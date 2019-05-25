@@ -1,0 +1,9 @@
+#ifndef __ZTH
+#define __ZTH
+// vim:filetype=cpp
+
+#include <libzth/config.h>
+#include <libzth/util.h>
+#include <libzth/version.h>
+
+#endif // __ZTH

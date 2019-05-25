@@ -1,0 +1,8 @@
+Zth (libzth) - Zeta threads
+
+A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads.
+In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol
+suggests that threads are not parallel, but they explicitly yield from one to another.
+
+GNU Pth is a great inspiration for this library.
+
