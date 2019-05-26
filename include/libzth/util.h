@@ -6,12 +6,16 @@
 
 #ifndef likely
 #  ifdef __GNUC__
-#    define likely(expr) __builtin_expect(!(expr), 0)
+#    define likely(expr) __builtin_expect(!!(expr), 1)
+#  else
+#    define likely(expr) (expr)
 #  endif
 #endif
 #ifndef unlikely
 #  ifdef __GNUC__
 #    define unlikely(expr) __builtin_expect((expr), 0)
+#  else
+#    define unlikely(expr) (expr)
 #  endif
 #endif
 
@@ -27,10 +31,13 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #endif
 
 #ifdef __cplusplus
-namespace zth {
-	char const* banner();
-    void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
-}
+#include <ctime>
+#include <string>
+
+#ifdef ZTH_OS_MAC
+extern "C" int clock_gettime(int clk_id, struct timespec* res);
+#  define CLOCK_MONOTONIC 1
+#endif
 
 #define zth_dbg(group, msg, a...) \
 	do { \
@@ -50,6 +57,76 @@ namespace zth {
 #else
 	#define zth_assert(...)  ((void)0)
 #endif
+
+namespace zth {
+	char const* banner();
+    void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
+
+	class Timestamp {
+	public:
+		Timestamp(time_t sec = 0, long nsec = 0)
+			: m_t()
+		{
+			m_t.tv_sec = sec;
+			m_t.tv_nsec = nsec;
+		}
+
+		static Timestamp now() {
+			Timestamp t;
+			int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &t.m_t);
+			zth_assert(res == 0);
+			return t;
+		}
+
+		bool isBefore(Timestamp const& t) const
+		{
+			return t.m_t.tv_sec > m_t.tv_sec || (t.m_t.tv_sec == m_t.tv_sec && t.m_t.tv_nsec >= m_t.tv_nsec);
+		}
+
+		Timestamp diff(Timestamp const& t) const
+		{
+			Timestamp res;
+
+			if(likely(isBefore(t))) {
+				// t is later in time than this.
+				res.m_t.tv_sec = t.m_t.tv_sec - m_t.tv_sec;
+				res.m_t.tv_nsec = t.m_t.tv_nsec - m_t.tv_nsec;
+			} else {
+				// this is later in time than t.
+				res.m_t.tv_sec = m_t.tv_sec - t.m_t.tv_sec;
+				res.m_t.tv_nsec = m_t.tv_nsec - t.m_t.tv_nsec;
+			}
+
+			if(res.m_t.tv_nsec < 0) {
+				res.m_t.tv_nsec += 1000000000;
+				res.m_t.tv_sec--;
+			}
+
+			return res;
+		}
+
+		Timestamp& add(Timestamp const& t)
+		{
+			m_t.tv_sec += t.m_t.tv_sec;
+			m_t.tv_nsec += t.m_t.tv_nsec;
+			if(m_t.tv_nsec > 1000000000) {
+				m_t.tv_nsec -= 1000000000;
+				m_t.tv_sec++;
+			}
+			return *this;
+		}
+
+		Timestamp& operator+=(Timestamp const& t) { return add(t); }
+
+		std::string toString() const {
+			char buf[32];
+			return snprintf(buf, sizeof(buf), "%g s", (double)m_t.tv_sec + (double)m_t.tv_nsec * 1e-9) > 0 ? buf : "? s";
+		}
+
+	private:
+		struct timespec m_t;
+	};
+}
 
 #endif // __cplusplus
 #endif // __ZTH_UTIL_H

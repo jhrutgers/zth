@@ -4,6 +4,10 @@
 #include <cstdio>
 #include <cstdarg>
 
+#ifdef ZTH_OS_MAC
+#  include <mach/mach_time.h>
+#endif
+
 using namespace std;
 
 namespace zth {
@@ -61,3 +65,28 @@ void zth_logv(char const* fmt, va_list arg)
 	vprintf(fmt, arg);
 }
 
+#ifdef ZTH_OS_MAC
+struct MachTimebaseInfo {
+	MachTimebaseInfo()
+	{
+		mach_timebase_info(&info);
+	}
+
+	mach_timebase_info_data_t info;
+};
+
+static MachTimebaseInfo machTimebaseInfo;
+
+int clock_gettime(int clk_id, struct timespec* res)
+{
+	if(unlikely(!res))
+		return EINVAL;
+
+	zth_assert(clk_id == CLOCK_MONOTONIC);
+	uint64_t c = mach_absolute_time() * machTimebaseInfo.info.numer / machTimebaseInfo.info.denom;
+
+	res->tv_sec = c / 1000000000l;
+	res->tv_nsec = c % 1000000000l;
+	return 0;
+}
+#endif

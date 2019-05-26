@@ -36,6 +36,9 @@
 #endif
 
 #ifdef __cplusplus
+#include <cstddef>
+#include <cstdint>
+
 namespace zth {
 	struct DefaultConfig {
 		static const bool Debug = 
@@ -55,6 +58,10 @@ namespace zth {
 		static const bool EnableDebugPrint = Debug;
 		static const bool EnableColorDebugPrint = true;
 		static int const Print_banner = 12;
+		static int const Print_worker = 8;
+		static int const Print_fiber = 9;
+
+		static size_t const DefaultFiberStackSize = 0x100000;
 	};
 } // namespace
 #endif // __cplusplus
