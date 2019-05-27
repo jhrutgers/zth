@@ -41,27 +41,29 @@
 
 namespace zth {
 	struct DefaultConfig {
-		static const bool Debug = 
+		static bool const Debug = 
 #ifndef NDEBUG
 			true;
 #else
 			false;
 #endif
 
-		static const bool EnableAssert = 
+		static bool const EnableAssert = 
 #ifndef NDEBUG
 			Debug;
 #else
 			false;
 #endif
 
-		static const bool EnableDebugPrint = Debug;
-		static const bool EnableColorDebugPrint = true;
+		static bool const EnableDebugPrint = Debug;
+		static bool const EnableColorDebugPrint = true;
 		static int const Print_banner = 12;
 		static int const Print_worker = 8;
 		static int const Print_fiber = 9;
+		static int const Print_context = 10;
 
 		static size_t const DefaultFiberStackSize = 0x100000;
+		static bool const ContextSignals = true;
 	};
 } // namespace
 #endif // __cplusplus

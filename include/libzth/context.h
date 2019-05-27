@@ -1,11 +1,28 @@
 #ifndef __ZTH_CONTEXT
 #define __ZTH_CONTEXT
 
+#include <libzth/config.h>
+
 #ifdef __cplusplus
 namespace zth {
 	class Context;
 
-	Context* context_create();
+	struct ContextAttr {
+		ContextAttr(Entry entry = NULL, void* arg = NULL)
+			: stackSize(Config::DefaultFiberStackSize)
+			, entry(entry)
+			, arg(arg)
+		{}
+
+		size_t stackSize;
+		typedef void* EntryArg;
+		typedef void(*Entry)(EntryArg);
+		EntryArg arg;
+	};
+
+	int context_init();
+	void context_deinit();
+	int context_create(Context*& context, ContextAttr const& attr);
 	void context_switch(Context* from, Context* to);
 	void context_destroy(Context* context);
 } // namespace

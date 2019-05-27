@@ -65,6 +65,22 @@ void zth_logv(char const* fmt, va_list arg)
 	vprintf(fmt, arg);
 }
 
+std::string pthreadId(pthread_t p)
+{
+	std::string res = "0x";
+	char buf[3] = {};
+
+	for(size_t i = 0; i < sizeof(p); i++)
+	{
+		if(snprintf(buf, sizeof(buf), "%02hhx", ((char*)(void*)&p)[i]))
+			res += buf;
+		else
+			res += "??";
+	}
+
+	return res;
+}
+
 #ifdef ZTH_OS_MAC
 struct MachTimebaseInfo {
 	MachTimebaseInfo()

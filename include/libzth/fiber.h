@@ -54,16 +54,19 @@ namespace zth
 	public:
 		enum State { New = 0, Ready, Running, Dead };
 
-		typedef void*(*Entry)(void*);
+		typedef ContextAttr::EntryArg EntryArg;
+		typedef void*(*Entry)(EntryArg);
+		static void* const ExitUnknown = (void*)(uintptr_t)-1;
 
-		Fiber(Entry entry)
+		Fiber(Entry entry, EntryArg arg = EntryArg())
 			: m_name("zth::Fiber")
 			, m_state(New)
+			, m_contextAttr(&fiberEntry, this)
 			, m_entry(entry)
-			, m_stacksize(Config::DefaultFiberStackSize)
+			, m_entryArg(arg)
 		{
+			zth_assert(m_entry);
 			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), this);
-			m_context = context_create();
 		}
 
 		~Fiber() {
@@ -83,16 +86,30 @@ namespace zth
 			if(state() != New)
 				return EPERM;
 
-			m_stacksize = size;
+			m_contextAttr.stackSize = size;
 			return 0;
 		}
 
-		size_t stackSize() const { return m_stacksize; }
+		size_t stackSize() const { return m_contextAttr.stacksize; }
 		Context* context() const { return m_context; }
 		State state() const { return m_state; }
+		void* exit() const { return m_exit; }
 		Timestamp const& totalTime() const { return m_totalTime; }
 
-		int init();
+		int init() {
+			if(state() != New)
+				return EPERM;
+
+			zth_assert(!m_context);
+
+			int res = context_create(m_context, m_contextAttr);
+			if(res)
+				return res;
+
+			m_state = Ready;
+			m_exit = ExitUnknown;
+			return 0;
+		}
 
 		int run(Fiber& from, Timestamp const& now = Timestamp::now()) {
 			int res = 0;
@@ -131,20 +148,47 @@ namespace zth
 			}
 		}
 
+		bool allowYield(Timestamp const& now = Timestamp::now()) {
+			return true;
+		}
+
 		int kill() {
 			zth_dbg(fiber, "[%s (%p)] Killed", name().c_str(), this);
 			m_state = Dead;
 			return 0;
 		}
 
+	protected:
+		static void fiberEntry(void* that) {
+			zth_assert(that);
+			static_cast<Fiber*>(that)->fiberEntry_();
+		}
+
+		void fiberEntry_() {
+			zth_dbg(fiber, "[%s (%p)] Entry", name().c_str(), this);
+			void* res = NULL;
+#ifdef __cpp_exceptions
+			try {
+#endif
+				m_exit = m_entry(m_arg);
+#ifdef __cpp_exceptions
+			} catch(...) {
+				zth_dbg(fiber, "[%s (%p)] Uncaught exception", name().c_str(), this);
+			}
+#endif
+			kill();
+		}
+
 	private:
 		std::string m_name;
 		State m_state;
+		ContextAttr m_contextAttr;
 		Entry m_entry;
-		size_t m_stacksize;
+		EntryArg m_arg;
 		Context* m_context;
 		Timestamp m_totalTime;
 		Timestamp m_startRun;
+		void* m_exit;
 	};
 
 } // namespace

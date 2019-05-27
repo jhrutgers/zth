@@ -20,6 +20,10 @@ namespace zth {
 		{
 			zth_dbg(banner, "%s", banner());
 			zth_dbg(worker, "[Worker %p] Created", this);
+
+			if(context_init())
+				zth_abort("context_init() failed");
+
 			m_workerFiber.setName("zth::Worker");
 			m_workerFiber.setStackSize(0); // no stack
 			m_workerFiber.next = m_workerFiber.prev = &m_workerFiber;
@@ -31,6 +35,7 @@ namespace zth {
 				m_runnableQueue->kill();
 				cleanup(m_runnableQueue);
 			}
+			context_deinit();
 			zth_dbg(worker, "[Worker %p] Destructed", this);
 		}
 
@@ -162,6 +167,23 @@ namespace zth {
 		Fiber m_workerFiber;
 		Timestamp m_end;
 	};
+
+	inline void yield(Fiber* preferFiber = NULL)
+	{
+		Worker* worker = Worker::currentWorker();
+		if(unlikely(!worker))
+			return;
+
+		Fiber* fiber = worker->currentFiber();
+		if(unlikely(!fiber))
+			return;
+
+		Timestamp now = Timestamp::now();
+		if(unlikely(!fiber->allowYield(now)))
+			return;
+
+		worker->schedule(preferFiber, now);
+	}
 
 } // namespace
 #endif // __cpusplus

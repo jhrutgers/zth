@@ -61,6 +61,7 @@ extern "C" int clock_gettime(int clk_id, struct timespec* res);
 namespace zth {
 	char const* banner();
     void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
+	std::string pthreadId(pthread_t p = pthread_self());
 
 	class Timestamp {
 	public:
