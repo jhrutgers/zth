@@ -49,22 +49,6 @@ void zth_abort(char const* msg, ...)
 	abort();
 }
 
-} // namespace
-
-void zth_log(char const* fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-	zth_logv(fmt, args);
-	va_end(args);
-}
-
-// weak symbol
-void zth_logv(char const* fmt, va_list arg)
-{
-	vprintf(fmt, arg);
-}
-
 std::string pthreadId(pthread_t p)
 {
 	std::string res = "0x";
@@ -81,17 +65,45 @@ std::string pthreadId(pthread_t p)
 	return res;
 }
 
-#ifdef ZTH_OS_MAC
-struct MachTimebaseInfo {
-	MachTimebaseInfo()
-	{
-		mach_timebase_info(&info);
+std::string format(char const* fmt, ...)
+{
+	std::string res;
+	char* buf = NULL;
+	va_list args;
+	va_start(args, fmt);
+	if(vasprintf(&buf, fmt, args) > 0) {
+		res = buf;
+		free(buf);
 	}
+	va_end(args);
+	return res;
+}
 
-	mach_timebase_info_data_t info;
-};
+} // namespace
 
-static MachTimebaseInfo machTimebaseInfo;
+void zth_log(char const* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	zth_logv(fmt, args);
+	va_end(args);
+}
+
+// weak symbol
+void zth_logv(char const* fmt, va_list arg)
+{
+	vprintf(fmt, arg);
+}
+
+#ifdef ZTH_OS_MAC
+
+static mach_timebase_info_data_t clock_info;
+
+static void clock_global_init() __attribute__((constructor));
+static void clock_global_init()
+{
+	mach_timebase_info(&clock_info);
+}
 
 int clock_gettime(int clk_id, struct timespec* res)
 {
@@ -99,7 +111,7 @@ int clock_gettime(int clk_id, struct timespec* res)
 		return EINVAL;
 
 	zth_assert(clk_id == CLOCK_MONOTONIC);
-	uint64_t c = mach_absolute_time() * machTimebaseInfo.info.numer / machTimebaseInfo.info.denom;
+	uint64_t c = mach_absolute_time() * clock_info.numer / clock_info.denom;
 
 	res->tv_sec = c / 1000000000l;
 	res->tv_nsec = c % 1000000000l;

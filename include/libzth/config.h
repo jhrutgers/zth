@@ -35,6 +35,10 @@
 #  error Unsupported OS.
 #endif
 
+#ifdef _DEBUG
+#  define ZTH_USE_VALGRIND
+#endif
+
 #ifdef __cplusplus
 #include <cstddef>
 #include <cstdint>
@@ -62,7 +66,8 @@ namespace zth {
 		static int const Print_fiber = 9;
 		static int const Print_context = 10;
 
-		static size_t const DefaultFiberStackSize = 0x100000;
+		static size_t const DefaultFiberStackSize = 0x10000;
+		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = true;
 	};
 } // namespace

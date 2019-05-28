@@ -6,60 +6,86 @@
 #include <libzth/fiber.h>
 
 #include <time.h>
+#include <pthread.h>
+#include <limits>
 
 namespace zth {
 	
 	class Worker {
 	public:
 		static Worker* currentWorker() { return (Worker*)pthread_getspecific(m_currentWorker); }
+#include <pthread.h>
 		Fiber* currentFiber() const { return m_currentFiber; }
 	
 		Worker()
 			: m_currentFiber()
+			, m_runnableQueue()
 			, m_workerFiber(&dummyWorkerEntry)
 		{
-			zth_dbg(banner, "%s", banner());
+			int res = 0;
 			zth_dbg(worker, "[Worker %p] Created", this);
 
-			if(context_init())
-				zth_abort("context_init() failed");
+			if(currentWorker())
+				zth_abort("Only one worker allowed per thread");
+
+			if((res = pthread_setspecific(m_currentWorker, this)))
+				goto error;
+
+			if((res = context_init()))
+				goto error;
 
 			m_workerFiber.setName("zth::Worker");
 			m_workerFiber.setStackSize(0); // no stack
 			m_workerFiber.next = m_workerFiber.prev = &m_workerFiber;
+			if((res = m_workerFiber.init()))
+				goto error;
+
+			return;
+
+		error:
+			zth_abort("Cannot create Worker; error %d", res);
 		}
 
 		~Worker() {
+			zth_dbg(worker, "[Worker %p] Destruct", this);
 			while(m_runnableQueue)
 			{
 				m_runnableQueue->kill();
 				cleanup(m_runnableQueue);
 			}
 			context_deinit();
-			zth_dbg(worker, "[Worker %p] Destructed", this);
 		}
 
 		void add(Fiber* fiber) {
 			if(likely(m_runnableQueue)) {
 				fiber->prev = m_runnableQueue;
 				fiber->next = m_runnableQueue->next;
-				fiber->next->prev = fiber;
-				m_runnableQueue->next = fiber;
+				fiber->next->prev = fiber->prev->next = fiber;
 			} else {
 				m_runnableQueue = fiber->next = fiber->prev = fiber;
 			}
 
 			zth_dbg(worker, "[Worker %p] Added %s (%p)", this, fiber->name().c_str(), fiber);
+			dbgStats();
 		}
 
 		void schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
+			if(preferFiber)
+				zth_dbg(worker, "[Worker %p] Schedule to %s (%p)", this, preferFiber->name().c_str(), preferFiber);
+			else
+				zth_dbg(worker, "[Worker %p] Schedule", this);
+
+			dbgStats();
+
 			// Check if fiber is within the runnable queue.
-			zth_assert(!preferFiber || (m_runnableQueue && m_runnableQueue->listContains(*preferFiber)));
+			zth_assert(!preferFiber ||
+				(m_runnableQueue && m_runnableQueue->listContains(*preferFiber)) ||
+				preferFiber == &m_workerFiber);
 
 			if(unlikely(m_end.isBefore(now)))
 			{
 				// Stop worker and return to its run1() call.
-				zth_dbg(worker, "[Worker %p] Time is up");
+				zth_dbg(worker, "[Worker %p] Time is up", this);
 				preferFiber = &m_workerFiber;
 			}
 		
@@ -110,8 +136,7 @@ namespace zth {
 			}
 		}
 
-		void cleanup(Fiber* fiber)
-		{
+		void cleanup(Fiber* fiber) {
 			if(!fiber)
 				return;
 
@@ -137,27 +162,39 @@ namespace zth {
 			fiber->next->prev = fiber->prev;
 			if(m_runnableQueue == fiber)
 				m_runnableQueue = fiber->next;
+			if(m_runnableQueue == fiber)
+				m_runnableQueue = NULL;
 			
 			delete fiber;
 		}
 
-		void run1()
-		{
-			zth_assert(!currentFiber());
-			schedule();
-		}
+		void run(Timestamp const& duration = Timestamp()) {
+			if(duration.isNull()) {
+				zth_dbg(worker, "[Worker %p] Run", this);
+				m_end = Timestamp(std::numeric_limits<time_t>::max());
+			} else {
+				zth_dbg(worker, "[Worker %p] Run for %s", this, duration.toString().c_str());
+				m_end = Timestamp::now() + duration;
+			}
 
-		void run(Timestamp const& t = Timestamp((time_t)-1))
-		{
-			m_end = t;
-			while(m_runnableQueue && Timestamp::now().isBefore(m_end))
-				run1();
+			while(m_runnableQueue && Timestamp::now().isBefore(m_end)) {
+				schedule();
+				zth_assert(!currentFiber());
+			}
 		}
 
 	protected:
-		static void* dummyWorkerEntry(void*)
-		{
+		static void* dummyWorkerEntry(void*) {
 			zth_abort("The worker fiber should not be executed.");
+		}
+
+		void dbgStats() {
+			zth_dbg(worker, "[Worker %p] Run queue:", this);
+			if(!m_runnableQueue)
+				zth_dbg(worker, "[Worker %p]   <empty>", this);
+			else
+				for(Fiber::Iterator it = m_runnableQueue->iterate(); it; ++it)
+					zth_dbg(worker, "[Worker %p]   %s", this, it->stats().c_str());
 		}
 
 	private:
@@ -166,6 +203,8 @@ namespace zth {
 		Fiber* m_runnableQueue;
 		Fiber m_workerFiber;
 		Timestamp m_end;
+
+		friend void worker_global_init();
 	};
 
 	inline void yield(Fiber* preferFiber = NULL)

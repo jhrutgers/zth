@@ -1,8 +1,19 @@
 #include <zth>
 
+#include <unistd.h>
 #include <csetjmp>
 #include <csignal>
 #include <sys/mman.h>
+
+#ifdef ZTH_USE_VALGRIND
+#  include <valgrind/valgrind.h>
+#endif
+
+#ifdef ZTH_OS_MAC
+#  ifndef MAP_STACK
+#    define MAP_STACK 0
+#  endif
+#endif
 
 using namespace std;
 
@@ -18,28 +29,56 @@ public:
 	void* stack;
 	size_t stackSize;
 	ContextAttr attr;
-	sigjmp_buf* parent;
 	sigset_t mask;
+	union {
+		sig_atomic_t volatile did_trampoline;
+		sigjmp_buf* volatile parent;
+	};
+#ifdef ZTH_USE_VALGRIND
+	unsigned int valgrind_stack_id;
+#endif
 };
 
-static sig_atomic_t volatile did_trampoline = 0;
-static Context* volatile trampoline_context = NULL;
+static pthread_key_t context_key;
+
+static void context_global_init() __attribute__((constructor));
+static void context_global_init() {
+	// By default, block SIGUSR1 for the main/all thread(s).
+	int res = 0;
+
+	sigset_t sigs;
+	sigemptyset(&sigs);
+	sigaddset(&sigs, SIGUSR1);
+	if((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL)))
+		goto error;
+
+	if((res = pthread_key_create(&context_key, NULL)))
+		goto error;
+
+	return;
+error:
+	zth_abort("Cannot initialize signals; error %d", res);
+}
 
 static void context_trampoline(int sig)
 {
 	// At this point, we are in the signal handler.
 	
-	if(sig != SIGUSR2 || did_trampoline) 
-		// huh?
+	if(unlikely(sig != SIGUSR1))
+		// Huh?
 		return;
 
 	// Put the context on the stack, as trampoline_context is about to change.
-	Context* context = trampoline_context;
+	Context* context = (Context*)pthread_getspecific(context_key);
 
-	if(setjmp(context->trampoline_env, 0) == 0)
+	if(unlikely(!context || context->did_trampoline))
+		// Huh?
+		return;
+
+	if(setjmp(context->trampoline_env) == 0)
 	{
 		// Return immediately to complete the signal handler.
-		did_trampoline = 1;
+		context->did_trampoline = 1;
 		return;
 	}
 
@@ -56,7 +95,7 @@ static void context_trampoline(int sig)
 	if(sigsetjmp(context->env, Config::ContextSignals) == 0) {
 		// Now, we are ready to be context switched to this fiber.
 		// Go back to our parent, as it was not our schedule turn to continue with actual execution.
-		siglongjmp(*context->me);
+		siglongjmp(*context->parent, 1);
 	}
 
 	// This is actually the first time we enter the fiber by the normal scheduler.
@@ -72,20 +111,15 @@ int context_init()
 {
 	zth_dbg(context, "[th %s] Initialize", pthreadId().c_str());
 
-	// Claim SIGUSR2 for context_create().
-	int res = 0;
-	sigset_t sigs;
-	sigemptyset(&sigs);
-	sigaddset(&sigs, SIGUSR2);
-	if((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL)))
-		return res;
-	
+	// Claim SIGUSR1 for context_create().
 	struct sigaction sa;
 	sa.sa_handler = &context_trampoline;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_ONSTACK;
-	if(sigaction(SIGUSR2, &sa, NULL))
+	if(sigaction(SIGUSR1, &sa, NULL))
 		return errno;
+
+	// Let SIGUSR1 remain blocked.
 
 	// All set.
 	return 0;
@@ -99,7 +133,7 @@ void context_deinit()
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sigaction(SIGUSR2, &sa, NULL);
+	sigaction(SIGUSR1, &sa, NULL);
 }
 
 int context_create(Context*& context, ContextAttr const& attr)
@@ -109,8 +143,9 @@ int context_create(Context*& context, ContextAttr const& attr)
 	context->stack = NULL;
 	context->stackSize = attr.stackSize;
 	context->attr = attr;
+	context->did_trampoline = 0;
 
-	if(attr->stackSize == 0)
+	if(attr.stackSize == 0)
 	{
 		// No stack, so no entry point can be accessed.
 		// This is used if only a context is required, but not a fiber is to be started.
@@ -132,63 +167,81 @@ int context_create(Context*& context, ContextAttr const& attr)
 		goto rollback_new;
 	}
 
-	// Guard both ends of the stack.
-	if( mprotect(context->stack, pagesize, PROT_NONE) ||
-		mprotect((char*)context->stack + context->stackSize - 2 * pagesize, pagesize, PROT_NONE))
-	{
-		res = errno;
-		goto rollback_mmap;
+	stack_t ss;
+
+	if(Config::EnableStackGuard) {
+		// Guard both ends of the stack.
+		if( mprotect(context->stack, pagesize, PROT_NONE) ||
+			mprotect((char*)context->stack + context->stackSize - pagesize, pagesize, PROT_NONE))
+		{
+			res = errno;
+			goto rollback_mmap;
+		}
+
+		ss.ss_sp = (char*)context->stack + pagesize;
+		ss.ss_size = context->stackSize - 2 * pagesize;
+	} else {
+		ss.ss_sp = context->stack;
+		ss.ss_size = context->stackSize;
 	}
 
-	stack_t ss;
-	ss.ss_sp = (char*)context->stack + pagesize;
-	ss.ss_size = context->stackSize - 2 * pagesize;
+#ifdef ZTH_USE_VALGRIND
+	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(ss.ss_sp, (char*)ss.ss_sp + ss.ss_size);
+#endif
+
 	ss.ss_flags = 0;
 	if(sigaltstack(&ss, NULL))
 	{
 		res = errno;
-		goto rollback_mmap;
+		goto rollback_stack;
 	}
 	
-	// If two worker threads are using signals, it is not clear which one was handled first.
-	// Use a lock to make that clear.
-	static pthread_mutex_t siglock = PTHREAD_MUTEX_INITIALIZER;
-	if((res = pthread_mutex_lock(&siglock)))
-		goto rollback_mmap;
+	if((res = pthread_setspecific(context_key, context)))
+		goto rollback_stack;
 
-	did_trampoline = 0;
-	trampoline_context = context;
+	// Ready to do the signal.
+	sigset_t sigs;
+	sigemptyset(&sigs);
+	sigaddset(&sigs, SIGUSR1);
+	if((res = pthread_sigmask(SIG_UNBLOCK, &sigs, NULL)))
+		goto rollback_stack;
 
-	res = pthread_kill(pthread_self(), SIGUSR2);
+	// As we are not blocking SIGUSR1, we will get the signal.
+	if((res = pthread_kill(pthread_self(), SIGUSR1)))
+		goto rollback_stack;
 
-	if(!res)
-	{
-		sigset_t sigs;
-		sigfillset(&sigs);
-		sigdelset(&sigs, SIGUSR2);
-		while(!did_trampoline)
-			sigsuspend(&sigs);
-	}
+	// Shouldn't take long...
+	while(!context->did_trampoline)
+		pthread_yield_np();
 
-	trampoline_context = NULL;
-	pthread_mutex_unlock(&siglock);
+	// Block again.
+	if((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL)))
+		return res;
 
-	if(res)
-		goto rollback_mmap;
+	if(Config::Debug)
+		pthread_setspecific(context_key, NULL);
 
 	// Ok, we have returned from the signal handler.
 	// Now go back again and save a proper env.
 	sigjmp_buf me;
 	context->parent = &me;
-	if(sigsetjmp(me, Config::ContextSignals))
-		longjmp(context->trampoline_env);
+	if(sigsetjmp(me, Config::ContextSignals) == 0)
+		longjmp(context->trampoline_env, 1);
 
 	// context is setup properly and is ready for normal scheduling.
-	context->parent = NULL;
+	if(Config::Debug)
+		context->parent = NULL;
+
+	// Reset sigaltstack.
+	//...todo
 
 	zth_dbg(context, "[th %s] New context %p", pthreadId().c_str(), context);
 	return 0;
 
+rollback_stack:
+#ifdef ZTH_USE_VALGRIND
+	VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
+#endif
 rollback_mmap:
 	munmap(context->stack, context->stackSize);
 rollback_new:
@@ -203,14 +256,12 @@ void context_switch(Context* from, Context* to)
 	zth_assert(from);
 	zth_assert(to);
 
-	if(sigsetjmp(from->env, Config::ContextSignals))
-		// Got back from somewhere else.
-		return;
+	if(sigsetjmp(from->env, Config::ContextSignals) == 0) {
+		// Go switch away from here.
+		siglongjmp(to->env, 1);
+	}
 
-	// Go switch away from here.
-	siglongjmp(to->env, 1);
-
-	// Impossible to get here.
+	// Got back from somewhere else.
 }
 
 void context_destroy(Context* context)
@@ -218,8 +269,11 @@ void context_destroy(Context* context)
 	if(!context)
 		return;
 	
-	if(context->stack)
-		free(context->stack);
+	if(context->stack) {
+		VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
+		munmap(context->stack, context->stackSize);
+		context->stack = NULL;
+	}
 
 	delete context;
 	zth_dbg(context, "[th %s] Deleted context %p", pthreadId().c_str(), context);

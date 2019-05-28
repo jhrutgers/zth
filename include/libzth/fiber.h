@@ -56,14 +56,15 @@ namespace zth
 
 		typedef ContextAttr::EntryArg EntryArg;
 		typedef void*(*Entry)(EntryArg);
-		static void* const ExitUnknown = (void*)(uintptr_t)-1;
+		static uintptr_t const ExitUnknown = (uintptr_t)-1;
 
 		Fiber(Entry entry, EntryArg arg = EntryArg())
 			: m_name("zth::Fiber")
 			, m_state(New)
-			, m_contextAttr(&fiberEntry, this)
 			, m_entry(entry)
 			, m_entryArg(arg)
+			, m_contextAttr(&fiberEntry, this)
+			, m_context()
 		{
 			zth_assert(m_entry);
 			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), this);
@@ -90,13 +91,13 @@ namespace zth
 			return 0;
 		}
 
-		size_t stackSize() const { return m_contextAttr.stacksize; }
+		size_t stackSize() const { return m_contextAttr.stackSize; }
 		Context* context() const { return m_context; }
 		State state() const { return m_state; }
 		void* exit() const { return m_exit; }
 		Timestamp const& totalTime() const { return m_totalTime; }
 
-		int init() {
+		int init(Timestamp const& now = Timestamp::now()) {
 			if(state() != New)
 				return EPERM;
 
@@ -107,7 +108,8 @@ namespace zth
 				return res;
 
 			m_state = Ready;
-			m_exit = ExitUnknown;
+			m_exit = (void*)ExitUnknown;
+			m_startRun = now;
 			return 0;
 		}
 
@@ -118,8 +120,11 @@ namespace zth
 			{
 			case New:
 				// First call, do implicit init.
-				if((res = init()))
+				if((res = init(now))) {
+					// Oops.
+					kill();
 					return res;
+				}
 				// fall-through
 			case Ready:
 				{
@@ -128,8 +133,11 @@ namespace zth
 					from.m_totalTime += dt;
 					// Hand over to this.
 					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.toString().c_str());
+					m_state = Running;
 					context_switch(from.context(), context());
 					// Ok, got back.
+					if(state() == Running)
+						m_state = Ready;
 					return 0;
 				}
 
@@ -158,6 +166,20 @@ namespace zth
 			return 0;
 		}
 
+		std::string stats() const {
+			std::string res = format("%s (%p)", name().c_str(), this);
+
+			switch(state()) {
+			case New:		res += " New"; break;
+			case Ready:		res += " Ready"; break;
+			case Running:	res += " Running"; break;
+			case Dead:		res += " Dead"; break;
+			}
+
+			res += format(" t=%s", m_totalTime.toString().c_str());
+			return res;
+		}
+
 	protected:
 		static void fiberEntry(void* that) {
 			zth_assert(that);
@@ -166,11 +188,10 @@ namespace zth
 
 		void fiberEntry_() {
 			zth_dbg(fiber, "[%s (%p)] Entry", name().c_str(), this);
-			void* res = NULL;
 #ifdef __cpp_exceptions
 			try {
 #endif
-				m_exit = m_entry(m_arg);
+				m_exit = m_entry(m_entryArg);
 #ifdef __cpp_exceptions
 			} catch(...) {
 				zth_dbg(fiber, "[%s (%p)] Uncaught exception", name().c_str(), this);
@@ -182,9 +203,9 @@ namespace zth
 	private:
 		std::string m_name;
 		State m_state;
-		ContextAttr m_contextAttr;
 		Entry m_entry;
-		EntryArg m_arg;
+		EntryArg m_entryArg;
+		ContextAttr m_contextAttr;
 		Context* m_context;
 		Timestamp m_totalTime;
 		Timestamp m_startRun;

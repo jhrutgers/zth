@@ -24,7 +24,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void zth_log(char const* fmt, ...);
+void zth_log(char const* fmt, ...) __attribute__((format(printf, 1, 2)));
 void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #ifdef __cplusplus
 } // extern "C"
@@ -33,6 +33,7 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #ifdef __cplusplus
 #include <ctime>
 #include <string>
+#include <pthread.h>
 
 #ifdef ZTH_OS_MAC
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
@@ -62,6 +63,7 @@ namespace zth {
 	char const* banner();
     void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
 	std::string pthreadId(pthread_t p = pthread_self());
+	std::string format(char const* fmt, ...) __attribute__((format(printf, 1, 2)));
 
 	class Timestamp {
 	public:
@@ -118,10 +120,15 @@ namespace zth {
 		}
 
 		Timestamp& operator+=(Timestamp const& t) { return add(t); }
+		Timestamp operator+(Timestamp const& t) { Timestamp res = *this; res += t; return res; }
 
 		std::string toString() const {
 			char buf[32];
 			return snprintf(buf, sizeof(buf), "%g s", (double)m_t.tv_sec + (double)m_t.tv_nsec * 1e-9) > 0 ? buf : "? s";
+		}
+
+		bool isNull() const {
+			return m_t.tv_sec == 0 && m_t.tv_nsec == 0;
 		}
 
 	private:

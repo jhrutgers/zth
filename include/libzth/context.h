@@ -8,15 +8,17 @@ namespace zth {
 	class Context;
 
 	struct ContextAttr {
-		ContextAttr(Entry entry = NULL, void* arg = NULL)
+		typedef void* EntryArg;
+		typedef void(*Entry)(EntryArg);
+
+		ContextAttr(Entry entry = NULL, EntryArg arg = EntryArg())
 			: stackSize(Config::DefaultFiberStackSize)
 			, entry(entry)
 			, arg(arg)
 		{}
 
 		size_t stackSize;
-		typedef void* EntryArg;
-		typedef void(*Entry)(EntryArg);
+		Entry entry;
 		EntryArg arg;
 	};
 
