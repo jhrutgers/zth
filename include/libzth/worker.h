@@ -4,10 +4,12 @@
 #ifdef __cplusplus
 #include <libzth/context.h>
 #include <libzth/fiber.h>
+#include <libzth/list.h>
 
 #include <time.h>
 #include <pthread.h>
 #include <limits>
+#include <cstring>
 
 namespace zth {
 	
@@ -19,7 +21,6 @@ namespace zth {
 	
 		Worker()
 			: m_currentFiber()
-			, m_runnableQueue()
 			, m_workerFiber(&dummyWorkerEntry)
 		{
 			int res = 0;
@@ -36,35 +37,27 @@ namespace zth {
 
 			m_workerFiber.setName("zth::Worker");
 			m_workerFiber.setStackSize(0); // no stack
-			m_workerFiber.next = m_workerFiber.prev = &m_workerFiber;
 			if((res = m_workerFiber.init()))
 				goto error;
 
 			return;
 
 		error:
-			zth_abort("Cannot create Worker; error %d", res);
+			zth_abort("Cannot create Worker; %s (error %d)", strerror(res), res);
 		}
 
 		~Worker() {
 			zth_dbg(worker, "[Worker %p] Destruct", this);
-			while(m_runnableQueue)
-			{
-				m_runnableQueue->kill();
-				cleanup(m_runnableQueue);
+			while(!m_runnableQueue.empty()) {
+				m_runnableQueue.front().kill();
+				cleanup(m_runnableQueue.front());
 			}
 			context_deinit();
 		}
 
 		void add(Fiber* fiber) {
-			if(likely(m_runnableQueue)) {
-				fiber->prev = m_runnableQueue;
-				fiber->next = m_runnableQueue->next;
-				fiber->next->prev = fiber->prev->next = fiber;
-			} else {
-				m_runnableQueue = fiber->next = fiber->prev = fiber;
-			}
-
+			zth_assert(fiber);
+			m_runnableQueue.push_back(*fiber);
 			zth_dbg(worker, "[Worker %p] Added %s (%p)", this, fiber->name().c_str(), fiber);
 			dbgStats();
 		}
@@ -79,7 +72,7 @@ namespace zth {
 
 			// Check if fiber is within the runnable queue.
 			zth_assert(!preferFiber ||
-				(m_runnableQueue && m_runnableQueue->listContains(*preferFiber)) ||
+				m_runnableQueue.contains(*preferFiber) ||
 				preferFiber == &m_workerFiber);
 
 			if(unlikely(m_end.isBefore(now)))
@@ -96,17 +89,17 @@ namespace zth {
 			{
 				if(likely(m_currentFiber))
 					// Pick next one from the list.
-					fiber = m_currentFiber->next;
-				else if(m_runnableQueue)
+					fiber = m_currentFiber->listNext();
+				else if(!m_runnableQueue.empty())
 					// Use first of the queue.
-					fiber = m_runnableQueue;
+					fiber = &m_runnableQueue.front();
 				else
 					// No fiber to switch to. Stay here.
 					return;
 			}
 
-			zth_assert(fiber->prev);
-			zth_assert(fiber->next);
+			zth_assert(fiber == &m_workerFiber || fiber->listPrev());
+			zth_assert(fiber == &m_workerFiber || fiber->listNext());
 
 			{
 				Fiber* prevFiber = m_currentFiber;
@@ -114,9 +107,10 @@ namespace zth {
 
 				if(unlikely(fiber == &m_workerFiber && prevFiber))
 					// Update head of queue to continue scheduling from where we stopped.
-					m_runnableQueue = prevFiber->next;
+					m_runnableQueue.rotate(*prevFiber->listNext());
 
 				res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
+				// Warning! When res == 0, fiber might already been deleted.
 				m_currentFiber = prevFiber;
 
 				switch(res)
@@ -125,8 +119,8 @@ namespace zth {
 					// Ok, just returned to this fiber. Continue execution.
 					return;
 				case EPERM:
-					// fiber died.
-					cleanup(fiber);
+					// fiber just died.
+					cleanup(*fiber);
 					// Retry to find a fiber.
 					fiber = NULL;
 					goto reschedule;
@@ -136,36 +130,27 @@ namespace zth {
 			}
 		}
 
-		void cleanup(Fiber* fiber) {
-			if(!fiber)
-				return;
+		void cleanup(Fiber& fiber) {
+			zth_assert(fiber.state() == Fiber::Dead);
 
-			zth_assert(fiber->state() == Fiber::Dead);
-
-			if(unlikely(m_currentFiber == fiber))
+			if(unlikely(m_currentFiber == &fiber))
 			{
 				// It seems that the current fiber is dead.
 				// In this case, we cannot delete the fiber and its context,
 				// as that is the context we are currently using.
 				// Return to the worker's context and sort it out from there.
 				
-				zth_dbg(worker, "[Worker %p] Current fiber %s (%p) just died; switch to worker", this, fiber->name().c_str(), fiber);
+				zth_dbg(worker, "[Worker %p] Current fiber %s (%p) just died; switch to worker", this, fiber.name().c_str(), &fiber);
 				schedule(&m_workerFiber);
 
 				// We should not get here, as we are dead.
 				zth_abort("[Worker %p] Failed to switch to worker", this);
 			}
 
-			zth_dbg(worker, "[Worker %p] Fiber %s (%p) is dead; cleanup", this, fiber->name().c_str(), fiber);
+			zth_dbg(worker, "[Worker %p] Fiber %s (%p) is dead; cleanup", this, fiber.name().c_str(), &fiber);
 			// Remove from runnable queue
-			fiber->prev->next = fiber->next;
-			fiber->next->prev = fiber->prev;
-			if(m_runnableQueue == fiber)
-				m_runnableQueue = fiber->next;
-			if(m_runnableQueue == fiber)
-				m_runnableQueue = NULL;
-			
-			delete fiber;
+			m_runnableQueue.erase(fiber);
+			delete &fiber;
 		}
 
 		void run(Timestamp const& duration = Timestamp()) {
@@ -177,7 +162,7 @@ namespace zth {
 				m_end = Timestamp::now() + duration;
 			}
 
-			while(m_runnableQueue && Timestamp::now().isBefore(m_end)) {
+			while(!m_runnableQueue.empty() && Timestamp::now().isBefore(m_end)) {
 				schedule();
 				zth_assert(!currentFiber());
 			}
@@ -190,17 +175,17 @@ namespace zth {
 
 		void dbgStats() {
 			zth_dbg(worker, "[Worker %p] Run queue:", this);
-			if(!m_runnableQueue)
+			if(m_runnableQueue.empty())
 				zth_dbg(worker, "[Worker %p]   <empty>", this);
 			else
-				for(Fiber::Iterator it = m_runnableQueue->iterate(); it; ++it)
+				for(typeof(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
 					zth_dbg(worker, "[Worker %p]   %s", this, it->stats().c_str());
 		}
 
 	private:
 		static pthread_key_t m_currentWorker;
 		Fiber* m_currentFiber;
-		Fiber* m_runnableQueue;
+		List<Fiber> m_runnableQueue;
 		Fiber m_workerFiber;
 		Timestamp m_end;
 

@@ -1,5 +1,7 @@
 #include <zth>
 
+#include <cstring>
+
 namespace zth {
 
 pthread_key_t Worker::m_currentWorker;
@@ -10,7 +12,7 @@ void worker_global_init() {
 
 	int res = pthread_key_create(&Worker::m_currentWorker, NULL);
 	if(res)
-		zth_abort("Cannot create Worker's key; error %d", res);
+		zth_abort("Cannot create Worker's key; %s (error %d)", strerror(res), res);
 }
 
 } // namespace

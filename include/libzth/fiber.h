@@ -5,50 +5,11 @@
 #include <libzth/util.h>
 #include <libzth/config.h>
 #include <libzth/context.h>
+#include <libzth/list.h>
 
 namespace zth
 {
 	class Worker;
-
-	template <typename ChildClass>
-	class ListElement {
-	public:
-		ListElement()
-			: prev()
-			, next()
-		{}
-
-		class Iterator {
-		public:
-			Iterator(ChildClass const& start) : m_start(&start), m_current() {}
-			bool valid() const { return likely(m_current != m_start); }
-			operator bool() const { return valid(); }
-			Iterator& next() { m_current = likely(m_current) ? m_current->next : m_start; return *this; }
-			Iterator& operator++() { return next(); }
-			Iterator operator++(int) { Iterator i = *this; next(); return i; }
-			ChildClass const& operator*() const { return likely(m_current) ? *m_current : *m_start; }
-			ChildClass const* operator->() const { return &this->operator*(); }
-		private:
-			ChildClass const* m_start;
-			ChildClass const* m_current;
-		};
-
-		Iterator iterate() { return Iterator(*static_cast<ChildClass*>(this)); }
-		Iterator iterate() const { return Iterator(*static_cast<ChildClass const*>(this)); }
-
-		bool listContains(ChildClass& elem) const {
-			for(Iterator it = iterate(); it; ++it)
-				if(&*it == &elem)
-					return true;
-			return false;
-		}
-
-	private:
-		ChildClass* prev;
-		ChildClass* next;
-
-		friend class Worker;
-	};
 
 	class Fiber : public ListElement<Fiber> {
 	public:
@@ -73,7 +34,7 @@ namespace zth
 		~Fiber() {
 			context_destroy(m_context);
 			m_context = NULL;
-			zth_dbg(fiber, "[%s (%p)] Destructed", name().c_str(), this);
+			zth_dbg(fiber, "[%s (%p)] Destructed. Total CPU: %s", name().c_str(), this, m_totalTime.toString().c_str());
 		}
 
 		void setName(std::string const& name) {
@@ -128,16 +89,22 @@ namespace zth
 				// fall-through
 			case Ready:
 				{
-					m_startRun = now;
+					// Update administration of the current fiber.
 					Timestamp dt = from.m_startRun.diff(now);
 					from.m_totalTime += dt;
+					if(from.state() == Running)
+						from.m_state = Ready;
+
 					// Hand over to this.
-					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.toString().c_str());
+					m_startRun = now;
 					m_state = Running;
+
+					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.toString().c_str());
 					context_switch(from.context(), context());
+
 					// Ok, got back.
-					if(state() == Running)
-						m_state = Ready;
+					// Warning! This fiber might already be dead and destructed at this point!
+					// Only return here!
 					return 0;
 				}
 
