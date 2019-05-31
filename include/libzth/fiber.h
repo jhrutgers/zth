@@ -3,6 +3,7 @@
 
 #ifdef __cplusplus
 #include <libzth/util.h>
+#include <libzth/time.h>
 #include <libzth/config.h>
 #include <libzth/context.h>
 #include <libzth/list.h>
@@ -13,7 +14,7 @@ namespace zth
 
 	class Fiber : public ListElement<Fiber> {
 	public:
-		enum State { New = 0, Ready, Running, Dead };
+		enum State { New = 0, Ready, Running, Blocked, Suspended, Dead };
 
 		typedef ContextAttr::EntryArg EntryArg;
 		typedef void*(*Entry)(EntryArg);
@@ -26,6 +27,7 @@ namespace zth
 			, m_entryArg(arg)
 			, m_contextAttr(&fiberEntry, this)
 			, m_context()
+			, m_timeslice(Config::MinTimeslice_s())
 		{
 			zth_assert(m_entry);
 			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), this);
@@ -56,7 +58,7 @@ namespace zth
 		Context* context() const { return m_context; }
 		State state() const { return m_state; }
 		void* exit() const { return m_exit; }
-		Timestamp const& totalTime() const { return m_totalTime; }
+		TimeInterval const& totalTime() const { return m_totalTime; }
 
 		int init(Timestamp const& now = Timestamp::now()) {
 			if(state() != New)
@@ -90,7 +92,7 @@ namespace zth
 			case Ready:
 				{
 					// Update administration of the current fiber.
-					Timestamp dt = from.m_startRun.diff(now);
+					TimeInterval dt = now - from.m_startRun;
 					from.m_totalTime += dt;
 					if(from.state() == Running)
 						from.m_state = Ready;
@@ -98,6 +100,7 @@ namespace zth
 					// Hand over to this.
 					m_startRun = now;
 					m_state = Running;
+					m_stateEnd = now + m_timeslice;
 
 					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.toString().c_str());
 					context_switch(from.context(), context());
@@ -124,7 +127,7 @@ namespace zth
 		}
 
 		bool allowYield(Timestamp const& now = Timestamp::now()) {
-			return true;
+			return state() != Running || m_stateEnd < now;
 		}
 
 		int kill() {
@@ -140,6 +143,8 @@ namespace zth
 			case New:		res += " New"; break;
 			case Ready:		res += " Ready"; break;
 			case Running:	res += " Running"; break;
+			case Blocked:	res += " Blocked"; break;
+			case Suspended:	res += " Suspended"; break;
 			case Dead:		res += " Dead"; break;
 			}
 
@@ -174,8 +179,10 @@ namespace zth
 		EntryArg m_entryArg;
 		ContextAttr m_contextAttr;
 		Context* m_context;
-		Timestamp m_totalTime;
+		TimeInterval m_totalTime;
 		Timestamp m_startRun;
+		Timestamp m_stateEnd;
+		TimeInterval m_timeslice;
 		void* m_exit;
 	};
 

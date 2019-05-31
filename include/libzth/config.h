@@ -69,6 +69,7 @@ namespace zth {
 		static size_t const DefaultFiberStackSize = 0x10000;
 		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = true;
+		static double MinTimeslice_s() { return 1e-4; }
 	};
 } // namespace
 #endif // __cplusplus

@@ -153,8 +153,8 @@ namespace zth {
 			delete &fiber;
 		}
 
-		void run(Timestamp const& duration = Timestamp()) {
-			if(duration.isNull()) {
+		void run(TimeInterval const& duration = TimeInterval()) {
+			if(duration <= 0) {
 				zth_dbg(worker, "[Worker %p] Run", this);
 				m_end = Timestamp(std::numeric_limits<time_t>::max());
 			} else {
@@ -162,7 +162,7 @@ namespace zth {
 				m_end = Timestamp::now() + duration;
 			}
 
-			while(!m_runnableQueue.empty() && Timestamp::now().isBefore(m_end)) {
+			while(!m_runnableQueue.empty() && Timestamp::now() < m_end) {
 				schedule();
 				zth_assert(!currentFiber());
 			}
@@ -192,8 +192,7 @@ namespace zth {
 		friend void worker_global_init();
 	};
 
-	inline void yield(Fiber* preferFiber = NULL)
-	{
+	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
 		Worker* worker = Worker::currentWorker();
 		if(unlikely(!worker))
 			return;
@@ -203,10 +202,14 @@ namespace zth {
 			return;
 
 		Timestamp now = Timestamp::now();
-		if(unlikely(!fiber->allowYield(now)))
+		if(unlikely(!alwaysYield && !fiber->allowYield(now)))
 			return;
 
 		worker->schedule(preferFiber, now);
+	}
+
+	inline void outOfWork() {
+		yield(NULL, true);
 	}
 
 } // namespace

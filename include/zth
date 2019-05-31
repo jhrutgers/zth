@@ -4,6 +4,7 @@
 
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/time.h>
 #include <libzth/version.h>
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
