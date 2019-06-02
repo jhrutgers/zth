@@ -13,39 +13,39 @@ namespace zth {
 	template <typename T, typename Compare = std::less<T> > class SortedList;
 
 	template <typename ChildClass>
-	class ListElement {
+	class Listable {
 	public:
 		typedef ChildClass type;
 
-		ListElement()
+		Listable()
 			: prev()
 			, next()
 			, level()
 		{}
 
-		ListElement(ListElement const& e)
+		Listable(Listable const& e)
 			: prev()
 			, next()
 			, level()
 		{}
 
-		ListElement& operator=(ListElement const& rhs) {
+		Listable& operator=(Listable const& rhs) {
 			if(Config::EnableAssert)
 				prev = next = NULL;
 			return *this;
 		}
 
-		type* listNext() const { return static_cast<type*>(next); }
-		type* listPrev() const { return static_cast<type*>(prev); }
+		type* listNext() const { zth_assert(level == 0 && next); return static_cast<type*>(next); }
+		type* listPrev() const { zth_assert(level == 0 && prev); return static_cast<type*>(prev); }
 
 	private:
 		union {
-			ListElement* prev; // for List
-			ListElement* left; // for SortedList
+			Listable* prev; // for List
+			Listable* left; // for SortedList
 		};
 		union {
-			ListElement* next; // for List
-			ListElement* right;// for SortedList
+			Listable* next; // for List
+			Listable* right;// for SortedList
 		};
 		uint_fast8_t level; // for SortedList
 
@@ -57,7 +57,7 @@ namespace zth {
 	class List {
 	public:
 		typedef T type;
-		typedef ListElement<type> elem_type;
+		typedef Listable<type> elem_type;
 
 		List()
 			: m_head()
@@ -118,11 +118,11 @@ namespace zth {
 
 			if(m_head == NULL) {
 				zth_assert(m_tail == NULL);
-				m_tail = m_head = elem.prev = elem.next = elem;
+				m_tail = m_head = elem.prev = elem.next = &elem;
 			} else {
-				elem->next = m_head;
-				elem->prev = m_head->prev;
-				elem->prev->next = elem->next->prev = m_head = elem;
+				elem.next = m_head;
+				elem.prev = m_head->prev;
+				elem.prev->next = elem.next->prev = m_head = &elem;
 			}
 		}
 		
@@ -287,7 +287,7 @@ namespace zth {
 	class SortedList {
 	public:
 		typedef T type;
-		typedef ListElement<type> elem_type;
+		typedef Listable<type> elem_type;
 
 		SortedList()
 			: m_comp()
@@ -358,7 +358,7 @@ namespace zth {
 			return false;
 		}
 
-		type& head() const {
+		type& front() const {
 			zth_assert(m_head && m_t);
 			return static_cast<type&>(*m_head);
 		}

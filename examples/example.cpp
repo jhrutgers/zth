@@ -3,23 +3,22 @@
 #include <cstdio>
 using namespace std;
 
-void* fiber1(void*)
+void fiber1(void*)
 {
 	printf("fiber 1\n");
 	zth::outOfWork();
 	printf("fiber 1\n");
-	return NULL;
 }
 
-void* fiber2(void*)
+void fiber2(void*)
 {
 	printf("fiber 2\n");
-	zth::yield();
+	zth::nap(1);
+//	zth::yield();
 	printf("fiber 2\n");
-	return NULL;
 }
 
-struct Int : public zth::ListElement<Int> {
+struct Int : public zth::Listable<Int> {
 	Int(int value) : value(value) {}
 	bool operator<(Int const& rhs) const { return value < rhs.value; }
 	std::string str() const { return zth::format("%d", value); }

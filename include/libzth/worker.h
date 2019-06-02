@@ -5,6 +5,7 @@
 #include <libzth/context.h>
 #include <libzth/fiber.h>
 #include <libzth/list.h>
+#include <libzth/waiter.h>
 
 #include <time.h>
 #include <pthread.h>
@@ -22,6 +23,7 @@ namespace zth {
 		Worker()
 			: m_currentFiber()
 			, m_workerFiber(&dummyWorkerEntry)
+			, m_waiter(*this)
 		{
 			int res = 0;
 			zth_dbg(worker, "[Worker %p] Created", this);
@@ -40,6 +42,9 @@ namespace zth {
 			if((res = m_workerFiber.init()))
 				goto error;
 
+			if((res = waiter().run()))
+				goto error;
+
 			return;
 
 		error:
@@ -48,6 +53,11 @@ namespace zth {
 
 		~Worker() {
 			zth_dbg(worker, "[Worker %p] Destruct", this);
+			while(!m_suspendedQueue.empty()) {
+				Fiber& f = m_suspendedQueue.front();
+				resume(f);
+				f.kill();
+			}
 			while(!m_runnableQueue.empty()) {
 				m_runnableQueue.front().kill();
 				cleanup(m_runnableQueue.front());
@@ -55,10 +65,32 @@ namespace zth {
 			context_deinit();
 		}
 
+		Waiter& waiter() { return m_waiter; }
+
 		void add(Fiber* fiber) {
 			zth_assert(fiber);
-			m_runnableQueue.push_back(*fiber);
-			zth_dbg(worker, "[Worker %p] Added %s (%p)", this, fiber->name().c_str(), fiber);
+			zth_assert(fiber->state() != Fiber::Waiting); // We don't manage 'Waiting' here.
+			if(unlikely(fiber->state() == Fiber::Suspended)) {
+				m_suspendedQueue.push_back(*fiber);
+				zth_dbg(worker, "[Worker %p] Added suspended %s (%p)", this, fiber->name().c_str(), fiber);
+			} else {
+				m_runnableQueue.push_front(*fiber);
+				zth_dbg(worker, "[Worker %p] Added runnable %s (%p)", this, fiber->name().c_str(), fiber);
+			}
+			dbgStats();
+		}
+		
+		void release(Fiber& fiber) {
+			if(unlikely(fiber.state() == Fiber::Suspended)) {
+				m_suspendedQueue.erase(fiber);
+				zth_dbg(worker, "[Worker %p] Removed %s (%p) from suspended queue", this, fiber.name().c_str(), &fiber);
+			} else {
+				if(&fiber == m_currentFiber)
+					m_runnableQueue.rotate(*fiber.listNext());
+
+				m_runnableQueue.erase(fiber);
+				zth_dbg(worker, "[Worker %p] Removed %s (%p) from runnable queue", this, fiber.name().c_str(), &fiber);
+			}
 			dbgStats();
 		}
 
@@ -72,8 +104,8 @@ namespace zth {
 
 			// Check if fiber is within the runnable queue.
 			zth_assert(!preferFiber ||
-				m_runnableQueue.contains(*preferFiber) ||
-				preferFiber == &m_workerFiber);
+				preferFiber == &m_workerFiber ||
+				m_runnableQueue.contains(*preferFiber));
 
 			if(unlikely(m_end.isBefore(now)))
 			{
@@ -87,15 +119,12 @@ namespace zth {
 		reschedule:
 			if(likely(!fiber))
 			{
-				if(likely(m_currentFiber))
-					// Pick next one from the list.
-					fiber = m_currentFiber->listNext();
-				else if(!m_runnableQueue.empty())
+				if(likely(!m_runnableQueue.empty()))
 					// Use first of the queue.
 					fiber = &m_runnableQueue.front();
 				else
-					// No fiber to switch to. Stay here.
-					return;
+					// No fiber to switch to.
+					fiber = &m_workerFiber;
 			}
 
 			zth_assert(fiber == &m_workerFiber || fiber->listPrev());
@@ -105,9 +134,8 @@ namespace zth {
 				Fiber* prevFiber = m_currentFiber;
 				m_currentFiber = fiber;
 
-				if(unlikely(fiber == &m_workerFiber && prevFiber))
-					// Update head of queue to continue scheduling from where we stopped.
-					m_runnableQueue.rotate(*prevFiber->listNext());
+				if(unlikely(fiber != &m_workerFiber))
+					m_runnableQueue.rotate(*fiber->listNext());
 
 				res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
 				// Warning! When res == 0, fiber might already been deleted.
@@ -153,10 +181,44 @@ namespace zth {
 			delete &fiber;
 		}
 
+		void suspend(Fiber& fiber) {
+			switch(fiber.state()) {
+			case Fiber::New:
+			case Fiber::Ready:
+				release(fiber);
+				fiber.suspend();
+				add(&fiber);
+				break;
+			case Fiber::Running:
+				release(fiber);
+				fiber.suspend();
+				add(&fiber);
+				zth_assert(currentFiber() == &fiber);
+				// Current fiber suspended, immediate reschedule.
+				schedule();
+				break;
+			case Fiber::Waiting:
+				// Not on my queue...
+				fiber.suspend();
+				break;
+			default:
+				; // Ignore.
+			}
+		}
+
+		void resume(Fiber& fiber) {
+			if(fiber.state() != Fiber::Suspended)
+				return;
+
+			release(fiber);
+			fiber.resume();
+			add(&fiber);
+		}
+
 		void run(TimeInterval const& duration = TimeInterval()) {
 			if(duration <= 0) {
 				zth_dbg(worker, "[Worker %p] Run", this);
-				m_end = Timestamp(std::numeric_limits<time_t>::max());
+				m_end = Timestamp(std::numeric_limits<time_t>::max(), 0);
 			} else {
 				zth_dbg(worker, "[Worker %p] Run for %s", this, duration.str().c_str());
 				m_end = Timestamp::now() + duration;
@@ -169,24 +231,36 @@ namespace zth {
 		}
 
 	protected:
-		static void* dummyWorkerEntry(void*) {
+		static void dummyWorkerEntry(void*) {
 			zth_abort("The worker fiber should not be executed.");
 		}
 
 		void dbgStats() {
+			if(!Config::EnableDebugPrint || !Config::Print_worker)
+				return;
+
 			zth_dbg(worker, "[Worker %p] Run queue:", this);
 			if(m_runnableQueue.empty())
 				zth_dbg(worker, "[Worker %p]   <empty>", this);
 			else
 				for(typeof(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
-					zth_dbg(worker, "[Worker %p]   %s", this, it->stats().c_str());
+					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
+
+			zth_dbg(worker, "[Worker %p] Suspended queue:", this);
+			if(m_suspendedQueue.empty())
+				zth_dbg(worker, "[Worker %p]   <empty>", this);
+			else
+				for(typeof(m_suspendedQueue.begin()) it = m_suspendedQueue.begin(); it != m_suspendedQueue.end(); ++it)
+					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
 		}
 
 	private:
 		static pthread_key_t m_currentWorker;
 		Fiber* m_currentFiber;
 		List<Fiber> m_runnableQueue;
+		List<Fiber> m_suspendedQueue;
 		Fiber m_workerFiber;
+		Waiter m_waiter;
 		Timestamp m_end;
 
 		friend void worker_global_init();
@@ -210,6 +284,21 @@ namespace zth {
 
 	inline void outOfWork() {
 		yield(NULL, true);
+	}
+
+	inline void suspend() {
+		Worker* w = Worker::currentWorker();
+		if(unlikely(!w))
+			return;
+		Fiber* f = w->currentFiber();
+		if(likely(f))
+			w->suspend(*f);
+	}
+	
+	inline void resume(Fiber& fiber) {
+		Worker* w = Worker::currentWorker();
+		if(likely(w))
+			w->resume(fiber);
 	}
 
 } // namespace

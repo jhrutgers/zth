@@ -169,7 +169,13 @@ namespace zth {
 
 	class Timestamp {
 	public:
-		Timestamp(time_t sec = 0, long nsec = 0)
+		Timestamp()
+			: m_t()
+		{
+			*this = null();
+		}
+
+		Timestamp(time_t sec, long nsec)
 			: m_t()
 		{
 			m_t.tv_sec = sec;
@@ -177,7 +183,7 @@ namespace zth {
 		}
 
 		static Timestamp now() {
-			Timestamp t;
+			Timestamp t(0, 0);
 			int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &t.m_t);
 			zth_assert(res == 0);
 			zth_assert(!t.isNull());
@@ -188,7 +194,7 @@ namespace zth {
 		operator struct timespec const&() const { return ts(); }
 
 		bool isBefore(Timestamp const& t) const {
-			return t.m_t.tv_sec > m_t.tv_sec || (t.m_t.tv_sec == m_t.tv_sec && t.m_t.tv_nsec > m_t.tv_nsec);
+			return ts().tv_sec < t.ts().tv_sec || (ts().tv_sec == t.ts().tv_sec && ts().tv_nsec < t.ts().tv_nsec);
 		}
 
 		bool isAfter(Timestamp const& t) const {
@@ -217,6 +223,8 @@ namespace zth {
 		Timestamp& operator-=(TimeInterval const& dt) { add(-dt); return *this; }
 		Timestamp operator-(TimeInterval const& dt) const { Timestamp t(*this); return t -= dt; }
 		TimeInterval operator-(Timestamp const& rhs) const { return rhs.timeTo(*this); }
+
+		static Timestamp null() { return Timestamp(0, 0); }
 
 		bool isNull() const {
 			return m_t.tv_sec == 0 && m_t.tv_nsec == 0;
