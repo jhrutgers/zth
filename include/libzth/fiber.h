@@ -36,7 +36,7 @@ namespace zth
 		~Fiber() {
 			context_destroy(m_context);
 			m_context = NULL;
-			zth_dbg(fiber, "[%s (%p)] Destructed. Total CPU: %s", name().c_str(), this, m_totalTime.toString().c_str());
+			zth_dbg(fiber, "[%s (%p)] Destructed. Total CPU: %s", name().c_str(), this, m_totalTime.str().c_str());
 		}
 
 		void setName(std::string const& name) {
@@ -102,7 +102,7 @@ namespace zth
 					m_state = Running;
 					m_stateEnd = now + m_timeslice;
 
-					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.toString().c_str());
+					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), this, dt.str().c_str());
 					context_switch(from.context(), context());
 
 					// Ok, got back.
@@ -148,7 +148,7 @@ namespace zth
 			case Dead:		res += " Dead"; break;
 			}
 
-			res += format(" t=%s", m_totalTime.toString().c_str());
+			res += format(" t=%s", m_totalTime.str().c_str());
 			return res;
 		}
 

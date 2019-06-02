@@ -126,7 +126,7 @@ namespace zth {
 		TimeInterval operator-(TimeInterval const& rhs) const { TimeInterval ti(*this); ti -= rhs; return ti; }
 		TimeInterval operator-() const { return TimeInterval(m_t.tv_sec, m_t.tv_nsec, !m_negative); }
 
-		std::string toString() const {
+		std::string str() const {
 			std::string res;
 
 			uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);

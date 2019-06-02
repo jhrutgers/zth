@@ -19,6 +19,13 @@ void* fiber2(void*)
 	return NULL;
 }
 
+struct Int : public zth::ListElement<Int> {
+	Int(int value) : value(value) {}
+	bool operator<(Int const& rhs) const { return value < rhs.value; }
+	std::string str() const { return zth::format("%d", value); }
+	int value;
+};
+
 int main()
 {
 	for(double s1 = -5.0; s1 < 5; s1 += 0.1)
@@ -38,6 +45,23 @@ int main()
 					printf("%6g - %6g = %6g (exp %6g)\n", s1, s2, s, exp);
 			}
 		}
+
+	Int i1 = 1;
+	Int i2 = 2;
+	Int i4 = 3;
+	Int i3 = 3;
+	Int i5 = 5;
+	Int i6 = 6;
+	Int i7 = 7;
+	zth::SortedList<Int> list;
+	list.insert(i2);
+	list.insert(i3);
+	list.insert(i4);
+	list.insert(i1);
+	list.insert(i5);
+	list.insert(i6);
+	list.insert(i7);
+	list.erase(i7);
 
 	zth::Worker w;
 	w.add(new zth::Fiber(&fiber1));

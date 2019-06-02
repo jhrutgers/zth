@@ -158,7 +158,7 @@ namespace zth {
 				zth_dbg(worker, "[Worker %p] Run", this);
 				m_end = Timestamp(std::numeric_limits<time_t>::max());
 			} else {
-				zth_dbg(worker, "[Worker %p] Run for %s", this, duration.toString().c_str());
+				zth_dbg(worker, "[Worker %p] Run for %s", this, duration.str().c_str());
 				m_end = Timestamp::now() + duration;
 			}
 
