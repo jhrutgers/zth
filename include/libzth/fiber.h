@@ -125,7 +125,7 @@ namespace zth
 			case Running:
 				zth_assert(&from == this);
 				// No switch required.
-				return 0;
+				return EAGAIN;
 
 			case Dead:
 				// Can't run dead fibers.

@@ -8,5 +8,6 @@
 #include <libzth/version.h>
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
+#include <libzth/sync.h>
 
 #endif // __ZTH

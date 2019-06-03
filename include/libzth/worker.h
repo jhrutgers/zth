@@ -94,7 +94,7 @@ namespace zth {
 			dbgStats();
 		}
 
-		void schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
+		bool schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
 			if(preferFiber)
 				zth_dbg(worker, "[Worker %p] Schedule to %s (%p)", this, preferFiber->name().c_str(), preferFiber);
 			else
@@ -107,15 +107,14 @@ namespace zth {
 				preferFiber == &m_workerFiber ||
 				m_runnableQueue.contains(*preferFiber));
 
-			if(unlikely(m_end.isBefore(now)))
-			{
+			if(unlikely(m_end.isBefore(now))) {
 				// Stop worker and return to its run1() call.
 				zth_dbg(worker, "[Worker %p] Time is up", this);
 				preferFiber = &m_workerFiber;
 			}
 		
 			Fiber* fiber = preferFiber;
-			int res = 0;
+			bool didSchedule = false;
 		reschedule:
 			if(likely(!fiber))
 			{
@@ -137,20 +136,24 @@ namespace zth {
 				if(unlikely(fiber != &m_workerFiber))
 					m_runnableQueue.rotate(*fiber->listNext());
 
-				res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
-				// Warning! When res == 0, fiber might already been deleted.
+				int res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
+				// Warning! When res == 0, fiber might already have been deleted.
 				m_currentFiber = prevFiber;
 
 				switch(res)
 				{
 				case 0:
 					// Ok, just returned to this fiber. Continue execution.
-					return;
+					return true;
+				case EAGAIN:
+					// Switing to the same fiber.
+					return didSchedule;
 				case EPERM:
 					// fiber just died.
 					cleanup(*fiber);
 					// Retry to find a fiber.
 					fiber = NULL;
+					didSchedule = true;
 					goto reschedule;
 				default:
 					zth_abort("Unhandled Fiber::run() error %d", res);

@@ -5,5 +5,5 @@ set(CMAKE_CXX_COMPILER g++-mp-8)
 
 project (example)
 	include_directories("../include")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pthread")
 	add_executable(example example.cpp ../src/util.cpp ../src/context.cpp ../src/worker.cpp ../src/waiter.cpp)

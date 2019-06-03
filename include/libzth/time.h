@@ -12,13 +12,17 @@
 
 #ifdef ZTH_OS_MAC
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
+extern "C" int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain);
 #  define CLOCK_MONOTONIC 1
+#  define TIMER_ABSTIME 1
 #endif
 
 namespace zth {
 	
 	class TimeInterval {
 	public:
+		static long const BILLION = 1000000000L;
+
 		TimeInterval(time_t s = 0, long ns = 0, bool negative = false)
 			: m_t()
 			, m_negative(negative)
@@ -51,8 +55,8 @@ namespace zth {
 
 				m_t.tv_nsec = (long)(std::fmod(std::fabs(dt_), 1.0) * 1e9);
 
-				if(m_t.tv_nsec > 1000000000L) {
-					m_t.tv_nsec -= 1000000000L;
+				if(m_t.tv_nsec > BILLION) {
+					m_t.tv_nsec -= BILLION;
 					m_t.tv_sec++;
 				}
 			}
@@ -91,8 +95,8 @@ namespace zth {
 				time_t tv_sec __attribute__((unused)) = m_t.tv_sec;
 				m_t.tv_sec += t.m_t.tv_sec;
 				m_t.tv_nsec += t.m_t.tv_nsec;
-				if(m_t.tv_nsec > 1000000000L) {
-					m_t.tv_nsec -= 1000000000L;
+				if(m_t.tv_nsec > BILLION) {
+					m_t.tv_nsec -= BILLION;
 					m_t.tv_sec++;
 				}
 
@@ -110,7 +114,7 @@ namespace zth {
 					m_t.tv_nsec -= t.m_t.tv_nsec;
 				}
 				if(m_t.tv_nsec < 0) {
-					m_t.tv_nsec += 1000000000L;
+					m_t.tv_nsec += BILLION;
 					m_t.tv_sec--;
 				}
 			}

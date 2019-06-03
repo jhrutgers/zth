@@ -317,6 +317,8 @@ namespace zth {
 			m_t = delete_(x, m_t);
 			if(m_head == &x)
 				m_head = lowest(m_t);
+			if(Config::EnableAssert)
+				x.left = x.right = NULL;
 			m_size--;
 			check();
 		}
@@ -397,6 +399,7 @@ namespace zth {
 		elem_type* insert_(elem_type& x, elem_type* t) {
 			if(!t) {
 				x.level = 1;
+				x.left = x.right = NULL;
 				return &x;
 			} else if(m_comp(static_cast<type&>(x), static_cast<type&>(*t)))
 				t->left = insert_(x, t->left);
@@ -519,7 +522,7 @@ namespace zth {
 		}
 
 		static void print(elem_type* t, int indent = 0) {
-			if(Config::Print_list == 0)
+			if(Config::Print_list == 0 || !Config::EnableDebugPrint)
 				return;
 
 			if(!t)

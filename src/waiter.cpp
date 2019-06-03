@@ -35,10 +35,16 @@ void Waiter::entry() {
 			m_worker.add(&f);
 		}
 
-		if(m_sleeping.empty())
+		if(m_sleeping.empty()) {
+			// No fiber is sleeping. suspend() till anyone is going to nap().
+			zth_dbg(waiter, "[Worker %p] No sleeping fibers anymore; suspend", &m_worker);
 			suspend();
-		else
-			outOfWork();
+		} else if(!m_worker.schedule()) {
+			// Not rescheduled, which means that we are the only runnable fiber.
+			// Do a real sleep, until something interesting happens in the system.
+			zth_dbg(waiter, "[Worker %p] Out of work; suspend thread", &m_worker);
+			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &m_sleeping.front().stateEnd().ts(), NULL);
+		}
 	}
 }
 

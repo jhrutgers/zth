@@ -3,19 +3,26 @@
 #include <cstdio>
 using namespace std;
 
+zth::Semaphore sem;
+zth::Future<int> future;
+
 void fiber1(void*)
 {
 	printf("fiber 1\n");
 	zth::outOfWork();
+	sem.acquire(1);
 	printf("fiber 1\n");
+	future = 42;
 }
 
 void fiber2(void*)
 {
 	printf("fiber 2\n");
 	zth::nap(1);
+	sem.release(1);
 //	zth::yield();
 	printf("fiber 2\n");
+	printf("future = %d\n", future.value());
 }
 
 struct Int : public zth::Listable<Int> {
