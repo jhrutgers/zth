@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #include <cstring>
 
-#ifdef ZTH_USE_VALGRIND
+#ifdef ZTH_HAVE_VALGRIND
 #  include <valgrind/memcheck.h>
 #endif
 
@@ -116,7 +116,7 @@ static void context_trampoline(int sig)
 	bootstrap(context);
 }
 
-#ifdef ZTH_USE_VALGRIND
+#ifdef ZTH_HAVE_VALGRIND
 static char dummyAltStack[MINSIGSTKSZ];
 #endif
 
@@ -261,7 +261,7 @@ int context_create(Context*& context, ContextAttr const& attr)
 			goto rollback_stack;
 		}
 	}
-#ifdef ZTH_USE_VALGRIND
+#ifdef ZTH_HAVE_VALGRIND
 	else if(RUNNING_ON_VALGRIND) {
 		// Valgrind has a hard time tracking when we left the signal handler
 		// and are not using the altstack anymore. Reset the altstack, such

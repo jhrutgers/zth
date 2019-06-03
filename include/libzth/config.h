@@ -35,6 +35,8 @@
 #  error Unsupported OS.
 #endif
 
+#define ZTH_HAVE_VALGRIND
+
 #ifdef _DEBUG
 #  define ZTH_USE_VALGRIND
 #endif
