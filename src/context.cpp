@@ -5,6 +5,7 @@
 #include <csignal>
 #include <sys/mman.h>
 #include <cstring>
+#include <pthread.h>
 
 #ifdef ZTH_HAVE_VALGRIND
 #  include <valgrind/memcheck.h>
@@ -40,9 +41,8 @@ public:
 #endif
 };
 
-static pthread_key_t context_key;
+ZTH_TLS_STATIC(Context*, trampoline_context, NULL)
 
-static void context_global_init() __attribute__((constructor));
 static void context_global_init() {
 	// By default, block SIGUSR1 for the main/all thread(s).
 	int res = 0;
@@ -53,13 +53,11 @@ static void context_global_init() {
 	if((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL)))
 		goto error;
 
-	if((res = pthread_key_create(&context_key, NULL)))
-		goto error;
-
 	return;
 error:
 	zth_abort("Cannot initialize signals; %s (error %d)", strerror(res), res);
 }
+INIT_CALL(context_global_init)
 
 #ifdef ZTH_USE_VALGRIND
 static void bootstrap(Context* context) __attribute__((noinline));
@@ -99,7 +97,7 @@ static void context_trampoline(int sig)
 		return;
 
 	// Put the context on the stack, as trampoline_context is about to change.
-	Context* context = (Context*)pthread_getspecific(context_key);
+	Context* context = ZTH_TLS_GET(trampoline_context);
 
 	if(unlikely(!context || context->did_trampoline))
 		// Huh?
@@ -209,8 +207,7 @@ int context_create(Context*& context, ContextAttr const& attr)
 		goto rollback_stack;
 	}
 	
-	if(unlikely((res = pthread_setspecific(context_key, context))))
-		goto rollback_altstack;
+	ZTH_TLS_SET(trampoline_context, context);
 
 	// Ready to do the signal.
 	sigset_t sigs;
@@ -237,7 +234,7 @@ int context_create(Context*& context, ContextAttr const& attr)
 		goto rollback_altstack;
 
 	if(Config::Debug)
-		pthread_setspecific(context_key, NULL);
+		ZTH_TLS_SET(trampoline_context, NULL);
 
 	if(Config::EnableAssert) {
 		if(unlikely(sigaltstack(NULL, &ss))) {

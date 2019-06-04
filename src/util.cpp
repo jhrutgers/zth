@@ -33,6 +33,9 @@ char const* banner() {
 #ifdef _DEBUG
 		" debug"
 #endif
+#if ZTH_THREADS
+		" threads"
+#endif
 		;
 }
 
@@ -101,12 +104,12 @@ void zth_logv(char const* fmt, va_list arg)
 static mach_timebase_info_data_t clock_info;
 static uint64_t mach_clock_start;
 
-static void clock_global_init() __attribute__((constructor));
 static void clock_global_init()
 {
 	mach_timebase_info(&clock_info);
 	mach_clock_start = mach_absolute_time();
 }
+INIT_CALL(clock_global_init)
 
 int clock_gettime(int clk_id, struct timespec* res)
 {

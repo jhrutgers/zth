@@ -161,7 +161,7 @@ namespace zth {
 		operator bool() const { return valid(); }
 
 		void wait() { if(!valid()) block(); }
-		void set(type const& value) {
+		void set(type const& value = type()) {
 			zth_assert(!valid());
 			if(valid())
 				return;
@@ -184,6 +184,30 @@ namespace zth {
 		type* operator->() { return &value(); }
 	private:
 		char m_data[sizeof(type)];
+		bool m_valid;
+	};
+	
+	template <>
+	class Future<void> : public Synchronizer {
+	public:
+		typedef void type;
+		Future() : m_valid() {}
+		virtual ~Future() {}
+		virtual char const* name() const { return "Future"; }
+
+		bool valid() const { return m_valid; }
+		operator bool() const { return valid(); }
+
+		void wait() { if(!valid()) block(); }
+		void set() {
+			zth_assert(!valid());
+			if(valid())
+				return;
+			m_valid = true;
+			unblockAll();
+		}
+
+	private:
 		bool m_valid;
 	};
 

@@ -37,8 +37,8 @@ namespace zth
 			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), this);
 		}
 
-		~Fiber() {
-			for(typeof(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
+		virtual ~Fiber() {
+			for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 				it->first(*this, it->second);
 
 			context_destroy(m_context);

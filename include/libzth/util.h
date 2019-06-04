@@ -19,6 +19,25 @@
 #  endif
 #endif
 
+#define INIT_CALL(f)	struct f##__init { f##__init() { f(); } }; static f##__init f##__init_;
+
+// Make a FOREACH macro
+#define FOREACH_1(WHAT, X)       WHAT(X)
+#define FOREACH_2(WHAT, X, ...)  WHAT(X)FOREACH_1(WHAT, __VA_ARGS__)
+#define FOREACH_3(WHAT, X, ...)  WHAT(X)FOREACH_2(WHAT, __VA_ARGS__)
+#define FOREACH_4(WHAT, X, ...)  WHAT(X)FOREACH_3(WHAT, __VA_ARGS__)
+#define FOREACH_5(WHAT, X, ...)  WHAT(X)FOREACH_4(WHAT, __VA_ARGS__)
+#define FOREACH_6(WHAT, X, ...)  WHAT(X)FOREACH_5(WHAT, __VA_ARGS__)
+#define FOREACH_7(WHAT, X, ...)  WHAT(X)FOREACH_6(WHAT, __VA_ARGS__)
+#define FOREACH_8(WHAT, X, ...)  WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)
+#define FOREACH_9(WHAT, X, ...)  WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)
+#define FOREACH_10(WHAT, X, ...) WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)
+//... repeat as needed
+
+#define GET_MACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,NAME,...) NAME
+#define FOR_EACH(action,...) \
+    GET_MACRO(__VA_ARGS__,FOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1)(action,__VA_ARGS__)
+
 #include <stdarg.h>
 
 #ifdef __cplusplus
@@ -33,6 +52,7 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #ifdef __cplusplus
 #include <string>
 #include <pthread.h>
+#include <memory>
 
 #define zth_dbg(group, msg, a...) \
 	do { \
@@ -58,6 +78,12 @@ namespace zth {
     void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
 	std::string pthreadId(pthread_t p = pthread_self());
 	std::string format(char const* fmt, ...) __attribute__((format(printf, 1, 2)));
+
+#if __cplusplus < 201103L
+#  define zth_auto_ptr std::auto_ptr
+#else
+#  define zth_auto_ptr std::unique_ptr
+#endif
 }
 
 #endif // __cplusplus

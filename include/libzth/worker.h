@@ -2,6 +2,7 @@
 #define __ZTH_WORKER_H
 
 #ifdef __cplusplus
+#include <libzth/config.h>
 #include <libzth/context.h>
 #include <libzth/fiber.h>
 #include <libzth/list.h>
@@ -14,10 +15,13 @@
 
 namespace zth {
 	
+	class Worker;
+
+	ZTH_TLS_DECLARE(Worker*, currentWorker_)
+
 	class Worker {
 	public:
-		static Worker* currentWorker() { return (Worker*)pthread_getspecific(m_currentWorker); }
-#include <pthread.h>
+		static Worker* currentWorker() { return ZTH_TLS_GET(currentWorker_); }
 		Fiber* currentFiber() const { return m_currentFiber; }
 	
 		Worker()
@@ -31,8 +35,7 @@ namespace zth {
 			if(currentWorker())
 				zth_abort("Only one worker allowed per thread");
 
-			if((res = pthread_setspecific(m_currentWorker, this)))
-				goto error;
+			ZTH_TLS_SET(currentWorker_, this);
 
 			if((res = context_init()))
 				goto error;
@@ -246,19 +249,18 @@ namespace zth {
 			if(m_runnableQueue.empty())
 				zth_dbg(worker, "[Worker %p]   <empty>", this);
 			else
-				for(typeof(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
+				for(decltype(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
 					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
 
 			zth_dbg(worker, "[Worker %p] Suspended queue:", this);
 			if(m_suspendedQueue.empty())
 				zth_dbg(worker, "[Worker %p]   <empty>", this);
 			else
-				for(typeof(m_suspendedQueue.begin()) it = m_suspendedQueue.begin(); it != m_suspendedQueue.end(); ++it)
+				for(decltype(m_suspendedQueue.begin()) it = m_suspendedQueue.begin(); it != m_suspendedQueue.end(); ++it)
 					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
 		}
 
 	private:
-		static pthread_key_t m_currentWorker;
 		Fiber* m_currentFiber;
 		List<Fiber> m_runnableQueue;
 		List<Fiber> m_suspendedQueue;
