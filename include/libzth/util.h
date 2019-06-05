@@ -13,7 +13,7 @@
 #endif
 #ifndef unlikely
 #  ifdef __GNUC__
-#    define unlikely(expr) __builtin_expect((expr), 0)
+#    define unlikely(expr) __builtin_expect((long)(expr), 0)
 #  else
 #    define unlikely(expr) (expr)
 #  endif
@@ -22,21 +22,22 @@
 #define INIT_CALL(f)	struct f##__init { f##__init() { f(); } }; static f##__init f##__init_;
 
 // Make a FOREACH macro
-#define FOREACH_1(WHAT, X)       WHAT(X)
-#define FOREACH_2(WHAT, X, ...)  WHAT(X)FOREACH_1(WHAT, __VA_ARGS__)
-#define FOREACH_3(WHAT, X, ...)  WHAT(X)FOREACH_2(WHAT, __VA_ARGS__)
-#define FOREACH_4(WHAT, X, ...)  WHAT(X)FOREACH_3(WHAT, __VA_ARGS__)
-#define FOREACH_5(WHAT, X, ...)  WHAT(X)FOREACH_4(WHAT, __VA_ARGS__)
-#define FOREACH_6(WHAT, X, ...)  WHAT(X)FOREACH_5(WHAT, __VA_ARGS__)
-#define FOREACH_7(WHAT, X, ...)  WHAT(X)FOREACH_6(WHAT, __VA_ARGS__)
-#define FOREACH_8(WHAT, X, ...)  WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)
-#define FOREACH_9(WHAT, X, ...)  WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)
-#define FOREACH_10(WHAT, X, ...) WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)
+#define FOREACH_0(WHAT)
+#define FOREACH_1(WHAT, X)			WHAT(X)
+#define FOREACH_2(WHAT, X, ...)		WHAT(X)FOREACH_1(WHAT, __VA_ARGS__)
+#define FOREACH_3(WHAT, X, ...)		WHAT(X)FOREACH_2(WHAT, __VA_ARGS__)
+#define FOREACH_4(WHAT, X, ...)		WHAT(X)FOREACH_3(WHAT, __VA_ARGS__)
+#define FOREACH_5(WHAT, X, ...)		WHAT(X)FOREACH_4(WHAT, __VA_ARGS__)
+#define FOREACH_6(WHAT, X, ...)		WHAT(X)FOREACH_5(WHAT, __VA_ARGS__)
+#define FOREACH_7(WHAT, X, ...)		WHAT(X)FOREACH_6(WHAT, __VA_ARGS__)
+#define FOREACH_8(WHAT, X, ...)		WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)
+#define FOREACH_9(WHAT, X, ...)		WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)
+#define FOREACH_10(WHAT, X, ...)	WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)
 //... repeat as needed
 
-#define GET_MACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,NAME,...) NAME
+#define _GET_MACRO(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,NAME,...) NAME
 #define FOR_EACH(action,...) \
-    GET_MACRO(__VA_ARGS__,FOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1)(action,__VA_ARGS__)
+    _GET_MACRO(0,##__VA_ARGS__,FOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1,FOREACH_0)(action,##__VA_ARGS__)
 
 #include <stdarg.h>
 

@@ -4,12 +4,11 @@
 namespace zth {
 
 void nap(Timestamp const& sleepUntil) {
-	Worker* w = Worker::currentWorker();
-	if(unlikely(!w))
-		return;
+	Worker* w;
+	Fiber* f;
+	getContext(&w, &f);
 
-	Fiber* f = w->currentFiber();
-	if(unlikely(!f || f->state() != Fiber::Running))
+	if(f->state() != Fiber::Running)
 		return;
 
 	f->nap(sleepUntil);

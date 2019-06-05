@@ -59,9 +59,11 @@ error:
 }
 INIT_CALL(context_global_init)
 
+static void bootstrap(Context* context) __attribute__((noreturn
 #ifdef ZTH_USE_VALGRIND
-static void bootstrap(Context* context) __attribute__((noinline));
+	,noinline
 #endif
+	));
 static void bootstrap(Context* context)
 {
 	zth_dbg(context, "Bootstrapping %p", context);
@@ -164,8 +166,9 @@ int context_create(Context*& context, ContextAttr const& attr)
 	}
 	
 	// Let the new context inherit our signal mask.
-	if(unlikely((res = pthread_sigmask(0, NULL, &context->mask))))
-		return res;
+	if(Config::ContextSignals)
+		if(unlikely((res = pthread_sigmask(0, NULL, &context->mask))))
+			return res;
 
 	size_t const pagesize = getpagesize();
 	zth_assert(__builtin_popcount(pagesize) == 1);
@@ -297,6 +300,14 @@ int context_create(Context*& context, ContextAttr const& attr)
 	// Disable checking during bootstrap.
 	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
 #endif
+
+	if(Config::EnableAssert) {
+		if(unlikely(sigaltstack(NULL, &ss))) {
+			res = errno;
+			goto rollback_altstack;
+		}
+		zth_assert(!(ss.ss_flags & SS_ONSTACK));
+	}
 
 	// context is setup properly and is ready for normal scheduling.
 	if(Config::Debug)

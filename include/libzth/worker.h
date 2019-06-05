@@ -75,10 +75,10 @@ namespace zth {
 			zth_assert(fiber->state() != Fiber::Waiting); // We don't manage 'Waiting' here.
 			if(unlikely(fiber->state() == Fiber::Suspended)) {
 				m_suspendedQueue.push_back(*fiber);
-				zth_dbg(worker, "[Worker %p] Added suspended %s (%p)", this, fiber->name().c_str(), fiber);
+				zth_dbg(worker, "[Worker %p] Added suspended %s (%p)", this, fiber->name().c_str(), fiber->normptr());
 			} else {
 				m_runnableQueue.push_front(*fiber);
-				zth_dbg(worker, "[Worker %p] Added runnable %s (%p)", this, fiber->name().c_str(), fiber);
+				zth_dbg(worker, "[Worker %p] Added runnable %s (%p)", this, fiber->name().c_str(), fiber->normptr());
 			}
 			dbgStats();
 		}
@@ -86,20 +86,20 @@ namespace zth {
 		void release(Fiber& fiber) {
 			if(unlikely(fiber.state() == Fiber::Suspended)) {
 				m_suspendedQueue.erase(fiber);
-				zth_dbg(worker, "[Worker %p] Removed %s (%p) from suspended queue", this, fiber.name().c_str(), &fiber);
+				zth_dbg(worker, "[Worker %p] Removed %s (%p) from suspended queue", this, fiber.name().c_str(), fiber.normptr());
 			} else {
 				if(&fiber == m_currentFiber)
 					m_runnableQueue.rotate(*fiber.listNext());
 
 				m_runnableQueue.erase(fiber);
-				zth_dbg(worker, "[Worker %p] Removed %s (%p) from runnable queue", this, fiber.name().c_str(), &fiber);
+				zth_dbg(worker, "[Worker %p] Removed %s (%p) from runnable queue", this, fiber.name().c_str(), fiber.normptr());
 			}
 			dbgStats();
 		}
 
 		bool schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
 			if(preferFiber)
-				zth_dbg(worker, "[Worker %p] Schedule to %s (%p)", this, preferFiber->name().c_str(), preferFiber);
+				zth_dbg(worker, "[Worker %p] Schedule to %s (%p)", this, preferFiber->name().c_str(), preferFiber->normptr());
 			else
 				zth_dbg(worker, "[Worker %p] Schedule", this);
 
@@ -174,14 +174,14 @@ namespace zth {
 				// as that is the context we are currently using.
 				// Return to the worker's context and sort it out from there.
 				
-				zth_dbg(worker, "[Worker %p] Current fiber %s (%p) just died; switch to worker", this, fiber.name().c_str(), &fiber);
+				zth_dbg(worker, "[Worker %p] Current fiber %s (%p) just died; switch to worker", this, fiber.name().c_str(), fiber.normptr());
 				schedule(&m_workerFiber);
 
 				// We should not get here, as we are dead.
 				zth_abort("[Worker %p] Failed to switch to worker", this);
 			}
 
-			zth_dbg(worker, "[Worker %p] Fiber %s (%p) is dead; cleanup", this, fiber.name().c_str(), &fiber);
+			zth_dbg(worker, "[Worker %p] Fiber %s (%p) is dead; cleanup", this, fiber.name().c_str(), fiber.normptr());
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
 			delete &fiber;
@@ -241,6 +241,10 @@ namespace zth {
 			zth_abort("The worker fiber should not be executed.");
 		}
 
+		bool isInWorkerContext() const {
+			return m_currentFiber == NULL || m_currentFiber == &m_workerFiber;
+		}
+
 		void dbgStats() {
 			if(!Config::EnableDebugPrint || !Config::Print_worker)
 				return;
@@ -271,14 +275,24 @@ namespace zth {
 		friend void worker_global_init();
 	};
 
-	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
-		Worker* worker = Worker::currentWorker();
-		if(unlikely(!worker))
-			return;
+	inline void getContext(Worker** currentWorker, Fiber** currentFiber) {
+		Worker* currentWorker_ = Worker::currentWorker();
+		if(unlikely(!currentWorker_))
+			zth_abort("No worker initialized");
+		if(likely(currentWorker))
+			*currentWorker = currentWorker_;
 
-		Fiber* fiber = worker->currentFiber();
-		if(unlikely(!fiber))
-			return;
+		if(likely(currentFiber)) {
+			Fiber* currentFiber_ = *currentFiber = currentWorker_->currentFiber();
+			if(unlikely(!currentFiber_))
+				zth_abort("Not within fiber context");
+		}
+	}
+
+	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
+		Worker* worker;
+		Fiber* fiber;
+		getContext(&worker, &fiber);
 
 		Timestamp now = Timestamp::now();
 		if(unlikely(!alwaysYield && !fiber->allowYield(now)))
@@ -292,18 +306,16 @@ namespace zth {
 	}
 
 	inline void suspend() {
-		Worker* w = Worker::currentWorker();
-		if(unlikely(!w))
-			return;
-		Fiber* f = w->currentFiber();
-		if(likely(f))
-			w->suspend(*f);
+		Worker* worker;
+		Fiber* fiber;
+		getContext(&worker, &fiber);
+		worker->suspend(*fiber);
 	}
 	
 	inline void resume(Fiber& fiber) {
-		Worker* w = Worker::currentWorker();
-		if(likely(w))
-			w->resume(fiber);
+		Worker* worker;
+		getContext(&worker, NULL);
+		worker->resume(fiber);
 	}
 
 } // namespace

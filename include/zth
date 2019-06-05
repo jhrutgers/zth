@@ -9,5 +9,6 @@
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
 #include <libzth/sync.h>
+#include <libzth/async.h>
 
 #endif // __ZTH

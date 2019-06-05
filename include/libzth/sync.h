@@ -14,23 +14,74 @@
 #endif
 
 namespace zth {
-	class Synchronizer {
+
+	class RefCounted {
 	public:
-		Synchronizer() {}
-		virtual ~Synchronizer() {}
+		RefCounted() : m_count() {}
+		virtual ~RefCounted() {}
+
+		void used() {
+			zth_assert(m_count < std::numeric_limits<size_t>::max());
+			m_count++;
+		}
+
+		void unused() {
+			zth_assert(m_count > 0);
+			if(--m_count == 0)
+				delete this;
+		}
+
+	private:
+		size_t m_count;
+	};
+
+	template <typename T>
+	class SharedPointer {
+	public:
+		SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
+		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
+		~SharedPointer() { reset(); }
+
+		void reset(RefCounted* object = NULL) {
+			if(object)
+				object->used();
+			if(m_object)
+				m_object->unused();
+			m_object = object;
+		}
+		
+		SharedPointer& operator=(RefCounted* object) { reset(object); return *this; }
+		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); }
+		
+		T* get() const { return m_object ? static_cast<T*>(m_object) : NULL; }
+		operator T*() const { return get(); }
+		T* operator*() const { zth_assert(get()); return get(); }
+		T* operator->() const { zth_assert(get()); return get(); }
+
+		T* release() {
+			T* object = get();
+			m_object = NULL;
+			return object;
+		}
+		
+	private:
+		RefCounted* m_object;
+	};
+
+	class Synchronizer : public RefCounted {
+	public:
+		Synchronizer() : RefCounted() {}
+		virtual ~Synchronizer() { zth_dbg(sync, "[%s (%p)] Destruct", name(), normptr()); }
 		virtual char const* name() const { return "Synchronizer"; }
+		void const* normptr() const { return this; }
 
 	protected:
 		void block() {
-			Worker* w = Worker::currentWorker();
-			if(unlikely(!w))
-				return;
+			Worker* w;
+			Fiber* f;
+			getContext(&w, &f);
 
-			Fiber* f = w->currentFiber();
-			if(unlikely(!f))
-				return;
-
-			zth_dbg(sync, "[%s (%p)] Block %s (%p)", name(), this, f->name().c_str(), f);
+			zth_dbg(sync, "[%s (%p)] Block %s (%p)", name(), normptr(), f->name().c_str(), f->normptr());
 			w->release(*f);
 			m_queue.push_back(*f);
 			f->nap(Timestamp::null());
@@ -38,26 +89,24 @@ namespace zth {
 		}
 
 		void unblockFirst() {
-			Worker* w = Worker::currentWorker();
-			if(unlikely(!w))
-				return;
+			Worker* w;
+			getContext(&w, NULL);
 
 			if(m_queue.empty())
 				return;
 
 			Fiber& f = m_queue.front();
-			zth_dbg(sync, "[%s (%p)] Unblock %s (%p)", name(), this, f.name().c_str(), &f);
+			zth_dbg(sync, "[%s (%p)] Unblock %s (%p)", name(), normptr(), f.name().c_str(), f.normptr());
 			m_queue.pop_front();
 			f.wakeup();
 			w->add(&f);
 		}
 
 		void unblockAll() {
-			Worker* w = Worker::currentWorker();
-			if(unlikely(!w))
-				return;
+			Worker* w;
+			getContext(&w, NULL);
 
-			zth_dbg(sync, "[%s (%p)] Unblock all", name(), this);
+			zth_dbg(sync, "[%s (%p)] Unblock all", name(), normptr());
 
 			while(!m_queue.empty()) {
 				Fiber& f = m_queue.front();

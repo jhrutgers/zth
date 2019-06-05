@@ -25,6 +25,21 @@ void fiber2(void*)
 	printf("future = %d\n", future.value());
 }
 
+int fiber4() {
+	printf("fiber 4\n");
+	return 4;
+}
+declare_fibered_1(fiber4)
+define_fibered_1(fiber4)
+
+void fiber3() {
+	printf("fiber 3\n");
+	fiber4_future f = async fiber4();
+	printf("got from fiber 4: %d\n", f->value());
+}
+declare_fibered_1(fiber3)
+define_fibered_1(fiber3)
+
 struct Int : public zth::Listable<Int> {
 	Int(int value) : value(value) {}
 	bool operator<(Int const& rhs) const { return value < rhs.value; }
@@ -34,6 +49,7 @@ struct Int : public zth::Listable<Int> {
 
 int main()
 {
+#if 0
 	for(double s1 = -5.0; s1 < 5; s1 += 0.1)
 		for(double s2 = -5.0; s2 < 5; s2 += 0.1) {
 			zth::TimeInterval ti1 = s1;
@@ -68,10 +84,13 @@ int main()
 	list.insert(i6);
 	list.insert(i7);
 	list.erase(i7);
+#endif
 
 	zth::Worker w;
-	w.add(new zth::Fiber(&fiber1));
-	w.add(new zth::Fiber(&fiber2));
+//	w.add(new zth::Fiber(&fiber1));
+//	w.add(new zth::Fiber(&fiber2));
+
+	async fiber3();
 	w.run();
 }
 
