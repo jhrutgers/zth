@@ -1,15 +1,41 @@
+#ifdef _WIN32
+// For Fiber API
+#  if _WIN32_WINNT < 0x0400
+#    undef _WIN32_WINNT
+#    define _WIN32_WINNT 0x0400 
+#  endif
+#  define WIN32_LEAN_AND_MEAN
+#endif
+
+// For ucontext_t
+#define _XOPEN_SOURCE
+
 #include <zth>
 
 #include <unistd.h>
-#include <csetjmp>
-#include <csignal>
-#include <sys/mman.h>
 #include <cstring>
-#include <pthread.h>
+
+#ifdef ZTH_CONTEXT_SJLJ
+#  include <csetjmp>
+#  include <csignal>
+#  include <pthread.h>
+#endif
+
+#ifdef ZTH_CONTEXT_UCONTEXT
+#  include <csetjmp>
+#  include <ucontext.h>
+#endif
+
+#ifdef ZTH_CONTEXT_WINFIBER
+#  include <windows.h>
+#else
+#  include <sys/mman.h>
+#endif
 
 #ifdef ZTH_HAVE_VALGRIND
 #  include <valgrind/memcheck.h>
 #endif
+
 
 #ifdef ZTH_OS_MAC
 #  ifndef MAP_STACK
@@ -19,29 +45,86 @@
 
 using namespace std;
 
-namespace zth
-{
+namespace zth {
 
 class Context {
 public:
+	void* stack;
+	size_t stackSize;
+	ContextAttr attr;
+#ifdef ZTH_CONTEXT_SJLJ
 	union {
 		jmp_buf trampoline_env;
 		sigjmp_buf env;
 	};
-	void* stack;
-	size_t stackSize;
-	ContextAttr attr;
 	sigset_t mask;
 	union {
 		sig_atomic_t volatile did_trampoline;
 		sigjmp_buf* volatile parent;
 	};
+#endif
+#ifdef ZTH_CONTEXT_UCONTEXT
+	sigjmp_buf env;
+#endif
+#ifdef ZTH_CONTEXT_WINFIBER
+	LPVOID fiber;
+#endif
 #ifdef ZTH_USE_VALGRIND
 	unsigned int valgrind_stack_id;
 #endif
 };
 
-ZTH_TLS_STATIC(Context*, trampoline_context, NULL)
+static void context_entry(Context* context) __attribute__((noreturn));
+
+
+////////////////////////////////////////////////////////////
+// ucontext method
+
+#ifdef ZTH_CONTEXT_UCONTEXT
+#  define context_init_impl()	0
+#  define context_deinit_impl()
+#  define context_destroy_impl(...)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
+
+static void context_trampoline(Context* context, sigjmp_buf origin) {
+	if(sigsetjmp(context->env, Config::ContextSignals) == 0)
+		siglongjmp(origin, 1);
+
+	context_entry(context);
+}
+
+static int context_create_impl(Context* context, stack_t* stack) {
+	ucontext_t uc;
+	if(getcontext(&uc))
+		return EINVAL;
+	
+	uc.uc_link = NULL;
+	uc.uc_stack = *stack;
+	sigjmp_buf origin;
+	makecontext(&uc, (void(*)(void))&context_trampoline, 2, context, origin);
+	if(sigsetjmp(origin, Config::ContextSignals) == 0)
+		setcontext(&uc);
+	return 0;
+}
+
+static void context_switch_impl(Context* from, Context* to) {
+	// switchcontext() restores signal masks, which is slow...
+	if(sigsetjmp(from->env, Config::ContextSignals) == 0)
+		siglongjmp(to->env, 1);
+}
+
+#  pragma GCC diagnostic pop
+#endif // ZTH_CONTEXT_UCONTEXT
+
+
+
+
+////////////////////////////////////////////////////////////
+// sigaltstack() method
+
+#ifdef ZTH_CONTEXT_SJLJ
+#  define context_destroy_impl(...)
 
 static void context_global_init() {
 	// By default, block SIGUSR1 for the main/all thread(s).
@@ -64,8 +147,7 @@ static void bootstrap(Context* context) __attribute__((noreturn
 	,noinline
 #endif
 	));
-static void bootstrap(Context* context)
-{
+static void bootstrap(Context* context) {
 	zth_dbg(context, "Bootstrapping %p", context);
 
 	if(Config::ContextSignals) {
@@ -82,16 +164,12 @@ static void bootstrap(Context* context)
 	}
 
 	// This is actually the first time we enter the fiber by the normal scheduler.
-	// Go execute the fiber.
-	context->attr.entry(context->attr.arg);
-	// Fiber has quit. Switch to another one.
-	yield();
-	// We should never get here, otherwise the fiber wasn't dead...
-	zth_abort("Returned to finished context");
+	context_entry(context);
 }
 
-static void context_trampoline(int sig)
-{
+ZTH_TLS_STATIC(Context*, trampoline_context, NULL)
+
+static void context_trampoline(int sig) {
 	// At this point, we are in the signal handler.
 	
 	if(unlikely(sig != SIGUSR1))
@@ -116,14 +194,7 @@ static void context_trampoline(int sig)
 	bootstrap(context);
 }
 
-#ifdef ZTH_HAVE_VALGRIND
-static char dummyAltStack[MINSIGSTKSZ];
-#endif
-
-int context_init()
-{
-	zth_dbg(context, "[th %s] Initialize", pthreadId().c_str());
-
+static int context_init_impl() {
 	// Claim SIGUSR1 for context_create().
 	struct sigaction sa;
 	sa.sa_handler = &context_trampoline;
@@ -138,10 +209,8 @@ int context_init()
 	return 0;
 }
 
-void context_deinit()
-{
-	zth_dbg(context, "[th %s] Deinit", pthreadId().c_str());
-
+static void context_deinit_impl() {
+	// Release SIGUSR1.
 	struct sigaction sa;
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
@@ -149,66 +218,32 @@ void context_deinit()
 	sigaction(SIGUSR1, &sa, NULL);
 }
 
-int context_create(Context*& context, ContextAttr const& attr)
-{
+#ifdef ZTH_HAVE_VALGRIND
+static char dummyAltStack[MINSIGSTKSZ];
+#endif
+
+static int context_create_impl(Context* context, stack_t* stack) {
 	int res = 0;
-	context = new Context();
-	context->stack = NULL;
-	context->stackSize = attr.stackSize;
-	context->attr = attr;
 	context->did_trampoline = 0;
 
-	if(unlikely(attr.stackSize == 0)) {
-		// No stack, so no entry point can be accessed.
-		// This is used if only a context is required, but not a fiber is to be started.
-		context->stack = NULL;
-		return 0;
-	}
-	
 	// Let the new context inherit our signal mask.
 	if(Config::ContextSignals)
 		if(unlikely((res = pthread_sigmask(0, NULL, &context->mask))))
 			return res;
 
-	size_t const pagesize = getpagesize();
-	zth_assert(__builtin_popcount(pagesize) == 1);
-	context->stackSize = (context->stackSize + MINSIGSTKSZ + 3 * pagesize - 1) & ~(pagesize - 1);
-
-	// Get a new stack.
-	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED)) {
-		res = errno;
-		goto rollback_new;
-	}
-
-	stack_t ss;
+	stack_t& ss = *stack;
 	stack_t oss;
 
-	if(Config::EnableStackGuard) {
-		// Guard both ends of the stack.
-		if( unlikely(
-		        mprotect(context->stack, pagesize, PROT_NONE) ||
-		        mprotect((char*)context->stack + context->stackSize - pagesize, pagesize, PROT_NONE)))
-		{
-			res = errno;
-			goto rollback_mmap;
-		}
-
-		ss.ss_sp = (char*)context->stack + pagesize;
-		ss.ss_size = context->stackSize - 2 * pagesize;
-	} else {
-		ss.ss_sp = context->stack;
-		ss.ss_size = context->stackSize;
-	}
-
-	ss.ss_flags = 0
-#ifdef SS_AUTODISARM
-		| SS_AUTODISARM
+#ifdef ZTH_USE_VALGRIND
+	// Disable checking during bootstrap.
+	VALGRIND_DISABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
 #endif
-		;
-	if(unlikely(sigaltstack(&ss, &oss))) {
-		res = errno;
-		goto rollback_stack;
-	}
+
+#ifdef SS_AUTODISARM
+	ss.ss_flags |= SS_AUTODISARM;
+#endif
+	if(unlikely(sigaltstack(&ss, &oss)))
+		return errno;
 	
 	ZTH_TLS_SET(trampoline_context, context);
 
@@ -218,11 +253,6 @@ int context_create(Context*& context, ContextAttr const& attr)
 	sigaddset(&sigs, SIGUSR1);
 	if(unlikely((res = pthread_sigmask(SIG_UNBLOCK, &sigs, NULL))))
 		goto rollback_altstack;
-
-#ifdef ZTH_USE_VALGRIND
-	// Disable checking during bootstrap.
-	VALGRIND_DISABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
-#endif
 
 	// As we are not blocking SIGUSR1, we will get the signal.
 	if(unlikely((res = pthread_kill(pthread_self(), SIGUSR1))))
@@ -255,10 +285,11 @@ int context_create(Context*& context, ContextAttr const& attr)
 		goto rollback_altstack;
 	}
 #endif
+
 	if(unlikely(!(oss.ss_flags & SS_DISABLE))) {
 		if(sigaltstack(&oss, NULL)) {
 			res = errno;
-			goto rollback_stack;
+			goto rollback;
 		}
 	}
 #ifdef ZTH_HAVE_VALGRIND
@@ -272,7 +303,7 @@ int context_create(Context*& context, ContextAttr const& attr)
 		dss.ss_flags = 0;
 		if(unlikely(sigaltstack(&dss, NULL))) {
 			res = errno;
-			goto rollback_altstack;
+			goto rollback;
 		}
 
 		// Although the previous stack was disabled, it is still valid.
@@ -282,14 +313,6 @@ int context_create(Context*& context, ContextAttr const& attr)
 
 	// Ok, we have returned from the signal handler.
 	// Now go back again and save a proper env.
-#ifdef ZTH_USE_VALGRIND
-	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(ss.ss_sp, (char*)ss.ss_sp + ss.ss_size - 1);
-
-	if(RUNNING_ON_VALGRIND)
-		zth_dbg(context, "[th %s] Stack of context %p has Valgrind id %u and is at %p-%p",
-			pthreadId().c_str(), context, context->valgrind_stack_id,
-			ss.ss_sp, (char*)ss.ss_sp + ss.ss_size - 1);
-#endif
 
 	sigjmp_buf me;
 	context->parent = &me;
@@ -297,60 +320,95 @@ int context_create(Context*& context, ContextAttr const& attr)
 		longjmp(context->trampoline_env, 1);
 
 #ifdef ZTH_USE_VALGRIND
-	// Disable checking during bootstrap.
+	// Disabled checking during bootstrap.
 	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
 #endif
 
 	if(Config::EnableAssert) {
-		if(unlikely(sigaltstack(NULL, &ss))) {
+		if(unlikely(sigaltstack(NULL, &oss))) {
 			res = errno;
-			goto rollback_altstack;
+			goto rollback;
 		}
-		zth_assert(!(ss.ss_flags & SS_ONSTACK));
+		zth_assert(!(oss.ss_flags & SS_ONSTACK));
 	}
 
 	// context is setup properly and is ready for normal scheduling.
 	if(Config::Debug)
 		context->parent = NULL;
 
-	zth_dbg(context, "[th %s] New context %p with stack: %p-%p", pthreadId().c_str(), context, ss.ss_sp, (char*)ss.ss_sp + ss.ss_size - 1);
 	return 0;
 
 rollback_altstack:
-	if(!(oss.ss_flags & SS_DISABLE))
-		sigaltstack(&oss, NULL);
-rollback_stack:
 #ifdef ZTH_USE_VALGRIND
 	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
-	VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
 #endif
-rollback_mmap:
-	munmap(context->stack, context->stackSize);
-rollback_new:
-	delete context;
-	context = NULL;
-	zth_dbg(context, "[th %s] Cannot create context; %s (error %d)", pthreadId().c_str(), strerror(res), res);
+	if(!(oss.ss_flags & SS_DISABLE))
+		sigaltstack(&oss, NULL);
+rollback:
 	return res ? res : EINVAL;
 }
 
-void context_switch(Context* from, Context* to)
-{
-	zth_assert(from);
-	zth_assert(to);
-
+static void context_switch_impl(Context* from, Context* to) {
 	if(sigsetjmp(from->env, Config::ContextSignals) == 0) {
 		// Go switch away from here.
 		siglongjmp(to->env, 1);
 	}
-
-	// Got back from somewhere else.
 }
 
-void context_destroy(Context* context)
-{
-	if(!context)
+#endif // ZTH_CONTEXT_SJLJ
+
+
+
+
+////////////////////////////////////////////////////////////
+// Win32 fiber method
+
+#ifdef ZTH_CONTEXT_WINFIBER
+#  define context_deinit_impl()
+
+static int context_init_impl() {
+	ConvertThreadToFiber(NULL);
+	return 0;
+}
+
+static int context_create_impl(Context* context, stack_t* stack) {
+	int res = 0;
+	if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)context_entry, (LPVOID)context)))
+		return 0;
+	else if((res = -(int)GetLastError()))
+		return res;
+	else
+		return EINVAL;
+}
+
+static void context_destroy_impl(Context* context) {
+	if(!context->fiber)
 		return;
-	
+
+	DeleteFiber(context->fiber);
+	context->fiber = NULL;
+}
+
+static void context_switch_impl(Context* from, Context* to) {
+	zth_assert(to->fiber && to->fiber != GetCurrentFiber());
+	SwitchToFiber(to->fiber);
+}
+
+#endif // ZTH_CONTEXT_WINFIBER
+
+
+
+
+////////////////////////////////////////////////////////////
+// Stack allocation
+
+#ifdef ZTH_CONTEXT_WINFIBER
+typedef void* stack_t;
+// Stack is implicit by CreateFiber().
+#  define context_deletestack(...)
+#  define context_newstack(...) 0
+#else // !ZTH_CONTEXT_WINFIBER
+static void context_deletestack(Context* context) {
 	if(context->stack) {
 #ifdef ZTH_USE_VALGRIND
 		VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
@@ -358,7 +416,134 @@ void context_destroy(Context* context)
 		munmap(context->stack, context->stackSize);
 		context->stack = NULL;
 	}
+}
 
+static int context_newstack(Context* context, stack_t* stack) {
+	int res = 0;
+	size_t const pagesize = getpagesize();
+	zth_assert(__builtin_popcount(pagesize) == 1);
+	context->stackSize = (context->stackSize + MINSIGSTKSZ + 3 * pagesize - 1) & ~(pagesize - 1);
+
+	// Get a new stack.
+	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED)) {
+		res = errno;
+		goto rollback;
+	}
+
+	if(Config::EnableStackGuard) {
+		stack->ss_sp = (char*)context->stack + pagesize;
+		stack->ss_size = context->stackSize - 2 * pagesize;
+	} else {
+		stack->ss_sp = context->stack;
+		stack->ss_size = context->stackSize;
+	}
+	stack->ss_flags = 0;
+
+#ifdef ZTH_USE_VALGRIND
+	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(stack->ss_sp, (char*)stack->ss_sp + stack->ss_size - 1);
+
+	if(RUNNING_ON_VALGRIND)
+		zth_dbg(context, "[th %s] Stack of context %p has Valgrind id %u",
+			pthreadId().c_str(), context, context->valgrind_stack_id);
+#endif
+
+	if(Config::EnableStackGuard) {
+		// Guard both ends of the stack.
+		if(unlikely(
+			mprotect(context->stack, pagesize, PROT_NONE) ||
+			mprotect((char*)context->stack + context->stackSize - pagesize, pagesize, PROT_NONE)))
+		{
+			res = errno;
+			goto rollback_mmap;
+		}
+	}
+
+	return 0;
+
+rollback_mmap:
+	context_deletestack(context);
+rollback:
+	return res ? res : EINVAL;
+}
+#endif // !ZTH_CONTEXT_WINFIBER
+
+
+
+
+////////////////////////////////////////////////////////////
+// Common functions
+
+int context_init() {
+	zth_dbg(context, "[th %s] Initialize", pthreadId().c_str());
+	return context_init_impl();
+}
+
+void context_deinit() {
+	zth_dbg(context, "[th %s] Deinit", pthreadId().c_str());
+	context_deinit_impl();
+}
+
+static void context_entry(Context* context) {
+	zth_assert(context);
+	// Go execute the fiber.
+	context->attr.entry(context->attr.arg);
+	// Fiber has quit. Switch to another one.
+	yield();
+	// We should never get here, otherwise the fiber wasn't dead...
+	zth_abort("Returned to finished context");
+}
+
+int context_create(Context*& context, ContextAttr const& attr) {
+	int res = 0;
+	context = new Context();
+	context->stack = NULL;
+	context->stackSize = attr.stackSize;
+	context->attr = attr;
+
+	if(unlikely(attr.stackSize == 0)) {
+		// No stack, so no entry point can be accessed.
+		// This is used if only a context is required, but not a fiber is to be started.
+		context->stack = NULL;
+		return 0;
+	}
+
+	stack_t stack;
+	if(unlikely((res = context_newstack(context, &stack))))
+		goto rollback_new;
+
+	if(unlikely((res = context_create_impl(context, &stack))))
+		goto rollback_stack;
+
+#ifdef ZTH_CONTEXT_WINFIBER
+	zth_dbg(context, "[th %s] New context %p", pthreadId().c_str(), context);
+#else
+	zth_dbg(context, "[th %s] New context %p with stack: %p-%p", pthreadId().c_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
+#endif
+	return 0;
+	
+rollback_stack:
+	context_deletestack(context);
+rollback_new:
+	delete context;
+	zth_dbg(context, "[th %s] Cannot create context; %s (error %d)", pthreadId().c_str(), strerror(res), res);
+	return res ? res : EINVAL;
+}
+
+void context_switch(Context* from, Context* to) {
+	zth_assert(from);
+	zth_assert(to);
+
+	context_switch_impl(from, to);
+
+	// Got back from somewhere else.
+}
+
+void context_destroy(Context* context) {
+	if(!context)
+		return;
+	
+	context_destroy_impl(context);
+	context_deletestack(context);
 	delete context;
 	zth_dbg(context, "[th %s] Deleted context %p", pthreadId().c_str(), context);
 }

@@ -48,7 +48,9 @@
 #  error Unsupported hardware platform.
 #endif
 
-#if defined(__linux__)
+#if defined(_WIN32)
+#  define ZTH_OS_WINDOWS
+#elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
 #elif defined(__APPLE__)
 #  include "TargetConditionals.h"
@@ -66,6 +68,23 @@
 #ifdef _DEBUG
 #  define ZTH_USE_VALGRIND
 #endif
+
+#ifdef ZTH_OS_WINDOWS
+#  define ZTH_CONTEXT_WINFIBER
+#  if defined(UNICODE) || defined(_UNICODE)
+#    error Do not use UNICODE. Use ANSI with UTF-8 instead.
+#  endif
+#elif defined(ZTH_HAVE_VALGRIND)
+// Valgrind does not handle sigaltstack very well.
+#  define ZTH_CONTEXT_UCONTEXT
+#else
+// Default approach.
+#  define ZTH_CONTEXT_SJLJ
+//#  define ZTH_CONTEXT_UCONTEXT
+#endif
+
+
+
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -104,9 +123,9 @@ namespace zth {
 		static int const Print_waiter = 13;
 		static int const Print_sync = 14;
 
-		static size_t const DefaultFiberStackSize = 0x10000;
+		static size_t const DefaultFiberStackSize = 0x20000;
 		static bool const EnableStackGuard = Debug;
-		static bool const ContextSignals = true;
+		static bool const ContextSignals = false;
 		static double MinTimeslice_s() { return 1e-4; }
 	};
 } // namespace

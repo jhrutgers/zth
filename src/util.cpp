@@ -36,6 +36,15 @@ char const* banner() {
 #if ZTH_THREADS
 		" threads"
 #endif
+#ifdef ZTH_CONTEXT_UCONTEXT
+		" ucontext"
+#endif
+#ifdef ZTH_CONTEXT_SJLJ
+		" sjlj"
+#endif
+#ifdef ZTH_CONTEXT_WINFIBER
+		" winfiber"
+#endif
 		;
 }
 
