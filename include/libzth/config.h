@@ -48,10 +48,17 @@
 #  error Unsupported hardware platform.
 #endif
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__CYGWIN__)
 #  define ZTH_OS_WINDOWS
+#  define _WANT_IO_C99_FORMATS 1
+#  define __USE_MINGW_ANSI_STDIO 1
+#  define __STDC_FORMAT_MACROS
+#  if defined(UNICODE) || defined(_UNICODE)
+#    error Do not use UNICODE. Use ANSI with UTF-8 instead.
+#  endif
 #elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
+#  define ZTH_HAVE_VALGRIND
 #elif defined(__APPLE__)
 #  include "TargetConditionals.h"
 #  ifdef TARGET_OS_MAC
@@ -59,21 +66,17 @@
 #  else
 #    error Unsupported Apple platform.
 #  endif
+#  define ZTH_HAVE_VALGRIND
 #else
 #  error Unsupported OS.
 #endif
 
-#define ZTH_HAVE_VALGRIND
-
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(ZTH_HAVE_VALGRIND)
 #  define ZTH_USE_VALGRIND
 #endif
 
 #ifdef ZTH_OS_WINDOWS
 #  define ZTH_CONTEXT_WINFIBER
-#  if defined(UNICODE) || defined(_UNICODE)
-#    error Do not use UNICODE. Use ANSI with UTF-8 instead.
-#  endif
 #elif defined(ZTH_HAVE_VALGRIND)
 // Valgrind does not handle sigaltstack very well.
 #  define ZTH_CONTEXT_UCONTEXT

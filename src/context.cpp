@@ -1,10 +1,11 @@
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__CYGWIN__)
 // For Fiber API
 #  if _WIN32_WINNT < 0x0400
 #    undef _WIN32_WINNT
 #    define _WIN32_WINNT 0x0400 
 #  endif
 #  define WIN32_LEAN_AND_MEAN
+#  define NOGDI
 #endif
 
 // For ucontext_t
@@ -364,18 +365,29 @@ static void context_switch_impl(Context* from, Context* to) {
 // Win32 fiber method
 
 #ifdef ZTH_CONTEXT_WINFIBER
+#ifdef stack_t
+#  undef stack_t
+#endif
+typedef void* stack_t;
 #  define context_deinit_impl()
 
 static int context_init_impl() {
-	ConvertThreadToFiber(NULL);
-	return 0;
+	printf("init\n");
+	int res = 0;
+	if(ConvertThreadToFiber(NULL))
+		return 0;
+	else if((res = -(int)GetLastError()))
+		return res;
+	else
+		return EINVAL;
 }
 
 static int context_create_impl(Context* context, stack_t* stack) {
 	int res = 0;
-	if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)context_entry, (LPVOID)context)))
+	if((context->fiber = CreateFiber(/*(SIZE_T)Config::DefaultFiberStackSize*/0, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
+		printf("%p\n", context->fiber);
 		return 0;
-	else if((res = -(int)GetLastError()))
+	} else if((res = -(int)GetLastError()))
 		return res;
 	else
 		return EINVAL;
@@ -391,7 +403,9 @@ static void context_destroy_impl(Context* context) {
 
 static void context_switch_impl(Context* from, Context* to) {
 	zth_assert(to->fiber && to->fiber != GetCurrentFiber());
+	printf("Switch %p\n", to->fiber);
 	SwitchToFiber(to->fiber);
+	printf("Switched\n");
 }
 
 #endif // ZTH_CONTEXT_WINFIBER
@@ -403,7 +417,6 @@ static void context_switch_impl(Context* from, Context* to) {
 // Stack allocation
 
 #ifdef ZTH_CONTEXT_WINFIBER
-typedef void* stack_t;
 // Stack is implicit by CreateFiber().
 #  define context_deletestack(...)
 #  define context_newstack(...) 0
@@ -504,6 +517,7 @@ int context_create(Context*& context, ContextAttr const& attr) {
 		// No stack, so no entry point can be accessed.
 		// This is used if only a context is required, but not a fiber is to be started.
 		context->stack = NULL;
+		context->fiber = GetCurrentFiber();
 		return 0;
 	}
 
