@@ -40,8 +40,8 @@ char const* banner() {
 #ifdef ZTH_CONTEXT_UCONTEXT
 		" ucontext"
 #endif
-#ifdef ZTH_CONTEXT_SJLJ
-		" sjlj"
+#ifdef ZTH_CONTEXT_SIGALTSTACK
+		" sigaltstack"
 #endif
 #ifdef ZTH_CONTEXT_WINFIBER
 		" winfiber"
@@ -63,20 +63,20 @@ void zth_abort(char const* msg, ...)
 	abort();
 }
 
-std::string pthreadId(pthread_t p)
+template <typename T, size_t S = sizeof(T)> struct as_uint64_t { };
+template <typename T> struct as_uint64_t<T,1> { static uint64_t value(T x) { return *reinterpret_cast<uint8_t*>(&x); } };
+template <typename T> struct as_uint64_t<T,2> { static uint64_t value(T x) { return *reinterpret_cast<uint16_t*>(&x); } };
+template <typename T> struct as_uint64_t<T,4> { static uint64_t value(T x) { return *reinterpret_cast<uint32_t*>(&x); } };
+template <typename T> struct as_uint64_t<T,8> { static uint64_t value(T x) { return *reinterpret_cast<uint64_t*>(&x); } };
+
+#ifdef ZTH_HAVE_PTHREAD
+std::string threadId(pthread_t p)
+#else
+std::string threadId(pid_t p)
+#endif
 {
-	std::string res = "0x";
-	char buf[3] = {};
-
-	for(size_t i = 0; i < sizeof(p); i++)
-	{
-		if(snprintf(buf, sizeof(buf), "%02hhx", ((char*)(void*)&p)[i]))
-			res += buf;
-		else
-			res += "??";
-	}
-
-	return res;
+	char buf[32];
+	return snprintf(buf, sizeof(buf), "0x%" PRIx64, as_uint64_t<decltype(p)>::value(p)) > 0 ? buf : "??";
 }
 
 std::string format(char const* fmt, ...)
@@ -94,6 +94,32 @@ std::string format(char const* fmt, ...)
 }
 
 } // namespace
+
+static void zth_log_init() {
+	setvbuf(stdout, NULL, _IOLBF, 4096);
+	setvbuf(stderr, NULL, _IOLBF, 4096);
+}
+INIT_CALL(zth_log_init)
+
+void zth_color_log(int color, char const* fmt, ...)
+{
+#ifdef _WIN32
+	bool do_color = false;
+#else
+	static bool do_color = isatty(fileno(stdout));
+#endif
+
+	if(do_color)
+		zth_log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
+
+	va_list args;
+	va_start(args, fmt);
+	zth_logv(fmt, args);
+	va_end(args);
+	
+	if(do_color)
+		zth_log("\x1b[0m");
+}
 
 void zth_log(char const* fmt, ...)
 {

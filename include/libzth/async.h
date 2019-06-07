@@ -152,8 +152,8 @@ namespace zth {
 #define declare_fibered_1(f) \
 	namespace zth { namespace fibered { \
 		extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
-	} } \
-//#define declare_fibered(...) FOREACH(declare_fibered_1, ##__VA_ARGS__)
+	} }
+#define declare_fibered(...) FOREACH(declare_fibered_1, ##__VA_ARGS__)
 
 #define define_fibered_1(f) \
 	namespace zth { namespace fibered { \
@@ -161,13 +161,11 @@ namespace zth {
 	} } \
 	typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
 
-//#define define_fibered(...) FOREACH(define_fibered_1, ##__VA_ARGS__)
+#define define_fibered(...) FOREACH(define_fibered_1, ##__VA_ARGS__)
 
-#if 0
 #define make_fibered(...) \
 	declare_fibered(__VA_ARGS__) \
 	define_fibered(__VA_ARGS__)
-#endif
 
 #define async ::zth::fibered::
 

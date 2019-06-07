@@ -27,22 +27,20 @@ void fiber2(void*)
 
 int fiber4() {
 	printf("fiber 4\n");
-	for(int i = 0; i < 1000; i++)
+//	for(int i = 0; i < 1000; i++)
 		zth::outOfWork();
 	return 4;
 }
-declare_fibered_1(fiber4)
-define_fibered_1(fiber4)
+make_fibered(fiber4)
 
 void fiber3() {
 	printf("fiber 3\n");
 	fiber4_future f = async fiber4();
-	for(int i = 0; i < 1000; i++)
+//	for(int i = 0; i < 1000; i++)
 		zth::outOfWork();
 	printf("got from fiber 4: %d\n", f->value());
 }
-declare_fibered_1(fiber3)
-define_fibered_1(fiber3)
+make_fibered(fiber3)
 
 struct Int : public zth::Listable<Int> {
 	Int(int value) : value(value) {}

@@ -1,25 +1,33 @@
-#if defined(_WIN32) || defined(__CYGWIN__)
-// For Fiber API
-#  if _WIN32_WINNT < 0x0400
-#    undef _WIN32_WINNT
-#    define _WIN32_WINNT 0x0400 
-#  endif
+#include <libzth/macros.h>
+
+#ifdef ZTH_OS_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
 #  define NOGDI
 #endif
 
+#ifdef ZTH_OS_MAC
 // For ucontext_t
-#define _XOPEN_SOURCE
+#  define _XOPEN_SOURCE
+#  include <sched.h>
+#endif
 
 #include <zth>
 
 #include <unistd.h>
 #include <cstring>
 
-#ifdef ZTH_CONTEXT_SJLJ
+#ifdef ZTH_CONTEXT_SIGALTSTACK
 #  include <csetjmp>
+#  include <sys/types.h>
 #  include <csignal>
-#  include <pthread.h>
+#  ifdef ZTH_HAVE_PTHREAD
+#    include <pthread.h>
+#  else
+#    define pthread_sigmask(...)	sigprocmask(__VA_ARGS__)
+#    define pthread_kill(...)		kill(__VA_ARGS__)
+#    define pthread_self()			getpid()
+#    define pthread_yield_np()		sched_yield()
+#  endif
 #endif
 
 #ifdef ZTH_CONTEXT_UCONTEXT
@@ -31,17 +39,13 @@
 #  include <windows.h>
 #else
 #  include <sys/mman.h>
+#  ifndef MAP_STACK
+#    define MAP_STACK 0
+#  endif
 #endif
 
 #ifdef ZTH_HAVE_VALGRIND
 #  include <valgrind/memcheck.h>
-#endif
-
-
-#ifdef ZTH_OS_MAC
-#  ifndef MAP_STACK
-#    define MAP_STACK 0
-#  endif
 #endif
 
 using namespace std;
@@ -53,7 +57,7 @@ public:
 	void* stack;
 	size_t stackSize;
 	ContextAttr attr;
-#ifdef ZTH_CONTEXT_SJLJ
+#ifdef ZTH_CONTEXT_SIGALTSTACK
 	union {
 		jmp_buf trampoline_env;
 		sigjmp_buf env;
@@ -96,6 +100,10 @@ static void context_trampoline(Context* context, sigjmp_buf origin) {
 }
 
 static int context_create_impl(Context* context, stack_t* stack) {
+	if(unlikely(!stack->ss_sp))
+		// Stackless fiber only saves current context; nothing to do.
+		return 0;
+
 	ucontext_t uc;
 	if(getcontext(&uc))
 		return EINVAL;
@@ -124,7 +132,7 @@ static void context_switch_impl(Context* from, Context* to) {
 ////////////////////////////////////////////////////////////
 // sigaltstack() method
 
-#ifdef ZTH_CONTEXT_SJLJ
+#ifdef ZTH_CONTEXT_SIGALTSTACK
 #  define context_destroy_impl(...)
 
 static void context_global_init() {
@@ -224,6 +232,10 @@ static char dummyAltStack[MINSIGSTKSZ];
 #endif
 
 static int context_create_impl(Context* context, stack_t* stack) {
+	if(unlikely(!stack->ss_sp))
+		// Stackless fiber only saves current context; nothing to do.
+		return 0;
+
 	int res = 0;
 	context->did_trampoline = 0;
 
@@ -356,7 +368,7 @@ static void context_switch_impl(Context* from, Context* to) {
 	}
 }
 
-#endif // ZTH_CONTEXT_SJLJ
+#endif // ZTH_CONTEXT_SIGALTSTACK
 
 
 
@@ -372,7 +384,6 @@ typedef void* stack_t;
 #  define context_deinit_impl()
 
 static int context_init_impl() {
-	printf("init\n");
 	int res = 0;
 	if(ConvertThreadToFiber(NULL))
 		return 0;
@@ -384,10 +395,14 @@ static int context_init_impl() {
 
 static int context_create_impl(Context* context, stack_t* stack) {
 	int res = 0;
-	if((context->fiber = CreateFiber(/*(SIZE_T)Config::DefaultFiberStackSize*/0, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
-		printf("%p\n", context->fiber);
+	if(unlikely(!stack->ss_sp)) {
+		// Stackless fiber only saves current context.
+		if((context->fiber = GetCurrentFiber()))
+			return 0;
+	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
 		return 0;
-	} else if((res = -(int)GetLastError()))
+
+	if((res = -(int)GetLastError()))
 		return res;
 	else
 		return EINVAL;
@@ -403,9 +418,7 @@ static void context_destroy_impl(Context* context) {
 
 static void context_switch_impl(Context* from, Context* to) {
 	zth_assert(to->fiber && to->fiber != GetCurrentFiber());
-	printf("Switch %p\n", to->fiber);
 	SwitchToFiber(to->fiber);
-	printf("Switched\n");
 }
 
 #endif // ZTH_CONTEXT_WINFIBER
@@ -457,7 +470,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 
 	if(RUNNING_ON_VALGRIND)
 		zth_dbg(context, "[th %s] Stack of context %p has Valgrind id %u",
-			pthreadId().c_str(), context, context->valgrind_stack_id);
+			threadId().c_str(), context, context->valgrind_stack_id);
 #endif
 
 	if(Config::EnableStackGuard) {
@@ -487,12 +500,12 @@ rollback:
 // Common functions
 
 int context_init() {
-	zth_dbg(context, "[th %s] Initialize", pthreadId().c_str());
+	zth_dbg(context, "[th %s] Initialize", threadId().c_str());
 	return context_init_impl();
 }
 
 void context_deinit() {
-	zth_dbg(context, "[th %s] Deinit", pthreadId().c_str());
+	zth_dbg(context, "[th %s] Deinit", threadId().c_str());
 	context_deinit_impl();
 }
 
@@ -513,33 +526,27 @@ int context_create(Context*& context, ContextAttr const& attr) {
 	context->stackSize = attr.stackSize;
 	context->attr = attr;
 
-	if(unlikely(attr.stackSize == 0)) {
-		// No stack, so no entry point can be accessed.
-		// This is used if only a context is required, but not a fiber is to be started.
-		context->stack = NULL;
-		context->fiber = GetCurrentFiber();
-		return 0;
-	}
-
-	stack_t stack;
-	if(unlikely((res = context_newstack(context, &stack))))
+	stack_t stack = {};
+	if(unlikely(attr.stackSize > 0 && (res = context_newstack(context, &stack))))
 		goto rollback_new;
 
 	if(unlikely((res = context_create_impl(context, &stack))))
 		goto rollback_stack;
 
+	if(likely(attr.stackSize > 0)) {
 #ifdef ZTH_CONTEXT_WINFIBER
-	zth_dbg(context, "[th %s] New context %p", pthreadId().c_str(), context);
+		zth_dbg(context, "[th %s] New context %p", threadId().c_str(), context);
 #else
-	zth_dbg(context, "[th %s] New context %p with stack: %p-%p", pthreadId().c_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
+		zth_dbg(context, "[th %s] New context %p with stack: %p-%p", threadId().c_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
 #endif
+	}
 	return 0;
 	
 rollback_stack:
 	context_deletestack(context);
 rollback_new:
 	delete context;
-	zth_dbg(context, "[th %s] Cannot create context; %s (error %d)", pthreadId().c_str(), strerror(res), res);
+	zth_dbg(context, "[th %s] Cannot create context; %s (error %d)", threadId().c_str(), strerror(res), res);
 	return res ? res : EINVAL;
 }
 
@@ -559,7 +566,7 @@ void context_destroy(Context* context) {
 	context_destroy_impl(context);
 	context_deletestack(context);
 	delete context;
-	zth_dbg(context, "[th %s] Deleted context %p", pthreadId().c_str(), context);
+	zth_dbg(context, "[th %s] Deleted context %p", threadId().c_str(), context);
 }
 
 } // namespace
