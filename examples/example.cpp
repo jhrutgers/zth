@@ -39,6 +39,7 @@ void fiber3() {
 //	for(int i = 0; i < 1000; i++)
 		zth::outOfWork();
 	printf("got from fiber 4: %d\n", f->value());
+	zth::print_backtrace();
 }
 make_fibered(fiber3)
 
@@ -92,6 +93,7 @@ int main()
 //	w.add(new zth::Fiber(&fiber1));
 //	w.add(new zth::Fiber(&fiber2));
 
+	zth::print_backtrace();
 	async fiber3();
 	w.run();
 }

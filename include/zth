@@ -10,5 +10,6 @@
 #include <libzth/worker.h>
 #include <libzth/sync.h>
 #include <libzth/async.h>
+#include <libzth/perf.h>
 
 #endif // __ZTH
