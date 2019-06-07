@@ -13,7 +13,7 @@
 #endif
 #ifndef unlikely
 #  ifdef __GNUC__
-#    define unlikely(expr) __builtin_expect((long)(expr), 0)
+#    define unlikely(expr) __builtin_expect((long long)(expr), 0)
 #  else
 #    define unlikely(expr) (expr)
 #  endif
@@ -44,7 +44,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void zth_log(char const* fmt, ...) __attribute__((format(printf, 1, 2)));
+void zth_log(char const* fmt, ...) __attribute__((format(gnu_printf, 1, 2)));
 void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #ifdef __cplusplus
 } // extern "C"
@@ -76,9 +76,9 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 
 namespace zth {
 	char const* banner();
-    void zth_abort(char const* msg, ...) __attribute__((format(printf, 1, 2), noreturn));
+    void zth_abort(char const* msg, ...) __attribute__((format(gnu_printf, 1, 2), noreturn));
 	std::string pthreadId(pthread_t p = pthread_self());
-	std::string format(char const* fmt, ...) __attribute__((format(printf, 1, 2)));
+	std::string format(char const* fmt, ...) __attribute__((format(gnu_printf, 1, 2)));
 
 #if __cplusplus < 201103L
 #  define zth_auto_ptr std::auto_ptr

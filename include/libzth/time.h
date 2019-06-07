@@ -5,10 +5,11 @@
 #include <libzth/config.h>
 #include <libzth/util.h>
 
+#include <cstdio>
 #include <ctime>
 #include <cmath>
 #include <limits>
-#include <cinttypes>
+#include <inttypes.h>
 
 #ifdef ZTH_OS_MAC
 extern "C" int clock_gettime(int clk_id, struct timespec* res);

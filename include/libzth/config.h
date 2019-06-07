@@ -90,8 +90,8 @@
 
 
 #ifdef __cplusplus
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace zth {
 	struct DefaultConfig {

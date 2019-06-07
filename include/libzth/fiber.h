@@ -245,6 +245,10 @@ namespace zth
 		}
 
 		void fiberEntry_() {
+
+			printf("entry_\n");
+			printf("[%s (%p)] Entry", name().c_str(), normptr());
+
 			zth_dbg(fiber, "[%s (%p)] Entry", name().c_str(), normptr());
 #ifdef __cpp_exceptions
 			try {
