@@ -13,3 +13,5 @@ example
 *.dSYM
 callgrind.out.*
 /*.exe
+zth.vcd
+zth.*.vcd

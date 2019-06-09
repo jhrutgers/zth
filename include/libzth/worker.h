@@ -44,7 +44,7 @@ namespace zth {
 			m_workerFiber.setStackSize(0); // no stack
 			if((res = m_workerFiber.init()))
 				goto error;
-
+			
 			if((res = perf_init()))
 				goto error;
 
@@ -59,6 +59,7 @@ namespace zth {
 
 		~Worker() {
 			zth_dbg(worker, "[Worker %p] Destruct", this);
+
 			while(!m_suspendedQueue.empty()) {
 				Fiber& f = m_suspendedQueue.front();
 				resume(f);
@@ -68,6 +69,8 @@ namespace zth {
 				m_runnableQueue.front().kill();
 				cleanup(m_runnableQueue.front());
 			}
+
+			perf_deinit();
 			context_deinit();
 		}
 

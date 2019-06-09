@@ -60,6 +60,7 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 
 #ifdef __cplusplus
 #include <string>
+#include <string.h>
 #include <pthread.h>
 #include <memory>
 
@@ -97,6 +98,22 @@ namespace zth {
 #endif
 
 	std::string format(char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)));
+
+	inline std::string err(int e) {
+#if ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
+		char buf[128];
+#  if !defined(ZTH_OS_LINUX) || (_POSIX_C_SOURCE >= 200112L) && !defined(_GNU_SOURCE)
+		// XSI-compatible
+		return format("%s (error %d)", strerror_r(e, buf, sizeof(buf)) ? "Unknown error" : buf, e);
+#  else
+		// GNU-specific
+		return format("%s (error %d)", strerror_r(e, buf, sizeof(buf)), e);
+#  endif
+#else
+		// Not thread-safe
+		return format("%s (error %d)", strerror(e), e);
+#endif
+	}
 }
 
 #endif // __cplusplus

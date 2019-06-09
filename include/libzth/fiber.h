@@ -225,7 +225,7 @@ namespace zth
 				return;
 
 			zth_dbg(fiber, "[%s (%p)] Resume", name().c_str(), normptr());
-			setState(m_stateNext)
+			setState(m_stateNext);
 			if(state() == New)
 				m_stateNext = Ready;
 		}
@@ -234,12 +234,13 @@ namespace zth
 			std::string res = format("%s (%p)", name().c_str(), normptr());
 
 			switch(state()) {
-			case New:		res += " New"; break;
-			case Ready:		res += " Ready"; break;
-			case Running:	res += " Running"; break;
-			case Waiting:	res += " Waiting"; break;
-			case Suspended:	res += " Suspended"; break;
-			case Dead:		res += " Dead"; break;
+			case Uninitialized:		res += " Uninitialized"; break;
+			case New:				res += " New"; break;
+			case Ready:				res += " Ready"; break;
+			case Running:			res += " Running"; break;
+			case Waiting:			res += " Waiting"; break;
+			case Suspended:			res += " Suspended"; break;
+			case Dead:				res += " Dead"; break;
 			}
 
 			res += format(" t=%s", m_totalTime.str().c_str());
