@@ -51,6 +51,13 @@ namespace zth {
 		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = false;
 		static double MinTimeslice_s() { return 1e-4; }
+
+		static size_t const PerfEventBufferSize = 128;
+		static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
+		static size_t const PerfVCDFileBuffer = 0x1000;
+
+		static bool const PerfVCD = true;
+		static bool const PerfTrackFiberState = PerfVCD;
 	};
 } // namespace
 #endif // __cplusplus

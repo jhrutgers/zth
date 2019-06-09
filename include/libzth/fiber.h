@@ -7,6 +7,7 @@
 #include <libzth/config.h>
 #include <libzth/context.h>
 #include <libzth/list.h>
+#include <libzth/perf.h>
 
 #include <list>
 #include <utility>
@@ -17,7 +18,7 @@ namespace zth
 
 	class Fiber : public Listable<Fiber> {
 	public:
-		enum State { New = 0, Ready, Running, Waiting, Suspended, Dead };
+		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
 
 		typedef ContextAttr::EntryArg EntryArg;
 		typedef void(*Entry)(EntryArg);
@@ -25,14 +26,16 @@ namespace zth
 
 		Fiber(Entry entry, EntryArg arg = EntryArg())
 			: m_name("zth::Fiber")
-			, m_state(New)
+			, m_state(Uninitialized)
 			, m_stateNext(Ready)
 			, m_entry(entry)
 			, m_entryArg(arg)
 			, m_contextAttr(&fiberEntry, this)
 			, m_context()
+			, m_fls()
 			, m_timeslice(Config::MinTimeslice_s())
 		{
+			setState(New);
 			zth_assert(m_entry);
 			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), normptr());
 		}
@@ -41,6 +44,7 @@ namespace zth
 			for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 				it->first(*this, it->second);
 
+			zth_assert(!fls());
 			context_destroy(m_context);
 			m_context = NULL;
 			zth_dbg(fiber, "[%s (%p)] Destructed. Total CPU: %s", name().c_str(), normptr(), m_totalTime.str().c_str());
@@ -66,6 +70,8 @@ namespace zth
 		size_t stackSize() const { return m_contextAttr.stackSize; }
 		Context* context() const { return m_context; }
 		State state() const { return m_state; }
+		void* fls() const { return m_fls; }
+		void setFls(void* data = NULL) { m_fls = data; }
 		Timestamp const& stateEnd() const { return m_stateEnd; }
 		TimeInterval const& totalTime() const { return m_totalTime; }
 		void addCleanup(void(*f)(Fiber&,void*), void* arg) { m_cleanup.push_back(std::make_pair(f, arg)); }
@@ -84,7 +90,7 @@ namespace zth
 				return res;
 			}
 
-			m_state = m_stateNext;
+			setState(m_stateNext, now);
 			m_stateNext = Ready;
 			m_startRun = now;
 			return 0;
@@ -108,11 +114,11 @@ namespace zth
 					TimeInterval dt = now - from.m_startRun;
 					from.m_totalTime += dt;
 					if(from.state() == Running)
-						from.m_state = Ready;
+						from.setState(Ready, now);
 
 					// Hand over to this.
 					m_startRun = now;
-					m_state = Running;
+					setState(Running, now);
 					m_stateEnd = now + m_timeslice;
 
 					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), normptr(), dt.str().c_str());
@@ -148,7 +154,7 @@ namespace zth
 				return;
 
 			zth_dbg(fiber, "[%s (%p)] Killed", name().c_str(), normptr());
-			m_state = Dead;
+			setState(Dead);
 		}
 
 		void nap(Timestamp const& sleepUntil) {
@@ -161,7 +167,7 @@ namespace zth
 			case Ready:
 			case Running:
 				zth_dbg(fiber, "[%s (%p)] Sleep", name().c_str(), normptr());
-				m_state = Waiting;
+				setState(Waiting);
 				m_stateNext = Ready;
 				break;
 			case Suspended:
@@ -178,7 +184,8 @@ namespace zth
 		
 		void wakeup() {
 			if(likely(state() == Waiting)) {
-				switch((m_state = m_stateNext)) {
+				setState(m_stateNext);
+				switch(state()) {
 				case Suspended:
 					zth_dbg(fiber, "[%s (%p)] Suspend after wakeup", name().c_str(), normptr());
 					m_stateNext = Ready;
@@ -210,7 +217,7 @@ namespace zth
 			}
 
 			zth_dbg(fiber, "[%s (%p)] Suspend", name().c_str(), normptr());
-			m_state = Suspended;
+			setState(Suspended);
 		}
 
 		void resume() {
@@ -218,7 +225,8 @@ namespace zth
 				return;
 
 			zth_dbg(fiber, "[%s (%p)] Resume", name().c_str(), normptr());
-			if((m_state = m_stateNext) == New)
+			setState(m_stateNext)
+			if(state() == New)
 				m_stateNext = Ready;
 		}
 
@@ -239,6 +247,16 @@ namespace zth
 		}
 
 	protected:
+		void setState(State state, Timestamp const& t = Timestamp::now()) {
+			if(m_state == state)
+				return;
+
+			m_state = state;
+			if(Config::PerfTrackFiberState)
+				perf_trackState(*this, state, t);
+
+		}
+
 		static void fiberEntry(void* that) {
 			zth_assert(that);
 			static_cast<Fiber*>(that)->fiberEntry_();
@@ -267,6 +285,7 @@ namespace zth
 		EntryArg m_entryArg;
 		ContextAttr m_contextAttr;
 		Context* m_context;
+		void* m_fls;
 		TimeInterval m_totalTime;
 		Timestamp m_startRun;
 		Timestamp m_stateEnd;

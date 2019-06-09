@@ -45,6 +45,9 @@ namespace zth {
 			if((res = m_workerFiber.init()))
 				goto error;
 
+			if((res = perf_init()))
+				goto error;
+
 			if((res = waiter().run()))
 				goto error;
 
@@ -316,6 +319,19 @@ namespace zth {
 		Worker* worker;
 		getContext(&worker, NULL);
 		worker->resume(fiber);
+	}
+
+	// fiber-local storage
+	inline void* fls() {
+		Fiber* fiber;
+		getContext(NULL, &fiber);
+		return fiber->fls();
+	}
+	
+	inline void setFls(void* data = NULL) {
+		Fiber* fiber;
+		getContext(NULL, &fiber);
+		return fiber->setFls(data);
 	}
 
 } // namespace
