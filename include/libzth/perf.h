@@ -40,7 +40,7 @@ namespace zth {
 
 	void perf_flushEventBuffer();
 
-	inline void perf_trackState(Fiber& fiber, int state, Timestamp const& t = Timestamp::now()) {
+	inline void perf_trackState(Fiber& fiber, int state, Timestamp const& t = Timestamp::now(), bool force = false) {
 		if(unlikely(!perf_eventBuffer))
 			return;
 
@@ -53,7 +53,7 @@ namespace zth {
 		perf_eventBuffer->push_back(e);
 		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);
 
-		if(unlikely(perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
+		if(unlikely(force || perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
 			perf_flushEventBuffer();
 	}
 

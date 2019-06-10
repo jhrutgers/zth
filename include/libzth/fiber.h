@@ -44,6 +44,7 @@ namespace zth
 			for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 				it->first(*this, it->second);
 
+			setState(Uninitialized);
 			zth_assert(!fls());
 			context_destroy(m_context);
 			m_context = NULL;
@@ -254,7 +255,7 @@ namespace zth
 
 			m_state = state;
 			if(Config::PerfTrackFiberState)
-				perf_trackState(*this, state, t);
+				perf_trackState(*this, state, t, state <= New || state == Dead);
 
 		}
 

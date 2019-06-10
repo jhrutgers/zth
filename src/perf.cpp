@@ -1,3 +1,6 @@
+#ifndef _BSD_SOURCE
+#  define _BSD_SOURCE
+#endif
 #include <zth>
 
 #include <unistd.h>
@@ -20,23 +23,24 @@ class PerfFiber : public Runnable {
 public:
 	PerfFiber(Worker* worker)
 		: m_worker(*worker)
-		, m_vcd(-1)
-		, m_vcdBuffer()
+		, m_vcd()
+		, m_vcdd()
 	{
 		zth_assert(worker);
 	}
 
 	virtual ~PerfFiber() {
-		processEventBuffer();
+		if(!processEventBuffer())
+			finalizeVCD();
 
-		if(m_vcdBuffer) {
-			free(m_vcdBuffer);
-			m_vcdBuffer = NULL;
+		if(m_vcdd) {
+			fclose(m_vcdd);
+			m_vcdd = NULL;
 		}
 
-		if(m_vcd >= 0) {
-			close(m_vcd);
-			m_vcd = -1;
+		if(m_vcd) {
+			fclose(m_vcd);
+			m_vcd = NULL;
 		}
 
 		delete perf_eventBuffer;
@@ -45,7 +49,7 @@ public:
 
 	void flushEventBuffer() {
 		Fiber* f = fiber();
-		if(f) {
+		if(f && f->state() >= Fiber::Ready && f->state() < Fiber::Dead) {
 			m_worker.resume(*f);
 			m_worker.schedule(f);
 		}
@@ -63,111 +67,138 @@ protected:
 	}
 
 	virtual void entry() {
-		m_vcdBufferSize = Config::PerfEventBufferThresholdToTriggerVCDWrite * 16;
-		if(!(m_vcdBuffer = (char*)malloc(m_vcdBufferSize))) {
-			fprintf(stderr, "Cannot alloc perf buffer; %s\n", err(ENOMEM).c_str());
+		if(startVCD())
 			return;
-		}
-
-		char filename_[32];
-		char const* filename = snprintf(filename_, sizeof(filename_), "zth.%d.vcd", (int)getpid()) <= 0 ? filename_ : "zth.vcd";
-		if((m_vcd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0666)) < 0) {
-			fprintf(stderr, "Cannot open VCD file %s; %s\n", filename, err(errno).c_str());
-			goto rollback_malloc;
-		}
 
 		while(true) {
 			if(processEventBuffer())
-				goto write_error;
+				return;
 
 			m_worker.suspend(*this);
 		}
 
-	write_error:
-		if(m_vcd >= 0) {
-			close(m_vcd);
-			m_vcd = -1;
-		}
-	rollback_malloc:
-		if(m_vcdBuffer) {
-			free(m_vcdBuffer);
-			m_vcdBuffer = NULL;
-		}
+		// Will never get here. The fiber is never properly stopped, but just killed when the Worker terminates.
 	}
 
 	int processEventBuffer() {
-		if(unlikely(m_vcd < 0))
+		if(unlikely(!m_vcdd))
 			return EAGAIN;
 
 		int res = 0;
 
 		decltype(eventBuffer()) eb = eventBuffer();
 		size_t eb_size = eb.size();
-		size_t vcdBufferContent = 0;
 
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent const& e = eb[i];
-			int len;
 
-			do {
-				size_t vcdBufferRemaining = m_vcdBufferSize - vcdBufferContent;
-
-				len = snprintf(m_vcdBuffer + vcdBufferContent, vcdBufferRemaining,
-					"%" PRIu64 ".%09ld: %s -> %d\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, e.fiber->name().c_str(), e.fiberState.state);
-
-				if(likely(len < (int)vcdBufferRemaining))
-					break;
-
-				m_vcdBufferSize *= 2;
-				zth_dbg(perf, "[Worker %p] Realloc buffer to 0x%zx", &m_worker, m_vcdBufferSize);
-				char* newVcdBuffer = (char*)realloc(m_vcdBuffer, m_vcdBufferSize);
-				if(!newVcdBuffer) {
-					res = ENOMEM;
-					fprintf(stderr, "Cannot realloc perf buffer; %s\n", err(ENOMEM).c_str());
-					goto error;
-				}
-				m_vcdBuffer = newVcdBuffer;
-			} while(true);
-
-			vcdBufferContent += len;
-			zth_assert(vcdBufferContent < m_vcdBufferSize);
-		}
-
-		// Dump current buffer to file. This call may block. That is OK, even though other fibers are stalled.
-		// This way, doing perf operations does not influence the performance numbers of other fibers.
-		// In the vcd file, the overhead of this write() will show up.
-		if(likely(vcdBufferContent > 0)) {
-			zth_dbg(perf, "[Worker %p] Dump %zu bytes of VCD data", &m_worker, vcdBufferContent);
-			for(size_t offset = 0, remaining = vcdBufferContent; remaining > 0; ) {
-				ssize_t cnt = write(m_vcd, m_vcdBuffer + offset, remaining);
-
-				if(cnt < 0) {
-					res = errno;
-					fprintf(stderr, "Cannot write VCD file; %s\n", err(res).c_str());
-					goto error;
-				}
-
-				zth_assert((size_t)cnt <= remaining);
-				offset += (size_t)cnt;
-				remaining -= (size_t)cnt;
+			if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%p -> %d\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, e.fiber, e.fiberState.state) <= 0) {
+				res = errno;
+				goto write_error;
 			}
-			vcdBufferContent = 0;
 		}
 
 	done:
 		eb.clear();
 		return 0;
-	error:
+
+	write_error:
+		fprintf(stderr, "Cannot write VCD file; %s\n", err(res).c_str());
 		if(!res)
 			res = EIO;
 		goto done;
 	}
 
+	int startVCD() {
+		int res = 0;
+		char vcdFilename_[32];
+		char const* vcdFilename = snprintf(vcdFilename_, sizeof(vcdFilename_), "zth.%d.vcd", (int)getpid()) <= 0 ? vcdFilename_ : "zth.vcd";
+
+		if(!(m_vcd = fopen(vcdFilename, "w"))) {
+			res = errno;
+			fprintf(stderr, "Cannot open VCD file %s; %s\n", vcdFilename, err(res).c_str());
+			goto rollback;
+		}
+
+		if(!(m_vcdd = tmpfile())) {
+			fprintf(stderr, "Cannot open temporary VCD data file; %s\n", err(errno).c_str());
+			goto rollback;
+		}
+
+		time_t now;
+		if(time(&now) != -1) {
+#if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
+			char dateBuf[128];
+			char* strnow = ctime_r(&now, dateBuf);
+#else
+			// Possibly not thread-safe.
+			char* strnow = ctime(&now);
+#endif
+			if(strnow)
+				if(fprintf(m_vcd, "$date %s$end\n", strnow) < 0)
+					goto write_error;
+		}
+
+		if(fprintf(m_vcd, "$version %s $end\n$timescale 1 ns $end\n$scope module top $end\n", banner()) < 0)
+			goto write_error;
+
+		fprintf(stderr, "Using %s for perf VCD output\n", vcdFilename);
+		return 0;
+
+	write_error:
+		fprintf(stderr, "Cannot write %s", vcdFilename);
+		res = EIO;
+	rollback:
+		if(m_vcdd) {
+			fclose(m_vcdd);
+			m_vcdd = NULL;
+		}
+		if(m_vcd) {
+			fclose(m_vcd);
+			m_vcd = NULL;
+		}
+		return res ? res : EIO;
+	}
+
+	int finalizeVCD() {
+		if(!m_vcd || !m_vcdd)
+			return 0;
+
+		int res = 0;
+		if(fprintf(m_vcd, "$upscope $end\n$enddefinitions $end\n") < 0)
+			goto write_error;
+
+		rewind(m_vcdd);
+		char buf[1024];
+		size_t cnt;
+		while((cnt = fread(buf, 1, sizeof(buf), m_vcdd)) > 0)
+			if(fwrite(buf, cnt, 1, m_vcd) != 1)
+				goto write_error;
+
+		if(ferror(m_vcdd))
+			goto read_error;
+
+		zth_assert(feof(m_vcdd));
+		zth_assert(!ferror(m_vcd));
+
+		fclose(m_vcdd);
+		m_vcdd = NULL;
+		fclose(m_vcd);
+		m_vcd = NULL;
+		return 0;
+
+	read_error:
+		fprintf(stderr, "Cannot read temporary VCD data file\n");
+		return res ? res : EIO;
+	write_error:
+		fprintf(stderr, "Cannot write VCD file\n");
+		return res ? res : EIO;
+	}
+
 private:
 	Worker& m_worker;
-	int m_vcd;
-	char* m_vcdBuffer;
-	size_t m_vcdBufferSize;
+	FILE* m_vcd;
+	FILE* m_vcdd;
 };
 
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, NULL);
