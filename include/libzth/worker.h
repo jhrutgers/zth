@@ -19,18 +19,19 @@ namespace zth {
 
 	ZTH_TLS_DECLARE(Worker*, currentWorker_)
 
-	class Worker {
+	class Worker : public UniqueID<Worker> {
 	public:
 		static Worker* currentWorker() { return ZTH_TLS_GET(currentWorker_); }
 		Fiber* currentFiber() const { return m_currentFiber; }
 	
 		Worker()
-			: m_currentFiber()
+			: UniqueID("Worker")
+			, m_currentFiber()
 			, m_workerFiber(&dummyWorkerEntry)
 			, m_waiter(*this)
 		{
 			int res = 0;
-			zth_dbg(worker, "[Worker %p] Created", this);
+			zth_dbg(worker, "[%s] Created", id_str());
 
 			if(currentWorker())
 				zth_abort("Only one worker allowed per thread");
@@ -48,6 +49,9 @@ namespace zth {
 			if((res = perf_init()))
 				goto error;
 
+			if(Config::PerfTrackFiberState)
+				perf_registerFiber(m_workerFiber);
+
 			if((res = waiter().run()))
 				goto error;
 
@@ -57,8 +61,8 @@ namespace zth {
 			zth_abort("Cannot create Worker; %s (error %d)", strerror(res), res);
 		}
 
-		~Worker() {
-			zth_dbg(worker, "[Worker %p] Destruct", this);
+		virtual ~Worker() {
+			zth_dbg(worker, "[%s] Destruct", id_str());
 
 			while(!m_suspendedQueue.empty()) {
 				Fiber& f = m_suspendedQueue.front();
@@ -81,10 +85,10 @@ namespace zth {
 			zth_assert(fiber->state() != Fiber::Waiting); // We don't manage 'Waiting' here.
 			if(unlikely(fiber->state() == Fiber::Suspended)) {
 				m_suspendedQueue.push_back(*fiber);
-				zth_dbg(worker, "[Worker %p] Added suspended %s (%p)", this, fiber->name().c_str(), fiber->normptr());
+				zth_dbg(worker, "[%s] Added suspended %s", id_str(), fiber->id_str());
 			} else {
 				m_runnableQueue.push_front(*fiber);
-				zth_dbg(worker, "[Worker %p] Added runnable %s (%p)", this, fiber->name().c_str(), fiber->normptr());
+				zth_dbg(worker, "[%s] Added runnable %s", id_str(), fiber->id_str());
 			}
 			dbgStats();
 		}
@@ -92,22 +96,22 @@ namespace zth {
 		void release(Fiber& fiber) {
 			if(unlikely(fiber.state() == Fiber::Suspended)) {
 				m_suspendedQueue.erase(fiber);
-				zth_dbg(worker, "[Worker %p] Removed %s (%p) from suspended queue", this, fiber.name().c_str(), fiber.normptr());
+				zth_dbg(worker, "[%s] Removed %s from suspended queue", id_str(), fiber.id_str());
 			} else {
 				if(&fiber == m_currentFiber)
 					m_runnableQueue.rotate(*fiber.listNext());
 
 				m_runnableQueue.erase(fiber);
-				zth_dbg(worker, "[Worker %p] Removed %s (%p) from runnable queue", this, fiber.name().c_str(), fiber.normptr());
+				zth_dbg(worker, "[%s] Removed %s from runnable queue", id_str(), fiber.id_str());
 			}
 			dbgStats();
 		}
 
 		bool schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
 			if(preferFiber)
-				zth_dbg(worker, "[Worker %p] Schedule to %s (%p)", this, preferFiber->name().c_str(), preferFiber->normptr());
+				zth_dbg(worker, "[%s] Schedule to %s", id_str(), preferFiber->id_str());
 			else
-				zth_dbg(worker, "[Worker %p] Schedule", this);
+				zth_dbg(worker, "[%s] Schedule", id_str());
 
 			dbgStats();
 
@@ -118,7 +122,7 @@ namespace zth {
 
 			if(unlikely(m_end.isBefore(now))) {
 				// Stop worker and return to its run1() call.
-				zth_dbg(worker, "[Worker %p] Time is up", this);
+				zth_dbg(worker, "[%s] Time is up", id_str());
 				preferFiber = &m_workerFiber;
 			}
 		
@@ -180,14 +184,14 @@ namespace zth {
 				// as that is the context we are currently using.
 				// Return to the worker's context and sort it out from there.
 				
-				zth_dbg(worker, "[Worker %p] Current fiber %s (%p) just died; switch to worker", this, fiber.name().c_str(), fiber.normptr());
+				zth_dbg(worker, "[%s] Current fiber %s just died; switch to worker", id_str(), fiber.id_str());
 				schedule(&m_workerFiber);
 
 				// We should not get here, as we are dead.
 				zth_abort("[Worker %p] Failed to switch to worker", this);
 			}
 
-			zth_dbg(worker, "[Worker %p] Fiber %s (%p) is dead; cleanup", this, fiber.name().c_str(), fiber.normptr());
+			zth_dbg(worker, "[%s] Fiber %s is dead; cleanup", id_str(), fiber.id_str());
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
 			delete &fiber;
@@ -229,10 +233,10 @@ namespace zth {
 
 		void run(TimeInterval const& duration = TimeInterval()) {
 			if(duration <= 0) {
-				zth_dbg(worker, "[Worker %p] Run", this);
+				zth_dbg(worker, "[%s] Run", id_str());
 				m_end = Timestamp(std::numeric_limits<time_t>::max(), 0);
 			} else {
-				zth_dbg(worker, "[Worker %p] Run for %s", this, duration.str().c_str());
+				zth_dbg(worker, "[%s] Run for %s", id_str(), duration.str().c_str());
 				m_end = Timestamp::now() + duration;
 			}
 
@@ -255,19 +259,19 @@ namespace zth {
 			if(!Config::EnableDebugPrint || !Config::Print_worker)
 				return;
 
-			zth_dbg(worker, "[Worker %p] Run queue:", this);
+			zth_dbg(worker, "[%s] Run queue:", id_str());
 			if(m_runnableQueue.empty())
-				zth_dbg(worker, "[Worker %p]   <empty>", this);
+				zth_dbg(worker, "[%s]   <empty>", id_str());
 			else
 				for(decltype(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
-					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
+					zth_dbg(worker, "[%s]   %s", id_str(), it->str().c_str());
 
-			zth_dbg(worker, "[Worker %p] Suspended queue:", this);
+			zth_dbg(worker, "[%s] Suspended queue:", id_str());
 			if(m_suspendedQueue.empty())
-				zth_dbg(worker, "[Worker %p]   <empty>", this);
+				zth_dbg(worker, "[%s]   <empty>", id_str());
 			else
 				for(decltype(m_suspendedQueue.begin()) it = m_suspendedQueue.begin(); it != m_suspendedQueue.end(); ++it)
-					zth_dbg(worker, "[Worker %p]   %s", this, it->str().c_str());
+					zth_dbg(worker, "[%s]   %s", id_str(), it->str().c_str());
 		}
 
 	private:

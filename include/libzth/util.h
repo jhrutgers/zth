@@ -2,6 +2,7 @@
 #define __ZTH_UTIL_H
 
 #include <libzth/macros.h>
+#include <libzth/config.h>
 
 #define ZTH_STRINGIFY_(x) #x
 #define ZTH_STRINGIFY(x) ZTH_STRINGIFY_(x)
@@ -63,6 +64,7 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #include <string.h>
 #include <pthread.h>
 #include <memory>
+#include <inttypes.h>
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
@@ -114,6 +116,43 @@ namespace zth {
 		return format("%s (error %d)", strerror(e), e);
 #endif
 	}
+
+	template <typename T, bool ThreadSafe = Config::EnableThreads>
+	class UniqueID {
+	public:
+		static uint64_t getID() { return ThreadSafe ? __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED) : ++m_nextId; }
+
+		UniqueID(char const* name = "Object") : m_id(getID()), m_name(name) {}
+		virtual ~UniqueID() {}
+
+		void const* normptr() const { return this; }
+
+		uint64_t id() const { return m_id; }
+
+		std::string const& name() const { return m_name; }
+
+		virtual void setName(std::string const& name) {
+			m_name = name;
+			m_id_str.clear();
+		}
+
+		char const* id_str() const {
+			if(unlikely(m_id_str.empty()))
+				m_id_str = format("%s #%" PRIu64, name().c_str(), id());
+			return m_id_str.c_str();
+		}
+	private:
+		UniqueID(UniqueID const&);
+		UniqueID& operator=(UniqueID const&);
+
+		uint64_t const m_id;
+		std::string m_name;
+		std::string mutable m_id_str;
+		// If allocating once every ns, it takes more than 500 millenia until we run out of identifiers.
+		static uint64_t m_nextId;
+	};
+
+	template <typename T, bool ThreadSafe> uint64_t UniqueID<T,ThreadSafe>::m_nextId = 0;
 }
 
 #endif // __cplusplus

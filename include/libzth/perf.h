@@ -23,7 +23,7 @@ namespace zth {
 		enum Type { FiberState, Marker };
 
 		Timestamp t;
-		Fiber* fiber;
+		uint64_t fiber;
 		Type type;
 
 		union {
@@ -39,14 +39,15 @@ namespace zth {
 	ZTH_TLS_DECLARE(std::vector<PerfEvent>*, perf_eventBuffer)
 
 	void perf_flushEventBuffer();
+	void perf_registerFiber(Fiber& fiber);
 
-	inline void perf_trackState(Fiber& fiber, int state, Timestamp const& t = Timestamp::now(), bool force = false) {
+	inline void perf_trackState(UniqueID<Fiber>& fiber, int state, Timestamp const& t = Timestamp::now(), bool force = false) {
 		if(unlikely(!perf_eventBuffer))
 			return;
 
 		PerfEvent e;
 		e.t = t;
-		e.fiber = &fiber;
+		e.fiber = fiber.id();
 		e.type = PerfEvent::FiberState;
 		e.fiberState.state = state;
 

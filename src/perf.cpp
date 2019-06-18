@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <map>
 
 #ifndef ZTH_OS_WINDOWS
 #  include <execinfo.h>
@@ -27,6 +28,7 @@ public:
 		, m_vcdd()
 	{
 		zth_assert(worker);
+		startVCD();
 	}
 
 	virtual ~PerfFiber() {
@@ -49,10 +51,18 @@ public:
 
 	void flushEventBuffer() {
 		Fiber* f = fiber();
-		if(f && f->state() >= Fiber::Ready && f->state() < Fiber::Dead) {
+		if(f && f != m_worker.currentFiber() && f->state() >= Fiber::New && f->state() < Fiber::Dead) {
 			m_worker.resume(*f);
 			m_worker.schedule(f);
 		}
+	}
+
+	void registerFiber(Fiber& fiber) {
+		if(unlikely(!m_vcd))
+			return;
+		
+		std::string const& id = vcdId(fiber.id());
+		fprintf(m_vcd, "$var wire 1 %s %s $end\n", id.c_str(), fiber.id_str());
 	}
 
 	static decltype(*perf_eventBuffer)& eventBuffer() { 
@@ -67,7 +77,7 @@ protected:
 	}
 
 	virtual void entry() {
-		if(startVCD())
+		if(!m_vcd)
 			return;
 
 		while(true) {
@@ -92,10 +102,27 @@ protected:
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent const& e = eb[i];
 
-			if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%p -> %d\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, e.fiber, e.fiberState.state) <= 0) {
+			char x;
+			bool doCleanup = false;
+			switch(e.fiberState.state) {
+			case Fiber::New:		x = 'H'; break;
+			case Fiber::Ready:		x = '0'; break;
+			case Fiber::Running:	x = '1'; break;
+			case Fiber::Waiting:	x = 'L'; break;
+			case Fiber::Suspended:	x = 'Z'; break;
+			case Fiber::Dead:		x = 'X'; break;
+			default:
+				x = '-';
+				doCleanup = true;
+			}
+
+			if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, x, vcdId(e.fiber).c_str()) <= 0) {
 				res = errno;
 				goto write_error;
 			}
+
+			if(doCleanup)
+				vcdIdRelease(e.fiber);
 		}
 
 	done:
@@ -195,10 +222,39 @@ protected:
 		return res ? res : EIO;
 	}
 
+	std::string const& vcdId(uint64_t fiber) {
+		std::pair<decltype(m_vcdIds.begin()),bool> i = m_vcdIds.insert(std::make_pair(fiber, std::string()));
+		if(likely(!i.second))
+			// Already in the map. Return the value.
+			return i.first->second;
+
+		// Just added with empty string. Generate a proper VCD identifier.
+		// Identifier is a string of ASCII 33-126.
+		// Do a radix-94 convert.
+		uint64_t id = fiber;
+		char buf[16]; // the string cannot be longer than 10 chars, as 94^10 > 2^64.
+		char* s = &buf[sizeof(buf) - 1];
+		*s = 0;
+
+		do {
+			*--s = id % 94 + 33;
+			id /= 94;
+		} while(id);
+
+		return i.first->second = s;
+	}
+
+	void vcdIdRelease(uint64_t fiber) {
+		decltype(m_vcdIds.begin()) it = m_vcdIds.find(fiber);
+		if(it != m_vcdIds.end())
+			m_vcdIds.erase(it);
+	}
+
 private:
 	Worker& m_worker;
 	FILE* m_vcd;
 	FILE* m_vcdd;
+	std::map<uint64_t,std::string> m_vcdIds;
 };
 
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, NULL);
@@ -221,8 +277,13 @@ void perf_deinit() {
 }
 
 void perf_flushEventBuffer() {
-	zth_assert(perfFiber);
-	perfFiber->flushEventBuffer();
+	if(likely(perfFiber))
+		perfFiber->flushEventBuffer();
+}
+
+void perf_registerFiber(Fiber& fiber) {
+	if(likely(perfFiber))
+		perfFiber->registerFiber(fiber);
 }
 
 std::list<void*> backtrace(size_t depth) {

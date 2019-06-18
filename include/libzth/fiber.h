@@ -16,7 +16,7 @@ namespace zth
 {
 	class Worker;
 
-	class Fiber : public Listable<Fiber> {
+	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	public:
 		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
 
@@ -25,7 +25,7 @@ namespace zth
 		static uintptr_t const ExitUnknown = (uintptr_t)-1;
 
 		Fiber(Entry entry, EntryArg arg = EntryArg())
-			: m_name("zth::Fiber")
+			: UniqueID("zth::Fiber")
 			, m_state(Uninitialized)
 			, m_stateNext(Ready)
 			, m_entry(entry)
@@ -37,28 +37,27 @@ namespace zth
 		{
 			setState(New);
 			zth_assert(m_entry);
-			zth_dbg(fiber, "[%s (%p)] New fiber", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] New fiber %p", id_str(), normptr());
 		}
 
 		virtual ~Fiber() {
 			for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 				it->first(*this, it->second);
 
+			if(state() > Uninitialized && state() < Dead)
+				kill();
+
 			setState(Uninitialized);
 			zth_assert(!fls());
 			context_destroy(m_context);
 			m_context = NULL;
-			zth_dbg(fiber, "[%s (%p)] Destructed. Total CPU: %s", name().c_str(), normptr(), m_totalTime.str().c_str());
+			zth_dbg(fiber, "[%s] Destructed. Total CPU: %s", id_str(), m_totalTime.str().c_str());
 		}
 
-		void const* normptr() const { return this; }
-
-		void setName(std::string const& name) {
-			zth_dbg(fiber, "[%s (%p)] Renamed to %s", this->name().c_str(), normptr(), name.c_str());
-			m_name = name;
+		virtual void setName(std::string const& name) {
+			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
+			UniqueID::setName(name);
 		}
-
-		std::string const& name() const { return m_name; }
 
 		int setStackSize(size_t size) {
 			if(state() != New)
@@ -83,7 +82,7 @@ namespace zth
 
 			zth_assert(!m_context);
 
-			zth_dbg(fiber, "[%s (%p)] Init", this->name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Init", id_str());
 			int res = context_create(m_context, m_contextAttr);
 			if(res) {
 				// Oops.
@@ -91,9 +90,13 @@ namespace zth
 				return res;
 			}
 
+			if(Config::PerfTrackFiberState)
+				perf_registerFiber(*this);
+
 			setState(m_stateNext, now);
 			m_stateNext = Ready;
 			m_startRun = now;
+
 			return 0;
 		}
 
@@ -122,7 +125,7 @@ namespace zth
 					setState(Running, now);
 					m_stateEnd = now + m_timeslice;
 
-					zth_dbg(fiber, "Switch from %s (%p) to %s (%p) after %s", from.name().c_str(), &from, name().c_str(), normptr(), dt.str().c_str());
+					zth_dbg(fiber, "Switch from %s to %s after %s", from.id_str(), id_str(), dt.str().c_str());
 					context_switch(from.context(), context());
 
 					// Ok, got back.
@@ -154,7 +157,7 @@ namespace zth
 			if(state() == Dead)
 				return;
 
-			zth_dbg(fiber, "[%s (%p)] Killed", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Killed", id_str());
 			setState(Dead);
 		}
 
@@ -162,17 +165,17 @@ namespace zth
 			switch(state()) {
 			case New:
 				// Postpone actual sleep
-				zth_dbg(fiber, "[%s (%p)] Sleep upon startup", name().c_str(), normptr());
+				zth_dbg(fiber, "[%s] Sleep upon startup", id_str());
 				m_stateNext = Waiting;
 				break;
 			case Ready:
 			case Running:
-				zth_dbg(fiber, "[%s (%p)] Sleep", name().c_str(), normptr());
+				zth_dbg(fiber, "[%s] Sleep", id_str());
 				setState(Waiting);
 				m_stateNext = Ready;
 				break;
 			case Suspended:
-				zth_dbg(fiber, "[%s (%p)] Schedule sleep after resume", name().c_str(), normptr());
+				zth_dbg(fiber, "[%s] Schedule sleep after resume", id_str());
 				m_stateNext = Waiting;
 				break;
 			case Waiting:
@@ -188,14 +191,14 @@ namespace zth
 				setState(m_stateNext);
 				switch(state()) {
 				case Suspended:
-					zth_dbg(fiber, "[%s (%p)] Suspend after wakeup", name().c_str(), normptr());
+					zth_dbg(fiber, "[%s] Suspend after wakeup", id_str());
 					m_stateNext = Ready;
 					break;
 				default:
-					zth_dbg(fiber, "[%s (%p)] Wakeup", name().c_str(), normptr());
+					zth_dbg(fiber, "[%s] Wakeup", id_str());
 				}
 			} else if(state() == Suspended && m_stateNext == Waiting) {
-				zth_dbg(fiber, "[%s (%p)] Set wakeup after suspend", name().c_str(), normptr());
+				zth_dbg(fiber, "[%s] Set wakeup after suspend", id_str());
 				m_stateNext = Ready;
 			}
 		}
@@ -217,7 +220,7 @@ namespace zth
 				return;
 			}
 
-			zth_dbg(fiber, "[%s (%p)] Suspend", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Suspend", id_str());
 			setState(Suspended);
 		}
 
@@ -225,14 +228,14 @@ namespace zth
 			if(state() != Suspended)
 				return;
 
-			zth_dbg(fiber, "[%s (%p)] Resume", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Resume", id_str());
 			setState(m_stateNext);
 			if(state() == New)
 				m_stateNext = Ready;
 		}
 
 		std::string str() const {
-			std::string res = format("%s (%p)", name().c_str(), normptr());
+			std::string res = format("%s", id_str());
 
 			switch(state()) {
 			case Uninitialized:		res += " Uninitialized"; break;
@@ -254,9 +257,9 @@ namespace zth
 				return;
 
 			m_state = state;
-			if(Config::PerfTrackFiberState)
-				perf_trackState(*this, state, t, state <= New || state == Dead);
 
+			if(Config::PerfTrackFiberState)
+				perf_trackState(*this, m_state, t);
 		}
 
 		static void fiberEntry(void* that) {
@@ -265,22 +268,21 @@ namespace zth
 		}
 
 		void fiberEntry_() {
-			zth_dbg(fiber, "[%s (%p)] Entry", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Entry", id_str());
 #ifdef __cpp_exceptions
 			try {
 #endif
 				m_entry(m_entryArg);
 #ifdef __cpp_exceptions
 			} catch(...) {
-				zth_dbg(fiber, "[%s (%p)] Uncaught exception", name().c_str(), normptr());
+				zth_dbg(fiber, "[%s] Uncaught exception", id_str());
 			}
 #endif
-			zth_dbg(fiber, "[%s (%p)] Exit", name().c_str(), normptr());
+			zth_dbg(fiber, "[%s] Exit", id_str());
 			kill();
 		}
 
 	private:
-		std::string m_name;
 		State m_state;
 		State m_stateNext;
 		Entry m_entry;
