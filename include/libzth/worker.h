@@ -49,8 +49,7 @@ namespace zth {
 			if((res = perf_init()))
 				goto error;
 
-			if(Config::PerfTrackFiberState)
-				perf_registerFiber(m_workerFiber);
+			perf_event(PerfEvent(m_workerFiber));
 
 			if((res = waiter().run()))
 				goto error;

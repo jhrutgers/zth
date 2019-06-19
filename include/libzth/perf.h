@@ -14,50 +14,60 @@ namespace zth {
 	int perf_init();
 	void perf_deinit();
 
-	std::list<void*> backtrace(size_t depth = 32);
-	void print_backtrace(size_t depth = 32);
-
 	class Fiber;
 
+	class Backtrace {
+	public:
+		static size_t const maxDepth = 32;
+		Backtrace(size_t skip = 0);
+		Fiber* fiber() const { return m_fiber; }
+		uint64_t fiberId() const { return m_fiberId; }
+		void print() const;
+	private:
+		Fiber* m_fiber;
+		uint64_t m_fiberId;
+		size_t m_depth;
+		void* m_bt[maxDepth];
+		void* m_sp;
+	};
+
 	struct PerfEvent {
-		enum Type { FiberState, Marker };
+		enum Type { Nothing, FiberName, FiberState };
+
+		PerfEvent() : type(Nothing) {}
+
+		PerfEvent(UniqueID<Fiber> const& fiber)
+			: fiber(fiber.id()), type(FiberName), str(strdup(fiber.name().c_str())) {}
+		
+		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
+			: t(t), fiber(fiber.id()), type(FiberState), fiberState(state) {}
 
 		Timestamp t;
 		uint64_t fiber;
 		Type type;
 
 		union {
-			struct {
-				int state;
-			} fiberState;
-			struct {
-				int dummy;
-			} marker;
+			char* str;
+			int fiberState;
 		};
 	};
 
 	ZTH_TLS_DECLARE(std::vector<PerfEvent>*, perf_eventBuffer)
 
 	void perf_flushEventBuffer();
-	void perf_registerFiber(Fiber& fiber);
 
-	inline void perf_trackState(UniqueID<Fiber>& fiber, int state, Timestamp const& t = Timestamp::now(), bool force = false) {
+	inline void perf_event(PerfEvent const& event) {
+		if(!Config::EnablePerfEvent)
+			return;
 		if(unlikely(!perf_eventBuffer))
 			return;
 
-		PerfEvent e;
-		e.t = t;
-		e.fiber = fiber.id();
-		e.type = PerfEvent::FiberState;
-		e.fiberState.state = state;
-
-		perf_eventBuffer->push_back(e);
+		perf_eventBuffer->push_back(event);
 		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);
 
-		if(unlikely(force || perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
+		if(unlikely(perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
 			perf_flushEventBuffer();
 	}
-
 
 } // namespace
 #endif

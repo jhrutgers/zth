@@ -26,7 +26,7 @@ namespace zth {
 
 		void registerFuture(Future_type* future) {
 			m_future.reset(future);
-			zth_dbg(sync, "[%s (%p)] Registered to %s (%p)", future->name(), future->normptr(), name().c_str(), normptr());
+			zth_dbg(sync, "[%s] Registered to %s", future->id_str(), id_str());
 		}
 
 		Future_type* future() const { return m_future; }

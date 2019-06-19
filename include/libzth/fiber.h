@@ -12,9 +12,7 @@
 #include <list>
 #include <utility>
 
-namespace zth
-{
-	class Worker;
+namespace zth {
 
 	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	public:
@@ -46,6 +44,8 @@ namespace zth
 
 			if(state() > Uninitialized && state() < Dead)
 				kill();
+			
+			perf_event(PerfEvent(*this));
 
 			setState(Uninitialized);
 			zth_assert(!fls());
@@ -89,9 +89,6 @@ namespace zth
 				kill();
 				return res;
 			}
-
-			if(Config::PerfTrackFiberState)
-				perf_registerFiber(*this);
 
 			setState(m_stateNext, now);
 			m_stateNext = Ready;
@@ -258,8 +255,7 @@ namespace zth
 
 			m_state = state;
 
-			if(Config::PerfTrackFiberState)
-				perf_trackState(*this, m_state, t);
+			perf_event(PerfEvent(*this, m_state, t));
 		}
 
 		static void fiberEntry(void* that) {

@@ -1,6 +1,8 @@
 #ifndef _BSD_SOURCE
 #  define _BSD_SOURCE
 #endif
+#define UNW_LOCAL_ONLY
+
 #include <zth>
 
 #include <unistd.h>
@@ -11,9 +13,10 @@
 
 #ifndef ZTH_OS_WINDOWS
 #  include <execinfo.h>
+#  include <dlfcn.h>
+#  include <cxxabi.h>
 #endif
 
-#define UNW_LOCAL_ONLY
 #include <libunwind.h>
 
 namespace zth {
@@ -51,18 +54,51 @@ public:
 
 	void flushEventBuffer() {
 		Fiber* f = fiber();
-		if(f && f != m_worker.currentFiber() && f->state() >= Fiber::New && f->state() < Fiber::Dead) {
-			m_worker.resume(*f);
-			m_worker.schedule(f);
-		}
-	}
-
-	void registerFiber(Fiber& fiber) {
-		if(unlikely(!m_vcd))
+		size_t spareRoom = eventBuffer().capacity() - eventBuffer().size();
+		if(unlikely(!f || f == m_worker.currentFiber() || spareRoom < 2)) {
+			// Do it right here right now.
+			processEventBuffer();
 			return;
-		
-		std::string const& id = vcdId(fiber.id());
-		fprintf(m_vcd, "$var wire 1 %s %s $end\n", id.c_str(), fiber.id_str());
+		}
+
+		if(likely(spareRoom > 2)) {
+			// Wakeup and do the processing later on.
+			m_worker.resume(*f);
+			return;
+		}
+
+		// Almost full, but enough room to signal that we are going to process the buffer.
+		Fiber* currentFiber = m_worker.currentFiber();
+		if(unlikely(!currentFiber)) {
+			// Huh? Do it here anyway.
+			processEventBuffer();
+			return;
+		}
+
+		// Record a 'context switch' to f...
+		PerfEvent e;
+		e.t = Timestamp::now();
+		e.fiber = currentFiber->id();
+		e.type = PerfEvent::FiberState;
+		e.fiberState = Fiber::Ready;
+		eventBuffer().push_back(e);
+
+		e.fiber = f->id();
+		e.fiberState = Fiber::Running;
+		eventBuffer().push_back(e);
+
+		zth_dbg(perf, "Emergency processEventBuffer()");
+		processEventBuffer();
+
+		// ...and switch back.
+		e.t = Timestamp::now();
+		e.fiber = f->id();
+		e.fiberState = f->state();
+		eventBuffer().push_back(e);
+
+		e.fiber = currentFiber->id();
+		e.fiberState = currentFiber->state();
+		eventBuffer().push_back(e);
 	}
 
 	static decltype(*perf_eventBuffer)& eventBuffer() { 
@@ -91,7 +127,7 @@ protected:
 	}
 
 	int processEventBuffer() {
-		if(unlikely(!m_vcdd))
+		if(unlikely(!m_vcdd || !m_vcd))
 			return EAGAIN;
 
 		int res = 0;
@@ -102,27 +138,61 @@ protected:
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent const& e = eb[i];
 
-			char x;
-			bool doCleanup = false;
-			switch(e.fiberState.state) {
-			case Fiber::New:		x = 'H'; break;
-			case Fiber::Ready:		x = '0'; break;
-			case Fiber::Running:	x = '1'; break;
-			case Fiber::Waiting:	x = 'L'; break;
-			case Fiber::Suspended:	x = 'Z'; break;
-			case Fiber::Dead:		x = 'X'; break;
+			switch(e.type) {
+			case PerfEvent::FiberName:
+				if(e.str) {
+					for(char* p = e.str; *p; ++p) {
+						if(*p >= '0' && *p <= '9')
+							continue;
+						if(*p >= 'A' && *p <= 'Z')
+							continue;
+						if(*p >= 'a' && *p <= 'z')
+							continue;
+						*p = '_';
+					}
+					if(fprintf(m_vcd, "$var wire 1 %s %" PRIu64 "_%s $end\n", vcdId(e.fiber).c_str(), e.fiber, e.str) <= 0) {
+						res = errno;
+						goto write_error;
+					}
+					free(e.str);
+				} else {
+					if(fprintf(m_vcd, "$var wire 1 %s Fiber_%" PRIu64" $end\n", vcdId(e.fiber).c_str(), e.fiber) <= 0) {
+						res = errno;
+						goto write_error;
+					}
+				}
+				break;
+
+			case PerfEvent::FiberState:
+			{
+				char x;
+				bool doCleanup = false;
+				switch(e.fiberState) {
+				case Fiber::New:		x = 'L'; break;
+				case Fiber::Ready:		x = '0'; break;
+				case Fiber::Running:	x = '1'; break;
+				case Fiber::Waiting:	x = 'W'; break;
+				case Fiber::Suspended:	x = 'Z'; break;
+				case Fiber::Dead:		x = 'X'; break;
+				default:
+					x = '-';
+					doCleanup = true;
+				}
+
+				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, x, vcdId(e.fiber).c_str()) <= 0) {
+					res = errno;
+					goto write_error;
+				}
+
+				if(doCleanup)
+					vcdIdRelease(e.fiber);
+
+				break;
+			}
+
 			default:
-				x = '-';
-				doCleanup = true;
+				; // ignore
 			}
-
-			if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, x, vcdId(e.fiber).c_str()) <= 0) {
-				res = errno;
-				goto write_error;
-			}
-
-			if(doCleanup)
-				vcdIdRelease(e.fiber);
 		}
 
 	done:
@@ -260,6 +330,9 @@ private:
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, NULL);
 
 int perf_init() {
+	if(!Config::EnablePerfEvent)
+		return 0;
+
 	perf_eventBuffer = new std::vector<PerfEvent>();
 	perf_eventBuffer->reserve(Config::PerfEventBufferSize);
 
@@ -281,43 +354,99 @@ void perf_flushEventBuffer() {
 		perfFiber->flushEventBuffer();
 }
 
-void perf_registerFiber(Fiber& fiber) {
-	if(likely(perfFiber))
-		perfFiber->registerFiber(fiber);
-}
+Backtrace::Backtrace(size_t skip)
+	: m_depth()
+{
+	Worker* worker = Worker::currentWorker();
+	m_fiber = worker ? worker->currentFiber() : NULL;
+	m_fiberId = m_fiber ? m_fiber->id() : 0;
 
-std::list<void*> backtrace(size_t depth) {
-	std::list<void*> res;
+	unw_context_t uc;
 
-#ifndef ZTH_OS_WINDOWS
-	void* buf[depth];
-	int cnt = ::backtrace(buf, (int)depth);
+	if(unw_getcontext(&uc))
+		return;
 
-	for(int i = 0; i < cnt; i++)
-		res.push_back(buf[cnt]);
-#endif
-	printf("%d\n", cnt);
-
-	return res;
-}
-
-void print_backtrace(size_t depth) {
-	std::list<void*> res = backtrace(depth);
-
-	size_t i = 0;
-	for(std::list<void*>::const_iterator it = res.cbegin(); it != res.cend(); ++it, i++)
-		zth_log("%2zu: %p\n", i, *it);
-
-	unw_cursor_t cursor; unw_context_t uc;
-	unw_word_t ip, sp;
-
-	unw_getcontext(&uc);
+	unw_cursor_t cursor;
 	unw_init_local(&cursor, &uc);
-	while (unw_step(&cursor) > 0) {
+	size_t depth = 0;
+	for(size_t i = 0; i < skip && unw_step(&cursor) > 0; i++);
+
+	while (unw_step(&cursor) > 0 && depth < maxDepth) {
+		if(depth == 0) {
+			unw_word_t sp;
+			unw_get_reg(&cursor, UNW_REG_SP, &sp);
+			m_sp = (void*)sp;
+		}
+
+		unw_word_t ip;
 		unw_get_reg(&cursor, UNW_REG_IP, &ip);
-		unw_get_reg(&cursor, UNW_REG_SP, &sp);
-		printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp);
+		m_bt[depth++] = (void*)ip;
 	}
+
+	m_depth = depth;
+}
+
+void Backtrace::print() const {
+#ifndef ZTH_OS_WINDOWS
+#ifdef ZTH_OS_MAC
+	char atos[256];
+	FILE* atosf = NULL;
+	if(Config::Debug) {
+		int len = snprintf(atos, sizeof(atos), "atos -p %d\n", getpid());
+		if(len > 0 && (size_t)len < sizeof(atos))
+			atosf = popen(atos, "w");
+	}
+#endif
+	
+	printf("Backtrace of fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
+	fflush(stdout);
+
+	char** syms =
+#ifdef ZTH_OS_MAC
+		!atosf ? NULL :
+#endif
+		backtrace_symbols(m_bt, (int)m_depth);
+
+	for(size_t i = 0; i < m_depth; i++) {
+#ifdef ZTH_OS_MAC
+		if(atosf) {
+			fprintf(atosf, "%p\n", m_bt[i]);
+			continue;
+		}
+#endif
+
+		Dl_info info;
+		if(dladdr(m_bt[i], &info)) {
+			int status;
+			char* demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
+			if(status == 0 && demangled) {
+				printf("%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)m_bt[i], 
+					demangled, (uintptr_t)m_bt[i] - (uintptr_t)info.dli_saddr);
+				
+				free(demangled);
+				continue;
+			}
+		}
+
+		if(syms)
+			printf("%s\n", syms[i]);
+		else
+			printf("%-3zd 0x%0*" PRIxPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)m_bt[i]);
+	}
+	
+	if(syms)
+		free(syms);
+
+#ifdef ZTH_OS_MAC
+	if(atosf)
+		pclose(atosf);
+#endif
+
+	if(m_depth == maxDepth)
+		printf("<truncated>\n");
+	else
+		printf("<end>\n");
+#endif
 }
 
 } // namespace

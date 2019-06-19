@@ -60,6 +60,7 @@ void zth_abort(char const* msg, ...)
 
 	zth_log("  ***  %s\n\n", zth::Config::EnableColorDebugPrint ? "\x1b[0m" : "");
 
+	Backtrace().print();
 	abort();
 }
 

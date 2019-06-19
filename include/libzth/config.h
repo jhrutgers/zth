@@ -57,8 +57,7 @@ namespace zth {
 		static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
 		static size_t const PerfVCDFileBuffer = 0x1000;
 
-		static bool const PerfVCD = true;
-		static bool const PerfTrackFiberState = PerfVCD;
+		static bool const EnablePerfEvent = true;
 	};
 } // namespace
 #endif // __cplusplus

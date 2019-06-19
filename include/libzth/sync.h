@@ -68,12 +68,10 @@ namespace zth {
 		RefCounted* m_object;
 	};
 
-	class Synchronizer : public RefCounted {
+	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	public:
-		Synchronizer() : RefCounted() {}
-		virtual ~Synchronizer() { zth_dbg(sync, "[%s (%p)] Destruct", name(), normptr()); }
-		virtual char const* name() const { return "Synchronizer"; }
-		void const* normptr() const { return this; }
+		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(name) {}
+		virtual ~Synchronizer() { zth_dbg(sync, "[%s] Destruct", id_str()); }
 
 	protected:
 		void block() {
@@ -81,7 +79,7 @@ namespace zth {
 			Fiber* f;
 			getContext(&w, &f);
 
-			zth_dbg(sync, "[%s (%p)] Block %s (%p)", name(), normptr(), f->name().c_str(), f->normptr());
+			zth_dbg(sync, "[%s] Block %s", id_str(), f->id_str());
 			w->release(*f);
 			m_queue.push_back(*f);
 			f->nap(Timestamp::null());
@@ -96,7 +94,7 @@ namespace zth {
 				return;
 
 			Fiber& f = m_queue.front();
-			zth_dbg(sync, "[%s (%p)] Unblock %s (%p)", name(), normptr(), f.name().c_str(), f.normptr());
+			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 			m_queue.pop_front();
 			f.wakeup();
 			w->add(&f);
@@ -106,7 +104,7 @@ namespace zth {
 			Worker* w;
 			getContext(&w, NULL);
 
-			zth_dbg(sync, "[%s (%p)] Unblock all", name(), normptr());
+			zth_dbg(sync, "[%s] Unblock all", id_str());
 
 			while(!m_queue.empty()) {
 				Fiber& f = m_queue.front();
@@ -122,9 +120,8 @@ namespace zth {
 
 	class Mutex : public Synchronizer {
 	public:
-		Mutex() : m_locked() {}
+		Mutex() : Synchronizer("Mutex"), m_locked() {}
 		virtual ~Mutex() {}
-		virtual char const* name() const { return "Mutex"; }
 
 		void lock() {
 			if(unlikely(m_locked))
@@ -152,9 +149,8 @@ namespace zth {
 
 	class Semaphore : public Synchronizer {
 	public:
-		Semaphore(size_t init = 0) : m_count(init) {} 
+		Semaphore(size_t init = 0) : Synchronizer("Semaphore"), m_count(init) {} 
 		virtual ~Semaphore() {}
-		virtual char const* name() const { return "Semaphore"; }
 
 		void acquire(size_t count = 1) {
 			while(count > 0) {
@@ -180,9 +176,8 @@ namespace zth {
 
 	class Signal : public Synchronizer {
 	public:
-		Signal() {}
+		Signal() : Synchronizer("Signal") {}
 		virtual ~Signal() {}
-		virtual char const* name() const { return "Signal"; }
 		void wait() { block(); }
 		void signal() { unblockFirst(); }
 		void signalAll() { unblockAll(); }
@@ -192,7 +187,7 @@ namespace zth {
 	class Future : public Synchronizer {
 	public:
 		typedef T type;
-		Future() : m_valid() {
+		Future() : Synchronizer("Future"), m_valid() {
 #ifdef ZTH_USE_VALGRIND
 			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #endif
@@ -204,7 +199,6 @@ namespace zth {
 			VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
 #endif
 		}
-		virtual char const* name() const { return "Future"; }
 
 		bool valid() const { return m_valid; }
 		operator bool() const { return valid(); }
@@ -240,9 +234,8 @@ namespace zth {
 	class Future<void> : public Synchronizer {
 	public:
 		typedef void type;
-		Future() : m_valid() {}
+		Future() : Synchronizer("Future"), m_valid() {}
 		virtual ~Future() {}
-		virtual char const* name() const { return "Future"; }
 
 		bool valid() const { return m_valid; }
 		operator bool() const { return valid(); }
