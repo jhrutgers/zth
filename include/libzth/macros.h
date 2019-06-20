@@ -99,6 +99,7 @@
 #  define ZTH_OS_LINUX 1
 #  define ZTH_HAVE_VALGRIND
 #  define ZTH_HAVE_PTHREAD
+#  define ZTH_HAVE_LIBUNWIND
 #elif defined(__APPLE__)
 #  include "TargetConditionals.h"
 #  ifdef TARGET_OS_MAC
@@ -108,6 +109,7 @@
 #  endif
 #  define ZTH_HAVE_VALGRIND
 #  define ZTH_HAVE_PTHREAD
+#  define ZTH_HAVE_LIBUNWIND
 #else
 #  error Unsupported OS.
 #endif

@@ -380,7 +380,9 @@ static void context_switch_impl(Context* from, Context* to) {
 #ifdef stack_t
 #  undef stack_t
 #endif
-typedef void* stack_t;
+struct stack_t {
+	bool haveStack;
+};
 #  define context_deinit_impl()
 
 static int context_init_impl() {
@@ -395,11 +397,11 @@ static int context_init_impl() {
 
 static int context_create_impl(Context* context, stack_t* stack) {
 	int res = 0;
-	if(unlikely(!stack->ss_sp)) {
+	if(unlikely(!stack->haveStack)) {
 		// Stackless fiber only saves current context.
 		if((context->fiber = GetCurrentFiber()))
 			return 0;
-	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
+	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context)))
 		return 0;
 
 	if((res = -(int)GetLastError()))
@@ -432,7 +434,10 @@ static void context_switch_impl(Context* from, Context* to) {
 #ifdef ZTH_CONTEXT_WINFIBER
 // Stack is implicit by CreateFiber().
 #  define context_deletestack(...)
-#  define context_newstack(...) 0
+static int context_newstack(Context* context, stack_t* stack) {
+	stack->haveStack = context->stackSize > 0;
+	return 0;
+}
 #else // !ZTH_CONTEXT_WINFIBER
 static void context_deletestack(Context* context) {
 	if(context->stack) {

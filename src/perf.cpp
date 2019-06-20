@@ -1,6 +1,7 @@
 #ifndef _BSD_SOURCE
 #  define _BSD_SOURCE
 #endif
+
 #define UNW_LOCAL_ONLY
 
 #include <zth>
@@ -17,7 +18,9 @@
 #  include <cxxabi.h>
 #endif
 
+#ifdef ZTH_HAVE_LIBUNWIND
 #include <libunwind.h>
+#endif
 
 namespace zth {
 
@@ -217,7 +220,13 @@ protected:
 			goto rollback;
 		}
 
-		if(!(m_vcdd = tmpfile())) {
+#ifdef ZTH_OS_WINDOWS
+		// tmpfile() on WIN32 is broken
+		m_vcdd = fopen("zth.vcdd", "w+");
+#else
+		m_vcdd = tmpfile();
+#endif
+		if(!(m_vcdd)) {
 			fprintf(stderr, "Cannot open temporary VCD data file; %s\n", err(errno).c_str());
 			goto rollback;
 		}
@@ -361,6 +370,7 @@ Backtrace::Backtrace(size_t skip)
 	m_fiber = worker ? worker->currentFiber() : NULL;
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
 
+#ifdef ZTH_HAVE_LIBUNWIND
 	unw_context_t uc;
 
 	if(unw_getcontext(&uc))
@@ -384,6 +394,7 @@ Backtrace::Backtrace(size_t skip)
 	}
 
 	m_depth = depth;
+#endif
 }
 
 void Backtrace::print() const {
