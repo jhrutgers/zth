@@ -7,6 +7,7 @@
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/waiter.h>
+#include <libzth/perf.h>
 
 #include <time.h>
 #include <pthread.h>
@@ -49,7 +50,7 @@ namespace zth {
 			if((res = perf_init()))
 				goto error;
 
-			perf_event(PerfEvent(m_workerFiber));
+			perf_event(PerfEvent<>(m_workerFiber));
 
 			if((res = waiter().run()))
 				goto error;
@@ -298,21 +299,37 @@ namespace zth {
 		}
 	}
 
+	inline Worker& currentWorker() __attribute__((pure));
+	inline Worker& currentWorker() {
+		Worker* w = Worker::currentWorker();
+		zth_assert(w);
+		return *w;
+	}
+
+	inline Fiber& currentFiber() __attribute__((pure));
+	inline Fiber& currentFiber() {
+		Worker& w = currentWorker();
+		Fiber* f = w.currentFiber();
+		zth_assert(f);
+		return *f;
+	}
+
 	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
-		Worker* worker;
-		Fiber* fiber;
-		getContext(&worker, &fiber);
+		Fiber& fiber = currentFiber();
 
 		Timestamp now = Timestamp::now();
-		if(unlikely(!alwaysYield && !fiber->allowYield(now)))
+		perf_event(PerfEvent<>(fiber, "yield()", now));
+		if(unlikely(!alwaysYield && !fiber.allowYield(now)))
 			return;
 
-		worker->schedule(preferFiber, now);
+		currentWorker().schedule(preferFiber, now);
 	}
+#define zth_yield(...)	::zth::yield(__VA_ARGS__)
 
 	inline void outOfWork() {
 		yield(NULL, true);
 	}
+#define zth_outOfWork()	::zth::outOfWork()
 
 	inline void suspend() {
 		Worker* worker;
@@ -333,12 +350,27 @@ namespace zth {
 		getContext(NULL, &fiber);
 		return fiber->fls();
 	}
+#define zth_fls()	::zth::fls()
 	
 	inline void setFls(void* data = NULL) {
 		Fiber* fiber;
 		getContext(NULL, &fiber);
 		return fiber->setFls(data);
 	}
+#define zth_setFls(...)		::zth::setFls(__VA_ARGS__)
+
+#define zth_perfmark(str)															\
+	do {																			\
+		if(::zth::Config::EnablePerfEvent)											\
+			::zth::perf_event(::zth::PerfEvent<>(::zth::currentFiber(), "" str));	\
+	} while(0)
+
+#define zth_perflog(fmt, ...)														\
+	do {																			\
+		if(::zth::Config::EnablePerfEvent)											\
+			::zth::perf_event(::zth::PerfEvent<>(::zth::currentFiber(),				\
+				::zth::Timestamp::now(), fmt, ##__VA_ARGS__));						\
+	} while(0)
 
 } // namespace
 #endif // __cpusplus

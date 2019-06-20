@@ -104,12 +104,38 @@ namespace zth {
 		TypedFiber0(typename base::Function function) : base(function) {}
 		virtual ~TypedFiber0() {}
 	protected:
-		virtual void entry_() { function()(); setFuture(); }
+		virtual void entry_() { this->function()(); this->setFuture(); }
 	};
 
+	template <typename R, typename A1>
+	class TypedFiber1 : public TypedFiber<R, R(*)(A1)> {
+	public:
+		typedef TypedFiber<R, R(*)(A1)> base;
+		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
+		virtual ~TypedFiber1() {}
+	protected:
+		virtual void entry_() { this->setFuture(this->function()(m_a1)); }
+	private:
+		A1 m_a1;
+	};
+	
+	template <typename A1>
+	class TypedFiber1<void,A1> : public TypedFiber<void, void(*)(A1)> {
+	public:
+		typedef TypedFiber<void, void(*)(A1)> base;
+		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
+		virtual ~TypedFiber1() {}
+	protected:
+		virtual void entry_() { this->function()(m_a1); this->setFuture(); }
+	private:
+		A1 m_a1;
+	};
+	
 	struct TypedFiberType {
 		template <typename R> static R returnType(R(*f)());
 		template <typename R> static TypedFiber0<R> fiberType(R(*f)());
+		template <typename R, typename A1> static R returnType(R(*f)(A1));
+		template <typename R, typename A1> static TypedFiber1<R,A1> fiberType(R(*f)(A1));
 	};
 
 	template <typename F>
@@ -128,15 +154,17 @@ namespace zth {
 		TypedFiber_type* operator()() const {
 			return polish(*new TypedFiber_type(m_function));
 		}
+		
+		template <typename A1>
+		TypedFiber_type* operator()(A1 a1) const {
+			return polish(*new TypedFiber_type(m_function, a1));
+		}
 
 		TypedFiber_type* polish(TypedFiber_type& fiber) const {
 			if(unlikely(m_name))
 				fiber.setName(m_name);
 
-			Worker* w;
-			getContext(&w, NULL);
-			w->add(&fiber);
-
+			currentWorker().add(&fiber);
 			return &fiber;
 		}
 
@@ -157,7 +185,7 @@ namespace zth {
 
 #define define_fibered_1(f) \
 	namespace zth { namespace fibered { \
-		::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint ? ZTH_STRINGIFY(f) "()" : NULL); \
+		::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : NULL); \
 	} } \
 	typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
 

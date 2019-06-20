@@ -153,7 +153,6 @@ int clock_gettime(int clk_id, struct timespec* res)
 	if(unlikely(!res))
 		return EFAULT;
 
-
 	zth_assert(clk_id == CLOCK_MONOTONIC);
 	uint64_t c = (mach_absolute_time() - mach_clock_start);
 	uint64_t chigh = (c >> 32) * clock_info.numer;
@@ -161,7 +160,7 @@ int clock_gettime(int clk_id, struct timespec* res)
 	chigh /= clock_info.denom;
 	uint64_t clow = (c & (((uint64_t)1 << 32) - 1)) * clock_info.numer / clock_info.denom;
 	clow += chighrem;
-	uint64_t ns = chigh + clow; // 64-bit ns gives us more than 500 y before wrap-around.
+	uint64_t ns = (chigh << 32) + clow; // 64-bit ns gives us more than 500 y before wrap-around.
 
 	// Split in sec + nsec
 	res->tv_nsec = (long)(ns % zth::TimeInterval::BILLION);
@@ -202,3 +201,8 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 	return 0;
 }
 #endif
+
+namespace zth {
+	Timestamp const startTime(Timestamp::now());
+}
+

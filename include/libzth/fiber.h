@@ -45,7 +45,7 @@ namespace zth {
 			if(state() > Uninitialized && state() < Dead)
 				kill();
 			
-			perf_event(PerfEvent(*this));
+			perf_event(PerfEvent<>(*this));
 
 			setState(Uninitialized);
 			zth_assert(!fls());
@@ -239,7 +239,10 @@ namespace zth {
 			case New:				res += " New"; break;
 			case Ready:				res += " Ready"; break;
 			case Running:			res += " Running"; break;
-			case Waiting:			res += " Waiting"; break;
+			case Waiting:			res += " Waiting";
+									if(!m_stateEnd.isNull())
+										res += format(" (%s remaining)", Timestamp::now().timeTo(stateEnd()).str().c_str());
+									break;
 			case Suspended:			res += " Suspended"; break;
 			case Dead:				res += " Dead"; break;
 			}
@@ -255,7 +258,7 @@ namespace zth {
 
 			m_state = state;
 
-			perf_event(PerfEvent(*this, m_state, t));
+			perf_event(PerfEvent<>(*this, m_state, t));
 		}
 
 		static void fiberEntry(void* that) {

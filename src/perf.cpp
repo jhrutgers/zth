@@ -24,7 +24,7 @@
 
 namespace zth {
 
-ZTH_TLS_DEFINE(std::vector<PerfEvent>*, perf_eventBuffer, NULL)
+ZTH_TLS_DEFINE(std::vector<PerfEvent<> >*, perf_eventBuffer, NULL)
 	
 class PerfFiber : public Runnable {
 public:
@@ -56,6 +56,8 @@ public:
 	}
 
 	void flushEventBuffer() {
+		assert(Config::EnablePerfEvent);
+
 		Fiber* f = fiber();
 		size_t spareRoom = eventBuffer().capacity() - eventBuffer().size();
 		if(unlikely(!f || f == m_worker.currentFiber() || spareRoom < 2)) {
@@ -79,10 +81,10 @@ public:
 		}
 
 		// Record a 'context switch' to f...
-		PerfEvent e;
+		PerfEvent<> e;
 		e.t = Timestamp::now();
 		e.fiber = currentFiber->id();
-		e.type = PerfEvent::FiberState;
+		e.type = PerfEvent<>::FiberState;
 		e.fiberState = Fiber::Ready;
 		eventBuffer().push_back(e);
 
@@ -130,43 +132,46 @@ protected:
 	}
 
 	int processEventBuffer() {
-		if(unlikely(!m_vcdd || !m_vcd))
-			return EAGAIN;
-
 		int res = 0;
-
 		decltype(eventBuffer()) eb = eventBuffer();
 		size_t eb_size = eb.size();
 
+		if(unlikely(!m_vcdd || !m_vcd)) {
+			res = EAGAIN;
+			goto done;
+		}
+
 		for(size_t i = 0; i < eb_size; i++) {
-			PerfEvent const& e = eb[i];
+			PerfEvent<> const& e = eb[i];
+			TimeInterval t = e.t - startTime;
+			char const* str = NULL;
 
 			switch(e.type) {
-			case PerfEvent::FiberName:
+			case PerfEvent<>::FiberName:
 				if(e.str) {
 					for(char* p = e.str; *p; ++p) {
-						if(*p >= '0' && *p <= '9')
-							continue;
-						if(*p >= 'A' && *p <= 'Z')
-							continue;
-						if(*p >= 'a' && *p <= 'z')
-							continue;
-						*p = '_';
+						if(*p < 33 || *p > 126)
+							*p = '_';
 					}
-					if(fprintf(m_vcd, "$var wire 1 %s %" PRIu64 "_%s $end\n", vcdId(e.fiber).c_str(), e.fiber, e.str) <= 0) {
+					std::string const& id = vcdId(e.fiber);
+					if(fprintf(m_vcd, "$var wire 1 %s \\#%" PRIu64 "_%s $end\n$var real 0 %s! \\#%" PRIu64 "_%s/log $end\n",
+						id.c_str(), e.fiber, e.str, id.c_str(), e.fiber, e.str) <= 0)
+					{
 						res = errno;
 						goto write_error;
 					}
-					free(e.str);
 				} else {
-					if(fprintf(m_vcd, "$var wire 1 %s Fiber_%" PRIu64" $end\n", vcdId(e.fiber).c_str(), e.fiber) <= 0) {
+					std::string const& id = vcdId(e.fiber);
+					if(fprintf(m_vcd, "$var wire 1 %s %" PRIu64 "_Fiber $end\n$var real 0 %s! %" PRIu64 "_Fiber_log $end\n",
+						id.c_str(), e.fiber, id.c_str(), e.fiber) <= 0)
+					{
 						res = errno;
 						goto write_error;
 					}
 				}
 				break;
 
-			case PerfEvent::FiberState:
+			case PerfEvent<>::FiberState:
 			{
 				char x;
 				bool doCleanup = false;
@@ -182,7 +187,7 @@ protected:
 					doCleanup = true;
 				}
 
-				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n", (uint64_t)e.t.ts().tv_sec, e.t.ts().tv_nsec, x, vcdId(e.fiber).c_str()) <= 0) {
+				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n", (uint64_t)t.ts().tv_sec, t.ts().tv_nsec, x, vcdId(e.fiber).c_str()) <= 0) {
 					res = errno;
 					goto write_error;
 				}
@@ -193,14 +198,55 @@ protected:
 				break;
 			}
 
+			case PerfEvent<>::Log:
+			{
+				if(true) {
+					str = e.c_str;
+				} else {
+			case PerfEvent<>::Marker:
+					str = e.str;
+				}
+				if(!str)
+					break;
+
+				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\ns", (uint64_t)t.ts().tv_sec, t.ts().tv_nsec) <= 0) {
+					res = errno;
+					goto write_error;
+				}
+
+				char const* chunkStart = str;
+				char const* chunkEnd = chunkStart;
+				int len = 0;
+				while(chunkEnd[1]) {
+					if(*chunkEnd < 33 || *chunkEnd > 126) {
+						if(fprintf(m_vcdd, "%.*s\\x%02hhx", len, chunkStart, *chunkEnd) < 0) {
+							res = errno;
+							goto write_error;
+						}
+						chunkStart = chunkEnd = chunkEnd + 1;
+						len = 0;
+					} else {
+						chunkEnd++;
+						len++;
+					}
+				}
+
+				if(fprintf(m_vcdd, "%s %s!\n", chunkStart, vcdId(e.fiber).c_str()) <= 0) {
+					res = errno;
+					goto write_error;
+				}
+			}
+			
 			default:
 				; // ignore
 			}
 		}
 
 	done:
+		for(size_t i = 0; i < eb_size; i++)
+			eb[i].release();
 		eb.clear();
-		return 0;
+		return res;
 
 	write_error:
 		fprintf(stderr, "Cannot write VCD file; %s\n", err(res).c_str());
@@ -308,16 +354,16 @@ protected:
 			return i.first->second;
 
 		// Just added with empty string. Generate a proper VCD identifier.
-		// Identifier is a string of ASCII 33-126.
-		// Do a radix-94 convert.
+		// Identifier is a string of ASCII 34-126. Use 33 (!) as special character.
+		// Do a radix-93 convert.
 		uint64_t id = fiber;
-		char buf[16]; // the string cannot be longer than 10 chars, as 94^10 > 2^64.
+		char buf[16]; // the string cannot be longer than 10 chars, as 93^10 > 2^64.
 		char* s = &buf[sizeof(buf) - 1];
 		*s = 0;
 
 		do {
-			*--s = id % 94 + 33;
-			id /= 94;
+			*--s = id % 93 + 34;
+			id /= 93;
 		} while(id);
 
 		return i.first->second = s;
@@ -342,7 +388,7 @@ int perf_init() {
 	if(!Config::EnablePerfEvent)
 		return 0;
 
-	perf_eventBuffer = new std::vector<PerfEvent>();
+	perf_eventBuffer = new std::vector<PerfEvent<> >();
 	perf_eventBuffer->reserve(Config::PerfEventBufferSize);
 
 	Worker* worker;

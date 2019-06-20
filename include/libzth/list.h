@@ -317,8 +317,10 @@ namespace zth {
 			m_t = delete_(x, m_t);
 			if(m_head == &x)
 				m_head = lowest(m_t);
-			if(Config::EnableAssert)
+			if(Config::EnableAssert) {
+				x.level = 0;
 				x.left = x.right = NULL;
+			}
 			m_size--;
 			check();
 		}
@@ -421,8 +423,6 @@ namespace zth {
 				return NULL;
 			else if(&x == t) {
 				if(!t->left && !t->right) {
-					if(Config::EnableAssert)
-						t->level = 0;
 					return NULL;
 				} else if(!t->left) {
 					elem_type* l = successor(t);

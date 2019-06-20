@@ -122,17 +122,19 @@ namespace zth {
 		}
 
 		void sub(TimeInterval const& t) {
-			add(TimeInterval(t.m_t.tv_sec, t.m_t.tv_nsec, !t.m_negative));
+			add(TimeInterval(t.ts().tv_sec, t.ts().tv_nsec, !t.isNegative()));
 		}
 
 		TimeInterval& operator+=(TimeInterval const& rhs) { add(rhs); return *this; }
 		TimeInterval operator+(TimeInterval const& rhs) const { TimeInterval ti(*this); ti += rhs; return ti; }
 		TimeInterval& operator-=(TimeInterval const& rhs) { sub(rhs); return *this; }
 		TimeInterval operator-(TimeInterval const& rhs) const { TimeInterval ti(*this); ti -= rhs; return ti; }
-		TimeInterval operator-() const { return TimeInterval(m_t.tv_sec, m_t.tv_nsec, !m_negative); }
+		TimeInterval operator-() const { return TimeInterval(ts().tv_sec, ts().tv_nsec, !isNegative()); }
 
 		std::string str() const {
 			std::string res;
+			if(m_negative)
+				res = "-";
 
 			uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
 			time_t rest = m_t.tv_sec - d * 3600 * 24;
@@ -206,14 +208,14 @@ namespace zth {
 			return t.isBefore(*this);
 		}
 
-		bool operator==(Timestamp const& rhs) const { return m_t.tv_nsec == rhs.m_t.tv_nsec && m_t.tv_sec == rhs.m_t.tv_sec; }
+		bool operator==(Timestamp const& rhs) const { return ts().tv_nsec == rhs.ts().tv_nsec && ts().tv_sec == rhs.ts().tv_sec; }
 		bool operator<(Timestamp const& rhs) const { return this->isBefore(rhs); }
 		bool operator<=(Timestamp const& rhs) const { return *this == rhs || this->isBefore(rhs); }
 		bool operator>(Timestamp const& rhs) const { return rhs.isBefore(*this); }
 		bool operator>=(Timestamp const& rhs) const { return *this == rhs || rhs.isBefore(*this); }
 
 		TimeInterval timeTo(Timestamp const& t) const {
-			return TimeInterval(t.m_t.tv_sec, t.m_t.tv_nsec) - TimeInterval(m_t.tv_sec, m_t.tv_nsec);
+			return TimeInterval(t.ts().tv_sec, t.ts().tv_nsec) - TimeInterval(ts().tv_sec, ts().tv_nsec);
 		}
 
 		void add(TimeInterval const& dt) {
@@ -238,6 +240,8 @@ namespace zth {
 	private:
 		struct timespec m_t;
 	};
+
+	extern Timestamp const startTime;
 
 } // namespace
 

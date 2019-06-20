@@ -31,8 +31,9 @@ namespace zth {
 		void* m_sp;
 	};
 
+	template <bool Enable = Config::EnablePerfEvent>
 	struct PerfEvent {
-		enum Type { Nothing, FiberName, FiberState };
+		enum Type { Nothing, FiberName, FiberState, Log, Marker };
 
 		PerfEvent() : type(Nothing) {}
 
@@ -41,6 +42,38 @@ namespace zth {
 		
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(FiberState), fiberState(state) {}
+		
+		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp::now())
+			: t(t), fiber(fiber.id()), type(Log), str(strdup(str.c_str())) {}
+		
+		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp::now())
+			: t(t), fiber(fiber.id()), type(Marker), c_str(marker) {}
+
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5)))
+			: t(t), fiber(fiber.id()), type(Log)
+		{
+			va_list args;
+			va_start(args, fmt);
+			if(vasprintf(&str, fmt, args) == -1)
+				str = NULL;
+			va_end(args);
+		}
+
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args)
+			: t(t), fiber(fiber.id()), type(Log) { if(vasprintf(&str, fmt, args) == -1) str = NULL; }
+
+		void release() {
+			switch(type) {
+			case FiberName:
+			case Log:
+				if(str) {
+					free(str);
+					str = NULL;
+				}
+				break;
+			default:;
+			}
+		}
 
 		Timestamp t;
 		uint64_t fiber;
@@ -48,15 +81,39 @@ namespace zth {
 
 		union {
 			char* str;
+			char const* c_str;
+			int fiberState;
+		};
+	};
+	
+	template <>
+	struct PerfEvent<false> {
+		enum Type { Nothing, FiberName, FiberState, Log, Marker };
+
+		PerfEvent() {}
+		PerfEvent(UniqueID<Fiber> const& fiber) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) {}
+		void release() {}
+
+		union {
+			Timestamp t;
+			uint64_t fiber;
+			Type type;
+			char* str;
+			char const* c_str;
 			int fiberState;
 		};
 	};
 
-	ZTH_TLS_DECLARE(std::vector<PerfEvent>*, perf_eventBuffer)
+	ZTH_TLS_DECLARE(std::vector<PerfEvent<> >*, perf_eventBuffer)
 
 	void perf_flushEventBuffer();
 
-	inline void perf_event(PerfEvent const& event) {
+	inline void perf_event(PerfEvent<> const& event) {
 		if(!Config::EnablePerfEvent)
 			return;
 		if(unlikely(!perf_eventBuffer))
