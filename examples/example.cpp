@@ -3,6 +3,11 @@
 #include <cstdio>
 using namespace std;
 
+#ifdef ZTH_OS_WINDOWS
+#  define srand48(seed)	srand(seed)
+#  define drand48()		((double)rand() / (double)RAND_MAX)
+#endif
+
 zth::Semaphore sem;
 zth::Future<int> future;
 
