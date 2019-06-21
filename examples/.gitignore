@@ -16,3 +16,5 @@ callgrind.out.*
 zth.vcd
 zth.*.vcd
 /zth.vcdd
+libzth.*
+socks

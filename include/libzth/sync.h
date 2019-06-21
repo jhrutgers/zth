@@ -40,7 +40,7 @@ namespace zth {
 	public:
 		SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
 		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
-		~SharedPointer() { reset(); }
+		virtual ~SharedPointer() { reset(); }
 
 		void reset(RefCounted* object = NULL) {
 			if(object)
@@ -70,7 +70,7 @@ namespace zth {
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	public:
-		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(name) {}
+		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
 		virtual ~Synchronizer() { zth_dbg(sync, "[%s] Destruct", id_str()); }
 
 	protected:
@@ -120,7 +120,7 @@ namespace zth {
 
 	class Mutex : public Synchronizer {
 	public:
-		Mutex() : Synchronizer("Mutex"), m_locked() {}
+		Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
 		virtual ~Mutex() {}
 
 		void lock() {
@@ -149,7 +149,7 @@ namespace zth {
 
 	class Semaphore : public Synchronizer {
 	public:
-		Semaphore(size_t init = 0) : Synchronizer("Semaphore"), m_count(init) {} 
+		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {} 
 		virtual ~Semaphore() {}
 
 		void acquire(size_t count = 1) {
@@ -176,18 +176,18 @@ namespace zth {
 
 	class Signal : public Synchronizer {
 	public:
-		Signal() : Synchronizer("Signal") {}
+		Signal(char const* name = "Signal") : Synchronizer(name) {}
 		virtual ~Signal() {}
 		void wait() { block(); }
 		void signal() { unblockFirst(); }
 		void signalAll() { unblockAll(); }
 	};
 
-	template <typename T>
+	template <typename T = void>
 	class Future : public Synchronizer {
 	public:
 		typedef T type;
-		Future() : Synchronizer("Future"), m_valid() {
+		Future(char const* name = "Future") : Synchronizer(name), m_valid() {
 #ifdef ZTH_USE_VALGRIND
 			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #endif
@@ -234,7 +234,7 @@ namespace zth {
 	class Future<void> : public Synchronizer {
 	public:
 		typedef void type;
-		Future() : Synchronizer("Future"), m_valid() {}
+		Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
 		virtual ~Future() {}
 
 		bool valid() const { return m_valid; }

@@ -54,11 +54,6 @@ namespace zth {
 			zth_dbg(fiber, "[%s] Destructed. Total CPU: %s", id_str(), m_totalTime.str().c_str());
 		}
 
-		virtual void setName(std::string const& name) {
-			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
-			UniqueID::setName(name);
-		}
-
 		int setStackSize(size_t size) {
 			if(state() != New)
 				return EPERM;
@@ -252,6 +247,10 @@ namespace zth {
 		}
 
 	protected:
+		virtual void changedName(std::string const& name) {
+			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
+		}
+
 		void setState(State state, Timestamp const& t = Timestamp::now()) {
 			if(m_state == state)
 				return;

@@ -121,26 +121,43 @@ namespace zth {
 	class UniqueID {
 	public:
 		static uint64_t getID() { return ThreadSafe ? __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED) : ++m_nextId; }
-
-		UniqueID(char const* name = "Object") : m_id(getID()), m_name(name) {}
+	
+		UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
+#if __cplusplus >= 201103L
+		UniqueID(std::string&& name) : m_id(getID()), m_name(std::move(name)) {}
+#endif
+		UniqueID(char const* name = NULL) : m_id(getID()) { if(name) m_name = name; }
 		virtual ~UniqueID() {}
 
 		void const* normptr() const { return this; }
 
-		uint64_t id() const { return m_id; }
+		uint64_t id() const __attribute__((pure)) { return m_id; }
 
 		std::string const& name() const { return m_name; }
 
-		virtual void setName(std::string const& name) {
+		void setName(std::string const& name) {
 			m_name = name;
 			m_id_str.clear();
+			changedName(this->name());
 		}
 
+#if __cplusplus >= 201103L
+		void setName(std::string&& name) {
+			m_name = std::move(name);
+			m_id_str.clear();
+			changedName(this->name());
+		}
+#endif
+	
 		char const* id_str() const {
 			if(unlikely(m_id_str.empty()))
-				m_id_str = format("%s #%" PRIu64, name().c_str(), id());
+				m_id_str = format("%s #%" PRIu64, name().empty() ? "Object" : name().c_str(), id());
 			return m_id_str.c_str();
 		}
+
+	protected:
+		virtual void changedName(std::string const& name) {}
+
 	private:
 		UniqueID(UniqueID const&);
 		UniqueID& operator=(UniqueID const&);

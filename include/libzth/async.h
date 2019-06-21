@@ -73,7 +73,7 @@ namespace zth {
 		template <typename F>
 		AutoFuture& operator=(TypedFiber<T,F>* fiber) {
 			if(fiber) {
-				this->reset(new Future_type());
+				this->reset(new Future_type(format("Future of %s", fiber->name().c_str()).c_str()));
 				fiber->registerFuture(this->get());
 			} else {
 				this->reset();
@@ -132,10 +132,14 @@ namespace zth {
 	};
 	
 	struct TypedFiberType {
+		struct NoArg {};
 		template <typename R> static R returnType(R(*f)());
 		template <typename R> static TypedFiber0<R> fiberType(R(*f)());
+		template <typename R> static NoArg a1Type(R(*f)());
+
 		template <typename R, typename A1> static R returnType(R(*f)(A1));
 		template <typename R, typename A1> static TypedFiber1<R,A1> fiberType(R(*f)(A1));
+		template <typename R, typename A1> static A1 a1Type(R(*f)(A1));
 	};
 
 	template <typename F>
@@ -144,6 +148,7 @@ namespace zth {
 		typedef F Function;
 		typedef decltype(TypedFiberType::returnType((Function)0)) Return;
 		typedef decltype(TypedFiberType::fiberType((Function)0)) TypedFiber_type;
+		typedef decltype(TypedFiberType::a1Type((Function)0)) A1;
 		typedef AutoFuture<Return> AutoFuture_type;
 
 		TypedFiberFactory(Function function, char const* name)
@@ -155,7 +160,6 @@ namespace zth {
 			return polish(*new TypedFiber_type(m_function));
 		}
 		
-		template <typename A1>
 		TypedFiber_type* operator()(A1 a1) const {
 			return polish(*new TypedFiber_type(m_function, a1));
 		}

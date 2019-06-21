@@ -52,6 +52,7 @@ namespace zth {
 		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = false;
 		static double MinTimeslice_s() { return 1e-4; }
+		static bool const NamedSynchronizer = EnableDebugPrint && Print_sync > 0;
 
 		static size_t const PerfEventBufferSize = 128;
 		static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;

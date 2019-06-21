@@ -3,11 +3,6 @@
 #include <cstdio>
 using namespace std;
 
-#ifdef ZTH_OS_WINDOWS
-#  define srand48(seed)	srand(seed)
-#  define drand48()		((double)rand() / (double)RAND_MAX)
-#endif
-
 zth::Semaphore sem;
 zth::Future<int> future;
 
@@ -47,35 +42,6 @@ void fiber3() {
 	printf("got from fiber 4: %d\n", f->value());
 }
 make_fibered(fiber3)
-
-void washSock(int i) {
-	if(i < 0)
-		printf("wash left %d\n", -i);
-	else
-		printf("wash right %d\n", i);
-
-	zth::nap(drand48());
-}
-make_fibered(washSock)
-
-void wearSocks(int i) {
-	printf("wear %d\n", i);
-	washSock_future left = async washSock(-i);
-	washSock_future right = async washSock(i);
-	left->wait();
-	right->wait();
-	printf("washed %d\n", i);
-}
-make_fibered(wearSocks)
-
-void socks() {
-	srand48(time(NULL));
-	for(int i = 1; i <= 10; i++) {
-		zth::nap(drand48());
-		async wearSocks(i);
-	}
-}
-make_fibered(socks)
 
 struct Int : public zth::Listable<Int> {
 	Int(int value) : value(value) {}
@@ -127,8 +93,7 @@ int main()
 //	w.add(new zth::Fiber(&fiber1));
 //	w.add(new zth::Fiber(&fiber2));
 
-//	async fiber3();
-	async socks();
+	async fiber3();
 	w.run();
 }
 

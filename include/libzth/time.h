@@ -49,19 +49,17 @@ namespace zth {
 					dt_ == dt_ && // Should not be NaN
 					std::fabs(dt_) < (double)(std::numeric_limits<time_t>::max() / 2 - 1));
 
-				if(dt_ < 0)
-					m_t.tv_sec = (time_t)-dt_;
-				else
-					m_t.tv_sec = (time_t)dt_;
-
+				m_t.tv_sec = (time_t)std::fabs(dt_);
 				m_t.tv_nsec = (long)(std::fmod(std::fabs(dt_), 1.0) * 1e9);
 
-				if(m_t.tv_nsec > BILLION) {
+				if(m_t.tv_nsec >= BILLION) {
 					m_t.tv_nsec -= BILLION;
 					m_t.tv_sec++;
 				}
 			}
 		}
+
+		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
 		bool isNegative() const { return m_negative; }
 		bool isPositive() const { return !isNegative(); }
