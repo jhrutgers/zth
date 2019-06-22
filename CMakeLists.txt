@@ -15,7 +15,7 @@ add_library(zth ${sources})
 
 target_include_directories(zth PUBLIC include)
 
-target_compile_options(zth PRIVATE -Wall -Werror)
+target_compile_options(zth PRIVATE -Wall -Werror $<$<CONFIG:DEBUG>:-Og>)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(zth PUBLIC -DNDEBUG)

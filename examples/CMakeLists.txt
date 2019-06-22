@@ -8,4 +8,5 @@ link_libraries(zth)
 
 add_executable(example example.cpp)
 add_executable(socks socks.cpp)
+add_executable(work work.cpp)
 

@@ -1,6 +1,5 @@
 #include <zth>
 
-
 #include <cstdio>
 using namespace std;
 
@@ -43,7 +42,7 @@ void takeSocks(int count) {
 
 		allSocks.push_back(async wearSocks(*socks));
 
-		zth::nap(1);
+		zth::nap(0.5);
 	}
 
 	// Store the socks in the same order as they were worn.
@@ -60,12 +59,11 @@ Socks* wearSocks(Socks& socks) {
 	printf("Wear %s\n", socks.str.c_str());
 
 	// Done wearing, go wash both socks.
-	async washSock(socks.left);
-	washSock(socks.right);
+	async washSock(socks.left);		// in parallel
+	washSock(socks.right);			// done right here and now
 
 	// Wait till the washing sequence has completed.
 	socks.left.done.wait();
-	socks.right.done.wait();
 
 	printf("Fold %s\n", socks.str.c_str());
 	zth::nap(drand48());
@@ -84,8 +82,7 @@ void washSock(Sock& sock) {
 	sock.done.set();
 }
 
-int main()
-{
+int main() {
 	srand48(time(NULL));
 	zth::Worker w;
 	async takeSocks(10);
