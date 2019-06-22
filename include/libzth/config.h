@@ -8,6 +8,10 @@
 #include <stdint.h>
 
 namespace zth {
+	struct Env { enum { EnableDebugPrint, DoPerfEvent }; };
+	bool config(int env /* one of Env::* */, bool whenUnset);
+#define zth_config(name)	(::zth::config(::zth::Env::name, ::zth::Config::name))
+
 	struct DefaultConfig {
 		static bool const Debug = 
 #ifndef NDEBUG
@@ -59,6 +63,7 @@ namespace zth {
 		static size_t const PerfVCDFileBuffer = 0x1000;
 
 		static bool const EnablePerfEvent = true;
+		static bool const DoPerfEvent = false;
 	};
 } // namespace
 #endif // __cplusplus

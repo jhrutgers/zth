@@ -75,7 +75,7 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 
 #define zth_dbg(group, msg, a...) \
 	do { \
-		if(::zth::Config::EnableDebugPrint && ::zth::Config::Print_##group != 0) { \
+		if(::zth::Config::EnableDebugPrint && ::zth::Config::Print_##group != 0 && zth_config(EnableDebugPrint)) { \
 			if(::zth::Config::EnableColorDebugPrint) \
 				zth_color_log(::zth::Config::Print_##group, " > zth::" ZTH_STRINGIFY(group) ": " msg "\n", ##a); \
 			else \

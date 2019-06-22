@@ -1,8 +1,38 @@
 Zth (libzth) - Zeta threads
 
-A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads.
-In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol
-suggests that threads are not parallel, but they explicitly yield from one to another.
+A predecessor project was called Xi, as the Greek capital symbol suggests
+parallel threads.  In this project, preemptive multitasking is implemented. In
+the same context, the Z(eta) symbol suggests that threads are not parallel, but
+they explicitly yield from one to another.
 
 GNU Pth is a great inspiration for this library.
+
+
+
+--------------------------------------------
+-- How to build
+
+mkdir build
+cd build
+cmake ..
+cmake --build .
+
+For Mac OSX with MacPorts, one could change the sequence above by something like:
+CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake 
+
+
+--------------------------------------------
+-- How to run
+
+libzth checks for environment variables, which are listed below.  The
+environment is (usually) only checked once, so dynamically changing the
+variables after startup has no effect to libzth's behavior.
+
+ZTH_CONFIG_ENABLE_DEBUG_PRINT
+	When set to 0, debug prints are suppressed.  Enabled by default. For
+	non-debug builds, all debug prints are removed from the binary, so they
+	cannot be enabled in that case.
+
+ZTH_CONFIG_DO_PERF_EVENT
+	When set to 1, perf VCD file generation is enabeled.  Disabled by default.
 

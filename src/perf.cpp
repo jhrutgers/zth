@@ -385,7 +385,7 @@ private:
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, NULL);
 
 int perf_init() {
-	if(!Config::EnablePerfEvent)
+	if(!zth_config(DoPerfEvent))
 		return 0;
 
 	perf_eventBuffer = new std::vector<PerfEvent<> >();

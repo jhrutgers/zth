@@ -49,6 +49,27 @@ char const* banner() {
 		;
 }
 
+static bool config(char const* name, bool whenUnset) {
+	char const* e = getenv(name);
+	if(!e || !*e)
+		return whenUnset;
+	else if(strcmp(e, "0") == 0)
+		// Explicitly set to disabled
+		return false;
+	else
+		// Any other value is true
+		return true;
+}
+
+bool config(int env, bool whenUnset) {
+	switch(env) {
+	case Env::EnableDebugPrint:			{ static bool const e = config("ZTH_CONFIG_ENABLE_DEBUG_PRINT", whenUnset); return e; }
+	case Env::DoPerfEvent:				{ static bool const e = config("ZTH_CONFIG_DO_PERF_EVENT", whenUnset); return e; }
+	default:
+		return whenUnset;
+	}
+}
+
 void zth_abort(char const* msg, ...)
 {
 	zth_log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorDebugPrint ? "\x1b[41;1;37;1m" : "");

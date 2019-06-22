@@ -162,7 +162,10 @@ namespace zth {
 				break;
 			case Ready:
 			case Running:
-				zth_dbg(fiber, "[%s] Sleep", id_str());
+				if(sleepUntil.isNull())
+					zth_dbg(fiber, "[%s] Sleep", id_str());
+				else
+					zth_dbg(fiber, "[%s] Sleep for %s", id_str(), (sleepUntil - Timestamp::now()).str().c_str());
 				setState(Waiting);
 				m_stateNext = Ready;
 				break;
