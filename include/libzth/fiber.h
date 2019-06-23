@@ -153,7 +153,7 @@ namespace zth {
 			setState(Dead);
 		}
 
-		void nap(Timestamp const& sleepUntil) {
+		void nap(Timestamp const& sleepUntil = Timestamp::null()) {
 			switch(state()) {
 			case New:
 				// Postpone actual sleep

@@ -11,5 +11,6 @@
 #include <libzth/sync.h>
 #include <libzth/async.h>
 #include <libzth/perf.h>
+#include <libzth/io.h>
 
 #endif // __ZTH

@@ -25,7 +25,7 @@ void employer() {
 
 		switch(select(1, &fds, NULL, NULL, &tv)) {
 		case 1: {
-			ssize_t cnt = read(0, &buf[offset], sizeof(buf) - offset - 1);
+			ssize_t cnt = zth::io::read(0, &buf[offset], sizeof(buf) - offset - 1);
 			if(cnt <= 0) {
 				printf("Couldn't read stdin\n");
 				return;

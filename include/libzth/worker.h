@@ -285,20 +285,6 @@ namespace zth {
 		friend void worker_global_init();
 	};
 
-	inline void getContext(Worker** currentWorker, Fiber** currentFiber) {
-		Worker* currentWorker_ = Worker::currentWorker();
-		if(unlikely(!currentWorker_))
-			zth_abort("No worker initialized");
-		if(likely(currentWorker))
-			*currentWorker = currentWorker_;
-
-		if(likely(currentFiber)) {
-			Fiber* currentFiber_ = *currentFiber = currentWorker_->currentFiber();
-			if(unlikely(!currentFiber_))
-				zth_abort("Not within fiber context");
-		}
-	}
-
 	inline Worker& currentWorker() __attribute__((pure));
 	inline Worker& currentWorker() {
 		Worker* w = Worker::currentWorker();
@@ -312,6 +298,18 @@ namespace zth {
 		Fiber* f = w.currentFiber();
 		zth_assert(f);
 		return *f;
+	}
+	
+	inline void getContext(Worker** worker, Fiber** fiber) {
+		Worker& currentWorker_ = currentWorker();
+		if(likely(worker))
+			*worker = &currentWorker_;
+
+		if(likely(fiber)) {
+			Fiber* currentFiber_ = *fiber = currentWorker_.currentFiber();
+			if(unlikely(!currentFiber_))
+				zth_abort("Not within fiber context");
+		}
 	}
 
 	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {

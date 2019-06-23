@@ -51,6 +51,7 @@ namespace zth {
 		static int const Print_waiter = 13;
 		static int const Print_sync = 14;
 		static int const Print_perf = 15;
+		static int const Print_io = 7;
 
 		static size_t const DefaultFiberStackSize = 0x20000;
 		static bool const EnableStackGuard = Debug;
