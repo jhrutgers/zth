@@ -1,11 +1,14 @@
 #include <zth>
 
-#include <sys/select.h>
-#include <fcntl.h>
+#ifndef ZTH_OS_WINDOWS
+#  include <sys/select.h>
+#  include <fcntl.h>
+#endif
 
 namespace zth { namespace io {
 
 ssize_t read(int fd, void* buf, size_t count) {
+#ifndef ZTH_OS_WINDOWS
 	int flags = fcntl(fd, F_GETFL);
 	if(unlikely(flags == -1))
 		return -1; // with errno set
@@ -50,6 +53,9 @@ ssize_t read(int fd, void* buf, size_t count) {
 			return -1;
 		}
 	}
+#else
+	return ::read(fd, buf, count);
+#endif
 }
 
 } } // namespace

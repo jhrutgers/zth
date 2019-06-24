@@ -65,7 +65,11 @@ void Waiter::entry() {
 			// Not rescheduled, which means that we are the only runnable fiber.
 			// Do a real sleep, until something interesting happens in the system.
 			zth_dbg(waiter, "[Worker %p] Out of work; suspend thread, while waiting for %s", &m_worker, m_waiting.front().fiber().str().c_str());
+			zth_perfmark("idle system; sleep");
+			perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &m_waiting.front().timeout().ts(), NULL);
+			perf_event(PerfEvent<>(*fiber(), fiber()->state()));
+			zth_perfmark("wakeup");
 		}
 	}
 }

@@ -60,13 +60,13 @@ public:
 
 		Fiber* f = fiber();
 		size_t spareRoom = eventBuffer().capacity() - eventBuffer().size();
-		if(unlikely(!f || f == m_worker.currentFiber() || spareRoom < 2)) {
+		if(unlikely(!f || f == m_worker.currentFiber() || spareRoom < 3)) {
 			// Do it right here right now.
 			processEventBuffer();
 			return;
 		}
 
-		if(likely(spareRoom > 2)) {
+		if(likely(spareRoom > 3)) {
 			// Wakeup and do the processing later on.
 			m_worker.resume(*f);
 			return;
@@ -83,6 +83,11 @@ public:
 		// Record a 'context switch' to f...
 		PerfEvent<> e;
 		e.t = Timestamp::now();
+		e.fiber = f->id();
+		e.type = PerfEvent<>::Marker;
+		e.c_str = "Emerg flush";
+		eventBuffer().push_back(e);
+
 		e.fiber = currentFiber->id();
 		e.type = PerfEvent<>::FiberState;
 		e.fiberState = Fiber::Ready;

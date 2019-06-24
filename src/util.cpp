@@ -118,8 +118,17 @@ std::string format(char const* fmt, ...)
 } // namespace
 
 static void zth_log_init() {
-	setvbuf(stdout, NULL, _IOLBF, 4096);
-	setvbuf(stderr, NULL, _IOLBF, 4096);
+#ifdef ZTH_OS_WINDOWS
+	// Windows does not support line buffering.
+	// If set anyway, this implies full buffering.
+	// Only do that when we expect much debug output.
+	if(zth_config(EnableDebugPrint)) {
+#endif
+		setvbuf(stdout, NULL, _IOLBF, 4096);
+		setvbuf(stderr, NULL, _IOLBF, 4096);
+#ifdef ZTH_OS_WINDOWS
+	}
+#endif
 }
 INIT_CALL(zth_log_init)
 
