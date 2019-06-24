@@ -6,10 +6,6 @@
 #include <cstdarg>
 #include <unistd.h>
 
-#ifdef ZTH_OS_MAC
-#  include <mach/mach_time.h>
-#endif
-
 using namespace std;
 
 namespace zth {
@@ -164,75 +160,5 @@ void zth_log(char const* fmt, ...)
 void zth_logv(char const* fmt, va_list arg)
 {
 	vprintf(fmt, arg);
-}
-
-#ifdef ZTH_OS_MAC
-
-static mach_timebase_info_data_t clock_info;
-static uint64_t mach_clock_start;
-
-static void clock_global_init()
-{
-	mach_timebase_info(&clock_info);
-	mach_clock_start = mach_absolute_time();
-}
-INIT_CALL(clock_global_init)
-
-int clock_gettime(int clk_id, struct timespec* res)
-{
-	if(unlikely(!res))
-		return EFAULT;
-
-	zth_assert(clk_id == CLOCK_MONOTONIC);
-	uint64_t c = (mach_absolute_time() - mach_clock_start);
-	uint64_t chigh = (c >> 32) * clock_info.numer;
-	uint64_t chighrem = ((chigh % clock_info.denom) << 32) / clock_info.denom;
-	chigh /= clock_info.denom;
-	uint64_t clow = (c & (((uint64_t)1 << 32) - 1)) * clock_info.numer / clock_info.denom;
-	clow += chighrem;
-	uint64_t ns = (chigh << 32) + clow; // 64-bit ns gives us more than 500 y before wrap-around.
-
-	// Split in sec + nsec
-	res->tv_nsec = (long)(ns % zth::TimeInterval::BILLION);
-	res->tv_sec = (time_t)(ns / zth::TimeInterval::BILLION);
-	return 0;
-}
-
-int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain)
-{
-	if(!request)
-		return EFAULT;
-
-	zth_assert(clk_id == CLOCK_MONOTONIC);
-	zth_assert(flags == TIMER_ABSTIME);
-
-	struct timespec now;
-	int res = clock_gettime(CLOCK_MONOTONIC, &now);
-	if(unlikely(res))
-		return res;
-	
-	if(now.tv_sec > request->tv_sec)
-		// No need to sleep.
-		return 0;
-
-	time_t sec = request->tv_sec - now.tv_sec;
-	if(sec == 0 && request->tv_nsec <= now.tv_nsec) {
-		// No need to sleep.
-		return 0;
-	} else if(sec < std::numeric_limits<useconds_t>::max() / 1000000 - 1) {
-		useconds_t us = sec * 1000000;
-		us += (request->tv_nsec - now.tv_nsec) / 1000;
-		usleep(us);
-	} else {
-		// Overflow, sleep (almost) infinitely.
-		usleep(std::numeric_limits<useconds_t>::max());
-	}
-
-	return 0;
-}
-#endif
-
-namespace zth {
-	Timestamp const startTime(Timestamp::now());
 }
 

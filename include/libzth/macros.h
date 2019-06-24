@@ -95,6 +95,7 @@
 #  ifdef __CYGWIN__
 #    define ZTH_HAVE_PTHREAD
 #  endif
+#  define ZTH_HAVE_WINSOCK
 #elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
 #  define ZTH_HAVE_VALGRIND

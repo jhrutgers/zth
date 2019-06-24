@@ -79,8 +79,8 @@ namespace zth {
 
 	class AwaitFd : public Waitable, public Listable<AwaitFd> {
 	public:
-		enum AwaitType { AwaitRead, AwaitWrite, AwaitExcept };
-		AwaitFd(int fd, AwaitType awaitType) : m_fd(fd), m_awaitType(awaitType), m_ready() {}
+		enum AwaitType { AwaitRead /* and recv() */, AwaitWrite /* and send() */, AwaitExcept };
+		AwaitFd(int fd, AwaitType awaitType) : m_fd(fd), m_awaitType(awaitType), m_error(-1) {}
 		virtual ~AwaitFd() {}
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { zth_abort("Don't call."); }
 
@@ -97,12 +97,15 @@ namespace zth {
 			return format("Waitable to %s fd %d for %s", t, fd(), fiber().str().c_str());
 		}
 
-		void setReady(bool ready) { m_ready = ready; }
-		bool ready() const { return m_ready; }
+		void setResult(int error = 0) { m_error = error; }
+		bool finished() const { return m_error >= 0; }
+		int error() const { return m_error > 0 ? m_error : 0; }
+		bool ready() const { return m_error >= 0; }
+		bool intr() const { return error() == EINTR; }
 	private:
 		int const m_fd;
 		AwaitType const m_awaitType;
-		bool m_ready;
+		int m_error;
 	};
 
 	class Waiter : public Runnable {
@@ -113,7 +116,7 @@ namespace zth {
 		virtual ~Waiter() {}
 
 		void wait(TimedWaitable& w);
-		void waitFd(AwaitFd& w);
+		int waitFd(AwaitFd& w);
 
 	protected:
 		virtual int fiberHook(Fiber& f) {
@@ -127,6 +130,7 @@ namespace zth {
 	private:
 		Worker& m_worker;
 		SortedList<TimedWaitable> m_waiting;
+		List<AwaitFd> m_waitingFd;
 	};
 
 	void waitUntil(TimedWaitable& w);

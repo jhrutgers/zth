@@ -147,7 +147,7 @@ static void context_global_init() {
 
 	return;
 error:
-	zth_abort("Cannot initialize signals; %s (error %d)", strerror(res), res);
+	zth_abort("Cannot initialize signals; %s", err(res).c_str());
 }
 INIT_CALL(context_global_init)
 
@@ -551,7 +551,7 @@ rollback_stack:
 	context_deletestack(context);
 rollback_new:
 	delete context;
-	zth_dbg(context, "[th %s] Cannot create context; %s (error %d)", threadId().c_str(), strerror(res), res);
+	zth_dbg(context, "[th %s] Cannot create context; %s", threadId().c_str(), err(res).c_str());
 	return res ? res : EINVAL;
 }
 

@@ -1,4 +1,6 @@
-#include <zth>
+#include <libzth/io.h>
+#include <libzth/util.h>
+#include <libzth/worker.h>
 
 #ifndef ZTH_OS_WINDOWS
 #  include <sys/select.h>
@@ -7,15 +9,13 @@
 
 namespace zth { namespace io {
 
-ssize_t read(int fd, void* buf, size_t count) {
 #ifndef ZTH_OS_WINDOWS
+ssize_t read(int fd, void* buf, size_t count) {
 	int flags = fcntl(fd, F_GETFL);
 	if(unlikely(flags == -1))
 		return -1; // with errno set
 
-	bool blocking = flags & O_NONBLOCK;
-
-	if(!blocking) {
+	if((flags & O_NONBLOCK)) {
 		zth_dbg(io, "[%s] read(%d) non-blocking", currentFiber().str().c_str(), fd);
 		// Just do the call.
 		return ::read(fd, buf, count);
@@ -32,10 +32,11 @@ ssize_t read(int fd, void* buf, size_t count) {
 			// Forward our request to the Waiter.
 			zth_dbg(io, "[%s] read(%d) hand-off", currentFiber().str().c_str(), fd);
 			AwaitFd w(fd, AwaitFd::AwaitRead);
-			currentWorker().waiter().waitFd(w);
-			if(!w.ready())
-				// Still no data, retry.
-				break;
+			if(currentWorker().waiter().waitFd(w)) {
+				// Got some error.
+				errno = w.error();
+				return -1;
+			}
 			// else: fall-through to go read the data.
 		}
 		case 1:
@@ -53,9 +54,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 			return -1;
 		}
 	}
-#else
-	return ::read(fd, buf, count);
-#endif
 }
+#endif
 
 } } // namespace

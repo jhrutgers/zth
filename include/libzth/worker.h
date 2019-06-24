@@ -120,7 +120,7 @@ namespace zth {
 				preferFiber == &m_workerFiber ||
 				m_runnableQueue.contains(*preferFiber));
 
-			if(unlikely(m_end.isBefore(now))) {
+			if(unlikely(!runEnd().isNull() && runEnd().isBefore(now))) {
 				// Stop worker and return to its run1() call.
 				zth_dbg(worker, "[%s] Time is up", id_str());
 				preferFiber = &m_workerFiber;
@@ -231,16 +231,20 @@ namespace zth {
 			add(&fiber);
 		}
 
+		Timestamp const& runEnd() const {
+			return m_end;
+		}
+
 		void run(TimeInterval const& duration = TimeInterval()) {
 			if(duration <= 0) {
 				zth_dbg(worker, "[%s] Run", id_str());
-				m_end = Timestamp(std::numeric_limits<time_t>::max(), 0);
+				m_end = Timestamp::null();
 			} else {
 				zth_dbg(worker, "[%s] Run for %s", id_str(), duration.str().c_str());
 				m_end = Timestamp::now() + duration;
 			}
 
-			while(!m_runnableQueue.empty() && Timestamp::now() < m_end) {
+			while(!m_runnableQueue.empty() && (runEnd().isNull() || Timestamp::now() < runEnd())) {
 				schedule();
 				zth_assert(!currentFiber());
 			}
