@@ -1,3 +1,4 @@
+#include <libzth/config.h>
 #include <libzth/io.h>
 #include <libzth/util.h>
 #include <libzth/worker.h>
@@ -5,6 +6,13 @@
 #ifndef ZTH_OS_WINDOWS
 #  include <sys/select.h>
 #  include <fcntl.h>
+#endif
+
+#ifdef ZTH_CONFIG_WRAP_IO
+#  include <dlfcn.h>
+static ssize_t (*real_read)(int,void*,size_t) = &::read;
+#else
+#  define real_read(...) ::read(__VA_ARGS__)
 #endif
 
 namespace zth { namespace io {
@@ -18,7 +26,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 	if((flags & O_NONBLOCK)) {
 		zth_dbg(io, "[%s] read(%d) non-blocking", currentFiber().str().c_str(), fd);
 		// Just do the call.
-		return ::read(fd, buf, count);
+		return real_read(fd, buf, count);
 	}
 
 	while(true) {
@@ -42,7 +50,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 		case 1:
 			// Got data to read.
 			zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
-			return ::read(fd, buf, count);
+			return real_read(fd, buf, count);
 		
 		default:
 			// Huh?
@@ -58,3 +66,24 @@ ssize_t read(int fd, void* buf, size_t count) {
 #endif
 
 } } // namespace
+
+#ifdef ZTH_CONFIG_WRAP_IO
+static void zth_init_io() {
+	if(!(real_read = (decltype(real_read))dlsym(RTLD_NEXT, "read")))
+		goto error;
+	return;
+
+error:
+	fprintf(stderr, "Cannot load IO functions; %s\n", dlerror());
+	exit(1);
+}
+INIT_CALL(zth_init_io)
+
+ssize_t read(int fd, void* buf, size_t count) {
+	if(zth::Config::WrapIO)
+		return zth::io::read(fd, buf, count);
+	else
+		return real_read(fd, buf, count);
+}
+#endif
+

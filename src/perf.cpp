@@ -25,7 +25,7 @@
 
 namespace zth {
 
-ZTH_TLS_DEFINE(std::vector<PerfEvent<> >*, perf_eventBuffer, NULL)
+ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, NULL)
 	
 class PerfFiber : public Runnable {
 public:

@@ -65,6 +65,13 @@ namespace zth {
 
 		static bool const EnablePerfEvent = true;
 		static bool const DoPerfEvent = false;
+
+		static bool const WrapIO =
+#ifdef ZTH_CONFIG_WRAP_IO
+			true;
+#else
+			false;
+#endif
 	};
 } // namespace
 #endif // __cplusplus

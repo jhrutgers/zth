@@ -99,6 +99,9 @@
 #    define ZTH_HAVE_PTHREAD
 #  endif
 //#  define ZTH_HAVE_WINSOCK
+#  ifdef ZTH_CONFIG_WRAP_IO
+#    error ZTH_CONFIG_WRAP_IO is not supported on Windows.
+#  endif
 #elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
 //#  define ZTH_HAVE_VALGRIND

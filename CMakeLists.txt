@@ -3,6 +3,7 @@ project(zth)
 include(CheckIncludeFileCXX)
 
 option(ZTH_THREADS "Make libzth thread-aware" ON)
+option(ZTH_CONFIG_WRAP_IO "Wrap IO syscalls to fiber-aware variants" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
    set(CMAKE_BUILD_TYPE Release FORCE)
@@ -24,7 +25,7 @@ if(ZTH_HAVE_VALGRIND)
 	target_compile_definitions(zth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
-CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_LIBUNWIND)
+CHECK_INCLUDE_FILE_CXX("libunwind.h" ZTH_HAVE_LIBUNWIND)
 if(ZTH_HAVE_LIBUNWIND)
 	target_compile_definitions(zth PUBLIC -DZTH_HAVE_LIBUNWIND)
 	target_link_libraries(zth INTERFACE unwind)
@@ -39,6 +40,10 @@ if(ZTH_THREADS)
 #	target_link_options(zth PUBLIC -pthread)
 else()
 	target_compile_options(zth PUBLIC -DZTH_THREADS=0)
+endif()
+
+if(ZTH_CONFIG_WRAP_IO)
+	target_compile_options(zth PUBLIC -DZTH_CONFIG_WRAP_IO)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

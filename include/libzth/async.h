@@ -120,7 +120,7 @@ namespace zth {
 	};
 	
 	template <typename A1>
-	class TypedFiber1<void,A1> : public TypedFiber<void, void(*)(A1)> {
+	class TypedFiber1<void, A1> : public TypedFiber<void, void(*)(A1)> {
 	public:
 		typedef TypedFiber<void, void(*)(A1)> base;
 		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
@@ -131,18 +131,92 @@ namespace zth {
 		A1 m_a1;
 	};
 	
+	template <typename R, typename A1, typename A2>
+	class TypedFiber2 : public TypedFiber<R, R(*)(A1, A2)> {
+	public:
+		typedef TypedFiber<R, R(*)(A1, A2)> base;
+		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
+		virtual ~TypedFiber2() {}
+	protected:
+		virtual void entry_() { this->setFuture(this->function()(m_a1, m_a2)); }
+	private:
+		A1 m_a1;
+		A2 m_a2;
+	};
+	
+	template <typename A1, typename A2>
+	class TypedFiber2<void, A1, A2> : public TypedFiber<void, void(*)(A1, A2)> {
+	public:
+		typedef TypedFiber<void, void(*)(A1, A2)> base;
+		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
+		virtual ~TypedFiber2() {}
+	protected:
+		virtual void entry_() { this->function()(m_a1, m_a2); this->setFuture(); }
+	private:
+		A1 m_a1;
+		A2 m_a2;
+	};
+	
+	template <typename R, typename A1, typename A2, typename A3>
+	class TypedFiber3 : public TypedFiber<R, R(*)(A1, A2, A3)> {
+	public:
+		typedef TypedFiber<R, R(*)(A1, A2, A3)> base;
+		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
+		virtual ~TypedFiber3() {}
+	protected:
+		virtual void entry_() { this->setFuture(this->function()(m_a1, m_a2, m_a3)); }
+	private:
+		A1 m_a1;
+		A2 m_a2;
+		A3 m_a3;
+	};
+	
+	template <typename A1, typename A2, typename A3>
+	class TypedFiber3<void, A1, A2, A3> : public TypedFiber<void, void(*)(A1, A2, A3)> {
+	public:
+		typedef TypedFiber<void, void(*)(A1, A2, A3)> base;
+		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
+		virtual ~TypedFiber3() {}
+	protected:
+		virtual void entry_() { this->function()(m_a1, m_a2, m_a3); this->setFuture(); }
+	private:
+		A1 m_a1;
+		A2 m_a2;
+		A3 m_a3;
+	};
+	
 	template <typename F> struct TypedFiberType {};
 	template <typename R> struct TypedFiberType<R(*)()> {
 		struct NoArg {};
 		typedef R returnType;
 		typedef TypedFiber0<R> fiberType;
 		typedef NoArg a1Type;
+		typedef NoArg a2Type;
+		typedef NoArg a3Type;
 	};
 	template <typename R, typename A1> struct TypedFiberType<R(*)(A1)> {
 		struct NoArg {};
 		typedef R returnType;
 		typedef TypedFiber1<R,A1> fiberType;
 		typedef A1 a1Type;
+		typedef NoArg a2Type;
+		typedef NoArg a3Type;
+	};
+	template <typename R, typename A1, typename A2> struct TypedFiberType<R(*)(A1, A2)> {
+		struct NoArg {};
+		typedef R returnType;
+		typedef TypedFiber2<R,A1,A2> fiberType;
+		typedef A1 a1Type;
+		typedef A2 a2Type;
+		typedef NoArg a3Type;
+	};
+	template <typename R, typename A1, typename A2, typename A3> struct TypedFiberType<R(*)(A1, A2, A3)> {
+		struct NoArg {};
+		typedef R returnType;
+		typedef TypedFiber3<R,A1,A2,A3> fiberType;
+		typedef A1 a1Type;
+		typedef A2 a2Type;
+		typedef A3 a3Type;
 	};
 
 	template <typename F>
@@ -152,6 +226,8 @@ namespace zth {
 		typedef typename TypedFiberType<Function>::returnType Return;
 		typedef typename TypedFiberType<Function>::fiberType TypedFiber_type;
 		typedef typename TypedFiberType<Function>::a1Type A1;
+		typedef typename TypedFiberType<Function>::a2Type A2;
+		typedef typename TypedFiberType<Function>::a3Type A3;
 		typedef AutoFuture<Return> AutoFuture_type;
 
 		TypedFiberFactory(Function function, char const* name)
@@ -165,6 +241,14 @@ namespace zth {
 		
 		TypedFiber_type* operator()(A1 a1) const {
 			return polish(*new TypedFiber_type(m_function, a1));
+		}
+		
+		TypedFiber_type* operator()(A1 a1, A2 a2) const {
+			return polish(*new TypedFiber_type(m_function, a1, a2));
+		}
+
+		TypedFiber_type* operator()(A1 a1, A2 a2, A3 a3) const {
+			return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 		}
 
 		TypedFiber_type* polish(TypedFiber_type& fiber) const {
