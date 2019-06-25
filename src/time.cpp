@@ -1,5 +1,6 @@
 #include <libzth/macros.h>
 #include <libzth/time.h>
+#include <libzth/util.h>
 
 #ifdef ZTH_OS_MAC
 #  include <mach/mach_time.h>
@@ -87,7 +88,7 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *request, struct timespec *remain) {
 	if(unlikely(!request))
 		return EFAULT;
-	if(unlikely(clk_id != CLOCK_MONOTONIC || flags != TIMER_ABSTIME))
+	if(unlikely(clock_id != CLOCK_MONOTONIC || flags != TIMER_ABSTIME))
 		return EINVAL;
 	
 	struct timespec t;
@@ -95,9 +96,9 @@ int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *reques
 	if(unlikely(res))
 		return res;
 
-	if(t.tv_sec < request->tv_sec)
+	if(t.tv_sec > request->tv_sec)
 		return 0;
-	if(t.tv_sec == request->tv_sec && t.tv_nsec < request->tv_nsec)
+	if(t.tv_sec == request->tv_sec && t.tv_nsec > request->tv_nsec)
 		return 0;
 
 	t.tv_sec = request->tv_sec - t.tv_sec;
