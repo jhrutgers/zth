@@ -29,7 +29,7 @@
 // This is gcc
 #  ifdef __cplusplus
 #    if __cplusplus < 201103L
-#      define decltype(x) typeof(x)
+#      define decltype(x) __typeof__(x) // Well, not really true when references are involved...
 #    endif
 #  endif
 #  if ZTH_THREADS
@@ -43,6 +43,9 @@
 #    define _GNU_SOURCE
 #  endif
 #  define ZTH_ATTR_PRINTF	gnu_printf
+#  ifndef GCC_VERSION
+#    define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#  endif
 #else
 #  error Unsupported compiler. Please use gcc.
 #endif
@@ -61,6 +64,7 @@
 #  define ZTH_ATTR_PRINTF	printf
 #endif
 
+#define __STDC_FORMAT_MACROS
 
 
 
@@ -88,7 +92,6 @@
 #  define ZTH_OS_WINDOWS
 #  define _WANT_IO_C99_FORMATS 1
 #  define __USE_MINGW_ANSI_STDIO 1
-#  define __STDC_FORMAT_MACROS
 #  if defined(UNICODE) || defined(_UNICODE)
 #    error Do not use UNICODE. Use ANSI with UTF-8 instead.
 #  endif
@@ -98,9 +101,9 @@
 //#  define ZTH_HAVE_WINSOCK
 #elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
-#  define ZTH_HAVE_VALGRIND
+//#  define ZTH_HAVE_VALGRIND
 #  define ZTH_HAVE_PTHREAD
-#  define ZTH_HAVE_LIBUNWIND
+//#  define ZTH_HAVE_LIBUNWIND
 #elif defined(__APPLE__)
 #  include "TargetConditionals.h"
 #  ifdef TARGET_OS_MAC
@@ -108,9 +111,9 @@
 #  else
 #    error Unsupported Apple platform.
 #  endif
-#  define ZTH_HAVE_VALGRIND
+//#  define ZTH_HAVE_VALGRIND
 #  define ZTH_HAVE_PTHREAD
-#  define ZTH_HAVE_LIBUNWIND
+//#  define ZTH_HAVE_LIBUNWIND
 #else
 #  error Unsupported OS.
 #endif
@@ -138,8 +141,8 @@
 #  define ZTH_CONTEXT_UCONTEXT
 #else
 // Default approach.
-#  define ZTH_CONTEXT_SJLJ
-//#  define ZTH_CONTEXT_UCONTEXT
+//#  define ZTH_CONTEXT_SIGALTSTACK
+#  define ZTH_CONTEXT_UCONTEXT
 #endif
 
 #ifdef ZTH_CONTEXT_WINFIBER

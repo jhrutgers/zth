@@ -131,24 +131,27 @@ namespace zth {
 		A1 m_a1;
 	};
 	
-	struct TypedFiberType {
+	template <typename F> struct TypedFiberType {};
+	template <typename R> struct TypedFiberType<R(*)()> {
 		struct NoArg {};
-		template <typename R> static R returnType(R(*f)());
-		template <typename R> static TypedFiber0<R> fiberType(R(*f)());
-		template <typename R> static NoArg a1Type(R(*f)());
-
-		template <typename R, typename A1> static R returnType(R(*f)(A1));
-		template <typename R, typename A1> static TypedFiber1<R,A1> fiberType(R(*f)(A1));
-		template <typename R, typename A1> static A1 a1Type(R(*f)(A1));
+		typedef R returnType;
+		typedef TypedFiber0<R> fiberType;
+		typedef NoArg a1Type;
+	};
+	template <typename R, typename A1> struct TypedFiberType<R(*)(A1)> {
+		struct NoArg {};
+		typedef R returnType;
+		typedef TypedFiber1<R,A1> fiberType;
+		typedef A1 a1Type;
 	};
 
 	template <typename F>
 	class TypedFiberFactory {
 	public:
 		typedef F Function;
-		typedef decltype(TypedFiberType::returnType((Function)0)) Return;
-		typedef decltype(TypedFiberType::fiberType((Function)0)) TypedFiber_type;
-		typedef decltype(TypedFiberType::a1Type((Function)0)) A1;
+		typedef typename TypedFiberType<Function>::returnType Return;
+		typedef typename TypedFiberType<Function>::fiberType TypedFiber_type;
+		typedef typename TypedFiberType<Function>::a1Type A1;
 		typedef AutoFuture<Return> AutoFuture_type;
 
 		TypedFiberFactory(Function function, char const* name)

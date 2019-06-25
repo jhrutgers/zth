@@ -8,6 +8,7 @@
 
 #include <list>
 #include <vector>
+#include <stdlib.h>
 
 namespace zth {
 
@@ -100,7 +101,7 @@ namespace zth {
 		void release() {}
 
 		union {
-			Timestamp t;
+			struct timespec t;
 			uint64_t fiber;
 			Type type;
 			char* str;
@@ -109,7 +110,8 @@ namespace zth {
 		};
 	};
 
-	ZTH_TLS_DECLARE(std::vector<PerfEvent<> >*, perf_eventBuffer)
+	typedef std::vector<PerfEvent<> > perf_eventBuffer_type;
+	ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)
 
 	void perf_flushEventBuffer();
 

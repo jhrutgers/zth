@@ -11,6 +11,7 @@
 
 #include <list>
 #include <utility>
+#include <errno.h>
 
 namespace zth {
 

@@ -180,6 +180,8 @@ namespace zth {
 			*this = null();
 		}
 
+		Timestamp(struct timespec const& ts) : m_t(ts) {}
+
 		Timestamp(time_t sec, long nsec)
 			: m_t()
 		{

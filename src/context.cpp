@@ -32,6 +32,7 @@
 
 #ifdef ZTH_CONTEXT_UCONTEXT
 #  include <csetjmp>
+#  include <csignal>
 #  include <ucontext.h>
 #endif
 

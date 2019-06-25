@@ -120,7 +120,14 @@ namespace zth {
 	template <typename T, bool ThreadSafe = Config::EnableThreads>
 	class UniqueID {
 	public:
-		static uint64_t getID() { return ThreadSafe ? __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED) : ++m_nextId; }
+		static uint64_t getID() {
+			return ThreadSafe ?
+#if GCC_VERSION < 40802
+				__sync_add_and_fetch(&m_nextId, 1)
+#else
+				__atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
+#endif
+				: ++m_nextId; }
 	
 		UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
 #if __cplusplus >= 201103L
@@ -159,8 +166,16 @@ namespace zth {
 		virtual void changedName(std::string const& name) {}
 
 	private:
-		UniqueID(UniqueID const&);
-		UniqueID& operator=(UniqueID const&);
+		UniqueID(UniqueID const&)
+#if __cplusplus >= 201103L
+			= delete
+#endif
+			;
+		UniqueID& operator=(UniqueID const&)
+#if __cplusplus >= 201103L
+			= delete
+#endif
+			;
 
 		uint64_t const m_id;
 		std::string m_name;

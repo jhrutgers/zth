@@ -7,6 +7,7 @@
 #include <zth>
 
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -111,7 +112,7 @@ public:
 		eventBuffer().push_back(e);
 	}
 
-	static decltype(*perf_eventBuffer)& eventBuffer() { 
+	static perf_eventBuffer_type& eventBuffer() { 
 		zth_assert(perf_eventBuffer);
 		return *perf_eventBuffer;
 	}
@@ -138,7 +139,7 @@ protected:
 
 	int processEventBuffer() {
 		int res = 0;
-		decltype(eventBuffer()) eb = eventBuffer();
+		perf_eventBuffer_type& eb = eventBuffer();
 		size_t eb_size = eb.size();
 
 		if(unlikely(!m_vcdd || !m_vcd)) {
