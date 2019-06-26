@@ -43,15 +43,15 @@ namespace zth {
 			true;
 #endif
 
-		static int const Print_banner = 12;
-		static int const Print_worker = 8;
-		static int const Print_fiber = 9;
-		static int const Print_context = 10;
-		static int const Print_list = 11;
-		static int const Print_waiter = 13;
-		static int const Print_sync = 14;
-		static int const Print_perf = 15;
-		static int const Print_io = 6;
+		static int const Print_banner = 12;	// bright blue
+		static int const Print_worker = 5;	// magenta
+		static int const Print_waiter = 1;	// red
+		static int const Print_io = 9;		// bright red
+		static int const Print_perf = 6;	// cyan
+		static int const Print_fiber = 10;	// bright green
+		static int const Print_context = 2;	// green
+		static int const Print_sync = 11;	// bright yellow
+		static int const Print_list = 8;	// bright black
 
 		static size_t const DefaultFiberStackSize = 0x20000;
 		static bool const EnableStackGuard = Debug;

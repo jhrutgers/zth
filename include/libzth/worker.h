@@ -263,19 +263,19 @@ namespace zth {
 			if(!Config::EnableDebugPrint || !Config::Print_worker)
 				return;
 
-			zth_dbg(worker, "[%s] Run queue:", id_str());
+			zth_dbg(list, "[%s] Run queue:", id_str());
 			if(m_runnableQueue.empty())
-				zth_dbg(worker, "[%s]   <empty>", id_str());
+				zth_dbg(list, "[%s]   <empty>", id_str());
 			else
 				for(decltype(m_runnableQueue.begin()) it = m_runnableQueue.begin(); it != m_runnableQueue.end(); ++it)
-					zth_dbg(worker, "[%s]   %s", id_str(), it->str().c_str());
+					zth_dbg(list, "[%s]   %s", id_str(), it->str().c_str());
 
-			zth_dbg(worker, "[%s] Suspended queue:", id_str());
+			zth_dbg(list, "[%s] Suspended queue:", id_str());
 			if(m_suspendedQueue.empty())
-				zth_dbg(worker, "[%s]   <empty>", id_str());
+				zth_dbg(list, "[%s]   <empty>", id_str());
 			else
 				for(decltype(m_suspendedQueue.begin()) it = m_suspendedQueue.begin(); it != m_suspendedQueue.end(); ++it)
-					zth_dbg(worker, "[%s]   %s", id_str(), it->str().c_str());
+					zth_dbg(list, "[%s]   %s", id_str(), it->str().c_str());
 		}
 
 	private:

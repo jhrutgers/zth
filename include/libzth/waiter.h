@@ -6,6 +6,10 @@
 #include <libzth/list.h>
 #include <libzth/time.h>
 
+#ifdef ZTH_HAVE_POLL
+#  include <poll.h>
+#endif
+
 namespace zth {
 	class Worker;
 
@@ -77,36 +81,39 @@ namespace zth {
 		virtual ~PolledMemberWaiting() {}
 	};
 
+#ifdef ZTH_HAVE_POLL
 	class AwaitFd : public Waitable, public Listable<AwaitFd> {
 	public:
-		enum AwaitType { AwaitRead /* and recv() */, AwaitWrite /* and send() */, AwaitExcept };
-		AwaitFd(int fd, AwaitType awaitType) : m_fd(fd), m_awaitType(awaitType), m_error(-1) {}
+		AwaitFd(struct pollfd *fds, nfds_t nfds, Timestamp const& timeout = Timestamp())
+			: m_fds(fds), m_nfds(nfds), m_timeout(timeout), m_error(-1), m_result(-1) { zth_assert(nfds > 0 && fds); }
 		virtual ~AwaitFd() {}
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { zth_abort("Don't call."); }
 
-		int fd() const { return m_fd; }
-		AwaitType awaitType() const { return m_awaitType; }
+		struct pollfd* fds() const { return m_fds; }
+		nfds_t nfds() const { return m_nfds; }
+		Timestamp const& timeout() const { return m_timeout; }
 
 		virtual std::string str() const {
-			char const* t = "";
-			switch(awaitType()) {
-			case AwaitRead: t = "read"; break;
-			case AwaitWrite: t = "write"; break;
-			case AwaitExcept: t = "except"; break;
-			}
-			return format("Waitable to %s fd %d for %s", t, fd(), fiber().str().c_str());
+			if(timeout().isNull())
+				return format("Waitable for %d fds for %s", (int)m_nfds, fiber().str().c_str());
+			else
+				return format("Waitable for %d fds for %s with %s timeout", (int)m_nfds, fiber().str().c_str(),
+					(timeout() - Timestamp::now()).str().c_str());
 		}
 
-		void setResult(int error = 0) { m_error = error; }
+		void setResult(int result, int error = 0) { m_result = result; m_error = error; }
 		bool finished() const { return m_error >= 0; }
-		int error() const { return m_error > 0 ? m_error : 0; }
-		bool ready() const { return m_error >= 0; }
+		int error() const { return finished() ? m_error : 0; }
+		int result() const { return m_result; }
 		bool intr() const { return error() == EINTR; }
 	private:
-		int const m_fd;
-		AwaitType const m_awaitType;
+		struct pollfd* m_fds;
+		nfds_t m_nfds;
+		Timestamp m_timeout;
 		int m_error;
+		int m_result;
 	};
+#endif
 
 	class Waiter : public Runnable {
 	public:
@@ -116,7 +123,10 @@ namespace zth {
 		virtual ~Waiter() {}
 
 		void wait(TimedWaitable& w);
+#ifdef ZTH_HAVE_POLL
+		void checkFdList();
 		int waitFd(AwaitFd& w);
+#endif
 
 	protected:
 		virtual int fiberHook(Fiber& f) {
@@ -130,7 +140,10 @@ namespace zth {
 	private:
 		Worker& m_worker;
 		SortedList<TimedWaitable> m_waiting;
-		List<AwaitFd> m_waitingFd;
+#ifdef ZTH_HAVE_POLL
+		List<AwaitFd> m_fdList;
+		std::vector<struct pollfd> m_fdPollList;
+#endif
 	};
 
 	void waitUntil(TimedWaitable& w);

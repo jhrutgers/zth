@@ -1,13 +1,6 @@
 #include <libzth/waiter.h>
 #include <libzth/worker.h>
-
-#ifdef ZTH_OS_WINDOWS
-#  ifdef ZTH_HAVE_WINSOCK
-#    include <winsock2.h>
-#  endif
-#else
-#  include <sys/select.h>
-#endif
+#include <libzth/io.h>
 
 namespace zth {
 
@@ -31,24 +24,80 @@ void Waiter::wait(TimedWaitable& w) {
 	m_worker.schedule();
 }
 
+#ifdef ZTH_HAVE_POLL
+void Waiter::checkFdList() {
+	if(!Config::EnableAssert && (!zth_config(EnableDebugPrint) || !Config::Print_list))
+		return;
+
+	zth_dbg(list, "[%s] Waiter poll() list:", m_worker.id_str());
+	size_t offset = 0;
+	for(decltype(m_fdList.begin()) itw = m_fdList.begin(); itw != m_fdList.end(); ++itw) {
+		zth_dbg(list, "[%s]    %s", m_worker.id_str(), itw->str().c_str());
+		zth_assert(offset + itw->nfds() <= m_fdPollList.size());
+
+		for(size_t i = 0; i < (size_t)itw->nfds(); offset++, i++)
+			zth_dbg(list, "[%s]       %d: events 0x%04hx", m_worker.id_str(), m_fdPollList[i].fd, m_fdPollList[i].events);
+	}
+	zth_assert(offset == m_fdPollList.size());
+}
+
 int Waiter::waitFd(AwaitFd& w) {
 	Fiber* fiber = m_worker.currentFiber();
 	if(unlikely(!fiber || fiber->state() != Fiber::Running))
 		return EAGAIN;
 	
 	w.setFiber(*fiber);
+	
+	// Add our set of fds to the Waiter's administration.
+	m_fdList.push_back(w);
+	m_fdPollList.reserve(m_fdPollList.size() + w.nfds());
+	for(nfds_t i = 0; i < w.nfds(); i++)
+		m_fdPollList.push_back(w.fds()[i]);
+	
+	checkFdList();
+
+	// Put ourselves to sleep.
 	fiber->nap();
 	m_worker.release(*fiber);
 
-	m_waitingFd.push_back(w);
+	// Switch to Waiter
 	if(this->fiber())
 		m_worker.resume(*this->fiber());
 	
 	m_worker.schedule();
-	m_waitingFd.erase(w);
+
+	// Got back, check which fds were triggered.
 	zth_assert(w.finished());
-	return w.error();
+
+	size_t offset = 0;
+	int res = 0;
+	for(decltype(m_fdList.begin()) itw = m_fdList.begin(); itw != m_fdList.end(); ++itw, offset += itw->nfds())
+		if(&*itw == &w) {
+			// This is us
+			if(!w.error()) {
+				for(size_t i = 0; i < (size_t)w.nfds(); i++) {
+					struct pollfd& f = w.fds()[i] = m_fdPollList[offset + i];
+					if(f.revents) {
+						zth_dbg(waiter, "[%s] poll(%d)'s revents: 0x%04hx", m_worker.id_str(), f.fd, f.events);
+						res++;
+					}
+				}
+			}
+
+			m_fdList.erase(w);
+			m_fdPollList.erase(m_fdPollList.begin() + offset, m_fdPollList.begin() + offset + w.nfds());
+			break;
+		} 
+	
+	checkFdList();
+
+	if(w.error())
+		return w.error();
+
+	w.setResult(res);
+	return 0;
 }
+#endif
 
 void Waiter::entry() {
 	zth_assert(&currentWorker() == &m_worker);
@@ -70,9 +119,9 @@ void Waiter::entry() {
 
 		bool doRealSleep = false;
 
-		if(m_waiting.empty() && m_waitingFd.empty()) {
+		if(m_waiting.empty() && m_fdPollList.empty()) {
 			// No fiber is waiting. suspend() till anyone is going to nap().
-			zth_dbg(waiter, "[Worker %p] No sleeping fibers anymore; suspend", &m_worker);
+			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", m_worker.id_str());
 			m_worker.suspend(*fiber());
 		} else if(!m_worker.schedule()) {
 			// When true, we were not rescheduled, which means that we are the only runnable fiber.
@@ -80,93 +129,77 @@ void Waiter::entry() {
 			doRealSleep = true;
 		}
 
-#if !defined(ZTH_OS_WINDOWS) || defined(ZTH_HAVE_WINSOCK)
-		if(!m_waitingFd.empty()) {
-			fd_set readfds;
-			fd_set writefds;
-			fd_set exceptfds;
-
-			FD_ZERO(&readfds);
-			FD_ZERO(&writefds);
-			FD_ZERO(&exceptfds);
-
-			int nfds = 0;
-
-			for(decltype(m_waitingFd.begin()) it = m_waitingFd.begin(); it != m_waitingFd.end(); ++it) {
-				switch(it->awaitType()) {
-				case AwaitFd::AwaitRead: FD_SET(it->fd(), &readfds); break;
-				case AwaitFd::AwaitWrite: FD_SET(it->fd(), &writefds); break;
-				case AwaitFd::AwaitExcept: FD_SET(it->fd(), &exceptfds); break;
-				}
-				if(it->fd() > nfds)
-					nfds = it->fd();
+#ifdef ZTH_HAVE_POLL
+		if(!m_fdPollList.empty()) {
+			Timestamp const* pollTimeout = NULL;
+			if(doRealSleep) {
+				if(!m_worker.runEnd().isNull() && (!pollTimeout || *pollTimeout > m_worker.runEnd()))
+					pollTimeout = &m_worker.runEnd();
+				for(decltype(m_fdList.begin()) it = m_fdList.begin(); it != m_fdList.end(); ++it)
+					if(!it->timeout().isNull() && (!pollTimeout || *pollTimeout > it->timeout()))
+						pollTimeout = &it->timeout();
+				if(!m_waiting.empty() && (!pollTimeout || *pollTimeout > m_waiting.front().timeout()))
+					pollTimeout = &m_waiting.front().timeout();
 			}
 
-			struct timeval timeout = {};
-			struct timeval* ptimeout = &timeout;
+			int timeout_ms = 0;
 			if(doRealSleep) {
-				Timestamp const* end = NULL;
-				if(!m_worker.runEnd().isNull())
-					end = &m_worker.runEnd();
-				if(!m_waiting.empty() && (!end || *end > m_waiting.front().timeout()))
-					end = &m_waiting.front().timeout();
-
-				if(!end) {
-					ptimeout = NULL;
-					zth_dbg(waiter, "[Worker %p] Out of other work than doing select()", &m_worker);
+				if(!pollTimeout) {
+					// Infinite sleep.
+					timeout_ms = -1;
+					zth_dbg(waiter, "[%s] Out of other work than doing poll()", m_worker.id_str());
 				} else {
-					TimeInterval dt = *end - now;
-
-					if(dt <= 0) {
-						doRealSleep = false;
-					} else {
-						timeout.tv_sec = dt.ts().tv_sec;
-						timeout.tv_usec = dt.ts().tv_nsec / 1000L;
-						zth_dbg(waiter, "[Worker %p] Out of other work than doing select(); timeout is %s", &m_worker, dt.str().c_str());
-					}
+					TimeInterval dt = *pollTimeout - Timestamp::now();
+					zth_dbg(waiter, "[%s] Out of other work than doing poll(); timeout is %s", m_worker.id_str(), dt.str().c_str());
+					timeout_ms = (int)(dt.s() * 1000.0);
 				}
 			}
 
 			if(doRealSleep) {
-				zth_perfmark("blocking select()");
+				zth_perfmark("blocking poll()");
 				perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			}
 
-			int res = select(nfds + 1, &readfds, &writefds, &exceptfds, ptimeout);
+			int res = zth::io::real_poll(&m_fdPollList[0], (nfds_t)m_fdPollList.size(), timeout_ms);
 			int error = res == -1 ? errno : 0;
-
+			
 			if(doRealSleep) {
 				perf_event(PerfEvent<>(*fiber(), fiber()->state()));
 				zth_perfmark("wakeup");
 			}
 
 			if(res == -1) {
-				zth_dbg(waiter, "[Worker %p] select() failed; %s\n", &m_worker, err(error).c_str());
-				for(decltype(m_waitingFd.begin()) it = m_waitingFd.begin(); it != m_waitingFd.end(); ++it) {
-					zth_dbg(waiter, "[Worker %p] %s got error; wakeup", &m_worker, it->str().c_str());
-					it->setResult(error);
+				zth_dbg(waiter, "[%s] poll() failed; %s", m_worker.id_str(), err(error).c_str());
+				for(decltype(m_fdList.begin()) it = m_fdList.begin(); it != m_fdList.end(); ++it) {
+					zth_dbg(waiter, "[%s] %s got error; wakeup", m_worker.id_str(), it->str().c_str());
+					it->setResult(-1, error);
 					it->fiber().wakeup();
 					m_worker.add(&it->fiber());
 				}
 			} else if(res > 0) {
-				for(decltype(m_waitingFd.begin()) it = m_waitingFd.begin(); it != m_waitingFd.end(); ++it) {
-					switch(it->awaitType()) {
-					case AwaitFd::AwaitRead: if(!FD_ISSET(it->fd(), &readfds)) continue; break;
-					case AwaitFd::AwaitWrite: if(!FD_ISSET(it->fd(), &writefds)) continue; break;
-					case AwaitFd::AwaitExcept: if(!FD_ISSET(it->fd(), &exceptfds)) continue; break;
+				size_t offset = 0;
+				for(decltype(m_fdList.begin()) it = m_fdList.begin(); res > 0 && it != m_fdList.end(); offset += it->nfds(), ++it) {
+					bool wakeup = false;
+					zth_assert(m_fdPollList.size() <= offset + it->nfds());
+					for(size_t i = 0; res > 0 && i < it->nfds(); i++) {
+						if(m_fdPollList[offset + i].revents) {
+							wakeup = true;
+							res--;
+						}
 					}
 
-					// If we got here, it->fd() got signalled.
-					zth_dbg(waiter, "[Worker %p] %s got ready; wakeup", &m_worker, it->str().c_str());
-					it->setResult();
-					it->fiber().wakeup();
-					m_worker.add(&it->fiber());
+					if(wakeup) {
+						zth_dbg(waiter, "[%s] %s got ready; wakeup", m_worker.id_str(), it->str().c_str());
+						it->setResult(0);
+						it->fiber().wakeup();
+						m_worker.add(&it->fiber());
+					}
 				}
 			}
 		} else
 #endif
 		if(doRealSleep) {
-			zth_dbg(waiter, "[Worker %p] Out of work; suspend thread, while waiting for %s", &m_worker, m_waiting.front().fiber().str().c_str());
+			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", m_worker.id_str(), m_waiting.front().fiber().str().c_str());
 			Timestamp const* end = &m_waiting.front().timeout();
 			if(!m_worker.runEnd().isNull () && *end > m_worker.runEnd())
 				end = &m_worker.runEnd();

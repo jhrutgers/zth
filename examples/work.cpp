@@ -26,6 +26,13 @@ void employer() {
 	if(sigaction(SIGINT, &sa, NULL) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 
+#if 0
+	printf("Test scanf(): ");
+	fflush(stdout);
+	int i;
+	scanf("%d", &i);
+	printf("Got %d\n", i);
+#endif
 	printf("Enter jobs: ");
 	fflush(stdout);
 
