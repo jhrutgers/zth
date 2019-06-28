@@ -66,8 +66,8 @@ namespace zth {
 		static bool const EnablePerfEvent = true;
 		static bool const DoPerfEvent = false;
 
-		static bool const WrapIO =
-#ifdef ZTH_CONFIG_WRAP_IO
+		static bool const UseZMQ =
+#ifdef ZTH_HAVE_LIBZMQ
 			true;
 #else
 			false;

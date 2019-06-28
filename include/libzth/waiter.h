@@ -9,6 +9,22 @@
 #ifdef ZTH_HAVE_POLL
 #  include <poll.h>
 #endif
+#ifdef ZTH_HAVE_LIBZMQ
+#  include <zmq.h>
+#  ifdef ZTH_HAVE_POLL
+#    undef POLLIN
+#    define POLLIN ZMQ_POLLIN
+#    undef POLLOUT
+#    define POLLOUT ZMQ_POLLOUT
+#    undef POLLERR
+#    define POLLERR ZMQ_POLLERR
+#    undef POLLPRI
+#    define POLLPRI ZMQ_POLLPRI
+#    undef POLLRDBAND
+#    undef POLLWRBAND
+#    undef POLLHUP
+#  endif
+#endif
 
 namespace zth {
 	class Worker;
@@ -81,16 +97,23 @@ namespace zth {
 		virtual ~PolledMemberWaiting() {}
 	};
 
-#ifdef ZTH_HAVE_POLL
+#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+
+#  ifdef ZTH_HAVE_LIBZMQ
+	typedef zmq_pollitem_t zth_pollfd_t;
+#  else
+	typedef struct pollfd zth_pollfd_t;
+#  endif
+
 	class AwaitFd : public Waitable, public Listable<AwaitFd> {
 	public:
-		AwaitFd(struct pollfd *fds, nfds_t nfds, Timestamp const& timeout = Timestamp())
+		AwaitFd(zth_pollfd_t *fds, int nfds, Timestamp const& timeout = Timestamp())
 			: m_fds(fds), m_nfds(nfds), m_timeout(timeout), m_error(-1), m_result(-1) { zth_assert(nfds > 0 && fds); }
 		virtual ~AwaitFd() {}
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { zth_abort("Don't call."); }
 
-		struct pollfd* fds() const { return m_fds; }
-		nfds_t nfds() const { return m_nfds; }
+		zth_pollfd_t* fds() const { return m_fds; }
+		int nfds() const { return m_nfds; }
 		Timestamp const& timeout() const { return m_timeout; }
 
 		virtual std::string str() const {
@@ -107,8 +130,8 @@ namespace zth {
 		int result() const { return m_result; }
 		bool intr() const { return error() == EINTR; }
 	private:
-		struct pollfd* m_fds;
-		nfds_t m_nfds;
+		zth_pollfd_t* m_fds;
+		int m_nfds;
 		Timestamp m_timeout;
 		int m_error;
 		int m_result;
@@ -140,9 +163,9 @@ namespace zth {
 	private:
 		Worker& m_worker;
 		SortedList<TimedWaitable> m_waiting;
-#ifdef ZTH_HAVE_POLL
+#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
 		List<AwaitFd> m_fdList;
-		std::vector<struct pollfd> m_fdPollList;
+		std::vector<zth_pollfd_t> m_fdPollList;
 #endif
 	};
 

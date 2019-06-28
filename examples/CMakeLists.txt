@@ -6,7 +6,7 @@ message("Building examples with CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 add_compile_options(-Wall -Werror)
 #add_compile_options($<$<CONFIG:DEBUG>:-Og>)
 
-link_libraries(zth)
+link_libraries(libzth)
 
 add_executable(example example.cpp)
 add_executable(socks socks.cpp)

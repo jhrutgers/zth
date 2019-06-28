@@ -2,6 +2,10 @@
 #define __ZTH
 // vim:filetype=cpp
 
+#include <libzth/macros.h>
+#ifdef ZTH_HAVE_LIBZMQ
+#  include <zmq.h>
+#endif
 #include <libzth/config.h>
 #include <libzth/util.h>
 #include <libzth/time.h>

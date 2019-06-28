@@ -41,8 +41,8 @@ char const* banner() {
 #ifdef ZTH_CONTEXT_WINFIBER
 		" winfiber"
 #endif
-#ifdef ZTH_CONFIG_WRAP_IO
-		" wrapio"
+#ifdef ZTH_HAVE_ZMQ
+		" zmq"
 #endif
 		;
 }

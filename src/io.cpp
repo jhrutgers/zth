@@ -7,25 +7,17 @@
 #  include <alloca.h>
 #  include <fcntl.h>
 #  ifndef POLLIN_SET
-#    define POLLIN_SET (POLLRDBAND | POLLIN | POLLHUP | POLLERR)
+#    define POLLIN_SET (/*POLLRDBAND |*/ POLLIN | /*POLLHUP |*/ POLLERR)
 #  endif
 #  ifndef POLLOUT_SET
-#    define POLLOUT_SET (POLLWRBAND | POLLOUT | POLLERR)
+#    define POLLOUT_SET (/*POLLWRBAND |*/ POLLOUT | POLLERR)
 #  endif
 #  ifndef POLLEX_SET
 #    define POLLEX_SET (POLLPRI)
 #  endif
 #endif
 
-#ifdef ZTH_CONFIG_WRAP_IO
-#  include <dlfcn.h>
-#endif
-
 namespace zth { namespace io {
-
-ssize_t (*real_read)(int,void*,size_t) = &::read;
-int (*real_select)(int,fd_set*,fd_set*,fd_set*,struct timeval*) = &::select;
-int (*real_poll)(struct pollfd*,nfds_t,int) = &::poll;
 
 #ifdef ZTH_HAVE_POLL
 ssize_t read(int fd, void* buf, size_t count) {
@@ -36,14 +28,19 @@ ssize_t read(int fd, void* buf, size_t count) {
 	if((flags & O_NONBLOCK)) {
 		zth_dbg(io, "[%s] read(%d) non-blocking", currentFiber().str().c_str(), fd);
 		// Just do the call.
-		return real_read(fd, buf, count);
+		return ::read(fd, buf, count);
 	}
 
 	while(true) {
 		struct pollfd fds = {};
 		fds.fd = fd;
 		fds.events = POLLIN_SET;
-		switch(real_poll(&fds, 1, 0)) {
+#ifdef ZTH_HAVE_LIBZMQ
+		switch(::zmq_poll(&fds, 1, 0))
+#else
+		switch(::poll(&fds, 1, 0))
+#endif
+		{
 		case 0: {
 			// No data, so the read() would block.
 			// Forward our request to the Waiter.
@@ -59,7 +56,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 		case 1:
 			// Got data to read.
 			zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
-			return real_read(fd, buf, count);
+			return ::read(fd, buf, count);
 		
 		default:
 			// Huh?
@@ -82,16 +79,16 @@ int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struc
 		return 0;
 	if(timeout && timeout->tv_sec == 0 && timeout->tv_usec == 0)
 		// Non-blocking call.
-		return real_select(nfds, readfds, writefds, exceptfds, timeout);
+		return ::select(nfds, readfds, writefds, exceptfds, timeout);
 
 	zth_dbg(io, "[%s] select(%d) hand-off", currentFiber().str().c_str(), nfds);
 
 	// Convert select() to poll()
-	struct pollfd* fds_heap = NULL;
-	struct pollfd* fds = NULL;
+	zth_pollfd_t* fds_heap = NULL;
+	zth_pollfd_t* fds = NULL;
 	if(nfds < 16)
-		fds = (struct pollfd*)alloca(sizeof(struct pollfd*) * nfds * 3);
-	else if(!(fds = fds_heap = (struct pollfd*)malloc(sizeof(struct pollfd*) * nfds * 3))) {
+		fds = (zth_pollfd_t*)alloca(sizeof(zth_pollfd_t*) * nfds * 3);
+	else if(!(fds = fds_heap = (zth_pollfd_t*)malloc(sizeof(zth_pollfd_t*) * nfds * 3))) {
 		errno = ENOMEM;
 		return -1;
 	}
@@ -161,10 +158,14 @@ done:
 	return res;
 }
 
-int poll(struct pollfd *fds, nfds_t nfds, int timeout) {
+int poll(zth_pollfd_t *fds, int nfds, int timeout) {
 	if(timeout == 0)
 		// Non-blocking poll.
-		return real_poll(fds, nfds, 0);
+#ifdef ZTH_HAVE_LIBZMQ
+		return ::zmq_poll(fds, nfds, 0);
+#else
+		return ::poll(fds, (nfds_t)nfds, 0);
+#endif
 	
 	zth_dbg(io, "[%s] poll(%d) hand-off", currentFiber().str().c_str(), (int)nfds);
 	Timestamp t;
@@ -183,42 +184,4 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout) {
 #endif
 
 } } // namespace
-
-#ifdef ZTH_CONFIG_WRAP_IO
-static void zth_init_io() {
-	if(!(zth::io::real_read = (decltype(zth::io::real_read))dlsym(RTLD_NEXT, "read")))
-		goto error;
-	if(!(zth::io::real_select = (decltype(zth::io::real_select))dlsym(RTLD_NEXT, "select")))
-		goto error;
-	if(!(zth::io::real_poll = (decltype(zth::io::real_poll))dlsym(RTLD_NEXT, "poll")))
-		goto error;
-	return;
-
-error:
-	fprintf(stderr, "Cannot load IO functions; %s\n", dlerror());
-	exit(1);
-}
-INIT_CALL(zth_init_io)
-
-ssize_t read(int fd, void* buf, size_t count) {
-	if(zth::Config::WrapIO)
-		return zth::io::read(fd, buf, count);
-	else
-		return zth::io::real_read(fd, buf, count);
-}
-
-int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout) {
-	if(zth::Config::WrapIO)
-		return zth::io::select(nfds, readfds, writefds, exceptfds, timeout);
-	else
-		return zth::io::real_select(nfds, readfds, writefds, exceptfds, timeout);
-}
-
-int poll(struct pollfd *fds, nfds_t nfds, int timeout) {
-	if(zth::Config::WrapIO)
-		return zth::io::poll(fds, nfds, timeout);
-	else
-		return zth::io::real_poll(fds, nfds, timeout);
-}
-#endif
 

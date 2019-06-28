@@ -51,7 +51,7 @@ int Waiter::waitFd(AwaitFd& w) {
 	// Add our set of fds to the Waiter's administration.
 	m_fdList.push_back(w);
 	m_fdPollList.reserve(m_fdPollList.size() + w.nfds());
-	for(nfds_t i = 0; i < w.nfds(); i++)
+	for(int i = 0; i < w.nfds(); i++)
 		m_fdPollList.push_back(w.fds()[i]);
 	
 	checkFdList();
@@ -76,7 +76,7 @@ int Waiter::waitFd(AwaitFd& w) {
 			// This is us
 			if(!w.error()) {
 				for(size_t i = 0; i < (size_t)w.nfds(); i++) {
-					struct pollfd& f = w.fds()[i] = m_fdPollList[offset + i];
+					zth_pollfd_t& f = w.fds()[i] = m_fdPollList[offset + i];
 					if(f.revents) {
 						zth_dbg(waiter, "[%s] poll(%d)'s revents: 0x%04hx", m_worker.id_str(), f.fd, f.events);
 						res++;
@@ -160,7 +160,11 @@ void Waiter::entry() {
 				perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			}
 
-			int res = zth::io::real_poll(&m_fdPollList[0], (nfds_t)m_fdPollList.size(), timeout_ms);
+#ifdef ZTH_HAVE_LIBZMQ
+			int res = zth_poll(&m_fdPollList[0], (int)m_fdPollList.size(), timeout_ms);
+#else
+			int res = ::poll(&m_fdPollList[0], (nfds_t)m_fdPollList.size(), timeout_ms);
+#endif
 			int error = res == -1 ? errno : 0;
 			
 			if(doRealSleep) {
@@ -181,7 +185,7 @@ void Waiter::entry() {
 				for(decltype(m_fdList.begin()) it = m_fdList.begin(); res > 0 && it != m_fdList.end(); offset += it->nfds(), ++it) {
 					bool wakeup = false;
 					zth_assert(m_fdPollList.size() <= offset + it->nfds());
-					for(size_t i = 0; res > 0 && i < it->nfds(); i++) {
+					for(size_t i = 0; res > 0 && i < (size_t)it->nfds(); i++) {
 						if(m_fdPollList[offset + i].revents) {
 							wakeup = true;
 							res--;
