@@ -12,3 +12,7 @@ add_executable(example example.cpp)
 add_executable(socks socks.cpp)
 add_executable(work work.cpp)
 
+if(ZTH_HAVE_LIBZMQ)
+	add_executable(zmq zmq.cpp)
+endif()
+

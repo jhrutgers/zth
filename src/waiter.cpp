@@ -29,14 +29,22 @@ void Waiter::checkFdList() {
 	if(!Config::EnableAssert && (!zth_config(EnableDebugPrint) || !Config::Print_list))
 		return;
 
-	zth_dbg(list, "[%s] Waiter poll() list:", m_worker.id_str());
+	zth_dbg(list, "[%s] Waiter poll() list:", id_str());
 	size_t offset = 0;
 	for(decltype(m_fdList.begin()) itw = m_fdList.begin(); itw != m_fdList.end(); ++itw) {
-		zth_dbg(list, "[%s]    %s", m_worker.id_str(), itw->str().c_str());
+		zth_dbg(list, "[%s]    %s", id_str(), itw->str().c_str());
 		zth_assert(offset + itw->nfds() <= m_fdPollList.size());
 
-		for(size_t i = 0; i < (size_t)itw->nfds(); offset++, i++)
-			zth_dbg(list, "[%s]       %d: events 0x%04hx", m_worker.id_str(), m_fdPollList[i].fd, m_fdPollList[i].events);
+		for(size_t i = 0; i < (size_t)itw->nfds(); offset++, i++) {
+			std::string fd;
+#  ifdef ZTH_HAVE_LIBZMQ
+			if(m_fdPollList[i].socket)
+				fd = format("0x%" PRIxPTR, (uintptr_t)m_fdPollList[i].socket);
+			else
+#  endif
+				format("%d", m_fdPollList[i].fd);
+			zth_dbg(list, "[%s]       %s: events 0x%04hx", id_str(), fd.c_str(), m_fdPollList[i].events);
+		}
 	}
 	zth_assert(offset == m_fdPollList.size());
 }
@@ -78,7 +86,7 @@ int Waiter::waitFd(AwaitFd& w) {
 				for(size_t i = 0; i < (size_t)w.nfds(); i++) {
 					zth_pollfd_t& f = w.fds()[i] = m_fdPollList[offset + i];
 					if(f.revents) {
-						zth_dbg(waiter, "[%s] poll(%d)'s revents: 0x%04hx", m_worker.id_str(), f.fd, f.events);
+						zth_dbg(waiter, "[%s] poll(%d)'s revents: 0x%04hx", id_str(), f.fd, f.events);
 						res++;
 					}
 				}
@@ -101,6 +109,7 @@ int Waiter::waitFd(AwaitFd& w) {
 
 void Waiter::entry() {
 	zth_assert(&currentWorker() == &m_worker);
+	fiber()->setName(format("zth::Waiter of %s", m_worker.id_str()));
 
 	while(true) {
 		Timestamp now = Timestamp::now();
@@ -121,7 +130,7 @@ void Waiter::entry() {
 
 		if(m_waiting.empty() && m_fdPollList.empty()) {
 			// No fiber is waiting. suspend() till anyone is going to nap().
-			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", m_worker.id_str());
+			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", id_str());
 			m_worker.suspend(*fiber());
 		} else if(!m_worker.schedule()) {
 			// When true, we were not rescheduled, which means that we are the only runnable fiber.
@@ -147,10 +156,10 @@ void Waiter::entry() {
 				if(!pollTimeout) {
 					// Infinite sleep.
 					timeout_ms = -1;
-					zth_dbg(waiter, "[%s] Out of other work than doing poll()", m_worker.id_str());
+					zth_dbg(waiter, "[%s] Out of other work than doing poll()", id_str());
 				} else {
 					TimeInterval dt = *pollTimeout - Timestamp::now();
-					zth_dbg(waiter, "[%s] Out of other work than doing poll(); timeout is %s", m_worker.id_str(), dt.str().c_str());
+					zth_dbg(waiter, "[%s] Out of other work than doing poll(); timeout is %s", id_str(), dt.str().c_str());
 					timeout_ms = (int)(dt.s() * 1000.0);
 				}
 			}
@@ -161,11 +170,12 @@ void Waiter::entry() {
 			}
 
 #ifdef ZTH_HAVE_LIBZMQ
-			int res = zth_poll(&m_fdPollList[0], (int)m_fdPollList.size(), timeout_ms);
+			int res = ::zmq_poll(&m_fdPollList[0], (int)m_fdPollList.size(), timeout_ms);
+			int error = res == -1 ? zmq_errno() : 0;
 #else
 			int res = ::poll(&m_fdPollList[0], (nfds_t)m_fdPollList.size(), timeout_ms);
-#endif
 			int error = res == -1 ? errno : 0;
+#endif
 			
 			if(doRealSleep) {
 				perf_event(PerfEvent<>(*fiber(), fiber()->state()));
@@ -173,9 +183,9 @@ void Waiter::entry() {
 			}
 
 			if(res == -1) {
-				zth_dbg(waiter, "[%s] poll() failed; %s", m_worker.id_str(), err(error).c_str());
+				zth_dbg(waiter, "[%s] poll() failed; %s", id_str(), err(error).c_str());
 				for(decltype(m_fdList.begin()) it = m_fdList.begin(); it != m_fdList.end(); ++it) {
-					zth_dbg(waiter, "[%s] %s got error; wakeup", m_worker.id_str(), it->str().c_str());
+					zth_dbg(waiter, "[%s] %s got error; wakeup", id_str(), it->str().c_str());
 					it->setResult(-1, error);
 					it->fiber().wakeup();
 					m_worker.add(&it->fiber());
@@ -184,7 +194,7 @@ void Waiter::entry() {
 				size_t offset = 0;
 				for(decltype(m_fdList.begin()) it = m_fdList.begin(); res > 0 && it != m_fdList.end(); offset += it->nfds(), ++it) {
 					bool wakeup = false;
-					zth_assert(m_fdPollList.size() <= offset + it->nfds());
+					zth_assert(m_fdPollList.size() >= offset + it->nfds());
 					for(size_t i = 0; res > 0 && i < (size_t)it->nfds(); i++) {
 						if(m_fdPollList[offset + i].revents) {
 							wakeup = true;
@@ -193,7 +203,7 @@ void Waiter::entry() {
 					}
 
 					if(wakeup) {
-						zth_dbg(waiter, "[%s] %s got ready; wakeup", m_worker.id_str(), it->str().c_str());
+						zth_dbg(waiter, "[%s] %s got ready; wakeup", id_str(), it->str().c_str());
 						it->setResult(0);
 						it->fiber().wakeup();
 						m_worker.add(&it->fiber());
@@ -203,7 +213,7 @@ void Waiter::entry() {
 		} else
 #endif
 		if(doRealSleep) {
-			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", m_worker.id_str(), m_waiting.front().fiber().str().c_str());
+			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().fiber().str().c_str());
 			Timestamp const* end = &m_waiting.front().timeout();
 			if(!m_worker.runEnd().isNull () && *end > m_worker.runEnd())
 				end = &m_worker.runEnd();

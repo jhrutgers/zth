@@ -18,6 +18,11 @@
 #  define ZTH_THREADS 1
 #endif
 
+#if !ZTH_THREADS && defined(ZTH_HAVE_LIBZMQ)
+#  undef ZTH_THREADS
+#  define ZTH_THREDS 1
+#endif
+
 
 
 
@@ -66,6 +71,13 @@
 
 #define __STDC_FORMAT_MACROS
 
+#ifndef EXTERN_C
+#  ifdef __cplusplus
+#    define EXTERN_C extern "C"
+#  else
+#    define EXTERN_C
+#  endif
+#endif
 
 
 //////////////////////////////////////////////////

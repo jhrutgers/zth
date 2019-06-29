@@ -309,6 +309,10 @@ namespace zth {
 		int run();
 		Fiber* fiber() const { return m_fiber; }
 		operator Fiber&() { zth_assert(fiber()); return *fiber(); }
+		
+		char const* id_str() const {
+			return fiber() ? fiber()->id_str() : "detached Runnable";
+		}
 
 	protected:
 		virtual int fiberHook(Fiber& f) {
@@ -317,7 +321,10 @@ namespace zth {
 			return 0;
 		}
 
-		virtual void cleanup() {}
+		virtual void cleanup() {
+			m_fiber = NULL;
+		}
+
 		static void cleanup_(Fiber& f, void* that) {
 			Runnable* r = (Runnable*)that;
 			if(r) {
@@ -338,4 +345,7 @@ namespace zth {
 
 } // namespace
 #endif // __cplusplus
+
+EXTERN_C void main_fiber(int argc, char** argv);
+
 #endif // __ZTH_FIBER_H

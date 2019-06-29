@@ -136,6 +136,22 @@ namespace zth {
 		int m_error;
 		int m_result;
 	};
+
+	class Await1Fd : public AwaitFd {
+	public:
+		explicit Await1Fd(int fd, short events, Timestamp const& timeout = Timestamp())
+			: AwaitFd(&m_fd, 1, timeout), m_fd() { m_fd.fd = fd; m_fd.events = events; }
+#ifdef ZTH_HAVE_LIBZMQ
+		explicit Await1Fd(void* socket, short events, Timestamp const& timeout = Timestamp())
+			: AwaitFd(&m_fd, 1, timeout), m_fd() { m_fd.socket = socket; m_fd.events = events; }
+#endif
+		virtual ~Await1Fd() {}
+
+		zth_pollfd_t const& fd() const { return m_fd; }
+		zth_pollfd_t& fd() { return m_fd; }
+	private:
+		zth_pollfd_t m_fd;
+	};
 #endif
 
 	class Waiter : public Runnable {

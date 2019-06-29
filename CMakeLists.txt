@@ -17,6 +17,7 @@ add_subdirectory(examples)
 
 file(GLOB_RECURSE sources src/*.cpp)
 add_library(libzth ${sources})
+set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
 
 target_include_directories(libzth PUBLIC include)
 
@@ -24,8 +25,8 @@ target_compile_options(libzth PRIVATE -Wall -Werror)
 #target_compile_options(libzth PRIVATE $<$<CONFIG:DEBUG>:-Og>)
 
 if(ZTH_HAVE_LIBZMQ)
-	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_ZMQ)
-	target_link_libraries(libzth INTERFACE libzmq)
+	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
+	target_link_libraries(libzth PUBLIC libzmq)
 endif()
 
 CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)

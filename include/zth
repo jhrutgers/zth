@@ -4,7 +4,7 @@
 
 #include <libzth/macros.h>
 #ifdef ZTH_HAVE_LIBZMQ
-#  include <zmq.h>
+#  include <libzth/zmq.h>
 #endif
 #include <libzth/config.h>
 #include <libzth/util.h>

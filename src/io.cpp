@@ -2,6 +2,7 @@
 #include <libzth/io.h>
 #include <libzth/util.h>
 #include <libzth/worker.h>
+#include <libzth/zmq.h>
 
 #ifdef ZTH_HAVE_POLL
 #  include <alloca.h>
@@ -31,42 +32,40 @@ ssize_t read(int fd, void* buf, size_t count) {
 		return ::read(fd, buf, count);
 	}
 
-	while(true) {
-		struct pollfd fds = {};
-		fds.fd = fd;
-		fds.events = POLLIN_SET;
+	zth_pollfd_t fds = {};
+	fds.fd = fd;
+	fds.events = POLLIN_SET;
 #ifdef ZTH_HAVE_LIBZMQ
-		switch(::zmq_poll(&fds, 1, 0))
+	switch(::zmq_poll(&fds, 1, 0))
 #else
-		switch(::poll(&fds, 1, 0))
+	switch(::poll(&fds, 1, 0))
 #endif
-		{
-		case 0: {
-			// No data, so the read() would block.
-			// Forward our request to the Waiter.
-			zth_dbg(io, "[%s] read(%d) hand-off", currentFiber().str().c_str(), fd);
-			AwaitFd w(&fds, 1);
-			if(currentWorker().waiter().waitFd(w)) {
-				// Got some error.
-				errno = w.error();
-				return -1;
-			}
-			// else: fall-through to go read the data.
-		}
-		case 1:
-			// Got data to read.
-			zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
-			return ::read(fd, buf, count);
-		
-		default:
-			// Huh?
-			zth_assert(false);
-			errno = EINVAL;
-			// fall-through
-		case -1:
-			// Error. Return with errno set.
+	{
+	case 0: {
+		// No data, so the read() would block.
+		// Forward our request to the Waiter.
+		zth_dbg(io, "[%s] read(%d) hand-off", currentFiber().str().c_str(), fd);
+		AwaitFd w(&fds, 1);
+		if(currentWorker().waiter().waitFd(w)) {
+			// Got some error.
+			errno = w.error();
 			return -1;
 		}
+		// else: fall-through to go read the data.
+	}
+	case 1:
+		// Got data to read.
+		zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
+		return ::read(fd, buf, count);
+	
+	default:
+		// Huh?
+		zth_assert(false);
+		errno = EINVAL;
+		// fall-through
+	case -1:
+		// Error. Return with errno set.
+		return -1;
 	}
 }
 

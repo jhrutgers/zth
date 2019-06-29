@@ -1,6 +1,5 @@
-#include <zth>
-
-#include <cstring>
+#include <libzth/worker.h>
+#include <libzth/async.h>
 
 namespace zth {
 
@@ -11,21 +10,15 @@ void worker_global_init() {
 }
 INIT_CALL(worker_global_init)
 
-int Runnable::run() {
-	Worker* w = Worker::currentWorker();
-	if(unlikely(!w))
-		return EAGAIN;
+} // namespace
 
-	Fiber* f = new Fiber(&Runnable::entry_, (void*)this);
-	int res;
-	if(unlikely((res = fiberHook(*f)))) {
-		// Rollback.
-		delete f;
-		return res;
-	}
+__attribute__((weak)) void main_fiber(int argc, char** argv) {}
+make_fibered(main_fiber);
 
-	w->add(f);
+__attribute__((weak)) int main(int argc, char** argv) {
+	zth::Worker w;
+	async main_fiber(argc, argv);
+	w.run();
 	return 0;
 }
 
-} // namespace

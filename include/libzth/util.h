@@ -28,6 +28,7 @@
 #endif
 
 #define INIT_CALL(f)	struct f##__init { f##__init() { f(); } }; static f##__init f##__init_;
+#define DEINIT_CALL(f)	struct f##__deinit { f##__deinit() { atexit(f); } }; static f##__deinit f##__deinit_;
 
 // Make a FOREACH macro
 #define FOREACH_0(WHAT)
@@ -73,6 +74,8 @@ void zth_logv(char const* fmt, va_list arg) __attribute__((weak));
 #  include <unistd.h>
 #endif
 
+#include <libzth/zmq.h>
+
 #define zth_dbg(group, msg, a...) \
 	do { \
 		if(::zth::Config::EnableDebugPrint && ::zth::Config::Print_##group != 0 && zth_config(EnableDebugPrint)) { \
@@ -102,7 +105,9 @@ namespace zth {
 	std::string format(char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)));
 
 	inline std::string err(int e) {
-#if ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
+#ifdef ZTH_HAVE_LIBZMQ
+		return format("%s (error %d)", zmq_strerror(e), e);
+#elif ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
 		char buf[128];
 #  if !defined(ZTH_OS_LINUX) || (_POSIX_C_SOURCE >= 200112L) && !defined(_GNU_SOURCE)
 		// XSI-compatible
