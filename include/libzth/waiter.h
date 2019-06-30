@@ -5,10 +5,8 @@
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/time.h>
+#include <libzth/io.h>
 
-#ifdef ZTH_HAVE_POLL
-#  include <poll.h>
-#endif
 #ifdef ZTH_HAVE_LIBZMQ
 #  include <zmq.h>
 #  ifdef ZTH_HAVE_POLL
@@ -98,12 +96,6 @@ namespace zth {
 	};
 
 #if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
-
-#  ifdef ZTH_HAVE_LIBZMQ
-	typedef zmq_pollitem_t zth_pollfd_t;
-#  else
-	typedef struct pollfd zth_pollfd_t;
-#  endif
 
 	class AwaitFd : public Waitable, public Listable<AwaitFd> {
 	public:

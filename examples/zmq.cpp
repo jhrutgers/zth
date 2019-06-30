@@ -4,17 +4,17 @@
 static sig_atomic_t volatile stop = 0;
 
 void server() {
-	void* responder = zth::zmq::zmq_socket(ZMQ_REP);
+	void* responder = zmq_socket(ZMQ_REP);
 	int rc = zmq_bind(responder, "inproc://hello");
 	zth_assert(!rc);
 
 	while(!stop) {
 		char buffer [10];
-		if(zth::zmq::zmq_recv(responder, buffer, 10, 0) == -1)
+		if(zmq_recv(responder, buffer, 10, 0) == -1)
 			break;
 		printf("Received Hello\n");
 		zth::nap(1);          //  Do some 'work'
-		zth::zmq::zmq_send(responder, (void*)"World", 5, 0);
+		zmq_send(responder, (void*)"World", 5, 0);
 	}
 	
 	zmq_close(responder);
@@ -22,15 +22,15 @@ void server() {
 make_fibered(server)
 
 void client() {
-	printf ("Connecting to hello world server...\n");
-	void* requester = zth::zmq::zmq_socket(ZMQ_REQ);
+	printf("Connecting to hello world server...\n");
+	void* requester = zmq_socket(ZMQ_REQ);
 	zmq_connect(requester, "inproc://hello");
 
 	for(int request_nbr = 0; request_nbr != 10 && !stop; request_nbr++) {
 		char buffer [10];
 		printf("Sending Hello %d...\n", request_nbr);
-		zth::zmq::zmq_send(requester, (void*)"Hello", 5, 0);
-		zth::zmq::zmq_recv(requester, buffer, 10, 0);
+		zmq_send(requester, (void*)"Hello", 5, 0);
+		zmq_recv(requester, buffer, 10, 0);
 		printf("Received World %d\n", request_nbr);
 	}
 

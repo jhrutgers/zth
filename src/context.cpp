@@ -11,7 +11,9 @@
 #  include <sched.h>
 #endif
 
-#include <zth>
+#include <libzth/context.h>
+#include <libzth/util.h>
+#include <libzth/worker.h>
 
 #include <unistd.h>
 #include <cstring>

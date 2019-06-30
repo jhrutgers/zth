@@ -274,17 +274,16 @@ namespace zth {
 	} }
 #define declare_fibered(...) FOREACH(declare_fibered_1, ##__VA_ARGS__)
 
-#define define_fibered_1(f) \
+#define define_fibered_1(storage, f) \
 	namespace zth { namespace fibered { \
-		::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : NULL); \
+		storage ::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : NULL); \
 	} } \
 	typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
+#define define_fibered_extern_1(f)	define_fibered_1(extern, f)
+#define define_fibered_static_1(f)	define_fibered_1(static, f)
+#define define_fibered(...) FOREACH(define_fibered_extern_1, ##__VA_ARGS__)
 
-#define define_fibered(...) FOREACH(define_fibered_1, ##__VA_ARGS__)
-
-#define make_fibered(...) \
-	declare_fibered(__VA_ARGS__) \
-	define_fibered(__VA_ARGS__)
+#define make_fibered(...) FOREACH(define_fibered_static_1, ##__VA_ARGS__)
 
 #define async ::zth::fibered::
 

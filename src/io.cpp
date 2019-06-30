@@ -1,10 +1,11 @@
+#define ZTH_REDIRECT_IO 0
 #include <libzth/config.h>
 #include <libzth/io.h>
 #include <libzth/util.h>
 #include <libzth/worker.h>
 #include <libzth/zmq.h>
 
-#ifdef ZTH_HAVE_POLL
+#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
 #  include <alloca.h>
 #  include <fcntl.h>
 #  ifndef POLLIN_SET
@@ -20,7 +21,7 @@
 
 namespace zth { namespace io {
 
-#ifdef ZTH_HAVE_POLL
+#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
 ssize_t read(int fd, void* buf, size_t count) {
 	int flags = fcntl(fd, F_GETFL);
 	if(unlikely(flags == -1))
@@ -35,11 +36,11 @@ ssize_t read(int fd, void* buf, size_t count) {
 	zth_pollfd_t fds = {};
 	fds.fd = fd;
 	fds.events = POLLIN_SET;
-#ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 	switch(::zmq_poll(&fds, 1, 0))
-#else
+#  else
 	switch(::poll(&fds, 1, 0))
-#endif
+#  endif
 	{
 	case 0: {
 		// No data, so the read() would block.
@@ -160,11 +161,11 @@ done:
 int poll(zth_pollfd_t *fds, int nfds, int timeout) {
 	if(timeout == 0)
 		// Non-blocking poll.
-#ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 		return ::zmq_poll(fds, nfds, 0);
-#else
+#  else
 		return ::poll(fds, (nfds_t)nfds, 0);
-#endif
+#  endif
 	
 	zth_dbg(io, "[%s] poll(%d) hand-off", currentFiber().str().c_str(), (int)nfds);
 	Timestamp t;

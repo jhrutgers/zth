@@ -79,6 +79,26 @@
 #  endif
 #endif
 
+#ifndef ZTH_EXPORT
+#  define ZTH_EXPORT __attribute__((visibility("default")))
+#endif
+
+#ifdef __cplusplus
+#  ifdef ZTH_EXPORT_INLINE_EMIT
+#    define ZTH_EXPORT_INLINE EXTERN_C ZTH_EXPORT
+#  else
+#    define ZTH_EXPORT_INLINE EXTERN_C ZTH_EXPORT __attribute__((gnu_inline)) inline
+#  endif
+#  define ZTH_EXPORT_INLINE_CPPONLY ZTH_EXPORT_INLINE
+#  define ZTH_EXPORT_INLINE_CPPONLY_IMPL(...) __VA_ARGS__
+#else
+#  define ZTH_EXPORT_INLINE ZTH_EXPORT __attribute__((gnu_inline)) extern inline
+#  define ZTH_EXPORT_INLINE_CPPONLY ZTH_EXPORT extern
+#  define ZTH_EXPORT_INLINE_CPPONLY_IMPL(...) ;
+#endif
+
+
+
 
 //////////////////////////////////////////////////
 // Hardware

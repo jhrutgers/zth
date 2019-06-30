@@ -1,3 +1,5 @@
+#define ZTH_REDIRECT_ZMQ 0
+
 #include <libzth/macros.h>
 #ifdef ZTH_HAVE_LIBZMQ
 

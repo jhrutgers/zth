@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-void job(int length) {
+static void job(int length) {
 	printf("job %d started\n", length);
 	zth::nap(0.1 * (double)length);
 	printf("job %d finished\n", length);
@@ -15,7 +15,7 @@ static void handler(int sig) {
 	write(fileno(stderr), msg, strlen(msg));
 }
 
-void employer() {
+static void employer() {
 	char buf[128];
 	int offset = 0;
 
@@ -26,19 +26,12 @@ void employer() {
 	if(sigaction(SIGINT, &sa, NULL) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 
-#if 0
-	printf("Test scanf(): ");
-	fflush(stdout);
-	int i;
-	scanf("%d", &i);
-	printf("Got %d\n", i);
-#endif
 	printf("Enter jobs: ");
 	fflush(stdout);
 
 	while(true) {
 		// Do a blocking read.
-		ssize_t cnt = zth::io::read(0, &buf[offset], sizeof(buf) - offset - 1);
+		ssize_t cnt = read(0, &buf[offset], sizeof(buf) - offset - 1);
 		if(cnt <= 0) {
 			printf("Couldn't read stdin\n");
 			return;
@@ -71,8 +64,7 @@ void employer() {
 }
 make_fibered(employer)
 
-int main() {
-	zth::Worker w;
-	async employer();
-	w.run();
+void main_fiber(int argc, char** argv) {
+	employer();
 }
+
