@@ -6,6 +6,16 @@ if(NOT CMAKE_BUILD_TYPE)
    set(CMAKE_BUILD_TYPE Release FORCE)
 endif()
 
+if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+  message(FATAL_ERROR "CMake generation is not allowed within the source directory! \
+    Remove the CMakeCache.txt file and try again from another folder, e.g.: \
+    \
+      rm CMakeCache.txt \
+      mkdir build \
+      cd build \
+      cmake ..")
+endif()
+
 option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
 if(ZTH_HAVE_LIBZMQ)
 	set(BUILD_TESTS OFF CACHE BOOL "Disabling building tests")

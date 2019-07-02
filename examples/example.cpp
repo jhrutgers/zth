@@ -8,7 +8,7 @@ zth::Future<int> future;
 
 void fiber1(void*)
 {
-	printf("fiber 1 %" PRIu64 "\n", 0ULL);
+	printf("fiber 1\n");
 	zth::outOfWork();
 	sem.acquire(1);
 	printf("fiber 1\n");
