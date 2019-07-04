@@ -16,7 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <zth>
+#include <libzth/macros.h>
+#include <libzth/util.h>
+#include <libzth/version.h>
+#include <libzth/perf.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -27,6 +30,10 @@ using namespace std;
 
 namespace zth {
 
+/*!
+ * \brief Prints a banner line with version and configuration information.
+ * \ingroup zth_api_cpp
+ */
 char const* banner() {
 	return "Zth " ZTH_VERSION
 #ifdef __GNUC__
@@ -65,75 +72,33 @@ char const* banner() {
 		;
 }
 
-static bool config(char const* name, bool whenUnset) {
-	char const* e = getenv(name);
-	if(!e || !*e)
-		return whenUnset;
-	else if(strcmp(e, "0") == 0)
-		// Explicitly set to disabled
-		return false;
-	else
-		// Any other value is true
-		return true;
-}
-
-bool config(int env, bool whenUnset) {
-	switch(env) {
-	case Env::EnableDebugPrint:			{ static bool const e = config("ZTH_CONFIG_ENABLE_DEBUG_PRINT", whenUnset); return e; }
-	case Env::DoPerfEvent:				{ static bool const e = config("ZTH_CONFIG_DO_PERF_EVENT", whenUnset); return e; }
-	default:
-		return whenUnset;
-	}
-}
-
-void zth_abort(char const* msg, ...)
+/*!
+ * \brief Aborts the process after printing the given printf() formatted message.
+ * \ingroup zth_api_cpp
+ */
+void abort(char const* fmt, ...)
 {
-	zth_log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorDebugPrint ? "\x1b[41;1;37;1m" : "");
-
-	va_list va;
-	va_start(va, msg);
-	zth_logv(msg, va);
-	va_end(va);
-
-	zth_log("  ***  %s\n\n", zth::Config::EnableColorDebugPrint ? "\x1b[0m" : "");
-
-	Backtrace().print();
-	abort();
-}
-
-template <typename T, size_t S = sizeof(T)> struct as_uint64_t { };
-template <typename T> struct as_uint64_t<T,1> { static uint64_t value(T x) { return *reinterpret_cast<uint8_t*>(&x); } };
-template <typename T> struct as_uint64_t<T,2> { static uint64_t value(T x) { return *reinterpret_cast<uint16_t*>(&x); } };
-template <typename T> struct as_uint64_t<T,4> { static uint64_t value(T x) { return *reinterpret_cast<uint32_t*>(&x); } };
-template <typename T> struct as_uint64_t<T,8> { static uint64_t value(T x) { return *reinterpret_cast<uint64_t*>(&x); } };
-
-#ifdef ZTH_HAVE_PTHREAD
-std::string threadId(pthread_t p)
-#else
-std::string threadId(pid_t p)
-#endif
-{
-	char buf[32];
-	return snprintf(buf, sizeof(buf), "0x%" PRIx64, as_uint64_t<decltype(p)>::value(p)) > 0 ? buf : "??";
-}
-
-std::string format(char const* fmt, ...)
-{
-	std::string res;
-	char* buf = NULL;
 	va_list args;
 	va_start(args, fmt);
-	if(vasprintf(&buf, fmt, args) > 0) {
-		res = buf;
-		free(buf);
-	}
+	abortv(fmt, args);
 	va_end(args);
-	return res;
 }
 
-} // namespace
+/*!
+ * \copybrief zth::abort()
+ * \ingroup zth_api_cpp
+ */
+void abortv(char const* fmt, va_list args)
+{
+	log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorDebugPrint ? "\x1b[41;1;37;1m" : "");
+	logv(fmt, args);
+	log("  ***  %s\n\n", zth::Config::EnableColorDebugPrint ? "\x1b[0m" : "");
 
-static void zth_log_init() {
+	Backtrace().print();
+	::abort();
+}
+
+static void log_init() {
 #ifdef ZTH_OS_WINDOWS
 	// Windows does not support line buffering.
 	// If set anyway, this implies full buffering.
@@ -146,37 +111,49 @@ static void zth_log_init() {
 	}
 #endif
 }
-INIT_CALL(zth_log_init)
+INIT_CALL(log_init)
 
-void zth_color_log(int color, char const* fmt, ...)
+/*!
+ * \brief Logs a given printf()-like formatted string using an ANSI color code.
+ * \details #zth_logv() is used for the actual logging.
+ * \ingroup zth_api_cpp
+ */
+void log_colorv(int color, char const* fmt, va_list args)
 {
-#ifdef _WIN32
+#ifdef ZTH_OS_WINDOWS
 	bool do_color = false;
 #else
 	static bool do_color = isatty(fileno(stdout));
 #endif
 
 	if(do_color)
-		zth_log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
+		log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
 
-	va_list args;
-	va_start(args, fmt);
-	zth_logv(fmt, args);
-	va_end(args);
+	logv(fmt, args);
 	
 	if(do_color)
-		zth_log("\x1b[0m");
+		log("\x1b[0m");
 }
 
-void zth_log(char const* fmt, ...)
+} // namespace
+
+/*!
+ * \copydoc zth::abort()
+ * \ingroup zth_api_c
+ */
+void zth_abort(char const* fmt, ...)
 {
-	va_list args;
-	va_start(args, fmt);
-	zth_logv(fmt, args);
-	va_end(args);
+	va_list va;
+	va_start(va, fmt);
+	zth::abortv(fmt, va);
+	va_end(va);
 }
 
-// weak symbol
+/*!
+ * \brief Prints the given printf()-like formatted string to stdout.
+ * \details This is a weak symbol. Override when required.
+ * \ingroup zth_api_c
+ */
 void zth_logv(char const* fmt, va_list arg)
 {
 	vprintf(fmt, arg);

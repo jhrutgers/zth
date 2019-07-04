@@ -19,6 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp C++ API
+ * \brief C++ interface to Zth (but all \ref zth_api_c functions are available as well).
+ */
+/*!
+ * \defgroup zth_api_c C API
+ * \brief C interface to Zth.
+ */
+
 #include <libzth/macros.h>
 #include <libzth/zmq.h>
 #include <libzth/config.h>

@@ -495,8 +495,8 @@ static int context_newstack(Context* context, stack_t* stack) {
 	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(stack->ss_sp, (char*)stack->ss_sp + stack->ss_size - 1);
 
 	if(RUNNING_ON_VALGRIND)
-		zth_dbg(context, "[th %s] Stack of context %p has Valgrind id %u",
-			threadId().c_str(), context, context->valgrind_stack_id);
+		zth_dbg(context, "[%s] Stack of context %p has Valgrind id %u",
+			currentWorker().id_str(), context, context->valgrind_stack_id);
 #endif
 
 	if(Config::EnableStackGuard) {
@@ -526,12 +526,12 @@ rollback:
 // Common functions
 
 int context_init() {
-	zth_dbg(context, "[th %s] Initialize", threadId().c_str());
+	zth_dbg(context, "[%s] Initialize", currentWorker().id_str());
 	return context_init_impl();
 }
 
 void context_deinit() {
-	zth_dbg(context, "[th %s] Deinit", threadId().c_str());
+	zth_dbg(context, "[%s] Deinit", currentWorker().id_str());
 	context_deinit_impl();
 }
 
@@ -561,9 +561,9 @@ int context_create(Context*& context, ContextAttr const& attr) {
 
 	if(likely(attr.stackSize > 0)) {
 #ifdef ZTH_CONTEXT_WINFIBER
-		zth_dbg(context, "[th %s] New context %p", threadId().c_str(), context);
+		zth_dbg(context, "[%s] New context %p", currentWorker().id_str(), context);
 #else
-		zth_dbg(context, "[th %s] New context %p with stack: %p-%p", threadId().c_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
+		zth_dbg(context, "[%s] New context %p with stack: %p-%p", currentWorker().id_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
 #endif
 	}
 	return 0;
@@ -572,7 +572,7 @@ rollback_stack:
 	context_deletestack(context);
 rollback_new:
 	delete context;
-	zth_dbg(context, "[th %s] Cannot create context; %s", threadId().c_str(), err(res).c_str());
+	zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(), err(res).c_str());
 	return res ? res : EINVAL;
 }
 
@@ -592,7 +592,7 @@ void context_destroy(Context* context) {
 	context_destroy_impl(context);
 	context_deletestack(context);
 	delete context;
-	zth_dbg(context, "[th %s] Deleted context %p", threadId().c_str(), context);
+	zth_dbg(context, "[%s] Deleted context %p", currentWorker().id_str(), context);
 }
 
 } // namespace

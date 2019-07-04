@@ -89,6 +89,8 @@ int main()
 	list.erase(i7);
 #endif
 
+	zth_banner();
+
 	zth::Worker w;
 //	w.add(new zth::Fiber(&fiber1));
 //	w.add(new zth::Fiber(&fiber2));
