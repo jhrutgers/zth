@@ -42,7 +42,7 @@ void Waiter::wait(TimedWaitable& w) {
 	m_worker.schedule();
 }
 
-#ifdef ZTH_HAVE_POLL
+#ifdef ZTH_HAVE_POLLER
 void Waiter::checkFdList() {
 	if(!Config::EnableAssert && (!zth_config(EnableDebugPrint) || !Config::Print_list))
 		return;
@@ -156,7 +156,7 @@ void Waiter::entry() {
 			doRealSleep = true;
 		}
 
-#ifdef ZTH_HAVE_POLL
+#ifdef ZTH_HAVE_POLLER
 		if(!m_fdPollList.empty()) {
 			Timestamp const* pollTimeout = NULL;
 			if(doRealSleep) {

@@ -66,7 +66,7 @@
 #  endif
 #  define ZTH_ATTR_PRINTF	gnu_printf
 #  ifndef GCC_VERSION
-#    define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
 #  endif
 #else
 #  error Unsupported compiler. Please use gcc.
@@ -101,18 +101,38 @@
 #endif
 
 #ifdef __cplusplus
-#  ifdef ZTH_EXPORT_INLINE_EMIT
-#    define ZTH_EXPORT_INLINE EXTERN_C ZTH_EXPORT
+#  ifdef ZTH_INLINE_EMIT
+#    define ZTH_INLINE
 #  else
-#    define ZTH_EXPORT_INLINE EXTERN_C ZTH_EXPORT __attribute__((gnu_inline)) inline
+#    define ZTH_INLINE __attribute__((gnu_inline)) inline
 #  endif
-#  define ZTH_EXPORT_INLINE_CPPONLY ZTH_EXPORT_INLINE
-#  define ZTH_EXPORT_INLINE_CPPONLY_IMPL(...) __VA_ARGS__
 #else
-#  define ZTH_EXPORT_INLINE ZTH_EXPORT __attribute__((gnu_inline)) extern inline
-#  define ZTH_EXPORT_INLINE_CPPONLY ZTH_EXPORT extern
-#  define ZTH_EXPORT_INLINE_CPPONLY_IMPL(...) ;
+#  define ZTH_INLINE __attribute__((gnu_inline)) extern inline
 #endif
+
+/*
+HOWTO inline:
+
+// Inline private C++-only function:
+#ifdef __cplusplus
+inline void foo() { baz::bar(); }
+#endif
+
+// Inline public C++-only function:
+#ifdef __cplusplus
+ZTH_EXPORT inline void foo() { baz::bar(); }
+#endif
+
+// Inline public C/C++ function:
+EXTERN_C ZTH_EXPORT ZTH_INLINE void foo() { bar(); }
+
+// Inline public C/C++ function with C++-only implementation:
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE void foo() { baz::bar(); }
+#else
+ZTH_EXPORT void foo();
+#endif
+*/
 
 
 
@@ -200,11 +220,15 @@
 #endif
 
 #ifdef ZTH_CONTEXT_WINFIBER
-#  if WINVER < 0x0400 || _WIN32_WINNT < 0x0400
-#    undef WINVER
-#    undef _WIN32_WINNT
+#  ifndef WINVER
 #    define WINVER 0x0400
-#    define _WIN32_WINNT 0x0400
+#  elif WINVER < 0x0400
+#    error WINVER should be at least 0x0400
+#  endif
+#  ifndef _WIN32_WINNT
+#    define _WIN32_WINNT WINVER
+#  elif _WIN32_WINNT < 0x0400
+#    error _WIN32_WINNT should be at least 0x0400
 #  endif
 #endif
 

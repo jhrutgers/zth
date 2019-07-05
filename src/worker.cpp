@@ -31,7 +31,7 @@ INIT_CALL(worker_global_init)
 } // namespace
 
 __attribute__((weak)) void main_fiber(int argc, char** argv) {}
-make_fibered(main_fiber);
+zth_fiber(main_fiber);
 
 __attribute__((weak)) int main(int argc, char** argv) {
 	zth::Worker w;

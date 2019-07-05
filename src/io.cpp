@@ -23,7 +23,8 @@
 #include <libzth/worker.h>
 #include <libzth/zmq.h>
 
-#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+#ifdef ZTH_HAVE_POLLER
+
 #  include <alloca.h>
 #  include <fcntl.h>
 #  ifndef POLLIN_SET
@@ -35,11 +36,13 @@
 #  ifndef POLLEX_SET
 #    define POLLEX_SET (POLLPRI)
 #  endif
-#endif
 
 namespace zth { namespace io {
 
-#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+/*!
+ * \brief Like normal \c %read(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
+ * \ingroup zth_api_cpp_io
+ */
 ssize_t read(int fd, void* buf, size_t count) {
 	int flags = fcntl(fd, F_GETFL);
 	if(unlikely(flags == -1))
@@ -88,6 +91,10 @@ ssize_t read(int fd, void* buf, size_t count) {
 	}
 }
 
+/*!
+ * \brief Like normal \c %select(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
+ * \ingroup zth_api_cpp_io
+ */
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout) {
 	if(nfds < 0) {
 		errno = EINVAL;
@@ -176,6 +183,10 @@ done:
 	return res;
 }
 
+/*!
+ * \brief Like normal \c %poll(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
+ * \ingroup zth_api_cpp_io
+ */
 int poll(zth_pollfd_t *fds, int nfds, int timeout) {
 	if(timeout == 0)
 		// Non-blocking poll.
@@ -199,7 +210,8 @@ int poll(zth_pollfd_t *fds, int nfds, int timeout) {
 
 	return w.result();
 }
-#endif
 
 } } // namespace
-
+#else
+static int no_io __attribute__((unused));
+#endif // ZTH_HAVE_POLLER

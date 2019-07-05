@@ -31,7 +31,7 @@ int fiber4(int i) {
 		zth::outOfWork();
 	return i + 4;
 }
-make_fibered(fiber4)
+zth_fiber(fiber4)
 
 void fiber3() {
 	printf("fiber 3\n");
@@ -41,7 +41,7 @@ void fiber3() {
 	zth_perfmark("abc zz");
 	printf("got from fiber 4: %d\n", f->value());
 }
-make_fibered(fiber3)
+zth_fiber(fiber3)
 
 struct Int : public zth::Listable<Int> {
 	Int(int value) : value(value) {}

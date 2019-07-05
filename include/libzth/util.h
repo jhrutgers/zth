@@ -164,8 +164,8 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), weak)) void zt
 
 namespace zth {
 	ZTH_EXPORT char const* banner();
-    ZTH_EXPORT void abort(char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn));
-	ZTH_EXPORT void abortv(char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn));
+    ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void abort(char const* fmt, ...);
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void abortv(char const* fmt, va_list args);
 
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void log_colorv(int color, char const* fmt, va_list args);
 
@@ -241,7 +241,7 @@ namespace zth {
 	public:
 		static uint64_t getID() {
 			return ThreadSafe ?
-#if GCC_VERSION < 40802
+#if GCC_VERSION < 40802L
 				__sync_add_and_fetch(&m_nextId, 1)
 #else
 				__atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
@@ -257,7 +257,7 @@ namespace zth {
 
 		void const* normptr() const { return this; }
 
-		uint64_t id() const __attribute__((pure)) { return m_id; }
+		__attribute__((pure)) uint64_t id() const { return m_id; }
 
 		std::string const& name() const { return m_name; }
 
@@ -313,24 +313,29 @@ namespace zth {
  * \details This is a C-wrapper for zth::banner().
  * \ingroup zth_api_c
  */
-ZTH_EXPORT_INLINE_CPPONLY void zth_banner()
-	ZTH_EXPORT_INLINE_CPPONLY_IMPL({ zth::banner(); })
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_banner() { zth::banner(); }
+#else
+ZTH_EXPORT void zth_banner();
+#endif
 
 /*!
  * \copydoc zth::abort()
  * \details This is a C-wrapper for zth::abort().
  * \ingroup zth_api_c
  */
-ZTH_EXPORT void zth_abort(char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn));
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void zth_abort(char const* fmt, ...);
 
 /*!
  * \copydoc zth::log_color()
  * \details This is a C-wrapper for zth::log_color().
  * \ingroup zth_api_c
  */
-ZTH_EXPORT_INLINE_CPPONLY __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...)
-#ifndef DOXYGEN
-	ZTH_EXPORT_INLINE_CPPONLY_IMPL({ va_list args; va_start(args, fmt); zth::log_colorv(color, fmt, args); va_end(args); })
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...) {
+	va_list args; va_start(args, fmt); zth::log_colorv(color, fmt, args); va_end(args); }
+#else
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...);
 #endif
 
 /*!
@@ -338,9 +343,11 @@ ZTH_EXPORT_INLINE_CPPONLY __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zt
  * \details This is a C-wrapper for zth::log().
  * \ingroup zth_api_c
  */
-ZTH_EXPORT_INLINE_CPPONLY __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...)
-#ifndef DOXYGEN
-	ZTH_EXPORT_INLINE_CPPONLY_IMPL({ va_list args; va_start(args, fmt); zth::logv(fmt, args); va_end(args); })
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...) {
+	va_list args; va_start(args, fmt); zth::logv(fmt, args); va_end(args); }
+#else
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...);
 #endif
 
 #endif // __ZTH_UTIL_H

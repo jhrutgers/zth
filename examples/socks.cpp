@@ -31,7 +31,7 @@ struct Socks {
 void takeSocks(int count);
 Socks* wearSocks(Socks& socks);
 void washSock(Sock& sock);
-make_fibered(takeSocks, wearSocks, washSock)
+zth_fiber(takeSocks, wearSocks, washSock)
 
 void takeSocks(int count) {
 	std::list<wearSocks_future> allSocks;

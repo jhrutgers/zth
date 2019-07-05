@@ -32,6 +32,12 @@
 
 namespace zth {
 
+	/*!
+	 * \brief The fiber.
+	 * \details This class manages a fiber's context and state, given an entry function.
+	 * \details Usually, don't subclass this class (use #zth::Runnable instead), as the #zth::Fiber is owned by
+	 *          and part of a #zth::Worker's administration. For example, a Fiber object is deleted by the Worker when it is dead.
+	 */
 	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	public:
 		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
@@ -316,6 +322,12 @@ namespace zth {
 		std::list<std::pair<void(*)(Fiber&,void*),void*> > m_cleanup;
 	};
 
+	/*!
+	 * \brief An abstract class, that can be started as a fiber.
+	 * \details Create a subclass of this class if you want to have an object that can be started as a fiber.
+	 *          In contrast to a #zth::Fiber, this class does not have to be on the heap and exists before and after the actual fiber.
+	 * \ingroup zth_api_cpp
+	 */
 	class Runnable {
 	public:
 		Runnable() 
@@ -359,10 +371,9 @@ namespace zth {
 		Fiber* m_fiber;
 	};
 
-
 } // namespace
 #endif // __cplusplus
 
-EXTERN_C void main_fiber(int argc, char** argv);
+EXTERN_C ZTH_EXPORT void main_fiber(int argc, char** argv);
 
 #endif // __ZTH_FIBER_H

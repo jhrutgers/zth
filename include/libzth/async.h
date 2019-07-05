@@ -286,24 +286,59 @@ namespace zth {
 	
 } // namespace
 
-#define declare_fibered_1(f) \
+#define zth_fiber_declare_1(f) \
 	namespace zth { namespace fibered { \
 		extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
 	} }
-#define declare_fibered(...) FOREACH(declare_fibered_1, ##__VA_ARGS__)
 
-#define define_fibered_1(storage, f) \
+/*!
+ * \brief Do the declaration part of #zth_fiber() (to be used in an .h file).
+ * \ingroup zth_api_cpp
+ */
+#define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
+
+#define zth_fiber_define_1(storage, f) \
 	namespace zth { namespace fibered { \
 		storage ::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : NULL); \
 	} } \
 	typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
-#define define_fibered_extern_1(f)	define_fibered_1(extern, f)
-#define define_fibered_static_1(f)	define_fibered_1(static, f)
-#define define_fibered(...) FOREACH(define_fibered_extern_1, ##__VA_ARGS__)
+#define zth_fiber_define_extern_1(f)	zth_fiber_define_1(extern, f)
+#define zth_fiber_define_static_1(f)	zth_fiber_define_1(static, f)
 
-#define make_fibered(...) FOREACH(define_fibered_static_1, ##__VA_ARGS__)
+/*!
+ * \brief Do the definition part of #zth_fiber() (to be used in a .cpp file).
+ * \ingroup zth_api_cpp
+ */
+#define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
 
+/*!
+ * \brief Prepare every given function to become a fiber by #async.
+ * \ingroup zth_api_cpp
+ */
+#define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
+
+/*!
+ * \brief Run a function as a new fiber.
+ * \details The function must have passed through #zth_fiber() (or friends) first.
+ * \ingroup zth_api_cpp
+ */
 #define async ::zth::fibered::
+
+/*!
+ * \brief Run a function as a new fiber.
+ * \ingroup zth_api_c
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_fiber_create(void(*f)(void*), void* arg = NULL, char const* name = NULL) {
+	zth::Fiber* fiber = new zth::Fiber(f, arg);
+
+	if(unlikely(name))
+		fiber->setName(name);
+
+	zth::currentWorker().add(fiber);
+}
+#else // !__cplusplus
+
+ZTH_EXPORT void zth_fiber_create(void(*f)(void*), void* arg, char const* name);
 
 #endif // __cplusplus
 #endif // __ZTH_ASYNC_H

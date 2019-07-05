@@ -8,7 +8,7 @@ static void job(int length) {
 	zth::nap(0.1 * (double)length);
 	printf("job %d finished\n", length);
 }
-make_fibered(job)
+zth_fiber(job)
 
 static void handler(int sig) {
 	char const* msg = "got interrupted\n";
@@ -62,7 +62,7 @@ static void employer() {
 		//printf("sscanf(): cnt=%zd tot=%d off=%d\n", cnt, totalScanned, offset);
 	}
 }
-make_fibered(employer)
+zth_fiber(employer)
 
 void main_fiber(int argc, char** argv) {
 	employer();

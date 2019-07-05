@@ -19,7 +19,7 @@ void server() {
 	
 	zmq_close(responder);
 }
-make_fibered(server)
+zth_fiber(server)
 
 void client() {
 	printf("Connecting to hello world server...\n");
@@ -36,7 +36,7 @@ void client() {
 
 	zmq_close(requester);
 }
-make_fibered(client)
+zth_fiber(client)
 
 static void handler(int sig) {
 	char const* msg = "got interrupted\n";

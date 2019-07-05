@@ -21,9 +21,9 @@
 #include <libzth/macros.h>
 #ifdef ZTH_HAVE_LIBZMQ
 
-#include <libzth/zmq.h>
-#include <libzth/waiter.h>
-#include <libzth/worker.h>
+#  include <libzth/zmq.h>
+#  include <libzth/waiter.h>
+#  include <libzth/worker.h>
 
 namespace zth { namespace zmq {
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define ZTH_EXPORT_INLINE_EMIT
+#define ZTH_INLINE_EMIT
 #include <zth>
 
 // Make sure this compilation unit has at least one symbol.
