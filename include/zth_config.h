@@ -25,6 +25,10 @@
 
 #ifdef __cplusplus
 namespace zth {
+	/*!
+	 * \brief The configration of Zth.
+	 * \ingroup zth_api_cpp_config
+	 */
 	struct Config : public DefaultConfig {
 		// Override defaults from DefaultConfig here for your local setup.
 	};

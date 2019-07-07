@@ -18,6 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp_config config
+ * \ingroup zth_api_cpp
+ */
+
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
@@ -27,6 +32,15 @@
 namespace zth {
 	struct Env { enum { EnableDebugPrint, DoPerfEvent }; };
 	bool config(int env /* one of Env::* */, bool whenUnset);
+
+	/*!
+	 * \brief Checks if the given zth::Config field is enabled.
+	 * \details This function checks both the set zth::Config value and the environment.
+	 * \param name the field name within zth::Config (without zth::Config prefix)
+	 * \return a bool, indicating if the field is enabled
+	 * \ingroup zth_api_cpp_config
+	 * \hideinitializer
+	 */
 #define zth_config(name)	(::zth::config(::zth::Env::name, ::zth::Config::name))
 
 	struct DefaultConfig {

@@ -19,7 +19,12 @@
  */
 
 /*!
- * \defgroup zth_util Misc util functions
+ * \defgroup zth_api_c_util util
+ * \ingroup zth_api_c
+ */
+/*!
+ * \defgroup zth_api_cpp_util util
+ * \ingroup zth_api_cpp
  */
 
 #include <libzth/macros.h>
@@ -136,7 +141,8 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), weak)) void zt
  * \param group one of the %zth::Config::Print_x, where only \c x has to be specified
  * \param fmt \c printf()-like formatting string
  * \param a arguments for \p fmt
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_util
+ * \hideinitializer
  */
 #  define zth_dbg(group, fmt, a...) \
 	do { \
@@ -172,7 +178,7 @@ namespace zth {
 	/*!
 	 * \brief Logs a given printf()-like formatted string using an ANSI color code.
 	 * \details #zth_logv() is used for the actual logging.
-	 * \ingroup zth_api_cpp
+	 * \ingroup zth_api_cpp_util
 	 */
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) inline void log_color(int color, char const* fmt, ...) {
 		va_list args; va_start(args, fmt); log_colorv(color, fmt, args); va_end(args); }
@@ -181,7 +187,7 @@ namespace zth {
 	 * \brief Logs a given printf()-like formatted string.
 	 * \details #zth_logv() is used for the actual logging.
 	 * \see zth::log_colorv()
-	 * \ingroup zth_api_cpp
+	 * \ingroup zth_api_cpp_util
 	 */
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void logv(char const* fmt, va_list arg) {
 		::zth_logv(fmt, arg); }
@@ -190,7 +196,7 @@ namespace zth {
 	 * \brief Logs a given printf()-like formatted string.
 	 * \details #zth_logv() is used for the actual logging.
 	 * \see zth::log_color()
-	 * \ingroup zth_api_cpp
+	 * \ingroup zth_api_cpp_util
 	 */
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void log(char const* fmt, ...) {
 		va_list args; va_start(args, fmt); logv(fmt, args); va_end(args); }
@@ -234,7 +240,7 @@ namespace zth {
 
 	/*!
 	 * \brief Keeps track of a process-wide unique ID within the type \p T.
-	 * \ingroup zth_api_cpp
+	 * \ingroup zth_api_cpp_util
 	 */
 	template <typename T, bool ThreadSafe = Config::EnableThreads>
 	class UniqueID {
@@ -262,6 +268,10 @@ namespace zth {
 		std::string const& name() const { return m_name; }
 
 		void setName(std::string const& name) {
+			setName(name.c_str());
+		}
+		
+		void setName(char const* name) {
 			m_name = name;
 			m_id_str.clear();
 			changedName(this->name());
@@ -311,7 +321,7 @@ namespace zth {
 /*!
  * \copydoc zth::banner()
  * \details This is a C-wrapper for zth::banner().
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_banner() { zth::banner(); }
@@ -322,14 +332,14 @@ ZTH_EXPORT void zth_banner();
 /*!
  * \copydoc zth::abort()
  * \details This is a C-wrapper for zth::abort().
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void zth_abort(char const* fmt, ...);
 
 /*!
  * \copydoc zth::log_color()
  * \details This is a C-wrapper for zth::log_color().
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
 EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...) {
@@ -341,7 +351,7 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int
 /*!
  * \copydoc zth::log()
  * \details This is a C-wrapper for zth::log().
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
 EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...) {

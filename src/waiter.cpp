@@ -183,7 +183,7 @@ void Waiter::entry() {
 			}
 
 			if(doRealSleep) {
-				zth_perfmark("blocking poll()");
+				perf_mark("blocking poll()");
 				perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			}
 
@@ -197,7 +197,7 @@ void Waiter::entry() {
 			
 			if(doRealSleep) {
 				perf_event(PerfEvent<>(*fiber(), fiber()->state()));
-				zth_perfmark("wakeup");
+				perf_mark("wakeup");
 			}
 
 			if(res == -1) {
@@ -235,11 +235,11 @@ void Waiter::entry() {
 			Timestamp const* end = &m_waiting.front().timeout();
 			if(!m_worker.runEnd().isNull () && *end > m_worker.runEnd())
 				end = &m_worker.runEnd();
-			zth_perfmark("idle system; sleep");
+			perf_mark("idle system; sleep");
 			perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), NULL);
 			perf_event(PerfEvent<>(*fiber(), fiber()->state()));
-			zth_perfmark("wakeup");
+			perf_mark("wakeup");
 		}
 	}
 }

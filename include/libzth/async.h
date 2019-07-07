@@ -77,6 +77,83 @@ namespace zth {
 		SharedPointer<Future_type> m_future;
 	};
 
+	struct FiberManipulator {
+	protected:
+		FiberManipulator() {}
+		virtual void apply(Fiber& fiber) const = 0;
+
+		template <typename R, typename F> friend TypedFiber<R,F>* operator<<(TypedFiber<R,F>* f, FiberManipulator const& m);
+	private:
+		FiberManipulator(FiberManipulator const&)
+#if __cplusplus >= 201103L
+			= delete
+#endif
+			;
+	};
+
+	template <typename R, typename F>
+	TypedFiber<R,F>* operator<<(TypedFiber<R,F>* f, FiberManipulator const& m) {
+		if(likely(f))
+			m.apply(*f);
+		return f;
+	}
+
+	/*!
+	 * \brief Change the stack size of a fiber returned by #async.
+	 *
+	 * This is a manipulator that calls #zth::Fiber::setStackSize().
+	 * Example:
+	 * \code
+	 * void foo() { ... }
+	 * zth_fiber(foo)
+	 *
+	 * int main_fiber(int argc, char** argv) {
+	 *     async foo() << zth::setStackSize(0x10000);
+	 * }
+	 * \endcode
+	 *
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	struct setStackSize : public FiberManipulator {
+	public:
+		setStackSize(size_t stack) : m_stack(stack) {}
+	protected:
+		virtual void apply(Fiber& fiber) const { fiber.setStackSize(m_stack); }
+	private:
+		size_t m_stack;
+	};
+	
+	/*!
+	 * \brief Change the name of a fiber returned by #async.
+	 * \details This is a manipulator that calls #zth::Fiber::setName().
+	 * \see zth::setStackSize() for an example
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	struct setName : public FiberManipulator {
+	public:
+		setName(char const* name) : m_name(name) {}
+#if __cplusplus >= 201103L
+		setName(std::string const& name) : m_name(name) {}
+		setName(std::string&& name) : m_name(std::move(name)) {}
+#else
+		setName(std::string const& name) : m_name(name.c_str()) {}
+#endif
+	protected:
+		virtual void apply(Fiber& fiber) const {
+#if __cplusplus >= 201103L
+			fiber.setName(std::move(m_name));
+#else
+			fiber.setName(m_name);
+#endif
+		}
+	private:
+#if __cplusplus >= 201103L
+		std::string m_name;
+#else
+		char const* m_name;
+#endif
+	};
+
 	template <typename T>
 	class AutoFuture : public SharedPointer<Future<T> > {
 	public:
@@ -293,7 +370,8 @@ namespace zth {
 
 /*!
  * \brief Do the declaration part of #zth_fiber() (to be used in an .h file).
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_fiber
+ * \hideinitializer
  */
 #define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
 
@@ -307,38 +385,59 @@ namespace zth {
 
 /*!
  * \brief Do the definition part of #zth_fiber() (to be used in a .cpp file).
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_fiber
+ * \hideinitializer
  */
 #define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
 
 /*!
  * \brief Prepare every given function to become a fiber by #async.
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_fiber
+ * \hideinitializer
  */
 #define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
 
 /*!
  * \brief Run a function as a new fiber.
- * \details The function must have passed through #zth_fiber() (or friends) first.
- * \ingroup zth_api_cpp
+ *
+ * The function must have passed through #zth_fiber() (or friends) first.
+ * Example:
+ *
+ * \code
+ * void foo(int i) { ... }
+ * zth_fiber(foo)
+ *
+ * void main_fiber(int argc, char** argv) {
+ *     async foo(42);
+ * }
+ * \endcode
+ *
+ * \ingroup zth_api_cpp_fiber
+ * \hideinitializer
  */
 #define async ::zth::fibered::
 
 /*!
  * \brief Run a function as a new fiber.
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_fiber_create(void(*f)(void*), void* arg = NULL, char const* name = NULL) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = NULL, size_t stack = 0, char const* name = NULL) {
+	int res = 0;
 	zth::Fiber* fiber = new zth::Fiber(f, arg);
+
+	if(unlikely(stack))
+		if((res = fiber->setStackSize(stack)))
+			return res;
 
 	if(unlikely(name))
 		fiber->setName(name);
 
 	zth::currentWorker().add(fiber);
+	return res;
 }
 #else // !__cplusplus
 
-ZTH_EXPORT void zth_fiber_create(void(*f)(void*), void* arg, char const* name);
+ZTH_EXPORT int zth_fiber_create(void(*f)(void*), void* arg, size_t stack, char const* name);
 
 #endif // __cplusplus
 #endif // __ZTH_ASYNC_H

@@ -18,6 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp_perf perf
+ * \ingroup zth_api_cpp
+ */
+/*!
+ * \defgroup zth_api_c_perf perf
+ * \ingroup zth_api_c
+ */
+
 #ifdef __cplusplus
 
 #include <libzth/config.h>
@@ -35,6 +44,7 @@ namespace zth {
 	void perf_deinit();
 
 	class Fiber;
+	__attribute__((pure)) UniqueID<Fiber> const& currentFiberID();
 
 	class Backtrace {
 	public:
@@ -51,6 +61,9 @@ namespace zth {
 		void* m_sp;
 	};
 
+	/*!
+	 * \ingroup zth_api_cpp_perf
+	 */
 	template <bool Enable = Config::EnablePerfEvent>
 	struct PerfEvent {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
@@ -79,7 +92,7 @@ namespace zth {
 			va_end(args);
 		}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args)
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) 
 			: t(t), fiber(fiber.id()), type(Log) { if(vasprintf(&str, fmt, args) == -1) str = NULL; }
 
 		void release() {
@@ -116,7 +129,7 @@ namespace zth {
 		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) {}
 		void release() {}
 
 		union {
@@ -134,7 +147,10 @@ namespace zth {
 
 	void perf_flushEventBuffer();
 
-	inline void perf_event(PerfEvent<> const& event) {
+	/*!
+	 * \ingroup zth_api_cpp_perf
+	 */
+	ZTH_EXPORT inline void perf_event(PerfEvent<> const& event) {
 		if(!Config::EnablePerfEvent)
 			return;
 		if(unlikely(!perf_eventBuffer))
@@ -147,6 +163,68 @@ namespace zth {
 			perf_flushEventBuffer();
 	}
 
+	/*!
+	 * \ingroup zth_api_cpp_perf
+	 */
+	ZTH_EXPORT inline void perf_mark(char const* marker) {
+		if(Config::EnablePerfEvent)
+			perf_event(PerfEvent<>(currentFiberID(), marker));
+	}
+	
+	/*!
+	 * \ingroup zth_api_cpp_perf
+	 */
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void perf_log(char const* fmt, ...) {
+		if(!Config::EnablePerfEvent)
+			return;
+
+		va_list args;
+		va_start(args, fmt);
+		perf_event(PerfEvent<>(currentFiberID(), Timestamp(), fmt, args));
+		va_end(args);
+	}
+	
+	/*!
+	 * \ingroup zth_api_cpp_perf
+	 */
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void perf_logv(char const* fmt, va_list args) {
+		if(Config::EnablePerfEvent)
+			perf_event(PerfEvent<>(currentFiberID(), Timestamp(), fmt, args));
+	}
+
 } // namespace
-#endif
+
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_mark_(char const* marker) { zth::perf_mark(marker); }
+
+/*!
+ * \copydoc zth::perf_log()
+ * \details This is a C-wrapper for zth::perf_log().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_perf_log(char const* fmt, ...) {
+	va_list args; va_start(args, fmt); zth::perf_logv(fmt, args); va_end(args); }
+
+/*!
+ * \copydoc zth::perf_logv()
+ * \details This is a C-wrapper for zth::perf_logv().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_perf_logv(char const* fmt, va_list args) { zth::perf_logv(fmt, args); }
+
+#else // !__cplusplus
+
+ZTH_EXPORT void zth_perf_mark_(char const* marker);
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_perf_log(char const* fmt, ...);
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_perf_logv(char const* fmt, va_list args);
+
+#endif // __cplusplus
+
+/*!
+ * \copydoc zth::perf_mark()
+ * \details This is a C-wrapper for zth::perf_mark().
+ * \ingroup zth_api_c_perf
+ * \hideinitializer
+ */
+#define zth_perf_mark(marker)	zth_perf_mark_("" marker)
+
 #endif // __ZTH_PERF_H

@@ -35,10 +35,10 @@ zth_fiber(fiber4)
 
 void fiber3() {
 	printf("fiber 3\n");
-	fiber4_future f = async fiber4(2);
+	fiber4_future f = async fiber4(2) << zth::setStackSize(0x10000);
 //	for(int i = 0; i < 1000; i++)
 		zth::outOfWork();
-	zth_perfmark("abc zz");
+	zth::perf_mark("abc zz");
 	printf("got from fiber 4: %d\n", f->value());
 }
 zth_fiber(fiber3)

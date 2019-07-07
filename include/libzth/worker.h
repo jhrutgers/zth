@@ -37,6 +37,9 @@ namespace zth {
 
 	ZTH_TLS_DECLARE(Worker*, currentWorker_)
 
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
 	class Worker : public UniqueID<Worker> {
 	public:
 		static Worker* currentWorker() { return ZTH_TLS_GET(currentWorker_); }
@@ -306,19 +309,27 @@ namespace zth {
 		friend void worker_global_init();
 	};
 
-	inline Worker& currentWorker() __attribute__((pure));
-	inline Worker& currentWorker() {
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() {
 		Worker* w = Worker::currentWorker();
 		zth_assert(w);
 		return *w;
 	}
 
-	inline Fiber& currentFiber() __attribute__((pure));
-	inline Fiber& currentFiber() {
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() {
 		Worker& w = currentWorker();
 		Fiber* f = w.currentFiber();
 		zth_assert(f);
 		return *f;
+	}
+	
+	__attribute__((pure)) inline UniqueID<Fiber> const& currentFiberID() {
+		return currentFiber();
 	}
 	
 	inline void getContext(Worker** worker, Fiber** fiber) {
@@ -333,7 +344,10 @@ namespace zth {
 		}
 	}
 
-	inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
 		Fiber& fiber = currentFiber();
 
 		Timestamp now = Timestamp::now();
@@ -343,12 +357,13 @@ namespace zth {
 
 		currentWorker().schedule(preferFiber, now);
 	}
-#define zth_yield(...)	::zth::yield(__VA_ARGS__)
 
-	inline void outOfWork() {
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void outOfWork() {
 		yield(NULL, true);
 	}
-#define zth_outOfWork()	::zth::outOfWork()
 
 	inline void suspend() {
 		Worker* worker;
@@ -363,34 +378,61 @@ namespace zth {
 		worker->resume(fiber);
 	}
 
-	// fiber-local storage
-	inline void* fls() {
-		Fiber* fiber;
-		getContext(NULL, &fiber);
-		return fiber->fls();
-	}
-#define zth_fls()	::zth::fls()
-	
-	inline void setFls(void* data = NULL) {
-		Fiber* fiber;
-		getContext(NULL, &fiber);
-		return fiber->setFls(data);
-	}
-#define zth_setFls(...)		::zth::setFls(__VA_ARGS__)
-
-#define zth_perfmark(str)															\
-	do {																			\
-		if(::zth::Config::EnablePerfEvent)											\
-			::zth::perf_event(::zth::PerfEvent<>(::zth::currentFiber(), "" str));	\
-	} while(0)
-
-#define zth_perflog(fmt, ...)														\
-	do {																			\
-		if(::zth::Config::EnablePerfEvent)											\
-			::zth::perf_event(::zth::PerfEvent<>(::zth::currentFiber(),				\
-				::zth::Timestamp::now(), fmt, ##__VA_ARGS__));						\
-	} while(0)
-
 } // namespace
+
+/*!
+ * \copydoc zth::yield()
+ * \details This is a C-wrapper for zth::yield().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_yield() { zth::yield(); }
+
+/*!
+ * \copydoc zth::outOfWork()
+ * \details This is a C-wrapper for zth::outOfWork().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_outOfWork() { zth::outOfWork(); }
+
+/*!
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() {
+	if(!zth::Worker::currentWorker())
+		return EINVAL;
+
+	new zth::Worker();
+	return 0;
+}
+
+/*!
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = NULL) {
+	zth::Worker* w = zth::Worker::currentWorker();
+	if(unlikely(!w))
+		return;
+	w->run(ts ? zth::TimeInterval(ts->tv_sec, ts->tv_nsec) : zth::TimeInterval());
+}
+
+/*!
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() {
+	zth::Worker* w = zth::Worker::currentWorker();
+	if(unlikely(!w))
+		return;
+	delete w;
+}
+
+#else // !__cplusplus
+
+ZTH_EXPORT void zth_yield();
+ZTH_EXPORT void zth_outOfWork();
+
+ZTH_EXPORT int zth_worker_create();
+ZTH_EXPORT void zth_worker_run(struct timespec const* ts);
+ZTH_EXPORT int zth_worker_destroy();
+
 #endif // __cpusplus
 #endif // __ZTH_WORKER_H

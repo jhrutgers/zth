@@ -18,6 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp_fiber fiber
+ * \ingroup zth_api_cpp
+ */
+/*!
+ * \defgroup zth_api_c_fiber fiber
+ * \ingroup zth_api_c
+ */
+
 #ifdef __cplusplus
 #include <libzth/util.h>
 #include <libzth/time.h>
@@ -326,7 +335,7 @@ namespace zth {
 	 * \brief An abstract class, that can be started as a fiber.
 	 * \details Create a subclass of this class if you want to have an object that can be started as a fiber.
 	 *          In contrast to a #zth::Fiber, this class does not have to be on the heap and exists before and after the actual fiber.
-	 * \ingroup zth_api_cpp
+	 * \ingroup zth_api_cpp_util
 	 */
 	class Runnable {
 	public:
@@ -370,8 +379,45 @@ namespace zth {
 		Runnable& operator=(Runnable&);
 		Fiber* m_fiber;
 	};
+	
+	__attribute__((pure)) Fiber& currentFiber();
+	
+	// fiber-local storage
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void* fls() {
+		return currentFiber().fls();
+	}
+	
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void setFls(void* data = NULL) {
+		return currentFiber().setFls(data);
+	}
 
 } // namespace
+
+/*!
+ * \copydoc zth::fls()
+ * \details This is a C-wrapper for zth::fls().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_fls() { return zth::fls(); }
+
+/*!
+ * \copydoc zth::setFls()
+ * \details This is a C-wrapper for zth::setFls().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_fls_set(void* data = NULL) { zth::setFls(data); }
+
+#else // !__cplusplus
+
+ZTH_EXPORT void* zth_fls();
+ZTH_EXPORT void* zth_fls_set(void* data);
+
 #endif // __cplusplus
 
 EXTERN_C ZTH_EXPORT void main_fiber(int argc, char** argv);

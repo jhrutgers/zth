@@ -27,12 +27,25 @@
 
 #define ZTH_VERSION ZTH_STRINGIFY(ZTH_VERSION_MAJOR) "." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 namespace zth {
-	inline char const* version() {
+	/*!
+	 * \brief Returns the version of Zth.
+	 * \ingroup zth_api_cpp_util
+	 */
+	ZTH_EXPORT inline char const* version() {
 		return ZTH_VERSION;
 	}
 }
-#endif
+
+/*!
+ * \copydoc zth::version()
+ * \details This is a C-wrapper for zth::version().
+ * \ingroup zth_api_c_util
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE char const* zth_version() { return zth::version(); }
+#else // !__cplusplus
+ZTH_EXPORT char const* zth_version();
+#endif // __cplusplus
 
 #endif // _ZTH_VERSION_H

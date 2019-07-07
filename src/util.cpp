@@ -32,7 +32,7 @@ namespace zth {
 
 /*!
  * \brief Prints a banner line with version and configuration information.
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_util
  */
 char const* banner() {
 	return "Zth " ZTH_VERSION
@@ -74,7 +74,7 @@ char const* banner() {
 
 /*!
  * \brief Aborts the process after printing the given printf() formatted message.
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_util
  */
 void abort(char const* fmt, ...)
 {
@@ -86,7 +86,7 @@ void abort(char const* fmt, ...)
 
 /*!
  * \copybrief zth::abort()
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_util
  */
 void abortv(char const* fmt, va_list args)
 {
@@ -116,7 +116,7 @@ INIT_CALL(log_init)
 /*!
  * \brief Logs a given printf()-like formatted string using an ANSI color code.
  * \details #zth_logv() is used for the actual logging.
- * \ingroup zth_api_cpp
+ * \ingroup zth_api_cpp_util
  */
 void log_colorv(int color, char const* fmt, va_list args)
 {
@@ -139,7 +139,7 @@ void log_colorv(int color, char const* fmt, va_list args)
 
 /*!
  * \copydoc zth::abort()
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 void zth_abort(char const* fmt, ...)
 {
@@ -152,7 +152,7 @@ void zth_abort(char const* fmt, ...)
 /*!
  * \brief Prints the given printf()-like formatted string to stdout.
  * \details This is a weak symbol. Override when required.
- * \ingroup zth_api_c
+ * \ingroup zth_api_c_util
  */
 void zth_logv(char const* fmt, va_list arg)
 {
