@@ -288,7 +288,14 @@ namespace zth {
 	
 		char const* id_str() const {
 			if(unlikely(m_id_str.empty()))
-				m_id_str = format("%s #%" PRIu64, name().empty() ? "Object" : name().c_str(), id());
+				m_id_str = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
+#ifdef ZTH_OS_WINDOWS
+					(unsigned int)_getpid(),
+#else
+					(unsigned int)getpid(),
+#endif
+					id());
+
 			return m_id_str.c_str();
 		}
 

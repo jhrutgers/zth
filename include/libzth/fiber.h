@@ -411,12 +411,12 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_fls() { return zth::fls(); }
  * \details This is a C-wrapper for zth::setFls().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_fls_set(void* data = NULL) { zth::setFls(data); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_setFls(void* data = NULL) { zth::setFls(data); }
 
 #else // !__cplusplus
 
 ZTH_EXPORT void* zth_fls();
-ZTH_EXPORT void* zth_fls_set(void* data);
+ZTH_EXPORT void* zth_setFls(void* data);
 
 #endif // __cplusplus
 

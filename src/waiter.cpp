@@ -241,6 +241,8 @@ void Waiter::entry() {
 			perf_event(PerfEvent<>(*fiber(), fiber()->state()));
 			perf_mark("wakeup");
 		}
+
+		sigchld_check();
 	}
 }
 

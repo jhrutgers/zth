@@ -33,6 +33,8 @@
 
 namespace zth {
 	
+	void sigchld_check();
+
 	class Worker;
 
 	ZTH_TLS_DECLARE(Worker*, currentWorker_)
@@ -111,6 +113,11 @@ namespace zth {
 				zth_dbg(worker, "[%s] Added runnable %s", id_str(), fiber->id_str());
 			}
 			dbgStats();
+		}
+
+		Worker& operator<<(Fiber* fiber) {
+			add(fiber);
+			return *this;
 		}
 		
 		void release(Fiber& fiber) {
@@ -215,6 +222,8 @@ namespace zth {
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
 			delete &fiber;
+			
+			sigchld_check();
 		}
 
 		void suspend(Fiber& fiber) {
@@ -268,6 +277,8 @@ namespace zth {
 				schedule();
 				zth_assert(!currentFiber());
 			}
+			
+			sigchld_check();
 		}
 
 	protected:
@@ -378,6 +389,10 @@ namespace zth {
 		worker->resume(fiber);
 	}
 
+	int startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL);
+	int execlp(char const* file, char const* arg, ... /*, NULL */);
+	int execvp(char const* file, char* const arg[]);
+
 } // namespace
 
 /*!
@@ -425,6 +440,21 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() {
 	delete w;
 }
 
+/*!
+ * \copydoc zth::execvp()
+ * \details This is a C-wrapper for zth::execvp().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL) {
+	return zth::startWorkerThread(f, stack, name); }
+
+/*!
+ * \copydoc zth::execvp()
+ * \details This is a C-wrapper for zth::execvp().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[]) { return zth::execvp(file, arg); }
+
 #else // !__cplusplus
 
 ZTH_EXPORT void zth_yield();
@@ -433,6 +463,9 @@ ZTH_EXPORT void zth_outOfWork();
 ZTH_EXPORT int zth_worker_create();
 ZTH_EXPORT void zth_worker_run(struct timespec const* ts);
 ZTH_EXPORT int zth_worker_destroy();
+
+ZTH_EXPORT int zth_startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL);
+ZTH_EXPORT int zth_execvp(char const* file, char* const arg[]);
 
 #endif // __cpusplus
 #endif // __ZTH_WORKER_H
