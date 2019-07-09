@@ -51,6 +51,11 @@ namespace zth {
 			zth_assert(s >= 0);
 		}
 
+		TimeInterval(struct timespec const& ts)
+			: m_t(ts)
+			, m_negative()
+		{}
+
 		template <typename T>
 		TimeInterval(T dt)
 			: m_t()

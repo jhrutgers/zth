@@ -58,6 +58,8 @@ void* zmq_socket(int type) {
 }
 
 int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
+	perf_syscall("zmq_msg_send()");
+
 	int res = ::zmq_msg_send(msg, socket, flags | ZMQ_DONTWAIT);
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
@@ -74,6 +76,8 @@ int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
 }
 
 int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
+	perf_syscall("zmq_msg_recv()");
+
 	int res = ::zmq_msg_recv(msg, socket, flags | ZMQ_DONTWAIT);
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
@@ -90,6 +94,8 @@ int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
 }
 
 int zmq_send(void *socket, void *buf, size_t len, int flags) {
+	perf_syscall("zmq_send()");
+
 	int res = ::zmq_send(socket, buf, len, flags | ZMQ_DONTWAIT);
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
@@ -106,6 +112,8 @@ int zmq_send(void *socket, void *buf, size_t len, int flags) {
 }
 
 int zmq_recv(void *socket, void *buf, size_t len, int flags) {
+	perf_syscall("zmq_recv()");
+
 	int res = ::zmq_recv(socket, buf, len, flags | ZMQ_DONTWAIT);
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
@@ -122,6 +130,8 @@ int zmq_recv(void *socket, void *buf, size_t len, int flags) {
 }
 
 int zmq_send_const(void *socket, void *buf, size_t len, int flags) {
+	perf_syscall("zmq_send_const()");
+
 	int res = ::zmq_send_const(socket, buf, len, flags | ZMQ_DONTWAIT);
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))

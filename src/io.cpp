@@ -44,6 +44,8 @@ namespace zth { namespace io {
  * \ingroup zth_api_cpp_io
  */
 ssize_t read(int fd, void* buf, size_t count) {
+	perf_syscall("read()");
+
 	int flags = fcntl(fd, F_GETFL);
 	if(unlikely(flags == -1))
 		return -1; // with errno set
@@ -96,6 +98,8 @@ ssize_t read(int fd, void* buf, size_t count) {
  * \ingroup zth_api_cpp_io
  */
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout) {
+	perf_syscall("select()");
+
 	if(nfds < 0) {
 		errno = EINVAL;
 		return -1;
@@ -188,6 +192,8 @@ done:
  * \ingroup zth_api_cpp_io
  */
 int poll(zth_pollfd_t *fds, int nfds, int timeout) {
+	perf_syscall("poll()");
+
 	if(timeout == 0)
 		// Non-blocking poll.
 #  ifdef ZTH_HAVE_LIBZMQ

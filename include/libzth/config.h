@@ -30,7 +30,7 @@
 #include <stdint.h>
 
 namespace zth {
-	struct Env { enum { EnableDebugPrint, DoPerfEvent }; };
+	struct Env { enum { EnableDebugPrint, DoPerfEvent, PerfSyscall }; };
 	bool config(int env /* one of Env::* */, bool whenUnset);
 
 	/*!
@@ -97,6 +97,7 @@ namespace zth {
 
 		static bool const EnablePerfEvent = true;
 		static bool const DoPerfEvent = false;
+		static bool const PerfSyscall = true;
 
 		static bool const UseZMQ =
 #ifdef ZTH_HAVE_LIBZMQ

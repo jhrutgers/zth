@@ -362,7 +362,7 @@ namespace zth {
 		Fiber& fiber = currentFiber();
 
 		Timestamp now = Timestamp::now();
-		perf_event(PerfEvent<>(fiber, "yield()", now));
+		perf_syscall("yield()", now);
 		if(unlikely(!alwaysYield && !fiber.allowYield(now)))
 			return;
 

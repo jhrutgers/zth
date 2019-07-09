@@ -180,7 +180,7 @@ namespace zth {
 
 		va_list args;
 		va_start(args, fmt);
-		perf_event(PerfEvent<>(currentFiberID(), Timestamp(), fmt, args));
+		perf_event(PerfEvent<>(currentFiberID(), Timestamp::now(), fmt, args));
 		va_end(args);
 	}
 	
@@ -189,7 +189,12 @@ namespace zth {
 	 */
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void perf_logv(char const* fmt, va_list args) {
 		if(Config::EnablePerfEvent)
-			perf_event(PerfEvent<>(currentFiberID(), Timestamp(), fmt, args));
+			perf_event(PerfEvent<>(currentFiberID(), Timestamp::now(), fmt, args));
+	}
+
+	inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp()) {
+		if(Config::EnablePerfEvent && zth_config(PerfSyscall))
+			perf_event(PerfEvent<>(currentFiberID(), syscall, t.isNull() ? Timestamp::now() : t));
 	}
 
 } // namespace

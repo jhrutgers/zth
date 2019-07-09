@@ -201,11 +201,54 @@ namespace zth {
 	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
 		PolledWaiting<C> w(that, f, pollInterval); waitUntil(w); }
 
-	inline void  nap(Timestamp const& sleepUntil)	{ TimedWaitable w(sleepUntil); waitUntil(w); }
-	inline void  nap(TimeInterval const& sleepFor)	{ nap(Timestamp::now() + sleepFor); }
-	inline void mnap(long sleepFor_ms)				{ nap(TimeInterval((time_t)(sleepFor_ms / 1000L), sleepFor_ms % 1000L * 1000000L)); }
-	inline void unap(long sleepFor_us)				{ nap(TimeInterval((time_t)(sleepFor_us / 1000000L), sleepFor_us % 1000000L * 1000L)); }
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void  nap(Timestamp const& sleepUntil)	{ TimedWaitable w(sleepUntil); waitUntil(w); }
+
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void  nap(TimeInterval const& sleepFor)	{ nap(Timestamp::now() + sleepFor); }
+
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void mnap(long sleepFor_ms)				{ nap(TimeInterval((time_t)(sleepFor_ms / 1000L), sleepFor_ms % 1000L * 1000000L)); }
+
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT inline void unap(long sleepFor_us)				{ nap(TimeInterval((time_t)(sleepFor_us / 1000000L), sleepFor_us % 1000000L * 1000L)); }
 
 } // namespace 
+
+/*!
+ * \copydoc zth::nap(zth::TimeInterval const&)
+ * \details This is a C-wrapper for zth::nap(zth::TimeInterval const&).
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_nap(struct timespec const* ts) { if(likely(ts)) zth::nap(zth::TimeInterval(*ts)); }
+
+/*!
+ * \copydoc zth::mnap()
+ * \details This is a C-wrapper for zth::mnap().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_mnap(long sleepFor_ms) { zth::mnap(sleepFor_ms); }
+
+/*!
+ * \copydoc zth::unap()
+ * \details This is a C-wrapper for zth::unap().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_unap(long sleepFor_us) { zth::unap(sleepFor_us); }
+
+#else // !__cplusplus
+
+ZTH_EXPORT void zth_nap(struct timespec const* ts);
+ZTH_EXPORT void zth_mnap(long sleepFor_ms);
+ZTH_EXPORT void zth_unap(long sleepFor_us);
+
 #endif // __cplusplus
 #endif // __ZTH_WAITER_H

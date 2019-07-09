@@ -23,6 +23,7 @@
 namespace zth {
 
 void waitUntil(TimedWaitable& w) {
+	perf_syscall("waitUntil()");
 	currentWorker().waiter().wait(w);
 }
 
