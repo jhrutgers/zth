@@ -1,0 +1,39 @@
+// vim:filetype=cpp
+
+/*!
+\example 1_helloworld.cpp
+\brief Basic Zth usage.
+This program will print:
+\verbatim
+Hello
+World!!1
+\endverbatim
+*/
+
+/*!
+\example 2_fibers.cpp
+\brief Fiber creation.
+This program will print:
+\verbatim
+fiber_vv()
+fddd is not valid yet
+fiber_ddd(3, 4) = 7
+fddd = 7
+fiber_ddd(1, 2) = 3
+fiber_vii(3, 14)
+fiber_vi(42)
+fiber_vv()
+\endverbatim
+Note that the order of the last four lines is not deterministic.
+*/
+
+/*!
+\example socks.cpp
+\brief More complex fiber and synchronization example.
+*/
+
+/*!
+\example zmq.cpp
+\brief 0MQ integration
+*/
+

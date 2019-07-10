@@ -1,6 +1,5 @@
-#ifndef __ZTH
-#define __ZTH
-// vim:filetype=cpp
+#ifndef __ZTH_H
+#define __ZTH_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
@@ -19,6 +18,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <zth.h>
+/*!
+ * \defgroup zth_api_cpp C++ API
+ * \brief C++ interface to Zth (but all \ref zth_api_c functions are available as well).
+ */
+/*!
+ * \defgroup zth_api_c C API
+ * \brief C interface to Zth.
+ */
 
-#endif // __ZTH
+#include <libzth/macros.h>
+#include <libzth/zmq.h>
+#include <libzth/config.h>
+#include <libzth/util.h>
+#include <libzth/time.h>
+#include <libzth/version.h>
+#include <libzth/fiber.h>
+#include <libzth/worker.h>
+#include <libzth/sync.h>
+#include <libzth/async.h>
+#include <libzth/perf.h>
+#include <libzth/io.h>
+
+#endif // __ZTH_H

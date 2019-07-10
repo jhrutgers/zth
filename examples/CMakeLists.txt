@@ -8,6 +8,8 @@ add_compile_options(-Wall -Werror)
 
 link_libraries(libzth)
 
+add_executable(1_helloworld 1_helloworld.cpp)
+add_executable(2_fibers 2_fibers.cpp)
 add_executable(example example.cpp)
 add_executable(socks socks.cpp)
 add_executable(work work.cpp)

@@ -50,7 +50,7 @@
 #ifdef __GNUC__
 // This is gcc
 #  ifdef __cplusplus
-#    if __cplusplus < 201103L
+#    if __cplusplus < 201103L && !defined(decltype)
 #      define decltype(x) __typeof__(x) // Well, not really true when references are involved...
 #    endif
 #  endif

@@ -5,19 +5,24 @@ parallel threads.  In this project, preemptive multitasking is implemented. In
 the same context, the Z(eta) symbol suggests that threads are not parallel, but
 they explicitly yield from one to another.
 
-GNU Pth has been a great inspiration for this library.
+[GNU Pth](https://www.gnu.org/software/pth/) has been a great inspiration for this library.
 
 
 
 ## How to build
 
-mkdir build
-cd build
-cmake ..
-cmake --build .
+	mkdir build
+	cd build
+	cmake ..
+	cmake --build .
 
 For Mac OSX with MacPorts, one could change the sequence above by something like:
-CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake 
+
+	CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
+
+By default, release builds are generated. To do debug builds, do something like:
+
+	cmake .. -D CMAKE_BUILD_TYPE=Debug
 
 
 ## How to run
@@ -26,13 +31,17 @@ libzth checks for environment variables, which are listed below.  The
 environment is (usually) only checked once, so dynamically changing the
 variables after startup has no effect to libzth's behavior.
 
-ZTH_CONFIG_ENABLE_DEBUG_PRINT
+* `ZTH_CONFIG_ENABLE_DEBUG_PRINT`  
 	When set to 0, debug prints are suppressed.  Enabled by default. For
 	non-debug builds, all debug prints are removed from the binary, so they
 	cannot be enabled in that case.
 
-ZTH_CONFIG_DO_PERF_EVENT
+* `ZTH_CONFIG_DO_PERF_EVENT`  
 	When set to 1, perf VCD file generation is enabeled.  Disabled by default.
+
+* `ZTH_CONFIG_DO_PERF_SYSCALL`  
+	When set to 1, the perf VCD logs will contain all calls to Zth's special
+	functions.  Enabled by default.
 
 
 ## License
