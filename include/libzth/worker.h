@@ -457,6 +457,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[
 
 #else // !__cplusplus
 
+#include <time.h>
+
 ZTH_EXPORT void zth_yield();
 ZTH_EXPORT void zth_outOfWork();
 
@@ -464,8 +466,8 @@ ZTH_EXPORT int zth_worker_create();
 ZTH_EXPORT void zth_worker_run(struct timespec const* ts);
 ZTH_EXPORT int zth_worker_destroy();
 
-ZTH_EXPORT int zth_startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL);
+ZTH_EXPORT int zth_startWorkerThread(void(*f)(), size_t stack, char const* name);
 ZTH_EXPORT int zth_execvp(char const* file, char* const arg[]);
 
-#endif // __cpusplus
+#endif // __cplusplus
 #endif // __ZTH_WORKER_H

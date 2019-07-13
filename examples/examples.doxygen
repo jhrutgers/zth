@@ -28,6 +28,64 @@ Note that the order of the last four lines is not deterministic.
 */
 
 /*!
+\example 3_coop.cpp
+\brief Example how to yield properly.
+This program will print something like this (depending on the speed of your CPU):
+\verbatim
+Example 1: nice vs nicer
+Be nicer 0
+Be nice 0
+Be nice 1
+Be nice 2
+Be nice 3
+Be nicer 1
+Be nice 4
+Be nice 5
+Be nice 6
+Be nicer 2
+Be nice 7
+Be nice 8
+Be nice 9
+nice_fiber() done
+Be nicer 3
+Be nicer 4
+Be nicer 5
+Be nicer 6
+Be nicer 7
+Be nicer 8
+Be nicer 9
+nicer_fiber() done
+
+Example 2: server-client
+Requesting 0
+Requesting 1
+Requesting 2
+Serving 0
+Serving 1
+Serving 2
+Requesting 3
+Requesting 4
+Requesting 5
+Serving 3
+Serving 4
+Serving 5
+Requesting 6
+Requesting 7
+Requesting 8
+Serving 6
+Serving 7
+Serving 8
+Requesting 9
+Serving 9
+\endverbatim
+*/
+
+/*!
+\example 9_c_api.c
+\brief C-API example.
+*/
+
+/*!
 \example socks.cpp
 \brief More complex fiber and synchronization example.
 */

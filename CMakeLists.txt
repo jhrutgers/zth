@@ -68,3 +68,19 @@ endif()
 
 target_link_libraries(libzth INTERFACE dl)
 
+find_package(Doxygen)
+option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+
+if(ZTH_DOCUMENTATION)
+	if(NOT DOXYGEN_FOUND)
+		message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+	endif()
+
+	add_custom_target(
+		doc ALL
+		COMMAND doxygen
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating API documentation with Doxygen (see doxygen/html/index.html)"
+	)
+endif()
+

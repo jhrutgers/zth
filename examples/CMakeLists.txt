@@ -10,6 +10,8 @@ link_libraries(libzth)
 
 add_executable(1_helloworld 1_helloworld.cpp)
 add_executable(2_fibers 2_fibers.cpp)
+add_executable(3_coop 3_coop.cpp)
+add_executable(9_c_api 9_c_api.c)
 add_executable(example example.cpp)
 add_executable(socks socks.cpp)
 add_executable(work work.cpp)

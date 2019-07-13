@@ -18,7 +18,7 @@ they explicitly yield from one to another.
 
 For Mac OSX with MacPorts, one could change the sequence above by something like:
 
-	CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
+	CC=gcc-mp-8 CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
 
 By default, release builds are generated. To do debug builds, do something like:
 
