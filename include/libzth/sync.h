@@ -18,6 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp_sync sync
+ * \ingroup zth_api_cpp
+ */
+/*!
+ * \defgroup zth_api_c_sync sync
+ * \ingroup zth_api_c
+ */
+
 #ifdef __cplusplus
 
 #include <libzth/list.h>
@@ -136,15 +145,17 @@ namespace zth {
 		List<Fiber> m_queue;
 	};
 
+	/*!
+	 * \ingroup zth_api_cpp_sync
+	 */
 	class Mutex : public Synchronizer {
 	public:
 		Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
 		virtual ~Mutex() {}
 
 		void lock() {
-			if(unlikely(m_locked))
+			while(unlikely(m_locked))
 				block();
-			zth_assert(!m_locked);
 			m_locked = true;
 		}
 
@@ -165,6 +176,9 @@ namespace zth {
 		bool m_locked;
 	};
 
+	/*!
+	 * \ingroup zth_api_cpp_sync
+	 */
 	class Semaphore : public Synchronizer {
 	public:
 		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {} 
@@ -174,6 +188,9 @@ namespace zth {
 			while(count > 0) {
 				if(count <= m_count) {
 					m_count -= count;
+					if(m_count > 0)
+						// There might be another one waiting.
+						unblockFirst();
 					return;
 				} else {
 					count -= m_count;
@@ -184,14 +201,27 @@ namespace zth {
 		}
 
 		void release(size_t count = 1) {
-			if((m_count += count) > 0)
+			zth_assert(m_count + count >= m_count); // ...otherwise it wrapped around, which is probably not want you wanted...
+
+			if(unlikely(m_count + count < m_count))
+				// wrapped around, saturate
+				m_count = std::numeric_limits<size_t>::max();
+			else
+				m_count += count;
+
+			if(likely(m_count > 0))
 				unblockFirst();
 		}
+
+		size_t value() const { return m_count; }
 
 	private:
 		size_t m_count;
 	};
 
+	/*!
+	 * \ingroup zth_api_cpp_sync
+	 */
 	class Signal : public Synchronizer {
 	public:
 		Signal(char const* name = "Signal") : Synchronizer(name) {}
@@ -201,6 +231,9 @@ namespace zth {
 		void signalAll() { unblockAll(); }
 	};
 
+	/*!
+	 * \ingroup zth_api_cpp_sync
+	 */
 	template <typename T = void>
 	class Future : public Synchronizer {
 	public:
@@ -272,6 +305,363 @@ namespace zth {
 	};
 
 } // namespace
+
+struct zth_mutex_t { void* p; };
+
+/*!
+ * \brief Initializes a mutex.
+ * \details This is a C-wrapper to create a new zth::Mutex.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
+	if(unlikely(!mutex))
+		return EINVAL;
+
+	mutex->p = (void*)new zth::Mutex();
+	return 0;
+}
+
+/*!
+ * \brief Destroys a mutex.
+ * \details This is a C-wrapper to delete a zth::Mutex.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
+	if(unlikely(!mutex))
+		return EINVAL;
+	if(unlikely(!mutex->p))
+		// Already destroyed.
+		return 0;
+
+	delete reinterpret_cast<zth::Mutex*>(mutex->p);
+	mutex->p = NULL;
+	return 0;
+}
+
+/*!
+ * \brief Locks a mutex.
+ * \details This is a C-wrapper for zth::Mutex::lock().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_lock(zth_mutex_t* mutex) {
+	if(unlikely(!mutex || !mutex->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Mutex*>(mutex->p)->lock();
+	return 0;
+}
+
+/*!
+ * \brief Try to lock a mutex.
+ * \details This is a C-wrapper for zth::Mutex::trylock().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_trylock(zth_mutex_t* mutex) {
+	if(unlikely(!mutex || !mutex->p))
+		return EINVAL;
+
+	return reinterpret_cast<zth::Mutex*>(mutex->p)->trylock() ? 0 : EBUSY;
+}
+
+/*!
+ * \brief Unlock a mutex.
+ * \details This is a C-wrapper for zth::Mutex::unlock().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_unlock(zth_mutex_t* mutex) {
+	if(unlikely(!mutex || !mutex->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Mutex*>(mutex->p)->unlock();
+	return 0;
+}
+
+struct zth_sem_t { void* p; };
+
+/*!
+ * \brief Initializes a semaphore.
+ * \details This is a C-wrapper to create a new zth::Semaphore.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
+	if(unlikely(!sem))
+		return EINVAL;
+
+	sem->p = (void*)new zth::Semaphore(value);
+	return 0;
+}
+
+/*!
+ * \brief Destroys a semaphore.
+ * \details This is a C-wrapper to delete a zth::Semaphore.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
+	if(unlikely(!sem))
+		return EINVAL;
+	if(unlikely(!sem->p))
+		// Already destroyed.
+		return 0;
+
+	delete reinterpret_cast<zth::Semaphore*>(sem->p);
+	sem->p = NULL;
+	return 0;
+}
+
+/*!
+ * \brief Returns the value of a semaphore.
+ * \details This is a C-wrapper for zth::Semaphore::value().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_getvalue(zth_sem_t *__restrict__ sem, size_t *__restrict__ value) {
+	if(unlikely(!sem || !sem->p || !value))
+		return EINVAL;
+
+	*value = reinterpret_cast<zth::Semaphore*>(sem->p)->value();
+	return 0;
+}
+
+#ifndef EOVERFLOW
+#  define EOVERFLOW EAGAIN
+#endif
+
+/*!
+ * \brief Increments a semaphore.
+ * \details This is a C-wrapper for zth::Mutex::release() of 1.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) {
+	if(unlikely(!sem || !sem->p))
+		return EINVAL;
+
+	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
+	if(unlikely(s->value() == std::numeric_limits<size_t>::max()))
+		return EOVERFLOW;
+
+	s->release();
+	return 0;
+}
+
+/*!
+ * \brief Decrements (or wait for) a semaphore.
+ * \details This is a C-wrapper for zth::Mutex::acquire() of 1.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_wait(zth_sem_t* sem) {
+	if(unlikely(!sem || !sem->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Semaphore*>(sem->p)->acquire();
+	return 0;
+}
+
+/*!
+ * \brief Try to decrement a semaphore.
+ * \details This is a C-wrapper based on zth::Mutex::acquire().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) {
+	if(unlikely(!sem || !sem->p))
+		return EINVAL;
+
+	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
+	if(unlikely(s->value() <= 0))
+		return EAGAIN;
+
+	s->acquire();
+	return 0;
+}
+
+struct zth_cond_t { void* p; };
+
+/*!
+ * \brief Initializes a condition.
+ * \details This is a C-wrapper to create a new zth::Signal.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
+	if(unlikely(!cond))
+		return EINVAL;
+
+	cond->p = (void*)new zth::Signal();
+	return 0;
+}
+
+/*!
+ * \brief Destroys a condition.
+ * \details This is a C-wrapper to delete a zth::Signal.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
+	if(unlikely(!cond))
+		return EINVAL;
+	if(unlikely(!cond->p))
+		// Already destroyed.
+		return 0;
+
+	delete reinterpret_cast<zth::Signal*>(cond->p);
+	cond->p = NULL;
+	return 0;
+}
+
+/*!
+ * \brief Signals one fiber waiting for the condition.
+ * \details This is a C-wrapper for zth::Signal::signal().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_signal(zth_cond_t* cond) {
+	if(unlikely(!cond || !cond->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Signal*>(cond->p)->signal();
+	return 0;
+}
+
+/*!
+ * \brief Signals all fibers waiting for the condition.
+ * \details This is a C-wrapper for zth::Signal::signalAll().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) {
+	if(unlikely(!cond || !cond->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Signal*>(cond->p)->signalAll();
+	return 0;
+}
+
+/*!
+ * \brief Wait for a condition.
+ * \details This is a C-wrapper for zth::Signal::wait().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_wait(zth_cond_t* cond) {
+	if(unlikely(!cond || !cond->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Signal*>(cond->p)->wait();
+	return 0;
+}
+
+struct zth_future_t { void* p; };
+typedef zth::Future<uintptr_t> zth_future_t_type;
+
+/*!
+ * \brief Initializes a future.
+ * \details This is a C-wrapper to create a new zth::Future.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
+	if(unlikely(!future))
+		return EINVAL;
+
+	future->p = (void*)new zth_future_t_type();
+	return 0;
+}
+
+/*!
+ * \brief Destroys a future.
+ * \details This is a C-wrapper to delete a zth::Future.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
+	if(unlikely(!future))
+		return EINVAL;
+	if(unlikely(!future->p))
+		// Already destroyed.
+		return 0;
+
+	delete reinterpret_cast<zth_future_t_type*>(future->p);
+	future->p = NULL;
+	return 0;
+}
+
+/*!
+ * \brief Checks if a future was already set.
+ * \details This is a C-wrapper for zth::Future::valid().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future) {
+	if(unlikely(!future || !future->p))
+		return EINVAL;
+
+	return reinterpret_cast<zth_future_t_type*>(future->p)->valid() ? 0 : EAGAIN;
+}
+
+/*!
+ * \brief Sets a future and signals all waiting fibers.
+ * \details This is a C-wrapper for zth::Future::set().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_t value) {
+	if(unlikely(!future || !future->p))
+		return EINVAL;
+
+	zth_future_t_type* f = reinterpret_cast<zth_future_t_type*>(future->p);
+	if(f->valid())
+		return EAGAIN;
+
+	f->set(value);
+	return 0;
+}
+
+/*!
+ * \brief Wait for and return a future's value.
+ * \details This is a C-wrapper for zth::Future::value().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value) {
+	if(unlikely(!future || !future->p || !value))
+		return EINVAL;
+
+	*value = reinterpret_cast<zth_future_t_type*>(future->p)->value();
+	return 0;
+}
+
+/*!
+ * \brief Wait for a future.
+ * \details This is a C-wrapper for zth::Future::wait().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future) {
+	if(unlikely(!future || !future->p))
+		return EINVAL;
+
+	reinterpret_cast<zth_future_t_type*>(future->p)->wait();
+	return 0;
+}
+
+#else // !__cplusplus
+
+struct zth_mutex_t { void* p; };
+ZTH_EXPORT int zth_mutex_init(zth_mutex_t* mutex);
+ZTH_EXPORT int zth_mutex_destroy(zth_mutex_t* mutex);
+ZTH_EXPORT int zth_mutex_lock(zth_mutex_t* mutex);
+ZTH_EXPORT int zth_mutex_trylock(zth_mutex_t* mutex);
+ZTH_EXPORT int zth_mutex_unlock(zth_mutex_t* mutex);
+
+struct zth_sem_t { void* p; };
+ZTH_EXPORT int zth_sem_init(zth_sem_t* sem, size_t value);
+ZTH_EXPORT int zth_sem_destroy(zth_sem_t* sem);
+ZTH_EXPORT int zth_sem_getvalue(zth_sem_t *__restrict__ sem, size_t *__restrict__ value);
+ZTH_EXPORT int zth_sem_post(zth_sem_t* sem);
+ZTH_EXPORT int zth_sem_wait(zth_sem_t* sem);
+ZTH_EXPORT int zth_sem_trywait(zth_sem_t* sem);
+
+struct zth_cond_t { void* p; };
+ZTH_EXPORT int zth_cond_init(zth_cond_t* cond);
+ZTH_EXPORT int zth_cond_destroy(zth_cond_t* cond);
+ZTH_EXPORT int zth_cond_signal(zth_cond_t* cond);
+ZTH_EXPORT int zth_cond_broadcast(zth_cond_t* cond);
+ZTH_EXPORT int zth_cond_wait(zth_cond_t* cond);
+
+struct zth_future_t { void* p; };
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future);
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future);
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future);
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_t value);
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value);
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future);
 
 #endif // __cplusplus
 #endif // __ZTH_SYNC_H

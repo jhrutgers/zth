@@ -81,6 +81,52 @@ Serving 9
 */
 
 /*!
+\example 4_sync.cpp
+\brief Synchronization primitives example.
+This program will print something like this:
+\verbatim
+Other fiber
+fiber 3 outside of critical section
+ { fiber 3 at start of critical section
+fiber 2 outside of critical section
+fiber 1 outside of critical section
+Other fiber
+ } fiber 3 at end of critical section
+ { fiber 2 at start of critical section
+Other fiber
+fiber 3 outside of critical section
+ } fiber 2 at end of critical section
+ { fiber 1 at start of critical section
+Other fiber
+fiber 2 outside of critical section
+ } fiber 1 at end of critical section
+ { fiber 3 at start of critical section
+Other fiber
+fiber 1 outside of critical section
+ } fiber 3 at end of critical section
+ { fiber 2 at start of critical section
+Other fiber
+fiber 3 outside of critical section
+ } fiber 2 at end of critical section
+ { fiber 1 at start of critical section
+Other fiber
+fiber 2 outside of critical section
+ } fiber 1 at end of critical section
+ { fiber 3 at start of critical section
+Other fiber
+fiber 1 outside of critical section
+ } fiber 3 at end of critical section
+ { fiber 2 at start of critical section
+Other fiber
+ } fiber 2 at end of critical section
+ { fiber 1 at start of critical section
+Other fiber
+ } fiber 1 at end of critical section
+Other fiber
+\endverbatim
+*/
+
+/*!
 \example 9_c_api.c
 \brief C-API example.
 */
