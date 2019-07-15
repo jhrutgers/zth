@@ -48,17 +48,23 @@ namespace zth {
 
 	class Backtrace {
 	public:
-		static size_t const maxDepth = 32;
-		Backtrace(size_t skip = 0);
+		Backtrace(size_t skip = 0, size_t maxDepth = 128);
 		Fiber* fiber() const { return m_fiber; }
 		uint64_t fiberId() const { return m_fiberId; }
+		std::vector<void*> const& bt() const { return m_bt; }
+		bool truncated() const { return m_truncated; }
+		Timestamp const& t0() const { return m_t0; }
+		Timestamp const& t1() const { return m_t1; }
+		void printPartial(size_t start, ssize_t end = -1) const;
 		void print() const;
+		void printDelta(Backtrace const& other) const;
 	private:
+		Timestamp m_t0;
+		Timestamp m_t1;
 		Fiber* m_fiber;
 		uint64_t m_fiberId;
-		size_t m_depth;
-		void* m_bt[maxDepth];
-		void* m_sp;
+		std::vector<void*> m_bt;
+		bool m_truncated;
 	};
 
 	/*!

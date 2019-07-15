@@ -127,6 +127,11 @@ Other fiber
 */
 
 /*!
+\example 5_perf.cpp
+\brief perf example.
+*/
+
+/*!
 \example 9_c_api.c
 \brief C-API example.
 */

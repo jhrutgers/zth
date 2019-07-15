@@ -438,12 +438,13 @@ void perf_flushEventBuffer() {
 		perfFiber->flushEventBuffer();
 }
 
-Backtrace::Backtrace(size_t skip)
-	: m_depth()
+Backtrace::Backtrace(size_t skip, size_t maxDepth)
+	: m_t0(Timestamp::now())
 {
 	Worker* worker = Worker::currentWorker();
 	m_fiber = worker ? worker->currentFiber() : NULL;
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
+	m_truncated = true;
 
 #ifdef ZTH_HAVE_LIBUNWIND
 	unw_context_t uc;
@@ -460,20 +461,31 @@ Backtrace::Backtrace(size_t skip)
 		if(depth == 0) {
 			unw_word_t sp;
 			unw_get_reg(&cursor, UNW_REG_SP, &sp);
-			m_sp = (void*)sp;
 		}
 
 		unw_word_t ip;
 		unw_get_reg(&cursor, UNW_REG_IP, &ip);
-		m_bt[depth++] = (void*)ip;
+		m_bt.push_back((void*)ip);
 	}
 
-	m_depth = depth;
+	m_truncated = depth == maxDepth;
 #endif
+
+	m_t1 = Timestamp::now();
 }
 
-void Backtrace::print() const {
+void Backtrace::printPartial(size_t start, ssize_t end) const {
 #ifndef ZTH_OS_WINDOWS
+	if(bt().size() == 0)
+		return;
+	if(end < 0) {
+		if(-end > (ssize_t)bt().size())
+			return;
+		end = (ssize_t)bt().size() + end;
+	}
+	if(start > (size_t)end)
+		return;
+
 #ifdef ZTH_OS_MAC
 	char atos[256];
 	FILE* atosf = NULL;
@@ -484,30 +496,27 @@ void Backtrace::print() const {
 	}
 #endif
 	
-	printf("Backtrace of fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
-	fflush(stdout);
-
 	char** syms =
 #ifdef ZTH_OS_MAC
 		!atosf ? NULL :
 #endif
-		backtrace_symbols(m_bt, (int)m_depth);
+		backtrace_symbols(&bt()[start], (int)end - start + 1);
 
-	for(size_t i = 0; i < m_depth; i++) {
+	for(size_t i = start; i <= (size_t)end; i++) {
 #ifdef ZTH_OS_MAC
 		if(atosf) {
-			fprintf(atosf, "%p\n", m_bt[i]);
+			fprintf(atosf, "%p\n", bt()[i]);
 			continue;
 		}
 #endif
 
 		Dl_info info;
-		if(dladdr(m_bt[i], &info)) {
+		if(dladdr(bt()[i], &info)) {
 			int status;
 			char* demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
 			if(status == 0 && demangled) {
-				printf("%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)m_bt[i], 
-					demangled, (uintptr_t)m_bt[i] - (uintptr_t)info.dli_saddr);
+				printf("%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i], 
+					demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr);
 				
 				free(demangled);
 				continue;
@@ -517,7 +526,7 @@ void Backtrace::print() const {
 		if(syms)
 			printf("%s\n", syms[i]);
 		else
-			printf("%-3zd 0x%0*" PRIxPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)m_bt[i]);
+			printf("%-3zd 0x%0*" PRIxPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
 	}
 	
 	if(syms)
@@ -527,12 +536,54 @@ void Backtrace::print() const {
 	if(atosf)
 		pclose(atosf);
 #endif
+#endif
+}
 
-	if(m_depth == maxDepth)
+void Backtrace::print() const {
+	printf("Backtrace of fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
+	if(bt().size() > 0)
+		printPartial(0, bt().size() - 1);
+
+	if(truncated())
 		printf("<truncated>\n");
 	else
 		printf("<end>\n");
-#endif
+}
+
+void Backtrace::printDelta(Backtrace const& other) const {
+	// Make sure other was first.
+	if(other.t0() > t0()) {
+		other.printDelta(*this);
+		return;
+	}
+
+	TimeInterval dt = t0() - other.t1();
+
+	if(other.fiberId() != fiberId() ||
+		other.truncated() || truncated())
+	{
+		printf("Execution from:\n");
+		other.print();
+		printf("to:\n");
+		print();
+		printf("took %s\n", dt.str().c_str());
+		return;
+	}
+
+	// Find common base
+	ssize_t common = 0;
+	while(bt()[bt().size() - 1 - common] == other.bt()[other.bt().size() - 1 - common])
+		common++;
+
+	printf("Execution from fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
+	other.printPartial(0, -common - 1);
+	printf("to:\n");
+	printPartial(0, -common - 1);
+	if(common > 0) {
+		printf("having in common:\n");
+		other.printPartial(other.bt().size() - (size_t)common);
+	}
+	printf("took %s\n", dt.str().c_str());
 }
 
 } // namespace
