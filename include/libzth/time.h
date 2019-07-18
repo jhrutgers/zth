@@ -146,11 +146,19 @@ namespace zth {
 			add(TimeInterval(t.ts().tv_sec, t.ts().tv_nsec, !t.isNegative()));
 		}
 
+		void mul(double x) {
+			*this = TimeInterval(s() * x);
+		}
+
 		TimeInterval& operator+=(TimeInterval const& rhs) { add(rhs); return *this; }
 		TimeInterval operator+(TimeInterval const& rhs) const { TimeInterval ti(*this); ti += rhs; return ti; }
 		TimeInterval& operator-=(TimeInterval const& rhs) { sub(rhs); return *this; }
 		TimeInterval operator-(TimeInterval const& rhs) const { TimeInterval ti(*this); ti -= rhs; return ti; }
 		TimeInterval operator-() const { return TimeInterval(ts().tv_sec, ts().tv_nsec, !isNegative()); }
+		TimeInterval& operator*=(double x) { mul(x); return *this; }
+		TimeInterval operator*(double x) const { return TimeInterval(s() * x); }
+		TimeInterval& operator/=(double x) { mul(1.0 / x); return *this; }
+		TimeInterval operator/(double x) const { return TimeInterval(s() / x); }
 
 		std::string str() const {
 			std::string res;

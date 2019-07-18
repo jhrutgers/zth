@@ -48,6 +48,11 @@ variables after startup has no effect to libzth's behavior.
 	When set to 1, the perf VCD logs will contain all calls to Zth's special
 	functions.  Enabled by default.
 
+* `ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN`
+	When set to 1, check at every context switch if the timeslice was overrun
+	significantly.  Only the longest overrun is reported.  Enabled by default
+	in the debug build, not available in release builds.
+
 
 ## License
 

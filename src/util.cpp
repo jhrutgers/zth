@@ -90,9 +90,9 @@ void abort(char const* fmt, ...)
  */
 void abortv(char const* fmt, va_list args)
 {
-	log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorDebugPrint ? "\x1b[41;1;37;1m" : "");
+	log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorLog ? "\x1b[41;1;37;1m" : "");
 	logv(fmt, args);
-	log("  ***  %s\n\n", zth::Config::EnableColorDebugPrint ? "\x1b[0m" : "");
+	log("  ***  %s\n\n", zth::Config::EnableColorLog ? "\x1b[0m" : "");
 
 	Backtrace().print();
 	::abort();
@@ -123,15 +123,15 @@ void log_colorv(int color, char const* fmt, va_list args)
 #ifdef ZTH_OS_WINDOWS
 	bool do_color = false;
 #else
-	static bool do_color = isatty(fileno(stdout));
+	static bool do_color = Config::EnableColorLog && isatty(fileno(stdout));
 #endif
 
-	if(do_color)
+	if(do_color && color > 0)
 		log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
 
 	logv(fmt, args);
 	
-	if(do_color)
+	if(do_color && color > 0)
 		log("\x1b[0m");
 }
 

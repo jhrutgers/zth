@@ -474,7 +474,7 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	m_t1 = Timestamp::now();
 }
 
-void Backtrace::printPartial(size_t start, ssize_t end) const {
+void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 #ifndef ZTH_OS_WINDOWS
 	if(bt().size() == 0)
 		return;
@@ -515,7 +515,8 @@ void Backtrace::printPartial(size_t start, ssize_t end) const {
 			int status;
 			char* demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
 			if(status == 0 && demangled) {
-				printf("%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i], 
+				log_color(color, "%s%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "",
+					i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i], 
 					demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr);
 				
 				free(demangled);
@@ -524,9 +525,9 @@ void Backtrace::printPartial(size_t start, ssize_t end) const {
 		}
 
 		if(syms)
-			printf("%s\n", syms[i]);
+			log_color(color, "%s%s\n", color >= 0 ? ZTH_DBG_PREFIX : "", syms[i]);
 		else
-			printf("%-3zd 0x%0*" PRIxPTR "\n", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
+			log_color(color, "%s%-3zd 0x%0*" PRIxPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
 	}
 	
 	if(syms)
@@ -539,21 +540,21 @@ void Backtrace::printPartial(size_t start, ssize_t end) const {
 #endif
 }
 
-void Backtrace::print() const {
-	printf("Backtrace of fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
+void Backtrace::print(int color) const {
+	log_color(color, "%sBacktrace of fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
 	if(bt().size() > 0)
-		printPartial(0, bt().size() - 1);
+		printPartial(0, bt().size() - 1, color);
 
 	if(truncated())
-		printf("<truncated>\n");
+		log_color(color, "%s<truncated>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
 	else
-		printf("<end>\n");
+		log_color(color, "%s<end>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
 }
 
-void Backtrace::printDelta(Backtrace const& other) const {
+void Backtrace::printDelta(Backtrace const& other, int color) const {
 	// Make sure other was first.
 	if(other.t0() > t0()) {
-		other.printDelta(*this);
+		other.printDelta(*this, color);
 		return;
 	}
 
@@ -562,11 +563,11 @@ void Backtrace::printDelta(Backtrace const& other) const {
 	if(other.fiberId() != fiberId() ||
 		other.truncated() || truncated())
 	{
-		printf("Execution from:\n");
-		other.print();
-		printf("to:\n");
-		print();
-		printf("took %s\n", dt.str().c_str());
+		log_color(color, "%sExecuted from:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
+		other.print(color);
+		log_color(color, "%sto:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
+		print(color);
+		log_color(color, "%stook %s\n", color >= 0 ? ZTH_DBG_PREFIX : "", dt.str().c_str());
 		return;
 	}
 
@@ -575,15 +576,15 @@ void Backtrace::printDelta(Backtrace const& other) const {
 	while(bt()[bt().size() - 1 - common] == other.bt()[other.bt().size() - 1 - common])
 		common++;
 
-	printf("Execution from fiber %p #%" PRIu64 ":\n", m_fiber, m_fiberId);
-	other.printPartial(0, -common - 1);
-	printf("to:\n");
-	printPartial(0, -common - 1);
+	log_color(color, "%sExecution from fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
+	other.printPartial(0, -common - 1, color);
+	log_color(color, "%sto:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
+	printPartial(0, -common - 1, color);
 	if(common > 0) {
-		printf("having in common:\n");
-		other.printPartial(other.bt().size() - (size_t)common);
+		log_color(color, "%shaving in common:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
+		other.printPartial(other.bt().size() - (size_t)common, color);
 	}
-	printf("took %s\n", dt.str().c_str());
+	log_color(color, "%stook %s\n", color >= 0 ? ZTH_DBG_PREFIX : "", dt.str().c_str());
 }
 
 } // namespace

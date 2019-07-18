@@ -98,7 +98,10 @@ namespace zth {
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	public:
 		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
-		virtual ~Synchronizer() { zth_dbg(sync, "[%s] Destruct", id_str()); }
+		virtual ~Synchronizer() {
+			zth_dbg(sync, "[%s] Destruct", id_str());
+			zth_assert(m_queue.empty());
+		}
 
 	protected:
 		void block() {
@@ -113,21 +116,25 @@ namespace zth {
 			w->schedule();
 		}
 
-		void unblockFirst() {
+		bool unblockFirst() {
+			if(m_queue.empty())
+				return false;
+
 			Worker* w;
 			getContext(&w, NULL);
-
-			if(m_queue.empty())
-				return;
 
 			Fiber& f = m_queue.front();
 			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 			m_queue.pop_front();
 			f.wakeup();
 			w->add(&f);
+			return true;
 		}
 
-		void unblockAll() {
+		bool unblockAll() {
+			if(m_queue.empty())
+				return false;
+
 			Worker* w;
 			getContext(&w, NULL);
 
@@ -139,6 +146,7 @@ namespace zth {
 				f.wakeup();
 				w->add(&f);
 			}
+			return true;
 		}
 
 	private:
@@ -224,11 +232,35 @@ namespace zth {
 	 */
 	class Signal : public Synchronizer {
 	public:
-		Signal(char const* name = "Signal") : Synchronizer(name) {}
+		Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
 		virtual ~Signal() {}
-		void wait() { block(); }
-		void signal() { unblockFirst(); }
-		void signalAll() { unblockAll(); }
+
+		void wait() {
+			if(!m_signalled)
+				block();
+			if(m_signalled > 0)
+				m_signalled--;
+		}
+
+		void signal(bool queue = true) {
+			if(!unblockFirst() && queue && m_signalled >= 0) {
+				m_signalled++;
+				zth_assert(m_signalled > 0); // Otherwise, it wrapped around, which is probably not what you want.
+			}
+		}
+
+		void signalAll(bool queue = true) {
+			unblockAll();
+			if(queue)
+				m_signalled = -1;
+		}
+
+		void reset() {
+			m_signalled = 0;
+		}
+
+	private:
+		int m_signalled;
 	};
 
 	/*!

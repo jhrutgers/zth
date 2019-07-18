@@ -65,6 +65,7 @@ namespace zth {
 			, m_context()
 			, m_fls()
 			, m_timeslice(Config::MinTimeslice_s())
+			, m_dtMax(Config::CheckTimesliceOverrun ? Config::MinTimeslice_s() * Config::TimesliceOverrunFactorReportThreshold : 0)
 		{
 			setState(New);
 			zth_assert(m_entry);
@@ -125,7 +126,7 @@ namespace zth {
 			return 0;
 		}
 
-		int run(Fiber& from, Timestamp const& now = Timestamp::now()) {
+		int run(Fiber& from, Timestamp now = Timestamp::now()) {
 			int res = 0;
 
 		again:
@@ -142,8 +143,17 @@ namespace zth {
 					// Update administration of the current fiber.
 					TimeInterval dt = now - from.m_startRun;
 					from.m_totalTime += dt;
+
 					if(from.state() == Running)
 						from.setState(Ready, now);
+
+					if(unlikely(zth_config(CheckTimesliceOverrun) && from.m_dtMax < dt)) {
+						perf_mark("timeslice overrun reported");
+						from.m_dtMax = dt;
+						log_color(Config::Print_perf, ZTH_DBG_PREFIX "Long timeslice by %s of %s:\n", from.id_str(), dt.str().c_str());
+						Backtrace().print(Config::Print_perf);
+						now = Timestamp::now();
+					}
 
 					// Hand over to this.
 					m_startRun = now;
@@ -328,6 +338,7 @@ namespace zth {
 		Timestamp m_startRun;
 		Timestamp m_stateEnd;
 		TimeInterval m_timeslice;
+		TimeInterval m_dtMax;
 		std::list<std::pair<void(*)(Fiber&,void*),void*> > m_cleanup;
 	};
 

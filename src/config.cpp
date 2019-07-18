@@ -48,6 +48,7 @@ bool config(int env, bool whenUnset) {
 	case Env::EnableDebugPrint:			{ static bool const e = config("ZTH_CONFIG_ENABLE_DEBUG_PRINT", whenUnset); return e; }
 	case Env::DoPerfEvent:				{ static bool const e = config("ZTH_CONFIG_DO_PERF_EVENT", whenUnset); return e; }
 	case Env::PerfSyscall:				{ static bool const e = config("ZTH_CONFIG_PERF_SYSCALL", whenUnset); return e; }
+	case Env::CheckTimesliceOverrun:	{ static bool const e = config("ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN", whenUnset); return e; }
 	default:
 		return whenUnset;
 	}

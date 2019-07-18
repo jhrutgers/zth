@@ -55,9 +55,9 @@ namespace zth {
 		bool truncated() const { return m_truncated; }
 		Timestamp const& t0() const { return m_t0; }
 		Timestamp const& t1() const { return m_t1; }
-		void printPartial(size_t start, ssize_t end = -1) const;
-		void print() const;
-		void printDelta(Backtrace const& other) const;
+		void printPartial(size_t start, ssize_t end = -1, int color = -1) const;
+		void print(int color = -1) const;
+		void printDelta(Backtrace const& other, int color = -1) const;
 	private:
 		Timestamp m_t0;
 		Timestamp m_t1;

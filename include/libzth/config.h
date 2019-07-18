@@ -30,7 +30,7 @@
 #include <stdint.h>
 
 namespace zth {
-	struct Env { enum { EnableDebugPrint, DoPerfEvent, PerfSyscall }; };
+	struct Env { enum { EnableDebugPrint, DoPerfEvent, PerfSyscall, CheckTimesliceOverrun }; };
 	bool config(int env /* one of Env::* */, bool whenUnset);
 
 	/*!
@@ -66,7 +66,7 @@ namespace zth {
 #endif
 
 		static bool const EnableDebugPrint = Debug;
-		static bool const EnableColorDebugPrint =
+		static bool const EnableColorLog =
 #ifdef _WIN32
 			// Default Windows cmd prompt does not support colors.
 			false;
@@ -89,6 +89,8 @@ namespace zth {
 		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = false;
 		static double MinTimeslice_s() { return 1e-4; }
+		static int const TimesliceOverrunFactorReportThreshold = 4;
+		static bool const CheckTimesliceOverrun = Debug;
 		static bool const NamedSynchronizer = EnableDebugPrint && Print_sync > 0;
 
 		static size_t const PerfEventBufferSize = 128;
