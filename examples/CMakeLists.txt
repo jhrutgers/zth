@@ -17,6 +17,7 @@ add_executable(9_c_api 9_c_api.c)
 add_executable(example example.cpp)
 add_executable(socks socks.cpp)
 add_executable(work work.cpp)
+add_executable(daemon_pattern daemon_pattern.cpp)
 
 if(ZTH_HAVE_LIBZMQ)
 	add_executable(zmq zmq.cpp)

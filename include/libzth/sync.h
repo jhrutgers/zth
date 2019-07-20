@@ -165,17 +165,20 @@ namespace zth {
 			while(unlikely(m_locked))
 				block();
 			m_locked = true;
+			zth_dbg(sync, "[%s] Locked", id_str());
 		}
 
 		bool trylock() {
 			if(m_locked)
 				return false;
 			m_locked = true;
+			zth_dbg(sync, "[%s] Locked", id_str());
 			return true;
 		}
 
 		void unlock() {
 			zth_assert(m_locked);
+			zth_dbg(sync, "[%s] Unlocked", id_str());
 			m_locked = false;
 			unblockFirst();
 		}
@@ -193,19 +196,21 @@ namespace zth {
 		virtual ~Semaphore() {}
 
 		void acquire(size_t count = 1) {
-			while(count > 0) {
-				if(count <= m_count) {
-					m_count -= count;
+			size_t remaining = count;
+			while(remaining > 0) {
+				if(remaining <= m_count) {
+					m_count -= remaining;
 					if(m_count > 0)
 						// There might be another one waiting.
 						unblockFirst();
 					return;
 				} else {
-					count -= m_count;
+					remaining -= m_count;
 					m_count = 0;
 					block();
 				}
 			}
+			zth_dbg(sync, "[%s] Acquired %zu", id_str(), count);
 		}
 
 		void release(size_t count = 1) {
@@ -216,6 +221,8 @@ namespace zth {
 				m_count = std::numeric_limits<size_t>::max();
 			else
 				m_count += count;
+			
+			zth_dbg(sync, "[%s] Released %zu", id_str(), count);
 
 			if(likely(m_count > 0))
 				unblockFirst();
@@ -238,18 +245,27 @@ namespace zth {
 		void wait() {
 			if(!m_signalled)
 				block();
+			else
+				// Do a yield() here, as one might rely on the signal to block
+				// regularly when the signal is used in a loop (see daemon
+				// pattern).
+				yield();
+
 			if(m_signalled > 0)
 				m_signalled--;
 		}
 
-		void signal(bool queue = true) {
+		void signal(bool queue = true, bool queueEveryTime = false) {
+			zth_dbg(sync, "[%s] Signal", id_str());
 			if(!unblockFirst() && queue && m_signalled >= 0) {
-				m_signalled++;
+				if(m_signalled == 0 || queueEveryTime)
+					m_signalled++;
 				zth_assert(m_signalled > 0); // Otherwise, it wrapped around, which is probably not what you want.
 			}
 		}
 
 		void signalAll(bool queue = true) {
+			zth_dbg(sync, "[%s] Signal all", id_str());
 			unblockAll();
 			if(queue)
 				m_signalled = -1;
@@ -296,6 +312,7 @@ namespace zth {
 #endif
 			new(m_data) type(value);
 			m_valid = true;
+			zth_dbg(sync, "[%s] Set", id_str());
 			unblockAll();
 		}
 		Future& operator=(type const& value) { set(value); return *this; }
@@ -329,11 +346,42 @@ namespace zth {
 			if(valid())
 				return;
 			m_valid = true;
+			zth_dbg(sync, "[%s] Set", id_str());
 			unblockAll();
 		}
 
 	private:
 		bool m_valid;
+	};
+
+	class Gate : public Synchronizer {
+	public:
+		Gate(size_t count, char const* name = "Gate")
+			: Synchronizer(name), m_count(count), m_current() {}
+		virtual ~Gate() {}
+
+		bool pass() {
+			zth_dbg(sync, "[%s] Pass", id_str());
+			if(++m_current >= count()) {
+				m_current -= count();
+				unblockAll();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		void wait() {
+			if(!pass())
+				block();
+		}
+
+		size_t count() const { return m_count; }
+		size_t current() const { return m_current; }
+
+	private:
+		size_t const m_count;
+		size_t m_current;
 	};
 
 } // namespace
@@ -663,16 +711,74 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future) {
 	return 0;
 }
 
+struct zth_gate_t { void* p; };
+
+/*!
+ * \brief Initializes a gate.
+ * \details If all participants call #zth_gate_wait(), the gate behaves the same as a \c pthread_barrier_t would.
+ * \details This is a C-wrapper to create a new zth::Gate.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count) {
+	if(unlikely(!gate))
+		return EINVAL;
+
+	gate->p = (void*)new zth::Gate(count);
+	return 0;
+}
+
+/*!
+ * \brief Destroys a gate.
+ * \details This is a C-wrapper to delete a zth::Gate.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
+	if(unlikely(!gate))
+		return EINVAL;
+	if(unlikely(!gate->p))
+		// Already destroyed.
+		return 0;
+
+	delete reinterpret_cast<zth::Gate*>(gate->p);
+	gate->p = NULL;
+	return 0;
+}
+
+/*!
+ * \brief Passes a gate.
+ * \details This is a C-wrapper for zth::Gate::pass().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_pass(zth_gate_t* gate) {
+	if(unlikely(!gate || !gate->p))
+		return EINVAL;
+
+	return reinterpret_cast<zth::Gate*>(gate->p)->pass() ? 0 : EBUSY;
+}
+
+/*!
+ * \brief Wait for a gate.
+ * \details This is a C-wrapper for zth::Gate::wait().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) {
+	if(unlikely(!gate || !gate->p))
+		return EINVAL;
+
+	reinterpret_cast<zth::Gate*>(gate->p)->wait();
+	return 0;
+}
+
 #else // !__cplusplus
 
-struct zth_mutex_t { void* p; };
+typedef struct { void* p; } zth_mutex_t;
 ZTH_EXPORT int zth_mutex_init(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_destroy(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_lock(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_trylock(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_unlock(zth_mutex_t* mutex);
 
-struct zth_sem_t { void* p; };
+typedef struct { void* p; } zth_sem_t;
 ZTH_EXPORT int zth_sem_init(zth_sem_t* sem, size_t value);
 ZTH_EXPORT int zth_sem_destroy(zth_sem_t* sem);
 ZTH_EXPORT int zth_sem_getvalue(zth_sem_t *__restrict__ sem, size_t *__restrict__ value);
@@ -680,20 +786,26 @@ ZTH_EXPORT int zth_sem_post(zth_sem_t* sem);
 ZTH_EXPORT int zth_sem_wait(zth_sem_t* sem);
 ZTH_EXPORT int zth_sem_trywait(zth_sem_t* sem);
 
-struct zth_cond_t { void* p; };
+typedef struct { void* p; } zth_cond_t;
 ZTH_EXPORT int zth_cond_init(zth_cond_t* cond);
 ZTH_EXPORT int zth_cond_destroy(zth_cond_t* cond);
 ZTH_EXPORT int zth_cond_signal(zth_cond_t* cond);
 ZTH_EXPORT int zth_cond_broadcast(zth_cond_t* cond);
 ZTH_EXPORT int zth_cond_wait(zth_cond_t* cond);
 
-struct zth_future_t { void* p; };
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future);
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future);
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future);
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_t value);
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value);
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future);
+typedef struct { void* p; } zth_future_t;
+ZTH_EXPORT int zth_future_init(zth_future_t* future);
+ZTH_EXPORT int zth_future_destroy(zth_future_t* future);
+ZTH_EXPORT int zth_future_valid(zth_future_t* future);
+ZTH_EXPORT int zth_future_set(zth_future_t* future, uintptr_t value);
+ZTH_EXPORT int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value);
+ZTH_EXPORT int zth_future_wait(zth_future_t* future);
+
+typedef struct { void* p; } zth_gate_t;
+ZTH_EXPORT int zth_gate_init(zth_gate_t* gate, size_t count);
+ZTH_EXPORT int zth_gate_destroy(zth_gate_t* gate);
+ZTH_EXPORT int zth_gate_pass(zth_gate_t* gate);
+ZTH_EXPORT int zth_gate_wait(zth_gate_t* gate);
 
 #endif // __cplusplus
 #endif // __ZTH_SYNC_H

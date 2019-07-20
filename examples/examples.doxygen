@@ -146,3 +146,8 @@ Other fiber
 \brief 0MQ integration
 */
 
+/*!
+\example daemon_pattern.cpp
+\brief Pattern how to use and trigger a background daemon fiber.
+*/
+

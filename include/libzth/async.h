@@ -107,7 +107,7 @@ namespace zth {
 	 * void foo() { ... }
 	 * zth_fiber(foo)
 	 *
-	 * int main_fiber(int argc, char** argv) {
+	 * void main_fiber(int argc, char** argv) {
 	 *     async foo() << zth::setStackSize(0x10000);
 	 * }
 	 * \endcode
@@ -152,6 +152,35 @@ namespace zth {
 #else
 		char const* m_name;
 #endif
+	};
+	
+	/*!
+	 * \brief Makes the fiber pass the given gate upon exit.
+	 *
+	 * Example:
+	 * \code
+	 * void foo() { ... }
+	 * zth_fiber(foo)
+	 *
+	 * void main_fiber(int argc, char** argv) {
+	 *     zth::Gate gate(3);
+	 *     async foo() << zth::passOnExit(gate);
+	 *     async foo() << zth::passOnExit(gate);
+	 *     gate.wait();
+	 *     // If we get here, both foo()s have finished.
+	 * }
+	 * \endcode
+	 *
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	struct passOnExit : public FiberManipulator {
+	public:
+		passOnExit(Gate& gate) : m_gate(&gate) {}
+	protected:
+		static void cleanup(Fiber& f, void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
+		virtual void apply(Fiber& fiber) const { fiber.addCleanup(&cleanup, (void*)m_gate); }
+	private:
+		Gate* m_gate;
 	};
 
 	template <typename T>
