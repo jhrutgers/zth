@@ -203,21 +203,49 @@ namespace zth {
 		va_list args; va_start(args, fmt); logv(fmt, args); va_end(args); }
 
 	/*!
-	 * \brief Format like \c sprintf(), but save the result in an \c std::string.
+	 * \brief Format like \c vsprintf(), but save the result in an \c std::string.
 	 */
-	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline std::string format(char const* fmt, ...) {
-		std::string res;
-		char* buf = NULL;
-		va_list args;
-		va_start(args, fmt);
-		if(vasprintf(&buf, fmt, args) > 0) {
-			res = buf;
-			free(buf);
+	__attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline std::string formatv(char const* fmt, va_list args) {
+		int const maxstack = (int)sizeof(void*) * 8;
+
+		char sbuf[maxstack];
+		char* hbuf = NULL;
+		char* buf = sbuf;
+
+		va_list args2;
+		va_copy(args2, args);
+		int c = vsnprintf(sbuf, maxstack, fmt, args);
+
+		if(c >= maxstack) {
+			hbuf = (char*)malloc(c + 1);
+			if(unlikely(!hbuf))
+				c = 0;
+			else {
+				int c2 = vsprintf(hbuf, fmt, args2);
+				assert(c2 <= c);
+				c = c2;
+			}
 		}
-		va_end(args);
+
+		va_end(args2);
+
+		std::string res(buf, (size_t)(c < 0 ? 0 : c));
+		if(hbuf)
+			free(hbuf);
 		return res;
 	}
 
+	/*!
+	 * \brief Format like \c sprintf(), but save the result in an \c std::string.
+	 */
+	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline std::string format(char const* fmt, ...) {
+		va_list args;
+		va_start(args, fmt);
+		std::string res = formatv(fmt, args);
+		va_end(args);
+		return res;
+	}
+	
 	/*!
 	 * \brief Return a string like \c strerror() does, but as a \c std::string.
 	 */
