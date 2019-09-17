@@ -72,6 +72,14 @@
 #  error Unsupported compiler. Please use gcc.
 #endif
 
+#if defined(__cplusplus) && __cplusplus >= 201703L
+#  define ZTH_FALLTHROUGH [[fallthrough]];
+#elif GCC_VERSION >= 70000
+#  define ZTH_FALLTHROUGH __attribute__ ((fallthrough));
+#else
+#  define ZTH_FALLTHROUGH
+#endif
+
 #ifndef ZTH_TLS_DECLARE
 #  undef ZTH_THREADS
 #  define ZTH_THREAD 0

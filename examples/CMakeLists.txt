@@ -18,6 +18,8 @@ add_executable(example example.cpp)
 add_executable(socks socks.cpp)
 add_executable(work work.cpp)
 add_executable(daemon_pattern daemon_pattern.cpp)
+add_executable(measure measure.cpp)
+add_executable(fsm fsm.cpp)
 
 if(ZTH_HAVE_LIBZMQ)
 	add_executable(zmq zmq.cpp)
