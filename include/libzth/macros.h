@@ -74,7 +74,7 @@
 
 #if defined(__cplusplus) && __cplusplus >= 201703L
 #  define ZTH_FALLTHROUGH [[fallthrough]];
-#elif GCC_VERSION >= 70000
+#elif GCC_VERSION >= 70000L
 #  define ZTH_FALLTHROUGH __attribute__ ((fallthrough));
 #else
 #  define ZTH_FALLTHROUGH
@@ -142,6 +142,9 @@ ZTH_EXPORT void foo();
 #endif
 */
 
+#if defined(__cplusplus) && __cplusplus < 201103L
+#  define constexpr
+#endif
 
 
 

@@ -377,21 +377,21 @@ namespace zth {
 
 	namespace guards {
 		enum End { end = 0 };
-		template <typename Fsm> bool always(Fsm& fsm) { return true; }
+		template <typename Fsm> TimeInterval always(Fsm& fsm) { return TimeInterval(); }
 	}
 
 	template <typename Fsm>
 	class FsmGuard {
 	public:
-		typedef bool (*Function)(Fsm& fsm);
-		FsmGuard(Function function)
+		typedef TimeInterval (*Function)(Fsm& fsm);
+		constexpr FsmGuard(Function function)
 			: m_function(function)
 		{}
 
 		FsmGuard(guards::End) : m_function() {}
 
-		bool operator()(Fsm& fsm) const { return valid() ? m_function(fsm) : false; }
-		bool valid() const { return m_function; }
+		TimeInterval operator()(Fsm& fsm) const { zth_assert(valid()); return m_function(fsm); }
+		constexpr bool valid() const { return m_function; }
 	private:
 		Function m_function;
 	};
@@ -408,7 +408,7 @@ namespace zth {
 	template <typename Fsm>
 	class FsmFactory {
 	public:
-		FsmFactory(FsmDescription<Fsm>* description)
+		constexpr FsmFactory(FsmDescription<Fsm>* description)
 			: m_description(description)
 			, m_compiled()
 		{} 
@@ -460,7 +460,7 @@ namespace zth {
 	};
 
 	template <typename State_>
-	class Fsm : UniqueID<Fsm<void> > {
+	class Fsm : public UniqueID<Fsm<void> > {
 	protected:
 		enum EvalState { evalCompile, evalInit, evalIdle, evalState, evalRecurse };
 		typedef FsmDescription<Fsm> const* StateAddr;
@@ -550,7 +550,7 @@ namespace zth {
 		bool evalOnce() {
 			StateAddr p = m_state;
 			while(p->guard.valid())
-				if((p++)->guard(*this)) {
+				if((p++)->guard(*this).hasPassed()) {
 					if(p->stateAddr == m_state)
 						// Take this self-loop.
 						return false;

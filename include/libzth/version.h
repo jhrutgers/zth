@@ -33,7 +33,7 @@ namespace zth {
 	 * \brief Returns the version of Zth.
 	 * \ingroup zth_api_cpp_util
 	 */
-	ZTH_EXPORT inline char const* version() {
+	ZTH_EXPORT constexpr inline char const* version() {
 		return ZTH_VERSION;
 	}
 }

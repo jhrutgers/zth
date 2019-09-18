@@ -39,6 +39,14 @@ char const* banner() {
 #ifdef __GNUC__
 		" g++-" ZTH_STRINGIFY(__GNUC__) "." ZTH_STRINGIFY(__GNUC_MINOR__) "." ZTH_STRINGIFY(__GNUC_PATCHLEVEL__)
 #endif
+#if __cplusplus < 201103L
+#elif __cplusplus == 201103L
+		" C++11"
+#elif __cplusplus == 201402L
+		" C++14"
+#else
+		" C++" ZTH_STRINGIFY(__cplusplus)
+#endif
 #ifdef ZTH_OS_LINUX
 		" linux"
 #endif

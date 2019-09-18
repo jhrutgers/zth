@@ -42,7 +42,12 @@ namespace zth {
 	public:
 		static long const BILLION = 1000000000L;
 
-		TimeInterval(time_t s = 0, long ns = 0, bool negative = false)
+		constexpr TimeInterval()
+			: m_t()
+			, m_negative()
+		{}
+
+		TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t()
 			, m_negative(negative)
 		{
@@ -51,7 +56,7 @@ namespace zth {
 			zth_assert(s >= 0);
 		}
 
-		TimeInterval(struct timespec const& ts)
+		constexpr TimeInterval(struct timespec const& ts)
 			: m_t(ts)
 			, m_negative()
 		{}
@@ -84,9 +89,11 @@ namespace zth {
 
 		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
-		bool isNegative() const { return m_negative; }
-		bool isPositive() const { return !isNegative(); }
-		struct timespec const& ts() const { return m_t; }
+		constexpr bool isNegative() const { return m_negative; }
+		constexpr bool isPositive() const { return !isNegative(); }
+		constexpr bool isNull() const { return m_t.tv_sec == 0 && m_t.tv_nsec == 0; }
+		constexpr bool hasPassed() const { return isNegative() || isNull(); }
+		constexpr struct timespec const& ts() const { return m_t; }
 		double s() const {
 			double t = (double)m_t.tv_sec + (double)m_t.tv_nsec * 1e-9;
 			if(m_negative)
@@ -94,22 +101,22 @@ namespace zth {
 			return t;
 		}
 
-		bool isAbsBiggerThan(TimeInterval const& t) const {
+		constexpr bool isAbsBiggerThan(TimeInterval const& t) const {
 			return m_t.tv_sec > t.m_t.tv_sec || (m_t.tv_sec == t.m_t.tv_sec && m_t.tv_nsec > t.m_t.tv_nsec);
 		}
 		
-		bool isBiggerThan(TimeInterval const& t) const {
+		constexpr bool isBiggerThan(TimeInterval const& t) const {
 			return
 				(!m_negative && t.m_negative) || 
 				(!m_negative && !t.m_negative && this->isAbsBiggerThan(t)) ||
 				(m_negative && t.m_negative && t.isAbsBiggerThan(*this));
 		}
 
-		bool operator==(TimeInterval const& rhs) const { return m_t.tv_nsec == rhs.m_t.tv_nsec && m_t.tv_sec == rhs.m_t.tv_sec && m_negative == rhs.m_negative; }
-		bool operator>(TimeInterval const& rhs) const { return this->isBiggerThan(rhs); }
-		bool operator>=(TimeInterval const& rhs) const { return *this == rhs || this->isBiggerThan(rhs); }
-		bool operator<(TimeInterval const& rhs) const { return !(*this >= rhs); }
-		bool operator<=(TimeInterval const& rhs) const { return *this == rhs || !(*this > rhs); }
+		constexpr bool operator==(TimeInterval const& rhs) const { return m_t.tv_nsec == rhs.m_t.tv_nsec && m_t.tv_sec == rhs.m_t.tv_sec && m_negative == rhs.m_negative; }
+		constexpr bool operator>(TimeInterval const& rhs) const { return this->isBiggerThan(rhs); }
+		constexpr bool operator>=(TimeInterval const& rhs) const { return *this == rhs || this->isBiggerThan(rhs); }
+		constexpr bool operator<(TimeInterval const& rhs) const { return !(*this >= rhs); }
+		constexpr bool operator<=(TimeInterval const& rhs) const { return *this == rhs || !(*this > rhs); }
 
 		void add(TimeInterval const& t) {
 			if(t.m_negative == m_negative) {

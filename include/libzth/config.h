@@ -88,7 +88,7 @@ namespace zth {
 		static size_t const DefaultFiberStackSize = 0x20000;
 		static bool const EnableStackGuard = Debug;
 		static bool const ContextSignals = false;
-		static double MinTimeslice_s() { return 1e-4; }
+		constexpr static double MinTimeslice_s() { return 1e-4; }
 		static int const TimesliceOverrunFactorReportThreshold = 4;
 		static bool const CheckTimesliceOverrun = Debug;
 		static bool const NamedSynchronizer = EnableDebugPrint && Print_sync > 0;
