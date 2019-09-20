@@ -49,10 +49,11 @@ namespace zth {
 	public:
 		Waitable() : m_fiber() {}
 		virtual ~Waitable() {}
-		Fiber& fiber() const { zth_assert(m_fiber); return *m_fiber; }
+		Fiber& fiber() const { zth_assert(hasFiber()); return *m_fiber; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) = 0;
 		virtual std::string str() const { return format("Waitable for %s", fiber().str().c_str()); }
 		void setFiber(Fiber& fiber) { m_fiber = &fiber; }
+		bool hasFiber() const { return m_fiber; }
 	private:
 		Fiber* m_fiber;
 	};
@@ -74,8 +75,8 @@ namespace zth {
 	template <typename F>
 	class PolledWaiting : public TimedWaitable {
 	public:
-		PolledWaiting(F f, TimeInterval const& interval)
-			: TimedWaitable(Timestamp::now() + interval), m_f(f), m_interval(interval) {}
+		PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
+			: TimedWaitable(), m_f(f) { setInterval(interval); }
 		virtual ~PolledWaiting() {}
 
 		virtual bool poll(Timestamp const& now = Timestamp::now()) {
@@ -91,9 +92,13 @@ namespace zth {
 		}
 
 		TimeInterval const& interval() const { return m_interval; }
+		void setInterval(TimeInterval const& interval) {
+			m_interval = interval;
+			setTimeout(Timestamp::now() + interval);
+		}
 	private:
 		F m_f;
-		TimeInterval const m_interval;
+		TimeInterval m_interval;
 	};
 
 	template <typename C>
@@ -172,6 +177,8 @@ namespace zth {
 		virtual ~Waiter() {}
 
 		void wait(TimedWaitable& w);
+		void scheduleTask(TimedWaitable& w);
+		void unscheduleTask(TimedWaitable& w);
 #ifdef ZTH_HAVE_POLL
 		void checkFdList();
 		int waitFd(AwaitFd& w);
@@ -199,7 +206,10 @@ namespace zth {
 	template <typename F> void waitUntil(F f, TimeInterval const& pollInterval) {
 		PolledWaiting<F> w(f, pollInterval); waitUntil(w); }
 	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
-		PolledWaiting<C> w(that, f, pollInterval); waitUntil(w); }
+		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
+	
+	void scheduleTask(TimedWaitable& w);
+	void unscheduleTask(TimedWaitable& w);
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber

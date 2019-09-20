@@ -42,19 +42,29 @@ namespace zth {
 	public:
 		static long const BILLION = 1000000000L;
 
+		constexpr static TimeInterval infinity() { return TimeInterval(std::numeric_limits<time_t>::max()); }
+		constexpr static TimeInterval null() { return TimeInterval(); }
+
 		constexpr TimeInterval()
 			: m_t()
 			, m_negative()
 		{}
 
+#if __cplusplus >= 201103L
+		constexpr TimeInterval(time_t s, long ns = 0, bool negative = false)
+			: m_t{s, ns}
+			, m_negative(negative)
+		{}
+#else
 		TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t()
 			, m_negative(negative)
 		{
 			m_t.tv_sec = s;
 			m_t.tv_nsec = ns;
-			zth_assert(s >= 0);
+			zth_assert(isNormal());
 		}
+#endif
 
 		constexpr TimeInterval(struct timespec const& ts)
 			: m_t(ts)
@@ -73,11 +83,12 @@ namespace zth {
 			} else {
 				double dt_ = (double)dt;
 
-				zth_assert(
-					dt_ == dt_ && // Should not be NaN
-					std::fabs(dt_) < (double)(std::numeric_limits<time_t>::max() / 2 - 1));
+				zth_assert(dt_ == dt_); // Should not be NaN
 
-				m_t.tv_sec = (time_t)std::fabs(dt_);
+				if(std::fabs(dt_) > (double)(std::numeric_limits<time_t>::max() / 2 - 1))
+					m_t.tv_sec = std::numeric_limits<time_t>::max();
+				else
+					m_t.tv_sec = (time_t)std::fabs(dt_);
 				m_t.tv_nsec = (long)(std::fmod(std::fabs(dt_), 1.0) * 1e9);
 
 				if(m_t.tv_nsec >= BILLION) {
@@ -89,9 +100,11 @@ namespace zth {
 
 		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
+		constexpr bool isNormal() const { return m_t.tv_sec >= 0 && m_t.tv_nsec >= 0 && m_t.tv_nsec < BILLION; }
 		constexpr bool isNegative() const { return m_negative; }
 		constexpr bool isPositive() const { return !isNegative(); }
 		constexpr bool isNull() const { return m_t.tv_sec == 0 && m_t.tv_nsec == 0; }
+		constexpr bool isInfinite() const { return m_t.tv_sec > std::numeric_limits<time_t>::max() / 2; }
 		constexpr bool hasPassed() const { return isNegative() || isNull(); }
 		constexpr struct timespec const& ts() const { return m_t; }
 		double s() const {
@@ -130,7 +143,8 @@ namespace zth {
 				}
 
 				// Check for overflow.
-				zth_assert(tv_sec <= m_t.tv_sec);
+				if(tv_sec > m_t.tv_sec)
+					m_t.tv_sec = std::numeric_limits<time_t>::max(); // infinite
 			} else {
 				if(t.isAbsBiggerThan(*this)) {
 					// Add in other sign direction with sign flip.

@@ -43,6 +43,25 @@ void Waiter::wait(TimedWaitable& w) {
 	m_worker.schedule();
 }
 
+void scheduleTask(TimedWaitable& w) {
+	currentWorker().waiter().scheduleTask(w);
+}
+
+void Waiter::scheduleTask(TimedWaitable& w) {
+	m_waiting.insert(w);
+	if(this->fiber())
+		m_worker.resume(*this->fiber());
+}
+
+void unscheduleTask(TimedWaitable& w) {
+	currentWorker().waiter().unscheduleTask(w);
+}
+
+void Waiter::unscheduleTask(TimedWaitable& w) {
+	m_waiting.erase(w);
+}
+
+
 #ifdef ZTH_HAVE_POLLER
 void Waiter::checkFdList() {
 	if(!Config::EnableAssert && (!zth_config(EnableDebugPrint) || !Config::Print_list))
@@ -137,8 +156,10 @@ void Waiter::entry() {
 			TimedWaitable& w = m_waiting.front();
 			m_waiting.erase(w);
 			if(w.poll(now)) {
-				w.fiber().wakeup();
-				m_worker.add(&w.fiber());
+				if(w.hasFiber()) {
+					w.fiber().wakeup();
+					m_worker.add(&w.fiber());
+				}
 			} else {
 				// Reinsert, as the timeout() might have changed (and therefore the position in the list).
 				m_waiting.insert(w);

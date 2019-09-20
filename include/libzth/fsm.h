@@ -1,3 +1,6 @@
+#include <libzth/time.h>
+#include <libzth/waiter.h>
+
 #include <set>
 #include <map>
 
@@ -462,7 +465,7 @@ namespace zth {
 	template <typename State_>
 	class Fsm : public UniqueID<Fsm<void> > {
 	protected:
-		enum EvalState { evalCompile, evalInit, evalIdle, evalState, evalRecurse };
+		enum EvalState { evalCompile, evalInit, evalReset, evalIdle, evalState, evalRecurse };
 		typedef FsmDescription<Fsm> const* StateAddr;
 
 	public:
@@ -490,6 +493,8 @@ namespace zth {
 				return m_description->state;
 			case evalInit:
 				return m_factory->description()->state;
+			case evalReset:
+				return m_compiledDescription->state;
 			}
 		}
 
@@ -502,24 +507,41 @@ namespace zth {
 				return m_description->state;
 			case evalInit:
 				return m_factory->description()->state;
+			case evalReset:
+				return m_compiledDescription->state;
+			}
+		}
+
+		void reset() {
+			switch(m_evalState) {
+			default:
+				m_evalState = evalReset;
+				break;
+			case evalCompile:
+			case evalInit:
+			case evalReset:
+				break;
 			}
 		}
 
 		bool entry() const { return m_entry; }
 		bool exit() const { return m_exit; }
 
-		void eval(bool alwaysDoCallback = false) {
+		TimeInterval eval(bool alwaysDoCallback = false) {
 			bool didCallback = false;
+			TimeInterval wait = TimeInterval::null();
 
 			switch(m_evalState) {
 			case evalCompile:
-				m_state = Factory(m_description).description();
+				m_compiledDescription = Factory(m_description).description();
 				if(false) {
 					ZTH_FALLTHROUGH
 			case evalInit:
-					m_state = (StateAddr)m_factory->description();
+					m_compiledDescription = (StateAddr)m_factory->description();
 				}
-				m_stateNext = m_state;
+				ZTH_FALLTHROUGH
+			case evalReset:
+				m_stateNext = m_state = m_compiledDescription;
 				m_evalState = evalState;
 				m_exit = false;
 				m_entry = true;
@@ -530,35 +552,71 @@ namespace zth {
 			case evalIdle: {
 				do {
 					m_evalState = evalState;
-					while(evalOnce())
+					while((wait = evalOnce()).hasPassed())
 						didCallback = true;
 					if(alwaysDoCallback && !didCallback)
 						callback();
 				} while(m_evalState == evalRecurse);
 				m_evalState = evalIdle;
-				return;
+				break;
 			}
 			case evalState:
 				m_evalState = evalRecurse;
 				ZTH_FALLTHROUGH
 			case evalRecurse:
-				return;
+				break;
 			}
+			return wait;
+		}
+
+		void run() {
+			TimeInterval wait = eval();
+			if(m_state->guard.valid())
+				return;
+
+			PolledMemberWaiting<Fsm> wakeup(*this, &Fsm::trigger_, wait);
+			do {
+				if(wakeup.interval().isInfinite()) {
+					m_trigger.wait();
+				} else {
+					wakeup.setInterval(wait);
+					scheduleTask(wakeup);
+					m_trigger.wait();
+					unscheduleTask(wakeup);
+				}
+				wait = eval();
+			} while(m_state->guard.valid());
+		}
+
+		void trigger() {
+			m_trigger.signal(false);
 		}
 	
 	private:
-		bool evalOnce() {
+		bool trigger_() {
+			m_trigger.signal(false);
+			return true;
+		}
+
+		TimeInterval evalOnce() {
+			TimeInterval wait = TimeInterval::infinity();
 			StateAddr p = m_state;
-			while(p->guard.valid())
-				if((p++)->guard(*this).hasPassed()) {
+			while(p->guard.valid()) {
+				TimeInterval ti((p++)->guard(*this));
+				if(ti.hasPassed()) {
 					if(p->stateAddr == m_state)
 						// Take this self-loop.
-						return false;
+						return wait; // Note that wait is returned, which indicates that no loop has been taken.
 
 					setState(p->stateAddr);
-					return true;
+					wait = ti; // NVRO
+					return wait; // Return any passed TimeInterval, which indicates that a transition was taken.
+				} else if(ti < wait) {
+					// Save shortest wait interval.
+					wait = ti;
 				}
-			return false;
+			}
+			return wait;
 		}
 
 		void setState(StateAddr nextState) {
@@ -582,12 +640,14 @@ namespace zth {
 		union {
 			FsmDescription<Fsm>* m_description; // only valid during stateCompile
 			Factory const* m_factory; // only valid during stateInit
-			StateAddr m_state;
+			FsmDescription<Fsm> const* m_compiledDescription; // otherwise
 		};
+		StateAddr m_state;
 		StateAddr m_stateNext;
 		EvalState m_evalState;
 		bool m_entry;
 		bool m_exit;
+		Signal m_trigger;
 	};
 	
 	template <typename State_, typename CallbackArg_ = void>
