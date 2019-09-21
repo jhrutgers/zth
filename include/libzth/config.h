@@ -84,6 +84,7 @@ namespace zth {
 		static int const Print_sync = 11;	// bright yellow
 		static int const Print_list = 8;	// bright black
 		static int const Print_zmq = 9;		// bright red
+		static int const Print_fsm = 14;	// bright cyan
 
 		static size_t const DefaultFiberStackSize = 0x20000;
 		static bool const EnableStackGuard = Debug;

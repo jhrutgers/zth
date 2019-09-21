@@ -47,8 +47,8 @@ void cb(Fsm_type& fsm) {
 
 Fsm_type fsm(desc, &cb);
 
-int main() {
+void main_fiber(int argc, char** argv) {
 	printf("desc = %p\n", desc);
-	fsm.eval();
+	fsm.run();
 }
 

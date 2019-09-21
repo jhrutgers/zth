@@ -183,6 +183,11 @@ namespace zth {
 
 		std::string str() const {
 			std::string res;
+			if(isInfinite()) {
+				res = "infinity";
+				return res;
+			}
+
 			if(m_negative)
 				res = "-";
 
@@ -222,7 +227,8 @@ namespace zth {
 		struct timespec m_t;
 		bool m_negative;
 	};
-
+	
+	template <> inline std::string str<TimeInterval const&>(TimeInterval const& value) { return value.str(); }
 
 	class Timestamp {
 	public:

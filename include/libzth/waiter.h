@@ -76,7 +76,7 @@ namespace zth {
 	class PolledWaiting : public TimedWaitable {
 	public:
 		PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
-			: TimedWaitable(), m_f(f) { setInterval(interval); }
+			: TimedWaitable(Timestamp()), m_f(f) { setInterval(interval); }
 		virtual ~PolledWaiting() {}
 
 		virtual bool poll(Timestamp const& now = Timestamp::now()) {

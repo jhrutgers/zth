@@ -245,6 +245,29 @@ namespace zth {
 		va_end(args);
 		return res;
 	}
+
+	/*!
+	 * \brief Returns an \c std::string() representation of the given value.
+	 * \details Specialize for your own types.
+	 */
+	template <typename T> inline std::string str(T value) { return value; }
+	template <> inline std::string str<char>(char value) { return format("%c", value); }
+	template <> inline std::string str<signed char>(signed char value) { return format("%hhd", value); }
+	template <> inline std::string str<unsigned char>(unsigned char value) { return format("%hhu", value); }
+	template <> inline std::string str<short>(short value) { return format("%hd", value); }
+	template <> inline std::string str<unsigned short>(unsigned short value) { return format("%hu", value); }
+	template <> inline std::string str<int>(int value) { return format("%d", value); }
+	template <> inline std::string str<unsigned int>(unsigned int value) { return format("%u", value); }
+	template <> inline std::string str<long>(long value) { return format("%ld", value); }
+	template <> inline std::string str<unsigned long>(unsigned long value) { return format("%lu", value); }
+	template <> inline std::string str<long long>(long long value) { return format("%lld", value); }
+	template <> inline std::string str<unsigned long long>(unsigned long long value) { return format("%llu", value); }
+	template <> inline std::string str<float>(float value) { return format("%g", value); }
+	template <> inline std::string str<double>(double value) { return format("%g", value); }
+	template <> inline std::string str<long double>(long double value) { return format("%Lg", value); }
+#if __cplusplus >= 201103L
+	template <> inline std::string str<std::string&&>(std::string&& value) { return std::string(std::move(value)); }
+#endif
 	
 	/*!
 	 * \brief Return a string like \c strerror() does, but as a \c std::string.
@@ -267,12 +290,20 @@ namespace zth {
 #endif
 	}
 
+	class UniqueIDBase {
+	protected:
+		virtual std::string const& id_sstr() const = 0;
+		friend std::string str<UniqueIDBase const&>(UniqueIDBase const&);
+	};
+	
+	template <> inline std::string str<UniqueIDBase const&>(UniqueIDBase const& value) { return value.id_sstr(); }
+
 	/*!
 	 * \brief Keeps track of a process-wide unique ID within the type \p T.
 	 * \ingroup zth_api_cpp_util
 	 */
 	template <typename T, bool ThreadSafe = Config::EnableThreads>
-	class UniqueID {
+	class UniqueID : public UniqueIDBase {
 	public:
 		static uint64_t getID() {
 			return ThreadSafe ?
@@ -302,21 +333,21 @@ namespace zth {
 		
 		void setName(char const* name) {
 			m_name = name;
-			m_id_str.clear();
+			m_id_sstr.clear();
 			changedName(this->name());
 		}
 
 #if __cplusplus >= 201103L
 		void setName(std::string&& name) {
 			m_name = std::move(name);
-			m_id_str.clear();
+			m_id_sstr.clear();
 			changedName(this->name());
 		}
 #endif
 	
-		char const* id_str() const {
-			if(unlikely(m_id_str.empty()))
-				m_id_str = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
+		std::string const& id_sstr() const {
+			if(unlikely(m_id_sstr.empty()))
+				m_id_sstr = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
 #ifdef ZTH_OS_WINDOWS
 					(unsigned int)_getpid(),
 #else
@@ -324,7 +355,11 @@ namespace zth {
 #endif
 					id());
 
-			return m_id_str.c_str();
+			return m_id_sstr;
+		}
+
+		char const* id_str() const {
+			return id_sstr().c_str();
 		}
 
 	protected:
@@ -344,7 +379,7 @@ namespace zth {
 
 		uint64_t const m_id;
 		std::string m_name;
-		std::string mutable m_id_str;
+		std::string mutable m_id_sstr;
 		// If allocating once every ns, it takes more than 500 millenia until we run out of identifiers.
 		static uint64_t m_nextId;
 	};

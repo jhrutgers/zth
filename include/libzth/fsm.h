@@ -498,6 +498,9 @@ namespace zth {
 			}
 		}
 
+		Timestamp const& t() const { return m_t; }
+		TimeInterval dt() const { return Timestamp::now() - t(); }
+
 		State const& next() const {
 			switch(m_evalState) {
 			default:
@@ -513,6 +516,7 @@ namespace zth {
 		}
 
 		void reset() {
+			zth_dbg(fsm, "[%s] Reset", id_str());
 			switch(m_evalState) {
 			default:
 				m_evalState = evalReset;
@@ -541,8 +545,10 @@ namespace zth {
 				}
 				ZTH_FALLTHROUGH
 			case evalReset:
+				zth_dbg(fsm, "[%s] Initial", id_str());
 				m_stateNext = m_state = m_compiledDescription;
 				m_evalState = evalState;
+				m_t = Timestamp::now();
 				m_exit = false;
 				m_entry = true;
 				callback();
@@ -571,8 +577,11 @@ namespace zth {
 
 		void run() {
 			TimeInterval wait = eval();
-			if(m_state->guard.valid())
+			if(!m_state->guard.valid()) {
+		done:
+				zth_dbg(fsm, "[%s] Final state", id_str());
 				return;
+			}
 
 			PolledMemberWaiting<Fsm> wakeup(*this, &Fsm::trigger_, wait);
 			do {
@@ -586,6 +595,7 @@ namespace zth {
 				}
 				wait = eval();
 			} while(m_state->guard.valid());
+			goto done;
 		}
 
 		void trigger() {
@@ -604,9 +614,10 @@ namespace zth {
 			while(p->guard.valid()) {
 				TimeInterval ti((p++)->guard(*this));
 				if(ti.hasPassed()) {
-					if(p->stateAddr == m_state)
-						// Take this self-loop.
-						return wait; // Note that wait is returned, which indicates that no loop has been taken.
+					if(p->stateAddr == m_state) {
+						zth_dbg(fsm, "[%s] Selfloop", id_str());
+						return wait; // Note that wait is returned, which indicates that no transition has been taken.
+					}
 
 					setState(p->stateAddr);
 					wait = ti; // NVRO
@@ -616,10 +627,12 @@ namespace zth {
 					wait = ti;
 				}
 			}
+			zth_dbg(fsm, "[%s] Blocked for %s", id_str(), wait.str().c_str());
 			return wait;
 		}
 
 		void setState(StateAddr nextState) {
+			zth_dbg(fsm, "[%s] Transition", id_str());
 			m_stateNext = nextState;
 
 			m_exit = true;
@@ -627,6 +640,7 @@ namespace zth {
 			m_exit = false;
 
 			m_state = nextState;
+			m_t = Timestamp::now();
 
 			m_entry = true;
 			callback();
@@ -645,6 +659,7 @@ namespace zth {
 		StateAddr m_state;
 		StateAddr m_stateNext;
 		EvalState m_evalState;
+		Timestamp m_t;
 		bool m_entry;
 		bool m_exit;
 		Signal m_trigger;
@@ -673,8 +688,10 @@ namespace zth {
 
 	protected:
 		virtual void callback() {
-			if(m_callback)
+			if(m_callback) {
+				zth_dbg(fsm, "[%s] Callback%s", this->id_str(), this->entry() ? "for entry" : this->exit() ? "for exit" : "");
 				m_callback(*this, m_callbackArg);
+			}
 		}
 
 	private:
