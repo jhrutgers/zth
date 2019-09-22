@@ -39,5 +39,6 @@
 #include <libzth/async.h>
 #include <libzth/perf.h>
 #include <libzth/io.h>
+#include <libzth/fsm.h>
 
 #endif // __ZTH_H

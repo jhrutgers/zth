@@ -1,3 +1,24 @@
+#ifndef __ZTH_FSM_H
+#define __ZTH_FSM_H
+/*
+ * Zth (libzth), a cooperative userspace multitasking library.
+ * Copyright (C) 2019  Jochem Rutgers
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __cplusplus
 #include <libzth/time.h>
 #include <libzth/waiter.h>
 
@@ -5,382 +26,13 @@
 #include <map>
 
 namespace zth {
-#if 0
-	class FsmBase : public UniqueID<FsmBase> {
-	public:
-		~FsmBase() { 
-			while(!m_inputs.empty())
-				unlink(m_inputs.begin());
-		}
-
-		void trigger() {
-			// wakeup m_fiber from sleep or suspend
-		}
-
-		void link(FsmInputBase& input) {
-			if(m_inputs.insert(&input).second)
-				input.link(*this);
-		}
-
-		void unlink(FsmInputBase& input) {
-			if(m_inputs.erase(&input)) {
-				input.unlink(*this);
-				trigger();
-			}
-		}
-
-	protected:
-		Fiber* fiber() const { return m_fiber; }
-
-	private:
-		Fiber* m_fiber;
-		std::set<FsmInputBase*> m_inputs;
-	};
-
-	class FsmInputBase : public UniqueID<FsmInputBase> {
-	public:
-		~FsmInputBase() { 
-			while(!m_fsms.empty())
-				unlink(m_inputs.begin());
-		}
-
-		void link(FsmBase& fsm) {
-			if(m_fsms.insert(&fsm).second)
-				fsm.link(*this);
-		}
-
-		void unlink(FsmBase& fsm) {
-			if(m_fsms.erase(&fsm))
-				fsm.unlink(*this);
-		}
-
-	protected:
-		void triggerFsms() {
-			for(decltype(m_fsms.begin()) it = m_fsms.begin(); it != m_fsms.end(); ++it)
-				(*it)->trigger();
-		}
-
-	private:
-		std::set<FsmBase*> m_fsms;
-	};
-
-	template <typename Value_>
-	class FsmInput : public FsmInputBase {
-	public:
-		typedef Value_ Value;
-		FsmInput(Value const& value) : m_value(value) {}
-
-		Value const& get() const { return m_value; }
-		operator Value const&() const { return get(); }
-
-		void set(Value const& value) {
-			m_value = value;
-			triggerFsms();
-		}
-
-		FsmInput& operator=(Value const& value) {
-			set(value);
-			return *this;
-		}
-
-		FsmInput& operator+=(Value const& value) { *this = get() + value; return *this; }
-		FsmInput& operator-=(Value const& value) { *this = get() - value; return *this; }
-		FsmInput& operator/=(Value const& value) { *this = get() / value; return *this; }
-		FsmInput& operator*=(Value const& value) { *this = get() * value; return *this; }
-
-	private:
-		Value m_value;
-	};
-
-	template <typename T = int>
-	class Fsm : public FsmBase {
-	public:
-		typedef T State;
-
-		Fsm(State initial = State())
-			: m_state(initial), m_stateNext(initial)
-			, m_entry(true), m_exit(false)
-			, m_t(Timestamp::now())
-		{}
-
-		void transition(State state) {
-			m_stateNext = state;
-			m_exit = true;
-			setTimeout();
-		}
-		
-		Fsm& operator=(State state) {
-			transition(state);
-			return *this;
-		}
-
-		State eval() {
-			yield();
-			m_entry = m_state != m_stateNext;
-			m_state = m_stateNext;
-			m_exit = false;
-
-			if(entry())
-				m_t = Timestamp::now();
-		}
-
-		State state() const {
-			return m_state;
-		}
-
-		operator State() const { return state(); }
-
-		bool entry() {
-			return m_entry;
-		}
-		
-		bool exit() {
-			return m_exit;
-		}
-
-		Timestamp const& t() const { return m_t; }
-		TimeInterval dt() const { return Timestamp::now() - m_t; }
-
-		void setTimeout(TimeInterval const& timeout = TimeInterval()) { m_timeout = timeout; }
-		TimeInterval const& getTimeout() const { return m_timeout; }
-		bool timedout() const { return getTimeout() != TimeInterval() && dt() >= getTimeout(); }
-
-	private:
-		State m_state;
-		State m_stateNext;
-		bool m_entry;
-		bool m_exit;
-		Timestamp m_t;
-		TimeInterval m_timeout;
-	};
-
-
-	class Fsm;
-
-	class FsmState {
-	protected:
-		FsmState(char const* name = NULL) : m_name(name) {}
-	private:
-		FsmState(FsmState const&)
-#ifdef __cplusplus >= 201103L
-			= delete;
-		FsmState(FsmState&&)
-			= delete
-#endif
-			;
-		FsmState& operator=(FsmState const&)
-#ifdef __cplusplus >= 201103L
-			= delete;
-		FsmState& operator=(FsmState const&)
-			= delete
-#endif
-			;
-	public:
-		typedef uintptr_t Id;
-		char const* name() const { return m_name; }
-		Id id() const { return (Id)name(); }
-		bool operator==(FsmStateId const& state) const { return state.id() == id(); }
-		bool operator!=(FsmStateId const& state) const { return state.id() != id(); }
-	protected:
-		virtual void onEntry(FsmState const& from) {}
-		virtual void onExit(FsmState const& to) {}
-	private:
-		char const* const m_name;
-
-		friend class Fsm;
-	};
-
-	class FsmStateId {
-	public:
-		typedef FsmState::Id Id;
-		FsmStateId(FsmState const& state) : m_id(state.id()) {}
-		FsmStateId(FsmStateId const& stateName) { *this = stateName; }
-		bool operator==(FsmStateId const& stateName) const { return id() == stateName.id(); }
-		bool operator!=(FsmStateId const& stateName) const { return !(*this == stateName); }
-		FsmStateId& operator=(FsmStateId const& stateName) { m_id = stateName.id(); return *this; }
-		Id id() const { return m_id; }
-	private:
-		Id m_id;
-	};
-
-	class FsmInit : public FsmState {
-	public:
-		FsmInit() : FsmState(__func__) {}
-	};
-	
-	class FsmSelf : public FsmState {
-	public:
-		FsmSelf() : FsmState(__func__) {}
-	};
-
-	class FsmFinal : public FsmState {
-	public:
-		FsmFinal() : FsmState(__func__) {}
-	};
-
-	class FsmGuard {
-	protected:
-		FsmGuard(char const* name = NULL) : m_name(name) {}
-		static TimeInterval const pass;
-		static TimeInterval const poll;
-		static TimeInterval const wait;
-	public:
-		char const* name() const { return m_name; }
-		virtual TimeInterval operator()(Fsm const& fsm) const = 0;
-		virtual void relate(Fsm const& fsm) {}
-		virtual void unrelate(Fsm const& fsm) {}
-	private:
-		char const* const m_name;
-	};
-
-	class FsmGuardEnd {
-	public:
-		FsmGuardEnd() : FsmGuard() {}
-		virtual TimeInterval operator()(Fsm const& fsm) const { return pass; }
-	};
-
-	class FsmTrue : public FsmGuard {
-	public:
-		FsmTrue() : FsmGuard("true") {}
-		virtual TimeInterval operator()(Fsm const& fsm) const { return pass; }
-	};
-
-	FsmTrue const fsmTrue;
-
-	template <typename T>
-	class FsmBoolWrapper : public FsmGuard {
-	public:
-		FsmBoolWrapper(T& wrappee, char const* name = NULL) : FsmGuard(name), m_wrappee(wrappee) {}
-		virtual TimeInterval operator()(Fsm const& fsm) const { return (bool)m_wrappee ? pass : poll; }
-	private:
-		T& m_wrappee;
-	};
-
-	template <typename F>
-	class FsmFGuard : public FsmGuard {
-	public:
-		FsmFGuard(F f, char const* name = NULL) : FsmGuard(name), m_f(f) {}
-		virtual TimeInterval operator()(Fsm const& fsm) const { return f() ? pass : poll; }
-	private:
-		F m_f;
-	};
-	
-	FsmGuardEnd const fsmGuardEnd;
-
-	class FsmTimeout : public FsmGuard {
-	public:
-		FsmTimeout(TimeInterval const& timeout) : FsmGuard("timeout"), m_timeout(timeout) {}
-		virtual TimeInterval operator()(Fsm const& fsm) const {
-			TimeInterval dt = fsm.t();
-			return dt >= m_timeout ? pass : m_timeout - dt;
-		}
-	private:
-		TimeInterval m_timeout;
-	};
-
-	class FsmSignalGuard : public FsmGuard {
-	public:
-		FsmSignalGuard() : FsmGuard("signal") {}
-		virtual TimeInterval operator()(Fsm const& fsm) const {
-			if(m_signalled.erase(&fsm))
-				return pass;
-
-			m_fsms.insert(&fsm);
-			return wait;
-		}
-
-		void signal() {
-			if(m_signalled.empty()) {
-				m_signalled.swap(m_fsms);
-			} else {
-				for(decltype(m_fsms.begin()) it = m_fsms.begin(); it != m_fsms.end(); ++it) {
-					m_signalled.insert(*it);
-					it->wakeup();
-				}
-				m_fsms.clear();
-			}
-		}
-
-		virtual void unrelate(Fsm const& fsm) { 
-			m_fsms.erase(&fsm);
-			m_signalled.erase(&fsm);
-		}
-	private:
-		std::set<Fsm const*> m_fsms;
-		std::set<Fsm const*> m_signalled;
-	};
-
-	struct FsmTransition {
-		FsmGuard const& guard;
-		FsmStateId to;
-#ifdef __cplusplus >= 201103L
-		std::function<void(FsmState&,FsmState&,FsmGuard const&)> onTransition;
-#else
-		void (*onTransition)(FsmState& from, FsmState& to, FsmGuard const& guard);
-#endif
-	};
-	
-	FsmTransition const noTransition = { fsmGuardEnd, FsmSelf() };
-	
-	struct FsmStateTransitionPair {
-		FsmState state;
-		FsmTransition transitions[];
-	};
-	
-	typedef FsmStateTransitionPair const FsmDescription[];
-
-	class Fsm {
-	public:
-		Fsm(FsmDescription st);
-		FsmState const& eval();
-
-		void reset() { transition(fsmTrue, FsmInit()); }
-		FsmState const& state() const { return *m_state; }
-		FsmState const& nextState() const { return *m_nextState; }
-		FsmGuard const& guard() const { return *m_guard; }
-		TimeInterval const& t() const { return Timestamp::now() - m_t; }
-		void wakeup();
-	protected:
-		void transition(FsmGuard const& guard, FsmStateId const& state);
-	private:
-		FsmState const* m_state;
-		FsmState const* m_nextState;
-		FsmGuard const* m_guard;
-		Timestamp m_t;
-		std::map<FsmState::Id, FsmStateTransitionPair*> m_states;
-	};
-
-	
-	class StateA : public FsmState {
-	public:
-		StateA() : FsmState(__func__) {}
-		static void t(Fsm& fsm) {}
-	};
-
-	FsmTrue inputA;
-	FsmTrue inputB;
-
-	static FsmDescription sts = {
-		{ FsmInit(), {
-			{ fsmTrue,         StateA() },
-			  noTransition } },
-		{ StateA(), {
-			{ inputA,          StateB() },
-			{ inputB,          StateB(), &StateA::t },
-			{ FsmTimeout(0.5), FsmFinal() },
-			  noTransition } },
-		{ StateB(),
-			  noTransition } },
-		{ FsmFinal() }
-	};
-
-	static Fsm fsm(sts);
-
-#endif
 
 	namespace guards {
 		enum End { end = 0 };
 		template <typename Fsm> TimeInterval always(Fsm& fsm) { return TimeInterval(); }
+		template <unsigned int s, typename Fsm> TimeInterval timeout_s(Fsm& fsm) { static TimeInterval const ti((time_t)s); return ti - fsm.dt(); }
+		template <unsigned int ms, typename Fsm> TimeInterval timeout_ms(Fsm& fsm) { static TimeInterval const ti((double)ms * 1e-3); return ti - fsm.dt(); }
+		template <uint64_t us, typename Fsm> TimeInterval timeout_us(Fsm& fsm) { static TimeInterval const ti((double)us * 1e-6); return ti - fsm.dt(); }
 	}
 
 	template <typename Fsm>
@@ -473,13 +125,15 @@ namespace zth {
 		typedef FsmFactory<Fsm> Factory;
 		typedef FsmDescription<Fsm> Description[];
 
-		explicit Fsm(Factory const& factory)
-			: m_factory(&factory)
+		explicit Fsm(Factory const& factory, char const* name = "FSM")
+			: UniqueID(name)
+			, m_factory(&factory)
 			, m_evalState(evalInit)
 		{}
 		
-		explicit Fsm(Description description)
-			: m_description(description)
+		explicit Fsm(Description description, char const* name = "FSM")
+			: UniqueID(name)
+			, m_description(description)
 			, m_evalState(evalCompile)
 		{}
 		
@@ -545,9 +199,9 @@ namespace zth {
 				}
 				ZTH_FALLTHROUGH
 			case evalReset:
-				zth_dbg(fsm, "[%s] Initial", id_str());
 				m_stateNext = m_state = m_compiledDescription;
 				m_evalState = evalState;
+				zth_dbg(fsm, "[%s] Initial state %s", id_str(), str(state()).c_str());
 				m_t = Timestamp::now();
 				m_exit = false;
 				m_entry = true;
@@ -579,7 +233,7 @@ namespace zth {
 			TimeInterval wait = eval();
 			if(!m_state->guard.valid()) {
 		done:
-				zth_dbg(fsm, "[%s] Final state", id_str());
+				zth_dbg(fsm, "[%s] Final state %s", id_str(), str(state()).c_str());
 				return;
 			}
 
@@ -615,7 +269,7 @@ namespace zth {
 				TimeInterval ti((p++)->guard(*this));
 				if(ti.hasPassed()) {
 					if(p->stateAddr == m_state) {
-						zth_dbg(fsm, "[%s] Selfloop", id_str());
+						zth_dbg(fsm, "[%s] Selfloop of state %s", id_str(), str(state()).c_str());
 						return wait; // Note that wait is returned, which indicates that no transition has been taken.
 					}
 
@@ -627,12 +281,12 @@ namespace zth {
 					wait = ti;
 				}
 			}
-			zth_dbg(fsm, "[%s] Blocked for %s", id_str(), wait.str().c_str());
+			zth_dbg(fsm, "[%s] State %s blocked for %s", id_str(), str(state()).c_str(), wait.str().c_str());
 			return wait;
 		}
 
 		void setState(StateAddr nextState) {
-			zth_dbg(fsm, "[%s] Transition", id_str());
+			zth_dbg(fsm, "[%s] Transition %s -> %s", id_str(), str(state()).c_str(), str(nextState->state).c_str());
 			m_stateNext = nextState;
 
 			m_exit = true;
@@ -672,14 +326,14 @@ namespace zth {
 		typedef CallbackArg_ CallbackArg;
 		typedef void (*Callback)(FsmCallback&, CallbackArg);
 
-		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg())
-			: base(factory)
+		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg(), char const* name = "FSM")
+			: base(factory, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
 		
-		explicit FsmCallback(typename base::Description description, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg())
-			: base(description)
+		explicit FsmCallback(typename base::Description description, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg(), char const* name = "FSM")
+			: base(description, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
@@ -689,7 +343,7 @@ namespace zth {
 	protected:
 		virtual void callback() {
 			if(m_callback) {
-				zth_dbg(fsm, "[%s] Callback%s", this->id_str(), this->entry() ? "for entry" : this->exit() ? "for exit" : "");
+				zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(), str(this->state()).c_str(), this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
 				m_callback(*this, m_callbackArg);
 			}
 		}
@@ -705,13 +359,13 @@ namespace zth {
 		typedef Fsm<State_> base;
 		typedef void (*Callback)(FsmCallback&);
 
-		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL)
-			: base(factory)
+		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, char const* name = "FSM")
+			: base(factory, name)
 			, m_callback(callback)
 		{}
 
-		explicit FsmCallback(typename base::Description description, Callback callback = NULL)
-			: base(description)
+		explicit FsmCallback(typename base::Description description, Callback callback = NULL, char const* name = "FSM")
+			: base(description, name)
 			, m_callback(callback)
 		{}
 
@@ -719,8 +373,10 @@ namespace zth {
 
 	protected:
 		virtual void callback() {
-			if(m_callback)
+			if(m_callback) {
+				zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(), str(this->state()).c_str(), this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
 				m_callback(*this);
+			}
 		}
 
 	private:
@@ -728,3 +384,5 @@ namespace zth {
 	};
 
 } // namespace
+#endif // __cplusplus
+#endif // __ZTH_FSM_H

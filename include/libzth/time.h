@@ -228,7 +228,12 @@ namespace zth {
 		bool m_negative;
 	};
 	
-	template <> inline std::string str<TimeInterval const&>(TimeInterval const& value) { return value.str(); }
+	template <> inline cow_string str<TimeInterval const&>(TimeInterval const& value) { return value.str(); }
+
+#if __cplusplus >= 201103L
+	ZTH_EXPORT inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)x); }
+	ZTH_EXPORT inline TimeInterval operator"" _s(long double x) { return TimeInterval(x); }
+#endif
 
 	class Timestamp {
 	public:

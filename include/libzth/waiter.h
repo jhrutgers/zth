@@ -65,7 +65,12 @@ namespace zth {
 		Timestamp const& timeout() const { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { return timeout() <= now; }
 		bool operator<(TimedWaitable const& rhs) const { return timeout() < rhs.timeout(); }
-		virtual std::string str() const { return format("Waitable with %s timeout for %s", (timeout() - Timestamp::now()).str().c_str(), fiber().str().c_str()); }
+		virtual std::string str() const {
+			if(hasFiber())
+				return format("Waitable with %s timeout for %s", (timeout() - Timestamp::now()).str().c_str(), fiber().str().c_str());
+			else
+				return format("Waitable with %s timeout", (timeout() - Timestamp::now()).str().c_str());
+		}
 	protected:
 		void setTimeout(Timestamp const& t) { m_timeout = t; }
 	private:

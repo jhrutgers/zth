@@ -58,7 +58,8 @@ void unscheduleTask(TimedWaitable& w) {
 }
 
 void Waiter::unscheduleTask(TimedWaitable& w) {
-	m_waiting.erase(w);
+	if(m_waiting.contains(w))
+		m_waiting.erase(w);
 }
 
 
@@ -253,7 +254,7 @@ void Waiter::entry() {
 		} else
 #endif
 		if(doRealSleep) {
-			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().fiber().str().c_str());
+			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().str().c_str());
 			Timestamp const* end = &m_waiting.front().timeout();
 			if(!m_worker.runEnd().isNull () && *end > m_worker.runEnd())
 				end = &m_worker.runEnd();

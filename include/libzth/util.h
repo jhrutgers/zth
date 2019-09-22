@@ -202,6 +202,49 @@ namespace zth {
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void log(char const* fmt, ...) {
 		va_list args; va_start(args, fmt); logv(fmt, args); va_end(args); }
 
+	class cow_string {
+	public:
+		cow_string() : m_cstr() {}
+		explicit cow_string(char const* s) : m_cstr(s) {}
+		cow_string(std::string const& s) : m_cstr(), m_str(s) {}
+		cow_string(cow_string const& s) : m_cstr(s.m_cstr), m_str(s.m_str) {}
+
+		cow_string operator=(char const* s) { m_cstr = s; return *this; }
+		cow_string operator=(std::string const& s) { m_cstr = NULL; m_str = s; return *this; }
+
+#if __cplusplus >= 201103L
+		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
+		cow_string(cow_string&& s) : m_cstr(s.m_cstr), m_str(std::move(s.m_str)) {}
+		cow_string operator=(std::string&& s) { m_cstr = NULL; m_str = std::move(s); return *this; }
+#endif
+
+		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
+		std::string const& str() const { return local(); }
+		operator std::string const&() const { return str(); }
+		char const& at(size_t pos) const { return str().at(pos); }
+		char operator[](size_t pos) const { return m_cstr ? m_cstr[pos] : str()[pos]; }
+		char& operator[](size_t pos) { return local()[pos]; }
+		char const* data() const { return c_str(); }
+		bool empty() const { return m_cstr ? *m_cstr == 0 : m_str.empty(); }
+		size_t size() const { return str().size(); }
+		size_t length() const { return str().length(); }
+		void clear() { m_cstr = NULL; m_str.clear(); }
+
+	protected:
+		std::string const& local() const {
+			if(unlikely(m_cstr)) {
+				m_str = m_cstr;
+				m_cstr = NULL;
+			}
+			return m_str;
+		}
+		std::string& local() { const_cast<cow_string const*>(this)->local(); return m_str; }
+
+	private:
+		mutable char const* m_cstr;
+		mutable std::string m_str;
+	};
+
 	/*!
 	 * \brief Format like \c vsprintf(), but save the result in an \c std::string.
 	 */
@@ -250,23 +293,23 @@ namespace zth {
 	 * \brief Returns an \c std::string() representation of the given value.
 	 * \details Specialize for your own types.
 	 */
-	template <typename T> inline std::string str(T value) { return value; }
-	template <> inline std::string str<char>(char value) { return format("%c", value); }
-	template <> inline std::string str<signed char>(signed char value) { return format("%hhd", value); }
-	template <> inline std::string str<unsigned char>(unsigned char value) { return format("%hhu", value); }
-	template <> inline std::string str<short>(short value) { return format("%hd", value); }
-	template <> inline std::string str<unsigned short>(unsigned short value) { return format("%hu", value); }
-	template <> inline std::string str<int>(int value) { return format("%d", value); }
-	template <> inline std::string str<unsigned int>(unsigned int value) { return format("%u", value); }
-	template <> inline std::string str<long>(long value) { return format("%ld", value); }
-	template <> inline std::string str<unsigned long>(unsigned long value) { return format("%lu", value); }
-	template <> inline std::string str<long long>(long long value) { return format("%lld", value); }
-	template <> inline std::string str<unsigned long long>(unsigned long long value) { return format("%llu", value); }
-	template <> inline std::string str<float>(float value) { return format("%g", value); }
-	template <> inline std::string str<double>(double value) { return format("%g", value); }
-	template <> inline std::string str<long double>(long double value) { return format("%Lg", value); }
+	template <typename T> inline cow_string str(T value) { return cow_string(value); }
+	template <> inline cow_string str<char>(char value) { return format("%c", value); }
+	template <> inline cow_string str<signed char>(signed char value) { return format("%hhd", value); }
+	template <> inline cow_string str<unsigned char>(unsigned char value) { return format("%hhu", value); }
+	template <> inline cow_string str<short>(short value) { return format("%hd", value); }
+	template <> inline cow_string str<unsigned short>(unsigned short value) { return format("%hu", value); }
+	template <> inline cow_string str<int>(int value) { return format("%d", value); }
+	template <> inline cow_string str<unsigned int>(unsigned int value) { return format("%u", value); }
+	template <> inline cow_string str<long>(long value) { return format("%ld", value); }
+	template <> inline cow_string str<unsigned long>(unsigned long value) { return format("%lu", value); }
+	template <> inline cow_string str<long long>(long long value) { return format("%lld", value); }
+	template <> inline cow_string str<unsigned long long>(unsigned long long value) { return format("%llu", value); }
+	template <> inline cow_string str<float>(float value) { return format("%g", value); }
+	template <> inline cow_string str<double>(double value) { return format("%g", value); }
+	template <> inline cow_string str<long double>(long double value) { return format("%Lg", value); }
 #if __cplusplus >= 201103L
-	template <> inline std::string str<std::string&&>(std::string&& value) { return std::string(std::move(value)); }
+	template <> inline cow_string str<std::string&&>(std::string&& value) { return std::string(std::move(value)); }
 #endif
 	
 	/*!
@@ -292,11 +335,12 @@ namespace zth {
 
 	class UniqueIDBase {
 	protected:
-		virtual std::string const& id_sstr() const = 0;
-		friend std::string str<UniqueIDBase const&>(UniqueIDBase const&);
+		virtual char const* id_str() const = 0;
+		virtual ~UniqueIDBase() {}
+		friend cow_string str<UniqueIDBase const&>(UniqueIDBase const&);
 	};
 	
-	template <> inline std::string str<UniqueIDBase const&>(UniqueIDBase const& value) { return value.id_sstr(); }
+	template <> inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value) { return cow_string(value.id_str()); }
 
 	/*!
 	 * \brief Keeps track of a process-wide unique ID within the type \p T.
@@ -333,21 +377,21 @@ namespace zth {
 		
 		void setName(char const* name) {
 			m_name = name;
-			m_id_sstr.clear();
+			m_id_str.clear();
 			changedName(this->name());
 		}
 
 #if __cplusplus >= 201103L
 		void setName(std::string&& name) {
 			m_name = std::move(name);
-			m_id_sstr.clear();
+			m_id_str.clear();
 			changedName(this->name());
 		}
 #endif
 	
-		std::string const& id_sstr() const {
-			if(unlikely(m_id_sstr.empty()))
-				m_id_sstr = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
+		char const* id_str() const {
+			if(unlikely(m_id_str.empty()))
+				m_id_str = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
 #ifdef ZTH_OS_WINDOWS
 					(unsigned int)_getpid(),
 #else
@@ -355,11 +399,7 @@ namespace zth {
 #endif
 					id());
 
-			return m_id_sstr;
-		}
-
-		char const* id_str() const {
-			return id_sstr().c_str();
+			return m_id_str.c_str();
 		}
 
 	protected:
@@ -379,7 +419,7 @@ namespace zth {
 
 		uint64_t const m_id;
 		std::string m_name;
-		std::string mutable m_id_sstr;
+		std::string mutable m_id_str;
 		// If allocating once every ns, it takes more than 500 millenia until we run out of identifiers.
 		static uint64_t m_nextId;
 	};
