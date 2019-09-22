@@ -231,7 +231,9 @@ namespace zth {
 	template <> inline cow_string str<TimeInterval const&>(TimeInterval const& value) { return value.str(); }
 
 #if __cplusplus >= 201103L
-	ZTH_EXPORT inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)x); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x, (unsigned long long int)std::numeric_limits<time_t>::max)); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000L) * 1000000L); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000000L) * 1000L); }
 	ZTH_EXPORT inline TimeInterval operator"" _s(long double x) { return TimeInterval(x); }
 #endif
 

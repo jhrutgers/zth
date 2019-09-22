@@ -29,10 +29,41 @@ namespace zth {
 
 	namespace guards {
 		enum End { end = 0 };
-		template <typename Fsm> TimeInterval always(Fsm& fsm) { return TimeInterval(); }
-		template <unsigned int s, typename Fsm> TimeInterval timeout_s(Fsm& fsm) { static TimeInterval const ti((time_t)s); return ti - fsm.dt(); }
-		template <unsigned int ms, typename Fsm> TimeInterval timeout_ms(Fsm& fsm) { static TimeInterval const ti((double)ms * 1e-3); return ti - fsm.dt(); }
-		template <uint64_t us, typename Fsm> TimeInterval timeout_us(Fsm& fsm) { static TimeInterval const ti((double)us * 1e-6); return ti - fsm.dt(); }
+
+		template <typename Fsm> TimeInterval always(Fsm& fsm) {
+			zth_dbg(fsm, "[%s] Guard always", fsm.id_str());
+			return TimeInterval();
+		}
+
+		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> TimeInterval input(Fsm& fsm) {
+			if(fsm.clearInput(i)) {
+				zth_dbg(fsm, "[%s] Guard input %s", fsm.id_str(), str(i).c_str());
+				return TimeInterval();
+			} else
+				return TimeInterval::infinity();
+		}
+
+		template <typename Fsm> TimeInterval timeout_(Fsm& fsm, TimeInterval const& timeout) {
+			TimeInterval ti = timeout - fsm.dt();
+			if(ti.hasPassed())
+				zth_dbg(fsm, "[%s] Guard timeout %s", fsm.id_str(), timeout.str().c_str());
+			return ti;
+		}
+
+		template <time_t s, typename Fsm> TimeInterval timeout_s(Fsm& fsm) {
+			static constexpr TimeInterval const timeout(s);
+			return timeout_<Fsm>(fsm, timeout);
+		}
+
+		template <unsigned int ms, typename Fsm> TimeInterval timeout_ms(Fsm& fsm) {
+			static TimeInterval const timeout((double)ms * 1e-3);
+			return timeout_<Fsm>(fsm, timeout);
+		}
+
+		template <uint64_t us, typename Fsm> TimeInterval timeout_us(Fsm& fsm) {
+			static TimeInterval const timeout((double)us * 1e-6);
+			return timeout_<Fsm>(fsm, timeout);
+		}
 	}
 
 	template <typename Fsm>
@@ -114,7 +145,7 @@ namespace zth {
 		mutable bool m_compiled;
 	};
 
-	template <typename State_>
+	template <typename State_, typename Input_ = int>
 	class Fsm : public UniqueID<Fsm<void> > {
 	protected:
 		enum EvalState { evalCompile, evalInit, evalReset, evalIdle, evalState, evalRecurse };
@@ -122,6 +153,7 @@ namespace zth {
 
 	public:
 		typedef State_ State;
+		typedef Input_ Input;
 		typedef FsmFactory<Fsm> Factory;
 		typedef FsmDescription<Fsm> Description[];
 
@@ -180,10 +212,16 @@ namespace zth {
 			case evalReset:
 				break;
 			}
+			clearInputs();
 		}
 
 		bool entry() const { return m_entry; }
 		bool exit() const { return m_exit; }
+
+		void input(Input i) { m_inputs.insert(i); trigger(); }
+		bool clearInput(Input i) { return m_inputs.erase(i) > 0; }
+		void clearInputs() { m_inputs.clear(); }
+		bool hasInput(Input i) const { return m_inputs.count(i) > 0; }
 
 		TimeInterval eval(bool alwaysDoCallback = false) {
 			bool didCallback = false;
@@ -317,12 +355,13 @@ namespace zth {
 		bool m_entry;
 		bool m_exit;
 		Signal m_trigger;
+		std::set<Input> m_inputs;
 	};
 	
-	template <typename State_, typename CallbackArg_ = void>
-	class FsmCallback : public Fsm<State_> {
+	template <typename State_, typename CallbackArg_ = void, typename Input_ = int>
+	class FsmCallback : public Fsm<State_,Input_> {
 	public:
-		typedef Fsm<State_> base;
+		typedef Fsm<State_,Input_> base;
 		typedef CallbackArg_ CallbackArg;
 		typedef void (*Callback)(FsmCallback&, CallbackArg);
 
@@ -353,10 +392,10 @@ namespace zth {
 		CallbackArg const m_callbackArg;
 	};
 	
-	template <typename State_>
-	class FsmCallback<State_, void> : public Fsm<State_> {
+	template <typename State_, typename Input_>
+	class FsmCallback<State_,void,Input_> : public Fsm<State_,Input_> {
 	public:
-		typedef Fsm<State_> base;
+		typedef Fsm<State_,Input_> base;
 		typedef void (*Callback)(FsmCallback&);
 
 		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, char const* name = "FSM")
