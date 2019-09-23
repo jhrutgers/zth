@@ -185,7 +185,7 @@ namespace zth {
 		virtual ~Fsm() {}
 
 		template <typename FsmImplementation>
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L && !defined(DOXYGEN)
 		typename std::enable_if<std::is_base_of<Fsm,FsmImplementation>::value, FsmImplementation&>::type
 #else
 		FsmImplementation&
