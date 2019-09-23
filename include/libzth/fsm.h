@@ -42,6 +42,14 @@ namespace zth {
 			} else
 				return TimeInterval::infinity();
 		}
+		
+		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> TimeInterval peek(Fsm& fsm) {
+			if(fsm.hasInput(i)) {
+				zth_dbg(fsm, "[%s] Guard peek input %s", fsm.id_str(), str(i).c_str());
+				return TimeInterval();
+			} else
+				return TimeInterval::infinity();
+		}
 
 		template <typename Fsm> TimeInterval timeout_(Fsm& fsm, TimeInterval const& timeout) {
 			TimeInterval ti = timeout - fsm.dt();
@@ -86,7 +94,7 @@ namespace zth {
 	struct FsmDescription {
 		union {
 			typename Fsm::State state;
-			FsmDescription<Fsm> const* stateAddr;
+			FsmDescription const* stateAddr;
 		};
 		FsmGuard<Fsm> guard;
 	};
@@ -145,6 +153,11 @@ namespace zth {
 		mutable bool m_compiled;
 	};
 
+	/*!
+	 * \brief A Finite-state machine.
+	 * \tparam State_ the type of a state, which can be anything, as long as it is default-constructable and assignable, and comparable with \c std:less.
+	 * \tparam Input_ the type of inputs, as used by #Fsm::input(), which has the same type requirements as \c State_.
+	 */
 	template <typename State_, typename Input_ = int>
 	class Fsm : public UniqueID<Fsm<void> > {
 	protected:
@@ -170,6 +183,17 @@ namespace zth {
 		{}
 		
 		virtual ~Fsm() {}
+
+		template <typename FsmImplementation>
+#if __cplusplus >= 201103L
+		typename std::enable_if<std::is_base_of<Fsm,FsmImplementation>::value, FsmImplementation&>::type
+#else
+		FsmImplementation&
+#endif
+		as() {
+			zth_assert(dynamic_cast<FsmImplementation*>(this) != NULL);
+			return static_cast<FsmImplementation&>(*this);
+		}
 
 		State const& state() const {
 			switch(m_evalState) {
@@ -306,11 +330,6 @@ namespace zth {
 			while(p->guard.valid()) {
 				TimeInterval ti((p++)->guard(*this));
 				if(ti.hasPassed()) {
-					if(p->stateAddr == m_state) {
-						zth_dbg(fsm, "[%s] Selfloop of state %s", id_str(), str(state()).c_str());
-						return wait; // Note that wait is returned, which indicates that no transition has been taken.
-					}
-
 					setState(p->stateAddr);
 					wait = ti; // NVRO
 					return wait; // Return any passed TimeInterval, which indicates that a transition was taken.
@@ -324,7 +343,11 @@ namespace zth {
 		}
 
 		void setState(StateAddr nextState) {
-			zth_dbg(fsm, "[%s] Transition %s -> %s", id_str(), str(state()).c_str(), str(nextState->state).c_str());
+			if(nextState == m_state)
+				zth_dbg(fsm, "[%s] Selfloop of state %s", id_str(), str(state()).c_str());
+			else
+				zth_dbg(fsm, "[%s] Transition %s -> %s", id_str(), str(state()).c_str(), str(nextState->state).c_str());
+
 			m_stateNext = nextState;
 
 			m_exit = true;
@@ -365,19 +388,21 @@ namespace zth {
 		typedef CallbackArg_ CallbackArg;
 		typedef void (*Callback)(FsmCallback&, CallbackArg);
 
-		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg(), char const* name = "FSM")
+		explicit FsmCallback(typename base::Factory const& factory, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(factory, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
 		
-		explicit FsmCallback(typename base::Description description, Callback callback = NULL, CallbackArg const& callbackArg = CallbackArg(), char const* name = "FSM")
+		explicit FsmCallback(typename base::Description description, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(description, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
 
 		virtual ~FsmCallback() {}
+
+		CallbackArg callbackArg() const { return m_callbackArg; }
 
 	protected:
 		virtual void callback() {
