@@ -317,8 +317,8 @@ namespace zth {
 		}
 		Future& operator=(type const& value) { set(value); return *this; }
 
-		type& value() { wait(); return *reinterpret_cast<type*>(m_data); }
-		type const& value() const { wait(); return *reinterpret_cast<type const*>(m_data); }
+		type& value() { wait(); char* p = m_data; return *reinterpret_cast<type*>(p); }
+		type const& value() const { wait(); char const* p = m_data; return *reinterpret_cast<type const*>(p); }
 		operator type const&() const { return value(); }
 		operator type&() { return value(); }
 		type const* operator*() const { return &value(); }
@@ -326,7 +326,7 @@ namespace zth {
 		type const* operator->() const { return &value(); }
 		type* operator->() { return &value(); }
 	private:
-		char m_data[sizeof(type)];
+		char m_data[sizeof(type)] __attribute__((aligned(8)));
 		bool m_valid;
 	};
 	

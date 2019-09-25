@@ -12,7 +12,7 @@ zth_fiber(job)
 
 static void handler(int sig) {
 	char const* msg = "got interrupted\n";
-	write(fileno(stderr), msg, strlen(msg));
+	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
 }
 
 static void employer() {

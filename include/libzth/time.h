@@ -133,18 +133,18 @@ namespace zth {
 
 		void add(TimeInterval const& t) {
 			if(t.m_negative == m_negative) {
-				// Add in same sign direction.
-				time_t tv_sec __attribute__((unused)) = m_t.tv_sec;
-				m_t.tv_sec += t.m_t.tv_sec;
-				m_t.tv_nsec += t.m_t.tv_nsec;
-				if(m_t.tv_nsec > BILLION) {
-					m_t.tv_nsec -= BILLION;
-					m_t.tv_sec++;
-				}
-
 				// Check for overflow.
-				if(tv_sec > m_t.tv_sec)
+				if(isInfinite() || t.isInfinite() || std::numeric_limits<time_t>::max() - m_t.tv_sec - 1 <= t.m_t.tv_sec) {
 					m_t.tv_sec = std::numeric_limits<time_t>::max(); // infinite
+				} else {
+					// Add in same sign direction.
+					m_t.tv_sec += t.m_t.tv_sec;
+					m_t.tv_nsec += t.m_t.tv_nsec;
+					if(m_t.tv_nsec > BILLION) {
+						m_t.tv_nsec -= BILLION;
+						m_t.tv_sec++;
+					}
+				}
 			} else {
 				if(t.isAbsBiggerThan(*this)) {
 					// Add in other sign direction with sign flip.

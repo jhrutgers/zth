@@ -3,7 +3,7 @@ project(examples)
 
 message("Building examples with CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 
-add_compile_options(-Wall -Werror)
+add_compile_options(-Wall -Werror -Wno-error=missing-braces -Wno-missing-braces)
 #add_compile_options($<$<CONFIG:DEBUG>:-Og>)
 
 link_libraries(libzth)

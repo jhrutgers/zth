@@ -7,7 +7,7 @@ struct State {
 	typedef enum { init, peek, blink_on, blink_off, red_wait, red, amber, green, end } type;
 };
 // Do provide a str() specialization for this type.
-template <> zth::cow_string zth::str<State::type>(State::type value) { return zth::str((int)value); }
+namespace zth { template <> cow_string str<State::type>(State::type value) { return str((int)value); } }
 #else
 // Nicely named states, which eases debugging.
 namespace State {
@@ -25,7 +25,7 @@ namespace State {
 #endif
 
 enum Input { traffic };
-template <> zth::cow_string zth::str<Input>(Input value) { return zth::str((int)value); }
+namespace zth { template <> cow_string str<Input>(Input value) { return str((int)value); } }
 
 typedef zth::FsmCallback<State::type, zth::Timestamp&, Input> Fsm_type;
 

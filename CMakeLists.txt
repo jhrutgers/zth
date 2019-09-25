@@ -29,6 +29,9 @@ file(GLOB_RECURSE sources src/*.cpp)
 add_library(libzth ${sources})
 set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
 
+# Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp
+set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_SOURCE)
+
 target_include_directories(libzth PUBLIC include)
 
 target_compile_options(libzth PRIVATE -Wall -Werror)

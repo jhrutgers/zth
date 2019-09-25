@@ -5,7 +5,7 @@ static sig_atomic_t volatile stop = 0;
 
 void server() {
 	void* responder = zmq_socket(ZMQ_REP);
-	int rc = zmq_bind(responder, "inproc://hello");
+	int rc __attribute__((unused)) = zmq_bind(responder, "inproc://hello");
 	zth_assert(!rc);
 
 	while(!stop) {
@@ -40,7 +40,7 @@ zth_fiber(client)
 
 static void handler(int sig) {
 	char const* msg = "got interrupted\n";
-	write(fileno(stderr), msg, strlen(msg));
+	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
 	stop = 1;
 }
 
