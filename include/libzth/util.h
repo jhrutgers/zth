@@ -425,6 +425,9 @@ namespace zth {
 	};
 
 	template <typename T, bool ThreadSafe> uint64_t UniqueID<T,ThreadSafe>::m_nextId = 0;
+	
+	template <typename T, typename WhenTIsVoid> struct choose_type { typedef T type; };
+	template <typename WhenTIsVoid> struct choose_type<void, WhenTIsVoid> { typedef WhenTIsVoid type; };
 }
 
 #endif // __cplusplus

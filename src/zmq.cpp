@@ -48,15 +48,28 @@ static void* zmq_global_init() {
 	return zmq_ctx;
 }
 
+/*!
+ * \brief Returns the (only) 0MQ context, used by all fibers.
+ * \ingroup zth_api_cpp_zmq
+ */
 void* zmq_context() {
 	static void* zmq_ctx = zmq_global_init();
 	return zmq_ctx;
 }
 	
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_socket().
+ * \details The context is implicit, as all fibers run in the same thread and share the context.
+ * \ingroup zth_api_cpp_zmq
+ */
 void* zmq_socket(int type) {
 	return ::zmq_socket(zmq_context(), type);
 }
 
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_msg_send().
+ * \ingroup zth_api_cpp_zmq
+ */
 int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
 	perf_syscall("zmq_msg_send()");
 
@@ -75,6 +88,10 @@ int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
 	return ::zmq_msg_send(msg, socket, flags | ZMQ_DONTWAIT);
 }
 
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_msg_recv().
+ * \ingroup zth_api_cpp_zmq
+ */
 int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
 	perf_syscall("zmq_msg_recv()");
 
@@ -93,6 +110,10 @@ int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
 	return ::zmq_msg_recv(msg, socket, flags | ZMQ_DONTWAIT);
 }
 
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_send().
+ * \ingroup zth_api_cpp_zmq
+ */
 int zmq_send(void *socket, void *buf, size_t len, int flags) {
 	perf_syscall("zmq_send()");
 
@@ -111,6 +132,10 @@ int zmq_send(void *socket, void *buf, size_t len, int flags) {
 	return ::zmq_send(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_recv().
+ * \ingroup zth_api_cpp_zmq
+ */
 int zmq_recv(void *socket, void *buf, size_t len, int flags) {
 	perf_syscall("zmq_recv()");
 
@@ -129,6 +154,10 @@ int zmq_recv(void *socket, void *buf, size_t len, int flags) {
 	return ::zmq_recv(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
+/*!
+ * \brief Fiber-aware wrapper for 0MQ's \c zmq_send_const().
+ * \ingroup zth_api_cpp_zmq
+ */
 int zmq_send_const(void *socket, void *buf, size_t len, int flags) {
 	perf_syscall("zmq_send_const()");
 

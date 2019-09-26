@@ -18,9 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \defgroup zth_api_cpp_fsm fsm
+ * \ingroup zth_api_cpp
+ */
+
 #ifdef __cplusplus
 #include <libzth/time.h>
 #include <libzth/waiter.h>
+#include <libzth/util.h>
 
 #include <set>
 #include <map>
@@ -28,14 +34,29 @@
 namespace zth {
 
 	namespace guards {
-		enum End { end = 0 };
+		enum End {
+			/*!
+			 * \brief End-of-guard-list marker.
+			 * \ingroup zth_api_cpp_fsm
+			 */
+			end = 0 };
 
-		template <typename Fsm> TimeInterval always(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is always true.
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <typename Fsm> ZTH_EXPORT TimeInterval always(Fsm& fsm) {
 			zth_dbg(fsm, "[%s] Guard always", fsm.id_str());
 			return TimeInterval();
 		}
 
-		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> TimeInterval input(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is true when the given input has been set.
+		 * \details If set, the input is cleared from the Fsm.
+		 * \see zth::guards::peek()
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> ZTH_EXPORT TimeInterval input(Fsm& fsm) {
 			if(fsm.clearInput(i)) {
 				zth_dbg(fsm, "[%s] Guard input %s", fsm.id_str(), str(i).c_str());
 				return TimeInterval();
@@ -43,7 +64,13 @@ namespace zth {
 				return TimeInterval::infinity();
 		}
 		
-		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> TimeInterval peek(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is true when the given input has been set.
+		 * \details The input is not cleared from the Fsm.
+		 * \see zth::guards::input()
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <typename FsmInput, typename FsmInput::Input i, typename Fsm> ZTH_EXPORT TimeInterval peek(Fsm& fsm) {
 			if(fsm.hasInput(i)) {
 				zth_dbg(fsm, "[%s] Guard peek input %s", fsm.id_str(), str(i).c_str());
 				return TimeInterval();
@@ -58,22 +85,44 @@ namespace zth {
 			return ti;
 		}
 
-		template <time_t s, typename Fsm> TimeInterval timeout_s(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is true when the Fsm stayed for the given time in this state.
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <time_t s, typename Fsm> ZTH_EXPORT TimeInterval timeout_s(Fsm& fsm) {
 			static constexpr TimeInterval const timeout(s);
 			return timeout_<Fsm>(fsm, timeout);
 		}
 
-		template <unsigned int ms, typename Fsm> TimeInterval timeout_ms(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is true when the Fsm stayed for the given time in this state.
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <unsigned int ms, typename Fsm> ZTH_EXPORT TimeInterval timeout_ms(Fsm& fsm) {
 			static TimeInterval const timeout((double)ms * 1e-3);
 			return timeout_<Fsm>(fsm, timeout);
 		}
 
-		template <uint64_t us, typename Fsm> TimeInterval timeout_us(Fsm& fsm) {
+		/*!
+		 * \brief A guard that is true when the Fsm stayed for the given time in this state.
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <uint64_t us, typename Fsm> ZTH_EXPORT TimeInterval timeout_us(Fsm& fsm) {
 			static TimeInterval const timeout((double)us * 1e-6);
 			return timeout_<Fsm>(fsm, timeout);
 		}
 	}
 
+	/*!
+	 * \brief A guard is evaulated, and when true, the corresponding transition is taken.
+	 * \details Use one of the guards in \c zth::guards, like \c zth::guards::always(), or define your own.
+	 *          A guard is a function that gets the current Fsm reference as argument and should return a #zth::TimeInterval.
+	 *          When the interval has passed (zero or negative duration), the guard is assumed to be taken.
+	 *          A positive duration indicates how much time it will probably take for the guard to become valid, which can be
+	 *          used to suspend the fiber.
+	 * \see \ref fsm.cpp for an example
+	 * \ingroup zth_api_cpp_fsm
+	 */
 	template <typename Fsm>
 	class FsmGuard {
 	public:
@@ -90,6 +139,13 @@ namespace zth {
 		Function m_function;
 	};
 
+	/*!
+	 * \brief The description of a Fsm.
+	 * \details Don't try to understand this definition, just follow the example.
+	 * \see zth::Fsm
+	 * \see \ref fsm.cpp for an example
+	 * \ingroup zth_api_cpp_fsm
+	 */
 	template <typename Fsm>
 	struct FsmDescription {
 		union {
@@ -99,10 +155,16 @@ namespace zth {
 		FsmGuard<Fsm> guard;
 	};
 
+	/*!
+	 * \brief A compiler to turn an #zth::FsmDescription into something that can be used by #zth::Fsm.
+	 * \see zth::Fsm
+	 * \see \ref fsm.cpp for an example
+	 * \ingroup zth_api_cpp_fsm
+	 */
 	template <typename Fsm>
-	class FsmFactory {
+	class FsmCompiler {
 	public:
-		constexpr FsmFactory(FsmDescription<Fsm>* description)
+		constexpr FsmCompiler(FsmDescription<Fsm>* description)
 			: m_description(description)
 			, m_compiled()
 		{} 
@@ -110,7 +172,7 @@ namespace zth {
 #if GCC_VERSION >= 49000L
 		__attribute__((returns_nonnull))
 #endif
-		__attribute__((malloc,,warn_unused_result)) Fsm* create() const { return new Fsm(*this); }
+		__attribute__((malloc,warn_unused_result)) Fsm* create() const { return new Fsm(*this); }
 
 		FsmDescription<Fsm> const* description() const { compile(); return m_description; }
 
@@ -160,24 +222,35 @@ namespace zth {
 	 * \brief A Finite-state machine.
 	 * \tparam State_ the type of a state, which can be anything, as long as it is default-constructable and assignable, and comparable with \c std:less.
 	 * \tparam Input_ the type of inputs, as used by #Fsm::input(), which has the same type requirements as \c State_.
+	 * \tparam FsmImpl_ the actual subclass type of \c Fsm, which is used for the #zth::FsmDescription.
+	 *                  So, if you derive from Fsm, pass your class to \p FsmImpl_, such that every guard gets your actual \c Fsm type reference.
+	 *                  When \c void, assume that there is no subclass, and just use the \c Fsm reference instead.
+	 * \see \ref fsm.cpp for an example
+	 * \ingroup zth_api_cpp_fsm
 	 */
-	template <typename State_, typename Input_ = int>
-	class Fsm : public UniqueID<Fsm<void> > {
-	protected:
-		enum EvalState { evalCompile, evalInit, evalReset, evalIdle, evalState, evalRecurse };
-		typedef FsmDescription<Fsm> const* StateAddr;
-
+	template <typename State_, typename Input_ = int, typename FsmImpl_ = void>
+	class Fsm : public UniqueID<Fsm<void,void,void> > {
 	public:
+		typedef typename choose_type<FsmImpl_,Fsm>::type FsmImpl;
 		typedef State_ State;
 		typedef Input_ Input;
-		typedef FsmFactory<Fsm> Factory;
-		typedef FsmDescription<Fsm> Description[];
+		typedef FsmCompiler<FsmImpl> Compiler;
+		typedef FsmDescription<FsmImpl> Description[];
 
-		explicit Fsm(Factory const& factory, char const* name = "FSM")
+	protected:
+		enum EvalState { evalCompile, evalInit, evalReset, evalIdle, evalState, evalRecurse };
+		typedef FsmDescription<FsmImpl> const* StateAddr;
+
+	public:
+		explicit Fsm(Compiler const& compiler, char const* name = "FSM")
 			: UniqueID(name)
-			, m_factory(&factory)
+			, m_compiler(&compiler)
 			, m_evalState(evalInit)
-		{}
+		{
+#if __cplusplus >= 201103L && !defined(DOXYGEN)
+			static_assert(std::is_base_of<Fsm,FsmImpl>::value, "");
+#endif
+		}
 		
 		explicit Fsm(Description description, char const* name = "FSM")
 			: UniqueID(name)
@@ -187,17 +260,6 @@ namespace zth {
 		
 		virtual ~Fsm() {}
 
-		template <typename FsmImplementation>
-#if __cplusplus >= 201103L && !defined(DOXYGEN)
-		typename std::enable_if<std::is_base_of<Fsm,FsmImplementation>::value, FsmImplementation&>::type
-#else
-		FsmImplementation&
-#endif
-		as() {
-			zth_assert(dynamic_cast<FsmImplementation*>(this) != NULL);
-			return static_cast<FsmImplementation&>(*this);
-		}
-
 		State const& state() const {
 			switch(m_evalState) {
 			default:
@@ -205,7 +267,7 @@ namespace zth {
 			case evalCompile:
 				return m_description->state;
 			case evalInit:
-				return m_factory->description()->state;
+				return m_compiler->description()->state;
 			case evalReset:
 				return m_compiledDescription->state;
 			}
@@ -222,7 +284,7 @@ namespace zth {
 			case evalCompile:
 				return m_description->state;
 			case evalInit:
-				return m_factory->description()->state;
+				return m_compiler->description()->state;
 			case evalReset:
 				return m_compiledDescription->state;
 			}
@@ -232,6 +294,10 @@ namespace zth {
 			zth_dbg(fsm, "[%s] Reset", id_str());
 			switch(m_evalState) {
 			default:
+				// If you get here, you probably called reset from within the callback function, which you shouldn't do.
+				zth_assert(false);
+				ZTH_FALLTHROUGH
+			case evalIdle:
 				m_evalState = evalReset;
 				break;
 			case evalCompile:
@@ -256,11 +322,11 @@ namespace zth {
 
 			switch(m_evalState) {
 			case evalCompile:
-				m_compiledDescription = Factory(m_description).description();
+				m_compiledDescription = Compiler(m_description).description();
 				if(false) {
 					ZTH_FALLTHROUGH
 			case evalInit:
-					m_compiledDescription = (StateAddr)m_factory->description();
+					m_compiledDescription = (StateAddr)m_compiler->description();
 				}
 				ZTH_FALLTHROUGH
 			case evalReset:
@@ -331,7 +397,7 @@ namespace zth {
 			TimeInterval wait = TimeInterval::infinity();
 			StateAddr p = m_state;
 			while(p->guard.valid()) {
-				TimeInterval ti((p++)->guard(*this));
+				TimeInterval ti((p++)->guard(static_cast<FsmImpl&>(*this)));
 				if(ti.hasPassed()) {
 					setState(p->stateAddr);
 					wait = ti; // NVRO
@@ -366,13 +432,17 @@ namespace zth {
 		}
 
 	protected:
+		/*!
+		 * \brief This function is called when the FSM has to execute the code belonging by the current state.
+		 * \details It is called upon entry and exit of a state, and arbitrary times during a state.
+		 */
 		virtual void callback() = 0;
 
 	private:
 		union {
-			FsmDescription<Fsm>* m_description; // only valid during stateCompile
-			Factory const* m_factory; // only valid during stateInit
-			FsmDescription<Fsm> const* m_compiledDescription; // otherwise
+			FsmDescription<FsmImpl>* m_description; // only valid during stateCompile
+			Compiler const* m_compiler; // only valid during stateInit
+			FsmDescription<FsmImpl> const* m_compiledDescription; // otherwise
 		};
 		StateAddr m_state;
 		StateAddr m_stateNext;
@@ -384,15 +454,16 @@ namespace zth {
 		std::set<Input> m_inputs;
 	};
 	
-	template <typename State_, typename CallbackArg_ = void, typename Input_ = int>
-	class FsmCallback : public Fsm<State_,Input_> {
+	template <typename State_, typename CallbackArg_ = void, typename Input_ = int, typename FsmImpl_ = void>
+	class FsmCallback : public Fsm<State_,Input_,typename choose_type<FsmImpl_, FsmCallback<State_, CallbackArg_, Input_, void> >::type> {
 	public:
-		typedef Fsm<State_,Input_> base;
+		typedef typename choose_type<FsmImpl_, FsmCallback<State_, CallbackArg_, Input_, void> >::type FsmImpl;
+		typedef Fsm<State_,Input_,FsmImpl> base;
 		typedef CallbackArg_ CallbackArg;
 		typedef void (*Callback)(FsmCallback&, CallbackArg);
 
-		explicit FsmCallback(typename base::Factory const& factory, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
-			: base(factory, name)
+		explicit FsmCallback(typename base::Compiler const& compiler, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
+			: base(compiler, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
@@ -420,14 +491,15 @@ namespace zth {
 		CallbackArg const m_callbackArg;
 	};
 	
-	template <typename State_, typename Input_>
-	class FsmCallback<State_,void,Input_> : public Fsm<State_,Input_> {
+	template <typename State_, typename Input_, typename FsmImpl_>
+	class FsmCallback<State_,void,Input_,FsmImpl_> : public Fsm<State_,Input_,typename choose_type<FsmImpl_,FsmCallback<State_,void,Input_,void> >::type> {
 	public:
-		typedef Fsm<State_,Input_> base;
+		typedef typename choose_type<FsmImpl_, FsmCallback<State_, void, Input_, void> >::type FsmImpl;
+		typedef Fsm<State_,Input_,FsmImpl> base;
 		typedef void (*Callback)(FsmCallback&);
 
-		explicit FsmCallback(typename base::Factory const& factory, Callback callback = NULL, char const* name = "FSM")
-			: base(factory, name)
+		explicit FsmCallback(typename base::Compiler const& compiler, Callback callback = NULL, char const* name = "FSM")
+			: base(compiler, name)
 			, m_callback(callback)
 		{}
 
