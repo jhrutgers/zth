@@ -64,6 +64,18 @@ double fiber_ddd(double a, double b)
 }
 zth_fiber(fiber_ddd)
 
+#if __cplusplus >= 201103L
+// The current implementation for pre-C++11 only support up to three arguments.
+// C++11 and higher support arbitrary number of arguments.
+double fiber_ddddi(double a, double b, double c, int d)
+{
+	double res = a * b + c - d;
+	printf("fiber_ddddi(%g, %g, %g, %d) = %g\n", a, b, c, d, res);
+	return res;
+}
+zth_fiber(fiber_ddddi)
+#endif
+
 void main_fiber(int argc, char** argv)
 {
 	// `async' is just like a function call, but its execution is postponed.
@@ -102,5 +114,10 @@ void main_fiber(int argc, char** argv)
 	printf("fddd = %g\n", fddd->value());
 	// In case the return type of the fiber is void, the value() function is
 	// not available.
+
+#if __cplusplus >= 201103L
+	// Arbitrary fiber argument number example.
+	async fiber_ddddi(4, 5, 6, 7);
+#endif
 }
 

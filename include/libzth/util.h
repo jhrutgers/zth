@@ -428,6 +428,14 @@ namespace zth {
 	
 	template <typename T, typename WhenTIsVoid> struct choose_type { typedef T type; };
 	template <typename WhenTIsVoid> struct choose_type<void, WhenTIsVoid> { typedef WhenTIsVoid type; };
+
+#if __cplusplus >= 201103L
+	template <int...> struct Sequence {};
+#  ifndef DOXYGEN
+	template <int N, int... S> struct SequenceGenerator : SequenceGenerator<N - 1, N - 1, S...> {};
+	template <int... S> struct SequenceGenerator<0, S...> { typedef Sequence<S...> type; };
+#  endif
+#endif
 }
 
 #endif // __cplusplus

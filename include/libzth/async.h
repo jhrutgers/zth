@@ -26,6 +26,10 @@
 #include <libzth/sync.h>
 #include <libzth/worker.h>
 
+#if __cplusplus >= 201103L
+#  include <tuple>
+#endif
+
 namespace zth {
 
 	template <typename R, typename F>
@@ -308,6 +312,36 @@ namespace zth {
 		A2 m_a2;
 		A3 m_a3;
 	};
+
+#if __cplusplus >= 201103L
+	template <typename R, typename... Args>
+	class TypedFiberN : public TypedFiber<R, R(*)(Args...)> {
+	public:
+		typedef TypedFiber<R, R(*)(Args...)> base;
+		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}
+		virtual ~TypedFiberN() {}
+	protected:
+		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
+	private:
+		template <int... S> void entry__(Sequence<S...>) { this->setFuture(this->function()(std::get<S>(m_args)...)); }
+	private:
+		std::tuple<Args...> m_args;
+	};
+
+	template <typename... Args>
+	class TypedFiberN<void, Args...> : public TypedFiber<void, void(*)(Args...)> {
+	public:
+		typedef TypedFiber<void, void(*)(Args...)> base;
+		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}
+		virtual ~TypedFiberN() {}
+	protected:
+		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
+	private:
+		template <int... S> void entry__(Sequence<S...>) { this->function()(std::get<S>(m_args)...); this->setFuture(); }
+	private:
+		std::tuple<Args...> m_args;
+	};
+#endif
 	
 	template <typename F> struct TypedFiberType {};
 	template <typename R> struct TypedFiberType<R(*)()> {
@@ -343,6 +377,18 @@ namespace zth {
 		typedef A3 a3Type;
 	};
 
+#if __cplusplus >= 201103L
+	template <typename R, typename... Args> struct TypedFiberType<R(*)(Args...)> {
+		struct NoArg {};
+		typedef R returnType;
+		typedef TypedFiberN<R,Args...> fiberType;
+		// The following types are only here for compatibility with the other TypedFiberTypes.
+		typedef NoArg a1Type;
+		typedef NoArg a2Type;
+		typedef NoArg a3Type;
+	};
+#endif
+
 	template <typename F>
 	class TypedFiberFactory {
 	public:
@@ -374,6 +420,13 @@ namespace zth {
 		TypedFiber_type* operator()(A1 a1, A2 a2, A3 a3) const {
 			return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 		}
+
+#if __cplusplus >= 201103L
+		template <typename... Args>
+		TypedFiber_type* operator()(Args&&... args) const {
+			return polish(*new TypedFiber_type(m_function, std::forward<Args>(args)...));
+		}
+#endif
 
 		TypedFiber_type* polish(TypedFiber_type& fiber) const {
 			if(unlikely(m_name))
