@@ -224,7 +224,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void  nap(TimeInterval const& sleepFor)	{ nap(Timestamp::now() + sleepFor); }
+	ZTH_EXPORT inline void  nap(TimeInterval const& sleepFor)	{ if(!sleepFor.hasPassed()) nap(Timestamp::now() + sleepFor); }
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber

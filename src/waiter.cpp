@@ -31,6 +31,8 @@ void Waiter::wait(TimedWaitable& w) {
 	Fiber* fiber = m_worker.currentFiber();
 	if(unlikely(!fiber || fiber->state() != Fiber::Running))
 		return;
+	if(unlikely(w.timeout() < Timestamp::now()))
+		return;
 	
 	w.setFiber(*fiber);
 	fiber->nap(w.timeout());
