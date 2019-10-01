@@ -479,6 +479,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 	// Get a new stack.
 	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED)) {
 		res = errno;
+		context->stack = NULL;
 		goto rollback;
 	}
 

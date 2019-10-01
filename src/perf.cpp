@@ -43,7 +43,7 @@
 #endif
 
 #ifdef ZTH_HAVE_LIBUNWIND
-#include <libunwind.h>
+#  include <libunwind.h>
 #endif
 
 namespace zth {
@@ -469,6 +469,10 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	}
 
 	m_truncated = depth == maxDepth;
+#elif !defined(ZTH_OS_WINDOWS)
+	m_bt.resize(maxDepth);
+	m_bt.resize(backtrace(&m_bt[0], maxDepth));
+	m_truncated = m_bt.size() == maxDepth;
 #endif
 
 	m_t1 = Timestamp::now();
@@ -525,7 +529,7 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 		}
 
 		if(syms)
-			log_color(color, "%s%s\n", color >= 0 ? ZTH_DBG_PREFIX : "", syms[i]);
+			log_color(color, "%s%-3zd %s\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, syms[i]);
 		else
 			log_color(color, "%s%-3zd 0x%0*" PRIxPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
 	}

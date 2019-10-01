@@ -265,8 +265,9 @@ namespace zth {
 				c = 0;
 			else {
 				int c2 = vsprintf(hbuf, fmt, args2);
-				assert(c2 <= c);
+				zth_assert(c2 <= c);
 				c = c2;
+				buf = hbuf;
 			}
 		}
 

@@ -196,7 +196,7 @@ namespace zth {
 					didSchedule = true;
 					goto reschedule;
 				default:
-					zth_abort("Unhandled Fiber::run() error %d", res);
+					zth_abort("Unhandled Fiber::run() error: %s", err(res).c_str());
 				}
 			}
 		}
