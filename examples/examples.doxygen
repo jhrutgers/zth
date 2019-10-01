@@ -161,16 +161,16 @@ Other fiber
 \brief Performance measurement of some aspects of Zth.
 On a MacBook Pro (2010), running the release build, it gives the following output:
 \verbatim
-[calib     ]  calibration                         :  0.000'000'002'603 s    (2^29 iterations, total 1.40 s)
-[calib     ]  empty test                          : -0.000'000'000'018 s    (2^29 iterations, total 1.39 s)
-[now       ]  Timestamp::now()                    :  0.000'000'043'157 s    (2^25 iterations, total 1.54 s)
-[context   ]  2 context_switch()s                 :  0.000'000'166'277 s    (2^23 iterations, total 1.42 s)
-[yield     ]  single-fiber yield()                :  0.000'000'073'902 s    (2^24 iterations, total 1.28 s)
-[yield     ]  single-fiber yield() always         :  0.000'000'073'639 s    (2^24 iterations, total 1.28 s)
-[yield     ]  yield() to fiber and back           :  0.000'000'412'143 s    (2^22 iterations, total 1.74 s)
-[fiber     ]  currentFiber()                      : -0.000'000'000'017 s    (2^29 iterations, total 1.39 s)
-[fiber     ]  create and cleanup fiber            :  0.000'017'504'479 s    (2^16 iterations, total 1.15 s)
-[nap       ]  nap(0)                              : -0.000'000'000'014 s    (2^29 iterations, total 1.39 s)
-[nap       ]  nap(100 ms)                         :  0.103'425'128'022 s    (2^ 4 iterations, total 1.65 s)
+[calib     ]  calibration                         :  0.000'000'002'613 s    (2^29 iterations, total 1.40 s)
+[calib     ]  empty test                          : -0.000'000'000'008 s    (2^29 iterations, total 1.40 s)
+[now       ]  Timestamp::now()                    :  0.000'000'043'526 s    (2^25 iterations, total 1.55 s)
+[context   ]  2 context_switch()s                 :  0.000'000'163'834 s    (2^23 iterations, total 1.40 s)
+[yield     ]  single-fiber yield()                :  0.000'000'073'900 s    (2^24 iterations, total 1.28 s)
+[yield     ]  single-fiber yield() always         :  0.000'000'074'261 s    (2^24 iterations, total 1.29 s)
+[yield     ]  yield() to fiber and back           :  0.000'000'406'253 s    (2^22 iterations, total 1.71 s)
+[fiber     ]  currentFiber()                      :  0.000'000'000'022 s    (2^29 iterations, total 1.41 s)
+[fiber     ]  create and cleanup fiber            :  0.000'019'744'122 s    (2^16 iterations, total 1.29 s)
+[nap       ]  nap(0)                              : -0.000'000'000'039 s    (2^29 iterations, total 1.38 s)
+[nap       ]  nap(100 ms)                         :  0.100'868'147'512 s    (2^ 4 iterations, total 1.61 s)
 \endverbatim
 */
