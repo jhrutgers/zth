@@ -7,9 +7,19 @@ they explicitly yield from one to another.
 
 [GNU Pth](https://www.gnu.org/software/pth/) has been a great inspiration for this library.
 
+Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc >=4 is supported.
 
 
 ## How to build
+
+When starting from scratch, clone the repository, like:
+
+	git clone http://gitlab/zth
+	cd zth
+	git submodule init
+	git submodule update
+
+Build Zth out-of-tree:
 
 	mkdir build
 	cd build
