@@ -56,9 +56,14 @@
 #  include <ucontext.h>
 #endif
 
+#ifdef ZTH_CONTEXT_SJLJ
+#  include <csetjmp>
+#  include <csignal>
+#endif
+
 #ifdef ZTH_CONTEXT_WINFIBER
 #  include <windows.h>
-#else
+#elif defined(ZTH_HAVE_MMAN)
 #  include <sys/mman.h>
 #  ifndef MAP_STACK
 #    define MAP_STACK 0
@@ -91,6 +96,9 @@ public:
 #endif
 #ifdef ZTH_CONTEXT_UCONTEXT
 	sigjmp_buf env;
+#endif
+#ifdef ZTH_CONTEXT_SJLJ
+	jmp_buf env;
 #endif
 #ifdef ZTH_CONTEXT_WINFIBER
 	LPVOID fiber;
@@ -448,6 +456,40 @@ static void context_switch_impl(Context* from, Context* to) {
 
 
 
+////////////////////////////////////////////////////////////
+// setjmp/longjmp fiddling method
+
+#ifdef ZTH_CONTEXT_SJLJ
+#  define context_init_impl()	0
+#  define context_deinit_impl()
+#  define context_destroy_impl(...)
+
+static int context_create_impl(Context* context, stack_t* stack) {
+	if(unlikely(!stack->ss_sp))
+		// Stackless fiber only saves current context; nothing to do.
+		return 0;
+
+	setjmp(context->env);
+#ifdef ZTH_ARCH_ARM
+	// TODO: do some fiddling with the jmp_buf...
+	context->env[0] = (int)&context_entry; // pc
+	context->env[1] = (int)context; // arg0
+	context->env[2] = (int)stack->ss_sp; // sp
+#else
+#  error Unsupported architecture for setjmp/longjmp method.
+#endif
+	return 0;
+}
+
+static void context_switch_impl(Context* from, Context* to) {
+	// switchcontext() restores signal masks, which is slow...
+	if(setjmp(from->env) == 0)
+		longjmp(to->env, 1);
+}
+
+#endif // ZTH_CONTEXT_SJLJ
+
+
 
 ////////////////////////////////////////////////////////////
 // Stack allocation
@@ -465,7 +507,11 @@ static void context_deletestack(Context* context) {
 #ifdef ZTH_USE_VALGRIND
 		VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
 #endif
+#ifdef ZTH_HAVE_MMAN
 		munmap(context->stack, context->stackSize);
+#else
+		free(context->stack);
+#endif
 		context->stack = NULL;
 	}
 }
@@ -477,16 +523,24 @@ static int context_newstack(Context* context, stack_t* stack) {
 	context->stackSize = (context->stackSize + MINSIGSTKSZ + 3 * pagesize - 1) & ~(pagesize - 1);
 
 	// Get a new stack.
-	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED)) {
+#ifdef ZTH_HAVE_MMAN
+	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED))
+#else
+	if(unlikely((context->stack = malloc(context->stackSize)) == NULL))
+#endif
+	{
 		res = errno;
 		context->stack = NULL;
 		goto rollback;
 	}
 
+#ifdef ZTH_HAVE_MMAN
 	if(Config::EnableStackGuard) {
 		stack->ss_sp = (char*)context->stack + pagesize;
 		stack->ss_size = context->stackSize - 2 * pagesize;
-	} else {
+	} else
+#endif
+	{
 		stack->ss_sp = context->stack;
 		stack->ss_size = context->stackSize;
 	}
@@ -500,6 +554,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 			currentWorker().id_str(), context, context->valgrind_stack_id);
 #endif
 
+#ifdef ZTH_HAVE_MMAN
 	if(Config::EnableStackGuard) {
 		// Guard both ends of the stack.
 		if(unlikely(
@@ -510,10 +565,12 @@ static int context_newstack(Context* context, stack_t* stack) {
 			goto rollback_mmap;
 		}
 	}
+#endif
 
 	return 0;
 
 rollback_mmap:
+	__attribute__((unused));
 	context_deletestack(context);
 rollback:
 	return res ? res : EINVAL;

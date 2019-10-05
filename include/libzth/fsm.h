@@ -172,7 +172,7 @@ namespace zth {
 #if GCC_VERSION >= 49000L
 		__attribute__((returns_nonnull))
 #endif
-		__attribute__((malloc,warn_unused_result)) Fsm* create() const { return new Fsm(*this); }
+		__attribute__((warn_unused_result)) Fsm* create() const { return new Fsm(*this); }
 
 		FsmDescription<Fsm> const* description() const { compile(); return m_description; }
 

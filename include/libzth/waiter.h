@@ -123,7 +123,7 @@ namespace zth {
 		virtual ~PolledMemberWaiting() {}
 	};
 
-#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+#ifdef ZTH_HAVE_POLLER
 
 	class AwaitFd : public Waitable, public Listable<AwaitFd> {
 	public:
@@ -184,7 +184,7 @@ namespace zth {
 		void wait(TimedWaitable& w);
 		void scheduleTask(TimedWaitable& w);
 		void unscheduleTask(TimedWaitable& w);
-#ifdef ZTH_HAVE_POLL
+#ifdef ZTH_HAVE_POLLER
 		void checkFdList();
 		int waitFd(AwaitFd& w);
 #endif
@@ -201,7 +201,7 @@ namespace zth {
 	private:
 		Worker& m_worker;
 		SortedList<TimedWaitable> m_waiting;
-#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+#ifdef ZTH_HAVE_POLLER
 		List<AwaitFd> m_fdList;
 		std::vector<zth_pollfd_t> m_fdPollList;
 #endif

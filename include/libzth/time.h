@@ -34,11 +34,13 @@
 #include <limits>
 #include <inttypes.h>
 
-#ifdef ZTH_OS_MAC
+#if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
 extern "C" int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain);
 #  define CLOCK_MONOTONIC 1
-#  define TIMER_ABSTIME 1
+#  ifndef TIMER_ABSTIME
+#    define TIMER_ABSTIME 1
+#  endif
 #endif
 
 namespace zth {

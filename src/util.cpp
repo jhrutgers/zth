@@ -53,11 +53,17 @@ char const* banner() {
 #ifdef ZTH_OS_MAC
 		" mac"
 #endif
+#ifdef ZTH_OS_BAREMETAL
+		" baremetal"
+#endif
 #ifdef ZTH_ARCH_X86_64
 		" x86_64"
 #endif
 #ifdef ZTH_ARCH_X86
 		" x86"
+#endif
+#ifdef ZTH_ARCH_ARM
+		" arm"
 #endif
 #ifdef _DEBUG
 		" debug"
@@ -70,6 +76,9 @@ char const* banner() {
 #endif
 #ifdef ZTH_CONTEXT_SIGALTSTACK
 		" sigaltstack"
+#endif
+#ifdef ZTH_CONTEXT_SJLJ
+		" sjlj"
 #endif
 #ifdef ZTH_CONTEXT_WINFIBER
 		" winfiber"

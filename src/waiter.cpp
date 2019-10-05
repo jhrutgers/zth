@@ -171,7 +171,11 @@ void Waiter::entry() {
 
 		bool doRealSleep = false;
 
-		if(m_waiting.empty() && m_fdPollList.empty()) {
+		if(m_waiting.empty()
+#ifdef ZTH_HAVE_POLLER
+			&& m_fdPollList.empty()
+#endif
+		) {
 			// No fiber is waiting. suspend() till anyone is going to nap().
 			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", id_str());
 			m_worker.suspend(*fiber());

@@ -69,7 +69,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	target_link_libraries(libzth INTERFACE rt)
 endif()
 
-target_link_libraries(libzth INTERFACE dl)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
+	target_link_libraries(libzth INTERFACE dl)
+endif()
 
 find_package(Doxygen)
 option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})

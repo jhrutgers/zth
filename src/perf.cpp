@@ -36,7 +36,7 @@
 #include <fcntl.h>
 #include <map>
 
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 #  include <execinfo.h>
 #  include <dlfcn.h>
 #  include <cxxabi.h>
@@ -469,7 +469,7 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	}
 
 	m_truncated = depth == maxDepth;
-#elif !defined(ZTH_OS_WINDOWS)
+#elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
 	m_bt.resize(backtrace(&m_bt[0], maxDepth));
 	m_truncated = m_bt.size() == maxDepth;
@@ -479,7 +479,7 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 }
 
 void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	if(bt().size() == 0)
 		return;
 	if(end < 0) {

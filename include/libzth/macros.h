@@ -156,6 +156,8 @@ ZTH_EXPORT void foo();
 #  define ZTH_ARCH_X86_64 1
 #elif defined(__i386__)
 #  define ZTH_ARCH_X86 1
+#elif defined(__arm__)
+#  define ZTH_ARCH_ARM 1
 #else
 #  error Unsupported hardware platform.
 #endif
@@ -188,6 +190,7 @@ ZTH_EXPORT void foo();
 #  define ZTH_HAVE_PTHREAD
 //#  define ZTH_HAVE_LIBUNWIND
 #  define ZTH_HAVE_POLL
+#  define ZTH_HAVE_MMAN
 #elif defined(__APPLE__)
 #  include "TargetConditionals.h"
 #  ifdef TARGET_OS_MAC
@@ -199,6 +202,10 @@ ZTH_EXPORT void foo();
 #  define ZTH_HAVE_PTHREAD
 //#  define ZTH_HAVE_LIBUNWIND
 #  define ZTH_HAVE_POLL
+#  define ZTH_HAVE_MMAN
+#elif defined(ZTH_ARCH_ARM)
+// Assume having newlib
+#  define ZTH_OS_BAREMETAL 1
 #else
 #  error Unsupported OS.
 #endif
@@ -221,6 +228,9 @@ ZTH_EXPORT void foo();
 
 #ifdef ZTH_OS_WINDOWS
 #  define ZTH_CONTEXT_WINFIBER
+#elif defined(ZTH_OS_BAREMETAL)
+// Assume having newlib with setjmp/longjmp fiddling.
+#  define ZTH_CONTEXT_SJLJ
 #elif defined(ZTH_HAVE_VALGRIND)
 // Valgrind does not handle sigaltstack very well.
 #  define ZTH_CONTEXT_UCONTEXT
