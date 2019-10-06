@@ -55,6 +55,7 @@ char const* banner() {
 #endif
 #ifdef ZTH_OS_BAREMETAL
 		" baremetal"
+		" newlib" _NEWLIB_VERSION
 #endif
 #ifdef ZTH_ARCH_X86_64
 		" x86_64"

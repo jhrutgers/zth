@@ -108,7 +108,7 @@ public:
 #endif
 };
 
-static void context_entry(Context* context) __attribute__((noreturn));
+extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 
 
 ////////////////////////////////////////////////////////////
@@ -464,6 +464,15 @@ static void context_switch_impl(Context* from, Context* to) {
 #  define context_deinit_impl()
 #  define context_destroy_impl(...)
 
+#ifdef ZTH_ARCH_ARM
+__attribute__((naked)) static void context_trampoline() {
+	__asm__ (
+		"ldr r0, [sp]\n"
+		"b context_entry\n"
+		);
+}
+#endif
+
 static int context_create_impl(Context* context, stack_t* stack) {
 	if(unlikely(!stack->ss_sp))
 		// Stackless fiber only saves current context; nothing to do.
@@ -471,10 +480,25 @@ static int context_create_impl(Context* context, stack_t* stack) {
 
 	setjmp(context->env);
 #ifdef ZTH_ARCH_ARM
-	// TODO: do some fiddling with the jmp_buf...
-	context->env[0] = (int)&context_entry; // pc
-	context->env[1] = (int)context; // arg0
-	context->env[2] = (int)stack->ss_sp; // sp
+	// Do some fiddling with the jmp_buf...
+
+	// We only checked against newlib 3.1.0.
+#  if NEWLIB_VERSION != 30100L
+#    error Unsupported newlib version.
+#  endif
+
+	void** sp = (void**)((char*)stack->ss_sp + stack->ss_size - sizeof(void*)); // sp
+	*sp = context; // push context argument on the new stack
+
+	size_t sp_offset = 
+#  if (__ARM_ARCH_ISA_THUMB == 1 && !__ARM_ARCH_ISA_ARM) || defined(__thumb2__)
+		8;
+#  else
+		9;
+#  endif
+
+	context->env[sp_offset] = (intptr_t)sp;
+	context->env[sp_offset + 1] = (intptr_t)&context_trampoline; // lr
 #else
 #  error Unsupported architecture for setjmp/longjmp method.
 #endif
@@ -482,7 +506,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 }
 
 static void context_switch_impl(Context* from, Context* to) {
-	// switchcontext() restores signal masks, which is slow...
+	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
 	if(setjmp(from->env) == 0)
 		longjmp(to->env, 1);
 }
@@ -518,7 +542,12 @@ static void context_deletestack(Context* context) {
 
 static int context_newstack(Context* context, stack_t* stack) {
 	int res = 0;
-	size_t const pagesize = getpagesize();
+	size_t const pagesize =
+#ifdef ZTH_HAVE_MMAN
+		getpagesize();
+#else
+		sizeof(void*);
+#endif
 	zth_assert(__builtin_popcount(pagesize) == 1);
 	context->stackSize = (context->stackSize + MINSIGSTKSZ + 3 * pagesize - 1) & ~(pagesize - 1);
 
@@ -593,7 +622,7 @@ void context_deinit() {
 	context_deinit_impl();
 }
 
-static void context_entry(Context* context) {
+void context_entry(Context* context) {
 	zth_assert(context);
 	// Go execute the fiber.
 	context->attr.entry(context->attr.arg);

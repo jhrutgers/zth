@@ -206,6 +206,10 @@ ZTH_EXPORT void foo();
 #elif defined(ZTH_ARCH_ARM)
 // Assume having newlib
 #  define ZTH_OS_BAREMETAL 1
+#  include <newlib.h>
+#  ifndef NEWLIB_VERSION
+#    define NEWLIB_VERSION (__NEWLIB__ * 10000L + __NEWLIB_MINOR__ * 100L + __NEWLIB_PATCHLEVEL__)
+#  endif
 #else
 #  error Unsupported OS.
 #endif

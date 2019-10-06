@@ -8,7 +8,7 @@ they explicitly yield from one to another.
 [GNU Pth](https://www.gnu.org/software/pth/) has been a great inspiration for this library.
 
 Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc >=4 is supported.
-There is experimental support for bare-metal ARM (with newlib).
+There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).
 
 
 ## How to build

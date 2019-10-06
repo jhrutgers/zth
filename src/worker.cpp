@@ -31,13 +31,13 @@ namespace zth {
 
 ZTH_TLS_DEFINE(Worker*, currentWorker_, NULL)
 
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 static void sigchld_handler(int);
 #endif
 
 void worker_global_init() {
 	zth_dbg(banner, "%s", banner());
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	struct sigaction sa = {};
 	sa.sa_handler = &sigchld_handler;
 	sigaction(SIGCHLD, &sa, NULL);
@@ -119,7 +119,7 @@ int execlp(char const* file, char const* arg, ... /*, NULL */) {
  * \ingroup zth_api_cpp_fiber
  */
 int execvp(char const* file, char* const arg[]) {
-#ifdef ZTH_OS_WINDOWS
+#if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)
 	return ENOSYS;
 #else
 	int res = 0;
@@ -139,7 +139,7 @@ int execvp(char const* file, char* const arg[]) {
 #endif
 }
 
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 static volatile sig_atomic_t sigchld_cleanup = 0;
 
 static void sigchld_handler(int) {
@@ -148,7 +148,7 @@ static void sigchld_handler(int) {
 #endif
 
 void sigchld_check() {
-#ifndef ZTH_OS_WINDOWS
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	if(likely(sigchld_cleanup == 0))
 		return;
 	

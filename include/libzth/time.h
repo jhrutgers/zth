@@ -37,7 +37,9 @@
 #if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
 extern "C" int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain);
-#  define CLOCK_MONOTONIC 1
+#  ifndef CLOCK_MONOTONIC
+#    define CLOCK_MONOTONIC 1
+#  endif
 #  ifndef TIMER_ABSTIME
 #    define TIMER_ABSTIME 1
 #  endif

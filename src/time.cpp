@@ -136,6 +136,30 @@ int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *reques
 }
 #endif
 
+#ifdef ZTH_OS_BAREMETAL
+// Clock functions are typically not provided by the std library.
+
+// As there is no OS, just do polling for the clock. Please provide a more accurate one, when appropriate.
+__attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain) {
+	if(unlikely(!request))
+		return EFAULT;
+	if(unlikely(clk_id != CLOCK_MONOTONIC || flags != TIMER_ABSTIME))
+		return EINVAL;
+
+	while(true) {
+		struct timespec now;
+		int res = clock_gettime(CLOCK_MONOTONIC, &now);
+		if(unlikely(res))
+			return res;
+		else if(now.tv_sec > request->tv_sec)
+			return 0;
+		else if(now.tv_sec == request->tv_sec && now.tv_nsec >= request->tv_nsec)
+			return 0;
+		// else just keep polling...
+	}
+}
+#endif
+
 namespace zth {
 	Timestamp const startTime(Timestamp::now());
 }

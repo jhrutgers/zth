@@ -10,21 +10,25 @@ static void job(int length) {
 }
 zth_fiber(job)
 
+#ifndef ZTH_OS_BAREMETAL
 static void handler(int sig) {
 	char const* msg = "got interrupted\n";
 	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
 }
+#endif
 
 static void employer() {
 	char buf[128];
 	int offset = 0;
 
+#ifndef ZTH_OS_BAREMETAL
 	struct sigaction sa;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	if(sigaction(SIGINT, &sa, NULL) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
+#endif
 
 	printf("Enter jobs: ");
 	fflush(stdout);
