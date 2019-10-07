@@ -487,7 +487,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #    error Unsupported newlib version.
 #  endif
 
-	void** sp = (void**)((char*)stack->ss_sp + stack->ss_size - sizeof(void*)); // sp
+	void** sp = (void**)((uintptr_t)((char*)stack->ss_sp + stack->ss_size - sizeof(void*)) & ~(uintptr_t)7); // sp (must be dword aligned)
 	*sp = context; // push context argument on the new stack
 
 	size_t sp_offset = 
