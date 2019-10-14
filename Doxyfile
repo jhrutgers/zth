@@ -795,6 +795,7 @@ INPUT                  = include \
                          include/zth \
                          src \
 						 examples/examples.doxygen \
+						 examples/arm/README-ARM.md \
 						 README.md
 
 # This tag can be used to specify the character encoding of the source files

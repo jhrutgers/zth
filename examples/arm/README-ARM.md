@@ -58,7 +58,7 @@ To get the stuff running, do this:
 
 3. Run Qemu with one of the examples.
 	I have tested it with Qemu 3.0.0.
-	(Note: Press 'Ctrl-A X' to terminate qemu)
+	(Note: Press 'Ctrl-A X' to terminate Qemu)
 
 		qemu-system-arm -machine virt -cpu cortex-a15 -s -m 8M -nographic -kernel examples/arm/zth-arm/examples/1_helloworld
 
@@ -67,7 +67,7 @@ To get the stuff running, do this:
 		> zth::banner: Zth 0.1.0 g++-8.3.1 C++14 baremetal newlib3.1.0 arm debug sjlj
 
 	Note that there is no OS that supplies `poll()`. So reading stdin is a bit tricky and not all examples behave the same way as at your PC.
-	Moreover, 0MQ isn't available too, of course.
+	Moreover, 0MQ isn't available either, of course.
 
 4. Connect `gdb` to Qemu. If you supply the `-S` argument to Qemu, it waits for `gdb` to connect before it starts.
 	That might make debugging a bit easier.

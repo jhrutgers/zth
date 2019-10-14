@@ -26,3 +26,7 @@ if(ZTH_HAVE_LIBZMQ)
 	add_executable(zmq zmq.cpp)
 endif()
 
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	add_subdirectory(arm EXCLUDE_FROM_ALL)
+endif()
+
