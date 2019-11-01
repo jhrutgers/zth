@@ -119,3 +119,6 @@ void _crt()
 	for(void** f = (void**)&__init_array_start; (char*)f < &__init_array_end; f++)
 		((void(*)(void))(*f))();
 }
+
+void* __dso_handle __attribute__((weak));
+

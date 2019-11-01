@@ -19,6 +19,7 @@
 #include <libzth/macros.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
+#include <errno.h>
 
 #ifdef ZTH_OS_MAC
 #  include <mach/mach_time.h>

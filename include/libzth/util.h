@@ -118,6 +118,7 @@
 #include <memory>
 #include <inttypes.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>

@@ -2,9 +2,9 @@
 
 void main_fiber(int argc, char** argv) {
 	while(true) {
-		printf("on");
+		printf("on\n");
 		zth::nap(1);
-		printf("off");
+		printf("off\n");
 		zth::nap(1);
 	}
 }
