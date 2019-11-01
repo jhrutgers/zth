@@ -529,7 +529,7 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 		}
 
 		if(syms)
-			log_color(color, "%s%-3zd %s\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, syms[i]);
+			log_color(color, "%s%-3zd %s\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, syms[i - start]);
 		else
 			log_color(color, "%s%-3zd 0x%0*" PRIxPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
 	}
