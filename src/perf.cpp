@@ -438,6 +438,8 @@ void perf_flushEventBuffer() {
 		perfFiber->flushEventBuffer();
 }
 
+extern "C" void context_entry(Context* context);
+
 Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	: m_t0(Timestamp::now())
 {
@@ -457,6 +459,8 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	size_t depth = 0;
 	for(size_t i = 0; i < skip && unw_step(&cursor) > 0; i++);
 
+	unw_proc_info_t pip;
+
 	while (unw_step(&cursor) > 0 && depth < maxDepth) {
 		if(depth == 0) {
 			unw_word_t sp;
@@ -466,6 +470,10 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 		unw_word_t ip;
 		unw_get_reg(&cursor, UNW_REG_IP, &ip);
 		m_bt.push_back((void*)ip);
+
+		if(unw_get_proc_info(&cursor, &pip) == 0 && pip.start_ip == (unw_word_t)&context_entry)
+			// Stop here, as we might get segfaults when passing the context_entry functions.
+			break;
 	}
 
 	m_truncated = depth == maxDepth;
@@ -519,9 +527,14 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 			int status;
 			char* demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
 			if(status == 0 && demangled) {
+#ifdef ZTH_OS_MAC
 				log_color(color, "%s%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "",
 					i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i], 
 					demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr);
+#else
+				log_color(color, "%s%-3zd %s(%s+0x%" PRIxPTR ") [0x%" PRIxPTR "]\n", color >= 0 ? ZTH_DBG_PREFIX : "",
+					i, info.dli_fname, demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr, (uintptr_t)bt()[i]);
+#endif
 				
 				free(demangled);
 				continue;
