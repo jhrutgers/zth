@@ -40,6 +40,10 @@ target_compile_options(libzth PRIVATE -Wall -Werror)
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
 	target_link_libraries(libzth PUBLIC libzmq)
+	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+		add_custom_command(TARGET libzth POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/external/libzmq/bin/libzmq.dll ${CMAKE_CURRENT_BINARY_DIR})
+	endif()
 endif()
 
 CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
