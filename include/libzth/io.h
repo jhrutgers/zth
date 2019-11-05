@@ -37,7 +37,11 @@
 #ifdef ZTH_HAVE_POLLER
 
 #  ifndef ZTH_REDIRECT_IO
-#    define ZTH_REDIRECT_IO 1
+#    ifdef ZTH_OS_WINDOWS
+#      define ZTH_REDIRECT_IO 0
+#    else
+#      define ZTH_REDIRECT_IO 1
+#    endif
 #  endif
 
 #  ifdef ZTH_HAVE_POLL
@@ -46,14 +50,16 @@
 
 #  ifdef ZTH_HAVE_LIBZMQ
 #    include <zmq.h>
-#    include <sys/select.h>
+#    ifndef ZTH_OS_WINDOWS
+#      include <sys/select.h>
+#    endif
 	typedef zmq_pollitem_t zth_pollfd_t;
 #  elif defined(ZTH_HAVE_POLL)
 #    include <sys/select.h>
 	typedef struct pollfd zth_pollfd_t;
 #  endif
 
-#  ifdef __cplusplus
+#  if defined(__cplusplus) && defined(OS_WINDOWS)
 namespace zth { namespace io {
 
 	ZTH_EXPORT ssize_t read(int fd, void* buf, size_t count);

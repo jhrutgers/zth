@@ -127,7 +127,7 @@
 #  include <unistd.h>
 #endif
 
-EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), weak)) void zth_logv(char const* fmt, va_list arg);
+EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv(char const* fmt, va_list arg);
 
 #ifdef __cplusplus
 /*!
@@ -422,7 +422,7 @@ namespace zth {
 		uint64_t const m_id;
 		std::string m_name;
 		std::string mutable m_id_str;
-		// If allocating once every ns, it takes more than 500 millenia until we run out of identifiers.
+		// If allocating once every ns, it takes more than 500 years until we run out of identifiers.
 		static uint64_t m_nextId;
 	};
 

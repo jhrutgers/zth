@@ -69,8 +69,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	target_link_libraries(libzth INTERFACE rt)
 endif()
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
-	target_link_libraries(libzth INTERFACE dl)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
+		target_link_libraries(libzth INTERFACE dl)
+	endif()
 endif()
 
 find_package(Doxygen)

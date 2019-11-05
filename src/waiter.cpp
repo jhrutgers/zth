@@ -83,7 +83,7 @@ void Waiter::checkFdList() {
 				fd = format("0x%" PRIxPTR, (uintptr_t)m_fdPollList[i].socket);
 			else
 #  endif
-				format("%d", m_fdPollList[i].fd);
+				format("%lld", (long long)m_fdPollList[i].fd);
 			zth_dbg(list, "[%s]       %s: events 0x%04hx", id_str(), fd.c_str(), m_fdPollList[i].events);
 		}
 	}
@@ -127,7 +127,7 @@ int Waiter::waitFd(AwaitFd& w) {
 				for(size_t i = 0; i < (size_t)w.nfds(); i++) {
 					zth_pollfd_t& f = w.fds()[i] = m_fdPollList[offset + i];
 					if(f.revents) {
-						zth_dbg(waiter, "[%s] poll(%d)'s revents: 0x%04hx", id_str(), f.fd, f.events);
+						zth_dbg(waiter, "[%s] poll(%lld)'s revents: 0x%04hx", id_str(), (long long)f.fd, f.events);
 						res++;
 					}
 				}

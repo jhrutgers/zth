@@ -175,15 +175,3 @@ void sigchld_check() {
 
 } // namespace
 
-__attribute__((weak)) void main_fiber(int argc, char** argv) {}
-#ifndef DOXYGEN
-zth_fiber(main_fiber);
-#endif
-
-__attribute__((weak)) int main(int argc, char** argv) {
-	zth::Worker w;
-	async main_fiber(argc, argv);
-	w.run();
-	return 0;
-}
-

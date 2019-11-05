@@ -47,12 +47,16 @@ static void handler(int sig) {
 void main_fiber(int argc, char** argv) {
 	printf("zmq main fiber\n");
 
+#ifdef ZTH_OS_WINDOWS
+	signal(SIGINT, handler);
+#else
 	struct sigaction sa;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	if(sigaction(SIGINT, &sa, NULL) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
+#endif
 
 	async server();
 	async client();

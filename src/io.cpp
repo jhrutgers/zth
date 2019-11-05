@@ -23,9 +23,11 @@
 #include <libzth/worker.h>
 #include <libzth/zmq.h>
 
-#ifdef ZTH_HAVE_POLLER
+#if defined(ZTH_HAVE_POLLER) && !defined(ZTH_OS_WINDOWS)
 
-#  include <alloca.h>
+#  ifndef ZTH_OS_WINDOWS
+#    include <alloca.h>
+#  endif
 #  include <fcntl.h>
 #  ifndef POLLIN_SET
 #    define POLLIN_SET (/*POLLRDBAND |*/ POLLIN | /*POLLHUP |*/ POLLERR)

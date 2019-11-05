@@ -1,5 +1,7 @@
 #include <zth>
-#include <sys/select.h>
+#ifndef ZTH_OS_WINDOWS
+#  include <sys/select.h>
+#endif
 #include <signal.h>
 #include <unistd.h>
 
@@ -22,12 +24,16 @@ static void employer() {
 	int offset = 0;
 
 #ifndef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_WINDOWS
+	signal(SIGINT, handler);
+#  else
 	struct sigaction sa;
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	if(sigaction(SIGINT, &sa, NULL) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
+#  endif
 #endif
 
 	printf("Enter jobs: ");

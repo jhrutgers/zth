@@ -37,7 +37,7 @@ By default, release builds are generated. To do debug builds, do something like:
 
 For Windows with Qt, one could run cmake like this:
 
-	set PATH=c:\Program Files\CMake\bin\cmake.exe;%PATH%
+	set PATH=c:\Program Files\CMake\bin;%PATH%
 	cmake.exe .. -D CMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -D CMAKE_MAKE_PROGRAM="c:/qt/Tools/mingw730_64/bin/mingw32-make.exe" -D CMAKE_C_COMPILER="c:/qt/Tools/mingw730_64/bin/gcc.exe" -D CMAKE_CXX_COMPILER="c:/qt/Tools/mingw730_64/bin/g++.exe"
 
 

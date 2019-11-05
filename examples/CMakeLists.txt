@@ -8,6 +8,13 @@ add_compile_options(-Wall -Werror -Wno-error=missing-braces -Wno-missing-braces)
 
 link_libraries(libzth)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	# Don't use the CRT's version which calls WinMain for a GUI,
+	# but use zth's weak main(), if the use does not specify one.
+	add_link_options("-Wl,-umain")
+	add_link_options("-Wl,-uzth_logv")
+endif()
+
 add_executable(1_helloworld 1_helloworld.cpp)
 add_executable(2_fibers 2_fibers.cpp)
 add_executable(3_coop 3_coop.cpp)

@@ -1,6 +1,6 @@
 #include <zth>
 
-static bool shutdown = false;
+static bool shutdown_flag = false;
 
 // A generic trigger function that signals a zth::Signal every given interval.
 void trigger(zth::Signal* s, zth::TimeInterval interval) {
@@ -8,7 +8,7 @@ void trigger(zth::Signal* s, zth::TimeInterval interval) {
 		return;
 
 	zth::Timestamp t = zth::Timestamp::now() + interval;
-	while(!shutdown) {
+	while(!shutdown_flag) {
 		zth::nap(t);
 		s->signal();
 		t += interval;
@@ -27,7 +27,7 @@ void someDaemon() {
 	// interval, start a timer to do this.
 	async trigger(&triggerSomeDaemon, 1);
 
-	while(!shutdown) {
+	while(!shutdown_flag) {
 		printf("daemon wakeup\n");
 		// ...and do some work.
 		
@@ -55,6 +55,6 @@ void main_fiber(int argc, char** argv) {
 
 	// Nap for a while, to show the interval trigger of the daemon.
 	zth::nap(10);
-	shutdown = true;
+	shutdown_flag = true;
 }
 

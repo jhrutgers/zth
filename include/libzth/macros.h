@@ -246,7 +246,7 @@ ZTH_EXPORT void foo();
 
 #ifdef ZTH_CONTEXT_WINFIBER
 #  ifndef WINVER
-#    define WINVER 0x0400
+#    define WINVER 0x0501
 #  elif WINVER < 0x0400
 #    error WINVER should be at least 0x0400
 #  endif
