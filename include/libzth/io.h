@@ -59,7 +59,7 @@
 	typedef struct pollfd zth_pollfd_t;
 #  endif
 
-#  if defined(__cplusplus) && defined(OS_WINDOWS)
+#  if defined(__cplusplus) && !defined(ZTH_OS_WINDOWS)
 namespace zth { namespace io {
 
 	ZTH_EXPORT ssize_t read(int fd, void* buf, size_t count);
