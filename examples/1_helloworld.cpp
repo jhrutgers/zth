@@ -31,6 +31,10 @@ zth_fiber(hello)
 // main() is weakly defined by Zth. If not implemented by the program, Zth
 // supplies one that just starts a worker and schedules main_fiber() as the
 // only fiber. So, this is a convenient entry point of your fibered program.
+// If you have to do some pre-Zth initialization to be done, such as enabling
+// peripherals of an embedded system, override the weakly defined
+// zth_preinit(), which is by default doing nothing. It is called before any
+// Zth functionality is used.
 void main_fiber(int argc, char** argv)
 {
 	async hello();

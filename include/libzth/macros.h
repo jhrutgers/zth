@@ -37,7 +37,7 @@
 
 #if !ZTH_THREADS && defined(ZTH_HAVE_LIBZMQ)
 #  undef ZTH_THREADS
-#  define ZTH_THREDS 1
+#  define ZTH_THREADS 1
 #endif
 
 
@@ -68,6 +68,7 @@
 #  ifndef GCC_VERSION
 #    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
 #  endif
+#  define UNUSED_PAR(name)	name __attribute__((unused))
 #else
 #  error Unsupported compiler. Please use gcc.
 #endif
@@ -82,7 +83,7 @@
 
 #ifndef ZTH_TLS_DECLARE
 #  undef ZTH_THREADS
-#  define ZTH_THREAD 0
+#  define ZTH_THREADS 0
 #  define ZTH_TLS_DECLARE(type,var)				extern type var;
 #  define ZTH_TLS_DEFINE(type,var,init)			type var = init;
 #  define ZTH_TLS_STATIC(type,var,init)			static type var = init;
@@ -218,7 +219,7 @@ ZTH_EXPORT void foo();
 #  define ZTH_USE_VALGRIND
 #endif
 
-#if !ZTH_THREAD
+#if !ZTH_THREADS
 #  undef ZTH_HAVE_PTHREAD
 #endif
 

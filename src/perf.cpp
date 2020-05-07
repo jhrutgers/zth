@@ -391,7 +391,7 @@ protected:
 		*s = 0;
 
 		do {
-			*--s = id % 93 + 34;
+			*--s = (char)(id % 93 + 34);
 			id /= 93;
 		} while(id);
 
@@ -440,7 +440,7 @@ void perf_flushEventBuffer() {
 
 extern "C" void context_entry(Context* context);
 
-Backtrace::Backtrace(size_t skip, size_t maxDepth)
+Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	: m_t0(Timestamp::now())
 {
 	Worker* worker = Worker::currentWorker();
@@ -486,7 +486,7 @@ Backtrace::Backtrace(size_t skip, size_t maxDepth)
 	m_t1 = Timestamp::now();
 }
 
-void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
+void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), int UNUSED_PAR(color)) const {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	if(bt().size() == 0)
 		return;
@@ -557,7 +557,7 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 #endif
 }
 
-void Backtrace::print(int color) const {
+void Backtrace::print(int UNUSED_PAR(color)) const {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	log_color(color, "%sBacktrace of fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
 	if(bt().size() > 0)

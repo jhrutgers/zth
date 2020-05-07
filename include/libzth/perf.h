@@ -124,7 +124,9 @@ namespace zth {
 			int fiberState;
 		};
 	};
-	
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 	template <>
 	struct PerfEvent<false> {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
@@ -147,6 +149,7 @@ namespace zth {
 			int fiberState;
 		};
 	};
+#pragma GCC diagnostic pop
 
 	typedef std::vector<PerfEvent<> > perf_eventBuffer_type;
 	ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)

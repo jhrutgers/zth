@@ -142,7 +142,7 @@ int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *reques
 // Clock functions are typically not provided by the std library.
 
 // As there is no OS, just do polling for the clock. Please provide a more accurate one, when appropriate.
-__attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain) {
+__attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* UNUSED_PAR(remain)) {
 	if(unlikely(!request))
 		return EFAULT;
 	if(unlikely(clk_id != CLOCK_MONOTONIC || flags != TIMER_ABSTIME))

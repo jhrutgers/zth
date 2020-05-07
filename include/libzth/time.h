@@ -204,6 +204,15 @@ namespace zth {
 			if(m_negative)
 				res = "-";
 
+#ifdef ZTH_OS_BAREMETAL
+			// Do a simplified print without float formatting support.
+			if(m_t.tv_sec >= 60)
+				res += format("%u s", (unsigned int)m_t.tv_sec);
+			else if(m_t.tv_sec > 0)
+				res += format("%u.%03u s", (unsigned int)m_t.tv_sec, (unsigned int)(m_t.tv_nsec / 1000000L));
+			else
+				res += format("%u us", (unsigned int)m_t.tv_nsec / 1000U);
+#else
 			uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
 			time_t rest = m_t.tv_sec - d * 3600 * 24;
 			bool doPrint = d > 0;
@@ -232,6 +241,7 @@ namespace zth {
 			} else {
 				res += format("%g s", s);
 			}
+#endif
 
 			return res;
 		}

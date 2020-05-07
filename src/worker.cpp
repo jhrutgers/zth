@@ -57,7 +57,7 @@ static void* worker_main(void* fiber) {
 /*!
  * \ingroup zth_api_cpp_fiber
  */
-int startWorkerThread(void(*f)(), size_t stack, char const* name) {
+int startWorkerThread(UNUSED_PAR(void(*f)()), size_t UNUSED_PAR(stack), char const* UNUSED_PAR(name)) {
 #ifdef ZTH_USE_PTHREAD
 	pthread_t t;
 	int res = 0;
@@ -118,7 +118,7 @@ int execlp(char const* file, char const* arg, ... /*, NULL */) {
 /*!
  * \ingroup zth_api_cpp_fiber
  */
-int execvp(char const* file, char* const arg[]) {
+int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[])) {
 #if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)
 	return ENOSYS;
 #else

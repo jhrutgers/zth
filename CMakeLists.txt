@@ -37,7 +37,7 @@ set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_
 
 target_include_directories(libzth PUBLIC include)
 
-target_compile_options(libzth PRIVATE -Wall -Werror)
+target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion)
 #target_compile_options(libzth PRIVATE $<$<CONFIG:DEBUG>:-Og>)
 
 if(ZTH_HAVE_LIBZMQ)

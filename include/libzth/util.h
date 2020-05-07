@@ -294,7 +294,7 @@ namespace zth {
 	template <> inline cow_string str<unsigned long>(unsigned long value) { return format("%lu", value); }
 	template <> inline cow_string str<long long>(long long value) { return format("%lld", value); }
 	template <> inline cow_string str<unsigned long long>(unsigned long long value) { return format("%llu", value); }
-	template <> inline cow_string str<float>(float value) { return format("%g", value); }
+	template <> inline cow_string str<float>(float value) { return format("%g", (double)value); }
 	template <> inline cow_string str<double>(double value) { return format("%g", value); }
 	template <> inline cow_string str<long double>(long double value) { return format("%Lg", value); }
 #if __cplusplus >= 201103L
@@ -380,19 +380,25 @@ namespace zth {
 	
 		char const* id_str() const {
 			if(unlikely(m_id_str.empty()))
-				m_id_str = format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
-#ifdef ZTH_OS_WINDOWS
-					(unsigned int)_getpid(),
+				m_id_str =
+#ifdef ZTH_OS_BAREMETAL
+					// No OS, no pid. And if newlib is used, don't try to format 64-bit ints.
+					format("%s #%u", name().empty() ? "Object" : name().c_str(), (unsigned int)id());
 #else
-					(unsigned int)getpid(),
+					format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
+#  ifdef ZTH_OS_WINDOWS
+						(unsigned int)_getpid(),
+#  else
+						(unsigned int)getpid(),
+#  endif
+						id());
 #endif
-					id());
 
 			return m_id_str.c_str();
 		}
 
 	protected:
-		virtual void changedName(std::string const& name) {}
+		virtual void changedName(std::string const& UNUSED_PAR(name)) {}
 
 	private:
 		UniqueID(UniqueID const&)

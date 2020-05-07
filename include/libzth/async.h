@@ -181,7 +181,7 @@ namespace zth {
 	public:
 		passOnExit(Gate& gate) : m_gate(&gate) {}
 	protected:
-		static void cleanup(Fiber& f, void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
+		static void cleanup(Fiber& UNUSED_PAR(f), void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
 		virtual void apply(Fiber& fiber) const { fiber.addCleanup(&cleanup, (void*)m_gate); }
 	private:
 		Gate* m_gate;

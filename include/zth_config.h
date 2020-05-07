@@ -18,6 +18,8 @@
 
 // Default zth configuration. Copy this file, and override defaults in the Config class below.
 // Make sure it is in your include path, and zth will use your config file.
+// For CMake, so something like this:
+//   target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 #ifndef __ZTH_CONFIG_H
 #  error Do not include this file directly, include <zth> instead.
@@ -31,6 +33,7 @@ namespace zth {
 	 */
 	struct Config : public DefaultConfig {
 		// Override defaults from DefaultConfig here for your local setup.
+		//static size_t const DefaultFiberStackSize = 0x2000;
 	};
 } // namespace
 #endif // __cplusplus

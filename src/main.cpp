@@ -1,7 +1,7 @@
 #include <libzth/worker.h>
 #include <libzth/async.h>
 
-__attribute__((weak)) void main_fiber(int argc, char** argv) {}
+__attribute__((weak)) void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv)) {}
 #ifndef DOXYGEN
 zth_fiber(main_fiber);
 #endif
