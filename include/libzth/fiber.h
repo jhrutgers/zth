@@ -34,6 +34,7 @@
 #include <libzth/context.h>
 #include <libzth/list.h>
 #include <libzth/perf.h>
+#include <libzth/init.h>
 
 #include <list>
 #include <utility>
@@ -67,6 +68,7 @@ namespace zth {
 			, m_timeslice(Config::MinTimeslice_s())
 			, m_dtMax(Config::CheckTimesliceOverrun ? Config::MinTimeslice_s() * Config::TimesliceOverrunFactorReportThreshold : 0)
 		{
+			zth_init();
 			setState(New);
 			zth_assert(m_entry);
 			zth_dbg(fiber, "[%s] New fiber %p", id_str(), normptr());

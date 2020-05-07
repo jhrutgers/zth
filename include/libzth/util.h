@@ -73,19 +73,6 @@
 #  define static_assert(expr, msg)	typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
-#ifndef INIT_CALL
-/*!
- * \brief Mark the given function \c f to be invoked during static initialization.
- */
-#  define INIT_CALL(f)		struct f##__init { f##__init() { f(); } }; static f##__init f##__init_;
-#endif
-#ifndef DEINIT_CALL
-/*!
- * \brief Mark the given function \c f to be invoked at exit.
- */
-#  define DEINIT_CALL(f)	struct f##__deinit { f##__deinit() { atexit(f); } }; static f##__deinit f##__deinit_;
-#endif
-
 #ifndef FOREACH
 #  define FOREACH_0(WHAT)														//!< \brief Helper for #FOREACH. \private
 #  define FOREACH_1(WHAT, X)			WHAT(X)									//!< \brief Helper for #FOREACH. \private

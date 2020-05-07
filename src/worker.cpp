@@ -43,7 +43,7 @@ void worker_global_init() {
 	sigaction(SIGCHLD, &sa, NULL);
 #endif
 }
-INIT_CALL(worker_global_init)
+ZTH_INIT_CALL(worker_global_init)
 	
 #ifdef ZTH_USE_PTHREAD
 static void* worker_main(void* fiber) {

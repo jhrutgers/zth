@@ -25,6 +25,7 @@
 #include <libzth/list.h>
 #include <libzth/waiter.h>
 #include <libzth/perf.h>
+#include <libzth/init.h>
 
 #include <time.h>
 #include <pthread.h>
@@ -53,6 +54,8 @@ namespace zth {
 			, m_workerFiber(&dummyWorkerEntry)
 			, m_waiter(*this)
 		{
+			zth_init();
+
 			int res = 0;
 			zth_dbg(worker, "[%s] Created", id_str());
 

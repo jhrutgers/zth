@@ -23,7 +23,10 @@ if(ZTH_HAVE_LIBZMQ)
 	add_subdirectory(external/libzmq)
 endif()
 
-add_subdirectory(examples)
+option(ZTH_BUILD_EXAMPLES "Build examples" ON)
+if(ZTH_BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif()
 
 file(GLOB_RECURSE sources src/*.cpp)
 add_library(libzth ${sources})

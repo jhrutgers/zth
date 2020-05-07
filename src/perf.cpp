@@ -558,6 +558,7 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const {
 }
 
 void Backtrace::print(int color) const {
+#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	log_color(color, "%sBacktrace of fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
 	if(bt().size() > 0)
 		printPartial(0, bt().size() - 1, color);
@@ -566,6 +567,7 @@ void Backtrace::print(int color) const {
 		log_color(color, "%s<truncated>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
 	else
 		log_color(color, "%s<end>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
+#endif
 }
 
 void Backtrace::printDelta(Backtrace const& other, int color) const {

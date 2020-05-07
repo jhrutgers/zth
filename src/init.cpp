@@ -1,5 +1,3 @@
-#ifndef __ZTH_H
-#define __ZTH_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
@@ -18,28 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*!
- * \defgroup zth_api_cpp C++ API
- * \brief C++ interface to Zth (but all \ref zth_api_c functions are available as well).
- */
-/*!
- * \defgroup zth_api_c C API
- * \brief C interface to Zth.
- */
-
 #include <libzth/macros.h>
 #include <libzth/init.h>
-#include <libzth/zmq.h>
-#include <libzth/config.h>
 #include <libzth/util.h>
-#include <libzth/time.h>
-#include <libzth/version.h>
-#include <libzth/fiber.h>
-#include <libzth/worker.h>
-#include <libzth/sync.h>
-#include <libzth/async.h>
-#include <libzth/perf.h>
-#include <libzth/io.h>
-#include <libzth/fsm.h>
 
-#endif // __ZTH_H
+struct zth_init_entry const* zth_init_head = NULL;
+struct zth_init_entry* zth_init_tail = NULL;
+
+/*!
+ * \brief Perform one-time global initialization of the Zth library.
+ * 
+ * Initialization is only done once. It is safe to call it multiple times.
+ * 
+ * The initialization sequence is initialized by #ZTH_INIT_CALL() and processed
+ * in the same order as normal static initializers are executed.
+ */
+void zth_init()
+{
+	if(likely(!zth_init_head))
+		// Already initialized.
+		return;
+
+	struct zth_init_entry const* p = zth_init_head;
+	zth_init_head = NULL;
+
+	while(p) {
+		// p might be overwritten during p->f(), copy next first.
+		struct zth_init_entry const* p_next = p->next;
+		if(p->f)
+			p->f();
+		p = p_next;
+	}
+}
+

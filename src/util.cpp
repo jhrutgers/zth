@@ -20,6 +20,7 @@
 #include <libzth/util.h>
 #include <libzth/version.h>
 #include <libzth/perf.h>
+#include <libzth/init.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -44,6 +45,8 @@ char const* banner() {
 		" C++11"
 #elif __cplusplus == 201402L
 		" C++14"
+#elif __cplusplus == 201703L
+		" C++17"
 #else
 		" C++" ZTH_STRINGIFY(__cplusplus)
 #endif
@@ -108,11 +111,18 @@ void abort(char const* fmt, ...)
  */
 void abortv(char const* fmt, va_list args)
 {
-	log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorLog ? "\x1b[41;1;37;1m" : "");
-	logv(fmt, args);
-	log("  ***  %s\n\n", zth::Config::EnableColorLog ? "\x1b[0m" : "");
+	static bool recurse = false;
 
-	Backtrace().print();
+	if(!recurse)
+	{
+		recurse = true;
+		log("\n%s  *** Zth ABORT:  ", zth::Config::EnableColorLog ? "\x1b[41;1;37;1m" : "");
+		logv(fmt, args);
+		log("  ***  %s\n\n", zth::Config::EnableColorLog ? "\x1b[0m" : "");
+
+		Backtrace().print();
+	}
+
 	::abort();
 }
 
@@ -129,7 +139,7 @@ static void log_init() {
 	}
 #endif
 }
-INIT_CALL(log_init)
+ZTH_INIT_CALL(log_init)
 
 /*!
  * \brief Logs a given printf()-like formatted string using an ANSI color code.

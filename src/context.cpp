@@ -17,6 +17,7 @@
  */
 
 #include <libzth/macros.h>
+#include <libzth/init.h>
 
 #ifdef ZTH_OS_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
@@ -178,7 +179,7 @@ static void context_global_init() {
 error:
 	zth_abort("Cannot initialize signals; %s", err(res).c_str());
 }
-INIT_CALL(context_global_init)
+ZTH_INIT_CALL(context_global_init)
 
 static void bootstrap(Context* context) __attribute__((noreturn
 #ifdef ZTH_USE_VALGRIND
@@ -482,8 +483,8 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #ifdef ZTH_ARCH_ARM
 	// Do some fiddling with the jmp_buf...
 
-	// We only checked against newlib 3.1.0.
-#  if NEWLIB_VERSION != 30100L
+	// We only checked against newlib 2.4.0 and 3.1.0.
+#  if NEWLIB_VERSION < 20400L || NEWLIB_VERSION > 30100L
 #    error Unsupported newlib version.
 #  endif
 

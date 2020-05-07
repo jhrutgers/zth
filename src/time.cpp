@@ -19,6 +19,7 @@
 #include <libzth/macros.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
+#include <libzth/init.h>
 #include <errno.h>
 
 #ifdef ZTH_OS_MAC
@@ -34,7 +35,7 @@ static void clock_global_init() {
 	mach_timebase_info(&clock_info);
 	mach_clock_start = mach_absolute_time();
 }
-INIT_CALL(clock_global_init)
+ZTH_INIT_CALL(clock_global_init)
 
 int clock_gettime(int clk_id, struct timespec* res) {
 	if(unlikely(!res))
@@ -161,7 +162,14 @@ __attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec
 }
 #endif
 
-namespace zth {
-	Timestamp const startTime(Timestamp::now());
+zth::Timestamp startTime_;
+
+static void startTimeInit()
+{
+	startTime_ = zth::Timestamp::now();
 }
+ZTH_INIT_CALL(startTimeInit)
+
+// Let the const zth::startTime alias to the non-const startTime_.
+namespace zth { extern Timestamp const __attribute__((alias("startTime_"))) startTime; }
 

@@ -9,8 +9,8 @@ set(CMAKE_AR "${toolchain_prefix}ar" CACHE FILEPATH "" FORCE)
 set(CMAKE_RANLIB "${toolchain_prefix}ranlib")
 set(CMAKE_C_COMPILER "${toolchain_prefix}gcc")
 set(CMAKE_CXX_COMPILER "${toolchain_prefix}g++")
-set(CMAKE_C_FLAGS "${arm_cpuflags} -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}-build/arm-none-eabi/newlib/targ-include -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}/newlib/libc/include" CACHE STRING "" FORCE)
-set(CMAKE_CXX_FLAGS "${arm_cpuflags} -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}-build/arm-none-eabi/newlib/targ-include -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}/newlib/libc/include -Wno-psabi -fno-use-cxa-atexit -fno-threadsafe-statics" CACHE STRING "" FORCE)
+set(CMAKE_C_FLAGS "${arm_cpuflags} -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}-build/arm-none-eabi/newlib/targ-include -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}/newlib/libc/include -Wno-psabi" CACHE STRING "" FORCE)
+set(CMAKE_CXX_FLAGS "${arm_cpuflags} -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}-build/arm-none-eabi/newlib/targ-include -isystem ${CMAKE_CURRENT_BINARY_DIR}/../${newlib}/newlib/libc/include -Wno-psabi -fno-use-cxa-atexit -fno-threadsafe-statics -Wno-psabi" CACHE STRING "" FORCE)
 
 set(CMAKE_EXE_LINKER_FLAGS "-T ${CMAKE_CURRENT_SOURCE_DIR}/examples/arm/arm.ld -nostartfiles -L${CMAKE_CURRENT_BINARY_DIR}/../${newlib}-build/arm-none-eabi/newlib -L${CMAKE_CURRENT_BINARY_DIR}/examples/arm -lc -lstdc++ -lsupc++ -fno-use-cxa-atexit -Wl,--whole-archive -larm-bsp -Wl,--no-whole-archive" CACHE INTERNAL "")
 
