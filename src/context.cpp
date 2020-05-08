@@ -509,7 +509,32 @@ static int context_create_impl(Context* context, stack_t* stack) {
 static void context_switch_impl(Context* from, Context* to) {
 	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
 	if(setjmp(from->env) == 0)
+	{
+#ifdef ZTH_ARM_USE_PSP
+		// Use the PSP for fibers and the MSP for the worker.
+		// So, if there is no stack in the Context, assume it is a worker, running
+		// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.
+		if(unlikely(!from->stack || !to->stack)) {
+			int control;
+			__asm__ ("mrs %0, control\n" : "=r"(control));
+
+			if(to->stack)
+				control |= 2; // set SPSEL to PSP
+			else
+				control &= ~2; // set SPSEL to MSR
+
+			__asm__ volatile (
+				"msr control, %1\n"
+				"isb\n"
+				"mov r0, %0\n"
+				"movs r1, #1\n"
+				"b longjmp\n"
+				: : "r"(to->env), "r"(control) : "r0", "r1", "memory"
+			);
+		}
+#endif
 		longjmp(to->env, 1);
+	}
 }
 
 #endif // ZTH_CONTEXT_SJLJ

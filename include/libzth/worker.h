@@ -189,7 +189,7 @@ namespace zth {
 					// Ok, just returned to this fiber. Continue execution.
 					return true;
 				case EAGAIN:
-					// Switing to the same fiber.
+					// Switching to the same fiber.
 					return didSchedule;
 				case EPERM:
 					// fiber just died.

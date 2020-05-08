@@ -236,6 +236,9 @@ ZTH_EXPORT void foo();
 #elif defined(ZTH_OS_BAREMETAL)
 // Assume having newlib with setjmp/longjmp fiddling.
 #  define ZTH_CONTEXT_SJLJ
+#  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6
+#    define ZTH_ARM_USE_PSP
+#  endif
 #elif defined(ZTH_HAVE_VALGRIND)
 // Valgrind does not handle sigaltstack very well.
 #  define ZTH_CONTEXT_UCONTEXT

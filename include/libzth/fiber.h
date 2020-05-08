@@ -376,7 +376,7 @@ namespace zth {
 			m_fiber = NULL;
 		}
 
-		static void cleanup_(Fiber& f, void* that) {
+		static void cleanup_(Fiber& UNUSED_PAR(f), void* that) {
 			Runnable* r = (Runnable*)that;
 			if(r) {
 				zth_assert(&f == r->m_fiber);

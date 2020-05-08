@@ -69,6 +69,9 @@ char const* banner() {
 #ifdef ZTH_ARCH_ARM
 		" arm"
 #endif
+#ifdef ZTH_ARM_USE_PSP
+		" psp"
+#endif
 #ifdef _DEBUG
 		" debug"
 #endif
