@@ -24,6 +24,9 @@
 /*!
  * \brief Call the function \p f using the new stack pointer.
  * 
+ * If \p sp is \c NULL, the Worker's stack is used.
+ * Only use this when running on a fiber stack.
+ *
  * The function \p f can have any prototype following the following rules:
  * - 0, 1, 2 or 3 arguments;
  * - void or non-void return type; and

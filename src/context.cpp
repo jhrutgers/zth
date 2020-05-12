@@ -718,16 +718,51 @@ void context_destroy(Context* context) {
 #  ifdef ZTH_ARCH_ARM
 __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(void(*f)()), ...) {
 	__asm__ (
-		"push {r4, r5, lr}\n"	// Save pc and variables
-		"mov r4, sp\n"			// Copy current stack pointer
-		"mov r5, r1\n"			// Save f
-		"mov sp, r0\n"			// Set new stack pointer
-		"mov r0, r2\n"			// Move arguments to f in place
+#ifdef __thumb__
+#  define REG_FP	"r7"
+#else
+#  define REG_FP	"r11"
+#endif
+
+		"push {r4, r5, " REG_FP ", lr}\n"	// Save pc and variables
+
+		"cbz r0, 1f\n"						// Jump if sp == NULL
+
+		"mov r4, sp\n"						// Copy current stack pointer
+		"mov sp, r0\n"						// Set new stack pointer
+		"push {" REG_FP ", lr}\n"			// Save previous frame pointer on new stack (for debugging)
+		"mov " REG_FP ", sp\n"
+
+		"mov r5, r1\n"						// Save f
+		"mov r0, r2\n"						// Move arguments to f in place
 		"mov r1, r3\n"
 		"ldr r2, [r4, #0]\n"
-		"blx r5\n"				// Call f
-		"mov sp, r4\n"			// Restore stack pointer
-		"pop {r4, r5, pc}\n"	// Return to caller
+		"blx r5\n"							// Call f
+		"mov sp, r4\n"						// Restore stack pointer
+		"pop {r4, r5, " REG_FP ", pc}\n"	// Return to caller
+
+"1:\n"
+		// We are on the PSP in a fiber, and switch to the MSP of the Worker.
+		"mrs r4, control\n"					// Save current control register
+		"bic r4, r4, #2\n"					// Set to use MSP
+		"msr control, r4\n"					// Enable MSP
+		"isb\n"
+
+		"push {" REG_FP ", lr}\n"			// Save frame pointer on MSP (for debugging)
+		"mov " REG_FP ", sp\n"
+
+		"mov r5, r1\n"						// Save f
+		"mov r0, r2\n"						// Move arguments to f in place
+		"mov r1, r3\n"
+		"ldr r2, [r4, #0]\n"
+		"blx r5\n"							// Call f
+
+		"mrs r4, control\n"					// Save current control register
+		"orr r4, r4, #2\n"					// Set to use PSP
+		"msr control, r4\n"					// Enable PSP
+		"isb\n"
+		"pop {r4, r5, " REG_FP ", pc}\n"	// Return to caller
+#undef REG_FP
 	);
 }
 #  endif
