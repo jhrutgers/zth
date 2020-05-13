@@ -111,6 +111,15 @@ public:
 
 extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 
+#ifdef ZTH_ARCH_ARM
+// Using the fp reg alias does not seem to work well...
+#  ifdef __thumb__
+#    define REG_FP	"r7"
+#  else
+#    define REG_FP	"r11"
+#  endif
+#endif
+
 
 ////////////////////////////////////////////////////////////
 // ucontext method
@@ -467,9 +476,14 @@ static void context_switch_impl(Context* from, Context* to) {
 
 #ifdef ZTH_ARCH_ARM
 __attribute__((naked)) static void context_trampoline() {
-	__asm__ (
+	__asm__ volatile (
 		"ldr r0, [sp]\n"
-		"b context_entry\n"
+		// Terminate stack frame list here, only for debugging purposes.
+		"mov " REG_FP ", #0\n"
+		"mov lr, #0\n"
+		"push {" REG_FP ", lr}\n"
+		"mov " REG_FP ", sp\n"
+		"bl context_entry\n"
 		);
 }
 #endif
@@ -716,21 +730,27 @@ void context_destroy(Context* context) {
 
 #ifdef ZTH_STACK_SWITCH
 #  ifdef ZTH_ARCH_ARM
+extern "C" void zth_context_switch_disable() {
+	zth::Worker::currentWorker()->contextSwitchDisable();
+}
+
+extern "C" void zth_context_switch_enable() {
+	zth::Worker::currentWorker()->contextSwitchEnable();
+}
+
 __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(void(*f)()), ...) {
-	__asm__ (
-#ifdef __thumb__
-#  define REG_FP	"r7"
-#else
-#  define REG_FP	"r11"
-#endif
+	__asm__ volatile (
 
 		"push {r4, r5, " REG_FP ", lr}\n"	// Save pc and variables
+		".save {r4, r5, " REG_FP ", lr}\n"
 
 		"cbz r0, 1f\n"						// Jump if sp == NULL
 
 		"mov r4, sp\n"						// Copy current stack pointer
+		"bic r0, #7\n"						// Force double-word aligned stack pointer
 		"mov sp, r0\n"						// Set new stack pointer
 		"push {" REG_FP ", lr}\n"			// Save previous frame pointer on new stack (for debugging)
+		".setfp " REG_FP ", sp\n"
 		"mov " REG_FP ", sp\n"
 
 		"mov r5, r1\n"						// Save f
@@ -749,7 +769,9 @@ __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(v
 		"isb\n"
 
 		"push {" REG_FP ", lr}\n"			// Save frame pointer on MSP (for debugging)
+		".setfp " REG_FP ", sp\n"
 		"mov " REG_FP ", sp\n"
+		"bl zth_context_switch_disable\n"	// Prevent context switching to other fibers when using MSP
 
 		"mov r5, r1\n"						// Save f
 		"mov r0, r2\n"						// Move arguments to f in place
@@ -757,10 +779,12 @@ __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(v
 		"ldr r2, [r4, #0]\n"
 		"blx r5\n"							// Call f
 
+		"bl zth_context_switch_enable\n"	// Allow context switching to other fibers again
 		"mrs r4, control\n"					// Save current control register
 		"orr r4, r4, #2\n"					// Set to use PSP
 		"msr control, r4\n"					// Enable PSP
 		"isb\n"
+
 		"pop {r4, r5, " REG_FP ", pc}\n"	// Return to caller
 #undef REG_FP
 	);

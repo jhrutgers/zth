@@ -86,16 +86,16 @@ namespace zth {
 	}
 
 	template <typename R>
-	typename impl::stack_switch_type_check<R>::type stack_switch(void* sp, R(*f)()) {
+	ZTH_INLINE typename impl::stack_switch_type_check<R>::type stack_switch(void* sp, R(*f)()) {
 		return reinterpret_cast<typename impl::stack_switch_type_check<R>::type>(zth_stack_switch(sp, (void(*)())f)); }
 	template <typename R, typename A1>
-	typename impl::stack_switch_type_check<R,A1>::type stack_switch(void* sp, R(*f)(A1), A1 a1) {
+	ZTH_INLINE typename impl::stack_switch_type_check<R,A1>::type stack_switch(void* sp, R(*f)(A1), A1 a1) {
 		return reinterpret_cast<typename impl::stack_switch_type_check<R>::type>(zth_stack_switch(sp, (void(*)())f, a1)); }
 	template <typename R, typename A1, typename A2>
-	typename impl::stack_switch_type_check<R,A1,A2>::type stack_switch(void* sp, R(*f)(A1,A2), A1 a1, A2 a2) {
+	ZTH_INLINE typename impl::stack_switch_type_check<R,A1,A2>::type stack_switch(void* sp, R(*f)(A1,A2), A1 a1, A2 a2) {
 		return reinterpret_cast<typename impl::stack_switch_type_check<R>::type>(zth_stack_switch(sp, (void(*)())f, a1, a2)); }
 	template <typename R, typename A1, typename A2, typename A3>
-	typename impl::stack_switch_type_check<R,A1,A2,A3>::type stack_switch(void* sp, R(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3) {
+	ZTH_INLINE typename impl::stack_switch_type_check<R,A1,A2,A3>::type stack_switch(void* sp, R(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3) {
 		return reinterpret_cast<typename impl::stack_switch_type_check<R>::type>(zth_stack_switch(sp, (void(*)())f, a1, a2, a3)); }
 
 } // namespace

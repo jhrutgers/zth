@@ -53,6 +53,7 @@ namespace zth {
 			, m_currentFiber()
 			, m_workerFiber(&dummyWorkerEntry)
 			, m_waiter(*this)
+			, m_disableContextSwitch()
 		{
 			zth_init();
 
@@ -122,6 +123,22 @@ namespace zth {
 			add(fiber);
 			return *this;
 		}
+
+		void contextSwitchEnable(bool enable = false) {
+			if(enable) {
+				zth_assert(m_disableContextSwitch > 0);
+				m_disableContextSwitch--;
+			} else
+				m_disableContextSwitch++;
+		}
+
+		void contextSwitchDisable() {
+			contextSwitchEnable(false);
+		}
+
+		bool contextSwitchEnabled() const {
+			return m_disableContextSwitch == 0;
+		}
 		
 		void release(Fiber& fiber) {
 			if(unlikely(fiber.state() == Fiber::Suspended)) {
@@ -138,6 +155,10 @@ namespace zth {
 		}
 
 		bool schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
+			if(unlikely(!contextSwitchEnabled()))
+				// Don't switch, immediately continue.
+				return true;
+
 			if(preferFiber)
 				zth_dbg(worker, "[%s] Schedule to %s", id_str(), preferFiber->id_str());
 			else
@@ -215,6 +236,7 @@ namespace zth {
 				// Return to the worker's context and sort it out from there.
 				
 				zth_dbg(worker, "[%s] Current fiber %s just died; switch to worker", id_str(), fiber.id_str());
+				zth_assert(contextSwitchEnabled());
 				schedule(&m_workerFiber);
 
 				// We should not get here, as we are dead.
@@ -242,6 +264,7 @@ namespace zth {
 				fiber.suspend();
 				add(&fiber);
 				zth_assert(currentFiber() == &fiber);
+				zth_assert(contextSwitchEnabled());
 				// Current fiber suspended, immediate reschedule.
 				schedule();
 				break;
@@ -319,6 +342,7 @@ namespace zth {
 		Fiber m_workerFiber;
 		Waiter m_waiter;
 		Timestamp m_end;
+		int m_disableContextSwitch;
 
 		friend void worker_global_init();
 	};
