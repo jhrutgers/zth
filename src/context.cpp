@@ -272,11 +272,15 @@ static void stack_guard(void* guard) {
 
 	reg_mpu_rbar rbar;
 
-	if(likely(guard))
+	if(likely(guard)) {
 		rbar.field.addr = (uintptr_t)guard >> 5;
-	else
+		register void* sp asm ("sp");
+		zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", guard, sp);
+	} else {
 		// Initialize at the top of the address space, so it is effectively unused.
 		rbar.field.addr = REG_MPU_RBAR_ADDR_UNUSED;
+		zth_dbg(context, "Disabled MPU stack guard");
+	}
 
 	rbar.field.valid = 1;
 	rbar.field.region = region;
@@ -945,6 +949,7 @@ __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(v
 
 		"push {r4, r5, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, r5, " REG_FP ", lr}\n"
+		"add " REG_FP ", sp, #0\n"
 
 		"cbz r0, 1f\n"						// Jump if sp == NULL
 
@@ -953,7 +958,7 @@ __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(v
 		"mov sp, r0\n"						// Set new stack pointer
 		"push {" REG_FP ", lr}\n"			// Save previous frame pointer on new stack (for debugging)
 		".setfp " REG_FP ", sp\n"
-		"mov " REG_FP ", sp\n"
+		"add " REG_FP ", sp, #0\n"
 
 		"mov r5, r1\n"						// Save f
 		"mov r0, r2\n"						// Move arguments to f in place
@@ -972,7 +977,7 @@ __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(v
 
 		"push {" REG_FP ", lr}\n"			// Save frame pointer on MSP (for debugging)
 		".setfp " REG_FP ", sp\n"
-		"mov " REG_FP ", sp\n"
+		"add " REG_FP ", sp, #0\n"
 		"bl zth_context_switch_disable\n"	// Prevent context switching to other fibers when using MSP
 
 		"mov r5, r1\n"						// Save f
