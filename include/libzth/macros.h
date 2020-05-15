@@ -159,10 +159,24 @@ ZTH_EXPORT void foo();
 #  define ZTH_ARCH_X86 1
 #elif defined(__arm__)
 #  define ZTH_ARCH_ARM 1
+#  if defined(__ARM_ARCH) && __ARM_ARCH >= 6
+#    define ZTH_ARM_HAVE_MPU
+#  endif
+#  define __isb() __asm__ volatile ("isb":::"memory")
+#  define __dsb() __asm__ volatile ("dsb":::"memory")
+#  define __dmb() __asm__ volatile ("dmb":::"memory")
+#  define barrier() __dsb()
 #else
 #  error Unsupported hardware platform.
 #endif
 
+#ifndef barrier
+#  if GCC_VERSION < 40802L
+#    define barrier() __sync_synchronize()
+#  else
+#    define barrier() __atomic_thread_fence()
+#  endif
+#endif
 
 
 

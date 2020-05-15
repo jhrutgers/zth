@@ -85,15 +85,43 @@
 #  define FOREACH_8(WHAT, X, ...)		WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
 #  define FOREACH_9(WHAT, X, ...)		WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
 #  define FOREACH_10(WHAT, X, ...)		WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_11(WHAT, X, ...)		WHAT(X)FOREACH_10(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_12(WHAT, X, ...)		WHAT(X)FOREACH_11(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_13(WHAT, X, ...)		WHAT(X)FOREACH_12(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_14(WHAT, X, ...)		WHAT(X)FOREACH_13(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_15(WHAT, X, ...)		WHAT(X)FOREACH_14(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_16(WHAT, X, ...)		WHAT(X)FOREACH_15(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
 //... repeat as needed
 
 /*! \brief Helper for #FOREACH. \private */
-#  define _GET_MACRO(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,NAME,...) NAME
+#  define _GET_MACRO(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
 /*!
  * \brief Evaluates to \c action(x) for every argument.
  */
 #  define FOREACH(action,...) \
-		_GET_MACRO(0,##__VA_ARGS__,FOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1,FOREACH_0)(action,##__VA_ARGS__)
+		_GET_MACRO(0,##__VA_ARGS__,FOREACH_16,FFOREACH_15,FFOREACH_14,FFOREACH_13,FFOREACH_12,FFOREACH_11,FFOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1,FOREACH_0)(action,##__VA_ARGS__)
+#endif
+
+#ifndef REVERSE
+#  define REVERSE_0()
+#  define REVERSE_1(a)		a
+#  define REVERSE_2(a,...)	REVERSE_1(__VA_ARGS__),a
+#  define REVERSE_3(a,...)	REVERSE_2(__VA_ARGS__),a
+#  define REVERSE_4(a,...)	REVERSE_3(__VA_ARGS__),a
+#  define REVERSE_5(a,...)	REVERSE_4(__VA_ARGS__),a
+#  define REVERSE_6(a,...)	REVERSE_5(__VA_ARGS__),a
+#  define REVERSE_7(a,...)	REVERSE_6(__VA_ARGS__),a
+#  define REVERSE_8(a,...)	REVERSE_7(__VA_ARGS__),a
+#  define REVERSE_9(a,...)	REVERSE_8(__VA_ARGS__),a
+#  define REVERSE_10(a,...)	REVERSE_9(__VA_ARGS__),a
+#  define REVERSE_11(a,...)	REVERSE_10(__VA_ARGS__),a
+#  define REVERSE_12(a,...)	REVERSE_11(__VA_ARGS__),a
+#  define REVERSE_13(a,...)	REVERSE_12(__VA_ARGS__),a
+#  define REVERSE_14(a,...)	REVERSE_13(__VA_ARGS__),a
+#  define REVERSE_15(a,...)	REVERSE_14(__VA_ARGS__),a
+#  define REVERSE_16(a,...)	REVERSE_15(__VA_ARGS__),a
+#  define REVERSE(...) \
+		_GET_MACRO(0,##__VA_ARGS__,REVERSE_16,REVERSE_15,REVERSE_14,REVERSE_13,REVERSE_12,REVERSE_11,REVERSE_10,REVERSE_9,REVERSE_8,REVERSE_7,REVERSE_6,REVERSE_5,REVERSE_4,REVERSE_3,REVERSE_2,REVERSE_1,REVERSE_0)(__VA_ARGS__)
 #endif
 
 #include <stdarg.h>

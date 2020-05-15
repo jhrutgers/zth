@@ -75,6 +75,11 @@
 #  include <valgrind/memcheck.h>
 #endif
 
+#ifdef ZTH_ARM_HAVE_MPU
+#  define ZTH_ARM_STACK_GUARD_BITS 5
+#  define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
+#endif
+
 using namespace std;
 
 namespace zth {
@@ -107,6 +112,9 @@ public:
 #ifdef ZTH_USE_VALGRIND
 	unsigned int valgrind_stack_id;
 #endif
+#ifdef ZTH_ARM_HAVE_MPU
+	void* guard;
+#endif
 };
 
 extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
@@ -118,6 +126,175 @@ extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 #  else
 #    define REG_FP	"r11"
 #  endif
+#endif
+
+
+////////////////////////////////////////////////////////////
+// ARM MPU for stack guard
+
+#if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL)
+template <uintptr_t Addr, typename Fields>
+struct reg {
+	reg() { static_assert(sizeof(Fields) == 4, ""); read(); }
+	union { uint32_t value; Fields field; };
+	static uint32_t volatile* r() { return (uint32_t volatile*)Addr; }
+	uint32_t read() const { return *r(); }
+	uint32_t read() { return value = *r(); }
+	void write() const { *r() = value; }
+	void write(uint32_t v) const { *r() = v; }
+	void write(uint32_t v) { *r() = value = v; }
+};
+
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+// In case of little-endian, gcc puts the last field at the highest bits.
+// This is counter intuitive for registers. Reverse them.
+#  define REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
+#else
+#  define REG_BITFIELDS(...) __VA_ARGS__
+#endif
+
+#define REG_DEFINE(name, addr, fields...) \
+	struct name##__type { unsigned int REG_BITFIELDS(fields); } __attribute__((packed)); \
+	struct name : public reg<addr, name##__type> {};
+
+REG_DEFINE(reg_mpu_type, 0xE000ED90,
+	// 32-bit register definition in unsigned int fields,
+	// ordered from MSB to LSB.
+	reserved1 : 8,
+	region : 8,
+	dregion : 8,
+	reserved2 : 7,
+	separate : 1)
+
+REG_DEFINE(reg_mpu_ctrl, 0xE000ED94,
+	reserved : 29,
+	privdefena : 1,
+	hfnmiena : 1,
+	enable : 1)
+
+REG_DEFINE(reg_mpu_rnr, 0xE000ED98,
+	reserved : 24,
+	region : 8)
+
+REG_DEFINE(reg_mpu_rbar, 0xE000ED9C,
+	addr : 27,
+	valid : 1,
+	region : 4)
+#define REG_MPU_RBAR_ADDR_UNUSED ((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
+
+REG_DEFINE(reg_mpu_rasr, 0xE000EDA0,
+	reserved1 : 3,
+	xn : 1,
+	reserved2 : 1,
+	ap : 3,
+	reserved3 : 2,
+	tex : 3,
+	s : 1,
+	c : 1,
+	b : 1,
+	srd : 8,
+	reserved4 : 2,
+	size : 5,
+	enable : 1)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+static int stack_guard_region() {
+	if(!Config::EnableStackGuard || Config::EnableThreads)
+		return -1;
+	
+	static int region = 0;
+
+	if(likely(region))
+		return region;
+
+	region = reg_mpu_type().field.dregion - 1;
+	reg_mpu_rnr rnr;
+	reg_mpu_rasr rasr;
+
+	// Do not try to use region 0, leave at least one unused for other application purposes.
+	for(; region > 0; --region) {
+		rnr.field.region = region;
+		rnr.write();
+
+		rasr.read();
+		if(!rasr.field.enable)
+			// This one is free.
+			break;
+	}
+
+	if(region > 0) {
+		reg_mpu_rbar rbar;
+		// Initialize at the top of the address space, so it is effectively unused.
+		rbar.field.addr = REG_MPU_RBAR_ADDR_UNUSED;
+		rbar.write();
+
+		rasr.field.size = ZTH_ARM_STACK_GUARD_BITS - 1;
+		rasr.field.xn = 0;
+		rasr.field.ap = 0; // no access
+
+		// Internal RAM should be normal, shareable, write-through.
+		rasr.field.tex = 0;
+		rasr.field.c = 1;
+		rasr.field.b = 0;
+		rasr.field.s = 1;
+
+		rasr.field.enable = 1;
+		rasr.write();
+
+		reg_mpu_ctrl ctrl;
+		if(!ctrl.field.enable) {
+			// MPU was not enabled at all.
+			ctrl.field.privdefena = 1; // Assume we are currently privileged.
+			ctrl.field.enable = 1;
+			ctrl.write();
+			__isb();
+		}
+		zth_dbg(context, "Using MPU region %d as stack guard", region);
+	} else {
+		region = -1;
+		zth_dbg(context, "Cannot find free MPU region for stack guard");
+	}
+
+	return region;
+}
+
+static void stack_guard(void* guard) {
+	if(!Config::EnableStackGuard || Config::EnableThreads)
+		return;
+
+	int const region = stack_guard_region();
+	if(unlikely(region < 0))
+		return;
+	
+	// Must be aligned to guard size
+	zth_assert(((uintptr_t)guard & (ZTH_ARM_STACK_GUARD_SIZE - 1)) == 0);
+
+	reg_mpu_rbar rbar;
+
+	if(likely(guard))
+		rbar.field.addr = (uintptr_t)guard >> 5;
+	else
+		// Initialize at the top of the address space, so it is effectively unused.
+		rbar.field.addr = REG_MPU_RBAR_ADDR_UNUSED;
+
+	rbar.field.valid = 1;
+	rbar.field.region = region;
+	rbar.write();
+
+	if(Config::Debug) {
+		// Only required if the settings should be in effect immediately.
+		// However, it takes some time, which may not be worth it in a release build.
+		// If skipped, it will take affect, but only after a few instructions, which
+		// are already in the pipeline.
+		__dsb();
+		__isb();
+	}
+}
+#pragma GCC diagnostic pop
+
+#else
+#  define stack_guard(...)
 #endif
 
 
@@ -585,11 +762,19 @@ static int context_newstack(Context* context, stack_t* stack) {
 	size_t const pagesize =
 #ifdef ZTH_HAVE_MMAN
 		getpagesize();
+#elif defined(ZTH_ARM_HAVE_MPU)
+		Config::EnableStackGuard ? (size_t)ZTH_ARM_STACK_GUARD_SIZE : sizeof(void*);
 #else
 		sizeof(void*);
 #endif
 	zth_assert(__builtin_popcount(pagesize) == 1);
-	context->stackSize = (context->stackSize + MINSIGSTKSZ + 3 * pagesize - 1) & ~(pagesize - 1);
+	context->stackSize = (context->stackSize
+#ifndef ZTH_STACK_SWITCH
+		// If using stack switch, signals and interrupts are not executed on the fiber stack.
+		+ MINSIGSTKSZ
+#endif
+		+ 3 * pagesize - 1) & ~(pagesize - 1);
+
 
 	// Get a new stack.
 #ifdef ZTH_HAVE_MMAN
@@ -605,8 +790,18 @@ static int context_newstack(Context* context, stack_t* stack) {
 
 #ifdef ZTH_HAVE_MMAN
 	if(Config::EnableStackGuard) {
+		// Exclude the pages at both sides of the stack.
 		stack->ss_sp = (char*)context->stack + pagesize;
 		stack->ss_size = context->stackSize - 2 * pagesize;
+	} else
+#elif defined(ZTH_ARM_HAVE_MPU)
+	if(Config::EnableStackGuard) {
+		// Stack grows down, exclude the page at the end (lowest address).
+		// The page must be aligned to its size.
+		uintptr_t stackEnd = ((uintptr_t)context->stack + 2 * pagesize) & ~(pagesize - 1);
+		stack->ss_sp = (char*)stackEnd;
+		stack->ss_size = context->stackSize - (stackEnd - (uintptr_t)context->stack);
+		context->guard = (void*)stackEnd;
 	} else
 #endif
 	{
@@ -665,6 +860,7 @@ void context_deinit() {
 void context_entry(Context* context) {
 	zth_assert(context);
 	// Go execute the fiber.
+	stack_guard(context->guard);
 	context->attr.entry(context->attr.arg);
 	// Fiber has quit. Switch to another one.
 	yield();
@@ -678,6 +874,9 @@ int context_create(Context*& context, ContextAttr const& attr) {
 	context->stack = NULL;
 	context->stackSize = attr.stackSize;
 	context->attr = attr;
+#ifdef ZTH_ARM_HAVE_MPU
+	context->guard = NULL;
+#endif
 
 	stack_t stack = {};
 	if(unlikely(attr.stackSize > 0 && (res = context_newstack(context, &stack))))
@@ -710,6 +909,7 @@ void context_switch(Context* from, Context* to) {
 	context_switch_impl(from, to);
 
 	// Got back from somewhere else.
+	stack_guard(from->guard);
 }
 
 void context_destroy(Context* context) {
@@ -738,6 +938,8 @@ extern "C" void zth_context_switch_enable() {
 	zth::Worker::currentWorker()->contextSwitchEnable();
 }
 
+// Note that this does not call stack_guard(), as the size of the new stack is unknown.
+// TODO: add some wrapper function to handle that.
 __attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(void(*f)()), ...) {
 	__asm__ volatile (
 
