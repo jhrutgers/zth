@@ -23,19 +23,12 @@
 #ifdef ZTH_STACK_SWITCH
 /*!
  * \brief Call the function \p f using the new stack pointer.
- * 
- * If \p sp is \c NULL, the Worker's stack is used.
- * Only use this when running on a fiber stack.
- *
- * The function \p f can have any prototype following the following rules:
- * - 0, 1, 2 or 3 arguments;
- * - void or non-void return type; and
- * - the arguments and return type must be trivially copyable, with a size of at most \c sizeof(void*).
- *
- * The arguments after \p f are passed to \p f.
- * When \p f returns, the previous stack is restored.
+ * \param sp the new stack pointer.  If \c NULL, the Worker's stack is used.
+ * \param ss the new stack size. This is not required to make the jump, but if 0, there will not be any stack overflow guard used.
+ * \param f the function to be called. When \p f returns, the previous stack is restored.
+ * \param arg the argument to pass to \p f.
  */
-EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* sp, void(*f)(), ...);
+EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* sp, size_t ss, void*(*f)(void*), void* arg);
 #else
 #  define zth_stack_switch(sp, f, ...) ((f)(__VA_ARGS__))
 #endif
@@ -101,5 +94,4 @@ namespace zth {
 } // namespace
 
 #endif // __cplusplus
-
 #endif // __ZTH_CONTEXT

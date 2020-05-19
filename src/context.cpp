@@ -18,6 +18,7 @@
 
 #include <libzth/macros.h>
 #include <libzth/init.h>
+#include <libzth/regs.h>
 
 #ifdef ZTH_OS_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
@@ -133,69 +134,7 @@ extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 // ARM MPU for stack guard
 
 #if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL)
-template <uintptr_t Addr, typename Fields>
-struct reg {
-	reg() { static_assert(sizeof(Fields) == 4, ""); read(); }
-	union { uint32_t value; Fields field; };
-	static uint32_t volatile* r() { return (uint32_t volatile*)Addr; }
-	uint32_t read() const { return *r(); }
-	uint32_t read() { return value = *r(); }
-	void write() const { *r() = value; }
-	void write(uint32_t v) const { *r() = v; }
-	void write(uint32_t v) { *r() = value = v; }
-};
-
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-// In case of little-endian, gcc puts the last field at the highest bits.
-// This is counter intuitive for registers. Reverse them.
-#  define REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
-#else
-#  define REG_BITFIELDS(...) __VA_ARGS__
-#endif
-
-#define REG_DEFINE(name, addr, fields...) \
-	struct name##__type { unsigned int REG_BITFIELDS(fields); } __attribute__((packed)); \
-	struct name : public reg<addr, name##__type> {};
-
-REG_DEFINE(reg_mpu_type, 0xE000ED90,
-	// 32-bit register definition in unsigned int fields,
-	// ordered from MSB to LSB.
-	reserved1 : 8,
-	region : 8,
-	dregion : 8,
-	reserved2 : 7,
-	separate : 1)
-
-REG_DEFINE(reg_mpu_ctrl, 0xE000ED94,
-	reserved : 29,
-	privdefena : 1,
-	hfnmiena : 1,
-	enable : 1)
-
-REG_DEFINE(reg_mpu_rnr, 0xE000ED98,
-	reserved : 24,
-	region : 8)
-
-REG_DEFINE(reg_mpu_rbar, 0xE000ED9C,
-	addr : 27,
-	valid : 1,
-	region : 4)
-#define REG_MPU_RBAR_ADDR_UNUSED ((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
-
-REG_DEFINE(reg_mpu_rasr, 0xE000EDA0,
-	reserved1 : 3,
-	xn : 1,
-	reserved2 : 1,
-	ap : 3,
-	reserved3 : 2,
-	tex : 3,
-	s : 1,
-	c : 1,
-	b : 1,
-	srd : 8,
-	reserved4 : 2,
-	size : 5,
-	enable : 1)
+#  define REG_MPU_RBAR_ADDR_UNUSED ((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
@@ -270,7 +209,7 @@ static void stack_guard(void* guard) {
 	// Must be aligned to guard size
 	zth_assert(((uintptr_t)guard & (ZTH_ARM_STACK_GUARD_SIZE - 1)) == 0);
 
-	reg_mpu_rbar rbar;
+	reg_mpu_rbar rbar(0);
 
 	if(likely(guard)) {
 		rbar.field.addr = (uintptr_t)guard >> 5;
@@ -934,68 +873,103 @@ void context_destroy(Context* context) {
 
 #ifdef ZTH_STACK_SWITCH
 #  ifdef ZTH_ARCH_ARM
-extern "C" void zth_context_switch_disable() {
-	zth::Worker::currentWorker()->contextSwitchDisable();
-}
 
-extern "C" void zth_context_switch_enable() {
-	zth::Worker::currentWorker()->contextSwitchEnable();
-}
-
-// Note that this does not call stack_guard(), as the size of the new stack is unknown.
-// TODO: add some wrapper function to handle that.
-__attribute__((naked)) void* zth_stack_switch(void* UNUSED_PAR(sp), UNUSED_PAR(void(*f)()), ...) {
+__attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*))) {
 	__asm__ volatile (
-
-		"push {r4, r5, " REG_FP ", lr}\n"	// Save pc and variables
-		".save {r4, r5, " REG_FP ", lr}\n"
+		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"cbz r0, 1f\n"						// Jump if sp == NULL
+		"mrs r4, control\n"				// Save current control register
+		"bic r3, r4, #2\n"				// Set to use MSP
+		"msr control, r3\n"				// Enable MSP
+		"isb\n"
+		"and r4, r4, #2\n"				// r4 is set to only have the PSP bit
 
-		"mov r4, sp\n"						// Copy current stack pointer
-		"bic r0, #7\n"						// Force double-word aligned stack pointer
-		"mov sp, r0\n"						// Set new stack pointer
-		"push {" REG_FP ", lr}\n"			// Save previous frame pointer on new stack (for debugging)
+		// We are on MSP now.
+		
+		"push {" REG_FP ", lr}\n"		// Save frame pointer on MSP
 		".setfp " REG_FP ", sp\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"mov r5, r1\n"						// Save f
-		"mov r0, r2\n"						// Move arguments to f in place
-		"mov r1, r3\n"
-		"ldr r2, [r4, #0]\n"
-		"blx r5\n"							// Call f
-		"mov sp, r4\n"						// Restore stack pointer
-		"pop {r4, r5, " REG_FP ", pc}\n"	// Return to caller
+		"blx r1\n"						// Call f(arg)
 
-"1:\n"
-		// We are on the PSP in a fiber, and switch to the MSP of the Worker.
-		"mrs r4, control\n"					// Save current control register
-		"bic r4, r4, #2\n"					// Set to use MSP
-		"msr control, r4\n"					// Enable MSP
+		"mrs r3, control\n"				// Save current control register
+		"orr r3, r3, r4\n"				// Set to use previous PSP setting
+		"msr control, r3\n"				// Enable PSP setting
 		"isb\n"
 
-		"push {" REG_FP ", lr}\n"			// Save frame pointer on MSP (for debugging)
-		".setfp " REG_FP ", sp\n"
-		"add " REG_FP ", sp, #0\n"
-		"bl zth_context_switch_disable\n"	// Prevent context switching to other fibers when using MSP
+		// We are back on the previous stack.
 
-		"mov r5, r1\n"						// Save f
-		"mov r0, r2\n"						// Move arguments to f in place
-		"mov r1, r3\n"
-		"ldr r2, [r4, #0]\n"
-		"blx r5\n"							// Call f
-
-		"bl zth_context_switch_enable\n"	// Allow context switching to other fibers again
-		"mrs r4, control\n"					// Save current control register
-		"orr r4, r4, #2\n"					// Set to use PSP
-		"msr control, r4\n"					// Enable PSP
-		"isb\n"
-
-		"pop {r4, r5, " REG_FP ", pc}\n"	// Return to caller
-#undef REG_FP
+		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
 	);
 }
-#  endif
+
+__attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)), void* UNUSED_PAR(sp)) {
+	__asm__ volatile (
+		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+		".save {r4, " REG_FP ", lr}\n"
+		"add " REG_FP ", sp, #0\n"
+		
+		"mov r4, sp\n"					// Save previous stack pointer
+		"mov sp, r2\n"					// Set new stack pointer
+		"push {" REG_FP ", lr}\n"		// Save previous frame pointer on new stack
+		".setfp " REG_FP ", sp\n"
+		"add " REG_FP ", sp, #0\n"
+
+		"blx r1\n"						// Call f(arg)
+
+		"mov sp, r4\n"					// Restore previous stack
+		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+	);
+}
+
+void* zth_stack_switch(void* sp, size_t UNUSED_PAR(ss), void*(*f)(void*), void* arg) {
+	zth::Worker* worker = zth::Worker::currentWorker();
+	void* res;
+
+	if(!sp) {
+		worker->contextSwitchDisable();
+		res = zth_stack_switch_msp(arg, f);
+		worker->contextSwitchEnable();
+		return res;
+	} else {
+#ifdef ZTH_ARM_HAVE_MPU
+		void* prevGuard = NULL;
+		zth::Context* context = NULL;
+
+		if(zth::Config::EnableStackGuard && ss) {
+			uintptr_t end = (uintptr_t)sp - ss;
+			zth::Fiber* fiber = worker->currentFiber();
+			if(unlikely(!fiber))
+				goto noguard;
+			
+			context = fiber->context();
+			if(unlikely(!context))
+				goto noguard;
+
+			void* guard = (void*)(((uintptr_t)end + 2 * ZTH_ARM_STACK_GUARD_SIZE) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+			prevGuard = context->guard;
+			context->guard = guard;
+
+			zth::stack_guard(guard);
+		}
+
+noguard:
 #endif
+
+		res = zth_stack_switch_psp(arg, f, (void*)((uintptr_t)sp & ~(uintptr_t)7));
+
+#ifdef ZTH_ARM_HAVE_MPU
+		if(prevGuard) {
+			context->guard = prevGuard;
+			zth::stack_guard(prevGuard);
+		}
+#endif
+	}
+
+	return res;
+}
+#  endif // ZTH_ARCH_ARM
+#endif // ZTH_STACK_SWITCH
 

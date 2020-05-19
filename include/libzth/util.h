@@ -73,6 +73,9 @@
 #  define static_assert(expr, msg)	typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
+/*! \brief Helper for #FOREACH and #REVERSE. \private */
+#define ZTH_GET_MACRO_ARGN(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
+
 #ifndef FOREACH
 #  define FOREACH_0(WHAT)														//!< \brief Helper for #FOREACH. \private
 #  define FOREACH_1(WHAT, X)			WHAT(X)									//!< \brief Helper for #FOREACH. \private
@@ -93,13 +96,11 @@
 #  define FOREACH_16(WHAT, X, ...)		WHAT(X)FOREACH_15(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
 //... repeat as needed
 
-/*! \brief Helper for #FOREACH. \private */
-#  define _GET_MACRO(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
 /*!
  * \brief Evaluates to \c action(x) for every argument.
  */
 #  define FOREACH(action,...) \
-		_GET_MACRO(0,##__VA_ARGS__,FOREACH_16,FFOREACH_15,FFOREACH_14,FFOREACH_13,FFOREACH_12,FFOREACH_11,FFOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1,FOREACH_0)(action,##__VA_ARGS__)
+		ZTH_GET_MACRO_ARGN(0,##__VA_ARGS__,FOREACH_16,FOREACH_15,FOREACH_14,FOREACH_13,FOREACH_12,FOREACH_11,FOREACH_10,FOREACH_9,FOREACH_8,FOREACH_7,FOREACH_6,FOREACH_5,FOREACH_4,FOREACH_3,FOREACH_2,FOREACH_1,FOREACH_0)(action,##__VA_ARGS__)
 #endif
 
 #ifndef REVERSE
@@ -121,7 +122,7 @@
 #  define REVERSE_15(a,...)	REVERSE_14(__VA_ARGS__),a
 #  define REVERSE_16(a,...)	REVERSE_15(__VA_ARGS__),a
 #  define REVERSE(...) \
-		_GET_MACRO(0,##__VA_ARGS__,REVERSE_16,REVERSE_15,REVERSE_14,REVERSE_13,REVERSE_12,REVERSE_11,REVERSE_10,REVERSE_9,REVERSE_8,REVERSE_7,REVERSE_6,REVERSE_5,REVERSE_4,REVERSE_3,REVERSE_2,REVERSE_1,REVERSE_0)(__VA_ARGS__)
+		ZTH_GET_MACRO_ARGN(0,##__VA_ARGS__,REVERSE_16,REVERSE_15,REVERSE_14,REVERSE_13,REVERSE_12,REVERSE_11,REVERSE_10,REVERSE_9,REVERSE_8,REVERSE_7,REVERSE_6,REVERSE_5,REVERSE_4,REVERSE_3,REVERSE_2,REVERSE_1,REVERSE_0)(__VA_ARGS__)
 #endif
 
 #include <stdarg.h>

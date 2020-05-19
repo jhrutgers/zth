@@ -42,4 +42,7 @@
 #include <libzth/io.h>
 #include <libzth/fsm.h>
 
+// You probably don't need these headers in your application.
+//#include <libzth/regs.h>
+
 #endif // __ZTH_H
