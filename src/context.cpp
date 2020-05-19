@@ -924,22 +924,25 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_P
 	);
 }
 
-void* zth_stack_switch(void* sp, size_t UNUSED_PAR(ss), void*(*f)(void*), void* arg) {
+void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg) {
 	zth::Worker* worker = zth::Worker::currentWorker();
 	void* res;
 
-	if(!sp) {
+	if(!stack) {
 		worker->contextSwitchDisable();
 		res = zth_stack_switch_msp(arg, f);
 		worker->contextSwitchEnable();
 		return res;
 	} else {
+		void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
 #ifdef ZTH_ARM_HAVE_MPU
 		void* prevGuard = NULL;
 		zth::Context* context = NULL;
 
-		if(zth::Config::EnableStackGuard && ss) {
-			uintptr_t end = (uintptr_t)sp - ss;
+		if(zth::Config::EnableStackGuard && size) {
+			if(unlikely(!worker))
+				goto noguard;
+
 			zth::Fiber* fiber = worker->currentFiber();
 			if(unlikely(!fiber))
 				goto noguard;
@@ -948,7 +951,7 @@ void* zth_stack_switch(void* sp, size_t UNUSED_PAR(ss), void*(*f)(void*), void* 
 			if(unlikely(!context))
 				goto noguard;
 
-			void* guard = (void*)(((uintptr_t)end + 2 * ZTH_ARM_STACK_GUARD_SIZE) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+			void* guard = (void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
 			prevGuard = context->guard;
 			context->guard = guard;
 
@@ -958,7 +961,7 @@ void* zth_stack_switch(void* sp, size_t UNUSED_PAR(ss), void*(*f)(void*), void* 
 noguard:
 #endif
 
-		res = zth_stack_switch_psp(arg, f, (void*)((uintptr_t)sp & ~(uintptr_t)7));
+		res = zth_stack_switch_psp(arg, f, sp);
 
 #ifdef ZTH_ARM_HAVE_MPU
 		if(prevGuard) {
