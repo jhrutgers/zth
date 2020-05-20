@@ -132,6 +132,11 @@ Other fiber
 */
 
 /*!
+\example 6_stack.cpp
+\brief Stack example.
+*/
+
+/*!
 \example 9_c_api.c
 \brief C-API example.
 */

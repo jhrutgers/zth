@@ -114,7 +114,13 @@ public:
 	unsigned int valgrind_stack_id;
 #endif
 #ifdef ZTH_ARM_HAVE_MPU
-	void* guard;
+	union {
+		// These are always the same.
+		void* guard;
+		void* stack_watermarked;
+	};
+#elif !defined(ZTH_CONTEXT_WINFIBER)
+	void* stack_watermarked;
 #endif
 };
 
@@ -720,6 +726,8 @@ static int context_newstack(Context* context, stack_t* stack) {
 
 
 	// Get a new stack.
+	size_t stack_watermarked_size = 0;
+
 #ifdef ZTH_HAVE_MMAN
 	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED))
 #else
@@ -734,24 +742,30 @@ static int context_newstack(Context* context, stack_t* stack) {
 #ifdef ZTH_HAVE_MMAN
 	if(Config::EnableStackGuard) {
 		// Exclude the pages at both sides of the stack.
-		stack->ss_sp = (char*)context->stack + pagesize;
-		stack->ss_size = context->stackSize - 2 * pagesize;
+		context->stack_watermarked = stack->ss_sp = (char*)context->stack + pagesize;
+		stack_watermarked_size = stack->ss_size = context->stackSize - 2 * pagesize;
 	} else
 #elif defined(ZTH_ARM_HAVE_MPU)
 	if(Config::EnableStackGuard) {
 		// Stack grows down, exclude the page at the end (lowest address).
 		// The page must be aligned to its size.
-		uintptr_t stackEnd = ((uintptr_t)context->stack + 2 * pagesize) & ~(pagesize - 1);
+		uintptr_t stackEnd = ((uintptr_t)context->stack + 2 * pagesize - 1) & ~(pagesize - 1);
 		stack->ss_sp = (char*)stackEnd;
 		stack->ss_size = context->stackSize - (stackEnd - (uintptr_t)context->stack);
-		context->guard = (void*)stackEnd;
+		/* context->stack_watermarked = */ context->guard = (void*)(stackEnd - ZTH_ARM_STACK_GUARD_SIZE);
+		stack_watermarked_size = stack->ss_size + ZTH_ARM_STACK_GUARD_SIZE;
 	} else
 #endif
 	{
-		stack->ss_sp = context->stack;
-		stack->ss_size = context->stackSize;
+		context->stack_watermarked = stack->ss_sp = context->stack;
+		stack_watermarked_size = stack->ss_size = context->stackSize;
 	}
 	stack->ss_flags = 0;
+
+	if(Config::EnableStackWaterMark)
+		stack_watermark_init(context->stack_watermarked, stack_watermarked_size);
+	else
+		context->stack_watermarked = NULL;
 
 #ifdef ZTH_USE_VALGRIND
 	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(stack->ss_sp, (char*)stack->ss_sp + stack->ss_size - 1);
@@ -869,7 +883,145 @@ void context_destroy(Context* context) {
 
 
 ////////////////////////////////////////////////////////////
-// Stack switching
+// Stack functions
+
+namespace zth {
+
+#define ZTH_STACK_WATERMARKER ((uint64_t)0x5a7468574de2889eULL) // Some nice UTF-8 text.
+
+/*!
+ * \brief Checks if the stack grows down or up.
+ * \param reference a pointer to some object that is at the caller's stack
+ * \return \c true if it grows down
+ */
+__attribute__((noinline,unused)) static bool stack_grows_down(void const* reference)
+{
+	int i = 42;
+	return (uintptr_t)&i < (uintptr_t)reference;
+}
+
+/*!
+ * \brief Helper to align the stack pointer for watermarking.
+ * \param stack the pointer to the stack memory region. The pointer updated because of alignment.
+ * \param sizeptr set to the memory where the size of the stack region is stored
+ * \param size if not \c NULL, it determines the size of \p stack. It is updated because of alignment.
+ */
+static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size = NULL) {
+	if(!stack)
+		return;
+	
+	uintptr_t stack_ = (uintptr_t)stack;
+
+#ifdef ZTH_ARM_HAVE_MPU
+	// Skip guard
+	if(Config::EnableStackGuard)
+		stack_ = (stack_ + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1);
+#endif
+
+	// Align to size_t
+	stack_ = ((uintptr_t)stack_ + sizeof(size_t) - 1) & ~(uintptr_t)(sizeof(size_t) - 1);
+	// The stack size is stored here.
+	sizeptr = (size_t*)stack_;
+
+	// Reduce stack to store the size.
+	stack_ += sizeof(size_t);
+	if(size)
+		// Reduce remaining stack size.
+		*size -= stack_ - (uintptr_t)stack;
+	
+	stack = (void*)stack_;
+}
+
+/*!
+ * \brief Initialize the memory region for stack high water marking.
+ * \ingroup zth_api_cpp_stack
+ */
+void stack_watermark_init(void* stack, size_t size) {
+	if(!Config::EnableStackWaterMark || !stack || !size)
+		return;
+	
+	// Most likely, but growing up stack is not implemented here (yet?)
+	zth_assert(stack_grows_down(&size));
+
+	size_t* sizeptr;
+	stack_watermark_align(stack, sizeptr, &size);
+	*sizeptr = size;
+
+	for(size_t i = 0; i * sizeof(uint64_t) < size; i++)
+		((uint64_t*)stack)[i] = ZTH_STACK_WATERMARKER;
+}
+
+/*!
+ * \brief Return the size of the given stack region.
+ * \details This does not take any #zth::stack_switch() calls into account.
+ * \param stack the same value as supplied to #zth::stack_watermark_init
+ * \ingroup zth_api_cpp_stack
+ */
+size_t stack_watermark_size(void* stack) {
+	if(!Config::EnableStackWaterMark || !stack)
+		return 0;
+	
+	size_t* sizeptr;
+	stack_watermark_align(stack, sizeptr);
+	return *sizeptr;
+}
+
+/*!
+ * \brief Return the high water mark of the stack.
+ * \details This does not take any #zth::stack_switch() calls into account.
+ * \param stack the same value as supplied to #zth::stack_watermark_init
+ * \ingroup zth_api_cpp_stack
+ */
+size_t stack_watermark_maxused(void* stack) {
+	if(!Config::EnableStackWaterMark || !stack)
+		return 0;
+	
+	size_t* sizeptr;
+	stack_watermark_align(stack, sizeptr);
+	size_t size = *sizeptr;
+
+	size_t unused = 0;
+	for(uint64_t* s = (uint64_t*)stack; unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+
+	return size - unused * sizeof(uint64_t);
+}
+
+/*!
+ * \brief Return the remaining stack size that was never touched.
+ * \details This does not take any #zth::stack_switch() calls into account.
+ * \param stack the same value as supplied to #zth::stack_watermark_init
+ * \ingroup zth_api_cpp_stack
+ */
+size_t stack_watermark_remaining(void* stack) {
+	if(!Config::EnableStackWaterMark || !stack)
+		return 0;
+	
+	size_t* sizeptr;
+	stack_watermark_align(stack, sizeptr);
+	size_t size = *sizeptr;
+
+	size_t unused = 0;
+	for(uint64_t* s = (uint64_t*)stack; unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+
+	return unused * sizeof(uint64_t);
+}
+
+/*!
+ * \brief Return the high water mark of the stack of the given context.
+ * \details This does not take any #zth::stack_switch() calls into account.
+ */
+size_t context_stack_usage(Context* context) {
+#ifdef ZTH_CONTEXT_WINFIBER
+	return 0;
+#else
+	if(!Config::EnableStackWaterMark || !context)
+		return 0;
+
+	return stack_watermark_maxused(context->stack_watermarked);
+#endif
+}
+
+} // namespace
 
 #ifdef ZTH_STACK_SWITCH
 #  ifdef ZTH_ARCH_ARM
@@ -951,7 +1103,7 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg) {
 			if(unlikely(!context))
 				goto noguard;
 
-			void* guard = (void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+			void* guard = (void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
 			prevGuard = context->guard;
 			context->guard = guard;
 

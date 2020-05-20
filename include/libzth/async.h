@@ -193,8 +193,8 @@ namespace zth {
 		typedef SharedPointer<Future<T> > base;
 		typedef Future<T> Future_type;
 
-		AutoFuture() {}
-		AutoFuture(AutoFuture const& af) { *this = af; }
+		AutoFuture() : base() {}
+		AutoFuture(AutoFuture const& af) : base() { *this = af; }
 		template <typename F> AutoFuture(TypedFiber<T,F>* fiber) { *this = fiber; }
 		virtual ~AutoFuture() {}
 

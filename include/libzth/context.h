@@ -20,17 +20,27 @@
 
 #include <libzth/config.h>
 
-#ifdef ZTH_STACK_SWITCH
+/*!
+ * \defgroup zth_api_c_stack stack
+ * \ingroup zth_api_c
+ */
+/*!
+ * \defgroup zth_api_cpp_stack stack
+ * \ingroup zth_api_cpp
+ */
+
 /*!
  * \brief Call the function \p f using the new stack pointer.
  * \param stack the new stack area. If \c NULL, the Worker's stack is used. If \p size is 0, this is the stack pointer, otherwise the stack pointer is calculated according to the ABI (growing up/down) within \p stack + \p size.
  * \param size the new stack size. This is not required to make the jump, but if 0, there will not be any stack overflow guard used.
- * \param f the function to be called. When \p f returns, the previous stack is restored.
+ * \param f the function with prototype \c void*(void*) to be called. When \p f returns, the previous stack is restored.
  * \param arg the argument to pass to \p f.
+ * \ingroup zth_api_c_stack
  */
+#ifdef ZTH_STACK_SWITCH
 EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg);
 #else
-#  define zth_stack_switch(stack, size, f, ...) ((f)(__VA_ARGS__))
+#  define zth_stack_switch(stack, size, f, arg) ((f)(__VA_ARGS__))
 #endif
 
 #ifdef __cplusplus
@@ -63,6 +73,12 @@ namespace zth {
 	int context_create(Context*& context, ContextAttr const& attr);
 	void context_switch(Context* from, Context* to);
 	void context_destroy(Context* context);
+
+	void stack_watermark_init(void* stack, size_t size);
+	size_t stack_watermark_size(void* stack);
+	size_t stack_watermark_maxused(void* stack);
+	size_t stack_watermark_remaining(void* stack);
+	size_t context_stack_usage(Context* context);
 
 
 
@@ -128,6 +144,9 @@ namespace zth {
 		template <typename F> void* stack_switch_fwd(F* f) { return (*f)(); }
 	} // namespace
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 */
 	template <typename R>
 	inline R stack_switch(void* stack, size_t size, R(*f)())
 	{
@@ -135,12 +154,21 @@ namespace zth {
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \brief \copybrief zth_stack_switch()
+	 * \details Type-safe C++ wrapper for #zth_stack_switch().
+	 * \ingroup zth_api_cpp_stack
+	 */
 	inline void stack_switch(void* stack, size_t size, void(*f)())
 	{
 		impl::FunctionIO0<void> f_ = {{f}};
 		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename R, typename A1>
 	inline R stack_switch(void* stack, size_t size, R(*f)(A1), A1 a1)
 	{
@@ -148,6 +176,10 @@ namespace zth {
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename A1>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1), A1 a1)
 	{
@@ -155,6 +187,10 @@ namespace zth {
 		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename R, typename A1, typename A2>
 	inline R stack_switch(void* stack, size_t size, R(*f)(A1,A2), A1 a1, A2 a2)
 	{
@@ -162,6 +198,10 @@ namespace zth {
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename A1, typename A2>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2), A1 a1, A2 a2)
 	{
@@ -169,6 +209,10 @@ namespace zth {
 		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename R, typename A1, typename A2, typename A3>
 	inline R stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3)
 	{
@@ -176,6 +220,10 @@ namespace zth {
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename A1, typename A2, typename A3>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3)
 	{
@@ -184,12 +232,21 @@ namespace zth {
 	}
 
 #  if __cplusplus >= 201103L
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename R, typename A1, typename A2, typename A3, typename... A>
 	inline typename std::enable_if<!std::is_void<R>::value,R>::type stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{
 		impl::FunctionION<R,A1,A2,A3,A...> f_ = {{f, {a1, a2, a3, a...}}};
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
+
+	/*!
+	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
+	 * \ingroup zth_api_cpp_stack
+	 */
 	template <typename A1, typename A2, typename A3, typename... A>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{

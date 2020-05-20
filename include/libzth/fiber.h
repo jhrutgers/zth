@@ -85,9 +85,14 @@ namespace zth {
 
 			setState(Uninitialized);
 			zth_assert(!fls());
+			size_t stackSize __attribute__((unused)) = this->stackSize();
+			size_t stackUsage __attribute__((unused)) = this->stackUsage();
 			context_destroy(m_context);
 			m_context = NULL;
-			zth_dbg(fiber, "[%s] Destructed. Total CPU: %s", id_str(), m_totalTime.str().c_str());
+			zth_dbg(fiber, "[%s] Destructed. Stack usage: 0x%x of 0x%x, total CPU: %s",
+				id_str(),
+				(unsigned int)stackUsage, (unsigned int)stackSize,
+				m_totalTime.str().c_str());
 		}
 
 		int setStackSize(size_t size) {
@@ -99,6 +104,7 @@ namespace zth {
 		}
 
 		size_t stackSize() const { return m_contextAttr.stackSize; }
+		size_t stackUsage() const { return context_stack_usage(context()); }
 		Context* context() const { return m_context; }
 		State state() const { return m_state; }
 		void* fls() const { return m_fls; }
