@@ -129,20 +129,22 @@ void abortv(char const* fmt, va_list args)
 	::abort();
 }
 
+#ifndef ZTH_OS_BAREMETAL
 static void log_init() {
-#ifdef ZTH_OS_WINDOWS
+#  ifdef ZTH_OS_WINDOWS
 	// Windows does not support line buffering.
 	// If set anyway, this implies full buffering.
 	// Only do that when we expect much debug output.
 	if(zth_config(EnableDebugPrint)) {
-#endif
+#  endif
 		setvbuf(stdout, NULL, _IOLBF, 4096);
 		setvbuf(stderr, NULL, _IOLBF, 4096);
-#ifdef ZTH_OS_WINDOWS
+#  ifdef ZTH_OS_WINDOWS
 	}
-#endif
+#  endif
 }
 ZTH_INIT_CALL(log_init)
+#endif
 
 /*!
  * \brief Logs a given printf()-like formatted string using an ANSI color code.
