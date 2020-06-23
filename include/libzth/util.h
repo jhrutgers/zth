@@ -460,7 +460,98 @@ namespace zth {
 	template <int... S> struct SequenceGenerator<0, S...> { typedef Sequence<S...> type; };
 #  endif
 #endif
-}
+
+	/*!
+	 * \brief Singleton pattern.
+	 * 
+	 * When a class inherits this class, the single instance of that class is available
+	 * via the static #instance() function.
+	 *
+	 * A class should use #Singleton as follows:
+	 *
+	 * \code
+	 * class Subclass : public Singleton<Subclass>
+	 * {
+	 * public:
+	 *   Subclass() {} // no need to invoke Singleton()
+	 *   // ...normal class implementation
+	 * };
+	 * \endcode
+	 *
+	 * Make sure that the template parameter \p T is the same as the subclass.
+	 *
+	 * \tparam T the type of the subclass that inherits this #Singleton.
+	 * \ingroup zth_api_cpp_util
+	 */
+	template <typename T>
+	class Singleton
+	{
+	public:
+		/*! \brief Alias of the \p T template parameter. */
+		typedef T singleton_type;
+
+	protected:
+		/*!
+		 * \brief Constructor.
+		 * \details (Only) the first instance of the \p T is recorded in \c m_instance.
+		 */
+		Singleton()
+		{
+			// Do not enforce construction of only one Singleton, only register the first one
+			// as 'the' instance.
+
+			if(!m_instance)
+				m_instance = static_cast<singleton_type*>(this);
+		}
+		
+		/*!
+		 * \brief Destructor.
+		 * \details After destruction, #instance() will return \c NULL.
+		 */
+		~Singleton()
+		{
+			if(m_instance == static_cast<singleton_type*>(this))
+				m_instance = NULL;
+		}
+
+	public:
+		/*!
+		 * \brief Wrapper for a pointer, which checks validity of the pointer upon dereference.
+		 */
+#ifdef _DEBUG
+		class safe_ptr
+		{
+		public:
+			safe_ptr(singleton_type* p) : m_p(p) {}
+			operator singleton_type*() const { return ptr(); }
+			operator bool() const { return ptr(); }
+			singleton_type* operator->() const { zth_assert(ptr()); return ptr(); }
+			singleton_type& operator*() const { zth_assert(ptr()); return *ptr(); }
+		protected:
+			singleton_type* ptr() const { return m_p; }
+		private:
+			singleton_type* m_p;
+		};
+#else
+		typedef singleton_type* safe_ptr;
+#endif
+
+		/*!
+		 * \brief Return the only instance of \p T.
+		 * \return the instance, or \c NULL when not constructed yet/anymore.
+		 */
+		__attribute__((pure)) static safe_ptr instance()
+		{
+			return m_instance;
+		}
+
+	private:
+		/*! \brief The only instance of \p T. */
+		static singleton_type* m_instance;
+	};
+
+	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = NULL;
+} // namespace
 
 #endif // __cplusplus
 

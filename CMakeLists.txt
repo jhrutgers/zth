@@ -28,6 +28,8 @@ if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
+set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
+
 file(GLOB_RECURSE sources src/*.cpp)
 add_library(libzth ${sources})
 set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
