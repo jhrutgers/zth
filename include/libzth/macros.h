@@ -68,7 +68,9 @@
 #  ifndef GCC_VERSION
 #    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
 #  endif
-#  define UNUSED_PAR(name)	name __attribute__((unused))
+#  ifndef UNUSED_PAR
+#    define UNUSED_PAR(name)	name __attribute__((unused))
+#  endif
 #else
 #  error Unsupported compiler. Please use gcc.
 #endif
@@ -143,7 +145,7 @@ ZTH_EXPORT void foo();
 #endif
 */
 
-#if defined(__cplusplus) && __cplusplus < 201103L
+#if defined(__cplusplus) && __cplusplus < 201103L && !defined(constexpr)
 #  define constexpr
 #endif
 
@@ -186,7 +188,7 @@ ZTH_EXPORT void foo();
 //
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-#  define ZTH_OS_WINDOWS
+#  define ZTH_OS_WINDOWS 1
 #  define _WANT_IO_C99_FORMATS 1
 #  define __USE_MINGW_ANSI_STDIO 1
 #  if defined(UNICODE) || defined(_UNICODE)
