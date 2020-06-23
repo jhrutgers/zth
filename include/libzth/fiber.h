@@ -158,7 +158,7 @@ namespace zth {
 					if(unlikely(zth_config(CheckTimesliceOverrun) && from.m_dtMax < dt)) {
 						perf_mark("timeslice overrun reported");
 						from.m_dtMax = dt;
-						log_color(Config::Print_perf, ZTH_DBG_PREFIX "Long timeslice by %s of %s:\n", from.id_str(), dt.str().c_str());
+						log_color(Config::Print_perf, ZTH_DBG_PREFIX "Long timeslice by %s of %s\n", from.id_str(), dt.str().c_str());
 						Backtrace().print(Config::Print_perf);
 						now = Timestamp::now();
 					}
