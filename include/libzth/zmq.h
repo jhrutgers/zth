@@ -54,6 +54,14 @@ namespace zth { namespace zmq {
 #  if ZTH_REDIRECT_ZMQ
 #    ifdef __cplusplus
 /*!
+ * \copydoc zth::zmq::zmq_context()
+ * \details This is a C-wrapper for zth::zmq::zmq_context().
+ * \ingroup zth_api_c_zmq
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_zmq_context() {
+	return zth::zmq::zmq_context(); }
+
+/*!
  * \copydoc zth::zmq::zmq_socket()
  * \details This is a C-wrapper for zth::zmq::zmq_socket().
  * \ingroup zth_api_c_zmq
@@ -110,7 +118,9 @@ ZTH_EXPORT int zth_zmq_recv(void *socket, void *buf, size_t len, int flags);
 ZTH_EXPORT int zth_zmq_send_const(void *socket, void *buf, size_t len, int flags);
 #    endif // __cplusplus
 
-#    define zmq_socket		zth_zmq_socket
+#    define zmq_ctx_new		zth_zmq_context
+#    define zmq_ctx_term(c)
+#    define zmq_socket(c,t)	zth_zmq_socket(t)
 #    define zmq_msg_send	zth_zmq_msg_send
 #    define zmq_msg_recv	zth_zmq_msg_recv
 #    define zmq_send		zth_zmq_send
