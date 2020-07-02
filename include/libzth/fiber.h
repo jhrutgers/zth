@@ -109,6 +109,7 @@ namespace zth {
 		State state() const { return m_state; }
 		void* fls() const { return m_fls; }
 		void setFls(void* data = NULL) { m_fls = data; }
+		Timestamp const& runningSince() const { return m_startRun; }
 		Timestamp const& stateEnd() const { return m_stateEnd; }
 		TimeInterval const& totalTime() const { return m_totalTime; }
 		void addCleanup(void(*f)(Fiber&,void*), void* arg) { m_cleanup.push_back(std::make_pair(f, arg)); }
