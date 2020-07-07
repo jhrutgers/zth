@@ -373,12 +373,12 @@ namespace zth {
 				if(wakeup.interval().isInfinite()) {
 					m_trigger.wait();
 				} else {
-					wakeup.setInterval(wait);
 					scheduleTask(wakeup);
 					m_trigger.wait();
 					unscheduleTask(wakeup);
 				}
 				wait = eval();
+				wakeup.setInterval(wait, currentFiber().runningSince());
 			} while(m_state->guard.valid());
 			goto done;
 		}

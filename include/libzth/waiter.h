@@ -97,9 +97,9 @@ namespace zth {
 		}
 
 		TimeInterval const& interval() const { return m_interval; }
-		void setInterval(TimeInterval const& interval) {
+		void setInterval(TimeInterval const& interval, Timestamp const& now = Timestamp::now()) {
 			m_interval = interval;
-			setTimeout(Timestamp::now() + interval);
+			setTimeout(now + interval);
 		}
 	private:
 		F m_f;
