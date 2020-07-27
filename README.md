@@ -1,5 +1,14 @@
 # Zth (libzth) - Zeta threads
 
+This library provides user-space cooperative multitasking, also known as
+fibers. One can see fibers as threads, but with the exception that you
+explicitly have to indicate when the fiber is allowed to switch to another
+fiber. As a result, locking, synchronization, using shared data structures
+between fibers is way more easier than when using threads. See also
+<https://en.wikipedia.org/wiki/Fiber_(computer_science)>.
+
+Check out the `examples` to get a grasp about how it works.
+
 A predecessor project was called Xi, as the Greek capital symbol suggests
 parallel threads.  In this project, preemptive multitasking is implemented. In
 the same context, the Z(eta) symbol suggests that threads are not parallel, but
@@ -15,7 +24,7 @@ There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).
 
 When starting from scratch, clone the repository, like:
 
-	git clone http://gitlab/zth
+	git clone https://github.com/jhrutgers/zth.git
 	cd zth
 	git submodule init
 	git submodule update
@@ -26,6 +35,8 @@ Build Zth out-of-tree:
 	cd build
 	cmake ..
 	cmake --build .
+
+After building, check out the `doc` directory for documentation.
 
 For Mac OSX with MacPorts, one could change the sequence above by something like:
 
