@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-ubuntu:
+    name: Build library on Ubuntu linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build
+        run: |
+          sudo apt install -y cmake make gcc
+          mkdir build
+          cd build
+          cmake .. -DZTH_HAVE_LIBZMQ=OFF   # Disable LIBZMQ for now.
+          make
