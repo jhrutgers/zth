@@ -1,3 +1,5 @@
+[![CI](https://github.com/jhrutgers/zth/workflows/CI/badge.svg)](https://github.com/jhrutgers/zth/actions?query=workflow%3ACI)
+
 # Zth (libzth) - Zeta threads
 
 This library provides user-space cooperative multitasking, also known as

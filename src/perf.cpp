@@ -479,7 +479,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	m_truncated = depth == maxDepth;
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
-	m_bt.resize(backtrace(&m_bt[0], maxDepth));
+	m_bt.resize(backtrace(&m_bt[0], (int)maxDepth));
 	m_truncated = m_bt.size() == maxDepth;
 #endif
 
