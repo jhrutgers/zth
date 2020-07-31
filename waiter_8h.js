@@ -1,0 +1,27 @@
+var waiter_8h =
+[
+    [ "Waitable", "classzth_1_1_waitable.html", "classzth_1_1_waitable" ],
+    [ "TimedWaitable", "classzth_1_1_timed_waitable.html", "classzth_1_1_timed_waitable" ],
+    [ "PolledWaiting", "classzth_1_1_polled_waiting.html", "classzth_1_1_polled_waiting" ],
+    [ "PolledMemberWaitingHelper", "structzth_1_1_polled_member_waiting_helper.html", "structzth_1_1_polled_member_waiting_helper" ],
+    [ "PolledMemberWaiting", "classzth_1_1_polled_member_waiting.html", "classzth_1_1_polled_member_waiting" ],
+    [ "AwaitFd", "classzth_1_1_await_fd.html", "classzth_1_1_await_fd" ],
+    [ "Await1Fd", "classzth_1_1_await1_fd.html", "classzth_1_1_await1_fd" ],
+    [ "Waiter", "classzth_1_1_waiter.html", "classzth_1_1_waiter" ],
+    [ "POLLERR", "waiter_8h.html#ab1c532446408c98559d4aaaeeeb99820", null ],
+    [ "POLLIN", "waiter_8h.html#a52ac479a805051f59643588b096024ff", null ],
+    [ "POLLOUT", "waiter_8h.html#a91b3c67129ac7675062f316b840a0d58", null ],
+    [ "POLLPRI", "waiter_8h.html#ab6f53b89c7a4cc5e8349f7c778d85168", null ],
+    [ "mnap", "waiter_8h.html#gabb282193c9fb32207257bb6474436152", null ],
+    [ "nap", "waiter_8h.html#ga0c69f207354e0928b738da3388bdd913", null ],
+    [ "nap", "waiter_8h.html#ga786a7557ff189b1f1e7552a37f772665", null ],
+    [ "scheduleTask", "waiter_8h.html#a692cd6a88a74b1b98d863277624cb93f", null ],
+    [ "unap", "waiter_8h.html#gad8abbae956466d84c1e1366eba469278", null ],
+    [ "unscheduleTask", "waiter_8h.html#a43a403677c60668b28e760f217473f30", null ],
+    [ "waitUntil", "waiter_8h.html#abd067566b5f56fb4aa9186880f568d0f", null ],
+    [ "waitUntil", "waiter_8h.html#accda3c092e2dd2870ca6005999cf8721", null ],
+    [ "waitUntil", "waiter_8h.html#a341b69cc04d2c640e7ff42c6828919e8", null ],
+    [ "zth_mnap", "group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5", null ],
+    [ "zth_nap", "group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e", null ],
+    [ "zth_unap", "group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2", null ]
+];
