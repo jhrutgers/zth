@@ -40,7 +40,7 @@
 namespace zth { namespace zmq {
 
 	void* zmq_context();
-	void *zmq_socket(int type);
+	void* zmq_socket(int type);
 	int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags);
 	int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags);
 	int zmq_send(void *socket, void *buf, size_t len, int flags);

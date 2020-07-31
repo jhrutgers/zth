@@ -716,7 +716,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 #else
 		sizeof(void*);
 #endif
-	zth_assert(__builtin_popcount(pagesize) == 1);
+	zth_assert(__builtin_popcount((unsigned int)pagesize) == 1);
 	context->stackSize = (context->stackSize
 #ifndef ZTH_STACK_SWITCH
 		// If using stack switch, signals and interrupts are not executed on the fiber stack.

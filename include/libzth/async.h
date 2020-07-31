@@ -323,7 +323,7 @@ namespace zth {
 	protected:
 		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
 	private:
-		template <int... S> void entry__(Sequence<S...>) { this->setFuture(this->function()(std::get<S>(m_args)...)); }
+		template <size_t... S> void entry__(Sequence<S...>) { this->setFuture(this->function()(std::get<S>(m_args)...)); }
 	private:
 		std::tuple<Args...> m_args;
 	};
@@ -337,7 +337,7 @@ namespace zth {
 	protected:
 		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
 	private:
-		template <int... S> void entry__(Sequence<S...>) { this->function()(std::get<S>(m_args)...); this->setFuture(); }
+		template <size_t... S> void entry__(Sequence<S...>) { this->function()(std::get<S>(m_args)...); this->setFuture(); }
 	private:
 		std::tuple<Args...> m_args;
 	};

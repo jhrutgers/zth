@@ -40,7 +40,7 @@
 #ifdef ZTH_STACK_SWITCH
 EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg);
 #else
-#  define zth_stack_switch(stack, size, f, arg) ((f)(__VA_ARGS__))
+#  define zth_stack_switch(stack, size, f, arg) ({ (void)(stack); (void)(size); ((f)(arg)); })
 #endif
 
 #ifdef __cplusplus
@@ -130,14 +130,14 @@ namespace zth {
 			union { struct { R(*f)(A...); std::tuple<A...> a; }; R r; };
 			void* operator()() { call(typename SequenceGenerator<sizeof...(A)>::type()); return &r; }
 		private:
-			template <int... S> void call(Sequence<S...>) { r = f(std::get<S>(a)...); }
+			template <size_t... S> void call(Sequence<S...>) { r = f(std::get<S>(a)...); }
 		};
 		template <typename... A>
 		struct FunctionION<void,A...> {
 			union { struct { void(*f)(A...); std::tuple<A...> a; }; };
 			void* operator()() { call(typename SequenceGenerator<sizeof...(A)>::type()); return NULL; }
 		private:
-			template <int... S> void call(Sequence<S...>) { f(std::get<S>(a)...); }
+			template <size_t... S> void call(Sequence<S...>) { f(std::get<S>(a)...); }
 		};
 #endif
 

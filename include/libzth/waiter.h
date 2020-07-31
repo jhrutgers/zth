@@ -130,7 +130,7 @@ namespace zth {
 		AwaitFd(zth_pollfd_t *fds, int nfds, Timestamp const& timeout = Timestamp())
 			: m_fds(fds), m_nfds(nfds), m_timeout(timeout), m_error(-1), m_result(-1) { zth_assert(nfds > 0 && fds); }
 		virtual ~AwaitFd() {}
-		virtual bool poll(Timestamp const& now = Timestamp::now()) { zth_abort("Don't call."); }
+		virtual bool poll(Timestamp const& UNUSED_PAR(now) = Timestamp::now()) { zth_abort("Don't call."); }
 
 		zth_pollfd_t* fds() const { return m_fds; }
 		int nfds() const { return m_nfds; }

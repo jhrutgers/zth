@@ -512,7 +512,7 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 #ifdef ZTH_OS_MAC
 		!atosf ? NULL :
 #endif
-		backtrace_symbols(&bt()[start], (int)end - start + 1);
+		backtrace_symbols(&bt()[start], int(end - start + 1));
 
 	for(size_t i = start; i <= (size_t)end; i++) {
 #ifdef ZTH_OS_MAC

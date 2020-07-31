@@ -77,7 +77,8 @@ ssize_t read(int fd, void* buf, size_t count) {
 			errno = w.error();
 			return -1;
 		}
-		// else: fall-through to go read the data.
+		// else: go read the data.
+		__attribute__((fallthrough));
 	}
 	case 1:
 		// Got data to read.
@@ -88,7 +89,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 		// Huh?
 		zth_assert(false);
 		errno = EINVAL;
-		// fall-through
+		__attribute__((fallthrough));
 	case -1:
 		// Error. Return with errno set.
 		return -1;

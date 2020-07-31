@@ -219,7 +219,7 @@ namespace zth {
 			if(doPrint)
 				res += format("%" PRIu64 "d:", d);
 
-			int h = rest / 3600; rest -= h * 3600;
+			int h = int(rest / 3600); rest -= h * 3600;
 			if(doPrint) {
 				res += format("%02d:", h);
 			} else if(h > 0) {
@@ -227,7 +227,7 @@ namespace zth {
 				doPrint = true;
 			}
 
-			int m = rest / 60; rest -= m * 60;
+			int m = int(rest / 60); rest -= m * 60;
 			if(doPrint) {
 				res += format("%02d:", m);
 			} else if(m > 0) {

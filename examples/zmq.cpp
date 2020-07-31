@@ -4,7 +4,7 @@
 static sig_atomic_t volatile stop = 0;
 
 void server() {
-	void* responder = zmq_socket(ZMQ_REP);
+	void* responder = zth_zmq_socket(ZMQ_REP);
 	int rc __attribute__((unused)) = zmq_bind(responder, "inproc://hello");
 	zth_assert(!rc);
 
@@ -23,7 +23,7 @@ zth_fiber(server)
 
 void client() {
 	printf("Connecting to hello world server...\n");
-	void* requester = zmq_socket(ZMQ_REQ);
+	void* requester = zth_zmq_socket(ZMQ_REQ);
 	zmq_connect(requester, "inproc://hello");
 
 	for(int request_nbr = 0; request_nbr != 10 && !stop; request_nbr++) {

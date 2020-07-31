@@ -143,6 +143,11 @@
 #  include <unistd.h>
 #endif
 
+#ifndef ZTH_OS_WINDOWS
+#  include <sys/types.h>
+#  include <unistd.h>
+#endif
+
 EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv(char const* fmt, va_list arg);
 
 #ifdef __cplusplus
@@ -454,10 +459,10 @@ namespace zth {
 	template <typename WhenTIsVoid> struct choose_type<void, WhenTIsVoid> { typedef WhenTIsVoid type; };
 
 #if __cplusplus >= 201103L
-	template <int...> struct Sequence {};
+	template <size_t...> struct Sequence {};
 #  ifndef DOXYGEN
-	template <int N, int... S> struct SequenceGenerator : SequenceGenerator<N - 1, N - 1, S...> {};
-	template <int... S> struct SequenceGenerator<0, S...> { typedef Sequence<S...> type; };
+	template <size_t N, size_t... S> struct SequenceGenerator : SequenceGenerator<N - 1, N - 1, S...> {};
+	template <size_t... S> struct SequenceGenerator<0, S...> { typedef Sequence<S...> type; };
 #  endif
 #endif
 
