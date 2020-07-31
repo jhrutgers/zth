@@ -21,7 +21,7 @@ trap gotErr ERR
 pushd "$( cd "$(dirname "$0")"/..; pwd -P )" > /dev/null
 
 if [ -z "$1" ]; then
-	BUILD_TYPE=Debug
+	BUILD_TYPE=Release
 else
 	BUILD_TYPE=$1
 fi

@@ -122,20 +122,21 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[])) {
 #if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)
 	return ENOSYS;
 #else
-	int res = 0;
 	pid_t pid;
 	if((pid = vfork()) == 0) {
 		// In child.
 		execvp(file, arg);
 		// If we get here, we could not create the process.
 		_exit(127);
+		return EAGAIN;
 	} else if(pid == -1) {
-		res = errno;
+		int res = errno;
 		Worker* w = Worker::currentWorker();
 		char const* id_str = w ? w->id_str() : "?";
 		zth_dbg(worker, "[%s] Could not vfork(); %s", id_str, err(res).c_str());
-	}
-	return res;
+		return res;
+	} else
+		return 0;
 #endif
 }
 

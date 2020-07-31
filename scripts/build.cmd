@@ -13,7 +13,7 @@ git submodule update
 if errorlevel 1 goto error
 
 pushd build
-cmake -DCMAKE_BUILD_TYPE=Debug "-GMinGW Makefiles" -DCMAKE_PREFIX_PATH=%QT_DIR% ..
+cmake -DCMAKE_BUILD_TYPE=Release "-GMinGW Makefiles" -DCMAKE_PREFIX_PATH=%QT_DIR% ..
 if errorlevel 1 goto error_popd
 cmake --build . -- -j%NUMBER_OF_PROCESSORS%
 if errorlevel 1 goto error_popd

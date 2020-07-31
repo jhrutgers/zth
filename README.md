@@ -25,35 +25,39 @@ There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).
 
 ## How to build
 
-When starting from scratch, clone the repository, like:
-
-	git clone https://github.com/jhrutgers/zth.git
-	cd zth
-	git submodule init
-	git submodule update
-
-Build Zth out-of-tree:
+To install all build dependencies, run `scripts/bootstrap` (as Administrator under Windows).
+Next, run `scripts/build` to build the library and all examples. This does effectively:
 
 	mkdir build
 	cd build
 	cmake ..
 	cmake --build .
 
-After building, check out the `doc` directory for documentation.
+After building, check out the `doxygen/html` directory for [documentation](https://jhrutgers.github.io/zth).
 
 For Mac OSX with MacPorts, one could change the sequence above by something like:
 
 	CC=gcc-mp-8 CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
 
-By default, release builds are generated. To do debug builds, do something like:
+By default, release builds are generated. To do debug builds, pass `Debug` as
+command line argument to `scripts/build`, or do something like:
 
 	cmake .. -D CMAKE_BUILD_TYPE=Debug
 
-For Windows with Qt, one could run cmake like this:
+### How to integrate in your project
 
-	set PATH=c:\Program Files\CMake\bin;%PATH%
-	cmake.exe .. -D CMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -D CMAKE_MAKE_PROGRAM="c:/qt/Tools/mingw730_64/bin/mingw32-make.exe" -D CMAKE_C_COMPILER="c:/qt/Tools/mingw730_64/bin/gcc.exe" -D CMAKE_CXX_COMPILER="c:/qt/Tools/mingw730_64/bin/g++.exe"
+Include the Zth top-level `CMakeLists.txt` in your project, and link to `libzth`.
+Configure Zth options as required, like this:
 
+	set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
+	set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
+	set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
+	add_subdirectory(zth)
+	# Override search path to your own zth_config.h.
+	target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+This also works for cross-compiling.
+Refer to `examples/arm/README-ARM.md` for some hints when compiling for bare-metal ARM.
 
 ## How to run
 
