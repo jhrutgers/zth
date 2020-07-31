@@ -299,7 +299,6 @@ Functions</h2></td></tr>
 <tr class="memdesc:gac37cad431ecd2830e62722d9c4f46e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remaining stack size that was never touched.  <a href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">More...</a><br /></td></tr>
 <tr class="separator:gac37cad431ecd2830e62722d9c4f46e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af203b49e9c31624b637b7d2bccb4ec9a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#af203b49e9c31624b637b7d2bccb4ec9a">context_stack_usage</a> (<a class="el" href="classzth_1_1_context.html">Context</a> *context)</td></tr>
-<tr class="memdesc:af203b49e9c31624b637b7d2bccb4ec9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack of the given context.  <a href="#af203b49e9c31624b637b7d2bccb4ec9a">More...</a><br /></td></tr>
 <tr class="separator:af203b49e9c31624b637b7d2bccb4ec9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a279f8b9049990922013e96d3e4eba9e0"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
 <tr class="memitem:a279f8b9049990922013e96d3e4eba9e0"><td class="memTemplItemLeft" align="right" valign="top">R&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a279f8b9049990922013e96d3e4eba9e0">stack_switch</a> (void *stack, size_t size, R(*f)())</td></tr>
@@ -505,6 +504,9 @@ Functions</h2></td></tr>
 <tr class="separator:a969db1279d63d0e4ee66a1e2e56e6917"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11d3236714aa5890b5217c28f9ade701"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a> (<a class="el" href="classzth_1_1_context.html">Context</a> *context)</td></tr>
 <tr class="separator:a11d3236714aa5890b5217c28f9ade701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">context_stack_usage</a> (<a class="el" href="classzth_1_1_context.html">Context</a> *<a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(context))</td></tr>
+<tr class="memdesc:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack of the given context.  <a href="#afcbfcd2cc3f8013c9c1b4bc011a8933b">More...</a><br /></td></tr>
+<tr class="separator:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36eb2c67dba75e522a867dc0ddd4c3bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a36eb2c67dba75e522a867dc0ddd4c3bb">ZTH_TLS_STATIC</a> (<a class="el" href="classzth_1_1_perf_fiber.html">PerfFiber</a> *, perfFiber, NULL)</td></tr>
 <tr class="separator:a36eb2c67dba75e522a867dc0ddd4c3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0feb299489b882465af74b17d7930b4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0feb299489b882465af74b17d7930b4a">worker_global_init</a> ()</td></tr>
@@ -687,7 +689,7 @@ Variables</h2></td></tr>
 </div>
 </div>
 <a id="af203b49e9c31624b637b7d2bccb4ec9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af203b49e9c31624b637b7d2bccb4ec9a">&#9670;&nbsp;</a></span>context_stack_usage()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af203b49e9c31624b637b7d2bccb4ec9a">&#9670;&nbsp;</a></span>context_stack_usage() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -697,6 +699,24 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classzth_1_1_context.html">Context</a> *&#160;</td>
           <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afcbfcd2cc3f8013c9c1b4bc011a8933b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcbfcd2cc3f8013c9c1b4bc011a8933b">&#9670;&nbsp;</a></span>context_stack_usage() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t zth::context_stack_usage </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_context.html">Context</a> *&#160;</td>
+          <td class="paramname"><em>UNUSED_PAR</em>context</td><td>)</td>
           <td></td>
         </tr>
       </table>

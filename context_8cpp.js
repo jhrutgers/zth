@@ -12,7 +12,7 @@ var context_8cpp =
     [ "context_destroy", "context_8cpp.html#a564d80f05b6b71340c02bae5cf9dfc64", null ],
     [ "context_entry", "context_8cpp.html#a11d3236714aa5890b5217c28f9ade701", null ],
     [ "context_init", "context_8cpp.html#a9cc2b699e671d9c8373356bf40747ac6", null ],
-    [ "context_stack_usage", "context_8cpp.html#af203b49e9c31624b637b7d2bccb4ec9a", null ],
+    [ "context_stack_usage", "context_8cpp.html#afcbfcd2cc3f8013c9c1b4bc011a8933b", null ],
     [ "context_switch", "context_8cpp.html#a21a9e449fda2d98f4725cbc35daf5af5", null ],
     [ "stack_watermark_init", "context_8cpp.html#ga44fe90bba77464eb5410d27b6d70584d", null ],
     [ "stack_watermark_maxused", "context_8cpp.html#ga76af3738586eef284086d9aa9b4713c6", null ],

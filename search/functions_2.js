@@ -20,7 +20,7 @@ var searchData=
   ['context_5fdestroy',['context_destroy',['../namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64',1,'zth']]],
   ['context_5fentry',['context_entry',['../namespacezth.html#a11d3236714aa5890b5217c28f9ade701',1,'zth']]],
   ['context_5finit',['context_init',['../namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6',1,'zth']]],
-  ['context_5fstack_5fusage',['context_stack_usage',['../namespacezth.html#af203b49e9c31624b637b7d2bccb4ec9a',1,'zth']]],
+  ['context_5fstack_5fusage',['context_stack_usage',['../namespacezth.html#af203b49e9c31624b637b7d2bccb4ec9a',1,'zth::context_stack_usage(Context *context)'],['../namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b',1,'zth::context_stack_usage(Context *UNUSED_PAR(context))']]],
   ['context_5fswitch',['context_switch',['../namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5',1,'zth']]],
   ['contextattr',['ContextAttr',['../structzth_1_1_context_attr.html#a1a7a1979f8badb98e46ca20c1fd88049',1,'zth::ContextAttr']]],
   ['contextswitchdisable',['contextSwitchDisable',['../classzth_1_1_worker.html#a165bec5e1f31063c5e702143c1d242a2',1,'zth::Worker']]],

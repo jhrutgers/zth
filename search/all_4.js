@@ -31,7 +31,7 @@ var searchData=
   ['context_5fentry',['context_entry',['../namespacezth.html#a11d3236714aa5890b5217c28f9ade701',1,'zth']]],
   ['context_5finit',['context_init',['../namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6',1,'zth']]],
   ['context_5finit_5fimpl',['context_init_impl',['../context_8cpp.html#afabd1c7a0ae6bd251aa3c27bd6d5c5ed',1,'context.cpp']]],
-  ['context_5fstack_5fusage',['context_stack_usage',['../namespacezth.html#af203b49e9c31624b637b7d2bccb4ec9a',1,'zth']]],
+  ['context_5fstack_5fusage',['context_stack_usage',['../namespacezth.html#af203b49e9c31624b637b7d2bccb4ec9a',1,'zth::context_stack_usage(Context *context)'],['../namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b',1,'zth::context_stack_usage(Context *UNUSED_PAR(context))']]],
   ['context_5fswitch',['context_switch',['../namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5',1,'zth']]],
   ['contextattr',['ContextAttr',['../structzth_1_1_context_attr.html',1,'zth::ContextAttr'],['../structzth_1_1_context_attr.html#a1a7a1979f8badb98e46ca20c1fd88049',1,'zth::ContextAttr::ContextAttr()']]],
   ['contextsignals',['ContextSignals',['../structzth_1_1_default_config.html#a7c17e5c9ab25c0db07c285cbdc89f9f8',1,'zth::DefaultConfig']]],

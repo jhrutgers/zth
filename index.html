@@ -86,7 +86,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="textblock"><p><a href="https://github.com/jhrutgers/zth/actions?query=workflow%3ACI"></a></p>
 <h1>Zth (libzth) - Zeta threads</h1>
 <p>This library provides user-space cooperative multitasking, also known as fibers. One can see fibers as threads, but with the exception that you explicitly have to indicate when the fiber is allowed to switch to another fiber. As a result, locking, synchronization, using shared data structures between fibers is way more easier than when using threads. See also <a href="https://en.wikipedia.org/wiki/Fiber_(computer_science)">https://en.wikipedia.org/wiki/Fiber_(computer_science)</a>.</p>
-<p>Check out the <code>examples</code> to get a grasp about how it works.</p>
+<p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> to get a grasp about how it works.</p>
 <p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
 <p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
 <p>Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc &gt;=4 is supported. There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).</p>
