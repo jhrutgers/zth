@@ -583,7 +583,7 @@ static void context_destroy_impl(Context* context) {
 	context->fiber = NULL;
 }
 
-static void context_switch_impl(Context* from, Context* to) {
+static void context_switch_impl(Context* UNUSED_PAR(from), Context* to) {
 	zth_assert(to->fiber && to->fiber != GetCurrentFiber());
 	SwitchToFiber(to->fiber);
 }
@@ -1010,7 +1010,7 @@ size_t stack_watermark_remaining(void* stack) {
  * \brief Return the high water mark of the stack of the given context.
  * \details This does not take any #zth::stack_switch() calls into account.
  */
-size_t context_stack_usage(Context* context) {
+size_t context_stack_usage(Context* UNUSED_PAR(context)) {
 #ifdef ZTH_CONTEXT_WINFIBER
 	return 0;
 #else

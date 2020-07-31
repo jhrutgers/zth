@@ -29,10 +29,6 @@ where /q make > NUL 2> NUL
 if errorlevel 1 goto need_bootstrap
 echo Found make
 
-where /q python > NUL 2> NUL
-if errorlevel 1 goto need_bootstrap
-echo Found python
-
 :done
 popd
 exit /b 0
