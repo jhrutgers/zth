@@ -1,3 +1,5 @@
+[![CI](https://github.com/jhrutgers/zth/workflows/CI/badge.svg)](https://github.com/jhrutgers/zth/actions?query=workflow%3ACI)
+
 # Zth (libzth) - Zeta threads
 
 This library provides user-space cooperative multitasking, also known as
@@ -7,7 +9,8 @@ fiber. As a result, locking, synchronization, using shared data structures
 between fibers is way more easier than when using threads. See also
 <https://en.wikipedia.org/wiki/Fiber_(computer_science)>.
 
-Check out the `examples` to get a grasp about how it works.
+Check out the [examples](https://jhrutgers.github.io/zth/examples.html) to get
+a grasp about how it works.
 
 A predecessor project was called Xi, as the Greek capital symbol suggests
 parallel threads.  In this project, preemptive multitasking is implemented. In
