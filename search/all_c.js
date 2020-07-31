@@ -19,6 +19,7 @@ var searchData=
   ['log',['Log',['../structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a2edad5826a91d25d8d9c3f8a87fb46b0',1,'zth::PerfEvent::Log()'],['../structzth_1_1_perf_event_3_01false_01_4.html#aa7a385666d3a51491ee4b8ab21f69350a3025791bbc503c020b1415204f8eecb2',1,'zth::PerfEvent&lt; false &gt;::Log()'],['../group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51',1,'zth::log()']]],
   ['log_5fcolor',['log_color',['../group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a',1,'zth']]],
   ['log_5fcolorv',['log_colorv',['../group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40',1,'zth']]],
+  ['log_5fsupports_5fansi_5fcolors',['log_supports_ansi_colors',['../namespacezth.html#a6503a42f5590b650fe7dcb276f7d3c09',1,'zth']]],
   ['logv',['logv',['../group__zth__api__cpp__util.html#gac71cc5442292ba8e2746dcaea59feeef',1,'zth']]],
   ['lowest',['lowest',['../classzth_1_1_sorted_list.html#ad28c1a87720c797b234d4a13f7bd3053',1,'zth::SortedList']]]
 ];

@@ -386,6 +386,9 @@ Functions</h2></td></tr>
 <tr class="separator:ga3f769b3137590c1dbfe2f972d81a2c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5aa80dc1fb17903b60f7302f8bc93492"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga5aa80dc1fb17903b60f7302f8bc93492">abortv</a> (char const *fmt, va_list args)</td></tr>
 <tr class="separator:ga5aa80dc1fb17903b60f7302f8bc93492"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6503a42f5590b650fe7dcb276f7d3c09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6503a42f5590b650fe7dcb276f7d3c09">log_supports_ansi_colors</a> ()</td></tr>
+<tr class="memdesc:a6503a42f5590b650fe7dcb276f7d3c09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the system supports ANSI colors.  <a href="#a6503a42f5590b650fe7dcb276f7d3c09">More...</a><br /></td></tr>
+<tr class="separator:a6503a42f5590b650fe7dcb276f7d3c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40">log_colorv</a> (int color, char const  *fmt, va_list args)</td></tr>
 <tr class="memdesc:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string using an ANSI color code.  <a href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40">More...</a><br /></td></tr>
 <tr class="separator:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -814,7 +817,7 @@ Variables</h2></td></tr>
 <p>Return a string like <code>strerror()</code> does, but as a <code>std::string</code>. </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="measure_8cpp-example.html#a8">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a7">zmq.cpp</a>.</dd>
 </dl>
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00341">341</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00342">342</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -883,7 +886,7 @@ Variables</h2></td></tr>
 <p>Format like <code>sprintf()</code>, but save the result in an <code>std::string</code>. </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="5_perf_8cpp-example.html#a7">5_perf.cpp</a>, <a class="el" href="measure_8cpp-example.html#a16">measure.cpp</a>, and <a class="el" href="socks_8cpp-example.html#a1">socks.cpp</a>.</dd>
 </dl>
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00307">307</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00308">308</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -923,7 +926,7 @@ Variables</h2></td></tr>
 
 <p>Format like <code>vsprintf()</code>, but save the result in an <code>std::string</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00273">273</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00274">274</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -962,6 +965,27 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00373">373</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+
+</div>
+</div>
+<a id="a6503a42f5590b650fe7dcb276f7d3c09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6503a42f5590b650fe7dcb276f7d3c09">&#9670;&nbsp;</a></span>log_supports_ansi_colors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool zth::log_supports_ansi_colors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns if the system supports ANSI colors. </p>
+
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00152">152</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -1273,7 +1297,7 @@ template&lt;typename T &gt; </div>
 <p>Specialize for your own types. </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="fsm_8cpp-example.html#a2">fsm.cpp</a>, <a class="el" href="measure_8cpp-example.html#a17">measure.cpp</a>, and <a class="el" href="socks_8cpp-example.html#a0">socks.cpp</a>.</dd>
 </dl>
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00319">319</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00320">320</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1303,7 +1327,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00320">320</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00321">321</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1333,7 +1357,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00332">332</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00333">333</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1363,7 +1387,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00331">331</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00332">332</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1393,7 +1417,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00325">325</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00326">326</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1423,7 +1447,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00327">327</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00328">328</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1453,7 +1477,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00333">333</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00334">334</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1483,7 +1507,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00329">329</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00330">330</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1513,7 +1537,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00323">323</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00324">324</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1543,7 +1567,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00321">321</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00322">322</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1573,7 +1597,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00335">335</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00336">336</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1633,7 +1657,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00366">366</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00367">367</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1663,7 +1687,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00322">322</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00323">323</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1693,7 +1717,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00326">326</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00327">327</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1723,7 +1747,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00328">328</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00329">329</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1753,7 +1777,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00330">330</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00331">331</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1783,7 +1807,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00324">324</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00325">325</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>

@@ -59,6 +59,7 @@ var util_8h =
     [ "log", "util_8h.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51", null ],
     [ "log_color", "util_8h.html#ga376be895ce62cae12c9bb2005a328f2a", null ],
     [ "log_colorv", "util_8h.html#ga3de356c7dddb81fb19a95e5b8a2c5c40", null ],
+    [ "log_supports_ansi_colors", "util_8h.html#a6503a42f5590b650fe7dcb276f7d3c09", null ],
     [ "logv", "util_8h.html#gac71cc5442292ba8e2746dcaea59feeef", null ],
     [ "str", "util_8h.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8", null ],
     [ "str< char >", "util_8h.html#a2a417b45d5a57e323dd4c79eb44f8d95", null ],
