@@ -66,13 +66,7 @@ namespace zth {
 #endif
 
 		static bool const EnableDebugPrint = Debug;
-		static bool const EnableColorLog =
-#ifdef _WIN32
-			// Default Windows cmd prompt does not support colors.
-			false;
-#else
-			true;
-#endif
+		static bool const EnableColorLog = true;
 
 		static int const Print_banner = 12;	// bright blue
 		static int const Print_worker = 5;	// magenta
