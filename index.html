@@ -91,20 +91,22 @@ $(document).ready(function(){initNavTree('index.html','');});
 <p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
 <p>Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc &gt;=4 is supported. There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).</p>
 <h2>How to build</h2>
-<p>When starting from scratch, clone the repository, like: </p><pre class="fragment">git clone https://github.com/jhrutgers/zth.git
-cd zth
-git submodule init
-git submodule update
-</pre><p>Build Zth out-of-tree: </p><pre class="fragment">mkdir build
+<p>To install all build dependencies, run <code>scripts/bootstrap</code> (as Administrator under Windows). Next, run <code>scripts/build</code> to build the library and all examples. This does effectively: </p><pre class="fragment">mkdir build
 cd build
 cmake ..
 cmake --build .
-</pre><p>After building, check out the <code>doc</code> directory for documentation.</p>
+</pre><p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
 <p>For Mac OSX with MacPorts, one could change the sequence above by something like: </p><pre class="fragment">CC=gcc-mp-8 CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
-</pre><p>By default, release builds are generated. To do debug builds, do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
-</pre><p>For Windows with Qt, one could run cmake like this: </p><pre class="fragment">set PATH=c:\Program Files\CMake\bin;%PATH%
-cmake.exe .. -D CMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -D CMAKE_MAKE_PROGRAM="c:/qt/Tools/mingw730_64/bin/mingw32-make.exe" -D CMAKE_C_COMPILER="c:/qt/Tools/mingw730_64/bin/gcc.exe" -D CMAKE_CXX_COMPILER="c:/qt/Tools/mingw730_64/bin/g++.exe"
-</pre><h2>How to run</h2>
+</pre><p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>scripts/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
+</pre><h3>How to integrate in your project</h3>
+<p>Include the Zth top-level <code>CMakeLists.txt</code> in your project, and link to <code>libzth</code>. Configure Zth options as required, like this: </p><pre class="fragment">set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
+set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
+set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
+add_subdirectory(zth)
+# Override search path to your own zth_config.h.
+target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+</pre><p>This also works for cross-compiling. Refer to <code><a class="el" href="_r_e_a_d_m_e-_a_r_m_8md.html">examples/arm/README-ARM.md</a></code> for some hints when compiling for bare-metal ARM.</p>
+<h2>How to run</h2>
 <p>libzth checks for environment variables, which are listed below. The environment is (usually) only checked once, so dynamically changing the variables after startup has no effect to libzth's behavior.</p>
 <ul>
 <li><code>ZTH_CONFIG_ENABLE_DEBUG_PRINT</code> When set to 0, debug prints are suppressed. Enabled by default. For non-debug builds, all debug prints are removed from the binary, so they cannot be enabled in that case.</li>
