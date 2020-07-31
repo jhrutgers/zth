@@ -147,17 +147,55 @@ ZTH_INIT_CALL(log_init)
 #endif
 
 /*!
+ * \brief Returns if the system supports ANSI colors.
+ */
+bool log_supports_ansi_colors()
+{
+#ifdef ZTH_OS_WINDOWS
+	static int support = 0;
+	if(likely(support))
+		return support > 0;
+		
+	// Win10 supports ANSI, but it should be enabled.
+	// This can be done to set the Console Mode to ENABLE_VIRTUAL_TERMINAL_PROCESSING (0x0004).
+	// However, the application is not compiled for Win10 specifically, so we cannot ask if we are running on Win10,
+	// and this macro has not been defined.
+	// Therefore, we just try to set the flag by its number, and check if it succeeds.
+	// If so, we assume cmd will accept ANSI colors.
+	AttachConsole(ATTACH_PARENT_PROCESS);
+	
+	DWORD mode = 0;
+	if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &mode))
+		goto nosupport;
+	if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), mode | 0x0004))
+		goto nosupport;
+		
+	// Succeeded. We have support. Enable stderr too.
+	if(GetConsoleMode(GetStdHandle(STD_ERROR_HANDLE), &mode))
+		SetConsoleMode(GetStdHandle(STD_ERROR_HANDLE), mode | 0x0004);
+		
+	support = 1;
+	return true;
+
+nosupport:	
+	support = -1;
+	return false;
+#else
+	return true;
+#endif
+}
+
+/*!
  * \brief Logs a given printf()-like formatted string using an ANSI color code.
  * \details #zth_logv() is used for the actual logging.
  * \ingroup zth_api_cpp_util
  */
 void log_colorv(int color, char const* fmt, va_list args)
 {
-#ifdef ZTH_OS_WINDOWS
-	bool do_color = false;
-#else
-	static bool do_color = Config::EnableColorLog && isatty(fileno(stdout));
-#endif
+	static bool do_color =
+		Config::EnableColorLog
+		&& log_supports_ansi_colors()
+		&& isatty(fileno(stdout));
 
 	if(do_color && color > 0)
 		log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");

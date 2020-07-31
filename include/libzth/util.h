@@ -196,6 +196,7 @@ namespace zth {
     ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void abort(char const* fmt, ...);
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void abortv(char const* fmt, va_list args);
 
+	ZTH_EXPORT bool log_supports_ansi_colors();
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void log_colorv(int color, char const* fmt, va_list args);
 
 	/*!
