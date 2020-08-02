@@ -86,7 +86,24 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="textblock"><p><a href="https://github.com/jhrutgers/zth/actions?query=workflow%3ACI"></a></p>
 <h1>Zth (libzth) - Zeta threads</h1>
 <p>This library provides user-space cooperative multitasking, also known as fibers. One can see fibers as threads, but with the exception that you explicitly have to indicate when the fiber is allowed to switch to another fiber. As a result, locking, synchronization, using shared data structures between fibers is way more easier than when using threads. See also <a href="https://en.wikipedia.org/wiki/Fiber_(computer_science)">https://en.wikipedia.org/wiki/Fiber_(computer_science)</a>.</p>
-<p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> to get a grasp about how it works.</p>
+<p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using the <code>async</code> keyword: </p><pre class="fragment">#include &lt;zth&gt;
+#include &lt;cstdio&gt;
+
+void world() {
+    printf("World!!1\n");
+}
+zth_fiber(world)
+
+void hello() {
+    async world();
+    printf("Hello\n");
+}
+zth_fiber(hello)
+
+void main_fiber(int argc, char** argv) {
+    async hello();
+}
+</pre><p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> for more details, including the full explanation of this example.</p>
 <p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
 <p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
 <p>Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc &gt;=4 is supported. There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).</p>
@@ -96,8 +113,7 @@ cd build
 cmake ..
 cmake --build .
 </pre><p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
-<p>For Mac OSX with MacPorts, one could change the sequence above by something like: </p><pre class="fragment">CC=gcc-mp-8 CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
-</pre><p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>scripts/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
+<p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>scripts/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
 </pre><h3>How to integrate in your project</h3>
 <p>Include the Zth top-level <code>CMakeLists.txt</code> in your project, and link to <code>libzth</code>. Configure Zth options as required, like this: </p><pre class="fragment">set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
 set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
