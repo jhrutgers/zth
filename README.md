@@ -9,8 +9,29 @@ fiber. As a result, locking, synchronization, using shared data structures
 between fibers is way more easier than when using threads. See also
 <https://en.wikipedia.org/wiki/Fiber_(computer_science)>.
 
-Check out the [examples](https://jhrutgers.github.io/zth/examples.html) to get
-a grasp about how it works.
+Working with fibers is very easy. The `examples/1_helloworld` example starts
+two fibers by using the `async` keyword:
+
+	#include <zth>
+	#include <cstdio>
+
+	void world() {
+		printf("World!!1\n");
+	}
+	zth_fiber(world)
+
+	void hello() {
+		async world();
+		printf("Hello\n");
+	}
+	zth_fiber(hello)
+
+	void main_fiber(int argc, char** argv) {
+		async hello();
+	}
+
+Check out the [examples](https://jhrutgers.github.io/zth/examples.html) for
+more details, including the full explanation of this example.
 
 A predecessor project was called Xi, as the Greek capital symbol suggests
 parallel threads.  In this project, preemptive multitasking is implemented. In
@@ -34,10 +55,6 @@ Next, run `scripts/build` to build the library and all examples. This does effec
 	cmake --build .
 
 After building, check out the `doxygen/html` directory for [documentation](https://jhrutgers.github.io/zth).
-
-For Mac OSX with MacPorts, one could change the sequence above by something like:
-
-	CC=gcc-mp-8 CXX=g++-mp-8 LDFLAGS=-L/opt/local/lib cmake ..
 
 By default, release builds are generated. To do debug builds, pass `Debug` as
 command line argument to `scripts/build`, or do something like:
