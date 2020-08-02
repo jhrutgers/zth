@@ -31,7 +31,18 @@ git submodule update
 
 mkdir -p build
 pushd build > /dev/null
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+case `uname -s` in
+	Darwin*)
+		# Use brew's gcc
+		export CC=`ls -1 /usr/local/bin/gcc-[0-9]* | sort -n | tail -n 1`
+		export CXX=`ls -1 /usr/local/bin/g++-[0-9]* | sort -n | tail -n 1`
+		;;
+	*)
+		export CC=gcc
+		export CXX=g++
+		;;
+esac
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
 cmake --build . -- -j`numproc` all
 popd > /dev/null
 

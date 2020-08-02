@@ -28,6 +28,7 @@
 
 #ifdef ZTH_OS_MAC
 
+#  ifdef ZTH_CUSTOM_CLOCK_GETTIME
 static mach_timebase_info_data_t clock_info;
 static uint64_t mach_clock_start;
 
@@ -61,6 +62,7 @@ int clock_gettime(int clk_id, struct timespec* res) {
 	res->tv_sec = (time_t)(ns / zth::TimeInterval::BILLION);
 	return 0;
 }
+#  endif // ZTH_CUSTOM_CLOCK_GETTIME
 
 int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain) {
 	if(unlikely(!request))
@@ -82,8 +84,8 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 		// No need to sleep.
 		return 0;
 	} else if(sec < std::numeric_limits<useconds_t>::max() / 1000000 - 1) {
-		useconds_t us = sec * 1000000;
-		us += (request->tv_nsec - now.tv_nsec) / 1000;
+		useconds_t us = (useconds_t)(sec * 1000000);
+		us += (useconds_t)((request->tv_nsec - now.tv_nsec) / 1000);
 		if(likely(!usleep(us)))
 			return 0;
 	} else {
@@ -162,6 +164,15 @@ __attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec
 }
 #endif
 
+#ifdef ZTH_OS_MAC
+namespace zth { zth::Timestamp startTime; }
+
+static void startTimeInit()
+{
+	zth::startTime = zth::Timestamp::now();
+}
+ZTH_INIT_CALL(startTimeInit)
+#else // !ZTH_OS_MAC
 zth::Timestamp startTime_;
 
 static void startTimeInit()
@@ -172,4 +183,4 @@ ZTH_INIT_CALL(startTimeInit)
 
 // Let the const zth::startTime alias to the non-const startTime_.
 namespace zth { extern Timestamp const __attribute__((alias("startTime_"))) startTime; }
-
+#endif // ZTH_OS_MAC

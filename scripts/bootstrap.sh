@@ -22,6 +22,8 @@ case `uname -s` in
 		}
 		install_or_upgrade cmake
 		install_or_upgrade gnutls
+		install_or_upgrade gcc
+		install_or_upgrade doxygen
 		;;
 	*)
 		echo "Unknown OS"

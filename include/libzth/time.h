@@ -35,7 +35,9 @@
 #include <inttypes.h>
 
 #if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
+#  ifdef ZTH_CUSTOM_CLOCK_GETTIME
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
+#  endif
 extern "C" int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain);
 #  ifndef CLOCK_MONOTONIC
 #    define CLOCK_MONOTONIC 1
@@ -83,6 +85,12 @@ namespace zth {
 			: m_t(ts)
 			, m_negative()
 		{}
+
+		TimeInterval& operator=(TimeInterval const& t) {
+			m_t = t.m_t;
+			m_negative = t.m_negative;
+			return *this;
+		}
 
 		template <typename T>
 		TimeInterval(T dt)
@@ -352,7 +360,12 @@ namespace zth {
 		struct timespec m_t;
 	};
 
+#ifdef ZTH_OS_MAC
+	// Should be const, but the alias-trick does not work on OSX.
+	extern Timestamp /* const */ startTime;
+#else
 	extern Timestamp const startTime;
+#endif
 
 } // namespace
 

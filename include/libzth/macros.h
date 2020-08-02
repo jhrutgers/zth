@@ -220,6 +220,11 @@ ZTH_EXPORT void foo();
 //#  define ZTH_HAVE_LIBUNWIND
 #  define ZTH_HAVE_POLL
 #  define ZTH_HAVE_MMAN
+#  include <Availability.h>
+#  if __MAC_OS_X_VERSION_MAX_ALLOWED < 1012
+// OSX 10.12 includes clock_gettime(). Otherwise, implement it by Zth.
+#    define ZTH_CUSTOM_CLOCK_GETTIME
+#  endif
 #elif defined(ZTH_ARCH_ARM)
 // Assume having newlib
 #  define ZTH_OS_BAREMETAL 1
