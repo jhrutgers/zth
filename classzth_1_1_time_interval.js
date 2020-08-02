@@ -26,6 +26,7 @@ var classzth_1_1_time_interval =
     [ "operator/=", "classzth_1_1_time_interval.html#aedf030d7cc283ca835c4e1c6be9b5f17", null ],
     [ "operator<", "classzth_1_1_time_interval.html#a5a3154c12daead6d2239194edfe2c438", null ],
     [ "operator<=", "classzth_1_1_time_interval.html#a11a7d3611a67cff2ed1f33b6b0b12d46", null ],
+    [ "operator=", "classzth_1_1_time_interval.html#a245a6720ef4d883535c011e6413d5db2", null ],
     [ "operator==", "classzth_1_1_time_interval.html#ac21365e84b287e8d7316437188d2fccb", null ],
     [ "operator>", "classzth_1_1_time_interval.html#a3d62d7d0ca7656b8a435dd65c2c2832a", null ],
     [ "operator>=", "classzth_1_1_time_interval.html#aa45fa9b10b46244334769c78abe13e4c", null ],
