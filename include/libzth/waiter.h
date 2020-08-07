@@ -207,9 +207,20 @@ namespace zth {
 #endif
 	};
 
-	void waitUntil(TimedWaitable& w);
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT void waitUntil(TimedWaitable& w);
+
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
 	template <typename F> void waitUntil(F f, TimeInterval const& pollInterval) {
 		PolledWaiting<F> w(f, pollInterval); waitUntil(w); }
+
+	/*!
+	 * \ingroup zth_api_cpp_fiber
+	 */
 	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
 		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
 	
