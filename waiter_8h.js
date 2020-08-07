@@ -18,9 +18,9 @@ var waiter_8h =
     [ "scheduleTask", "waiter_8h.html#a692cd6a88a74b1b98d863277624cb93f", null ],
     [ "unap", "waiter_8h.html#gad8abbae956466d84c1e1366eba469278", null ],
     [ "unscheduleTask", "waiter_8h.html#a43a403677c60668b28e760f217473f30", null ],
-    [ "waitUntil", "waiter_8h.html#abd067566b5f56fb4aa9186880f568d0f", null ],
-    [ "waitUntil", "waiter_8h.html#accda3c092e2dd2870ca6005999cf8721", null ],
-    [ "waitUntil", "waiter_8h.html#a341b69cc04d2c640e7ff42c6828919e8", null ],
+    [ "waitUntil", "waiter_8h.html#gabd067566b5f56fb4aa9186880f568d0f", null ],
+    [ "waitUntil", "waiter_8h.html#gaccda3c092e2dd2870ca6005999cf8721", null ],
+    [ "waitUntil", "waiter_8h.html#ga341b69cc04d2c640e7ff42c6828919e8", null ],
     [ "zth_mnap", "group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5", null ],
     [ "zth_nap", "group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e", null ],
     [ "zth_unap", "group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2", null ]

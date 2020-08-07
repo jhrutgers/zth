@@ -48,8 +48,8 @@ var NAVTREEINDEX =
 "classzth_1_1_perf_fiber.html#a31d389eda4fa6e362ae67158b238582b",
 "classzth_1_1_unique_i_d_base.html#ae1278133db82154945ba196e58140b36",
 "group__zth__api__c__sync.html#ga2e3ef1100eccacc5ca142d7f28595a9b",
-"perf_8cpp.html#a209869553938004bf0e2c93bb3d218da",
-"util_8h.html#a2d24f3d7e8889b90d179c7ee9dd4fc89"
+"pages.html",
+"util_8h.html#a233527786130148eace0194c0276ec56"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

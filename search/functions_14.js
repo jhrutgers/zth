@@ -4,7 +4,7 @@ var searchData=
   ['waitable',['Waitable',['../classzth_1_1_waitable.html#a41354477941eeaa06a97b3e2a138d120',1,'zth::Waitable']]],
   ['waiter',['Waiter',['../classzth_1_1_waiter.html#acc9a8c88bf782ff202b77d2a811025bc',1,'zth::Waiter::Waiter()'],['../classzth_1_1_worker.html#a4b71d9867a1d393cf312f533ff31ef41',1,'zth::Worker::waiter()']]],
   ['waitfd',['waitFd',['../classzth_1_1_waiter.html#a74b719754f50f1da32745226c2cef4a8',1,'zth::Waiter']]],
-  ['waituntil',['waitUntil',['../namespacezth.html#abd067566b5f56fb4aa9186880f568d0f',1,'zth::waitUntil(TimedWaitable &amp;w)'],['../namespacezth.html#accda3c092e2dd2870ca6005999cf8721',1,'zth::waitUntil(F f, TimeInterval const &amp;pollInterval)'],['../namespacezth.html#a341b69cc04d2c640e7ff42c6828919e8',1,'zth::waitUntil(C &amp;that, void(C::*f)(), TimeInterval const &amp;pollInterval)']]],
+  ['waituntil',['waitUntil',['../group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f',1,'zth::waitUntil(TimedWaitable &amp;w)'],['../group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721',1,'zth::waitUntil(F f, TimeInterval const &amp;pollInterval)'],['../group__zth__api__cpp__fiber.html#ga341b69cc04d2c640e7ff42c6828919e8',1,'zth::waitUntil(C &amp;that, void(C::*f)(), TimeInterval const &amp;pollInterval)']]],
   ['wakeup',['wakeup',['../classzth_1_1_fiber.html#aa67cec8a7410f5063e916d4d2993811b',1,'zth::Fiber']]],
   ['worker',['Worker',['../classzth_1_1_worker.html#a986afdcdef9e9dbca7fcbec6cd4026a2',1,'zth::Worker']]],
   ['worker_5fglobal_5finit',['worker_global_init',['../namespacezth.html#a0feb299489b882465af74b17d7930b4a',1,'zth']]],
