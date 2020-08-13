@@ -272,6 +272,10 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_unap(long sleepFor_us) { zth::unap(sleep
 
 #else // !__cplusplus
 
+#include <libzth/macros.h>
+
+#include <time.h>
+
 ZTH_EXPORT void zth_nap(struct timespec const* ts);
 ZTH_EXPORT void zth_mnap(long sleepFor_ms);
 ZTH_EXPORT void zth_unap(long sleepFor_us);

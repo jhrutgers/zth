@@ -36,6 +36,7 @@
 #include <libzth/version.h>
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
+#include <libzth/waiter.h>
 #include <libzth/sync.h>
 #include <libzth/async.h>
 #include <libzth/perf.h>
