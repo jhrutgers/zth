@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__fsm.html','');})
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm_guard.html">zth::FsmGuard&lt; Fsm &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard is evaulated, and when true, the corresponding transition is taken.  <a href="classzth_1_1_fsm_guard.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard is evaluated, and when true, the corresponding transition is taken.  <a href="classzth_1_1_fsm_guard.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_fsm_description.html">zth::FsmDescription&lt; Fsm &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The description of a <a class="el" href="classzth_1_1_fsm.html" title="A Finite-state machine. ">Fsm</a>.  <a href="structzth_1_1_fsm_description.html#details">More...</a><br /></td></tr>
@@ -129,6 +129,14 @@ Functions</h2></td></tr>
 <tr class="memitem:ga72a4330f8b179884908e45046176d668"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm.html#ga72a4330f8b179884908e45046176d668">zth::guards::timeout_us</a> (<a class="el" href="classzth_1_1_fsm.html">Fsm</a> &amp;fsm)</td></tr>
 <tr class="memdesc:ga72a4330f8b179884908e45046176d668"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard that is true when the <a class="el" href="classzth_1_1_fsm.html" title="A Finite-state machine. ">Fsm</a> stayed for the given time in this state.  <a href="group__zth__api__cpp__fsm.html#ga72a4330f8b179884908e45046176d668">More...</a><br /></td></tr>
 <tr class="separator:ga72a4330f8b179884908e45046176d668"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d11d3bc53bc6f677147d778f1dc525c"><td class="memTemplParams" colspan="2">template&lt;typename Fsm &gt; </td></tr>
+<tr class="memitem:ga3d11d3bc53bc6f677147d778f1dc525c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm.html#ga3d11d3bc53bc6f677147d778f1dc525c">zth::guards::lock</a> (<a class="el" href="classzth_1_1_fsm.html">Fsm</a> &amp;fsm)</td></tr>
+<tr class="memdesc:ga3d11d3bc53bc6f677147d778f1dc525c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper for <a class="el" href="classzth_1_1_fsm.html#ac7278bbc0708683b5f1f85dbb09eb21b" title="Check if a lock was requested while running in lockstep mode. ">zth::Fsm::guardLock()</a>.  <a href="group__zth__api__cpp__fsm.html#ga3d11d3bc53bc6f677147d778f1dc525c">More...</a><br /></td></tr>
+<tr class="separator:ga3d11d3bc53bc6f677147d778f1dc525c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5ed6a68b412e8e5013664de0297580b7"><td class="memTemplParams" colspan="2">template&lt;typename Fsm &gt; </td></tr>
+<tr class="memitem:ga5ed6a68b412e8e5013664de0297580b7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm.html#ga5ed6a68b412e8e5013664de0297580b7">zth::guards::step</a> (<a class="el" href="classzth_1_1_fsm.html">Fsm</a> &amp;fsm)</td></tr>
+<tr class="memdesc:ga5ed6a68b412e8e5013664de0297580b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">A wrapper for <a class="el" href="classzth_1_1_fsm.html#a06079c8c40f7a60f8991fd1fc38e3748" title="Check if a step was requested while paused in lockstep mode. ">zth::Fsm::guardStep()</a>.  <a href="group__zth__api__cpp__fsm.html#ga5ed6a68b412e8e5013664de0297580b7">More...</a><br /></td></tr>
+<tr class="separator:ga5ed6a68b412e8e5013664de0297580b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -182,6 +190,30 @@ template&lt;typename FsmInput , typename FsmInput::Input i, typename Fsm &gt; </
 
 </div>
 </div>
+<a id="ga3d11d3bc53bc6f677147d778f1dc525c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3d11d3bc53bc6f677147d778f1dc525c">&#9670;&nbsp;</a></span>lock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Fsm &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> zth::guards::lock </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_fsm.html">Fsm</a> &amp;&#160;</td>
+          <td class="paramname"><em>fsm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A wrapper for <a class="el" href="classzth_1_1_fsm.html#ac7278bbc0708683b5f1f85dbb09eb21b" title="Check if a lock was requested while running in lockstep mode. ">zth::Fsm::guardLock()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm_8h_source.html#l00119">119</a> of file <a class="el" href="fsm_8h_source.html">fsm.h</a>.</p>
+
+</div>
+</div>
 <a id="ga6786101aa12b384521001c932e076f10"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga6786101aa12b384521001c932e076f10">&#9670;&nbsp;</a></span>peek()</h2>
 
@@ -205,6 +237,30 @@ template&lt;typename FsmInput , typename FsmInput::Input i, typename Fsm &gt; </
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="fsm_8cpp-example.html#a0">fsm.cpp</a>.</dd>
 </dl>
 <p class="definition">Definition at line <a class="el" href="fsm_8h_source.html#l00073">73</a> of file <a class="el" href="fsm_8h_source.html">fsm.h</a>.</p>
+
+</div>
+</div>
+<a id="ga5ed6a68b412e8e5013664de0297580b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5ed6a68b412e8e5013664de0297580b7">&#9670;&nbsp;</a></span>step()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Fsm &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> zth::guards::step </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_fsm.html">Fsm</a> &amp;&#160;</td>
+          <td class="paramname"><em>fsm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A wrapper for <a class="el" href="classzth_1_1_fsm.html#a06079c8c40f7a60f8991fd1fc38e3748" title="Check if a step was requested while paused in lockstep mode. ">zth::Fsm::guardStep()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm_8h_source.html#l00131">131</a> of file <a class="el" href="fsm_8h_source.html">fsm.h</a>.</p>
 
 </div>
 </div>

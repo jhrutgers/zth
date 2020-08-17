@@ -119,7 +119,7 @@ var searchData=
   ['zth_5ftls_5fset',['ZTH_TLS_SET',['../macros_8h.html#a8afceb2d9601e9906696a4353bacf016',1,'macros.h']]],
   ['zth_5ftls_5fstatic',['ZTH_TLS_STATIC',['../macros_8h.html#a228f092c6290125ce8f9b7e945da7bbd',1,'ZTH_TLS_STATIC():&#160;macros.h'],['../namespacezth.html#a36eb2c67dba75e522a867dc0ddd4c3bb',1,'zth::ZTH_TLS_STATIC()']]],
   ['zth_5funap',['zth_unap',['../group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2',1,'waiter.h']]],
-  ['zth_5fversion',['zth_version',['../group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4',1,'zth_version():&#160;version.h'],['../version_8h.html#a66d1e18225cbde2a5eb652a80f84b297',1,'ZTH_VERSION():&#160;version.h']]],
+  ['zth_5fversion',['ZTH_VERSION',['../version_8h.html#a66d1e18225cbde2a5eb652a80f84b297',1,'ZTH_VERSION():&#160;version.h'],['../group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4',1,'zth_version():&#160;version.h']]],
   ['zth_5fversion_5fmajor',['ZTH_VERSION_MAJOR',['../version_8h.html#a5d7e7374885e201362c15a28066c5591',1,'version.h']]],
   ['zth_5fversion_5fminor',['ZTH_VERSION_MINOR',['../version_8h.html#a318d2e7b9ebb2f25eda87dec55b7cc5c',1,'version.h']]],
   ['zth_5fversion_5fpatch',['ZTH_VERSION_PATCH',['../version_8h.html#a2892912ba885d1255ce529e0f14eee2d',1,'version.h']]],
