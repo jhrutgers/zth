@@ -111,10 +111,34 @@ namespace zth {
 			static TimeInterval const timeout((double)us * 1e-6);
 			return timeout_<Fsm>(fsm, timeout);
 		}
+		
+		/*!
+		 * \brief A wrapper for #zth::Fsm::guardLock().
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <typename Fsm> ZTH_EXPORT TimeInterval lock(Fsm& fsm) {
+			if(fsm.guardLock()) {
+				zth_dbg(fsm, "[%s] Guard lock", fsm.id_str());
+				return TimeInterval();
+			} else
+				return TimeInterval::infinity();
+		}
+
+		/*!
+		 * \brief A wrapper for #zth::Fsm::guardStep().
+		 * \ingroup zth_api_cpp_fsm
+		 */
+		template <typename Fsm> ZTH_EXPORT TimeInterval step(Fsm& fsm) {
+			if(fsm.guardStep()) {
+				zth_dbg(fsm, "[%s] Guard step", fsm.id_str());
+				return TimeInterval();
+			} else
+				return TimeInterval::infinity();
+		}
 	}
 
 	/*!
-	 * \brief A guard is evaulated, and when true, the corresponding transition is taken.
+	 * \brief A guard is evaluated, and when true, the corresponding transition is taken.
 	 * \details Use one of the guards in \c zth::guards, like \c zth::guards::always(), or define your own.
 	 *          A guard is a function that gets the current Fsm reference as argument and should return a #zth::TimeInterval.
 	 *          When the interval has passed (zero or negative duration), the guard is assumed to be taken.
@@ -241,11 +265,14 @@ namespace zth {
 		enum EvalState { evalCompile, evalInit, evalReset, evalIdle, evalState, evalRecurse };
 		typedef FsmDescription<FsmImpl> const* StateAddr;
 
+		enum Lockstep { lockstepNormal, lockstepLock, lockstepStep, lockstepSteppingNext, lockstepStepping };
+
 	public:
 		explicit Fsm(Compiler const& compiler, char const* name = "FSM")
 			: UniqueID(name)
 			, m_compiler(&compiler)
 			, m_evalState(evalInit)
+			, m_lockstep(lockstepNormal)
 		{
 #if __cplusplus >= 201103L && !defined(DOXYGEN)
 			static_assert(std::is_base_of<Fsm,FsmImpl>::value, "");
@@ -256,6 +283,7 @@ namespace zth {
 			: UniqueID(name)
 			, m_description(description)
 			, m_evalState(evalCompile)
+			, m_lockstep(lockstepNormal)
 		{}
 		
 		virtual ~Fsm() {}
@@ -310,6 +338,103 @@ namespace zth {
 
 		bool entry() const { return m_entry; }
 		bool exit() const { return m_exit; }
+
+		/*!
+		 * \brief Check if lockstep mode is enabled.
+		 */
+		bool lockstep() const { return m_lockstep != lockstepNormal; }
+
+		/*!
+		 * \brief Enable/disable lockstep mode.
+		 *
+		 * Assume the following FSM:
+		 *
+		 * \verbatim
+		 * +--> A ---+
+		 * |         |
+		 * +--- B <--+
+		 * \endverbatim
+		 *
+		 * Normally, the transitions have guards that determine if the Fsm is allowed to continue.
+		 * In lockstep mode, one add special states where the Fsm can wait for an explicit input.
+		 * For example, if such explicit input is required before continuing back to A:
+		 *
+		 * \verbatim
+		 * +--> A ---+
+		 * |         |
+		 * +--- B <--+
+		 *     ^ \
+		 *    /   \
+		 *   +- C <+
+		 * \endverbatim
+		 *
+		 * In this Fsm, once B is reached, the Fsm may go to the stalled state C,
+		 * wait for an explicit input, go back to B and proceed to A.
+		 * To implement this, add a guard that checks #guardLock() at entry of B.
+		 * If it returns \c true, proceed to C. In C, add a guard that checks #guardStep().
+		 * If it returns \c true, proceed back to B. Any #guardLock() guards are ignored
+		 * until state B is left. If the expected explicit input was received, call #step().
+		 */
+		void setLockstep(bool enable) {
+			if(lockstep() == enable)
+				return;
+
+			switch(m_lockstep) {
+			case lockstepNormal:
+				m_lockstep = lockstepLock;
+				break;
+			default:
+				m_lockstep = lockstepNormal;
+				break;
+			}
+			trigger();
+		}
+
+		/*!
+		 * \brief Check if a lock was requested while running in lockstep mode.
+		 * \return \c true if the Fsm is to be paused
+		 * \see #setLockstep()
+		 */
+		bool guardLock() {
+			switch(m_lockstep) {
+			case lockstepLock:
+			case lockstepStep:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		/*!
+		 * \brief Check if a step was requested while paused in lockstep mode.
+		 * \return \c true if the Fsm may continue
+		 * \see #setLockstep()
+		 */
+		bool guardStep() {
+			switch(m_lockstep) {
+			case lockstepLock:
+				return false;
+			case lockstepStep:
+				m_lockstep = lockstepSteppingNext;
+				return true;
+			default:
+				return true;
+			}
+		}
+
+		/*!
+		 * \brief Allow the Fsm to proceed one step, if in lockstep mode.
+		 * \see #setLockstep()
+		 */
+		void step() {
+			switch(m_lockstep) {
+			case lockstepLock:
+				m_lockstep = lockstepStep;
+				trigger();
+				break;
+			default:;
+			}
+		}
 
 		void input(Input i) { m_inputs.insert(i); trigger(); }
 		bool clearInput(Input i) { return m_inputs.erase(i) > 0; }
@@ -425,6 +550,16 @@ namespace zth {
 
 			m_state = nextState;
 			m_t = Timestamp::now();
+			
+			switch(m_lockstep) {
+			case lockstepSteppingNext:
+				m_lockstep = lockstepStepping;
+				break;
+			case lockstepStepping:
+				m_lockstep = lockstepLock;
+				break;
+			default:;
+			}
 
 			m_entry = true;
 			callback();
@@ -450,6 +585,7 @@ namespace zth {
 		Timestamp m_t;
 		bool m_entry;
 		bool m_exit;
+		Lockstep m_lockstep;
 		Signal m_trigger;
 		std::set<Input> m_inputs;
 	};
