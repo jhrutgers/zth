@@ -947,7 +947,7 @@ void stack_watermark_init(void* stack, size_t size) {
 	stack_watermark_align(stack, sizeptr, &size);
 	*sizeptr = size;
 
-	for(size_t i = 0; i * sizeof(uint64_t) < size; i++)
+	for(size_t i = 0; i * sizeof(uint64_t) <= size - sizeof(uint64_t); i++)
 		((uint64_t*)stack)[i] = ZTH_STACK_WATERMARKER;
 }
 
