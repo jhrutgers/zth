@@ -31,6 +31,9 @@
 #include <set>
 #include <map>
 
+// Suppress missing braces, as this is what you do when you specify the FSM.
+#pragma GCC diagnostic ignored "-Wmissing-braces"
+
 namespace zth {
 
 	namespace guards {
