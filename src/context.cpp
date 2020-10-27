@@ -1,17 +1,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -147,7 +147,7 @@ extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 static int stack_guard_region() {
 	if(!Config::EnableStackGuard || Config::EnableThreads)
 		return -1;
-	
+
 	static int region = 0;
 
 	if(likely(region))
@@ -211,7 +211,7 @@ static void stack_guard(void* guard) {
 	int const region = stack_guard_region();
 	if(unlikely(region < 0))
 		return;
-	
+
 	// Must be aligned to guard size
 	zth_assert(((uintptr_t)guard & (ZTH_ARM_STACK_GUARD_SIZE - 1)) == 0);
 
@@ -272,7 +272,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 	ucontext_t uc;
 	if(getcontext(&uc))
 		return EINVAL;
-	
+
 	uc.uc_link = NULL;
 	uc.uc_stack = *stack;
 	sigjmp_buf origin;
@@ -345,7 +345,7 @@ ZTH_TLS_STATIC(Context*, trampoline_context, NULL)
 
 static void context_trampoline(int sig) {
 	// At this point, we are in the signal handler.
-	
+
 	if(unlikely(sig != SIGUSR1))
 		// Huh?
 		return;
@@ -422,7 +422,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #endif
 	if(unlikely(sigaltstack(&ss, &oss)))
 		return errno;
-	
+
 	ZTH_TLS_SET(trampoline_context, context);
 
 	// Ready to do the signal.
@@ -623,15 +623,15 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #ifdef ZTH_ARCH_ARM
 	// Do some fiddling with the jmp_buf...
 
-	// We only checked against newlib 2.4.0 and 3.1.0.
-#  if NEWLIB_VERSION < 20400L || NEWLIB_VERSION > 30100L
+	// We only checked against newlib 2.4.0, 3.1.0, and 3.3.0.
+#  if NEWLIB_VERSION < 20400L || NEWLIB_VERSION > 30300L
 #    error Unsupported newlib version.
 #  endif
 
 	void** sp = (void**)((uintptr_t)((char*)stack->ss_sp + stack->ss_size - sizeof(void*)) & ~(uintptr_t)7); // sp (must be dword aligned)
 	*sp = context; // push context argument on the new stack
 
-	size_t sp_offset = 
+	size_t sp_offset =
 #  if (__ARM_ARCH_ISA_THUMB == 1 && !__ARM_ARCH_ISA_ARM) || defined(__thumb2__)
 		8;
 #  else
@@ -850,7 +850,7 @@ int context_create(Context*& context, ContextAttr const& attr) {
 #endif
 	}
 	return 0;
-	
+
 rollback_stack:
 	context_deletestack(context);
 rollback_new:
@@ -872,7 +872,7 @@ void context_switch(Context* from, Context* to) {
 void context_destroy(Context* context) {
 	if(!context)
 		return;
-	
+
 	context_destroy_impl(context);
 	context_deletestack(context);
 	delete context;
@@ -909,7 +909,7 @@ __attribute__((noinline,unused)) static bool stack_grows_down(void const* refere
 static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size = NULL) {
 	if(!stack)
 		return;
-	
+
 	uintptr_t stack_ = (uintptr_t)stack;
 
 #ifdef ZTH_ARM_HAVE_MPU
@@ -928,7 +928,7 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 	if(size)
 		// Reduce remaining stack size.
 		*size -= stack_ - (uintptr_t)stack;
-	
+
 	stack = (void*)stack_;
 }
 
@@ -939,7 +939,7 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 void stack_watermark_init(void* stack, size_t size) {
 	if(!Config::EnableStackWaterMark || !stack || !size)
 		return;
-	
+
 	// Most likely, but growing up stack is not implemented here (yet?)
 	zth_assert(stack_grows_down(&size));
 
@@ -960,7 +960,7 @@ void stack_watermark_init(void* stack, size_t size) {
 size_t stack_watermark_size(void* stack) {
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
-	
+
 	size_t* sizeptr;
 	stack_watermark_align(stack, sizeptr);
 	return *sizeptr;
@@ -975,7 +975,7 @@ size_t stack_watermark_size(void* stack) {
 size_t stack_watermark_maxused(void* stack) {
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
-	
+
 	size_t* sizeptr;
 	stack_watermark_align(stack, sizeptr);
 	size_t size = *sizeptr;
@@ -995,7 +995,7 @@ size_t stack_watermark_maxused(void* stack) {
 size_t stack_watermark_remaining(void* stack) {
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
-	
+
 	size_t* sizeptr;
 	stack_watermark_align(stack, sizeptr);
 	size_t size = *sizeptr;
@@ -1039,7 +1039,7 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_P
 		"and r4, r4, #2\n"				// r4 is set to only have the PSP bit
 
 		// We are on MSP now.
-		
+
 		"push {" REG_FP ", lr}\n"		// Save frame pointer on MSP
 		".setfp " REG_FP ", sp\n"
 		"add " REG_FP ", sp, #0\n"
@@ -1062,7 +1062,7 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_P
 		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
-		
+
 		"mov r4, sp\n"					// Save previous stack pointer
 		"mov sp, r2\n"					// Set new stack pointer
 		"push {" REG_FP ", lr}\n"		// Save previous frame pointer on new stack
@@ -1098,7 +1098,7 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg) {
 			zth::Fiber* fiber = worker->currentFiber();
 			if(unlikely(!fiber))
 				goto noguard;
-			
+
 			context = fiber->context();
 			if(unlikely(!context))
 				goto noguard;
