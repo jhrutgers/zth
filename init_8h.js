@@ -5,6 +5,7 @@ var init_8h =
     [ "ZTH_INIT_CALL", "init_8h.html#a68623548df4d1790f4c5764165907fb0", null ],
     [ "ZTH_INIT_CALL_", "init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6", null ],
     [ "zth_init", "init_8h.html#a5365d3450ca6f2a88551ea2192b4f0c7", null ],
+    [ "zth_postdeinit", "init_8h.html#a1685d95631a58ef8cc24c9712e4e7bfb", null ],
     [ "zth_preinit", "init_8h.html#aa42004de097b0282398bd2ca61ea41bc", null ],
     [ "zth_init_head", "init_8h.html#a798e83ea50eb570c6fb14c97384f56b6", null ],
     [ "zth_init_tail", "init_8h.html#a39fa1dfee15fba6b9dfc4901ad2ffa97", null ]

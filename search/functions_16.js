@@ -44,6 +44,7 @@ var searchData=
   ['zth_5fperf_5flogv',['zth_perf_logv',['../group__zth__api__c__perf.html#gaae80b9853d0ba648e47b9f5e15e495be',1,'perf.h']]],
   ['zth_5fperf_5fmark_5f',['zth_perf_mark_',['../perf_8h.html#a62d726b7de91c7728496e57aa6817bed',1,'perf.h']]],
   ['zth_5fpoll',['zth_poll',['../group__zth__api__c__io.html#ga7d3fe6f6bd9056d6b964139b68a999e8',1,'io.h']]],
+  ['zth_5fpostdeinit',['zth_postdeinit',['../init_8h.html#a1685d95631a58ef8cc24c9712e4e7bfb',1,'zth_postdeinit():&#160;main.cpp'],['../main_8cpp.html#a1685d95631a58ef8cc24c9712e4e7bfb',1,'zth_postdeinit():&#160;main.cpp']]],
   ['zth_5fpreinit',['zth_preinit',['../init_8h.html#aa42004de097b0282398bd2ca61ea41bc',1,'zth_preinit():&#160;main.cpp'],['../main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc',1,'zth_preinit():&#160;main.cpp']]],
   ['zth_5fread',['zth_read',['../group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f',1,'io.h']]],
   ['zth_5fselect',['zth_select',['../group__zth__api__c__io.html#gaf7d1d6cffe584297ce904e5d968c0124',1,'io.h']]],
