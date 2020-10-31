@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -48,7 +48,7 @@ extern "C" int clock_nanosleep(int clk_id, int flags, struct timespec const* req
 #endif
 
 namespace zth {
-	
+
 	/*!
 	 * \brief Convenient wrapper around \c struct \c timespec that contains a time interval.
 	 * \ingroup zth_api_cpp_time
@@ -138,10 +138,10 @@ namespace zth {
 		constexpr bool isAbsBiggerThan(TimeInterval const& t) const {
 			return m_t.tv_sec > t.m_t.tv_sec || (m_t.tv_sec == t.m_t.tv_sec && m_t.tv_nsec > t.m_t.tv_nsec);
 		}
-		
+
 		constexpr bool isBiggerThan(TimeInterval const& t) const {
 			return
-				(!m_negative && t.m_negative) || 
+				(!m_negative && t.m_negative) ||
 				(!m_negative && !t.m_negative && this->isAbsBiggerThan(t)) ||
 				(m_negative && t.m_negative && t.isAbsBiggerThan(*this));
 		}
@@ -258,7 +258,7 @@ namespace zth {
 		struct timespec m_t;
 		bool m_negative;
 	};
-	
+
 	template <> inline cow_string str<TimeInterval const&>(TimeInterval const& value) { return value.str(); }
 
 #if __cplusplus >= 201103L
@@ -315,7 +315,7 @@ namespace zth {
 			zth_assert(!t.isNull());
 			return t;
 		}
-		
+
 		struct timespec const& ts() const { return m_t; }
 		operator struct timespec const&() const { return ts(); }
 
