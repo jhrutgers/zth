@@ -26,6 +26,7 @@ var namespacezth =
     [ "Gate", "classzth_1_1_gate.html", "classzth_1_1_gate" ],
     [ "List", "classzth_1_1_list.html", "classzth_1_1_list" ],
     [ "Listable", "classzth_1_1_listable.html", "classzth_1_1_listable" ],
+    [ "Load", "classzth_1_1_load.html", "classzth_1_1_load" ],
     [ "Mutex", "classzth_1_1_mutex.html", "classzth_1_1_mutex" ],
     [ "passOnExit", "structzth_1_1pass_on_exit.html", "structzth_1_1pass_on_exit" ],
     [ "PerfEvent", "structzth_1_1_perf_event.html", "structzth_1_1_perf_event" ],

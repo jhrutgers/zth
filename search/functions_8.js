@@ -2,6 +2,7 @@ var searchData=
 [
   ['id',['id',['../classzth_1_1_unique_i_d.html#afda1b7ce79271f4f465628220a3e1e83',1,'zth::UniqueID']]],
   ['id_5fstr',['id_str',['../classzth_1_1_runnable.html#a7dbb127d9716bc92ee2382094f308484',1,'zth::Runnable::id_str()'],['../classzth_1_1_unique_i_d_base.html#a18cd1e461a7e732a004574bc8f2c729b',1,'zth::UniqueIDBase::id_str()'],['../classzth_1_1_unique_i_d.html#aafcde36353af71ec27b1a0b67d91d394',1,'zth::UniqueID::id_str()']]],
+  ['idle',['idle',['../classzth_1_1_load.html#a956473247b7187b46c20bf88c8cdad51',1,'zth::Load::idle(type dt_s)'],['../classzth_1_1_load.html#a12cc05d60d330998ec912ff37d06020a',1,'zth::Load::idle(type load, type dt_s) const']]],
   ['infinity',['infinity',['../classzth_1_1_time_interval.html#a62c999ac519c2e3b8a088952566ce3b4',1,'zth::TimeInterval']]],
   ['init',['init',['../classzth_1_1_fiber.html#a4ace7e43f765b1dac6ffc198052dc2ec',1,'zth::Fiber']]],
   ['input',['input',['../classzth_1_1_fsm.html#a21a52a70c48d061a848099e4d680ccf0',1,'zth::Fsm::input()'],['../group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973',1,'zth::guards::input()']]],
@@ -11,6 +12,7 @@ var searchData=
   ['interval',['interval',['../classzth_1_1_polled_waiting.html#ae3965fe752a486dec5402f17a88bc36a',1,'zth::PolledWaiting']]],
   ['intr',['intr',['../classzth_1_1_await_fd.html#a8de53232e5589dac2b1064f303c3949d',1,'zth::AwaitFd']]],
   ['isabsbiggerthan',['isAbsBiggerThan',['../classzth_1_1_time_interval.html#ac10f05226a0fb9765f4dcbef448a65b3',1,'zth::TimeInterval']]],
+  ['isactive',['isActive',['../classzth_1_1_load.html#a1709f91f11e0cd3429c6446869bbc2ca',1,'zth::Load']]],
   ['isafter',['isAfter',['../classzth_1_1_timestamp.html#a3c5b109f965ab13bece74062b3fc6a5d',1,'zth::Timestamp']]],
   ['isbefore',['isBefore',['../classzth_1_1_timestamp.html#ab36aaa79841333df4852d52ec6e03dc2',1,'zth::Timestamp']]],
   ['isbiggerthan',['isBiggerThan',['../classzth_1_1_time_interval.html#acb148fa749a82e0e102fe3e3aa11f9c5',1,'zth::TimeInterval']]],

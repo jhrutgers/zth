@@ -1,6 +1,7 @@
 var searchData=
 [
   ['r',['r',['../structzth_1_1impl_1_1_function_i_o0.html#a6a09f0fef30e211a57cf950d76756cdb',1,'zth::impl::FunctionIO0::r()'],['../structzth_1_1impl_1_1_function_i_o1.html#a6f6a2b3db874d0a3f1aad98893afc04d',1,'zth::impl::FunctionIO1::r()'],['../structzth_1_1impl_1_1_function_i_o2.html#a5d20d0f95784a97badfa92bdd7b77d87',1,'zth::impl::FunctionIO2::r()'],['../structzth_1_1impl_1_1_function_i_o3.html#a7f203ce8ef012360a5899211a55a9c5a',1,'zth::impl::FunctionIO3::r()'],['../structzth_1_1impl_1_1_function_i_o_n.html#aeb12cc255747c7a910c5798c7ea18c34',1,'zth::impl::FunctionION::r()'],['../structzth_1_1_register.html#aef5fa920e16dba637d3ec39420e93145',1,'zth::Register::r()']]],
+  ['rc',['rc',['../classzth_1_1_load.html#a9511d107f4a7d33793ae6897b8463206',1,'zth::Load']]],
   ['read',['read',['../structzth_1_1_register.html#a9db8db8bf00e27de4ccbefe0bd0a08cb',1,'zth::Register::read() const'],['../structzth_1_1_register.html#ab2a9b5677921d29029538ab5c8511b49',1,'zth::Register::read()'],['../io_8h.html#a68dc4fd7189d34e2052e25ada13f89e0',1,'read():&#160;io.h'],['../group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de',1,'zth::io::read()']]],
   ['readme_2darm_2emd',['README-ARM.md',['../_r_e_a_d_m_e-_a_r_m_8md.html',1,'']]],
   ['readme_2emd',['README.md',['../_r_e_a_d_m_e_8md.html',1,'']]],

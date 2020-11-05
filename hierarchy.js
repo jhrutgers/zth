@@ -90,6 +90,7 @@ var hierarchy =
     [ "zth::List< T >", "classzth_1_1_list.html", null ],
     [ "zth::List< T >::iterator", "classzth_1_1_list_1_1iterator.html", null ],
     [ "zth::Listable< ChildClass >", "classzth_1_1_listable.html", null ],
+    [ "zth::Load< T >", "classzth_1_1_load.html", null ],
     [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
     [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
     [ "zth::PolledMemberWaitingHelper< C >", "structzth_1_1_polled_member_waiting_helper.html", null ],

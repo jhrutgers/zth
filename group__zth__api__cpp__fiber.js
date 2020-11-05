@@ -25,6 +25,7 @@ var group__zth__api__cpp__fiber =
       [ "currentFiber", "classzth_1_1_worker.html#a8a82376965a01056e9956d86c52c2fae", null ],
       [ "dbgStats", "classzth_1_1_worker.html#a8b4977fbbe5f29f2464ded06d35a5e84", null ],
       [ "isInWorkerContext", "classzth_1_1_worker.html#a628a0151b623204dde065a7369ff18ca", null ],
+      [ "load", "classzth_1_1_worker.html#a7db4e3dcdab5ea1fc0f1abf9d77212a7", null ],
       [ "operator<<", "classzth_1_1_worker.html#a4bc9e3ed7c5094bbd1ba6bf6c1565f2e", null ],
       [ "release", "classzth_1_1_worker.html#a3922e79c6c2c96e56bc98b4a0555517c", null ],
       [ "resume", "classzth_1_1_worker.html#acc9e1767b4fe3d25f18ff840ee7c5697", null ],

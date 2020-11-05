@@ -1,6 +1,7 @@
 var searchData=
 [
   ['r',['r',['../structzth_1_1_register.html#aef5fa920e16dba637d3ec39420e93145',1,'zth::Register']]],
+  ['rc',['rc',['../classzth_1_1_load.html#a9511d107f4a7d33793ae6897b8463206',1,'zth::Load']]],
   ['read',['read',['../structzth_1_1_register.html#a9db8db8bf00e27de4ccbefe0bd0a08cb',1,'zth::Register::read() const'],['../structzth_1_1_register.html#ab2a9b5677921d29029538ab5c8511b49',1,'zth::Register::read()'],['../group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de',1,'zth::io::read()']]],
   ['refcounted',['RefCounted',['../classzth_1_1_ref_counted.html#a746d7e21664728d4870ab2768adb68cf',1,'zth::RefCounted']]],
   ['register',['Register',['../structzth_1_1_register.html#aa11237fb3150806808a4e3d9c37787a2',1,'zth::Register::Register()'],['../structzth_1_1_register.html#a1cc186d6f66e4aa9b19747f6252c4b6a',1,'zth::Register::Register(type v)']]],

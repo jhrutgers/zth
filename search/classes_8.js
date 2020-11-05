@@ -6,5 +6,6 @@ var searchData=
   ['listable',['Listable',['../classzth_1_1_listable.html',1,'zth']]],
   ['listable_3c_20awaitfd_20_3e',['Listable&lt; AwaitFd &gt;',['../classzth_1_1_listable.html',1,'zth']]],
   ['listable_3c_20fiber_20_3e',['Listable&lt; Fiber &gt;',['../classzth_1_1_listable.html',1,'zth']]],
-  ['listable_3c_20timedwaitable_20_3e',['Listable&lt; TimedWaitable &gt;',['../classzth_1_1_listable.html',1,'zth']]]
+  ['listable_3c_20timedwaitable_20_3e',['Listable&lt; TimedWaitable &gt;',['../classzth_1_1_listable.html',1,'zth']]],
+  ['load',['Load',['../classzth_1_1_load.html',1,'zth']]]
 ];
