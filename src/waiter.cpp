@@ -1,17 +1,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@ void Waiter::wait(TimedWaitable& w) {
 		return;
 	if(unlikely(w.poll()))
 		return;
-	
+
 	w.setFiber(*fiber);
 	fiber->nap(w.timeout());
 	m_worker.release(*fiber);
@@ -41,7 +41,7 @@ void Waiter::wait(TimedWaitable& w) {
 	m_waiting.insert(w);
 	if(this->fiber())
 		m_worker.resume(*this->fiber());
-	
+
 	m_worker.schedule();
 }
 
@@ -94,15 +94,15 @@ int Waiter::waitFd(AwaitFd& w) {
 	Fiber* fiber = m_worker.currentFiber();
 	if(unlikely(!fiber || fiber->state() != Fiber::Running))
 		return EAGAIN;
-	
+
 	w.setFiber(*fiber);
-	
+
 	// Add our set of fds to the Waiter's administration.
 	m_fdList.push_back(w);
 	m_fdPollList.reserve(m_fdPollList.size() + w.nfds());
 	for(int i = 0; i < w.nfds(); i++)
 		m_fdPollList.push_back(w.fds()[i]);
-	
+
 	checkFdList();
 
 	// Put ourselves to sleep.
@@ -112,7 +112,7 @@ int Waiter::waitFd(AwaitFd& w) {
 	// Switch to Waiter
 	if(this->fiber())
 		m_worker.resume(*this->fiber());
-	
+
 	m_worker.schedule();
 
 	// Got back, check which fds were triggered.
@@ -136,8 +136,8 @@ int Waiter::waitFd(AwaitFd& w) {
 			m_fdList.erase(w);
 			m_fdPollList.erase(m_fdPollList.begin() + offset, m_fdPollList.begin() + offset + w.nfds());
 			break;
-		} 
-	
+		}
+
 	checkFdList();
 
 	if(w.error())
@@ -154,6 +154,7 @@ void Waiter::entry() {
 
 	while(true) {
 		Timestamp now = Timestamp::now();
+		m_worker.load().stop(now);
 
 		while(!m_waiting.empty() && m_waiting.front().timeout() < now) {
 			TimedWaitable& w = m_waiting.front();
@@ -171,6 +172,8 @@ void Waiter::entry() {
 
 		bool doRealSleep = false;
 
+		m_worker.load().start(now);
+
 		if(m_waiting.empty()
 #ifdef ZTH_HAVE_POLLER
 			&& m_fdPollList.empty()
@@ -183,6 +186,7 @@ void Waiter::entry() {
 			// When true, we were not rescheduled, which means that we are the only runnable fiber.
 			// Do a real sleep, until something interesting happens in the system.
 			doRealSleep = true;
+			m_worker.load().stop(now);
 		}
 
 #ifdef ZTH_HAVE_POLLER
@@ -223,7 +227,7 @@ void Waiter::entry() {
 			int res = ::poll(&m_fdPollList[0], (nfds_t)m_fdPollList.size(), timeout_ms);
 			int error = res == -1 ? errno : 0;
 #endif
-			
+
 			if(doRealSleep) {
 				perf_event(PerfEvent<>(*fiber(), fiber()->state()));
 				perf_mark("wakeup");

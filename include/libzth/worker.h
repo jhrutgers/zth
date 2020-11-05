@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@
 #include <cstring>
 
 namespace zth {
-	
+
 	void sigchld_check();
 
 	class Worker;
@@ -47,7 +47,7 @@ namespace zth {
 	public:
 		static Worker* currentWorker() { return ZTH_TLS_GET(currentWorker_); }
 		Fiber* currentFiber() const { return m_currentFiber; }
-	
+
 		Worker()
 			: UniqueID("Worker")
 			, m_currentFiber()
@@ -72,7 +72,7 @@ namespace zth {
 			m_workerFiber.setStackSize(0); // no stack
 			if((res = m_workerFiber.init()))
 				goto error;
-			
+
 			if((res = perf_init()))
 				goto error;
 
@@ -139,7 +139,7 @@ namespace zth {
 		bool contextSwitchEnabled() const {
 			return m_disableContextSwitch == 0;
 		}
-		
+
 		void release(Fiber& fiber) {
 			if(unlikely(fiber.state() == Fiber::Suspended)) {
 				m_suspendedQueue.erase(fiber);
@@ -176,7 +176,7 @@ namespace zth {
 				zth_dbg(worker, "[%s] Time is up", id_str());
 				preferFiber = &m_workerFiber;
 			}
-		
+
 			Fiber* fiber = preferFiber;
 			bool didSchedule = false;
 		reschedule:
@@ -234,7 +234,7 @@ namespace zth {
 				// In this case, we cannot delete the fiber and its context,
 				// as that is the context we are currently using.
 				// Return to the worker's context and sort it out from there.
-				
+
 				zth_dbg(worker, "[%s] Current fiber %s just died; switch to worker", id_str(), fiber.id_str());
 				zth_assert(contextSwitchEnabled());
 				schedule(&m_workerFiber);
@@ -247,7 +247,7 @@ namespace zth {
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
 			delete &fiber;
-			
+
 			sigchld_check();
 		}
 
@@ -303,8 +303,12 @@ namespace zth {
 				schedule();
 				zth_assert(!currentFiber());
 			}
-			
+
 			sigchld_check();
+		}
+
+		Load<>& load() {
+			return m_load;
 		}
 
 	protected:
@@ -343,6 +347,7 @@ namespace zth {
 		Waiter m_waiter;
 		Timestamp m_end;
 		int m_disableContextSwitch;
+		Load<> m_load;
 
 		friend void worker_global_init();
 	};
@@ -365,11 +370,11 @@ namespace zth {
 		zth_assert(f);
 		return *f;
 	}
-	
+
 	__attribute__((pure)) inline UniqueID<Fiber> const& currentFiberID() {
 		return currentFiber();
 	}
-	
+
 	inline void getContext(Worker** worker, Fiber** fiber) {
 		Worker& currentWorker_ = currentWorker();
 		if(likely(worker))
@@ -409,7 +414,7 @@ namespace zth {
 		getContext(&worker, &fiber);
 		worker->suspend(*fiber);
 	}
-	
+
 	inline void resume(Fiber& fiber) {
 		Worker* worker;
 		getContext(&worker, NULL);
