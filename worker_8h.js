@@ -11,7 +11,7 @@ var worker_8h =
     [ "sigchld_check", "worker_8h.html#ab890ee9e183611f6310c009078be7d53", null ],
     [ "startWorkerThread", "worker_8h.html#aa44c9c26006cc9757a8eeaa9284e1ca2", null ],
     [ "suspend", "worker_8h.html#abaf179a15df72c3e1a5c678697917edf", null ],
-    [ "yield", "worker_8h.html#gab23d0b81d2da4394b0f32c088a13d950", null ],
+    [ "yield", "worker_8h.html#ga37a6599e1ea8abaeab108030b1c9a196", null ],
     [ "zth_execvp", "group__zth__api__c__fiber.html#ga98e250385493bf16c0ffc906ba2cad44", null ],
     [ "zth_outOfWork", "group__zth__api__c__fiber.html#gad8461c1aec02080742c4770c18ad5012", null ],
     [ "zth_startWorkerThread", "group__zth__api__c__fiber.html#ga405106e51e454fcd350785db13533f54", null ],

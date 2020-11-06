@@ -55,5 +55,5 @@ var group__zth__api__cpp__fiber =
     [ "waitUntil", "group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f", null ],
     [ "waitUntil", "group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721", null ],
     [ "waitUntil", "group__zth__api__cpp__fiber.html#ga341b69cc04d2c640e7ff42c6828919e8", null ],
-    [ "yield", "group__zth__api__cpp__fiber.html#gab23d0b81d2da4394b0f32c088a13d950", null ]
+    [ "yield", "group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196", null ]
 ];
