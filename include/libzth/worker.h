@@ -390,10 +390,9 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false) {
+	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false, Timestamp const& now = Timestamp::now()) {
 		Fiber& fiber = currentFiber();
 
-		Timestamp now = Timestamp::now();
 		perf_syscall("yield()", now);
 		if(unlikely(!alwaysYield && !fiber.allowYield(now)))
 			return;
