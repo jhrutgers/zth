@@ -647,6 +647,15 @@ static int context_create_impl(Context* context, stack_t* stack) {
 }
 
 static void context_switch_impl(Context* from, Context* to) {
+#if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
+	// newlib does not do saving/restoring of FPU registers.
+	// We have to do it here ourselves.
+	__asm__ volatile ("vpush {d8-d15}");
+	#define arm_fpu_pop() __asm__ volatile ("vpop {d8-d15}")
+#else
+	#define arm_fpu_pop() do{}while(0)
+#endif
+
 	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
 	if(setjmp(from->env) == 0)
 	{
@@ -675,6 +684,9 @@ static void context_switch_impl(Context* from, Context* to) {
 #endif
 		longjmp(to->env, 1);
 	}
+
+	arm_fpu_pop();
+#undef arm_fpu_pop
 }
 
 #endif // ZTH_CONTEXT_SJLJ
