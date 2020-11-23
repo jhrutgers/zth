@@ -264,24 +264,36 @@ namespace zth {
 #if __cplusplus >= 201103L
 	/*!
 	 * \brief Define literals like \c 123_s, which is a #zth::TimeInterval of 123 seconds.
+	 *
+	 * You may want to put <tt>using zth::operator""_s;</tt> in your code to simplify using it.
+	 *
 	 * \ingroup zth_api_cpp_time
 	 */
 	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x, (unsigned long long int)std::numeric_limits<time_t>::max)); }
 
 	/*!
 	 * \brief Define literals like \c 123_ms, which is a #zth::TimeInterval of 123 milliseconds.
+	 *
+	 * You may want to put <tt>using zth::operator""_ms;</tt> in your code to simplify using it.
+	 *
 	 * \ingroup zth_api_cpp_time
 	 */
 	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000L) * 1000000L); }
 
 	/*!
 	 * \brief Define literals like \c 123_us, which is a #zth::TimeInterval of 123 microseconds.
+	 *
+	 * You may want to put <tt>using zth::operator""_us;</tt> in your code to simplify using it.
+	 *
 	 * \ingroup zth_api_cpp_time
 	 */
 	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000000L) * 1000L); }
 
 	/*!
 	 * \brief Define literals like \c 12.3_s, which is a #zth::TimeInterval of 12.3 seconds.
+	 *
+	 * You may want to put <tt>using zth::operator""_s;</tt> in your code to simplify using it.
+	 *
 	 * \ingroup zth_api_cpp_time
 	 */
 	ZTH_EXPORT inline TimeInterval operator"" _s(long double x) { return TimeInterval(x); }
