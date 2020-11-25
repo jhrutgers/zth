@@ -283,5 +283,27 @@ void Waiter::entry() {
 	}
 }
 
+
+
+
+
+bool PeriodicWakeUp::nap(Timestamp const& reference, Timestamp const& now) {
+	m_t = reference + interval();
+	if(likely(m_t > now)) {
+		// Proper sleep till next deadline.
+		zth::nap(m_t);
+		return true;
+	} else if(m_t + interval() > now) {
+		// Deadline has just passed. Don't sleep and try to catch up.
+		yield();
+		return false;
+	} else {
+		// Way passed deadline. Don't sleep and skip a few cycles.
+		m_t = now;
+		yield();
+		return false;
+	}
+}
+
 } // namespace
 

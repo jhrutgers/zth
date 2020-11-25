@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -223,7 +223,7 @@ namespace zth {
 	 */
 	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
 		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
-	
+
 	void scheduleTask(TimedWaitable& w);
 	void unscheduleTask(TimedWaitable& w);
 
@@ -247,7 +247,95 @@ namespace zth {
 	 */
 	ZTH_EXPORT inline void unap(long sleepFor_us)				{ nap(TimeInterval((time_t)(sleepFor_us / 1000000L), sleepFor_us % 1000000L * 1000L)); }
 
-} // namespace 
+	/*!
+	 * \brief Periodic wakeup after fixed interval.
+	 *
+	 * A common pattern is that a fiber wakes up periodically to
+	 * do some work, like this:
+	 *
+	 * \code
+	 * Timestamp t = Timestamp::now();
+	 * while(true) {
+	 *     do_work()
+	 *
+	 *     // Advance to next deadline.
+	 *     t += 100_ms;
+	 *
+	 *     // Sleep till deadline.
+	 *     nap(t);
+	 * }
+	 *
+	 * If somehow the deadline is missed <i>n</i> times, because of debugging, or
+	 * some other stalled task, the loop is executed <i>n</i> times without sleeping
+	 * to catch up with t. This burst of iterations is often not required; this
+	 * missed deadlines should just be skipped.
+	 *
+	 * One could be tempted to do it this way:
+	 *
+	 * \code
+	 * while(true) {
+	 *     do_work();
+	 *     nap(100_ms);
+	 * }
+	 * \endcode
+	 *
+	 * However, the sleeping may be just more than 100 ms, so the execution drifts
+	 * away from a strictly 10 Hz.
+	 *
+	 * Using this class, it is easier to skip missed deadlines, if it is more than one.
+	 * It can be used as follows:
+	 *
+	 * \code
+	 * PeriodicWakeUp w(100_ms);
+	 * while(true) {
+	 *     do_work();
+	 *
+	 *     // Sleep till deadline.
+	 *     w();
+	 * }
+	 * \endcode
+	 *
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	class PeriodicWakeUp {
+	public:
+		explicit PeriodicWakeUp(TimeInterval const& interval)
+			: m_interval(interval)
+			, m_t(Timestamp::now())
+		{}
+
+		Timestamp const& t() const {
+			return m_t;
+		}
+
+		TimeInterval const& interval() const {
+			return m_interval;
+		}
+
+		void setInterval(TimeInterval const& interval) {
+			m_interval = interval;
+		}
+
+		PeriodicWakeUp& operator=(TimeInterval& interval) {
+			setInterval(interval);
+			return *this;
+		}
+
+		bool nap() {
+			return nap(t());
+		}
+
+		bool nap(Timestamp const& reference, Timestamp const& now = Timestamp::now());
+
+		void operator()() {
+			nap();
+		}
+
+	private:
+		TimeInterval m_interval;
+		Timestamp m_t;
+	};
+} // namespace
 
 /*!
  * \copydoc zth::nap(zth::TimeInterval const&)
