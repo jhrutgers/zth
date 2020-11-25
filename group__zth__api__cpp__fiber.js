@@ -14,6 +14,16 @@ var group__zth__api__cpp__fiber =
       [ "passOnExit", "structzth_1_1pass_on_exit.html#a677ea86235687ed7ea0abdb088ff76e3", null ],
       [ "apply", "structzth_1_1pass_on_exit.html#a4be69fa60d0ace48f1628f387625c6fe", null ]
     ] ],
+    [ "PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", [
+      [ "PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html#a465ea9df4dda832ac7382a5ec22d2634", null ],
+      [ "interval", "classzth_1_1_periodic_wake_up.html#ade67aaa9497bd4cc8c12922cf024197f", null ],
+      [ "nap", "classzth_1_1_periodic_wake_up.html#a7ce70e55e51bba67c051775fa1e73bcd", null ],
+      [ "nap", "classzth_1_1_periodic_wake_up.html#a08fa25e933e4049ecab7aca3fcba581a", null ],
+      [ "operator()", "classzth_1_1_periodic_wake_up.html#a4bc251d1aca21070c6f7bd98ce28665f", null ],
+      [ "operator=", "classzth_1_1_periodic_wake_up.html#a0c28746f65ff1b0c4b9089f23b6b28eb", null ],
+      [ "setInterval", "classzth_1_1_periodic_wake_up.html#a39f7e2494c4dacd991d5165f3b649335", null ],
+      [ "t", "classzth_1_1_periodic_wake_up.html#a1661b2edf995f7b067350479e538dd45", null ]
+    ] ],
     [ "Worker", "classzth_1_1_worker.html", [
       [ "Worker", "classzth_1_1_worker.html#a986afdcdef9e9dbca7fcbec6cd4026a2", null ],
       [ "~Worker", "classzth_1_1_worker.html#a54b0f6bb5877d1029a18ae03ff2724a7", null ],

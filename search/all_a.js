@@ -12,7 +12,7 @@ var searchData=
   ['insert',['insert',['../classzth_1_1_list.html#a827f934ed79ece9bb38f7df05eb4fd5a',1,'zth::List::insert()'],['../classzth_1_1_sorted_list.html#ab66a1ebef27dc635063d790af060d3a8',1,'zth::SortedList::insert()']]],
   ['insert_5f',['insert_',['../classzth_1_1_sorted_list.html#ae77321ee78431564b8704e0b4402ac15',1,'zth::SortedList']]],
   ['instance',['instance',['../classzth_1_1_singleton.html#a31cb39bc487d75e1a283106181de916c',1,'zth::Singleton']]],
-  ['interval',['interval',['../classzth_1_1_polled_waiting.html#ae3965fe752a486dec5402f17a88bc36a',1,'zth::PolledWaiting']]],
+  ['interval',['interval',['../classzth_1_1_polled_waiting.html#ae3965fe752a486dec5402f17a88bc36a',1,'zth::PolledWaiting::interval()'],['../classzth_1_1_periodic_wake_up.html#ade67aaa9497bd4cc8c12922cf024197f',1,'zth::PeriodicWakeUp::interval()']]],
   ['intr',['intr',['../classzth_1_1_await_fd.html#a8de53232e5589dac2b1064f303c3949d',1,'zth::AwaitFd']]],
   ['io_2ecpp',['io.cpp',['../io_8cpp.html',1,'']]],
   ['io_2eh',['io.h',['../io_8h.html',1,'']]],

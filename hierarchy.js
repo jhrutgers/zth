@@ -93,6 +93,7 @@ var hierarchy =
     [ "zth::Load< T >", "classzth_1_1_load.html", null ],
     [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
     [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
+    [ "zth::PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", null ],
     [ "zth::PolledMemberWaitingHelper< C >", "structzth_1_1_polled_member_waiting_helper.html", null ],
     [ "zth::RefCounted", "classzth_1_1_ref_counted.html", [
       [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", [

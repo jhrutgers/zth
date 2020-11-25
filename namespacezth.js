@@ -32,6 +32,7 @@ var namespacezth =
     [ "PerfEvent", "structzth_1_1_perf_event.html", "structzth_1_1_perf_event" ],
     [ "PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", "structzth_1_1_perf_event_3_01false_01_4" ],
     [ "PerfFiber", "classzth_1_1_perf_fiber.html", "classzth_1_1_perf_fiber" ],
+    [ "PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", "classzth_1_1_periodic_wake_up" ],
     [ "PolledMemberWaiting", "classzth_1_1_polled_member_waiting.html", "classzth_1_1_polled_member_waiting" ],
     [ "PolledMemberWaitingHelper", "structzth_1_1_polled_member_waiting_helper.html", "structzth_1_1_polled_member_waiting_helper" ],
     [ "PolledWaiting", "classzth_1_1_polled_waiting.html", "classzth_1_1_polled_waiting" ],
