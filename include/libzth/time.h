@@ -92,35 +92,41 @@ namespace zth {
 			return *this;
 		}
 
+		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
+
+		TimeInterval(float dt) : m_t() { init_float<float>(dt); }
+		TimeInterval(double dt) : m_t() { init_float<double>(dt); }
+		TimeInterval(long double dt) : m_t() { init_float<long double>(dt); }
+		template <typename T> TimeInterval(T dt) : m_t() { init_int<T>(dt); }
+
+	private:
 		template <typename T>
-		TimeInterval(T dt)
-			: m_t()
-			, m_negative(dt < 0)
-		{
-			if(std::numeric_limits<T>::is_integer) {
-				// seconds only.
-				m_t.tv_sec = (time_t)(dt >= 0 ? dt : -dt);
-				m_t.tv_nsec = 0;
-			} else {
-				double dt_ = (double)dt;
+		void init_float(T dt) {
+			zth_assert(dt == dt); // Should not be NaN
 
-				zth_assert(dt_ == dt_); // Should not be NaN
+			m_negative = dt < 0;
 
-				if(std::fabs(dt_) > (double)(std::numeric_limits<time_t>::max() / 2 - 1))
-					m_t.tv_sec = std::numeric_limits<time_t>::max();
-				else
-					m_t.tv_sec = (time_t)std::fabs(dt_);
-				m_t.tv_nsec = (long)(std::fmod(std::fabs(dt_), 1.0) * 1e9);
+			if(std::fabs(dt) > (T)(std::numeric_limits<time_t>::max() / 2 - 1))
+				m_t.tv_sec = std::numeric_limits<time_t>::max();
+			else
+				m_t.tv_sec = (time_t)std::fabs(dt);
+			m_t.tv_nsec = (long)(std::fmod(std::fabs(dt), (T)1.0) * (T)1e9);
 
-				if(m_t.tv_nsec >= BILLION) {
-					m_t.tv_nsec -= BILLION;
-					m_t.tv_sec++;
-				}
+			if(m_t.tv_nsec >= BILLION) {
+				m_t.tv_nsec -= BILLION;
+				m_t.tv_sec++;
 			}
 		}
 
-		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
+		template <typename T>
+		void init_int(T dt) {
+			// seconds only.
+			m_negative = dt < 0;
+			m_t.tv_sec = (time_t)(dt >= 0 ? dt : -dt);
+			m_t.tv_nsec = 0;
+		}
 
+	public:
 		constexpr bool isNormal() const { return m_t.tv_sec >= 0 && m_t.tv_nsec >= 0 && m_t.tv_nsec < BILLION; }
 		constexpr bool isNegative() const { return m_negative; }
 		constexpr bool isPositive() const { return !isNegative(); }
@@ -128,8 +134,10 @@ namespace zth {
 		constexpr bool isInfinite() const { return m_t.tv_sec > std::numeric_limits<time_t>::max() / 2; }
 		constexpr bool hasPassed() const { return isNegative() || isNull(); }
 		constexpr struct timespec const& ts() const { return m_t; }
-		double s() const {
-			double t = (double)m_t.tv_sec + (double)m_t.tv_nsec * 1e-9;
+		double s() const { return s<double>(); }
+
+		template <typename T> T s() const {
+			T t = (T)m_t.tv_sec + (T)m_t.tv_nsec * (T)1e-9;
 			if(m_negative)
 				t = -t;
 			return t;
@@ -188,8 +196,9 @@ namespace zth {
 			add(TimeInterval(t.ts().tv_sec, t.ts().tv_nsec, !t.isNegative()));
 		}
 
-		void mul(double x) {
-			*this = TimeInterval(s() * x);
+		template <typename T>
+		void mul(T x) {
+			*this = TimeInterval(s<T>() * x);
 		}
 
 		TimeInterval& operator+=(TimeInterval const& rhs) { add(rhs); return *this; }
@@ -197,10 +206,10 @@ namespace zth {
 		TimeInterval& operator-=(TimeInterval const& rhs) { sub(rhs); return *this; }
 		TimeInterval operator-(TimeInterval const& rhs) const { TimeInterval ti(*this); ti -= rhs; return ti; }
 		TimeInterval operator-() const { return TimeInterval(ts().tv_sec, ts().tv_nsec, !isNegative()); }
-		TimeInterval& operator*=(double x) { mul(x); return *this; }
-		TimeInterval operator*(double x) const { return TimeInterval(s() * x); }
-		TimeInterval& operator/=(double x) { mul(1.0 / x); return *this; }
-		TimeInterval operator/(double x) const { return TimeInterval(s() / x); }
+		template <typename T> TimeInterval& operator*=(T x) { mul<T>(x); return *this; }
+		template <typename T> TimeInterval operator*(T x) const { return TimeInterval(s<T>() * x); }
+		template <typename T> TimeInterval& operator/=(T x) { mul<T>((T)1 / x); return *this; }
+		template <typename T> TimeInterval operator/(T x) const { return TimeInterval(s<T>() / x); }
 
 		std::string str() const {
 			std::string res;
