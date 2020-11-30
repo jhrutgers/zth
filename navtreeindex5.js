@@ -1,5 +1,9 @@
 var NAVTREEINDEX5 =
 {
+"structzth_1_1set_name.html#afa0d43b7c5041c3bd431b5d1d4a06947":[1,0,2,1,2],
+"structzth_1_1set_stack_size.html":[1,0,2,0],
+"structzth_1_1set_stack_size.html#a0232a01f28e5740267eabe3b9b4afd12":[1,0,2,0,1],
+"structzth_1_1set_stack_size.html#a107c7ab35b9b5fa9124b798dde955f05":[1,0,2,0,0],
 "structzth__cond__t.html":[3,0,1],
 "structzth__cond__t.html#a748eaf96d63a21a26e7673a004e132f5":[3,0,1,0],
 "structzth__future__t.html":[3,0,2],
