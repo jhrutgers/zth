@@ -349,6 +349,7 @@ namespace zth {
 		}
 
 		bool operator==(Timestamp const& rhs) const { return ts().tv_nsec == rhs.ts().tv_nsec && ts().tv_sec == rhs.ts().tv_sec; }
+		bool operator!=(Timestamp const& rhs) const { return !(*this == rhs); }
 		bool operator<(Timestamp const& rhs) const { return this->isBefore(rhs); }
 		bool operator<=(Timestamp const& rhs) const { return *this == rhs || this->isBefore(rhs); }
 		bool operator>(Timestamp const& rhs) const { return rhs.isBefore(*this); }
