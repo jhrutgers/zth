@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -215,7 +215,7 @@ namespace zth {
 	 */
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void logv(char const* fmt, va_list arg) {
 		::zth_logv(fmt, arg); }
-	
+
 	/*!
 	 * \brief Logs a given printf()-like formatted string.
 	 * \details #zth_logv() is used for the actual logging.
@@ -252,6 +252,8 @@ namespace zth {
 		size_t size() const { return str().size(); }
 		size_t length() const { return str().length(); }
 		void clear() { m_cstr = NULL; m_str.clear(); }
+		bool isConst() const { return m_cstr != NULL; }
+		bool isLocal() const { return m_cstr == NULL; }
 
 	protected:
 		std::string const& local() const {
@@ -335,7 +337,7 @@ namespace zth {
 #if __cplusplus >= 201103L
 	template <> inline cow_string str<std::string&&>(std::string&& value) { return std::string(std::move(value)); }
 #endif
-	
+
 	/*!
 	 * \brief Return a string like \c strerror() does, but as a \c std::string.
 	 */
@@ -363,7 +365,7 @@ namespace zth {
 		virtual ~UniqueIDBase() {}
 		friend cow_string str<UniqueIDBase const&>(UniqueIDBase const&);
 	};
-	
+
 	template <> inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value) { return cow_string(value.id_str()); }
 
 	/*!
@@ -381,7 +383,7 @@ namespace zth {
 				__atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
 #endif
 				: ++m_nextId; }
-	
+
 		UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
 #if __cplusplus >= 201103L
 		UniqueID(std::string&& name) : m_id(getID()), m_name(std::move(name)) {}
@@ -398,7 +400,7 @@ namespace zth {
 		void setName(std::string const& name) {
 			setName(name.c_str());
 		}
-		
+
 		void setName(char const* name) {
 			m_name = name;
 			m_id_str.clear();
@@ -412,7 +414,7 @@ namespace zth {
 			changedName(this->name());
 		}
 #endif
-	
+
 		char const* id_str() const {
 			if(unlikely(m_id_str.empty()))
 				m_id_str =
@@ -420,7 +422,7 @@ namespace zth {
 					// No OS, no pid. And if newlib is used, don't try to format 64-bit ints.
 					format("%s #%u", name().empty() ? "Object" : name().c_str(), (unsigned int)id());
 #else
-					format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(), 
+					format("%s #%u:%" PRIu64, name().empty() ? "Object" : name().c_str(),
 #  ifdef ZTH_OS_WINDOWS
 						(unsigned int)_getpid(),
 #  else
@@ -455,7 +457,7 @@ namespace zth {
 	};
 
 	template <typename T, bool ThreadSafe> uint64_t UniqueID<T,ThreadSafe>::m_nextId = 0;
-	
+
 	template <typename T, typename WhenTIsVoid> struct choose_type { typedef T type; };
 	template <typename WhenTIsVoid> struct choose_type<void, WhenTIsVoid> { typedef WhenTIsVoid type; };
 
@@ -469,7 +471,7 @@ namespace zth {
 
 	/*!
 	 * \brief Singleton pattern.
-	 * 
+	 *
 	 * When a class inherits this class, the single instance of that class is available
 	 * via the static #instance() function.
 	 *
@@ -509,7 +511,7 @@ namespace zth {
 			if(!m_instance)
 				m_instance = static_cast<singleton_type*>(this);
 		}
-		
+
 		/*!
 		 * \brief Destructor.
 		 * \details After destruction, #instance() will return \c NULL.
