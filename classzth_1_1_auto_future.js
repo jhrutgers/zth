@@ -6,6 +6,6 @@ var classzth_1_1_auto_future =
     [ "AutoFuture", "classzth_1_1_auto_future.html#a18a4df557178c859127b80ff488ae2be", null ],
     [ "AutoFuture", "classzth_1_1_auto_future.html#aa1ec98914184c4d6cd848a65e78ca572", null ],
     [ "~AutoFuture", "classzth_1_1_auto_future.html#a53ec9f53fb6ec584a04f3494758e0d3e", null ],
-    [ "operator=", "classzth_1_1_auto_future.html#af30d39ef9757f25f2b0939f385e512d0", null ],
-    [ "operator=", "classzth_1_1_auto_future.html#a3daf8b1cf7a8e241d2c8cb58b37f9846", null ]
+    [ "operator=", "classzth_1_1_auto_future.html#a3daf8b1cf7a8e241d2c8cb58b37f9846", null ],
+    [ "operator=", "classzth_1_1_auto_future.html#af30d39ef9757f25f2b0939f385e512d0", null ]
 ];

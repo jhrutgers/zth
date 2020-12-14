@@ -56,14 +56,14 @@ var group__zth__api__cpp__fiber =
     [ "execvp", "group__zth__api__cpp__fiber.html#ga4d66bcd4daab96dd4c487cf1ec95e253", null ],
     [ "fls", "group__zth__api__cpp__fiber.html#ga90683f0e60425732585e5e5374b5fdaf", null ],
     [ "mnap", "group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152", null ],
-    [ "nap", "group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913", null ],
     [ "nap", "group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665", null ],
+    [ "nap", "group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913", null ],
     [ "outOfWork", "group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869", null ],
     [ "setFls", "group__zth__api__cpp__fiber.html#gacacc7fd0f5c0504201eb9ffa9a4cb5b1", null ],
     [ "startWorkerThread", "group__zth__api__cpp__fiber.html#ga671f02c454a73a1a4cc7d7a3a3d1dda1", null ],
     [ "unap", "group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278", null ],
-    [ "waitUntil", "group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f", null ],
-    [ "waitUntil", "group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721", null ],
     [ "waitUntil", "group__zth__api__cpp__fiber.html#ga341b69cc04d2c640e7ff42c6828919e8", null ],
+    [ "waitUntil", "group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721", null ],
+    [ "waitUntil", "group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f", null ],
     [ "yield", "group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196", null ]
 ];

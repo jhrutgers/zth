@@ -2,8 +2,9 @@ var hierarchy =
 [
     [ "zth::FsmDescription< FsmImpl >", "structzth_1_1_fsm_description.html", null ],
     [ "zth::FsmDescription< zth::Fsm >", "structzth_1_1_fsm_description.html", null ],
-    [ "zth::FsmGuard< FsmImpl >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::FsmGuard< zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
+    [ "zth::FsmGuard< zth::FsmImpl >", "classzth_1_1_fsm_guard.html", null ],
+    [ "zth::FsmGuard< zth::zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::List< zth::AwaitFd >", "classzth_1_1_list.html", null ],
     [ "zth::List< zth::Fiber >", "classzth_1_1_list.html", null ],
     [ "zth::Listable< AwaitFd >", "classzth_1_1_listable.html", [
@@ -134,11 +135,11 @@ var hierarchy =
         [ "zth::Fiber", "classzth_1_1_fiber.html", null ]
       ] ],
       [ "zth::UniqueID< Fsm< void, void, void > >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, CallbackArg_, Input_, void > >::type >", "classzth_1_1_fsm.html", [
-          [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", null ]
-        ] ],
         [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [
           [ "zth::FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", null ]
+        ] ],
+        [ "zth::Fsm< State_, int, choose_type< void, FsmCallback< State_, void, int, void > >::type >", "classzth_1_1_fsm.html", [
+          [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", null ]
         ] ],
         [ "zth::Fsm< State_, Input_, FsmImpl_ >", "classzth_1_1_fsm.html", null ]
       ] ],

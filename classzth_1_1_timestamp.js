@@ -8,6 +8,7 @@ var classzth_1_1_timestamp =
     [ "isBefore", "classzth_1_1_timestamp.html#ab36aaa79841333df4852d52ec6e03dc2", null ],
     [ "isNull", "classzth_1_1_timestamp.html#a5c0f474ba9c1c75a4f8a2058b11bda9a", null ],
     [ "operator struct timespec const &", "classzth_1_1_timestamp.html#a5aa58bc95afe2b231301cb8470ec3275", null ],
+    [ "operator!=", "classzth_1_1_timestamp.html#adcf950eadba114350c6f23295b6f559b", null ],
     [ "operator+", "classzth_1_1_timestamp.html#ab8a2ff46f8d80e2c4350659116e021d2", null ],
     [ "operator+=", "classzth_1_1_timestamp.html#a4366db4d2dd880623731132659582ed3", null ],
     [ "operator-", "classzth_1_1_timestamp.html#a2d99bf5cc50dac30aa01c72faec91664", null ],

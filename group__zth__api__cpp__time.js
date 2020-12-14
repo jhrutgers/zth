@@ -23,8 +23,8 @@ var group__zth__api__cpp__time =
       [ "operator*=", "classzth_1_1_time_interval.html#af94ddc8191fd5b157c197f165eb31514", null ],
       [ "operator+", "classzth_1_1_time_interval.html#af2be572f001496426951d0cdf31eb418", null ],
       [ "operator+=", "classzth_1_1_time_interval.html#ace6cab87de625b94d92b5c0c925a92f9", null ],
-      [ "operator-", "classzth_1_1_time_interval.html#a6eddc3be96bba010c7797f7408ef8e1f", null ],
       [ "operator-", "classzth_1_1_time_interval.html#a1fb0b27629f57d13229bd250162e3b8a", null ],
+      [ "operator-", "classzth_1_1_time_interval.html#a6eddc3be96bba010c7797f7408ef8e1f", null ],
       [ "operator-=", "classzth_1_1_time_interval.html#aa606dec7a7891155649c26e7c2aff29f", null ],
       [ "operator/", "classzth_1_1_time_interval.html#a92c5862e54d326da7a0003a5b251357f", null ],
       [ "operator/=", "classzth_1_1_time_interval.html#a7c24b84a5e608236974af42ed0b4ca20", null ],
@@ -49,6 +49,7 @@ var group__zth__api__cpp__time =
       [ "isBefore", "classzth_1_1_timestamp.html#ab36aaa79841333df4852d52ec6e03dc2", null ],
       [ "isNull", "classzth_1_1_timestamp.html#a5c0f474ba9c1c75a4f8a2058b11bda9a", null ],
       [ "operator struct timespec const &", "classzth_1_1_timestamp.html#a5aa58bc95afe2b231301cb8470ec3275", null ],
+      [ "operator!=", "classzth_1_1_timestamp.html#adcf950eadba114350c6f23295b6f559b", null ],
       [ "operator+", "classzth_1_1_timestamp.html#ab8a2ff46f8d80e2c4350659116e021d2", null ],
       [ "operator+=", "classzth_1_1_timestamp.html#a4366db4d2dd880623731132659582ed3", null ],
       [ "operator-", "classzth_1_1_timestamp.html#a2d99bf5cc50dac30aa01c72faec91664", null ],
@@ -62,8 +63,8 @@ var group__zth__api__cpp__time =
       [ "timeTo", "classzth_1_1_timestamp.html#a6b43866f7eea0619c8a618b14572be7b", null ],
       [ "ts", "classzth_1_1_timestamp.html#a14c9473d1d4dce24ab57c89a78059ad6", null ]
     ] ],
-    [ "operator\"\" _ms", "group__zth__api__cpp__time.html#ga690560058af0922e95849c409d8b342f", null ],
-    [ "operator\"\" _s", "group__zth__api__cpp__time.html#ga37b24d0334a815adf9c986094292e81a", null ],
-    [ "operator\"\" _s", "group__zth__api__cpp__time.html#ga9b750b94c36e20656a23aaf5f0477620", null ],
-    [ "operator\"\" _us", "group__zth__api__cpp__time.html#ga37e05d6a5dea20c4e972abb0ba7143f9", null ]
+    [ "operator\"\"_ms", "group__zth__api__cpp__time.html#gabd3816d2aaac77cd32310d11ff8edf14", null ],
+    [ "operator\"\"_s", "group__zth__api__cpp__time.html#gaf57a16867f943d24fe5d77e683436b4a", null ],
+    [ "operator\"\"_s", "group__zth__api__cpp__time.html#ga78a04660561ea298233615a07d0e55f2", null ],
+    [ "operator\"\"_us", "group__zth__api__cpp__time.html#gac04a1ceb9e6f44bf179b660c52370f26", null ]
 ];

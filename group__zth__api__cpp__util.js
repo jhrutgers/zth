@@ -21,9 +21,9 @@ var group__zth__api__cpp__util =
       [ "id_str", "classzth_1_1_unique_i_d.html#aafcde36353af71ec27b1a0b67d91d394", null ],
       [ "name", "classzth_1_1_unique_i_d.html#acd4b200713d5d521e1e14d60f2131ebf", null ],
       [ "normptr", "classzth_1_1_unique_i_d.html#a4c9c863b0366aead7336a8c1c98a6867", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#ab33cd5fdc81238b5159892cf38a1bb2b", null ],
       [ "setName", "classzth_1_1_unique_i_d.html#ae5aca08fcf3fbc33f00fbf163c30f58d", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#a7f0a073e69553fdd678419b097657882", null ]
+      [ "setName", "classzth_1_1_unique_i_d.html#a7f0a073e69553fdd678419b097657882", null ],
+      [ "setName", "classzth_1_1_unique_i_d.html#ab33cd5fdc81238b5159892cf38a1bb2b", null ]
     ] ],
     [ "Singleton", "classzth_1_1_singleton.html", [
       [ "safe_ptr", "classzth_1_1_singleton_1_1safe__ptr.html", [
@@ -40,7 +40,7 @@ var group__zth__api__cpp__util =
     ] ],
     [ "zth_dbg", "group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7", null ],
     [ "abort", "group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38", null ],
-    [ "abortv", "group__zth__api__cpp__util.html#ga5aa80dc1fb17903b60f7302f8bc93492", null ],
+    [ "abortv", "group__zth__api__cpp__util.html#ga5fe15e1a38409a79aaefdcc0c306853a", null ],
     [ "banner", "group__zth__api__cpp__util.html#ga3583a47f136d677960cb8f0bcdead6a8", null ],
     [ "log", "group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51", null ],
     [ "log_color", "group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a", null ],
