@@ -70,10 +70,16 @@ endif()
 
 option(ZTH_THREADS "Make libzth thread-aware" ON)
 if(ZTH_THREADS)
-	target_compile_options(libzth PUBLIC -DZTH_THREADS=1 -pthread)
-#	target_link_options(libzth PUBLIC -pthread)
+	target_compile_options(libzth PUBLIC -DZTH_THREADS=1)
 else()
 	target_compile_options(libzth PUBLIC -DZTH_THREADS=0)
+endif()
+
+if(UNIX OR MINGW)
+	# Still compile/link with pthread, as it provides more than threads...
+	set(THREADS_PREFER_PTHREAD_FLAG ON)
+	find_package(Threads REQUIRED)
+	target_link_libraries(libzth PUBLIC Threads::Threads)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

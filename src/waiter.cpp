@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#define ZTH_REDIRECT_IO 0
+
 #include <libzth/waiter.h>
 #include <libzth/worker.h>
 #include <libzth/io.h>

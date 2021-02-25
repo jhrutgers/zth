@@ -1,3 +1,4 @@
 build
 doxygen
 *.swp
+*.swo
