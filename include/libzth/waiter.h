@@ -221,7 +221,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
+	template <typename C> void waitUntil(C& that, bool (C::*f)(), TimeInterval const& pollInterval) {
 		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
 
 	void scheduleTask(TimedWaitable& w);
