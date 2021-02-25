@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -36,14 +36,6 @@
 
 #ifdef ZTH_HAVE_POLLER
 
-#  ifndef ZTH_REDIRECT_IO
-#    ifdef ZTH_OS_WINDOWS
-#      define ZTH_REDIRECT_IO 0
-#    else
-#      define ZTH_REDIRECT_IO 1
-#    endif
-#  endif
-
 #  ifdef ZTH_HAVE_POLL
 #    include <poll.h>
 #  endif
@@ -65,12 +57,11 @@ namespace zth { namespace io {
 	ZTH_EXPORT ssize_t read(int fd, void* buf, size_t count);
 	ZTH_EXPORT int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 	ZTH_EXPORT int poll(zth_pollfd_t *fds, int nfds, int timeout);
-	
+
 } } // namespace
 #  endif // __cplusplus
 
-#  if ZTH_REDIRECT_IO
-#    ifdef __cplusplus
+#  ifdef __cplusplus
 /*!
  * \copydoc zth::io::read()
  * \details This is a C-wrapper for zth::io::read().
@@ -95,16 +86,11 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_select(int nfds, fd_set *readfds, fd_set 
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_poll(zth_pollfd_t *fds, int nfds, int timeout) {
 	return zth::io::poll(fds, nfds, timeout); }
 
-#    else // !__cplusplus
+#  else // !__cplusplus
 ZTH_EXPORT ssize_t zth_read(int fd, void* buf, size_t count);
 ZTH_EXPORT int zth_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 ZTH_EXPORT int zth_poll(zth_pollfd_t *fds, int nfds, int timeout);
-#    endif // __cplusplus
-
-#    define read		zth_read
-#    define select		zth_select
-#    define poll		zth_poll
-#  endif // ZTH_REDIRECT_IO
+#  endif // __cplusplus
 
 #endif // ZTH_HAVE_POLLER
 #endif // __ZTH_IO_H

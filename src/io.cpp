@@ -1,22 +1,21 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define ZTH_REDIRECT_IO 0
 #include <libzth/config.h>
 #include <libzth/io.h>
 #include <libzth/util.h>
@@ -84,7 +83,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 		// Got data to read.
 		zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
 		return ::read(fd, buf, count);
-	
+
 	default:
 		// Huh?
 		zth_assert(false);
@@ -164,7 +163,7 @@ int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struc
 		FD_ZERO(writefds);
 	if(exceptfds)
 		FD_ZERO(exceptfds);
-	
+
 	for(int i = 0; i < nfds_poll; i++) {
 		if(readfds && (fds[i].revents & POLLIN_SET)) {
 			FD_SET(i, readfds);
@@ -204,12 +203,12 @@ int poll(zth_pollfd_t *fds, int nfds, int timeout) {
 #  else
 		return ::poll(fds, (nfds_t)nfds, 0);
 #  endif
-	
+
 	zth_dbg(io, "[%s] poll(%d) hand-off", currentFiber().str().c_str(), (int)nfds);
 	Timestamp t;
 	if(timeout > 0)
 		t = Timestamp::now() + TimeInterval(timeout / 1000, (long)(timeout % 1000) * 1000000L);
-	
+
 	AwaitFd w(fds, nfds, t);
 	if(currentWorker().waiter().waitFd(w)) {
 		// Some error;
