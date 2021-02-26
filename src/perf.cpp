@@ -1,17 +1,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -49,7 +49,7 @@
 namespace zth {
 
 ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, NULL)
-	
+
 class PerfFiber : public Runnable {
 public:
 	PerfFiber(Worker* worker)
@@ -75,8 +75,13 @@ public:
 			m_vcd = NULL;
 		}
 
-		delete perf_eventBuffer;
-		perf_eventBuffer = NULL;
+		if(perf_eventBuffer) {
+			for(size_t i = 0; i < perf_eventBuffer->size(); i++)
+				(*perf_eventBuffer)[i].release();
+
+			delete perf_eventBuffer;
+			perf_eventBuffer = NULL;
+		}
 	}
 
 	void flushEventBuffer() {
@@ -135,7 +140,7 @@ public:
 		eventBuffer().push_back(e);
 	}
 
-	static perf_eventBuffer_type& eventBuffer() { 
+	static perf_eventBuffer_type& eventBuffer() {
 		zth_assert(perf_eventBuffer);
 		return *perf_eventBuffer;
 	}
@@ -265,7 +270,7 @@ protected:
 					goto write_error;
 				}
 			}
-			
+
 			default:
 				; // ignore
 			}
@@ -507,7 +512,7 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 			atosf = popen(atos, "w");
 	}
 #endif
-	
+
 	char** syms =
 #ifdef ZTH_OS_MAC
 		!atosf ? NULL :
@@ -529,13 +534,13 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 			if(status == 0 && demangled) {
 #ifdef ZTH_OS_MAC
 				log_color(color, "%s%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "",
-					i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i], 
+					i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i],
 					demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr);
 #else
 				log_color(color, "%s%-3zd %s(%s+0x%" PRIxPTR ") [0x%" PRIxPTR "]\n", color >= 0 ? ZTH_DBG_PREFIX : "",
 					i, info.dli_fname, demangled, (uintptr_t)bt()[i] - (uintptr_t)info.dli_saddr, (uintptr_t)bt()[i]);
 #endif
-				
+
 				free(demangled);
 				continue;
 			}
@@ -546,7 +551,7 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 		else
 			log_color(color, "%s%-3zd 0x%0*" PRIxPTR "\n", color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2, (uintptr_t)bt()[i]);
 	}
-	
+
 	if(syms)
 		free(syms);
 
