@@ -2,7 +2,7 @@
 #define __ZTH_PERF_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019  Jochem Rutgers
+ * Copyright (C) 2019-2021  Jochem Rutgers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -101,6 +101,7 @@ namespace zth {
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0)))
 			: t(t), fiber(fiber.id()), type(Log) { if(vasprintf(&str, fmt, args) == -1) str = NULL; }
 
+		// release() is called by PerfFiber (see perf.cpp), not by the dtor of PerfEvent.
 		void release() {
 			switch(type) {
 			case FiberName:
@@ -160,10 +161,12 @@ namespace zth {
 	 * \ingroup zth_api_cpp_perf
 	 */
 	ZTH_EXPORT inline void perf_event(PerfEvent<> const& event) {
-		if(!Config::EnablePerfEvent)
+		if(!Config::EnablePerfEvent || unlikely(!perf_eventBuffer)) {
+			// Release now, as there is no event buffer...
+			PerfEvent<> e(event);
+			e.release();
 			return;
-		if(unlikely(!perf_eventBuffer))
-			return;
+		}
 
 		perf_eventBuffer->push_back(event);
 		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);

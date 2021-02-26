@@ -3,37 +3,58 @@
 
 static sig_atomic_t volatile stop = 0;
 
+static int check(int res) {
+	if(res < 0) {
+		int e = errno;
+		printf("%s\n", zth::err(errno).c_str());
+		errno = e;
+	}
+	return res;
+}
+
 void server() {
 	void* responder = zth_zmq_socket(ZMQ_REP);
 	int rc __attribute__((unused)) = zmq_bind(responder, "inproc://hello");
 	zth_assert(!rc);
 
-	while(!stop) {
-		char buffer [10];
-		if(zmq_recv(responder, buffer, 10, 0) == -1)
-			break;
-		printf("Received Hello\n");
+	while(true) {
+		char buffer[10] = {};
+
+		switch(check(zmq_recv(responder, buffer, sizeof(buffer), 0))) {
+		case 0:
+			printf("Stopping server...\n");
+			check(zmq_send(responder, NULL, 0, 0));
+			// fall-through
+		case -1:
+			zmq_close(responder);
+			return;
+		}
+
+		printf("Received %s\n", buffer);
 		zth::nap(1);          //  Do some 'work'
-		zmq_send(responder, (void*)"World", 5, 0);
+		check(zmq_send(responder, (void*)"World", 5, 0));
 	}
-	
-	zmq_close(responder);
 }
 zth_fiber(server)
 
-void client() {
+void client(int messages) {
 	printf("Connecting to hello world server...\n");
 	void* requester = zth_zmq_socket(ZMQ_REQ);
 	zmq_connect(requester, "inproc://hello");
 
-	for(int request_nbr = 0; request_nbr != 10 && !stop; request_nbr++) {
-		char buffer [10];
-		printf("Sending Hello %d...\n", request_nbr);
-		zmq_send(requester, (void*)"Hello", 5, 0);
-		zmq_recv(requester, buffer, 10, 0);
-		printf("Received World %d\n", request_nbr);
+	while(messages > 0 && !stop) {
+		char buffer[10];
+		printf("Sending Hello %d...\n", messages);
+		check(zmq_send(requester, (void*)"Hello", 5, 0));
+		check(zmq_recv(requester, buffer, sizeof(buffer), 0));
+		printf("Received World %d\n", messages);
+		messages--;
 	}
 
+	// Terminator.
+	printf("Stopping client...\n");
+	check(zmq_send(requester, NULL, 0, 0));
+	check(zmq_recv(requester, NULL, 0, 0));
 	zmq_close(requester);
 }
 zth_fiber(client)
@@ -58,7 +79,14 @@ void main_fiber(int argc, char** argv) {
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 #endif
 
+	int messages = 10;
+	if(argc > 1) {
+		messages = atoi(argv[1]);
+		if(messages == 0)
+			messages = 1;
+	}
+
 	async server();
-	async client();
+	async client(messages);
 }
 

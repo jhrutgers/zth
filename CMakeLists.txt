@@ -23,10 +23,7 @@ if(ZTH_HAVE_LIBZMQ)
 	add_subdirectory(external/libzmq)
 endif()
 
-option(ZTH_BUILD_EXAMPLES "Build examples" ON)
-if(ZTH_BUILD_EXAMPLES)
-	add_subdirectory(examples)
-endif()
+add_subdirectory(version)
 
 set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
 
@@ -70,10 +67,20 @@ endif()
 
 option(ZTH_THREADS "Make libzth thread-aware" ON)
 if(ZTH_THREADS)
-	target_compile_options(libzth PUBLIC -DZTH_THREADS=1 -pthread)
-#	target_link_options(libzth PUBLIC -pthread)
+	target_compile_options(libzth PUBLIC -DZTH_THREADS=1)
 else()
 	target_compile_options(libzth PUBLIC -DZTH_THREADS=0)
+endif()
+
+if(UNIX OR MINGW)
+	# Still compile/link with pthread, as it provides more than threads...
+	set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+	set(THREADS_PREFER_PTHREAD_FLAG ON)
+	if(MINGW)
+		set(THREADS_HAVE_PTHREAD_ARG 1)
+	endif()
+	find_package(Threads REQUIRED)
+	target_link_libraries(libzth PUBLIC Threads::Threads)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -84,6 +91,23 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
 		target_link_libraries(libzth INTERFACE dl)
 	endif()
+endif()
+
+option(ZTH_BUILD_EXAMPLES "Build examples" ON)
+if(ZTH_BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif()
+
+option(ZTH_TESTS "Run the tests" ON)
+if(ZTH_TESTS)
+	enable_testing()
+
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17.0")
+		set(CTEST_OUTPUT_ON_FAILURE 1)
+		list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+	endif()
+
+	add_subdirectory(tests)
 endif()
 
 find_package(Doxygen)

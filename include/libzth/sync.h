@@ -2,7 +2,7 @@
 #define __ZTH_SYNC_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019  Jochem Rutgers
+ * Copyright (C) 2019-2021  Jochem Rutgers
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

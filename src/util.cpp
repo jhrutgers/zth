@@ -1,17 +1,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019  Jochem Rutgers
- * 
+ * Copyright (C) 2019-2021  Jochem Rutgers
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,10 @@
 #include <cstdio>
 #include <cstdarg>
 #include <unistd.h>
+
+#ifdef ZTH_OS_WINDOWS
+#  include <windows.h>
+#endif
 
 using namespace std;
 
@@ -155,7 +159,7 @@ bool log_supports_ansi_colors()
 	static int support = 0;
 	if(likely(support))
 		return support > 0;
-		
+
 	// Win10 supports ANSI, but it should be enabled.
 	// This can be done to set the Console Mode to ENABLE_VIRTUAL_TERMINAL_PROCESSING (0x0004).
 	// However, the application is not compiled for Win10 specifically, so we cannot ask if we are running on Win10,
@@ -163,21 +167,21 @@ bool log_supports_ansi_colors()
 	// Therefore, we just try to set the flag by its number, and check if it succeeds.
 	// If so, we assume cmd will accept ANSI colors.
 	AttachConsole(ATTACH_PARENT_PROCESS);
-	
+
 	DWORD mode = 0;
 	if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &mode))
 		goto nosupport;
 	if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), mode | 0x0004))
 		goto nosupport;
-		
+
 	// Succeeded. We have support. Enable stderr too.
 	if(GetConsoleMode(GetStdHandle(STD_ERROR_HANDLE), &mode))
 		SetConsoleMode(GetStdHandle(STD_ERROR_HANDLE), mode | 0x0004);
-		
+
 	support = 1;
 	return true;
 
-nosupport:	
+nosupport:
 	support = -1;
 	return false;
 #else
@@ -201,7 +205,7 @@ void log_colorv(int color, char const* fmt, va_list args)
 		log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
 
 	logv(fmt, args);
-	
+
 	if(do_color && color > 0)
 		log("\x1b[0m");
 }

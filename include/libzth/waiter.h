@@ -2,7 +2,7 @@
 #define __ZTH_WAITER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019  Jochem Rutgers
+ * Copyright (C) 2019-2021  Jochem Rutgers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -221,7 +221,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	template <typename C> void waitUntil(C& that, void (C::*f)(), TimeInterval const& pollInterval) {
+	template <typename C> void waitUntil(C& that, bool (C::*f)(), TimeInterval const& pollInterval) {
 		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
 
 	void scheduleTask(TimedWaitable& w);
