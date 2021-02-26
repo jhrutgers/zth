@@ -8,11 +8,10 @@ if(WIN32 AND ZTH_HAVE_LIBZMQ)
 		VERBATIM
 	)
 
-	add_custom_target(test-prepare
+	add_custom_target(test-prepare ALL
 		DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libzmq.timestamp
 		COMMENT "Prepare tests"
 	)
-
 endif()
 
 macro(zth_test_example EXAMPLE)
