@@ -566,8 +566,10 @@ static int context_create_impl(Context* context, stack_t* stack) {
 		// Stackless fiber only saves current context.
 		if((context->fiber = GetCurrentFiber()))
 			return 0;
-	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context)))
+	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
+		zth_dbg(context, "[%s] Created fiber %p", currentWorker().id_str(), context->fiber);
 		return 0;
+	}
 
 	if((res = -(int)GetLastError()))
 		return res;
@@ -579,7 +581,11 @@ static void context_destroy_impl(Context* context) {
 	if(!context->fiber)
 		return;
 
-	DeleteFiber(context->fiber);
+	// If the current fiber is the one to delete, it is probably not created by us.
+	if(likely(context->fiber != GetCurrentFiber())) {
+		zth_dbg(context, "[%s] Delete fiber %p", currentWorker().id_str(), context->fiber);
+		DeleteFiber(context->fiber);
+	}
 	context->fiber = NULL;
 }
 
