@@ -10,6 +10,9 @@ list(GET ZTH_VERSION_LIST 2 ZTH_VERSION_PATCH)
 
 string(REGEX REPLACE "^[0-9.]+(.*)$" "\\1" ZTH_VERSION_SUFFIX ${ZTH_VERSION})
 
+# Force reconfigure when version.txt is changed.
+configure_file(version.txt version.txt COPYONLY)
+
 configure_file(
 	${PROJECT_SOURCE_DIR}/include/libzth/version.h.in
 	${PROJECT_SOURCE_DIR}/include/libzth/version.h
