@@ -98,6 +98,18 @@ if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
+option(ZTH_TESTS "Run the tests" ON)
+if(ZTH_TESTS)
+	enable_testing()
+
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17.0")
+		set(CTEST_OUTPUT_ON_FAILURE 1)
+		list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+	endif()
+
+	add_subdirectory(tests)
+endif()
+
 find_package(Doxygen)
 option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 

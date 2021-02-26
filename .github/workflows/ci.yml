@@ -17,8 +17,19 @@ jobs:
         uses: actions/checkout@v2
       - name: bootstrap
         run: scripts/bootstrap.sh
-      - name: build
-        run: scripts/build.sh
+      - name: build Debug
+        run: scripts/build.sh Debug
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
+      - name: build Release
+        run: scripts/build.sh Release
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
+      - name: cppcheck
+        run: make cppcheck
+        working-directory: build
 
       # If everything is OK, publish documentation
       - name: deploy
@@ -35,8 +46,16 @@ jobs:
         uses: actions/checkout@v2
       - name: bootstrap
         run: scripts\bootstrap.cmd
-      - name: build
-        run: scripts\build.cmd
+      - name: build Debug
+        run: scripts\build.cmd Debug
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
+      - name: build Release
+        run: scripts\build.cmd Release
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
 
   build-mac:
     runs-on: macos-latest
@@ -45,6 +64,14 @@ jobs:
         uses: actions/checkout@v2
       - name: bootstrap
         run: scripts/bootstrap.sh
-      - name: build
-        run: scripts/build.sh
+      - name: build Debug
+        run: scripts/build.sh Debug
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
+      - name: build Release
+        run: scripts/build.sh Release
+      - name: test
+        run: cmake --build . -- test
+        working-directory: build
 

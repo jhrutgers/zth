@@ -69,6 +69,7 @@ Configure Zth options as required, like this:
 	set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
 	set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
 	set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
+	set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
 	add_subdirectory(zth)
 	# Override search path to your own zth_config.h.
 	target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
