@@ -34,7 +34,7 @@
 #  define ZTH_HAVE_POLLER
 #endif
 
-#ifdef ZTH_HAVE_POLLER
+#if defined(ZTH_HAVE_POLLER)
 
 #  ifdef ZTH_HAVE_POLL
 #    include <poll.h>
@@ -51,7 +51,7 @@
 	typedef struct pollfd zth_pollfd_t;
 #  endif
 
-#  if defined(__cplusplus) && !defined(ZTH_OS_WINDOWS)
+#  if defined(__cplusplus) && defined(ZTH_HAVE_POLLER) && !defined(ZTH_OS_WINDOWS)
 namespace zth { namespace io {
 
 	ZTH_EXPORT ssize_t read(int fd, void* buf, size_t count);
@@ -59,9 +59,7 @@ namespace zth { namespace io {
 	ZTH_EXPORT int poll(zth_pollfd_t *fds, int nfds, int timeout);
 
 } } // namespace
-#  endif // __cplusplus
 
-#  ifdef __cplusplus
 /*!
  * \copydoc zth::io::read()
  * \details This is a C-wrapper for zth::io::read().

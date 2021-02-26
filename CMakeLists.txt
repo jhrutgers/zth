@@ -25,11 +25,6 @@ endif()
 
 add_subdirectory(version)
 
-option(ZTH_BUILD_EXAMPLES "Build examples" ON)
-if(ZTH_BUILD_EXAMPLES)
-	add_subdirectory(examples)
-endif()
-
 set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
 
 file(GLOB_RECURSE sources src/*.cpp)
@@ -79,7 +74,11 @@ endif()
 
 if(UNIX OR MINGW)
 	# Still compile/link with pthread, as it provides more than threads...
+	set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 	set(THREADS_PREFER_PTHREAD_FLAG ON)
+	if(MINGW)
+		set(THREADS_HAVE_PTHREAD_ARG 1)
+	endif()
 	find_package(Threads REQUIRED)
 	target_link_libraries(libzth PUBLIC Threads::Threads)
 endif()
@@ -92,6 +91,11 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
 		target_link_libraries(libzth INTERFACE dl)
 	endif()
+endif()
+
+option(ZTH_BUILD_EXAMPLES "Build examples" ON)
+if(ZTH_BUILD_EXAMPLES)
+	add_subdirectory(examples)
 endif()
 
 find_package(Doxygen)
