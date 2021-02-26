@@ -23,6 +23,8 @@ if(ZTH_HAVE_LIBZMQ)
 	add_subdirectory(external/libzmq)
 endif()
 
+add_subdirectory(version)
+
 option(ZTH_BUILD_EXAMPLES "Build examples" ON)
 if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
