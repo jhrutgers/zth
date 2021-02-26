@@ -4,7 +4,7 @@ var searchData=
   ['safe_5fptr_441',['safe_ptr',['../classzth_1_1_singleton_1_1safe__ptr.html',1,'zth::Singleton&lt; T &gt;::safe_ptr'],['../classzth_1_1_singleton_1_1safe__ptr.html#acc2e3b085a4ce94fb7cfa35201baebe6',1,'zth::Singleton::safe_ptr::safe_ptr()']]],
   ['schedule_442',['schedule',['../classzth_1_1_worker.html#a0f2f40f96b1759904b1b7321c18d129b',1,'zth::Worker']]],
   ['scheduletask_443',['scheduleTask',['../classzth_1_1_waiter.html#a2cfdf686ced38d77d1fdb210359b0d14',1,'zth::Waiter::scheduleTask()'],['../namespacezth.html#a692cd6a88a74b1b98d863277624cb93f',1,'zth::scheduleTask()']]],
-  ['select_444',['select',['../io_8h.html#a2b406456012f9f74aeb33de6f3df053c',1,'select():&#160;io.h'],['../group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4',1,'zth::io::select()']]],
+  ['select_444',['select',['../group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4',1,'zth::io']]],
   ['semaphore_445',['Semaphore',['../classzth_1_1_semaphore.html',1,'zth::Semaphore'],['../classzth_1_1_semaphore.html#a045bf9579dc6f83ed6f89f156192be61',1,'zth::Semaphore::Semaphore()']]],
   ['sequence_446',['Sequence',['../structzth_1_1_sequence.html',1,'zth']]],
   ['set_447',['set',['../classzth_1_1_future.html#ad8d614f9349c2f44c304071d6a107819',1,'zth::Future::set()'],['../classzth_1_1_future_3_01void_01_4.html#a9f565aae2f369e0bee006526f5dad298',1,'zth::Future&lt; void &gt;::set()']]],

@@ -133,9 +133,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaccda3c092e2dd2870ca6005999cf8721"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
 <tr class="memitem:gaccda3c092e2dd2870ca6005999cf8721"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721">zth::waitUntil</a> (F f, <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval)</td></tr>
 <tr class="separator:gaccda3c092e2dd2870ca6005999cf8721"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga341b69cc04d2c640e7ff42c6828919e8"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:ga341b69cc04d2c640e7ff42c6828919e8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga341b69cc04d2c640e7ff42c6828919e8">zth::waitUntil</a> (C &amp;that, void(C::*f)(), <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval)</td></tr>
-<tr class="separator:ga341b69cc04d2c640e7ff42c6828919e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga663fe4d8f1bbd9e3a5f39890a3b7474c">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval)</td></tr>
+<tr class="separator:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0c69f207354e0928b738da3388bdd913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;sleepUntil)</td></tr>
 <tr class="separator:ga0c69f207354e0928b738da3388bdd913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga786a7557ff189b1f1e7552a37f772665"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665">zth::nap</a> (<a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;sleepFor)</td></tr>
@@ -619,8 +619,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga341b69cc04d2c640e7ff42c6828919e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga341b69cc04d2c640e7ff42c6828919e8">&#9670;&nbsp;</a></span>waitUntil() <span class="overload">[1/3]</span></h2>
+<a id="ga663fe4d8f1bbd9e3a5f39890a3b7474c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga663fe4d8f1bbd9e3a5f39890a3b7474c">&#9670;&nbsp;</a></span>waitUntil() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -636,7 +636,7 @@ template&lt;typename C &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void(C::*)()&#160;</td>
+          <td class="paramtype">bool(C::*)()&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>

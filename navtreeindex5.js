@@ -1,10 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"structzth_1_1set_name.html":[1,0,2,1],
-"structzth_1_1set_name.html#a6d9cff6b0a22bc28df088f5180da5598":[1,0,2,1,1],
-"structzth_1_1set_name.html#a79250edd78c7253774b3be424aa7fff4":[1,0,2,1,0],
-"structzth_1_1set_name.html#ade1356db18fe613d22e0433f15d50c1b":[1,0,2,1,3],
-"structzth_1_1set_name.html#afa0d43b7c5041c3bd431b5d1d4a06947":[1,0,2,1,2],
 "structzth_1_1set_stack_size.html":[1,0,2,0],
 "structzth_1_1set_stack_size.html#a0232a01f28e5740267eabe3b9b4afd12":[1,0,2,0,1],
 "structzth_1_1set_stack_size.html#a107c7ab35b9b5fa9124b798dde955f05":[1,0,2,0,0],
@@ -139,7 +134,7 @@ var NAVTREEINDEX5 =
 "waiter_8h.html#ab1c532446408c98559d4aaaeeeb99820":[4,0,1,0,15,8],
 "waiter_8h.html#ab6f53b89c7a4cc5e8349f7c778d85168":[4,0,1,0,15,11],
 "waiter_8h.html#ga0c69f207354e0928b738da3388bdd913":[4,0,1,0,15,14],
-"waiter_8h.html#ga341b69cc04d2c640e7ff42c6828919e8":[4,0,1,0,15,18],
+"waiter_8h.html#ga663fe4d8f1bbd9e3a5f39890a3b7474c":[4,0,1,0,15,18],
 "waiter_8h.html#ga786a7557ff189b1f1e7552a37f772665":[4,0,1,0,15,13],
 "waiter_8h.html#gabb282193c9fb32207257bb6474436152":[4,0,1,0,15,12],
 "waiter_8h.html#gabd067566b5f56fb4aa9186880f568d0f":[4,0,1,0,15,20],
