@@ -649,539 +649,545 @@ $(document).ready(function(){initNavTree('context_8cpp_source.html',''); initRes
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;        <span class="comment">// Stackless fiber only saves current context.</span></div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;        <span class="keywordflow">if</span>((context-&gt;fiber = GetCurrentFiber()))</div>
 <div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span>((context-&gt;fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&amp;<a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>, (LPVOID)context)))</div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160; </div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    <span class="keywordflow">if</span>((res = -(<span class="keywordtype">int</span>)GetLastError()))</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;        <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;        <span class="keywordflow">return</span> EINVAL;</div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;}</div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160; </div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a>(Context* context) {</div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;    <span class="keywordflow">if</span>(!context-&gt;fiber)</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160; </div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;    DeleteFiber(context-&gt;fiber);</div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;    context-&gt;fiber = NULL;</div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;}</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160; </div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_switch_impl(Context* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(from), Context* to) {</div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(to-&gt;fiber &amp;&amp; to-&gt;fiber != GetCurrentFiber());</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;    SwitchToFiber(to-&gt;fiber);</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;}</div>
-<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160; </div>
-<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160; </div>
-<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160; </div>
-<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160; </div>
-<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;<span class="comment">// setjmp/longjmp fiddling method</span></div>
-<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160; </div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_SJLJ</span></div>
-<div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;<span class="preprocessor">#  define context_init_impl()   0</span></div>
-<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;<span class="preprocessor">#  define context_deinit_impl()</span></div>
-<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;<span class="preprocessor">#  define context_destroy_impl(...)</span></div>
-<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160; </div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;<span class="preprocessor">#ifdef ZTH_ARCH_ARM</span></div>
-<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;__attribute__((naked)) <span class="keyword">static</span> <span class="keywordtype">void</span> context_trampoline() {</div>
-<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
-<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;        <span class="stringliteral">&quot;ldr r0, [sp]\n&quot;</span></div>
-<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;        <span class="comment">// Terminate stack frame list here, only for debugging purposes.</span></div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;        <span class="stringliteral">&quot;mov &quot;</span> REG_FP <span class="stringliteral">&quot;, #0\n&quot;</span></div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;        <span class="stringliteral">&quot;mov lr, #0\n&quot;</span></div>
-<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;        <span class="stringliteral">&quot;mov &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;        <span class="stringliteral">&quot;bl context_entry\n&quot;</span></div>
-<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;        );</div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;}</div>
-<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160; </div>
-<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_create_impl(Context* context, stack_t* stack) {</div>
-<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!stack-&gt;ss_sp))</div>
-<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;        <span class="comment">// Stackless fiber only saves current context; nothing to do.</span></div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160; </div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;    setjmp(context-&gt;env);</div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;<span class="preprocessor">#ifdef ZTH_ARCH_ARM</span></div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="comment">// Do some fiddling with the jmp_buf...</span></div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160; </div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;    <span class="comment">// We only checked against newlib 2.4.0, 3.1.0, and 3.3.0.</span></div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;<span class="preprocessor">#  if NEWLIB_VERSION &lt; 20400L || NEWLIB_VERSION &gt; 30300L</span></div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;<span class="preprocessor">#    error Unsupported newlib version.</span></div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160; </div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;    <span class="keywordtype">void</span>** sp = (<span class="keywordtype">void</span>**)((uintptr_t)((<span class="keywordtype">char</span>*)stack-&gt;ss_sp + stack-&gt;ss_size - <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*)) &amp; ~(uintptr_t)7); <span class="comment">// sp (must be dword aligned)</span></div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;    *sp = context; <span class="comment">// push context argument on the new stack</span></div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160; </div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    <span class="keywordtype">size_t</span> sp_offset =</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;<span class="preprocessor">#  if (__ARM_ARCH_ISA_THUMB == 1 &amp;&amp; !__ARM_ARCH_ISA_ARM) || defined(__thumb2__)</span></div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;        8;</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;<span class="preprocessor">#  else</span></div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;        9;</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160; </div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;    context-&gt;env[sp_offset] = (intptr_t)sp;</div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;    context-&gt;env[sp_offset + 1] = (intptr_t)&amp;context_trampoline; <span class="comment">// lr</span></div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;<span class="preprocessor">#  error Unsupported architecture for setjmp/longjmp method.</span></div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;}</div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160; </div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_switch_impl(Context* from, Context* to) {</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;<span class="preprocessor">#if defined(__ARM_PCS_VFP) &amp;&amp; !defined(__SOFTFP__)</span></div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;    <span class="comment">// newlib does not do saving/restoring of FPU registers.</span></div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;    <span class="comment">// We have to do it here ourselves.</span></div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;    __asm__ <span class="keyword">volatile</span> (<span class="stringliteral">&quot;vpush {d8-d15}&quot;</span>);</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;<span class="preprocessor">    #define arm_fpu_pop() __asm__ volatile (&quot;vpop {d8-d15}&quot;)</span></div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;<span class="preprocessor">    #define arm_fpu_pop() do{}while(0)</span></div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160; </div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;    <span class="comment">// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.</span></div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;    <span class="keywordflow">if</span>(setjmp(from-&gt;env) == 0)</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;    {</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_USE_PSP</span></div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;        <span class="comment">// Use the PSP for fibers and the MSP for the worker.</span></div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;        <span class="comment">// So, if there is no stack in the Context, assume it is a worker, running</span></div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;        <span class="comment">// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.</span></div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!from-&gt;stack || !to-&gt;stack)) {</div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;            <span class="keywordtype">int</span> control;</div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;            __asm__ (<span class="stringliteral">&quot;mrs %0, control\n&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span>(control));</div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160; </div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;            <span class="keywordflow">if</span>(to-&gt;stack)</div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;                control |= 2; <span class="comment">// set SPSEL to PSP</span></div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;                control &amp;= ~2; <span class="comment">// set SPSEL to MSR</span></div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160; </div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;            __asm__ <span class="keyword">volatile</span> (</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;                <span class="stringliteral">&quot;msr control, %1\n&quot;</span></div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;                <span class="stringliteral">&quot;isb\n&quot;</span></div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;                <span class="stringliteral">&quot;mov r0, %0\n&quot;</span></div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;                <span class="stringliteral">&quot;movs r1, #1\n&quot;</span></div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;                <span class="stringliteral">&quot;b longjmp\n&quot;</span></div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;                : : <span class="stringliteral">&quot;r&quot;</span>(to-&gt;env), <span class="stringliteral">&quot;r&quot;</span>(control) : <span class="stringliteral">&quot;r0&quot;</span>, <span class="stringliteral">&quot;r1&quot;</span>, <span class="stringliteral">&quot;memory&quot;</span></div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;            );</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        }</div>
-<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        longjmp(to-&gt;env, 1);</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;    }</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160; </div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;    arm_fpu_pop();</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;<span class="preprocessor">#undef arm_fpu_pop</span></div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;}</div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160; </div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_SJLJ</span></div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span>((context-&gt;fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&amp;<a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>, (LPVOID)context))) {</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Created fiber %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context-&gt;fiber);</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    }</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160; </div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    <span class="keywordflow">if</span>((res = -(<span class="keywordtype">int</span>)GetLastError()))</div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;        <span class="keywordflow">return</span> EINVAL;</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;}</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160; </div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a>(Context* context) {</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;    <span class="keywordflow">if</span>(!context-&gt;fiber)</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160; </div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;    <span class="comment">// If the current fiber is the one to delete, it is probably not created by us.</span></div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#aa0672ea7123854cc5f51902a06c473fb">likely</a>(context-&gt;fiber != GetCurrentFiber())) {</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Delete fiber %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context-&gt;fiber);</div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;        DeleteFiber(context-&gt;fiber);</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;    }</div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;    context-&gt;fiber = NULL;</div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;}</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160; </div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_switch_impl(Context* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(from), Context* to) {</div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(to-&gt;fiber &amp;&amp; to-&gt;fiber != GetCurrentFiber());</div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;    SwitchToFiber(to-&gt;fiber);</div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;}</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160; </div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_WINFIBER</span></div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160; </div>
+<div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160; </div>
+<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160; </div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;<span class="comment">// setjmp/longjmp fiddling method</span></div>
+<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160; </div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_SJLJ</span></div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;<span class="preprocessor">#  define context_init_impl()   0</span></div>
+<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;<span class="preprocessor">#  define context_deinit_impl()</span></div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;<span class="preprocessor">#  define context_destroy_impl(...)</span></div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160; </div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;<span class="preprocessor">#ifdef ZTH_ARCH_ARM</span></div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;__attribute__((naked)) <span class="keyword">static</span> <span class="keywordtype">void</span> context_trampoline() {</div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;        <span class="stringliteral">&quot;ldr r0, [sp]\n&quot;</span></div>
+<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;        <span class="comment">// Terminate stack frame list here, only for debugging purposes.</span></div>
+<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;        <span class="stringliteral">&quot;mov &quot;</span> REG_FP <span class="stringliteral">&quot;, #0\n&quot;</span></div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;        <span class="stringliteral">&quot;mov lr, #0\n&quot;</span></div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;        <span class="stringliteral">&quot;mov &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;        <span class="stringliteral">&quot;bl context_entry\n&quot;</span></div>
+<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;        );</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;}</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160; </div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_create_impl(Context* context, stack_t* stack) {</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!stack-&gt;ss_sp))</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;        <span class="comment">// Stackless fiber only saves current context; nothing to do.</span></div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160; </div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;    setjmp(context-&gt;env);</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;<span class="preprocessor">#ifdef ZTH_ARCH_ARM</span></div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;    <span class="comment">// Do some fiddling with the jmp_buf...</span></div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160; </div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;    <span class="comment">// We only checked against newlib 2.4.0, 3.1.0, and 3.3.0.</span></div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;<span class="preprocessor">#  if NEWLIB_VERSION &lt; 20400L || NEWLIB_VERSION &gt; 30300L</span></div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;<span class="preprocessor">#    error Unsupported newlib version.</span></div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;<span class="preprocessor">#  endif</span></div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160; </div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;    <span class="keywordtype">void</span>** sp = (<span class="keywordtype">void</span>**)((uintptr_t)((<span class="keywordtype">char</span>*)stack-&gt;ss_sp + stack-&gt;ss_size - <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*)) &amp; ~(uintptr_t)7); <span class="comment">// sp (must be dword aligned)</span></div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    *sp = context; <span class="comment">// push context argument on the new stack</span></div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160; </div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;    <span class="keywordtype">size_t</span> sp_offset =</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;<span class="preprocessor">#  if (__ARM_ARCH_ISA_THUMB == 1 &amp;&amp; !__ARM_ARCH_ISA_ARM) || defined(__thumb2__)</span></div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;        8;</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;<span class="preprocessor">#  else</span></div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;        9;</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;<span class="preprocessor">#  endif</span></div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160; </div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;    context-&gt;env[sp_offset] = (intptr_t)sp;</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;    context-&gt;env[sp_offset + 1] = (intptr_t)&amp;context_trampoline; <span class="comment">// lr</span></div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;<span class="preprocessor">#  error Unsupported architecture for setjmp/longjmp method.</span></div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;}</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160; </div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_switch_impl(Context* from, Context* to) {</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;<span class="preprocessor">#if defined(__ARM_PCS_VFP) &amp;&amp; !defined(__SOFTFP__)</span></div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;    <span class="comment">// newlib does not do saving/restoring of FPU registers.</span></div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;    <span class="comment">// We have to do it here ourselves.</span></div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;    __asm__ <span class="keyword">volatile</span> (<span class="stringliteral">&quot;vpush {d8-d15}&quot;</span>);</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;<span class="preprocessor">    #define arm_fpu_pop() __asm__ volatile (&quot;vpop {d8-d15}&quot;)</span></div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;<span class="preprocessor">    #define arm_fpu_pop() do{}while(0)</span></div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160; </div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;    <span class="comment">// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.</span></div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;    <span class="keywordflow">if</span>(setjmp(from-&gt;env) == 0)</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;    {</div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_USE_PSP</span></div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;        <span class="comment">// Use the PSP for fibers and the MSP for the worker.</span></div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;        <span class="comment">// So, if there is no stack in the Context, assume it is a worker, running</span></div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;        <span class="comment">// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.</span></div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!from-&gt;stack || !to-&gt;stack)) {</div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;            <span class="keywordtype">int</span> control;</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;            __asm__ (<span class="stringliteral">&quot;mrs %0, control\n&quot;</span> : <span class="stringliteral">&quot;=r&quot;</span>(control));</div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160; </div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;            <span class="keywordflow">if</span>(to-&gt;stack)</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;                control |= 2; <span class="comment">// set SPSEL to PSP</span></div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;                control &amp;= ~2; <span class="comment">// set SPSEL to MSR</span></div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160; </div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;            __asm__ <span class="keyword">volatile</span> (</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;                <span class="stringliteral">&quot;msr control, %1\n&quot;</span></div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                <span class="stringliteral">&quot;isb\n&quot;</span></div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;                <span class="stringliteral">&quot;mov r0, %0\n&quot;</span></div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;                <span class="stringliteral">&quot;movs r1, #1\n&quot;</span></div>
+<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;                <span class="stringliteral">&quot;b longjmp\n&quot;</span></div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;                : : <span class="stringliteral">&quot;r&quot;</span>(to-&gt;env), <span class="stringliteral">&quot;r&quot;</span>(control) : <span class="stringliteral">&quot;r0&quot;</span>, <span class="stringliteral">&quot;r1&quot;</span>, <span class="stringliteral">&quot;memory&quot;</span></div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;            );</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        }</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;        longjmp(to-&gt;env, 1);</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;    }</div>
 <div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160; </div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160; </div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160; </div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;<span class="comment">// Stack allocation</span></div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160; </div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;<span class="comment">// Stack is implicit by CreateFiber().</span></div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;<span class="preprocessor">#  define context_deletestack(...)</span></div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_newstack(Context* context, stack_t* stack) {</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;    stack-&gt;haveStack = context-&gt;stackSize &gt; 0;</div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;}</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;<span class="preprocessor">#else // !ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_deletestack(Context* context) {</div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;    <span class="keywordflow">if</span>(context-&gt;stack) {</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;<span class="preprocessor">#ifdef ZTH_USE_VALGRIND</span></div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;        VALGRIND_STACK_DEREGISTER(context-&gt;valgrind_stack_id);</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;        munmap(context-&gt;stack, context-&gt;stackSize);</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        free(context-&gt;stack);</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;        context-&gt;stack = NULL;</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;    }</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;}</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160; </div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_newstack(Context* context, stack_t* stack) {</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;    <span class="keywordtype">size_t</span> <span class="keyword">const</span> pagesize =</div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;        getpagesize();</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;<span class="preprocessor">#elif defined(ZTH_ARM_HAVE_MPU)</span></div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;        Config::EnableStackGuard ? (size_t)ZTH_ARM_STACK_GUARD_SIZE : <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*);</div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*);</div>
-<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(__builtin_popcount((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)pagesize) == 1);</div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;    context-&gt;stackSize = (context-&gt;stackSize</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;<span class="preprocessor">#ifndef ZTH_STACK_SWITCH</span></div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;        <span class="comment">// If using stack switch, signals and interrupts are not executed on the fiber stack.</span></div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        + MINSIGSTKSZ</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;    arm_fpu_pop();</div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;<span class="preprocessor">#undef arm_fpu_pop</span></div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;}</div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160; </div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_SJLJ</span></div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160; </div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160; </div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160; </div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;<span class="comment">// Stack allocation</span></div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160; </div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;<span class="comment">// Stack is implicit by CreateFiber().</span></div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;<span class="preprocessor">#  define context_deletestack(...)</span></div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_newstack(Context* context, stack_t* stack) {</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;    stack-&gt;haveStack = context-&gt;stackSize &gt; 0;</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;}</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;<span class="preprocessor">#else // !ZTH_CONTEXT_WINFIBER</span></div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> context_deletestack(Context* context) {</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;    <span class="keywordflow">if</span>(context-&gt;stack) {</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;<span class="preprocessor">#ifdef ZTH_USE_VALGRIND</span></div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;        VALGRIND_STACK_DEREGISTER(context-&gt;valgrind_stack_id);</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;        munmap(context-&gt;stack, context-&gt;stackSize);</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;        free(context-&gt;stack);</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;        context-&gt;stack = NULL;</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;    }</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;}</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160; </div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> context_newstack(Context* context, stack_t* stack) {</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;    <span class="keywordtype">size_t</span> <span class="keyword">const</span> pagesize =</div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        getpagesize();</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;<span class="preprocessor">#elif defined(ZTH_ARM_HAVE_MPU)</span></div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;        Config::EnableStackGuard ? (size_t)ZTH_ARM_STACK_GUARD_SIZE : <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*);</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        <span class="keyword">sizeof</span>(<span class="keywordtype">void</span>*);</div>
 <div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;        + 3 * pagesize - 1) &amp; ~(pagesize - 1);</div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160; </div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160; </div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;    <span class="comment">// Get a new stack.</span></div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    <span class="keywordtype">size_t</span> stack_watermarked_size = 0;</div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160; </div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
-<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((context-&gt;stack = mmap(NULL, context-&gt;stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | <a class="code" href="context_8cpp.html#a06c706c6cc07f13a3d0e1252e923ec69">MAP_STACK</a>, -1, 0)) == MAP_FAILED))</div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;#<span class="keywordflow">else</span></div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((context-&gt;stack = malloc(context-&gt;stackSize)) == NULL))</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;#endif</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;    {</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;        res = errno;</div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;        context-&gt;stack = NULL;</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;        <span class="keywordflow">goto</span> rollback;</div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;    }</div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160; </div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard) {</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;        <span class="comment">// Exclude the pages at both sides of the stack.</span></div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;        context-&gt;stack_watermarked = stack-&gt;ss_sp = (<span class="keywordtype">char</span>*)context-&gt;stack + pagesize;</div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;        stack_watermarked_size = stack-&gt;ss_size = context-&gt;stackSize - 2 * pagesize;</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;    } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;<span class="preprocessor">#elif defined(ZTH_ARM_HAVE_MPU)</span></div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(__builtin_popcount((<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)pagesize) == 1);</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    context-&gt;stackSize = (context-&gt;stackSize</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;<span class="preprocessor">#ifndef ZTH_STACK_SWITCH</span></div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;        <span class="comment">// If using stack switch, signals and interrupts are not executed on the fiber stack.</span></div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;        + MINSIGSTKSZ</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        + 3 * pagesize - 1) &amp; ~(pagesize - 1);</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160; </div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160; </div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;    <span class="comment">// Get a new stack.</span></div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;    <span class="keywordtype">size_t</span> stack_watermarked_size = 0;</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160; </div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((context-&gt;stack = mmap(NULL, context-&gt;stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | <a class="code" href="context_8cpp.html#a06c706c6cc07f13a3d0e1252e923ec69">MAP_STACK</a>, -1, 0)) == MAP_FAILED))</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;#<span class="keywordflow">else</span></div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((context-&gt;stack = malloc(context-&gt;stackSize)) == NULL))</div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;#endif</div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;    {</div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;        res = errno;</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;        context-&gt;stack = NULL;</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;        <span class="keywordflow">goto</span> rollback;</div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;    }</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160; </div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
 <div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard) {</div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;        <span class="comment">// Stack grows down, exclude the page at the end (lowest address).</span></div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;        <span class="comment">// The page must be aligned to its size.</span></div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;        uintptr_t stackEnd = ((uintptr_t)context-&gt;stack + 2 * pagesize - 1) &amp; ~(pagesize - 1);</div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;        stack-&gt;ss_sp = (<span class="keywordtype">char</span>*)stackEnd;</div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;        stack-&gt;ss_size = context-&gt;stackSize - (stackEnd - (uintptr_t)context-&gt;stack);</div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;        <span class="comment">/* context-&gt;stack_watermarked = */</span> context-&gt;guard = (<span class="keywordtype">void</span>*)(stackEnd - ZTH_ARM_STACK_GUARD_SIZE);</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;        stack_watermarked_size = stack-&gt;ss_size + ZTH_ARM_STACK_GUARD_SIZE;</div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;    } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;    {</div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;        context-&gt;stack_watermarked = stack-&gt;ss_sp = context-&gt;stack;</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;        stack_watermarked_size = stack-&gt;ss_size = context-&gt;stackSize;</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;    }</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;    stack-&gt;ss_flags = 0;</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackWaterMark)</div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;        <a class="code" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">stack_watermark_init</a>(context-&gt;stack_watermarked, stack_watermarked_size);</div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;        context-&gt;stack_watermarked = NULL;</div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160; </div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;<span class="preprocessor">#ifdef ZTH_USE_VALGRIND</span></div>
-<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;    context-&gt;valgrind_stack_id = VALGRIND_STACK_REGISTER(stack-&gt;ss_sp, (<span class="keywordtype">char</span>*)stack-&gt;ss_sp + stack-&gt;ss_size - 1);</div>
-<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160; </div>
-<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;    <span class="keywordflow">if</span>(RUNNING_ON_VALGRIND)</div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Stack of context %p has Valgrind id %u&quot;</span>,</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;            <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context, context-&gt;valgrind_stack_id);</div>
-<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160; </div>
-<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
-<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard) {</div>
-<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;        <span class="comment">// Guard both ends of the stack.</span></div>
-<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(</div>
-<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;            mprotect(context-&gt;stack, pagesize, PROT_NONE) ||</div>
-<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;            mprotect((<span class="keywordtype">char</span>*)context-&gt;stack + context-&gt;stackSize - pagesize, pagesize, PROT_NONE)))</div>
-<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;        {</div>
-<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;            res = errno;</div>
-<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;            <span class="keywordflow">goto</span> rollback_mmap;</div>
-<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;        }</div>
-<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;    }</div>
-<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160; </div>
-<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160; </div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;rollback_mmap:</div>
-<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;    __attribute__((unused));</div>
-<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;    context_deletestack(context);</div>
-<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;rollback:</div>
-<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;    <span class="keywordflow">return</span> res ? res : EINVAL;</div>
-<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;}</div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;<span class="preprocessor">#endif // !ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160; </div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160; </div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160; </div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160; </div>
-<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;<span class="comment">// Common functions</span></div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;        <span class="comment">// Exclude the pages at both sides of the stack.</span></div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;        context-&gt;stack_watermarked = stack-&gt;ss_sp = (<span class="keywordtype">char</span>*)context-&gt;stack + pagesize;</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;        stack_watermarked_size = stack-&gt;ss_size = context-&gt;stackSize - 2 * pagesize;</div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;    } <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;<span class="preprocessor">#elif defined(ZTH_ARM_HAVE_MPU)</span></div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard) {</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;        <span class="comment">// Stack grows down, exclude the page at the end (lowest address).</span></div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;        <span class="comment">// The page must be aligned to its size.</span></div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;        uintptr_t stackEnd = ((uintptr_t)context-&gt;stack + 2 * pagesize - 1) &amp; ~(pagesize - 1);</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;        stack-&gt;ss_sp = (<span class="keywordtype">char</span>*)stackEnd;</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;        stack-&gt;ss_size = context-&gt;stackSize - (stackEnd - (uintptr_t)context-&gt;stack);</div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;        <span class="comment">/* context-&gt;stack_watermarked = */</span> context-&gt;guard = (<span class="keywordtype">void</span>*)(stackEnd - ZTH_ARM_STACK_GUARD_SIZE);</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;        stack_watermarked_size = stack-&gt;ss_size + ZTH_ARM_STACK_GUARD_SIZE;</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;    } <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;    {</div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;        context-&gt;stack_watermarked = stack-&gt;ss_sp = context-&gt;stack;</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;        stack_watermarked_size = stack-&gt;ss_size = context-&gt;stackSize;</div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;    }</div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;    stack-&gt;ss_flags = 0;</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160; </div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackWaterMark)</div>
+<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;        <a class="code" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">stack_watermark_init</a>(context-&gt;stack_watermarked, stack_watermarked_size);</div>
+<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;        context-&gt;stack_watermarked = NULL;</div>
+<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160; </div>
+<div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160;<span class="preprocessor">#ifdef ZTH_USE_VALGRIND</span></div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;    context-&gt;valgrind_stack_id = VALGRIND_STACK_REGISTER(stack-&gt;ss_sp, (<span class="keywordtype">char</span>*)stack-&gt;ss_sp + stack-&gt;ss_size - 1);</div>
+<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160; </div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;    <span class="keywordflow">if</span>(RUNNING_ON_VALGRIND)</div>
+<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Stack of context %p has Valgrind id %u&quot;</span>,</div>
+<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;            <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context, context-&gt;valgrind_stack_id);</div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160; </div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;<span class="preprocessor">#ifdef ZTH_HAVE_MMAN</span></div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard) {</div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;        <span class="comment">// Guard both ends of the stack.</span></div>
+<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(</div>
+<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;            mprotect(context-&gt;stack, pagesize, PROT_NONE) ||</div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;            mprotect((<span class="keywordtype">char</span>*)context-&gt;stack + context-&gt;stackSize - pagesize, pagesize, PROT_NONE)))</div>
+<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;        {</div>
+<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;            res = errno;</div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;            <span class="keywordflow">goto</span> rollback_mmap;</div>
+<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;        }</div>
+<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;    }</div>
+<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160; </div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160; </div>
+<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;rollback_mmap:</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;    __attribute__((unused));</div>
+<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;    context_deletestack(context);</div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;rollback:</div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;    <span class="keywordflow">return</span> res ? res : EINVAL;</div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;}</div>
+<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;<span class="preprocessor">#endif // !ZTH_CONTEXT_WINFIBER</span></div>
 <div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160; </div>
-<div class="line"><a name="l00819"></a><span class="lineno"><a class="line" href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">  819</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">context_init</a>() {</div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Initialize&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str());</div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="context_8cpp.html#afabd1c7a0ae6bd251aa3c27bd6d5c5ed">context_init_impl</a>();</div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;}</div>
-<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160; </div>
-<div class="line"><a name="l00824"></a><span class="lineno"><a class="line" href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">  824</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">context_deinit</a>() {</div>
-<div class="line"><a name="l00825"></a><span class="lineno">  825</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Deinit&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str());</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;    <a class="code" href="context_8cpp.html#a8d0d4301ff4007a924f781152da07e88">context_deinit_impl</a>();</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;}</div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160; </div>
-<div class="line"><a name="l00829"></a><span class="lineno"><a class="line" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">  829</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* context) {</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(context);</div>
-<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    <span class="comment">// Go execute the fiber.</span></div>
-<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">stack_guard</a>(context-&gt;guard);</div>
-<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a>.<a class="code" href="structzth_1_1_context_attr.html#ae1e24f243044f6570246f6eeeb902a02">entry</a>(context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a>.<a class="code" href="structzth_1_1_context_attr.html#a9ee34a12252c21cd6a0bec20c2a25fe8">arg</a>);</div>
-<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160;    <span class="comment">// Fiber has quit. Switch to another one.</span></div>
-<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">yield</a>();</div>
-<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;    <span class="comment">// We should never get here, otherwise the fiber wasn&#39;t dead...</span></div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;    <a class="code" href="group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb">zth_abort</a>(<span class="stringliteral">&quot;Returned to finished context&quot;</span>);</div>
-<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;}</div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160; </div>
-<div class="line"><a name="l00840"></a><span class="lineno"><a class="line" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">  840</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">context_create</a>(<a class="code" href="classzth_1_1_context.html">Context</a>*&amp; context, <a class="code" href="structzth_1_1_context_attr.html">ContextAttr</a> <span class="keyword">const</span>&amp; attr) {</div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
-<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;    context = <span class="keyword">new</span> <a class="code" href="classzth_1_1_context.html">Context</a>();</div>
-<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#af1d2ce204fc1c1b95fcb9c534c48f095">stack</a> = NULL;</div>
-<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#a330dff6f28da994b4796d4d2cbf3762a">stackSize</a> = attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a>;</div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a> = attr;</div>
-<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
-<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;    context-&gt;guard = NULL;</div>
-<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160; </div>
-<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;    stack_t stack = {};</div>
-<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a> &gt; 0 &amp;&amp; (res = context_newstack(context, &amp;stack))))</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;        <span class="keywordflow">goto</span> rollback_new;</div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160; </div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((res = context_create_impl(context, &amp;stack))))</div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        <span class="keywordflow">goto</span> rollback_stack;</div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160; </div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#aa0672ea7123854cc5f51902a06c473fb">likely</a>(attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a> &gt; 0)) {</div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] New context %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context);</div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] New context %p with stack: %p-%p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context, stack.ss_sp, (<span class="keywordtype">char</span>*)stack.ss_sp + stack.ss_size - 1);</div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;    }</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160; </div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;rollback_stack:</div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;    context_deletestack(context);</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;rollback_new:</div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;    <span class="keyword">delete</span> context;</div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Cannot create context; %s&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), <a class="code" href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">err</a>(res).c_str());</div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;    <span class="keywordflow">return</span> res ? res : EINVAL;</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;}</div>
-<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160; </div>
-<div class="line"><a name="l00874"></a><span class="lineno"><a class="line" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">  874</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">context_switch</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* from, <a class="code" href="classzth_1_1_context.html">Context</a>* to) {</div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(from);</div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(to);</div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160; </div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;    context_switch_impl(from, to);</div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160; </div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160; </div>
+<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160; </div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;<span class="comment">// Common functions</span></div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160; </div>
+<div class="line"><a name="l00825"></a><span class="lineno"><a class="line" href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">  825</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">context_init</a>() {</div>
+<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Initialize&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str());</div>
+<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="context_8cpp.html#afabd1c7a0ae6bd251aa3c27bd6d5c5ed">context_init_impl</a>();</div>
+<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;}</div>
+<div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160; </div>
+<div class="line"><a name="l00830"></a><span class="lineno"><a class="line" href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">  830</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">context_deinit</a>() {</div>
+<div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Deinit&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str());</div>
+<div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    <a class="code" href="context_8cpp.html#a8d0d4301ff4007a924f781152da07e88">context_deinit_impl</a>();</div>
+<div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;}</div>
+<div class="line"><a name="l00834"></a><span class="lineno">  834</span>&#160; </div>
+<div class="line"><a name="l00835"></a><span class="lineno"><a class="line" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">  835</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* context) {</div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(context);</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;    <span class="comment">// Go execute the fiber.</span></div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;    <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">stack_guard</a>(context-&gt;guard);</div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a>.<a class="code" href="structzth_1_1_context_attr.html#ae1e24f243044f6570246f6eeeb902a02">entry</a>(context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a>.<a class="code" href="structzth_1_1_context_attr.html#a9ee34a12252c21cd6a0bec20c2a25fe8">arg</a>);</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;    <span class="comment">// Fiber has quit. Switch to another one.</span></div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">yield</a>();</div>
+<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;    <span class="comment">// We should never get here, otherwise the fiber wasn&#39;t dead...</span></div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;    <a class="code" href="group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb">zth_abort</a>(<span class="stringliteral">&quot;Returned to finished context&quot;</span>);</div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;}</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160; </div>
+<div class="line"><a name="l00846"></a><span class="lineno"><a class="line" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">  846</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">context_create</a>(<a class="code" href="classzth_1_1_context.html">Context</a>*&amp; context, <a class="code" href="structzth_1_1_context_attr.html">ContextAttr</a> <span class="keyword">const</span>&amp; attr) {</div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;    context = <span class="keyword">new</span> <a class="code" href="classzth_1_1_context.html">Context</a>();</div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#af1d2ce204fc1c1b95fcb9c534c48f095">stack</a> = NULL;</div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#a330dff6f28da994b4796d4d2cbf3762a">stackSize</a> = attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a>;</div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;    context-&gt;<a class="code" href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">attr</a> = attr;</div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    context-&gt;guard = NULL;</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160; </div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;    stack_t stack = {};</div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a> &gt; 0 &amp;&amp; (res = context_newstack(context, &amp;stack))))</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;        <span class="keywordflow">goto</span> rollback_new;</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160; </div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>((res = context_create_impl(context, &amp;stack))))</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;        <span class="keywordflow">goto</span> rollback_stack;</div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160; </div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#aa0672ea7123854cc5f51902a06c473fb">likely</a>(attr.<a class="code" href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">stackSize</a> &gt; 0)) {</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] New context %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context);</div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] New context %p with stack: %p-%p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context, stack.ss_sp, (<span class="keywordtype">char</span>*)stack.ss_sp + stack.ss_size - 1);</div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;    }</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160; </div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;rollback_stack:</div>
+<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;    context_deletestack(context);</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;rollback_new:</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    <span class="keyword">delete</span> context;</div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Cannot create context; %s&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), <a class="code" href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">err</a>(res).c_str());</div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;    <span class="keywordflow">return</span> res ? res : EINVAL;</div>
+<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;}</div>
 <div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160; </div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;    <span class="comment">// Got back from somewhere else.</span></div>
-<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;    <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">stack_guard</a>(from-&gt;guard);</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;}</div>
+<div class="line"><a name="l00880"></a><span class="lineno"><a class="line" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">  880</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">context_switch</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* from, <a class="code" href="classzth_1_1_context.html">Context</a>* to) {</div>
+<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(from);</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(to);</div>
 <div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160; </div>
-<div class="line"><a name="l00884"></a><span class="lineno"><a class="line" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">  884</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">context_destroy</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* context) {</div>
-<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;    <span class="keywordflow">if</span>(!context)</div>
-<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160; </div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    <a class="code" href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a>(context);</div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;    context_deletestack(context);</div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;    <span class="keyword">delete</span> context;</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Deleted context %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context);</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;}</div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;    context_switch_impl(from, to);</div>
+<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160; </div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;    <span class="comment">// Got back from somewhere else.</span></div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;    <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">stack_guard</a>(from-&gt;guard);</div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;}</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160; </div>
+<div class="line"><a name="l00890"></a><span class="lineno"><a class="line" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">  890</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">context_destroy</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* context) {</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    <span class="keywordflow">if</span>(!context)</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;        <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160; </div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;} <span class="comment">// namespace</span></div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160; </div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160; </div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;<span class="comment">// Stack functions</span></div>
+<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;    <a class="code" href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a>(context);</div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    context_deletestack(context);</div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;    <span class="keyword">delete</span> context;</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(context, <span class="stringliteral">&quot;[%s] Deleted context %p&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().id_str(), context);</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;}</div>
 <div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160; </div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;} <span class="comment">// namespace</span></div>
 <div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160; </div>
-<div class="line"><a name="l00902"></a><span class="lineno"><a class="line" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">  902</a></span>&#160;<span class="preprocessor">#define ZTH_STACK_WATERMARKER ((uint64_t)0x5a7468574de2889eULL) // Some nice UTF-8 text.</span></div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160; </div>
-<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;__attribute__((noinline,unused)) <span class="keyword">static</span> <span class="keywordtype">bool</span> stack_grows_down(<span class="keywordtype">void</span> <span class="keyword">const</span>* reference)</div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;{</div>
-<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;    <span class="keywordtype">int</span> i = 42;</div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    <span class="keywordflow">return</span> (uintptr_t)&amp;i &lt; (uintptr_t)reference;</div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;}</div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160; </div>
-<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> stack_watermark_align(<span class="keywordtype">void</span>*&amp; stack, <span class="keywordtype">size_t</span>*&amp; sizeptr, <span class="keywordtype">size_t</span>* size = NULL) {</div>
-<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;    <span class="keywordflow">if</span>(!stack)</div>
-<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160; </div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    uintptr_t stack_ = (uintptr_t)stack;</div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160; </div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="comment">// Skip guard</span></div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard)</div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;        stack_ = (stack_ + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) &amp; ~(ZTH_ARM_STACK_GUARD_SIZE - 1);</div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160; </div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;<span class="comment">// Stack functions</span></div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160; </div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160; </div>
+<div class="line"><a name="l00908"></a><span class="lineno"><a class="line" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">  908</a></span>&#160;<span class="preprocessor">#define ZTH_STACK_WATERMARKER ((uint64_t)0x5a7468574de2889eULL) // Some nice UTF-8 text.</span></div>
+<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160; </div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;__attribute__((noinline,unused)) <span class="keyword">static</span> <span class="keywordtype">bool</span> stack_grows_down(<span class="keywordtype">void</span> <span class="keyword">const</span>* reference)</div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;{</div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    <span class="keywordtype">int</span> i = 42;</div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;    <span class="keywordflow">return</span> (uintptr_t)&amp;i &lt; (uintptr_t)reference;</div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;}</div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160; </div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> stack_watermark_align(<span class="keywordtype">void</span>*&amp; stack, <span class="keywordtype">size_t</span>*&amp; sizeptr, <span class="keywordtype">size_t</span>* size = NULL) {</div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="keywordflow">if</span>(!stack)</div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160; </div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;    uintptr_t stack_ = (uintptr_t)stack;</div>
 <div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160; </div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;    <span class="comment">// Align to size_t</span></div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;    stack_ = ((uintptr_t)stack_ + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>) - 1) &amp; ~(uintptr_t)(<span class="keyword">sizeof</span>(size_t) - 1);</div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;    <span class="comment">// The stack size is stored here.</span></div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;    sizeptr = (<span class="keywordtype">size_t</span>*)stack_;</div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160; </div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;    <span class="comment">// Reduce stack to store the size.</span></div>
-<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;    stack_ += <span class="keyword">sizeof</span>(size_t);</div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;    <span class="keywordflow">if</span>(size)</div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;        <span class="comment">// Reduce remaining stack size.</span></div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;        *size -= stack_ - (uintptr_t)stack;</div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;    <span class="comment">// Skip guard</span></div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;    <span class="keywordflow">if</span>(Config::EnableStackGuard)</div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        stack_ = (stack_ + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) &amp; ~(ZTH_ARM_STACK_GUARD_SIZE - 1);</div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160; </div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;    <span class="comment">// Align to size_t</span></div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;    stack_ = ((uintptr_t)stack_ + <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>) - 1) &amp; ~(uintptr_t)(<span class="keyword">sizeof</span>(size_t) - 1);</div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;    <span class="comment">// The stack size is stored here.</span></div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;    sizeptr = (<span class="keywordtype">size_t</span>*)stack_;</div>
 <div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160; </div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;    stack = (<span class="keywordtype">void</span>*)stack_;</div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;}</div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160; </div>
-<div class="line"><a name="l00951"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">  951</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">stack_watermark_init</a>(<span class="keywordtype">void</span>* stack, <span class="keywordtype">size_t</span> size) {</div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack || !size)</div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160; </div>
-<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;    <span class="comment">// Most likely, but growing up stack is not implemented here (yet?)</span></div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(stack_grows_down(&amp;size));</div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160; </div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    stack_watermark_align(stack, sizeptr, &amp;size);</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    *sizeptr = size;</div>
-<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160; </div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i * <span class="keyword">sizeof</span>(uint64_t) &lt;= size - <span class="keyword">sizeof</span>(uint64_t); i++)</div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;        ((uint64_t*)stack)[i] = <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>;</div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;}</div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160; </div>
-<div class="line"><a name="l00972"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">  972</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">stack_watermark_size</a>(<span class="keywordtype">void</span>* stack) {</div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160; </div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;    <span class="keywordflow">return</span> *sizeptr;</div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;}</div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160; </div>
-<div class="line"><a name="l00987"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">  987</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">stack_watermark_maxused</a>(<span class="keywordtype">void</span>* stack) {</div>
-<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160; </div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;    <span class="keywordtype">size_t</span> size = *sizeptr;</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160; </div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;    <span class="keywordtype">size_t</span> unused = 0;</div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="keywordflow">for</span>(uint64_t* s = (uint64_t*)stack; unused &lt; size / <span class="keyword">sizeof</span>(uint64_t) &amp;&amp; *s == <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>; unused++, s++);</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160; </div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="keywordflow">return</span> size - unused * <span class="keyword">sizeof</span>(uint64_t);</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;}</div>
+<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;    <span class="comment">// Reduce stack to store the size.</span></div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;    stack_ += <span class="keyword">sizeof</span>(size_t);</div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;    <span class="keywordflow">if</span>(size)</div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;        <span class="comment">// Reduce remaining stack size.</span></div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;        *size -= stack_ - (uintptr_t)stack;</div>
+<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160; </div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    stack = (<span class="keywordtype">void</span>*)stack_;</div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;}</div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160; </div>
+<div class="line"><a name="l00957"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">  957</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">stack_watermark_init</a>(<span class="keywordtype">void</span>* stack, <span class="keywordtype">size_t</span> size) {</div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack || !size)</div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160; </div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;    <span class="comment">// Most likely, but growing up stack is not implemented here (yet?)</span></div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;    <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(stack_grows_down(&amp;size));</div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160; </div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;    stack_watermark_align(stack, sizeptr, &amp;size);</div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;    *sizeptr = size;</div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160; </div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i * <span class="keyword">sizeof</span>(uint64_t) &lt;= size - <span class="keyword">sizeof</span>(uint64_t); i++)</div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;        ((uint64_t*)stack)[i] = <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>;</div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;}</div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160; </div>
+<div class="line"><a name="l00978"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">  978</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">stack_watermark_size</a>(<span class="keywordtype">void</span>* stack) {</div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160; </div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;    <span class="keywordflow">return</span> *sizeptr;</div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;}</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160; </div>
+<div class="line"><a name="l00993"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">  993</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">stack_watermark_maxused</a>(<span class="keywordtype">void</span>* stack) {</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160; </div>
+<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    <span class="keywordtype">size_t</span> size = *sizeptr;</div>
 <div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160; </div>
-<div class="line"><a name="l01007"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13"> 1007</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">stack_watermark_remaining</a>(<span class="keywordtype">void</span>* stack) {</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160; </div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    <span class="keywordtype">size_t</span> size = *sizeptr;</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160; </div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    <span class="keywordtype">size_t</span> unused = 0;</div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    <span class="keywordflow">for</span>(uint64_t* s = (uint64_t*)stack; unused &lt; size / <span class="keyword">sizeof</span>(uint64_t) &amp;&amp; *s == <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>; unused++, s++);</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160; </div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    <span class="keywordflow">return</span> unused * <span class="keyword">sizeof</span>(uint64_t);</div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;}</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;    <span class="keywordtype">size_t</span> unused = 0;</div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;    <span class="keywordflow">for</span>(uint64_t* s = (uint64_t*)stack; unused &lt; size / <span class="keyword">sizeof</span>(uint64_t) &amp;&amp; *s == <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>; unused++, s++);</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160; </div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    <span class="keywordflow">return</span> size - unused * <span class="keyword">sizeof</span>(uint64_t);</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;}</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160; </div>
+<div class="line"><a name="l01013"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13"> 1013</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">stack_watermark_remaining</a>(<span class="keywordtype">void</span>* stack) {</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !stack)</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160; </div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    <span class="keywordtype">size_t</span>* sizeptr;</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    stack_watermark_align(stack, sizeptr);</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    <span class="keywordtype">size_t</span> size = *sizeptr;</div>
 <div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160; </div>
-<div class="line"><a name="l01025"></a><span class="lineno"><a class="line" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b"> 1025</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">context_stack_usage</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(context)) {</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !context)</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160; </div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">stack_watermark_maxused</a>(context-&gt;stack_watermarked);</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;}</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160; </div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;} <span class="comment">// namespace</span></div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;    <span class="keywordtype">size_t</span> unused = 0;</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    <span class="keywordflow">for</span>(uint64_t* s = (uint64_t*)stack; unused &lt; size / <span class="keyword">sizeof</span>(uint64_t) &amp;&amp; *s == <a class="code" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>; unused++, s++);</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160; </div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="keywordflow">return</span> unused * <span class="keyword">sizeof</span>(uint64_t);</div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;}</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160; </div>
+<div class="line"><a name="l01031"></a><span class="lineno"><a class="line" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b"> 1031</a></span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">context_stack_usage</a>(<a class="code" href="classzth_1_1_context.html">Context</a>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(context)) {</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;<span class="preprocessor">#ifdef ZTH_CONTEXT_WINFIBER</span></div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    <span class="keywordflow">if</span>(!Config::EnableStackWaterMark || !context)</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160; </div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;<span class="preprocessor">#ifdef ZTH_STACK_SWITCH</span></div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;<span class="preprocessor">#  ifdef ZTH_ARCH_ARM</span></div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160; </div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;__attribute__((naked,noinline)) <span class="keyword">static</span> <span class="keywordtype">void</span>* zth_stack_switch_msp(<span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(arg), <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(<span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*))) {</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;        <span class="stringliteral">&quot;push {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>   <span class="comment">// Save pc and variables</span></div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;        <span class="stringliteral">&quot;.save {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">stack_watermark_maxused</a>(context-&gt;stack_watermarked);</div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;}</div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160; </div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;} <span class="comment">// namespace</span></div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160; </div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;<span class="preprocessor">#ifdef ZTH_STACK_SWITCH</span></div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;<span class="preprocessor">#  ifdef ZTH_ARCH_ARM</span></div>
 <div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160; </div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;        <span class="stringliteral">&quot;mrs r4, control\n&quot;</span>             <span class="comment">// Save current control register</span></div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;        <span class="stringliteral">&quot;bic r3, r4, #2\n&quot;</span>              <span class="comment">// Set to use MSP</span></div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        <span class="stringliteral">&quot;msr control, r3\n&quot;</span>             <span class="comment">// Enable MSP</span></div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;        <span class="stringliteral">&quot;isb\n&quot;</span></div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;        <span class="stringliteral">&quot;and r4, r4, #2\n&quot;</span>              <span class="comment">// r4 is set to only have the PSP bit</span></div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;__attribute__((naked,noinline)) <span class="keyword">static</span> <span class="keywordtype">void</span>* zth_stack_switch_msp(<span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(arg), <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(<span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*))) {</div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        <span class="stringliteral">&quot;push {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>   <span class="comment">// Save pc and variables</span></div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;        <span class="stringliteral">&quot;.save {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
 <div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160; </div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;        <span class="comment">// We are on MSP now.</span></div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160; </div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>       <span class="comment">// Save frame pointer on MSP</span></div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;        <span class="stringliteral">&quot;.setfp &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;        <span class="stringliteral">&quot;mrs r4, control\n&quot;</span>             <span class="comment">// Save current control register</span></div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;        <span class="stringliteral">&quot;bic r3, r4, #2\n&quot;</span>              <span class="comment">// Set to use MSP</span></div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        <span class="stringliteral">&quot;msr control, r3\n&quot;</span>             <span class="comment">// Enable MSP</span></div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;        <span class="stringliteral">&quot;isb\n&quot;</span></div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;        <span class="stringliteral">&quot;and r4, r4, #2\n&quot;</span>              <span class="comment">// r4 is set to only have the PSP bit</span></div>
 <div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160; </div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;        <span class="stringliteral">&quot;blx r1\n&quot;</span>                      <span class="comment">// Call f(arg)</span></div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;        <span class="comment">// We are on MSP now.</span></div>
 <div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160; </div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;        <span class="stringliteral">&quot;mrs r3, control\n&quot;</span>             <span class="comment">// Save current control register</span></div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;        <span class="stringliteral">&quot;orr r3, r3, r4\n&quot;</span>              <span class="comment">// Set to use previous PSP setting</span></div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        <span class="stringliteral">&quot;msr control, r3\n&quot;</span>             <span class="comment">// Enable PSP setting</span></div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;        <span class="stringliteral">&quot;isb\n&quot;</span></div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160; </div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;        <span class="comment">// We are back on the previous stack.</span></div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160; </div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;        <span class="stringliteral">&quot;pop {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, pc}\n&quot;</span>    <span class="comment">// Return to caller</span></div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;    );</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;}</div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>       <span class="comment">// Save frame pointer on MSP</span></div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;        <span class="stringliteral">&quot;.setfp &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160; </div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;        <span class="stringliteral">&quot;blx r1\n&quot;</span>                      <span class="comment">// Call f(arg)</span></div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160; </div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;        <span class="stringliteral">&quot;mrs r3, control\n&quot;</span>             <span class="comment">// Save current control register</span></div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;        <span class="stringliteral">&quot;orr r3, r3, r4\n&quot;</span>              <span class="comment">// Set to use previous PSP setting</span></div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;        <span class="stringliteral">&quot;msr control, r3\n&quot;</span>             <span class="comment">// Enable PSP setting</span></div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;        <span class="stringliteral">&quot;isb\n&quot;</span></div>
 <div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160; </div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;__attribute__((naked,noinline)) <span class="keyword">static</span> <span class="keywordtype">void</span>* zth_stack_switch_psp(<span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(arg), <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(<span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*)), <span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(sp)) {</div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        <span class="stringliteral">&quot;push {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>   <span class="comment">// Save pc and variables</span></div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;        <span class="stringliteral">&quot;.save {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;        <span class="comment">// We are back on the previous stack.</span></div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160; </div>
+<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;        <span class="stringliteral">&quot;pop {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, pc}\n&quot;</span>    <span class="comment">// Return to caller</span></div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;    );</div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;}</div>
 <div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160; </div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;        <span class="stringliteral">&quot;mov r4, sp\n&quot;</span>                  <span class="comment">// Save previous stack pointer</span></div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;        <span class="stringliteral">&quot;mov sp, r2\n&quot;</span>                  <span class="comment">// Set new stack pointer</span></div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>       <span class="comment">// Save previous frame pointer on new stack</span></div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;        <span class="stringliteral">&quot;.setfp &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;__attribute__((naked,noinline)) <span class="keyword">static</span> <span class="keywordtype">void</span>* zth_stack_switch_psp(<span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(arg), <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(<span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*)), <span class="keywordtype">void</span>* <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(sp)) {</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    __asm__ <span class="keyword">volatile</span> (</div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;        <span class="stringliteral">&quot;push {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>   <span class="comment">// Save pc and variables</span></div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;        <span class="stringliteral">&quot;.save {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span></div>
 <div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
 <div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160; </div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;        <span class="stringliteral">&quot;blx r1\n&quot;</span>                      <span class="comment">// Call f(arg)</span></div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160; </div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;        <span class="stringliteral">&quot;mov sp, r4\n&quot;</span>                  <span class="comment">// Restore previous stack</span></div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;        <span class="stringliteral">&quot;pop {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, pc}\n&quot;</span>    <span class="comment">// Return to caller</span></div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    );</div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;}</div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160; </div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;<span class="keywordtype">void</span>* <a class="code" href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">zth_stack_switch</a>(<span class="keywordtype">void</span>* stack, <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*), <span class="keywordtype">void</span>* arg) {</div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;    <a class="code" href="classzth_1_1_worker.html">zth::Worker</a>* worker = <a class="code" href="classzth_1_1_worker.html#ae9c20dad103d7614efb970464968a6b6">zth::Worker::currentWorker</a>();</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    <span class="keywordtype">void</span>* res;</div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160; </div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    <span class="keywordflow">if</span>(!stack) {</div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;        worker-&gt;<a class="code" href="classzth_1_1_worker.html#a165bec5e1f31063c5e702143c1d242a2">contextSwitchDisable</a>();</div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        res = zth_stack_switch_msp(arg, f);</div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;        worker-&gt;<a class="code" href="classzth_1_1_worker.html#a6868dd2eef03852938a1bb34c7aba84e">contextSwitchEnable</a>();</div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;        <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;        <span class="keywordtype">void</span>* sp = (<span class="keywordtype">void</span>*)(((uintptr_t)stack + size) &amp; ~(uintptr_t)7);</div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        <span class="keywordtype">void</span>* prevGuard = NULL;</div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;        <a class="code" href="classzth_1_1_context.html">zth::Context</a>* context = NULL;</div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160; </div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="structzth_1_1_default_config.html#a08f99b64a6a5655eed4f64bbe28d7dbc">zth::Config::EnableStackGuard</a> &amp;&amp; size) {</div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!worker))</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160; </div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;            <a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a>* fiber = worker-&gt;<a class="code" href="classzth_1_1_worker.html#a8a82376965a01056e9956d86c52c2fae">currentFiber</a>();</div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!fiber))</div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160; </div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;            context = fiber-&gt;<a class="code" href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">context</a>();</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!context))</div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160; </div>
-<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;            <span class="keywordtype">void</span>* guard = (<span class="keywordtype">void</span>*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) &amp; ~(ZTH_ARM_STACK_GUARD_SIZE - 1));</div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;            prevGuard = context-&gt;guard;</div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;            context-&gt;guard = guard;</div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160; </div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;            <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">zth::stack_guard</a>(guard);</div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;        }</div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160; </div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;noguard:</div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;        <span class="stringliteral">&quot;mov r4, sp\n&quot;</span>                  <span class="comment">// Save previous stack pointer</span></div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;        <span class="stringliteral">&quot;mov sp, r2\n&quot;</span>                  <span class="comment">// Set new stack pointer</span></div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;        <span class="stringliteral">&quot;push {&quot;</span> REG_FP <span class="stringliteral">&quot;, lr}\n&quot;</span>       <span class="comment">// Save previous frame pointer on new stack</span></div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;        <span class="stringliteral">&quot;.setfp &quot;</span> REG_FP <span class="stringliteral">&quot;, sp\n&quot;</span></div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;        <span class="stringliteral">&quot;add &quot;</span> REG_FP <span class="stringliteral">&quot;, sp, #0\n&quot;</span></div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160; </div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;        <span class="stringliteral">&quot;blx r1\n&quot;</span>                      <span class="comment">// Call f(arg)</span></div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160; </div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;        <span class="stringliteral">&quot;mov sp, r4\n&quot;</span>                  <span class="comment">// Restore previous stack</span></div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;        <span class="stringliteral">&quot;pop {r4, &quot;</span> REG_FP <span class="stringliteral">&quot;, pc}\n&quot;</span>    <span class="comment">// Return to caller</span></div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;    );</div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;}</div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160; </div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;<span class="keywordtype">void</span>* <a class="code" href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">zth_stack_switch</a>(<span class="keywordtype">void</span>* stack, <span class="keywordtype">size_t</span> size, <span class="keywordtype">void</span>*(*f)(<span class="keywordtype">void</span>*), <span class="keywordtype">void</span>* arg) {</div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;    <a class="code" href="classzth_1_1_worker.html">zth::Worker</a>* worker = <a class="code" href="classzth_1_1_worker.html#ae9c20dad103d7614efb970464968a6b6">zth::Worker::currentWorker</a>();</div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;    <span class="keywordtype">void</span>* res;</div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160; </div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;    <span class="keywordflow">if</span>(!stack) {</div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        worker-&gt;<a class="code" href="classzth_1_1_worker.html#a165bec5e1f31063c5e702143c1d242a2">contextSwitchDisable</a>();</div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        res = zth_stack_switch_msp(arg, f);</div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;        worker-&gt;<a class="code" href="classzth_1_1_worker.html#a6868dd2eef03852938a1bb34c7aba84e">contextSwitchEnable</a>();</div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;        <span class="keywordtype">void</span>* sp = (<span class="keywordtype">void</span>*)(((uintptr_t)stack + size) &amp; ~(uintptr_t)7);</div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;        <span class="keywordtype">void</span>* prevGuard = NULL;</div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;        <a class="code" href="classzth_1_1_context.html">zth::Context</a>* context = NULL;</div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160; </div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="structzth_1_1_default_config.html#a08f99b64a6a5655eed4f64bbe28d7dbc">zth::Config::EnableStackGuard</a> &amp;&amp; size) {</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!worker))</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160; </div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;            <a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a>* fiber = worker-&gt;<a class="code" href="classzth_1_1_worker.html#a8a82376965a01056e9956d86c52c2fae">currentFiber</a>();</div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!fiber))</div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
+<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160; </div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;            context = fiber-&gt;<a class="code" href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">context</a>();</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!context))</div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;                <span class="keywordflow">goto</span> noguard;</div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160; </div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;            <span class="keywordtype">void</span>* guard = (<span class="keywordtype">void</span>*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) &amp; ~(ZTH_ARM_STACK_GUARD_SIZE - 1));</div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;            prevGuard = context-&gt;guard;</div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;            context-&gt;guard = guard;</div>
 <div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160; </div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;        res = zth_stack_switch_psp(arg, f, sp);</div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160; </div>
-<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
-<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;        <span class="keywordflow">if</span>(prevGuard) {</div>
-<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;            context-&gt;guard = prevGuard;</div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;            <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">zth::stack_guard</a>(prevGuard);</div>
-<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;        }</div>
-<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;    }</div>
-<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160; </div>
-<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;}</div>
-<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;<span class="preprocessor">#  endif // ZTH_ARCH_ARM</span></div>
-<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;<span class="preprocessor">#endif // ZTH_STACK_SWITCH</span></div>
-<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160; </div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;            <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">zth::stack_guard</a>(guard);</div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;        }</div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160; </div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;noguard:</div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160; </div>
+<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;        res = zth_stack_switch_psp(arg, f, sp);</div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160; </div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="preprocessor">#ifdef ZTH_ARM_HAVE_MPU</span></div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;        <span class="keywordflow">if</span>(prevGuard) {</div>
+<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;            context-&gt;guard = prevGuard;</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;            <a class="code" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">zth::stack_guard</a>(prevGuard);</div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;        }</div>
+<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;    }</div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160; </div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;}</div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;<span class="preprocessor">#  endif // ZTH_ARCH_ARM</span></div>
+<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;<span class="preprocessor">#endif // ZTH_STACK_SWITCH</span></div>
+<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclasszth_1_1_context_html_af461aff07cd16426cbe7d2cf03c38ae2"><div class="ttname"><a href="classzth_1_1_context.html#af461aff07cd16426cbe7d2cf03c38ae2">zth::Context::env</a></div><div class="ttdeci">sigjmp_buf env</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00105">context.cpp:105</a></div></div>
@@ -1192,32 +1198,32 @@ $(document).ready(function(){initNavTree('context_8cpp_source.html',''); initRes
 <div class="ttc" id="acontext_8cpp_html_afabd1c7a0ae6bd251aa3c27bd6d5c5ed"><div class="ttname"><a href="context_8cpp.html#afabd1c7a0ae6bd251aa3c27bd6d5c5ed">context_init_impl</a></div><div class="ttdeci">#define context_init_impl()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00254">context.cpp:254</a></div></div>
 <div class="ttc" id="aregs_8h_html"><div class="ttname"><a href="regs_8h.html">regs.h</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__util_html_ga15bf32dde0718b1eafdcdbc9057d36f7"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a></div><div class="ttdeci">#define zth_dbg(group, fmt, a...)</div><div class="ttdoc">Debug printf()-like function.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00170">util.h:170</a></div></div>
-<div class="ttc" id="anamespacezth_html_afcbfcd2cc3f8013c9c1b4bc011a8933b"><div class="ttname"><a href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">zth::context_stack_usage</a></div><div class="ttdeci">size_t context_stack_usage(Context *UNUSED_PAR(context))</div><div class="ttdoc">Return the high water mark of the stack of the given context.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l01025">context.cpp:1025</a></div></div>
+<div class="ttc" id="anamespacezth_html_afcbfcd2cc3f8013c9c1b4bc011a8933b"><div class="ttname"><a href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">zth::context_stack_usage</a></div><div class="ttdeci">size_t context_stack_usage(Context *UNUSED_PAR(context))</div><div class="ttdoc">Return the high water mark of the stack of the given context.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l01031">context.cpp:1031</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html_ae9c20dad103d7614efb970464968a6b6"><div class="ttname"><a href="classzth_1_1_worker.html#ae9c20dad103d7614efb970464968a6b6">zth::Worker::currentWorker</a></div><div class="ttdeci">static Worker * currentWorker()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00048">worker.h:48</a></div></div>
 <div class="ttc" id="amacros_8h_html_a8afceb2d9601e9906696a4353bacf016"><div class="ttname"><a href="macros_8h.html#a8afceb2d9601e9906696a4353bacf016">ZTH_TLS_SET</a></div><div class="ttdeci">#define ZTH_TLS_SET(var, value)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00061">macros.h:61</a></div></div>
 <div class="ttc" id="amacros_8h_html"><div class="ttname"><a href="macros_8h.html">macros.h</a></div></div>
-<div class="ttc" id="anamespacezth_html_a9cc2b699e671d9c8373356bf40747ac6"><div class="ttname"><a href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">zth::context_init</a></div><div class="ttdeci">int context_init()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00819">context.cpp:819</a></div></div>
+<div class="ttc" id="anamespacezth_html_a9cc2b699e671d9c8373356bf40747ac6"><div class="ttname"><a href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">zth::context_init</a></div><div class="ttdeci">int context_init()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00825">context.cpp:825</a></div></div>
 <div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00185">util.h:185</a></div></div>
 <div class="ttc" id="amacros_8h_html_a55b877a804738fba99a01f296adf2222"><div class="ttname"><a href="macros_8h.html#a55b877a804738fba99a01f296adf2222">ZTH_TLS_GET</a></div><div class="ttdeci">#define ZTH_TLS_GET(var)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00062">macros.h:62</a></div></div>
 <div class="ttc" id="astructzth_1_1_context_attr_html_a9ee34a12252c21cd6a0bec20c2a25fe8"><div class="ttname"><a href="structzth_1_1_context_attr.html#a9ee34a12252c21cd6a0bec20c2a25fe8">zth::ContextAttr::arg</a></div><div class="ttdeci">EntryArg arg</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00068">context.h:68</a></div></div>
 <div class="ttc" id="aclasszth_1_1_fiber_html"><div class="ttname"><a href="classzth_1_1_fiber.html">zth::Fiber</a></div><div class="ttdoc">The fiber.</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00051">fiber.h:51</a></div></div>
 <div class="ttc" id="astructzth_1_1_context_attr_html"><div class="ttname"><a href="structzth_1_1_context_attr.html">zth::ContextAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00056">context.h:56</a></div></div>
-<div class="ttc" id="anamespacezth_html_a635bff7e0b7baa3e3e46b6918b460187"><div class="ttname"><a href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a></div><div class="ttdeci">int context_create(Context *&amp;context, ContextAttr const &amp;attr)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00840">context.cpp:840</a></div></div>
+<div class="ttc" id="anamespacezth_html_a635bff7e0b7baa3e3e46b6918b460187"><div class="ttname"><a href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a></div><div class="ttdeci">int context_create(Context *&amp;context, ContextAttr const &amp;attr)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00846">context.cpp:846</a></div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00033">async.h:33</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__stack_html_gac37cad431ecd2830e62722d9c4f46e13"><div class="ttname"><a href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">zth::stack_watermark_remaining</a></div><div class="ttdeci">size_t stack_watermark_remaining(void *stack)</div><div class="ttdoc">Return the remaining stack size that was never touched.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l01007">context.cpp:1007</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__stack_html_gac37cad431ecd2830e62722d9c4f46e13"><div class="ttname"><a href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">zth::stack_watermark_remaining</a></div><div class="ttdeci">size_t stack_watermark_remaining(void *stack)</div><div class="ttdoc">Return the remaining stack size that was never touched.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l01013">context.cpp:1013</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="anamespacezth_html_aa3885498f0afd7b826c718b359cdfb3d"><div class="ttname"><a href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">zth::context_deinit</a></div><div class="ttdeci">void context_deinit()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00824">context.cpp:824</a></div></div>
+<div class="ttc" id="anamespacezth_html_aa3885498f0afd7b826c718b359cdfb3d"><div class="ttname"><a href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">zth::context_deinit</a></div><div class="ttdeci">void context_deinit()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00830">context.cpp:830</a></div></div>
 <div class="ttc" id="aclasszth_1_1_context_html"><div class="ttname"><a href="classzth_1_1_context.html">zth::Context</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00088">context.cpp:88</a></div></div>
 <div class="ttc" id="aworker_8h_html"><div class="ttname"><a href="worker_8h.html">worker.h</a></div></div>
 <div class="ttc" id="ainit_8h_html"><div class="ttname"><a href="init_8h.html">init.h</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga44fe90bba77464eb5410d27b6d70584d"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">zth::stack_watermark_init</a></div><div class="ttdeci">void stack_watermark_init(void *stack, size_t size)</div><div class="ttdoc">Initialize the memory region for stack high water marking.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00951">context.cpp:951</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga44fe90bba77464eb5410d27b6d70584d"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">zth::stack_watermark_init</a></div><div class="ttdeci">void stack_watermark_init(void *stack, size_t size)</div><div class="ttdoc">Initialize the memory region for stack high water marking.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00957">context.cpp:957</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00393">worker.h:393</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html"><div class="ttname"><a href="classzth_1_1_worker.html">zth::Worker</a></div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00046">worker.h:46</a></div></div>
 <div class="ttc" id="aclasszth_1_1_context_html_aff3c7642e97402f65eabf8425932bf9e"><div class="ttname"><a href="classzth_1_1_context.html#aff3c7642e97402f65eabf8425932bf9e">zth::Context::attr</a></div><div class="ttdeci">ContextAttr attr</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00092">context.cpp:92</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga1d6aed60e051b52215b105cb569ed186"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">zth::currentWorker</a></div><div class="ttdeci">Worker &amp; currentWorker()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00358">worker.h:358</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html_a8a82376965a01056e9956d86c52c2fae"><div class="ttname"><a href="classzth_1_1_worker.html#a8a82376965a01056e9956d86c52c2fae">zth::Worker::currentFiber</a></div><div class="ttdeci">Fiber * currentFiber() const</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00049">worker.h:49</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html_a165bec5e1f31063c5e702143c1d242a2"><div class="ttname"><a href="classzth_1_1_worker.html#a165bec5e1f31063c5e702143c1d242a2">zth::Worker::contextSwitchDisable</a></div><div class="ttdeci">void contextSwitchDisable()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00135">worker.h:135</a></div></div>
-<div class="ttc" id="anamespacezth_html_a11d3236714aa5890b5217c28f9ade701"><div class="ttname"><a href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">zth::context_entry</a></div><div class="ttdeci">void context_entry(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00829">context.cpp:829</a></div></div>
+<div class="ttc" id="anamespacezth_html_a11d3236714aa5890b5217c28f9ade701"><div class="ttname"><a href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">zth::context_entry</a></div><div class="ttdeci">void context_entry(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00835">context.cpp:835</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html_a6868dd2eef03852938a1bb34c7aba84e"><div class="ttname"><a href="classzth_1_1_worker.html#a6868dd2eef03852938a1bb34c7aba84e">zth::Worker::contextSwitchEnable</a></div><div class="ttdeci">void contextSwitchEnable(bool enable=false)</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00127">worker.h:127</a></div></div>
 <div class="ttc" id="acontext_8cpp_html_a8d0d4301ff4007a924f781152da07e88"><div class="ttname"><a href="context_8cpp.html#a8d0d4301ff4007a924f781152da07e88">context_deinit_impl</a></div><div class="ttdeci">#define context_deinit_impl()</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00255">context.cpp:255</a></div></div>
 <div class="ttc" id="aclasszth_1_1_context_html_a330dff6f28da994b4796d4d2cbf3762a"><div class="ttname"><a href="classzth_1_1_context.html#a330dff6f28da994b4796d4d2cbf3762a">zth::Context::stackSize</a></div><div class="ttdeci">size_t stackSize</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00091">context.cpp:91</a></div></div>
@@ -1225,18 +1231,18 @@ $(document).ready(function(){initNavTree('context_8cpp_source.html',''); initRes
 <div class="ttc" id="astructzth_1_1_context_attr_html_ac114f02e8cb39f06e1b4d987e9e4481c"><div class="ttname"><a href="structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c">zth::ContextAttr::stackSize</a></div><div class="ttdeci">size_t stackSize</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00066">context.h:66</a></div></div>
 <div class="ttc" id="ainit_8h_html_a68623548df4d1790f4c5764165907fb0"><div class="ttname"><a href="init_8h.html#a68623548df4d1790f4c5764165907fb0">ZTH_INIT_CALL</a></div><div class="ttdeci">#define ZTH_INIT_CALL(f)</div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00056">init.h:56</a></div></div>
 <div class="ttc" id="astructzth_1_1_context_attr_html_ae1e24f243044f6570246f6eeeb902a02"><div class="ttname"><a href="structzth_1_1_context_attr.html#ae1e24f243044f6570246f6eeeb902a02">zth::ContextAttr::entry</a></div><div class="ttdeci">Entry entry</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00067">context.h:67</a></div></div>
-<div class="ttc" id="acontext_8cpp_html_a1924dd076a12fdc086a08bcdad7f1251"><div class="ttname"><a href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a></div><div class="ttdeci">#define ZTH_STACK_WATERMARKER</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00902">context.cpp:902</a></div></div>
+<div class="ttc" id="acontext_8cpp_html_a1924dd076a12fdc086a08bcdad7f1251"><div class="ttname"><a href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a></div><div class="ttdeci">#define ZTH_STACK_WATERMARKER</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00908">context.cpp:908</a></div></div>
 <div class="ttc" id="acontext_8h_html"><div class="ttname"><a href="context_8h.html">context.h</a></div></div>
 <div class="ttc" id="agroup__zth__api__c__stack_html_ga0529a22f9d0b9190a0b94c568f489ca5"><div class="ttname"><a href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">zth_stack_switch</a></div><div class="ttdeci">#define zth_stack_switch(stack, size, f, arg)</div><div class="ttdoc">Call the function f using the new stack pointer.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00043">context.h:43</a></div></div>
 <div class="ttc" id="acontext_8cpp_html_a3cb7adc9d0f938941fb2d2bc39fd0dac"><div class="ttname"><a href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a></div><div class="ttdeci">#define context_destroy_impl(...)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00256">context.cpp:256</a></div></div>
-<div class="ttc" id="anamespacezth_html_a564d80f05b6b71340c02bae5cf9dfc64"><div class="ttname"><a href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a></div><div class="ttdeci">void context_destroy(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00884">context.cpp:884</a></div></div>
+<div class="ttc" id="anamespacezth_html_a564d80f05b6b71340c02bae5cf9dfc64"><div class="ttname"><a href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a></div><div class="ttdeci">void context_destroy(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00890">context.cpp:890</a></div></div>
 <div class="ttc" id="astructzth_1_1_default_config_html_a08f99b64a6a5655eed4f64bbe28d7dbc"><div class="ttname"><a href="structzth_1_1_default_config.html#a08f99b64a6a5655eed4f64bbe28d7dbc">zth::DefaultConfig::EnableStackGuard</a></div><div class="ttdeci">static const bool EnableStackGuard</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00084">config.h:84</a></div></div>
 <div class="ttc" id="autil_8h_html_aa0672ea7123854cc5f51902a06c473fb"><div class="ttname"><a href="util_8h.html#aa0672ea7123854cc5f51902a06c473fb">likely</a></div><div class="ttdeci">#define likely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00051">util.h:51</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga278d1ff87cf2af45717ce4e16661350b"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">zth::stack_watermark_size</a></div><div class="ttdeci">size_t stack_watermark_size(void *stack)</div><div class="ttdoc">Return the size of the given stack region.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00972">context.cpp:972</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga278d1ff87cf2af45717ce4e16661350b"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">zth::stack_watermark_size</a></div><div class="ttdeci">size_t stack_watermark_size(void *stack)</div><div class="ttdoc">Return the size of the given stack region.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00978">context.cpp:978</a></div></div>
 <div class="ttc" id="amacros_8h_html_a228f092c6290125ce8f9b7e945da7bbd"><div class="ttname"><a href="macros_8h.html#a228f092c6290125ce8f9b7e945da7bbd">ZTH_TLS_STATIC</a></div><div class="ttdeci">#define ZTH_TLS_STATIC(type, var, init)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00060">macros.h:60</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga76af3738586eef284086d9aa9b4713c6"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">zth::stack_watermark_maxused</a></div><div class="ttdeci">size_t stack_watermark_maxused(void *stack)</div><div class="ttdoc">Return the high water mark of the stack.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00987">context.cpp:987</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__stack_html_ga76af3738586eef284086d9aa9b4713c6"><div class="ttname"><a href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">zth::stack_watermark_maxused</a></div><div class="ttdeci">size_t stack_watermark_maxused(void *stack)</div><div class="ttdoc">Return the high water mark of the stack.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00993">context.cpp:993</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
-<div class="ttc" id="anamespacezth_html_a21a9e449fda2d98f4725cbc35daf5af5"><div class="ttname"><a href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a></div><div class="ttdeci">void context_switch(Context *from, Context *to)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00874">context.cpp:874</a></div></div>
+<div class="ttc" id="anamespacezth_html_a21a9e449fda2d98f4725cbc35daf5af5"><div class="ttname"><a href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a></div><div class="ttdeci">void context_switch(Context *from, Context *to)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00880">context.cpp:880</a></div></div>
 <div class="ttc" id="aclasszth_1_1_fiber_html_a9757a54835480c76a30637566d746cd4"><div class="ttname"><a href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">zth::Fiber::context</a></div><div class="ttdeci">Context * context() const</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00108">fiber.h:108</a></div></div>
 <div class="ttc" id="anamespacezth_html_a6cd6e84b95ba6c16333e8cf197d411e7"><div class="ttname"><a href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a></div><div class="ttdeci">std::string err(int e)</div><div class="ttdoc">Return a string like strerror() does, but as a std::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00344">util.h:344</a></div></div>
 <div class="ttc" id="agroup__zth__api__c__util_html_ga869dad6591d5f5900808ee721274b7bb"><div class="ttname"><a href="group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb">zth_abort</a></div><div class="ttdeci">void zth_abort(char const *fmt,...)</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00219">util.cpp:219</a></div></div>

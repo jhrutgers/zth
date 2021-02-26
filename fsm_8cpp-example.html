@@ -86,7 +86,10 @@ $(document).ready(function(){initNavTree('fsm_8cpp-example.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 <p>Finite-state machine example</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
+<div class="fragment"><div class="line"><span class="comment">// This example does not work on Windows, as Windows does not support poll()ing</span></div>
+<div class="line"><span class="comment">// stdin. And the ANSI console might be troubling.</span></div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// The easiest way to define a State type would be:</span></div>
 <div class="line"><span class="comment">//</span></div>
@@ -217,19 +220,6 @@ $(document).ready(function(){initNavTree('fsm_8cpp-example.html',''); initResiza
 <div class="line">        <span class="keywordflow">return</span>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// I know, switch(fsm.state()) is nicer, but then the State must be some integral type...</span></div>
-<div class="line"><span class="preprocessor">#ifdef ZTH_OS_WINDOWS</span></div>
-<div class="line">    <span class="comment">// No ANSI terminal support.</span></div>
-<div class="line">    <span class="keywordflow">if</span>(fsm.state() == State::init)</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Press enter to generate traffic.\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fsm.state() == State::blink_on || fsm.state() == State::amber)</div>
-<div class="line">        printf(<span class="stringliteral">&quot;amber\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fsm.state() == State::red_wait)</div>
-<div class="line">        printf(<span class="stringliteral">&quot;red\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fsm.state() == State::green)</div>
-<div class="line">        printf(<span class="stringliteral">&quot;green\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fsm.state() == State::blink_off)</div>
-<div class="line">        printf(<span class="stringliteral">&quot;(off)\n&quot;</span>);</div>
-<div class="line"><span class="preprocessor">#else</span></div>
 <div class="line">    <span class="keywordflow">if</span>(fsm.state() == State::init) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;\x1b[0m ________ \n&quot;</span>);</div>
 <div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
@@ -315,7 +305,6 @@ $(document).ready(function(){initNavTree('fsm_8cpp-example.html',''); initResiza
 <div class="line">            printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line">    }</div>
 <div class="line">    fflush(NULL);</div>
-<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Something to be passed to the callback function.</span></div>
@@ -336,7 +325,7 @@ $(document).ready(function(){initNavTree('fsm_8cpp-example.html',''); initResiza
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> trafficDetect() {</div>
 <div class="line">    <span class="keywordtype">char</span> buf;</div>
-<div class="line">    <span class="keywordflow">while</span>(<a name="a9"></a><a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">read</a>(0, &amp;buf, 1) &gt; 0)</div>
+<div class="line">    <span class="keywordflow">while</span>(<a name="a9"></a><a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(0, &amp;buf, 1) &gt; 0)</div>
 <div class="line">        fsm.input(traffic);</div>
 <div class="line">}</div>
 <div class="line"><a name="a10"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trafficDetect)</div>
