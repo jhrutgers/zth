@@ -18,11 +18,11 @@ macro(zth_test_example EXAMPLE)
 	if(VALGRIND_EXE)
 		# TODO: add --error-exitcode=1, but needs some investigation on current (false?) errors
 		add_test(NAME ${EXAMPLE}-valgrind
-			COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${VALGRIND_EXE} --leak-check=full $<TARGET_FILE:${EXAMPLE}>
+			COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${VALGRIND_EXE} --leak-check=full $<TARGET_FILE:${EXAMPLE}> ${ARGN}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	endif()
 
-	add_test(NAME ${EXAMPLE}-run COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 $<TARGET_FILE:${EXAMPLE}>
+	add_test(NAME ${EXAMPLE}-run COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 $<TARGET_FILE:${EXAMPLE}> ${ARGN}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endmacro()
 
@@ -35,3 +35,4 @@ zth_test_example(9_c_api)
 zth_test_example(daemon_pattern)
 zth_test_example(measure)
 zth_test_example(socks)
+zth_test_example(zmq 3)

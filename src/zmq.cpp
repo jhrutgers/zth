@@ -1,17 +1,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -56,7 +56,7 @@ void* zmq_context() {
 	static void* zmq_ctx = zmq_global_init();
 	return zmq_ctx;
 }
-	
+
 /*!
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_socket().
  * \details The context is implicit, as all fibers run in the same thread and share the context.
@@ -77,14 +77,21 @@ int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
 		return res;
-	
+
 	zth_dbg(zmq, "[%s] zmq_msg_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
 	Await1Fd w(socket, ZMQ_POLLOUT);
 
-	if((errno = zth::currentWorker().waiter().waitFd(w)))
+again:
+	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
+	case 0:
+		break;
+	case EINTR:
+		goto again;
+	default:
 		return -1;
-	
+	}
+
 	return ::zmq_msg_send(msg, socket, flags | ZMQ_DONTWAIT);
 }
 
@@ -99,14 +106,21 @@ int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
 		return res;
-	
+
 	zth_dbg(zmq, "[%s] zmq_msg_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
 	Await1Fd w(socket, ZMQ_POLLIN);
 
-	if((errno = zth::currentWorker().waiter().waitFd(w)))
+again:
+	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
+	case 0:
+		break;
+	case EINTR:
+		goto again;
+	default:
 		return -1;
-	
+	}
+
 	return ::zmq_msg_recv(msg, socket, flags | ZMQ_DONTWAIT);
 }
 
@@ -121,14 +135,21 @@ int zmq_send(void *socket, void *buf, size_t len, int flags) {
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
 		return res;
-	
+
 	zth_dbg(zmq, "[%s] zmq_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
 	Await1Fd w(socket, ZMQ_POLLOUT);
 
-	if((errno = zth::currentWorker().waiter().waitFd(w)))
+again:
+	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
+	case 0:
+		break;
+	case EINTR:
+		goto again;
+	default:
 		return -1;
-	
+	}
+
 	return ::zmq_send(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
@@ -143,14 +164,21 @@ int zmq_recv(void *socket, void *buf, size_t len, int flags) {
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
 		return res;
-	
+
 	zth_dbg(zmq, "[%s] zmq_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
 	Await1Fd w(socket, ZMQ_POLLIN);
 
-	if((errno = zth::currentWorker().waiter().waitFd(w)))
+again:
+	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
+	case 0:
+		break;
+	case EINTR:
+		goto again;
+	default:
 		return -1;
-	
+	}
+
 	return ::zmq_recv(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
@@ -165,14 +193,21 @@ int zmq_send_const(void *socket, void *buf, size_t len, int flags) {
 	int err = res == -1 ? zmq_errno() : 0;
 	if(err != EAGAIN || (flags & ZMQ_DONTWAIT))
 		return res;
-	
+
 	zth_dbg(zmq, "[%s] zmq_send_const(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
 	Await1Fd w(socket, ZMQ_POLLOUT);
 
-	if((errno = zth::currentWorker().waiter().waitFd(w)))
+again:
+	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
+	case 0:
+		break;
+	case EINTR:
+		goto again;
+	default:
 		return -1;
-	
+	}
+
 	return ::zmq_send_const(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
