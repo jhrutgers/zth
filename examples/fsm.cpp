@@ -1,3 +1,6 @@
+// This example does not work on Windows, as Windows does not support poll()ing
+// stdin. And the ANSI console might be troubling.
+
 #include <zth>
 
 // The easiest way to define a State type would be:
@@ -129,19 +132,6 @@ static void cb(Fsm_type& fsm, zth::Timestamp& green) {
 		return;
 
 	// I know, switch(fsm.state()) is nicer, but then the State must be some integral type...
-#ifdef ZTH_OS_WINDOWS
-	// No ANSI terminal support.
-	if(fsm.state() == State::init)
-		printf("Press enter to generate traffic.\n");
-	else if(fsm.state() == State::blink_on || fsm.state() == State::amber)
-		printf("amber\n");
-	else if(fsm.state() == State::red_wait)
-		printf("red\n");
-	else if(fsm.state() == State::green)
-		printf("green\n");
-	else if(fsm.state() == State::blink_off)
-		printf("(off)\n");
-#else
 	if(fsm.state() == State::init) {
 		printf("\x1b[0m ________ \n");
 		printf("/        \\\n");
@@ -227,7 +217,6 @@ static void cb(Fsm_type& fsm, zth::Timestamp& green) {
 			printf("\n\x1b[11A");
 	}
 	fflush(NULL);
-#endif
 }
 
 // Something to be passed to the callback function.
@@ -248,7 +237,7 @@ static Fsm_type fsm(compiler, &cb, green);
 
 static void trafficDetect() {
 	char buf;
-	while(read(0, &buf, 1) > 0)
+	while(zth::io::read(0, &buf, 1) > 0)
 		fsm.input(traffic);
 }
 zth_fiber(trafficDetect)
