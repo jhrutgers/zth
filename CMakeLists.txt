@@ -23,6 +23,11 @@ if(ZTH_HAVE_LIBZMQ)
 		set(ZMQ_CV_IMPL "win32api" CACHE STRING "Override auto-detect" FORCE)
 	endif()
 
+	if(APPLE)
+		# Make sure home-brew headers are in there.
+		include_directories(BEFORE SYSTEM /usr/local/include)
+	endif()
+
 	set(BUILD_TESTS OFF CACHE BOOL "Disabling building tests")
 	set(BUILD_STATIC OFF CACHE BOOL "Don't build static library" FORCE)
 	add_subdirectory(external/libzmq)
