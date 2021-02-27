@@ -18,6 +18,11 @@ endif()
 
 option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
 if(ZTH_HAVE_LIBZMQ)
+	if(MINGW)
+		# See https://github.com/zeromq/libzmq/issues/3859
+		set(ZMQ_CV_IMPL "win32api" CACHE STRING "Override auto-detect" FORCE)
+	endif()
+
 	set(BUILD_TESTS OFF CACHE BOOL "Disabling building tests")
 	set(BUILD_STATIC OFF CACHE BOOL "Don't build static library" FORCE)
 	add_subdirectory(external/libzmq)
