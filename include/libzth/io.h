@@ -51,7 +51,8 @@
 	typedef struct pollfd zth_pollfd_t;
 #  endif
 
-#  if defined(__cplusplus) && defined(ZTH_HAVE_POLLER) && !defined(ZTH_OS_WINDOWS)
+#  if !defined(ZTH_OS_WINDOWS)
+#    if defined(__cplusplus)
 namespace zth { namespace io {
 
 	ZTH_EXPORT ssize_t read(int fd, void* buf, size_t count);
@@ -84,11 +85,12 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_select(int nfds, fd_set *readfds, fd_set 
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_poll(zth_pollfd_t *fds, int nfds, int timeout) {
 	return zth::io::poll(fds, nfds, timeout); }
 
-#  else // !__cplusplus
+#    else // !__cplusplus
 ZTH_EXPORT ssize_t zth_read(int fd, void* buf, size_t count);
 ZTH_EXPORT int zth_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 ZTH_EXPORT int zth_poll(zth_pollfd_t *fds, int nfds, int timeout);
-#  endif // __cplusplus
+#    endif // __cplusplus
+#  endif
 
 #endif // ZTH_HAVE_POLLER
 #endif // __ZTH_IO_H
