@@ -92,7 +92,7 @@ namespace zth {
 			return *this;
 		}
 
-		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
+		constexpr TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
 		TimeInterval(float dt) : m_t() { init_float<float>(dt); }
 		TimeInterval(double dt) : m_t() { init_float<double>(dt); }
@@ -278,7 +278,12 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x, (unsigned long long int)std::numeric_limits<time_t>::max)); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x,
+				(unsigned long long int)std::numeric_limits<time_t>::max()));
+	}
 
 	/*!
 	 * \brief Define literals like \c 123_ms, which is a #zth::TimeInterval of 123 milliseconds.
@@ -287,7 +292,13 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000L) * 1000000L); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x / 1000ULL,
+				(unsigned long long int)std::numeric_limits<time_t>::max()),
+			((long)x % 1000L) * 1000000L);
+	}
 
 	/*!
 	 * \brief Define literals like \c 123_us, which is a #zth::TimeInterval of 123 microseconds.
@@ -296,7 +307,13 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000000L) * 1000L); }
+	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x / 1000000ULL,
+				(unsigned long long int)std::numeric_limits<time_t>::max()),
+			((long)x % 1000000L) * 1000L);
+	}
 
 	/*!
 	 * \brief Define literals like \c 12.3_s, which is a #zth::TimeInterval of 12.3 seconds.
