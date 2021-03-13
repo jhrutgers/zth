@@ -194,6 +194,7 @@ namespace zth {
 			zth_assert(fiber == &m_workerFiber || fiber->listNext());
 
 			{
+				// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 				Fiber* prevFiber = m_currentFiber;
 				m_currentFiber = fiber;
 
