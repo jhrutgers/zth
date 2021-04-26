@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -28,7 +28,7 @@
 #include <libzth/waiter.h>
 #include <libzth/util.h>
 
-#include <set>
+#include <vector>
 #include <map>
 
 // Suppress missing braces, as this is what you do when you specify the FSM.
@@ -66,7 +66,7 @@ namespace zth {
 			} else
 				return TimeInterval::infinity();
 		}
-		
+
 		/*!
 		 * \brief A guard that is true when the given input has been set.
 		 * \details The input is not cleared from the Fsm.
@@ -114,7 +114,7 @@ namespace zth {
 			static TimeInterval const timeout((double)us * 1e-6);
 			return timeout_<Fsm>(fsm, timeout);
 		}
-		
+
 		/*!
 		 * \brief A wrapper for #zth::Fsm::guardLock().
 		 * \ingroup zth_api_cpp_fsm
@@ -194,7 +194,7 @@ namespace zth {
 		constexpr FsmCompiler(FsmDescription<Fsm>* description)
 			: m_description(description)
 			, m_compiled()
-		{} 
+		{}
 
 #if GCC_VERSION >= 49000L
 		__attribute__((returns_nonnull))
@@ -281,14 +281,14 @@ namespace zth {
 			static_assert(std::is_base_of<Fsm,FsmImpl>::value, "");
 #endif
 		}
-		
+
 		explicit Fsm(Description description, char const* name = "FSM")
 			: UniqueID(name)
 			, m_description(description)
 			, m_evalState(evalCompile)
 			, m_lockstep(lockstepNormal)
 		{}
-		
+
 		virtual ~Fsm() {}
 
 		State const& state() const {
@@ -439,10 +439,42 @@ namespace zth {
 			}
 		}
 
-		void input(Input i) { m_inputs.insert(i); trigger(); }
-		bool clearInput(Input i) { return m_inputs.erase(i) > 0; }
-		void clearInputs() { m_inputs.clear(); }
-		bool hasInput(Input i) const { return m_inputs.count(i) > 0; }
+		void input(Input i) {
+			m_inputs.push_back(i);
+			trigger();
+		}
+
+		bool clearInput(Input i) {
+			for(size_t j = 0; j < m_inputs.size(); j++)
+				if(m_inputs[j] == i) {
+					m_inputs[j] = m_inputs.back();
+					m_inputs.pop_back();
+					return true;
+				}
+			return false;
+		}
+
+		void clearInputs() {
+			m_inputs.clear();
+		}
+
+		void setInputsCapacity(size_t capacity) {
+#if __cplusplus >= 201103L
+			if(m_inputs.capacity() > capacity * 2U) {
+				// Shrink when the current capacity is significantly more.
+				m_inputs.shrink_to_fit();
+			}
+#endif
+
+			m_inputs.reserve(capacity);
+		}
+
+		bool hasInput(Input i) const {
+			for(size_t j = 0; j < m_inputs.size(); j++)
+				if(m_inputs[j] == i)
+					return true;
+			return false;
+		}
 
 		TimeInterval eval(bool alwaysDoCallback = false) {
 			bool didCallback = false;
@@ -514,7 +546,7 @@ namespace zth {
 		void trigger() {
 			m_trigger.signal(false);
 		}
-	
+
 	private:
 		bool trigger_() {
 			m_trigger.signal(false);
@@ -553,7 +585,7 @@ namespace zth {
 
 			m_state = nextState;
 			m_t = Timestamp::now();
-			
+
 			switch(m_lockstep) {
 			case lockstepSteppingNext:
 				m_lockstep = lockstepStepping;
@@ -590,9 +622,9 @@ namespace zth {
 		bool m_exit;
 		Lockstep m_lockstep;
 		Signal m_trigger;
-		std::set<Input> m_inputs;
+		std::vector<Input> m_inputs;
 	};
-	
+
 	template <typename State_, typename CallbackArg_ = void, typename Input_ = int, typename FsmImpl_ = void>
 	class FsmCallback : public Fsm<State_,Input_,typename choose_type<FsmImpl_, FsmCallback<State_, CallbackArg_, Input_, void> >::type> {
 	public:
@@ -606,7 +638,7 @@ namespace zth {
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
-		
+
 		explicit FsmCallback(typename base::Description description, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(description, name)
 			, m_callback(callback)
@@ -629,7 +661,7 @@ namespace zth {
 		Callback const m_callback;
 		CallbackArg const m_callbackArg;
 	};
-	
+
 	template <typename State_, typename Input_, typename FsmImpl_>
 	class FsmCallback<State_,void,Input_,FsmImpl_> : public Fsm<State_,Input_,typename choose_type<FsmImpl_,FsmCallback<State_,void,Input_,void> >::type> {
 	public:
