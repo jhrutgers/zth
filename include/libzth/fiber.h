@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -80,7 +80,7 @@ namespace zth {
 
 			if(state() > Uninitialized && state() < Dead)
 				kill();
-			
+
 			perf_event(PerfEvent<>(*this));
 
 			setState(Uninitialized);
@@ -232,7 +232,7 @@ namespace zth {
 
 			m_stateEnd = sleepUntil;
 		}
-		
+
 		void wakeup() {
 			if(likely(state() == Waiting)) {
 				setState(m_stateNext);
@@ -359,7 +359,7 @@ namespace zth {
 	 */
 	class Runnable {
 	public:
-		Runnable() 
+		Runnable()
 			: m_fiber()
 		{}
 
@@ -367,7 +367,7 @@ namespace zth {
 		int run();
 		Fiber* fiber() const { return m_fiber; }
 		operator Fiber&() { zth_assert(fiber()); return *fiber(); }
-		
+
 		char const* id_str() const {
 			return fiber() ? fiber()->id_str() : "detached Runnable";
 		}
@@ -399,9 +399,9 @@ namespace zth {
 		Runnable& operator=(Runnable&);
 		Fiber* m_fiber;
 	};
-	
+
 	__attribute__((pure)) Fiber& currentFiber();
-	
+
 	// fiber-local storage
 	/*!
 	 * \ingroup zth_api_cpp_fiber
@@ -409,7 +409,7 @@ namespace zth {
 	ZTH_EXPORT inline void* fls() {
 		return currentFiber().fls();
 	}
-	
+
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
