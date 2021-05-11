@@ -84,7 +84,7 @@ environment is (usually) only checked once, so dynamically changing the
 variables after startup has no effect to libzth's behavior.
 
 * `ZTH_CONFIG_ENABLE_DEBUG_PRINT`  
-	When set to 0, debug prints are suppressed.  Enabled by default. For
+	When set to 1, debug prints are enabled. Disabled by default. For
 	non-debug builds, all debug prints are removed from the binary, so they
 	cannot be enabled in that case.
 

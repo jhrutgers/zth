@@ -169,7 +169,7 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv
  */
 #  define zth_dbg(group, fmt, a...) \
 	do { \
-		if(::zth::Config::EnableDebugPrint && ::zth::Config::Print_##group > 0 && zth_config(EnableDebugPrint)) { \
+		if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0 && zth_config(EnableDebugPrint)) { \
 			if(::zth::Config::EnableColorLog) \
 				::zth::log_color(::zth::Config::Print_##group, ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a); \
 			else \
