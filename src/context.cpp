@@ -76,6 +76,10 @@
 #  include <valgrind/memcheck.h>
 #endif
 
+#ifdef ZTH_ENABLE_ASAN
+#  include <sanitizer/common_interface_defs.h>
+#endif
+
 #ifdef ZTH_ARM_HAVE_MPU
 #  define ZTH_ARM_STACK_GUARD_BITS 5
 #  define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
@@ -121,6 +125,9 @@ public:
 	};
 #elif !defined(ZTH_CONTEXT_WINFIBER)
 	void* stack_watermarked;
+#endif
+#ifdef ZTH_ENABLE_ASAN
+	bool alive;
 #endif
 };
 
@@ -258,9 +265,19 @@ static void stack_guard(void* guard) {
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
 
 static void context_trampoline(Context* context, sigjmp_buf origin) {
+#ifdef ZTH_ENABLE_ASAN
+	void const* oldstack = NULL;
+	size_t oldsize = 0;
+	__sanitizer_finish_switch_fiber(NULL, &oldstack, &oldsize);
+
+	// We are jumping back.
+	__sanitizer_start_switch_fiber(NULL, oldstack, oldsize);
+#endif
+
 	if(sigsetjmp(context->env, Config::ContextSignals) == 0)
 		siglongjmp(origin, 1);
 
+	// Note that context_entry has the __sanitizer_finish_switch_fiber().
 	context_entry(context);
 }
 
@@ -277,8 +294,18 @@ static int context_create_impl(Context* context, stack_t* stack) {
 	uc.uc_stack = *stack;
 	sigjmp_buf origin;
 	makecontext(&uc, (void(*)(void))&context_trampoline, 2, context, origin);
+
+#ifdef ZTH_ENABLE_ASAN
+	void* fake_stack = NULL;
+	__sanitizer_start_switch_fiber(&fake_stack, stack->ss_sp, stack->ss_size);
+#endif
+
 	if(sigsetjmp(origin, Config::ContextSignals) == 0)
 		setcontext(&uc);
+
+#ifdef ZTH_ENABLE_ASAN
+	__sanitizer_finish_switch_fiber(fake_stack, NULL, NULL);
+#endif
 	return 0;
 }
 
@@ -299,6 +326,10 @@ static void context_switch_impl(Context* from, Context* to) {
 
 #ifdef ZTH_CONTEXT_SIGALTSTACK
 #  define context_destroy_impl(...)
+
+#ifdef ZTH_ENABLE_ASAN
+#  error Invalid configuration combination sigaltstack with asan.
+#endif
 
 static void context_global_init() {
 	// By default, block SIGUSR1 for the main/all thread(s).
@@ -833,12 +864,22 @@ void context_deinit() {
 }
 
 void context_entry(Context* context) {
+#ifdef ZTH_ENABLE_ASAN
+	__sanitizer_finish_switch_fiber(NULL, NULL, NULL);
+#endif
+
 	zth_assert(context);
+
 	// Go execute the fiber.
 	stack_guard(context->guard);
 	context->attr.entry(context->attr.arg);
+
 	// Fiber has quit. Switch to another one.
+#ifdef ZTH_ENABLE_ASAN
+	context->alive = false;
+#endif
 	yield();
+
 	// We should never get here, otherwise the fiber wasn't dead...
 	zth_abort("Returned to finished context");
 }
@@ -851,6 +892,9 @@ int context_create(Context*& context, ContextAttr const& attr) {
 	context->attr = attr;
 #ifdef ZTH_ARM_HAVE_MPU
 	context->guard = NULL;
+#endif
+#ifdef ZTH_ENABLE_ASAN
+	context->alive = true;
 #endif
 
 	stack_t stack = {};
@@ -881,7 +925,15 @@ void context_switch(Context* from, Context* to) {
 	zth_assert(from);
 	zth_assert(to);
 
+#ifdef ZTH_ENABLE_ASAN
+	zth_assert(to->alive);
+	void* fake_stack = NULL;
+	__sanitizer_start_switch_fiber(from->alive ? &fake_stack : NULL, to->stack, to->stackSize);
+#endif
 	context_switch_impl(from, to);
+#ifdef ZTH_ENABLE_ASAN
+	__sanitizer_finish_switch_fiber(fake_stack, NULL, NULL);
+#endif
 
 	// Got back from somewhere else.
 	stack_guard(from->guard);

@@ -97,6 +97,15 @@ char const* banner() {
 #ifdef ZTH_HAVE_ZMQ
 		" zmq"
 #endif
+#ifdef ZTH_ENABLE_ASAN
+		" asan"
+#endif
+#ifdef ZTH_ENABLE_LSAN
+		" lsan"
+#endif
+#ifdef ZTH_ENABLE_UBSAN
+		" ubsan"
+#endif
 		;
 }
 

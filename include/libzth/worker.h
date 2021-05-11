@@ -322,7 +322,7 @@ namespace zth {
 		}
 
 		void dbgStats() {
-			if(!Config::EnableDebugPrint || !Config::Print_worker)
+			if(!Config::SupportDebugPrint || !Config::Print_worker)
 				return;
 
 			zth_dbg(list, "[%s] Run queue:", id_str());

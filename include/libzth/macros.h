@@ -149,6 +149,10 @@ ZTH_EXPORT void foo();
 #  define constexpr
 #endif
 
+#if defined(__SANITIZE_ADDRESS__) && !defined(ZTH_ENABLE_ASAN)
+#  define ZTH_ENABLE_ASAN
+#endif
+
 
 
 //////////////////////////////////////////////////
