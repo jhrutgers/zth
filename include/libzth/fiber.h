@@ -43,6 +43,28 @@
 namespace zth {
 
 	/*!
+	 * \brief Hook to be called when a Fiber is created.
+	 *
+	 * This function is called after initialization of the fiber.
+	 * The default (weak) implementation does nothing.
+	 * Override when required.
+	 *
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT void hookNewFiber(Fiber& fiber);
+
+	/*!
+	 * \brief Hook to be called when a Fiber is destroyed.
+	 *
+	 * This function is called just after the fiber has died.
+	 * The default (weak) implementation does nothing.
+	 * Override when required.
+	 *
+	 * \ingroup zth_api_cpp_fiber
+	 */
+	ZTH_EXPORT void hookDeadFiber(Fiber& fiber);
+
+	/*!
 	 * \brief The fiber.
 	 * \details This class manages a fiber's context and state, given an entry function.
 	 * \details Usually, don't subclass this class (use #zth::Runnable instead), as the #zth::Fiber is owned by
@@ -145,6 +167,8 @@ namespace zth {
 				// First call, do implicit init.
 				if((res = init(now)))
 					return res;
+
+				hookNewFiber(*this);
 				goto again;
 
 			case Ready:
@@ -313,6 +337,9 @@ namespace zth {
 			m_state = state;
 
 			perf_event(PerfEvent<>(*this, m_state, t));
+
+			if(state == Dead)
+				hookDeadFiber(*this);
 		}
 
 		static void fiberEntry(void* that) {
