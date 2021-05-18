@@ -36,33 +36,16 @@
 #include <libzth/perf.h>
 #include <libzth/init.h>
 
+#include <errno.h>
+#include <exception>
 #include <list>
 #include <utility>
-#include <errno.h>
+
+#if __cplusplus >= 201103L
+#  include <functional>
+#endif
 
 namespace zth {
-
-	/*!
-	 * \brief Hook to be called when a Fiber is created.
-	 *
-	 * This function is called after initialization of the fiber.
-	 * The default (weak) implementation does nothing.
-	 * Override when required.
-	 *
-	 * \ingroup zth_api_cpp_fiber
-	 */
-	ZTH_EXPORT void hookNewFiber(Fiber& fiber);
-
-	/*!
-	 * \brief Hook to be called when a Fiber is destroyed.
-	 *
-	 * This function is called just after the fiber has died.
-	 * The default (weak) implementation does nothing.
-	 * Override when required.
-	 *
-	 * \ingroup zth_api_cpp_fiber
-	 */
-	ZTH_EXPORT void hookDeadFiber(Fiber& fiber);
 
 	/*!
 	 * \brief The fiber.
@@ -72,6 +55,27 @@ namespace zth {
 	 */
 	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	public:
+		typedef void(FiberHook)(Fiber&);
+
+#if __cplusplus >= 201103L
+		/*!
+		 * \brief Hook to be called when a Fiber is created.
+		 *
+		 * This function is called after initialization of the fiber.
+		 */
+		static std::function<FiberHook> hookNew;
+
+		/*!
+		 * \brief Hook to be called when a Fiber is destroyed.
+		 *
+		 * This function is called just after the fiber has died.
+		 */
+		static std::function<FiberHook> hookDead;
+#else
+		static FiberHook* hookNew;
+		static FiberHook* hookDead;
+#endif
+
 		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
 
 		typedef ContextAttr::EntryArg EntryArg;
@@ -168,7 +172,8 @@ namespace zth {
 				if((res = init(now)))
 					return res;
 
-				hookNewFiber(*this);
+				if(hookNew)
+					hookNew(*this);
 				goto again;
 
 			case Ready:
@@ -338,8 +343,8 @@ namespace zth {
 
 			perf_event(PerfEvent<>(*this, m_state, t));
 
-			if(state == Dead)
-				hookDeadFiber(*this);
+			if(state == Dead && hookDead)
+				hookDead(*this);
 		}
 
 		static void fiberEntry(void* that) {
@@ -354,6 +359,8 @@ namespace zth {
 #endif
 				m_entry(m_entryArg);
 #ifdef __cpp_exceptions
+			} catch(std::exception const& e) {
+				zth_dbg(fiber, "[%s] Uncaught exception; %s", id_str(), e.what());
 			} catch(...) {
 				zth_dbg(fiber, "[%s] Uncaught exception", id_str());
 			}

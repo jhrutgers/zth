@@ -21,8 +21,13 @@
 
 namespace zth {
 
-__attribute__((weak)) void hookNewFiber(Fiber& UNUSED_PAR(fiber)) {}
-__attribute__((weak)) void hookDeadFiber(Fiber& UNUSED_PAR(fiber)) {}
+#if __cplusplus >= 201103L
+std::function<Fiber::FiberHook> Fiber::hookNew;
+std::function<Fiber::FiberHook> Fiber::hookDead;
+#else
+Fiber::FiberHook* Fiber::hookNew = NULL;
+Fiber::FiberHook* Fiber::hookDead = NULL;
+#endif
 
 int Runnable::run() {
 	Worker* w = Worker::currentWorker();
