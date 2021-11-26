@@ -145,8 +145,29 @@ ZTH_EXPORT void foo();
 #endif
 */
 
-#if defined(__cplusplus) && __cplusplus < 201103L && !defined(constexpr)
-#  define constexpr
+#if defined(__cplusplus) && __cplusplus < 201103L
+#  ifndef constexpr
+#    define constexpr
+#  endif
+#  ifndef override
+#    define override
+#  endif
+#  ifndef final
+#    define final
+#  endif
+#  ifndef is_default
+#    define is_default = default;
+#  endif
+#  ifndef noexcept
+#    define noexcept throw()
+#  endif
+#  ifndef nullptr
+#    define nullptr NULL
+#  endif
+#else
+#  ifndef is_default
+#    define is_default {}
+#  endif
 #endif
 
 

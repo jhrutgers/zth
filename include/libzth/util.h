@@ -559,6 +559,15 @@ namespace zth {
 	};
 
 	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = NULL;
+
+#if __cplusplus >= 201103L
+	template <typename T> using allocator_traits = std::allocator_traits<T>;
+#else
+	template <typename T>
+	struct allocator_traits {
+		typedef T allocator_type;
+	};
+#endif
 } // namespace
 
 #endif // __cplusplus
