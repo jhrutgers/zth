@@ -37,11 +37,11 @@
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
 #include <libzth/poller.h>
+#include <libzth/io.h>
 #include <libzth/waiter.h>
 #include <libzth/sync.h>
 #include <libzth/async.h>
 #include <libzth/perf.h>
-#include <libzth/io.h>
 #include <libzth/fsm.h>
 
 // You probably don't need these headers in your application.

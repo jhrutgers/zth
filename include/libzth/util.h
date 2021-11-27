@@ -129,12 +129,14 @@
 
 #ifdef __cplusplus
 #include <string>
-#include <string.h>
+#include <cstring>
 #include <pthread.h>
+#include <limits>
 #include <memory>
 #include <inttypes.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include <vector>
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
@@ -560,14 +562,205 @@ namespace zth {
 
 	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = NULL;
 
+	template <typename T, int8_t Prealloc = 1, typename Allocator = typename Config::Allocator<T>::type>
+	class small_vector {
+	public:
+		typedef T value_type;
+		typedef Allocator allocator_type;
+		typedef std::vector<value_type, allocator_type> vector_type;
+
+		enum {
+			prealloc_request = Prealloc > 0 ? Prealloc : 0,
+			prealloc_request_size = prealloc_request * sizeof(value_type),
+			vector_size = sizeof(vector_type),
+			buffer_size = prealloc_request_size > vector_size ? prealloc_request_size : vector_size,
+			prealloc_size = buffer_size / sizeof(value_type),
+		};
+
+		small_vector()
+			: m_size()
+		{
+			static_assert(prealloc_size < std::numeric_limits<uint8_t>::max(), "");
+		}
+
+		~small_vector()
+		{
+			if(is_small())
+				resize(0);
+		}
+
+		value_type& operator[](size_t index)
+		{
+			zth_assert(index < size());
+			return data()[index];
+		}
+
+		value_type const& operator[](size_t index) const
+		{
+			zth_assert(index < size());
+			return data()[index];
+		}
+
+		value_type& front()
+		{
+			return (*this)[0];
+		}
+
+		value_type const& front() const
+		{
+			return (*this)[0];
+		}
+
+		value_type& back()
+		{
+			zth_assert(!empty());
+			return (*this)[size() - 1u];
+		}
+
+		value_type const& back() const
+		{
+			zth_assert(!empty());
+			return (*this)[size() - 1u];
+		}
+
+		value_type* data() noexcept
+		{
+			return is_small() ? array() : vector().data();
+		}
+
+		value_type const* data() const noexcept
+		{
+			return is_small() ? array() : vector().data();
+		}
+
+		bool empty() const noexcept
+		{
+			return is_small() ? m_size == 0 : vector().empty();
+		}
+
+		bool size() const noexcept
+		{
+			return is_small() ? m_size : vector().size();
+		}
+
+		void reserve(size_t new_cap)
+		{
+			if(is_small() && new_cap <= prealloc_size)
+				return;
+
+			if(is_small())
+				make_vector(new_cap);
+
+			vector().reserve(new_cap);
+		}
+
+		size_t capacity() const noexcept
+		{
+			return is_small() ? (size_t)prealloc_size : vector().capacity();
+		}
+
+		void clear()
+		{
+			if(is_small())
+				resize(0);
+			else
+				vector().clear();
+		}
+
+		void push_back(value_type const& v)
+		{
+			if(m_size < prealloc_size)
+				new(array()[m_size++]) value_type(v);
+			else
+				vector().push_back(v);
+		}
+
 #if __cplusplus >= 201103L
-	template <typename T> using allocator_traits = std::allocator_traits<T>;
-#else
-	template <typename T>
-	struct allocator_traits {
-		typedef T allocator_type;
-	};
+		template< class... Args >
+		void emplace_back(Args&&... args)
+		{
+			if(m_size < prealloc_size)
+				new(array()[m_size++]) value_type(std::forward<Args>(args)...);
+			else
+				vector().emplace_back(std::forward<Args>(args)...);
+		}
 #endif
+
+		void pop_back()
+		{
+			zth_assert(!empty());
+			if(is_small())
+				array()[--m_size].~value_type();
+			else
+				vector().pop_back();
+		}
+
+		void resize(size_t count, value_type const& x = value_type())
+		{
+			if(is_small()) {
+				while(count < m_size)
+					array()[--m_size].~value_type();
+
+				if(count <= prealloc_size) {
+					while(count > m_size)
+						new(array()[m_size++]) value_type(x);
+				} else {
+					make_vector(count);
+					vector().resize(count, x);
+				}
+			} else
+				vector().resize(count, x);
+		}
+
+	protected:
+		bool is_small() const noexcept { return m_size <= prealloc_size; }
+
+		value_type* array() noexcept
+		{
+			return reinterpret_cast<value_type*>(m_buffer);
+		}
+
+		value_type const* array() const noexcept
+		{
+			return reinterpret_cast<value_type const*>(m_buffer);
+		}
+
+		vector_type& vector() noexcept
+		{
+			return *reinterpret_cast<vector_type*>(m_buffer);
+		}
+
+		vector_type const& vector() const noexcept
+		{
+			return *reinterpret_cast<vector_type const*>(m_buffer);
+		}
+
+		void make_vector(size_t new_cap)
+		{
+			if(!is_small())
+				return;
+
+			vector_type v;
+			v.reserve(std::max(new_cap, (size_t)m_size));
+
+			for(size_t i = 0; i < m_size; i++) {
+#if __cplusplus >= 201103L
+				v.emplace_back(std::move(array()[i]));
+#else
+				v.push_back(array()[i]);
+#endif
+				array()[i].~value_type();
+			}
+
+			m_size = prealloc_size + 1u;
+			new(m_buffer) vector_type;
+			vector().swap(v);
+		}
+
+	private:
+		alignas(vector_type) alignas(value_type) char m_buffer[buffer_size];
+		uint8_t m_size;
+	};
 } // namespace
 
 #endif // __cplusplus

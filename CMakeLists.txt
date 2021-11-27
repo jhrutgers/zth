@@ -37,8 +37,22 @@ add_subdirectory(version)
 
 set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
 
-file(GLOB_RECURSE sources src/*.cpp)
-add_library(libzth ${sources})
+add_library(libzth
+	src/config.cpp
+	src/context.cpp
+	src/fiber.cpp
+	src/init.cpp
+	src/inline.cpp
+	src/io.cpp
+	src/main.cpp
+	src/perf.cpp
+	src/time.cpp
+	src/util.cpp
+	src/waiter.cpp
+	src/worker.cpp
+	src/zmq.cpp
+	src/zth_logv.cpp
+)
 set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
 
 # Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp

@@ -40,13 +40,22 @@
 #ifdef __cplusplus
 
 #include <libzth/worker.h>
+#include <libzth/waiter.h>
 
+#include <bitset>
 #include <memory>
 #include <map>
+#include <set>
+#include <stdexcept>
 #include <vector>
 
 #if __cplusplus >= 201103L
+#  include <functional>
 #  include <initializer_list>
+#endif
+
+#if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+#  define ZTH_HAVE_POLLER
 #endif
 
 namespace zth {
@@ -69,7 +78,15 @@ namespace zth {
 	 */
 	struct Pollable {
 	public:
-		enum Events { PollIn = 1, PollOut = 2, PollErr = 4, PollPri = 8, PollHup = 16 };
+		typedef std::bitset<5> Events;
+
+		enum EventsFlags {
+			PollIn = 1, PollOut = 2, PollErr = 4, PollPri = 8, PollHup = 16
+		};
+
+		Pollable(Events e, void* user = nullptr)
+			: user_data(user), events(e), revents()
+		{}
 
 		void* user_data;
 		Events events;
@@ -84,6 +101,21 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	struct PollableFd : public Pollable {
+		PollableFd(int fd, Events e, void* user = nullptr)
+			: Pollable(e, user)
+#ifdef ZTH_HAVE_LIBZMQ
+			, socket()
+#endif
+			, fd(fd)
+		{}
+
+#ifdef ZTH_HAVE_LIBZMQ
+		PollableFd(void* socket, Events e, void* user = nullptr)
+			: Pollable(e, user), socket(socket), fd()
+		{}
+
+		void* socket;
+#endif
 		int fd;
 	};
 
@@ -98,18 +130,13 @@ namespace zth {
 	 * \tparam Allocator the allocator type to use for dynamic memory allocations
 	 * \ingroup zth_api_cpp_poller
 	 */
-	template <template <typename> typename Allocator = allocator_traits>
-	class PollerBase {
+	class PollerInterface : public UniqueID<PollerInterface> {
 	public:
-		/*!
-		 * \brief Result of #poll().
-		 */
-		typedef std::vector<Pollable*, Allocator<Pollable*>::allocator_type> Result;
 
 		/*!
 		 * \brief Dtor.
 		 */
-		virtual ~PollerBase() is_default
+		virtual ~PollerInterface() is_default
 
 		/*!
 		 * \brief Add a pollable object.
@@ -121,11 +148,70 @@ namespace zth {
 		 */
 		virtual int add(Pollable& p) = 0;
 
+#if __cplusplus >= 201103L
+		/*!
+		 * \brief Add pollable objects.
+		 *
+		 * \return 0 on success, otherwise an errno
+		 */
+		int add(std::initializer_list<std::reference_wrapper<Pollable>> l)
+		{
+			__try {
+				reserve(l.size());
+			} __catch(...) {
+				return ENOMEM;
+			}
+
+			int res = 0;
+			size_t count = 0;
+
+			for(Pollable& p : l) {
+				if((res = add(p))) {
+					// Rollback.
+					for(auto it = l.begin(); it != l.end() && count > 0; ++it, count--)
+						remove(*it);
+					break;
+				}
+
+				// Success.
+				count++;
+			}
+
+			return res;
+		}
+#endif
+
 		/*!
 		 * \brief Remove a pollable object.
 		 * \return 0 on success, otherwise an errno
 		 */
 		virtual int remove(Pollable& p) noexcept = 0;
+
+		/*!
+		 * \brief Reserve memory to add more pollables.
+		 *
+		 * \except std::bad_alloc when allocation fails
+		 */
+		virtual void reserve(size_t more) = 0;
+
+		virtual bool empty() const noexcept = 0;
+	};
+
+	class PollerClientInterface : public PollerInterface {
+	public:
+		/*!
+		 * \brief Indicate that the given pollable got an event.
+		 */
+		virtual void event(Pollable& p) noexcept = 0;
+	};
+
+	template <template <typename> typename Allocator = Config::Allocator>
+	class PollerClientBase : public PollerClientInterface {
+	public:
+		/*!
+		 * \brief Result of #poll().
+		 */
+		typedef small_vector<Pollable*, 1, typename Allocator<Pollable*>::type> Result;
 
 		/*!
 		 * \brief Poll.
@@ -142,19 +228,18 @@ namespace zth {
 		virtual Result const& poll(int timeout_ms) noexcept = 0;
 	};
 
-	/*!
-	 * \brief Base class of the actual %Poller to be used by fibers.
-	 *
-	 * This client connects to a PollerServer, which is part of the Waiter.
-	 */
-	template <template <typename> typename Allocator = allocator_traits>
-	class PollerClientBase : public PollerBase<Allocator> {
+	class PollerServerBase : public PollerInterface {
 	public:
-		/*!
-		 * \brief Indicate that the given pollable got an event.
-		 */
-		virtual void event(Pollable& p) noexcept = 0;
+		virtual ~PollerServerBase() override is_default
+		virtual int poll(int timeout_ms) noexcept = 0;
+		virtual int migrateTo(PollerServerBase& p) = 0;
+		virtual int add(Pollable& p, PollerClientInterface* client) = 0;
+		virtual int remove(Pollable& p, PollerClientInterface* client) = 0;
 	};
+
+
+
+
 
 
 
@@ -177,16 +262,15 @@ namespace zth {
 	 * \tparam Item_ the item to be used as the actual poll thing
 	 * \tparam Allocator the allocator type to use for dynamic memory allocations
 	 */
-	template <typename PollItem_, template <typename> typename Allocator = allocator_traits>
-	class PollerServer : public PollerBase<Allocator> {
+	template <typename PollItem_, template <typename> typename Allocator = Config::Allocator>
+	class PollerServer : public PollerServerBase {
 	public:
-		typedef PollerBase<Allocator> base;
-		typedef PollerClientBase<Allocator> Client;
-		using typename base::Result;
+		typedef PollerServerBase base;
+		typedef PollerClientInterface Client;
 
 	protected:
 		typedef PollItem_ PollItem;
-		typedef std::vector<PollItem, Allocator<PollItem>::allocator_type> PollItemList;
+		typedef std::vector<PollItem, typename Allocator<PollItem>::type> PollItemList;
 
 	private:
 		/*!
@@ -197,13 +281,18 @@ namespace zth {
 			Client* client;
 		};
 
-		typedef std::vector<MetaItem, Allocator<MetaItem>::allocator_type> MetaItemList;
+		typedef std::vector<MetaItem, typename Allocator<MetaItem>::type> MetaItemList;
 
 		/*!
 		 * \brief Initialize a PollItem, given a Pollable.
 		 * \return 0 on success, otherwise an errno
 		 */
 		virtual int init(Pollable const& p, PollItem& item) noexcept = 0;
+
+		/*!
+		 * \brief Cleanup a PollItem.
+		 */
+		virtual void deinit(Pollable const& UNUSED_PAR(p), PollItem& UNUSED_PAR(item)) noexcept {}
 
 		/*!
 		 * \brief Do the actual poll.
@@ -228,41 +317,18 @@ namespace zth {
 		{
 			zth_assert(index < m_metaItems.size());
 
-			MetaItem const& m = m_metaItems[i];
+			MetaItem const& m = m_metaItems[index];
 			m.pollable->revents = revents;
 
-			if(revents) {
-				m_result.push_back(m.pollable);
+			if(revents.any()) {
+				zth_dbg(io, "[%s] pollable %p got 0x%lx", this->id_str(), m.pollable, revents.to_ulong());
 				if(m.client)
 					m.client->event(*m.pollable);
 			}
 		}
 
 	public:
-		virtual ~PollerServer() override is_default
-
-		template <template <typename> typename A>
-		int migrateTo(PollerBase<A>& p)
-		{
-			p.reserve(m_metaItems.size());
-			size_t added = 0;
-
-			for(size_t i = 0; i < m_metaItems.size(); i++) {
-				MetaItem const* m = m_metaItems[i];
-
-				int res = p.add(m.pollable, m.client);
-				if(res) {
-					// Rollback
-					p.remove(added);
-					return res;
-				}
-
-				added++;
-			}
-
-			clear();
-			return 0;
-		}
+		PollerServer() is_default
 
 #if __cplusplus >= 201103L
 		PollerServer(PollerServer const&) = delete;
@@ -276,14 +342,49 @@ namespace zth {
 	public:
 #endif
 
+		virtual ~PollerServer() override is_default
+
+		virtual int migrateTo(PollerServerBase& p) override
+		{
+			p.reserve(m_metaItems.size());
+			size_t added = 0;
+
+			for(size_t i = 0; i < m_metaItems.size(); i++) {
+				MetaItem const& m = m_metaItems[i];
+
+				int res = p.add(*m.pollable, m.client);
+				if(res) {
+					// Rollback
+					for(size_t j = i; j > 0; j--)
+						p.remove(*m_metaItems[j - 1U].pollable, m_metaItems[j - 1U].client);
+
+					return res;
+				}
+
+				added++;
+			}
+
+			clear();
+
+			// Really release all memory. This object is probably not used
+			// anymore. Swap to local variables, which will release all memory
+			// when going out of scope.
+			decltype(m_metaItems) dummyMeta;
+			m_metaItems.swap(dummyMeta);
+
+			decltype(m_pollItems) dummyPoll;
+			m_pollItems.swap(dummyPoll);
+
+			return 0;
+		}
+
 		/*!
 		 * \brief Reserve storage for the given number of additional Pollables to handle.
 		 */
-		void reserve(size_t more)
+		virtual void reserve(size_t more) override
 		{
 			m_metaItems.reserve(m_metaItems.size() + more);
 			m_pollItems.reserve(m_metaItems.capacity());
-			m_result.reserve(m_metaItems.capacity());
 		}
 
 		/*!
@@ -293,7 +394,7 @@ namespace zth {
 		 *
 		 * \return 0 on success, otherwise an errno
 		 */
-		int add(Pollable& p, Client* client)
+		int add(Pollable& p, Client* client) final
 		{
 			__try {
 				MetaItem m = { &p, client };
@@ -305,7 +406,6 @@ namespace zth {
 			__try {
 				// Reserve space, but do not initialize yet.
 				m_pollItems.reserve(m_metaItems.size());
-				m_result.reserve(m_metaItems.size());
 			} __catch(...) {
 				// Rollback.
 				m_metaItems.pop_back();
@@ -327,9 +427,9 @@ namespace zth {
 		 *
 		 * \return 0 on success, otherwise an errno
 		 */
-		int remove(Pollable& p, Client* client) noexcept
+		int remove(Pollable& p, Client* client) noexcept final
 		{
-			size_t count = m_pollableItems.size();
+			size_t count = m_pollItems.size();
 
 			size_t i;
 			for(i = count; i > 0; i--) {
@@ -342,22 +442,33 @@ namespace zth {
 				return ESRCH;
 
 			i--;
-			int res = 0;
 
 			if(i < count - 1u) {
 				// Not removing the last element, fill the gap.
-#ifdef __cplusplus >= 201103L
-				m_metaItems[i] = std::move(m_metaItems[count - 1u]);
+				if(i < m_pollItems.size()) {
+					deinit(*m_metaItems[i].pollable, m_pollItems[i]);
+					if(i < m_pollItems.size() - 1u) {
+#if __cplusplus >= 201103L
+						m_pollItems[i] = std::move(m_pollItems.back());
 #else
-				m_metaItems[i] = m_metaItems[count - 1u];
+						m_pollItems[i] = m_pollItems.back();
 #endif
-				if(i < m_pollItems.size())
-					res = init(*m_metaItems[i].pollable, m_pollItems[i]);
+					}
+					m_pollItems.pop_back();
+				}
+
+#if __cplusplus >= 201103L
+				m_metaItems[i] = std::move(m_metaItems.back());
+#else
+				m_metaItems[i] = m_metaItems.back();
+#endif
+				m_metaItems.pop_back();
+			} else {
+				// Drop the last element.
+				remove(1u);
 			}
 
-			// Drop the last element.
-			remove(1u);
-			return res;
+			return 0;
 		}
 
 		/*!
@@ -368,6 +479,9 @@ namespace zth {
 			if(last >= m_metaItems.size()) {
 				clear();
 			} else {
+				for(size_t i = m_metaItems.size() - last; i < m_pollItems.size(); i++)
+					deinit(*m_metaItems[i].pollable, m_pollItems[i]);
+
 				m_metaItems.resize(m_metaItems.size() - last);
 				if(m_pollItems.size() > m_metaItems.size())
 					m_pollItems.resize(m_metaItems.size());
@@ -386,29 +500,31 @@ namespace zth {
 		 */
 		void clear() noexcept
 		{
+			for(size_t i = 0; i < m_pollItems.size(); i++)
+				deinit(*m_metaItems[i].pollable, m_pollItems[i]);
+
 			m_metaItems.clear();
 			m_pollItems.clear();
 		}
 
-		virtual Result const& poll(int timeout_ms) noexcept override
+		bool empty() const noexcept final
 		{
-			m_result.clear();
-			if((errno = mirror()))
-				return m_result;
+			return m_metaItems.empty();
+		}
+
+		virtual int poll(int timeout_ms) noexcept override
+		{
+			int res = 0;
+
+			if((res = mirror()))
+				return res;
 
 			if(m_metaItems.empty()) {
-				errno = EINVAL;
-				return m_result;
+				return EINVAL;
 			}
 
-			int res = doPoll(timeout_ms, m_pollItems);
-			// m_result should be populated now by calls to event() by doPoll().
-
-			if(m_result.empty() && !res)
-				res = EAGAIN;
-
-			errno = res;
-			return m_result;
+			zth_dbg(io, "[%s] polling %u items for %d ms", this->id_str(), (unsigned)m_metaItems.size(), timeout_ms);
+			return doPoll(timeout_ms, m_pollItems);
 		}
 
 	protected:
@@ -425,10 +541,12 @@ namespace zth {
 			m_pollItems.resize(m_metaItems.size());
 
 			for(size_t i = doInit; i < m_metaItems.size(); i++)
-				if((res = init(*m_metaItems[i].pollable, m_pollItems[i])))
+				if((res = init(*m_metaItems[i].pollable, m_pollItems[i]))) {
+					m_pollItems.resize(i);
 					break;
+				}
 
-			return 0;
+			return res;
 		}
 
 	private:
@@ -445,13 +563,6 @@ namespace zth {
 		 * #m_metaItems.  #mirror() fixes that.
 		 */
 		PollItemList m_pollItems;
-
-		/*!
-		 * \brief The list of Pollables that have events to be processed.
-		 *
-		 * This is a subset of #m_metaItems.
-		 */
-		Result m_result;
 	};
 
 
@@ -462,10 +573,15 @@ namespace zth {
 	/*!
 	 * \brief A PollerServer that uses \c zmq_poll().
 	 */
-	template <template <typename> typename Allocator = allocator_traits>
+	template <template <typename> typename Allocator = Config::Allocator>
 	class ZmqPoller : public PollerServer<zmq_pollitem_t, Allocator> {
 	public:
 		typedef PollerServer<zmq_pollitem_t, Allocator> base;
+
+		ZmqPoller()
+		{
+			this->setName("zth::ZmqPoller");
+		}
 
 		virtual ~ZmqPoller() override is_default
 
@@ -475,17 +591,25 @@ namespace zth {
 			// Zth only has PollableFds, so this is safe.
 			PollableFd const& pfd = static_cast<PollableFd const&>(p);
 
-			item.socket = nullptr;
+#ifdef ZTH_HAVE_LIBZMQ
+			item.socket = pfd.socket;
+#endif
 			item.fd = pfd.fd;
-			item.events = pfd.events;
+
+			item.events = 0;
+			if((pfd.events.test(Pollable::PollIn)))
+				item.events |= ZMQ_POLLIN;
+			if((pfd.events.test(Pollable::PollOut)))
+				item.events |= ZMQ_POLLOUT;
 			return 0;
 		}
 
-		virtual int doPoll(int timeout_ms, base::PollItemList& items) noexcept override
+		virtual int doPoll(int timeout_ms, typename base::PollItemList& items) noexcept override
 		{
-			int res = zmq_poll(&items[0], items.size(), timeout_ms);
+			zth_assert(items.size() <= std::numeric_limits<int>::max());
+			int res = zmq_poll(&items[0], (int)items.size(), timeout_ms);
 			if(res < 0)
-				return errno;
+				return zmq_errno();
 			if(res == 0)
 				// Timeout.
 				return 0;
@@ -505,7 +629,7 @@ namespace zth {
 						revents |= Pollable::PollErr;
 				}
 
-				event(revents, i);
+				this->event(revents, i);
 			}
 
 			return 0;
@@ -520,10 +644,15 @@ namespace zth {
 	/*!
 	 * \brief A PollerServer that uses the OS's \c poll().
 	 */
-	template <template <typename> typename Allocator = allocator_traits>
+	template <template <typename> typename Allocator = Config::Allocator>
 	class PollPoller : public PollerServer<struct pollfd, Allocator> {
 	public:
 		typedef PollerServer<struct pollfd, Allocator> base;
+
+		PollPoller()
+		{
+			setName("zth::PollPoller");
+		}
 
 		virtual ~PollPoller() override is_default
 
@@ -582,15 +711,20 @@ namespace zth {
 	/*!
 	 * \brief Dummy poller that cannot poll.
 	 */
-	template <template <typename> typename Allocator = allocator_traits>
+	template <template <typename> typename Allocator = Config::Allocator>
 	class NoPoller : public PollerServer<int, Allocator> {
 	public:
 		typedef PollerServer<int, Allocator> base;
 
+		NoPoller()
+		{
+			setName("zth::NoPoller");
+		}
+
 		virtual ~NoPoller() override is_default
 
 	protected:
-		virtual int init(Pollable& UNUSED_PAR(p), int& UNUSED_PAR(item)) override
+		virtual int init(Pollable& UNUSED_PAR(p), int& UNUSED_PAR(item)) noexcept override
 		{
 			return EINVAL;
 		}
@@ -615,37 +749,53 @@ namespace zth {
 	/*!
 	 * \brief The poller to be used by a fiber.
 	 *
-	 * All poll requests are forwarded to the PollServer, as managed by the
+	 * All poll requests are forwarded to the PollerServer, as managed by the
 	 * current Worker's Waiter.
 	 */
-	template <template <typename> typename Allocator = allocator_traits>
+	template <template <typename> typename Allocator = Config::Allocator>
 	class PollerClient : public PollerClientBase<Allocator> {
-		typedef std::set<Pollable*, Allocator<Pollable*>::allocator_type> Pollables;
+		typedef small_vector<Pollable*, 1, typename Allocator<Pollable*>::type> Pollables;
 
 	public:
 		typedef PollerClientBase<Allocator> base;
-		using base::Result;
+		using typename base::Result;
 
-		constexpr PollerBase() noexcept
-			: m_fiber()
-		{}
-
-#if __cplusplus >= 201103L
-		Poller(std::initializer_list<Pollable&> l)
+		PollerClient()
 			: m_fiber()
 		{
-			m_pollables.insert(l);
-			m_result.reserve(m_pollables.size());
+			this->setName("zth::PollerClient");
+		}
+
+#if __cplusplus >= 201103L
+		PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l)
+			: m_fiber()
+		{
+			errno = add(l);
+
+#  ifdef __cpp_exceptions
+			switch(errno) {
+			case 0: break;
+			case ENOMEM: throw std::bad_alloc();
+			default: throw std::runtime_error("");
+			}
+#  endif
 		}
 #endif
 
 		virtual ~PollerClient() override is_default
 
+		virtual void reserve(size_t more) override
+		{
+			m_pollables.reserve(m_pollables.size() + more);
+			m_result.reserve(m_pollables.capacity());
+		}
+
 		virtual int add(Pollable& p) override
 		{
 			__try {
 				m_result.reserve(m_pollables.size() + 1u);
-				return m_pollables.insert(&p).second ? 0 : EALREADY;
+				m_pollables.push_back(&p);
+				return 0;
 			} __catch(...) {
 				return ENOMEM;
 			}
@@ -653,7 +803,16 @@ namespace zth {
 
 		virtual int remove(Pollable& p) noexcept override
 		{
-			return m_pollables.erase(&p) ? 0 : EAGAIN;
+			for(size_t i = m_pollables.size(); i > 0; i--) {
+				Pollable*& pi = m_pollables[i - 1u];
+				if(pi == &p) {
+					pi = m_pollables.back();
+					m_pollables.pop_back();
+					return 0;
+				}
+			}
+
+			return EAGAIN;
 		}
 
 		virtual Result const& poll(int timeout_ms) noexcept override
@@ -665,28 +824,34 @@ namespace zth {
 				return m_result;
 			}
 
-			PollerBase<Allocator>* p = currentWorker().waiter().poller();
-			if(!p) {
-				errno = ESRCH;
-				return m_result;
-			}
+			Waiter& waiter = currentWorker().waiter();
+			PollerServerBase& p = waiter.poller();
 
 			m_fiber = &currentFiber();
 
 			// Add all our pollables to the server.
-			for(Pollables::iterator it = m_pollables.begin(); it != m_pollables.end(); ++it)
-				p->add(**it, this);
+			for(size_t i = 0; i < m_pollables.size(); i++)
+				p.add(*m_pollables[i], this);
 
 			// Go do the poll.
-			if(timeout_ms == 0) {
-				// Do it immediately, in the current fiber's context.
-				p->poll(0);
+			zth_dbg(io, "[%s] polling %u items for %d ms", this->id_str(), (unsigned)m_pollables.size(), timeout_ms);
+
+			// First try, in the current fiber's context.
+			int res = p.poll(0);
+
+			if(!m_result.empty()) {
+				// Completed already.
+			} if(res && res != EAGAIN) {
+				// Completed with an error.
+			} if(timeout_ms == 0) {
+				// Just tried. Got nothing, apparently.
 			} else if(timeout_ms < 0) {
 				// Wait for the event callback.
+				waiter.wakeup();
 				suspend();
 			} else {
 				TimedWaitable w(Timestamp::now() + TimeInterval(timeout_ms / 1000L, (timeout_ms * 1000000L) % 1000000000L));
-				w.setFiber(m_fiber);
+				w.setFiber(*m_fiber);
 				scheduleTask(w);
 				// Wait for the event callback or a timeout.
 				suspend();
@@ -694,11 +859,14 @@ namespace zth {
 			}
 
 			// Remove our pollables from the server.
-			for(Pollables::iterator it = m_pollables.rbegin(); it != m_pollables.rend(); ++it)
-				p->remove(**it, this);
+			for(size_t i = m_pollables.size(); i > 0; i--)
+				p.remove(*m_pollables[i - 1u], this);
 
 			// m_result got populated by event().
-			errno = m_result.empty() ? EAGAIN : 0;
+			if(m_result.empty() && !res)
+				res = EAGAIN;
+
+			errno = res;
 			return m_result;
 		}
 
@@ -708,6 +876,11 @@ namespace zth {
 
 			zth_assert(m_fiber);
 			resume(*m_fiber);
+		}
+
+		bool empty() const noexcept final
+		{
+			return m_pollables.empty();
 		}
 
 	private:
@@ -729,6 +902,43 @@ namespace zth {
 
 	// The default Poller to use.
 	typedef PollerClient<> Poller;
+
+	template <typename P>
+	static int poll(P pollable, int timeout_ms = -1)
+	{
+		__try {
+			Poller poller;
+			poller.add(pollable);
+
+			while(true) {
+				Poller::Result const& result = poller.poll(timeout_ms);
+
+				if(result.empty()) {
+					switch(errno) {
+					case EINTR:
+					case EAGAIN:
+						if(timeout_ms == -1)
+							// Retry.
+							continue;
+						ZTH_FALLTHROUGH
+					default:
+						// Error.
+						return errno;
+					}
+				}
+
+				if((result[0]->revents & result[0]->events).any())
+					// Got it.
+					return 0;
+
+				// Hmm, there is another reason we returned...
+				return EIO;
+			}
+		} __catch(...) {
+			return ENOMEM;
+		}
+	}
 } // namespace
+
 #endif // __cplusplus
 #endif // ZTH_POLLER_H
