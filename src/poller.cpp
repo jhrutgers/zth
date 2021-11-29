@@ -31,7 +31,7 @@ namespace zth {
  *
  * \return 0 on success, otherwise an errno
  */
-int PollerInterface::add(std::initializer_list<std::reference_wrapper<Pollable>> l)
+int PollerInterface::add(std::initializer_list<std::reference_wrapper<Pollable>> l) noexcept
 {
 	__try {
 		reserve(l.size());
@@ -238,7 +238,7 @@ void PollerClient::reserve(size_t more)
 	m_result.reserve(m_pollables.capacity());
 }
 
-int PollerClient::add(Pollable& p)
+int PollerClient::add(Pollable& p) noexcept
 {
 	__try {
 		m_result.reserve(m_pollables.size() + 1u);

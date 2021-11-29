@@ -150,3 +150,24 @@ TEST(Poller, Zmq)
 }
 #endif // ZmqPoller
 
+TEST(Poller, Migrate)
+{
+	zth::PollableFd fd(0, zth::Pollable::PollIn);
+
+	zth::DefaultPollerServer s1;
+	EXPECT_TRUE(s1.empty());
+
+	zth::DefaultPollerServer s2;
+	EXPECT_TRUE(s2.empty());
+
+	EXPECT_EQ(s1.add(fd), 0);
+	EXPECT_FALSE(s1.empty());
+	EXPECT_TRUE(s2.empty());
+
+	s1.migrateTo(s2);
+	EXPECT_TRUE(s1.empty());
+	EXPECT_FALSE(s2.empty());
+
+	EXPECT_EQ(s2.remove(fd), 0);
+}
+

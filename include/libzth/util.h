@@ -614,6 +614,22 @@ namespace zth {
 
 	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = NULL;
 
+	/*!
+	 * \brief A simple std::vector, which can contain \p Prealloc without heap allocation.
+	 *
+	 * When the internal buffer is exhausted, the vector grows automatically
+	 * into an std::vector, using heap memory after all.
+	 *
+	 * In all cases, the elements are stored in contiguous memory, like
+	 * guaranteed by std::vector.  Upon a #push_back(), underlying memory may
+	 * be reallocated to accommodate the new element, which renders previous
+	 * pointers invalid.
+	 *
+	 * \tparam T the type of elements to contain
+	 * \tparam Prealloc the minimum number of elements to contain without using heap
+	 * \tparam Allocator the allocator to use for std::vector
+	 * \ingroup zth_api_cpp_util
+	 */
 	template <typename T, int8_t Prealloc = 1, typename Allocator = typename Config::Allocator<T>::type>
 	class small_vector {
 	public:
@@ -626,78 +642,129 @@ namespace zth {
 			prealloc_request_size = prealloc_request * sizeof(value_type),
 			vector_size = sizeof(vector_type),
 			buffer_size = prealloc_request_size > vector_size ? prealloc_request_size : vector_size,
-			prealloc_size = buffer_size / sizeof(value_type),
+			prealloc = buffer_size / sizeof(value_type),
 		};
 
-		small_vector()
+		/*!
+		 * \brief Default ctor.
+		 */
+		constexpr small_vector()
 			: m_size()
 		{
-			static_assert(prealloc_size < std::numeric_limits<uint8_t>::max(), "");
+			static_assert(prealloc < std::numeric_limits<uint8_t>::max(), "");
 		}
 
+		/*!
+		 * \brief Dtor.
+		 */
 		~small_vector()
 		{
 			if(is_small())
 				resize(0);
+			else
+				vector().~vector_type();
 		}
 
-		value_type& operator[](size_t index)
+		/*!
+		 * \brief Access an element.
+		 */
+		value_type& operator[](size_t index) noexcept
 		{
 			zth_assert(index < size());
 			return data()[index];
 		}
 
-		value_type const& operator[](size_t index) const
+		/*!
+		 * \brief Access an element.
+		 */
+		value_type const& operator[](size_t index) const noexcept
 		{
 			zth_assert(index < size());
 			return data()[index];
 		}
 
-		value_type& front()
+		/*!
+		 * \brief Access the first element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type& front() noexcept
 		{
 			return (*this)[0];
 		}
 
-		value_type const& front() const
+		/*!
+		 * \brief Access the first element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type const& front() const noexcept
 		{
 			return (*this)[0];
 		}
 
-		value_type& back()
+		/*!
+		 * \brief Access the last element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type& back() noexcept
 		{
 			zth_assert(!empty());
 			return (*this)[size() - 1u];
 		}
 
-		value_type const& back() const
+		/*!
+		 * \brief Access the last element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type const& back() const noexcept
 		{
 			zth_assert(!empty());
 			return (*this)[size() - 1u];
 		}
 
+		/*!
+		 * \brief Access the data array.
+		 */
 		value_type* data() noexcept
 		{
 			return is_small() ? array() : vector().data();
 		}
 
+		/*!
+		 * \brief Access the data array.
+		 */
 		value_type const* data() const noexcept
 		{
 			return is_small() ? array() : vector().data();
 		}
 
+		/*!
+		 * \brief Check if the vector is empty.
+		 */
 		bool empty() const noexcept
 		{
 			return is_small() ? m_size == 0 : vector().empty();
 		}
 
-		bool size() const noexcept
+		/*!
+		 * \brief Return the number of elements stored in the vector.
+		 */
+		size_t size() const noexcept
 		{
 			return is_small() ? m_size : vector().size();
 		}
 
+		/*!
+		 * \brief Reserve memory to accommodate at least the given number of elements.
+		 * \exception std::bad_alloc when allocation fails
+		 * \see #capacity()
+		 */
 		void reserve(size_t new_cap)
 		{
-			if(is_small() && new_cap <= prealloc_size)
+			if(is_small() && new_cap <= prealloc)
 				return;
 
 			if(is_small())
@@ -706,12 +773,21 @@ namespace zth {
 			vector().reserve(new_cap);
 		}
 
+		/*!
+		 * \brief Return the number of elements for which memory is currently reesrved.
+		 * \see #reserve()
+		 */
 		size_t capacity() const noexcept
 		{
-			return is_small() ? (size_t)prealloc_size : vector().capacity();
+			return is_small() ? (size_t)prealloc : vector().capacity();
 		}
 
-		void clear()
+		/*!
+		 * \brief Erase all elements from the vector.
+		 *
+		 * This does not release the memory.
+		 */
+		void clear() noexcept
 		{
 			if(is_small())
 				resize(0);
@@ -719,26 +795,58 @@ namespace zth {
 				vector().clear();
 		}
 
+		/*!
+		 * \brief Erase all elements from the vector and release all heap memory.
+		 */
+		void clear_and_release() noexcept
+		{
+			if(is_small()) {
+				resize(0);
+			} else {
+				vector_type v;
+				v.swap(vector());
+			}
+		}
+
+		/*!
+		 * \brief Append an element to the vector using the copy constructor.
+		 * \exception std::bad_alloc when allocation fails
+		 */
 		void push_back(value_type const& v)
 		{
-			if(m_size < prealloc_size)
-				new(&array()[m_size++]) value_type(v);
-			else
+			reserve(size() + 1u);
+
+			if(m_size < prealloc) {
+				new(&array()[m_size]) value_type(v);
+				m_size++;
+			} else
 				vector().push_back(v);
 		}
 
 #if __cplusplus >= 201103L
+		/*!
+		 * \brief Append an element to the vector by construct in-place.
+		 * \exception std::bad_alloc when allocation fails
+		 */
 		template< class... Args >
 		void emplace_back(Args&&... args)
 		{
-			if(m_size < prealloc_size)
-				new(&array()[m_size++]) value_type(std::forward<Args>(args)...);
-			else
+			reserve(size() + 1u);
+
+			if(m_size < prealloc) {
+				new(&array()[m_size]) value_type(std::forward<Args>(args)...);
+				m_size++;
+			} else
 				vector().emplace_back(std::forward<Args>(args)...);
 		}
 #endif
 
-		void pop_back()
+		/*!
+		 * \brief Remove the last element.
+		 *
+		 * Make sure the vector is not #empty() before calling.
+		 */
+		void pop_back() noexcept
 		{
 			zth_assert(!empty());
 			if(is_small())
@@ -747,15 +855,22 @@ namespace zth {
 				vector().pop_back();
 		}
 
+		/*!
+		 * \brief Resize the number of elements in the vector.
+		 * \param count the requested number of elements
+		 * \param x the value to save for newly constructed elements
+		 */
 		void resize(size_t count, value_type const& x = value_type())
 		{
 			if(is_small()) {
 				while(count < m_size)
 					array()[--m_size].~value_type();
 
-				if(count <= prealloc_size) {
-					while(count > m_size)
-						new(&array()[m_size++]) value_type(x);
+				if(count <= prealloc) {
+					while(count > m_size) {
+						new(&array()[m_size]) value_type(x);
+						m_size++;
+					}
 				} else {
 					make_vector(count);
 					vector().resize(count, x);
@@ -765,28 +880,50 @@ namespace zth {
 		}
 
 	protected:
-		bool is_small() const noexcept { return m_size <= prealloc_size; }
+		/*!
+		 * \brief Check if the current vector still fits in the internal buffer.
+		 */
+		bool is_small() const noexcept { return m_size <= prealloc; }
 
+		/*!
+		 * \brief Interpret buffer as the small vector.
+		 */
 		value_type* array() noexcept
 		{
+			zth_assert(is_small());
 			return reinterpret_cast<value_type*>(m_buffer);
 		}
 
+		/*!
+		 * \brief Interpret buffer as the small vector.
+		 */
 		value_type const* array() const noexcept
 		{
+			zth_assert(is_small());
 			return reinterpret_cast<value_type const*>(m_buffer);
 		}
 
+		/*!
+		 * \brief Interpret buffer as an std::vector.
+		 */
 		vector_type& vector() noexcept
 		{
+			zth_assert(!is_small());
 			return *reinterpret_cast<vector_type*>(m_buffer);
 		}
 
+		/*!
+		 * \brief Interpret buffer as an std::vector.
+		 */
 		vector_type const& vector() const noexcept
 		{
+			zth_assert(!is_small());
 			return *reinterpret_cast<vector_type const*>(m_buffer);
 		}
 
+		/*!
+		 * \brief Make sure the std::vector is used as storage.
+		 */
 		void make_vector(size_t new_cap)
 		{
 			if(!is_small())
@@ -804,13 +941,24 @@ namespace zth {
 				array()[i].~value_type();
 			}
 
-			m_size = prealloc_size + 1u;
+			m_size = prealloc + 1u;
 			new(m_buffer) vector_type;
 			vector().swap(v);
 		}
 
 	private:
+		/*!
+		 * \brief The buffer that holds either an array of \c value_types, or an std::vector instance.
+		 */
 		alignas(vector_type) alignas(value_type) char m_buffer[buffer_size];
+
+		/*!
+		 * \brief The number of elements in the array.
+		 *
+		 * If the value is larger than \c prealloc, #m_buffer contains an
+		 * std::vector instance, otherwise #m_buffer is an array of \c prealloc
+		 * elements.
+		 */
 		uint8_t m_size;
 	};
 } // namespace

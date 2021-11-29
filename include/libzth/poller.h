@@ -77,6 +77,9 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	struct Pollable {
+		/*!
+		 * \brief Flags to be used with #events and #revents.
+		 */
 		enum EventsFlags {
 			PollInIndex, PollOutIndex, PollErrIndex, PollPriIndex, PollHupIndex, FlagCount,
 
@@ -84,14 +87,37 @@ namespace zth {
 			PollErr = 1U << PollErrIndex, PollPri = 1U << PollPriIndex, PollHup = 1U << PollHupIndex,
 		};
 
+		/*! \brief Type of #events and #revents. */
 		typedef std::bitset<FlagCount> Events;
 
+		/*!
+		 * \brief Ctor.
+		 */
 		constexpr explicit Pollable(Events e, void* user = nullptr) noexcept
 			: user_data(user), events(e), revents()
 		{}
 
+		/*!
+		 * \brief User data.
+		 *
+		 * This can be changed, even after adding a Pollable to a Poller.
+		 */
 		void* user_data;
+
+		/*!
+		 * \brief Events to poll.
+		 *
+		 * Do not change these events after adding the Pollable to a Poller.
+		 *
+		 * Not every PollerServer may support all flags.
+		 */
 		Events events;
+
+		/*!
+		 * \brief Returned events by a poll.
+		 *
+		 * Do not set manually, let the Poller do that.
+		 */
 		Events revents;
 	};
 
@@ -103,6 +129,12 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	struct PollableFd : public Pollable {
+		/*!
+		 * \brief Ctor for a file descriptor.
+		 *
+		 * Do not pass ZeroMQ sockets as a file descriptor.
+		 * Use the socket \c void* for that.
+		 */
 		constexpr PollableFd(int fd, Events e, void* user = nullptr) noexcept
 			: Pollable(e, user)
 #ifdef ZTH_HAVE_LIBZMQ
@@ -112,12 +144,28 @@ namespace zth {
 		{}
 
 #ifdef ZTH_HAVE_LIBZMQ
+		/*!
+		 * \brief Ctor for a ZeroMQ socket.
+		 */
 		constexpr PollableFd(void* socket, Events e, void* user = nullptr) noexcept
 			: Pollable(e, user), socket(socket), fd()
 		{}
 
+		/*!
+		 * \brief The ZeroMQ socket.
+		 *
+		 * If set, it #fd is ignored.
+		 * Do not change the value after adding the Pollable to a Poller.
+		 */
 		void* socket;
 #endif
+
+		/*!
+		 * \brief The file descriptor.
+		 *
+		 * If #socket is set, this field is ignored.
+		 * Do not change the value after adding the Pollable to a Poller.
+		 */
 		int fd;
 	};
 
@@ -147,10 +195,10 @@ namespace zth {
 		 *
 		 * \return 0 on success, otherwise an errno
 		 */
-		virtual int add(Pollable& p) = 0;
+		virtual int add(Pollable& p) noexcept = 0;
 
 #if __cplusplus >= 201103L
-		int add(std::initializer_list<std::reference_wrapper<Pollable>> l);
+		int add(std::initializer_list<std::reference_wrapper<Pollable>> l) noexcept;
 #endif
 
 		/*!
@@ -172,6 +220,15 @@ namespace zth {
 		virtual bool empty() const noexcept = 0;
 	};
 
+	/*!
+	 * \brief The abstract base class of a Poller client.
+	 *
+	 * A call to #poll() forwards all registered Pollables to the server.  When
+	 * a Pollable has an event, the server passes it to the client via
+	 * #event().
+	 *
+	 * \ingroup zth_api_cpp_poller
+	 */
 	class PollerClientBase : public PollerInterface {
 	public:
 		virtual ~PollerClientBase() override is_default
@@ -201,12 +258,31 @@ namespace zth {
 		virtual void event(Pollable& p) noexcept = 0;
 	};
 
+	/*!
+	 * \brief Abstract base class of a Poller server.
+	 * \ingroup zth_api_cpp_poller
+	 */
 	class PollerServerBase : public PollerInterface {
 	public:
 		typedef PollerClientBase Client;
+
 		virtual ~PollerServerBase() override is_default
+
+		/*!
+		 * \brief Poll.
+		 *
+		 * The Pollables with events are not saved in the server,
+		 * but these are forwarded to the registered Client.
+		 *
+		 * \return 0 when a Pollable returned an event, otherwise an errno
+		 */
 		virtual int poll(int timeout_ms) noexcept = 0;
-		virtual int migrateTo(PollerServerBase& p) = 0;
+
+		/*!
+		 * \brief Move all registered Pollables to another server.
+		 * \return 0 on success, otherwise an errno
+		 */
+		virtual int migrateTo(PollerServerBase& p) noexcept = 0;
 
 		/*!
 		 * \brief Add a Pollable, that belongs to a given client.
@@ -215,7 +291,7 @@ namespace zth {
 		 *
 		 * \return 0 on success, otherwise an errno
 		 */
-		virtual int add(Pollable& p, Client* client) = 0;
+		virtual int add(Pollable& p, Client* client) noexcept = 0;
 
 		/*!
 		 * \brief Remove the given Pollable, belonging to the given client.
@@ -224,7 +300,7 @@ namespace zth {
 		 *
 		 * \return 0 on success, otherwise an errno
 		 */
-		virtual int remove(Pollable& p, Client* client) = 0;
+		virtual int remove(Pollable& p, Client* client) noexcept = 0;
 	};
 
 
@@ -247,10 +323,11 @@ namespace zth {
 	 * Pollables to these things.
 	 *
 	 * The subclass must implement \c init() to initialize this thing, and
-	 * \c doPoll() to perform the actual poll.
+	 * \c doPoll() to perform the actual poll. Implement \c deinit() to do
+	 * cleanup of that thing before destruction.
 	 *
-	 * \tparam Item_ the item to be used as the actual poll thing
-	 * \tparam Allocator the allocator type to use for dynamic memory allocations
+	 * \tparam PollItem_ the item to be used as the actual poll thing
+	 * \ingroup zth_api_cpp_poller
 	 */
 	template <typename PollItem_>
 	class PollerServer : public PollerServerBase {
@@ -258,6 +335,9 @@ namespace zth {
 		typedef PollerServerBase base;
 		using base::Client;
 
+		/*!
+		 * \brief Ctor.
+		 */
 		PollerServer() is_default
 
 #if __cplusplus >= 201103L
@@ -278,9 +358,14 @@ namespace zth {
 			zth_assert(empty());
 		}
 
-		virtual int migrateTo(PollerServerBase& p) override
+		virtual int migrateTo(PollerServerBase& p) noexcept override
 		{
-			p.reserve(m_metaItems.size());
+			__try {
+				p.reserve(m_metaItems.size());
+			} __catch(...) {
+				return ENOMEM;
+			}
+
 			size_t added = 0;
 
 			for(size_t i = 0; i < m_metaItems.size(); i++) {
@@ -301,13 +386,9 @@ namespace zth {
 			clear();
 
 			// Really release all memory. This object is probably not used
-			// anymore. Swap to local variables, which will release all memory
-			// when going out of scope.
-			decltype(m_metaItems) dummyMeta;
-			m_metaItems.swap(dummyMeta);
-
-			decltype(m_pollItems) dummyPoll;
-			m_pollItems.swap(dummyPoll);
+			// anymore.
+			m_metaItems.clear_and_release();
+			m_pollItems.clear_and_release();
 
 			return 0;
 		}
@@ -318,7 +399,7 @@ namespace zth {
 			m_pollItems.reserve(m_metaItems.capacity());
 		}
 
-		int add(Pollable& p, Client* client) final
+		int add(Pollable& p, Client* client) noexcept final
 		{
 			__try {
 				MetaItem m = { &p, client };
@@ -341,18 +422,19 @@ namespace zth {
 			else
 				zth_dbg(io, "[%s] added pollable %p", this->id_str(), &p);
 
+			zth_assert(m_metaItems.size() >= m_pollItems.size());
 			currentWorker().waiter().wakeup();
 			return 0;
 		}
 
-		int add(Pollable& p) final
+		int add(Pollable& p) noexcept final
 		{
 			return add(p, nullptr);
 		}
 
 		int remove(Pollable& p, Client* client) noexcept final
 		{
-			size_t count = m_pollItems.size();
+			size_t count = m_metaItems.size();
 
 			size_t i;
 			for(i = count; i > 0; i--) {
@@ -392,6 +474,7 @@ namespace zth {
 			}
 
 			zth_dbg(io, "[%s] removed pollable %p", this->id_str(), &p);
+			zth_assert(m_metaItems.size() >= m_pollItems.size());
 			return 0;
 		}
 
@@ -454,12 +537,15 @@ namespace zth {
 
 	protected:
 		typedef PollItem_ PollItem;
-		typedef std::vector<PollItem, typename Config::Allocator<PollItem>::type> PollItemList;
+
+		/*! \brief Type of list of poll things. */
+		typedef small_vector<PollItem, 4> PollItemList;
 
 		/*!
 		 * \brief Register an \c revents for the PollItem at the given index.
 		 *
 		 * This function should be called by \c doPoll().
+		 * Events are forwarded to the client registered with the Pollable.
 		 */
 		void event(Pollable::Events revents, size_t index) noexcept
 		{
@@ -494,7 +580,6 @@ namespace zth {
 		 * there are \c revents.
 		 *
 		 * \param timeout_ms the timeout for the polling
-		 * \param meta the list of MetaItems, of which the indices matches with the \p items
 		 * \param items the items, as initialized by #init().
 		 * \return 0 on success, otherwise an errno
 		 */
@@ -518,6 +603,7 @@ namespace zth {
 					break;
 				}
 
+			zth_assert(m_metaItems.size() == m_pollItems.size());
 			return res;
 		}
 
@@ -530,7 +616,7 @@ namespace zth {
 			Client* client;
 		};
 
-		typedef std::vector<MetaItem, typename Config::Allocator<MetaItem>::type> MetaItemList;
+		typedef small_vector<MetaItem, PollItemList::prealloc> MetaItemList;
 
 		/*!
 		 * \brief All registered Pollables.
@@ -554,6 +640,7 @@ namespace zth {
 
 	/*!
 	 * \brief A PollerServer that uses \c zmq_poll().
+	 * \ingroup zth_api_cpp_poller
 	 */
 	class ZmqPoller : public PollerServer<zmq_pollitem_t> {
 	public:
@@ -574,6 +661,7 @@ namespace zth {
 
 	/*!
 	 * \brief A PollerServer that uses the OS's \c poll().
+	 * \ingroup zth_api_cpp_poller
 	 */
 	class PollPoller : public PollerServer<struct pollfd> {
 	public:
@@ -595,6 +683,7 @@ namespace zth {
 
 	/*!
 	 * \brief Dummy poller that cannot poll.
+	 * \ingroup zth_api_cpp_poller
 	 */
 	class NoPoller final : public PollerServer<int> {
 	public:
@@ -641,7 +730,7 @@ namespace zth {
 		virtual ~PollerClient() override;
 
 		virtual void reserve(size_t more) override;
-		virtual int add(Pollable& p) override;
+		virtual int add(Pollable& p) noexcept override;
 		using base::add;
 		virtual int remove(Pollable& p) noexcept override;
 
