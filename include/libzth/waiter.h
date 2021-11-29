@@ -35,6 +35,7 @@ namespace zth {
 		virtual bool poll(Timestamp const& now = Timestamp::now()) = 0;
 		virtual std::string str() const { return format("Waitable for %s", fiber().str().c_str()); }
 		void setFiber(Fiber& fiber) { m_fiber = &fiber; }
+		void resetFiber() { m_fiber = nullptr; }
 		bool hasFiber() const { return m_fiber; }
 	private:
 		Fiber* m_fiber;
@@ -42,7 +43,7 @@ namespace zth {
 
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 	public:
-		TimedWaitable(Timestamp const& timeout) : m_timeout(timeout) {}
+		TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
 		Timestamp const& timeout() const { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { return timeout() <= now; }
@@ -115,6 +116,7 @@ namespace zth {
 		void wait(TimedWaitable& w);
 		void scheduleTask(TimedWaitable& w);
 		void unscheduleTask(TimedWaitable& w);
+		void wakeup(TimedWaitable& w);
 
 		PollerServerBase& poller();
 		void setPoller(PollerServerBase* p = nullptr);
@@ -157,6 +159,7 @@ namespace zth {
 
 	void scheduleTask(TimedWaitable& w);
 	void unscheduleTask(TimedWaitable& w);
+	void wakeup(TimedWaitable& w);
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber

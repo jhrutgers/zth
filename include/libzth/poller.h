@@ -193,7 +193,7 @@ namespace zth {
 		 * \return The registered pollables that have an event set.
 		 *         If the result is empty, \c errno is set to the error.
 		 */
-		virtual Result const& poll(int timeout_ms) noexcept = 0;
+		virtual Result const& poll(int timeout_ms = -1) noexcept = 0;
 
 		/*!
 		 * \brief Indicate that the given pollable got an event.
@@ -341,6 +341,7 @@ namespace zth {
 			else
 				zth_dbg(io, "[%s] added pollable %p", this->id_str(), &p);
 
+			currentWorker().waiter().wakeup();
 			return 0;
 		}
 
@@ -644,14 +645,14 @@ namespace zth {
 		using base::add;
 		virtual int remove(Pollable& p) noexcept override;
 
-		virtual Result const& poll(int timeout_ms) noexcept override;
+		virtual Result const& poll(int timeout_ms = -1) noexcept override;
 		virtual void event(Pollable& p) noexcept override;
 
 		bool empty() const noexcept final;
 
 	private:
 		/*! \brief The fiber that waits for this Poller.  */
-		Fiber* m_fiber;
+		TimedWaitable m_wait;
 
 		/*! \brief All %Pollables to poll. */
 		Pollables m_pollables;

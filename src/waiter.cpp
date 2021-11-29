@@ -87,6 +87,24 @@ void Waiter::unscheduleTask(TimedWaitable& w)
 		m_waiting.erase(w);
 }
 
+void wakeup(TimedWaitable& w)
+{
+	currentWorker().waiter().wakeup(w);
+}
+
+void Waiter::wakeup(TimedWaitable& w)
+{
+	if(m_waiting.contains(w)) {
+		m_waiting.erase(w);
+
+		if(w.hasFiber()) {
+			w.fiber().wakeup();
+			m_worker.add(&w.fiber());
+			w.resetFiber();
+		}
+	}
+}
+
 PollerServerBase& Waiter::poller()
 {
 	if(m_poller)
@@ -160,6 +178,11 @@ void Waiter::entry()
 			} else {
 				// Reinsert, as the timeout() might have changed (and therefore the position in the list).
 				m_waiting.insert(w);
+
+				// Update administration, although that does not influence the actual sleep time.
+				// It is mostly handy for debugging while printing fiber information.
+				if(Config::Debug && w.hasFiber())
+					w.fiber().nap(w.timeout());
 			}
 		}
 

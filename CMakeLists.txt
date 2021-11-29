@@ -16,6 +16,13 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
       cmake ..")
 endif()
 
+option(ZTH_DEV "Enable by default development related build options" OFF)
+if(ZTH_DEV)
+	set(ZTH_DEV_OPTION ON)
+else()
+	set(ZTH_DEV_OPTION OFF)
+endif()
+
 option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
 if(ZTH_HAVE_LIBZMQ)
 	if(MINGW)
@@ -123,16 +130,25 @@ if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
-option(ZTH_TESTS "Run the tests" ON)
-if(ZTH_TESTS)
-	enable_testing()
-
-	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17.0")
-		set(CTEST_OUTPUT_ON_FAILURE 1)
-		list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
+	if(CMAKE_CROSSCOMPILING)
+		set(ZTH_TESTS_DEFAULT OFF)
+	else()
+		set(ZTH_TESTS_DEFAULT ${ZTH_DEV_OPTION})
 	endif()
 
-	add_subdirectory(tests)
+	option(ZTH_TESTS "Build the tests" ${ZTH_TESTS_DEFAULT})
+
+	if(ZTH_TESTS)
+		enable_testing()
+
+		if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17.0")
+			set(CTEST_OUTPUT_ON_FAILURE 1)
+			list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+		endif()
+
+		add_subdirectory(tests)
+	endif()
 endif()
 
 find_package(Doxygen)

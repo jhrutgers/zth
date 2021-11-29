@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 function gotErr {
 	echo -e "\nError occurred, stopping\n"
 	exit 1
@@ -23,7 +25,8 @@ pushd "$( cd "$(dirname "$0")"/..; pwd -P )" > /dev/null
 if [ -z "$1" ]; then
 	BUILD_TYPE=Release
 else
-	BUILD_TYPE=$1
+	BUILD_TYPE="$1"
+	shift
 fi
 
 git submodule init
@@ -42,7 +45,7 @@ case `uname -s` in
 		export CXX=g++
 		;;
 esac
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
+cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" "$@" ..
 cmake --build . -- -j`numproc` all
 popd > /dev/null
 

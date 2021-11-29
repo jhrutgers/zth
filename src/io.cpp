@@ -45,13 +45,37 @@ ssize_t read(int fd, void* buf, size_t count) {
 		return ::read(fd, buf, count);
 	}
 
-	zth::Poller poller;
 	if((errno = zth::poll(PollableFd(fd, Pollable::PollIn), -1)))
 		return -1;
 
 	// Got data to read.
 	zth_dbg(io, "[%s] read(%d)", currentFiber().str().c_str(), fd);
 	return ::read(fd, buf, count);
+}
+
+/*!
+ * \brief Like normal \c %write(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
+ * \ingroup zth_api_cpp_io
+ */
+ssize_t write(int fd, void const* buf, size_t count) {
+	perf_syscall("write()");
+
+	int flags = fcntl(fd, F_GETFL);
+	if(unlikely(flags == -1))
+		return -1; // with errno set
+
+	if((flags & O_NONBLOCK)) {
+		zth_dbg(io, "[%s] write(%d) non-blocking", currentFiber().str().c_str(), fd);
+		// Just do the call.
+		return ::write(fd, buf, count);
+	}
+
+	if((errno = zth::poll(PollableFd(fd, Pollable::PollOut), -1)))
+		return -1;
+
+	// Go write the data.
+	zth_dbg(io, "[%s] write(%d)", currentFiber().str().c_str(), fd);
+	return ::write(fd, buf, count);
 }
 
 } } // namespace

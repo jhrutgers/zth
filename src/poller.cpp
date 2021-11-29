@@ -211,14 +211,12 @@ int NoPoller::doPoll(int timeout_ms, base::PollItemsList& items) noexcept
 //
 
 PollerClient::PollerClient()
-	: m_fiber()
 {
 	this->setName("zth::PollerClient");
 }
 
 #if __cplusplus >= 201103L
 PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l)
-	: m_fiber()
 {
 	errno = add(l);
 
@@ -278,8 +276,6 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 	Waiter& waiter = currentWorker().waiter();
 	PollerServerBase& p = waiter.poller();
 
-	m_fiber = &currentFiber();
-
 	// Add all our pollables to the server.
 	for(size_t i = 0; i < m_pollables.size(); i++)
 		p.add(*m_pollables[i], this);
@@ -288,25 +284,24 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 	zth_dbg(io, "[%s] polling %u items for %d ms", id_str(), (unsigned)m_pollables.size(), timeout_ms);
 
 	// First try, in the current fiber's context.
+	m_wait = TimedWaitable();
 	int res = p.poll(0);
 
 	if(!m_result.empty()) {
 		// Completed already.
-	} if(res && res != EAGAIN) {
+	} else if(res && res != EAGAIN) {
 		// Completed with an error.
-	} if(timeout_ms == 0) {
+	} else if(timeout_ms == 0) {
 		// Just tried. Got nothing, apparently.
 	} else if(timeout_ms < 0) {
 		// Wait for the event callback.
-		waiter.wakeup();
+		zth_dbg(io, "[%s] hand-off to server", id_str());
+		m_wait.setFiber(currentFiber());
 		suspend();
 	} else {
-		TimedWaitable w(Timestamp::now() + TimeInterval(timeout_ms / 1000L, (timeout_ms * 1000000L) % 1000000000L));
-		w.setFiber(*m_fiber);
-		scheduleTask(w);
-		// Wait for the event callback or a timeout.
-		suspend();
-		unscheduleTask(w);
+		zth_dbg(io, "[%s] hand-off to server with timeout", id_str());
+		m_wait = TimedWaitable(Timestamp::now() + TimeInterval(timeout_ms / 1000L, (timeout_ms * 1000000L) % 1000000000L));
+		waitUntil(m_wait);
 	}
 
 	// Remove our pollables from the server.
@@ -330,8 +325,13 @@ void PollerClient::event(Pollable& p) noexcept
 {
 	m_result.push_back(&p);
 
-	zth_assert(m_fiber);
-	resume(*m_fiber);
+	if(!m_wait.timeout().isNull()) {
+		// Managed by the waiter
+		currentWorker().waiter().wakeup(m_wait);
+	} else if(m_wait.hasFiber()) {
+		// Just suspended.
+		resume(m_wait.fiber());
+	}
 }
 
 bool PollerClient::empty() const noexcept
