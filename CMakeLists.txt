@@ -46,6 +46,7 @@ add_library(libzth
 	src/io.cpp
 	src/main.cpp
 	src/perf.cpp
+	src/poller.cpp
 	src/time.cpp
 	src/util.cpp
 	src/waiter.cpp

@@ -227,6 +227,58 @@ namespace zth {
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void log(char const* fmt, ...) {
 		va_list args; va_start(args, fmt); logv(fmt, args); va_end(args); }
 
+	/*!
+	 * \brief Wrapper for Config::Allocator::type::allocate().
+	 */
+	template <typename T>
+	__attribute__((warn_unused_result)) static inline T* allocate(size_t n = 1) {
+		typename Config::Allocator<T>::type allocator;
+		return allocator.allocate(n);
+	}
+
+	template <typename T>
+	__attribute__((warn_unused_result)) static inline T* new_alloc() {
+		T* o = allocate<T>(1);
+		new(o) T;
+		return o;
+	}
+
+	template <typename T, typename Arg>
+	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg const& arg) {
+		T* o = allocate<T>(1);
+		new(o) T(arg);
+		return o;
+	}
+
+#if __cplusplus >= 201103L
+	template <typename T, typename... Arg>
+	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg) {
+		T* o = allocate<T>(1);
+		new(o) T(std::forward<Arg>(arg)...);
+		return o;
+	}
+#endif
+
+	/*!
+	 * \brief Wrapper for Config::Allocator::type::deallocate().
+	 */
+	template <typename T>
+	static inline void deallocate(T* p, size_t n = 1) noexcept
+	{
+		typename Config::Allocator<T>::type allocator;
+		allocator.deallocate(p, n);
+	}
+
+	template <typename T>
+	static inline void delete_alloc(T* p) noexcept
+	{
+		if(unlikely(!p))
+			return;
+
+		p->~T();
+		deallocate(p, 1);
+	}
+
 	class cow_string {
 	public:
 		cow_string() : m_cstr() {}
@@ -670,7 +722,7 @@ namespace zth {
 		void push_back(value_type const& v)
 		{
 			if(m_size < prealloc_size)
-				new(array()[m_size++]) value_type(v);
+				new(&array()[m_size++]) value_type(v);
 			else
 				vector().push_back(v);
 		}
@@ -680,7 +732,7 @@ namespace zth {
 		void emplace_back(Args&&... args)
 		{
 			if(m_size < prealloc_size)
-				new(array()[m_size++]) value_type(std::forward<Args>(args)...);
+				new(&array()[m_size++]) value_type(std::forward<Args>(args)...);
 			else
 				vector().emplace_back(std::forward<Args>(args)...);
 		}
@@ -703,7 +755,7 @@ namespace zth {
 
 				if(count <= prealloc_size) {
 					while(count > m_size)
-						new(array()[m_size++]) value_type(x);
+						new(&array()[m_size++]) value_type(x);
 				} else {
 					make_vector(count);
 					vector().resize(count, x);

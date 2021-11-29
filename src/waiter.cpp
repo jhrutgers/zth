@@ -32,7 +32,7 @@ Waiter::Waiter(Worker& worker)
 Waiter::~Waiter()
 {
 	if(m_defaultPoller)
-		delete m_defaultPoller;
+		delete_alloc(m_defaultPoller);
 }
 
 void waitUntil(TimedWaitable& w)
@@ -94,7 +94,7 @@ PollerServerBase& Waiter::poller()
 	if(m_defaultPoller)
 		return *m_defaultPoller;
 
-	m_defaultPoller = new DefaultPoller;
+	m_defaultPoller = new_alloc<DefaultPollerServer>();
 	return *m_defaultPoller;
 }
 
@@ -130,7 +130,7 @@ void Waiter::setPoller(PollerServerBase* p)
 		// Replace poller by default one.
 		if(!m_defaultPoller && !m_poller->empty()) {
 			// ...but it doesn't exist yet and we need it.
-			m_defaultPoller = new DefaultPoller;
+			m_defaultPoller = new_alloc<DefaultPollerServer>();
 		}
 
 		if(m_defaultPoller)
@@ -178,8 +178,10 @@ void Waiter::entry()
 			m_worker.load().stop(now);
 		}
 
-		Timestamp const* end = &m_waiting.front().timeout();
-		if(!m_worker.runEnd().isNull () && *end > m_worker.runEnd())
+		Timestamp const* end = nullptr;
+		if(!m_waiting.empty())
+			end = &m_waiting.front().timeout();
+		if(!m_worker.runEnd().isNull() && (!end || *end > m_worker.runEnd()))
 			end = &m_worker.runEnd();
 
 		if(polling()) {
