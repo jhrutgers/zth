@@ -39,7 +39,7 @@ namespace zth {
  * \brief Prints a banner line with version and configuration information.
  * \ingroup zth_api_cpp_util
  */
-char const* banner() {
+char const* banner() noexcept {
 	return "Zth " ZTH_VERSION
 #ifdef __GNUC__
 		" g++-" ZTH_STRINGIFY(__GNUC__) "." ZTH_STRINGIFY(__GNUC_MINOR__) "." ZTH_STRINGIFY(__GNUC_PATCHLEVEL__)
@@ -116,7 +116,7 @@ char const* banner() {
  * \brief Aborts the process after printing the given printf() formatted message.
  * \ingroup zth_api_cpp_util
  */
-void abort(char const* fmt, ...)
+void abort(char const* fmt, ...) noexcept
 {
 	va_list args;
 	va_start(args, fmt);
@@ -128,7 +128,7 @@ void abort(char const* fmt, ...)
  * \copybrief zth::abort()
  * \ingroup zth_api_cpp_util
  */
-void abortv(char const* fmt, va_list args)
+void abortv(char const* fmt, va_list args) noexcept
 {
 	static bool recurse = false;
 
@@ -165,7 +165,7 @@ ZTH_INIT_CALL(log_init)
 /*!
  * \brief Returns if the system supports ANSI colors.
  */
-bool log_supports_ansi_colors()
+bool log_supports_ansi_colors() noexcept
 {
 #ifdef ZTH_OS_WINDOWS
 	static int support = 0;
@@ -222,6 +222,42 @@ void log_colorv(int color, char const* fmt, va_list args)
 		log("\x1b[0m");
 }
 
+/*!
+ * \brief Format like \c vsprintf(), but save the result in an \c std::string.
+ */
+std::string formatv(char const* fmt, va_list args)
+{
+	int const maxstack = (int)sizeof(void*) * 8;
+
+	char sbuf[maxstack];
+	char* hbuf = NULL;
+	char* buf = sbuf;
+
+	va_list args2;
+	va_copy(args2, args);
+	int c = vsnprintf(sbuf, maxstack, fmt, args);
+
+	if(c >= maxstack) {
+		hbuf = (char*)malloc(c + 1);
+		if(unlikely(!hbuf)) {
+			c = 0;
+		} else {
+			// cppcheck-suppress nullPointerRedundantCheck
+			int c2 = vsprintf(hbuf, fmt, args2);
+			zth_assert(c2 <= c);
+			c = c2;
+			buf = hbuf;
+		}
+	}
+
+	va_end(args2);
+
+	std::string res(buf, (size_t)(c < 0 ? 0 : c));
+	if(hbuf)
+		free(hbuf);
+	return res;
+}
+
 } // namespace
 
 /*!
@@ -235,4 +271,3 @@ void zth_abort(char const* fmt, ...)
 	zth::abortv(fmt, va);
 	va_end(va);
 }
-
