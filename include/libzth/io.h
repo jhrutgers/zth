@@ -1,5 +1,5 @@
-#ifndef __ZTH_IO_H
-#define __ZTH_IO_H
+#ifndef ZTH_IO_H
+#define ZTH_IO_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -63,4 +63,4 @@ ZTH_EXPORT ssize_t zth_write(int fd, void const* buf, size_t count);
 #    endif // __cplusplus
 #  endif // !ZTH_OS_WINDOWS
 #endif // ZTH_HAVE_POLLER
-#endif // __ZTH_IO_H
+#endif // ZTH_IO_H

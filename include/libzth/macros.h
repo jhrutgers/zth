@@ -1,5 +1,5 @@
-#ifndef __ZTH_MACROS_H
-#define __ZTH_MACROS_H
+#ifndef ZTH_MACROS_H
+#define ZTH_MACROS_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -309,4 +309,4 @@ ZTH_EXPORT void foo();
 #  endif
 #endif
 
-#endif // __ZTH_MACROS_H
+#endif // ZTH_MACROS_H

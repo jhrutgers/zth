@@ -1,5 +1,5 @@
-#ifndef __ZTH_CONFIG_H
-#define __ZTH_CONFIG_H
+#ifndef ZTH_CONFIG_H
+#define ZTH_CONFIG_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -135,4 +135,4 @@ namespace zth {
 
 #include "zth_config.h"
 
-#endif // __ZTH_CONFIG_H
+#endif // ZTH_CONFIG_H

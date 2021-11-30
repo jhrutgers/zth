@@ -1,5 +1,5 @@
-#ifndef __ZTH_TIME_H
-#define __ZTH_TIME_H
+#ifndef ZTH_TIME_H
+#define ZTH_TIME_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -417,4 +417,4 @@ namespace zth {
 } // namespace
 
 #endif // __cplusplus
-#endif // __ZTH_TIME_H
+#endif // ZTH_TIME_H

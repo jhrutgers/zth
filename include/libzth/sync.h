@@ -1,5 +1,5 @@
-#ifndef __ZTH_SYNC_H
-#define __ZTH_SYNC_H
+#ifndef ZTH_SYNC_H
+#define ZTH_SYNC_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -930,4 +930,4 @@ ZTH_EXPORT int zth_gate_pass(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_wait(zth_gate_t* gate);
 
 #endif // __cplusplus
-#endif // __ZTH_SYNC_H
+#endif // ZTH_SYNC_H

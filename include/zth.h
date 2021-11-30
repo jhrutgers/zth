@@ -1,5 +1,5 @@
-#ifndef __ZTH_H
-#define __ZTH_H
+#ifndef ZTH_H
+#define ZTH_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -47,4 +47,4 @@
 // You probably don't need these headers in your application.
 //#include <libzth/regs.h>
 
-#endif // __ZTH_H
+#endif // ZTH_H

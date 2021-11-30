@@ -1,5 +1,5 @@
-#ifndef __ZTH_LIST_H
-#define __ZTH_LIST_H
+#ifndef ZTH_LIST_H
+#define ZTH_LIST_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -566,4 +566,4 @@ namespace zth {
 
 } // namespace
 #endif // __cplusplus
-#endif // __ZTH_LIST_H
+#endif // ZTH_LIST_H

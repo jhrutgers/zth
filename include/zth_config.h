@@ -21,7 +21,7 @@
 // For CMake, so something like this:
 //   target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-#ifndef __ZTH_CONFIG_H
+#ifndef ZTH_CONFIG_H
 #  error Do not include this file directly, include <zth> instead.
 #endif
 
@@ -37,4 +37,3 @@ namespace zth {
 	};
 } // namespace
 #endif // __cplusplus
-

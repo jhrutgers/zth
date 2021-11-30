@@ -1,5 +1,5 @@
-#ifndef __ZTH_PERF_H
-#define __ZTH_PERF_H
+#ifndef ZTH_PERF_H
+#define ZTH_PERF_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -328,4 +328,4 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_perf_logv(cha
  */
 #define zth_perf_mark(marker)	zth_perf_mark_("" marker)
 
-#endif // __ZTH_PERF_H
+#endif // ZTH_PERF_H

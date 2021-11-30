@@ -1,5 +1,5 @@
-#ifndef __ZTH_INIT_H
-#define __ZTH_INIT_H
+#ifndef ZTH_INIT_H
+#define ZTH_INIT_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -72,4 +72,4 @@ EXTERN_C ZTH_EXPORT int zth_postdeinit();
 #endif
 
 #endif // __cplusplus
-#endif // __ZTH_INIT_H
+#endif // ZTH_INIT_H

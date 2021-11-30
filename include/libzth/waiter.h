@@ -1,5 +1,5 @@
-#ifndef __ZTH_WAITER_H
-#define __ZTH_WAITER_H
+#ifndef ZTH_WAITER_H
+#define ZTH_WAITER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -303,4 +303,4 @@ ZTH_EXPORT void zth_mnap(long sleepFor_ms);
 ZTH_EXPORT void zth_unap(long sleepFor_us);
 
 #endif // __cplusplus
-#endif // __ZTH_WAITER_H
+#endif // ZTH_WAITER_H

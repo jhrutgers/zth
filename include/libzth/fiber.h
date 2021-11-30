@@ -1,5 +1,5 @@
-#ifndef __ZTH_FIBER_H
-#define __ZTH_FIBER_H
+#ifndef ZTH_FIBER_H
+#define ZTH_FIBER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -476,4 +476,4 @@ ZTH_EXPORT void* zth_setFls(void* data);
 
 EXTERN_C ZTH_EXPORT void main_fiber(int argc, char** argv);
 
-#endif // __ZTH_FIBER_H
+#endif // ZTH_FIBER_H

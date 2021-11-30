@@ -1,5 +1,5 @@
-#ifndef __ZTH_WORKER_H
-#define __ZTH_WORKER_H
+#ifndef ZTH_WORKER_H
+#define ZTH_WORKER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -502,4 +502,4 @@ ZTH_EXPORT int zth_startWorkerThread(void(*f)(), size_t stack, char const* name)
 ZTH_EXPORT int zth_execvp(char const* file, char* const arg[]);
 
 #endif // __cplusplus
-#endif // __ZTH_WORKER_H
+#endif // ZTH_WORKER_H

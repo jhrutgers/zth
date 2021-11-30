@@ -1,5 +1,5 @@
-#ifndef __ZTH_ASYNC_H
-#define __ZTH_ASYNC_H
+#ifndef ZTH_ASYNC_H
+#define ZTH_ASYNC_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -525,4 +525,4 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg =
 ZTH_EXPORT int zth_fiber_create(void(*f)(void*), void* arg, size_t stack, char const* name);
 
 #endif // __cplusplus
-#endif // __ZTH_ASYNC_H
+#endif // ZTH_ASYNC_H
