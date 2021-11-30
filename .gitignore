@@ -1,4 +1,4 @@
-build
-doxygen
+/build/
+/doxygen/
 *.swp
 *.swo

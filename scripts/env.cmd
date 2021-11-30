@@ -4,7 +4,7 @@ rem Call this script to prepare the runtime environment on Windows for building 
 set here=%~dp0
 pushd %here%\..
 
-set PATH=C:\Program Files\CMake\bin;C:\Python38;C:\Python38\Scripts;%ChocolateyInstall%\lib\mingw\tools\install\mingw64\bin;%ChocolateyInstall%\bin;%PATH%
+set PATH=C:\Program Files\CMake\bin;%ChocolateyInstall%\lib\mingw\tools\install\mingw64\bin;%ChocolateyInstall%\bin;%PATH%
 
 where /q cmake > NUL 2> NUL
 if errorlevel 1 goto find_cmake
