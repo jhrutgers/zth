@@ -66,11 +66,13 @@ namespace zth {
 		{}
 
 #if __cplusplus >= 201103L
+		// cppcheck-suppress noExplicitConstructor
 		constexpr TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t{s, ns}
 			, m_negative(negative)
 		{}
 #else
+		// cppcheck-suppress noExplicitConstructor
 		TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t()
 			, m_negative(negative)
@@ -81,6 +83,7 @@ namespace zth {
 		}
 #endif
 
+		// cppcheck-suppress noExplicitConstructor
 		constexpr TimeInterval(struct timespec const& ts)
 			: m_t(ts)
 			, m_negative()
@@ -94,10 +97,14 @@ namespace zth {
 
 		constexpr TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
-		TimeInterval(float dt) : m_t() { init_float<float>(dt); }
-		TimeInterval(double dt) : m_t() { init_float<double>(dt); }
-		TimeInterval(long double dt) : m_t() { init_float<long double>(dt); }
-		template <typename T> TimeInterval(T dt) : m_t() { init_int<T>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(float dt) : m_t(), m_negative() { init_float<float>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(double dt) : m_t(), m_negative() { init_float<double>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(long double dt) : m_t(), m_negative() { init_float<long double>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		template <typename T> TimeInterval(T dt) : m_t(), m_negative() { init_int<T>(dt); }
 
 	private:
 		template <typename T>
@@ -337,6 +344,7 @@ namespace zth {
 			*this = null();
 		}
 
+		// cppcheck-suppress noExplicitConstructor
 		Timestamp(struct timespec const& ts) : m_t(ts) {}
 
 		Timestamp(time_t sec, long nsec)

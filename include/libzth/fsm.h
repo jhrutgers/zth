@@ -154,10 +154,12 @@ namespace zth {
 	class FsmGuard {
 	public:
 		typedef TimeInterval (*Function)(Fsm& fsm);
+		// cppcheck-suppress noExplicitConstructor
 		constexpr FsmGuard(Function function)
 			: m_function(function)
 		{}
 
+		// cppcheck-suppress noExplicitConstructor
 		FsmGuard(guards::End) : m_function() {}
 
 		TimeInterval operator()(Fsm& fsm) const { zth_assert(valid()); return m_function(fsm); }
@@ -191,7 +193,7 @@ namespace zth {
 	template <typename Fsm>
 	class FsmCompiler {
 	public:
-		constexpr FsmCompiler(FsmDescription<Fsm>* description)
+		constexpr explicit FsmCompiler(FsmDescription<Fsm>* description)
 			: m_description(description)
 			, m_compiled()
 		{}
@@ -639,6 +641,7 @@ namespace zth {
 			, m_callbackArg(callbackArg)
 		{}
 
+		// cppcheck-suppress passedByValue
 		explicit FsmCallback(typename base::Description description, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(description, name)
 			, m_callback(callback)
@@ -674,6 +677,7 @@ namespace zth {
 			, m_callback(callback)
 		{}
 
+		// cppcheck-suppress passedByValue
 		explicit FsmCallback(typename base::Description description, Callback callback = NULL, char const* name = "FSM")
 			: base(description, name)
 			, m_callback(callback)

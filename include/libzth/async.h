@@ -3,17 +3,17 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -56,7 +56,7 @@ namespace zth {
 	protected:
 		static void entry(void* that) {
 			if(likely(that))
-				((TypedFiber*)that)->entry_();
+				static_cast<TypedFiber*>(that)->entry_();
 		}
 
 		virtual void entry_() = 0;
@@ -120,13 +120,13 @@ namespace zth {
 	 */
 	struct setStackSize : public FiberManipulator {
 	public:
-		setStackSize(size_t stack) : m_stack(stack) {}
+		explicit setStackSize(size_t stack) : m_stack(stack) {}
 	protected:
 		virtual void apply(Fiber& fiber) const { fiber.setStackSize(m_stack); }
 	private:
 		size_t m_stack;
 	};
-	
+
 	/*!
 	 * \brief Change the name of a fiber returned by #async.
 	 * \details This is a manipulator that calls #zth::Fiber::setName().
@@ -135,12 +135,12 @@ namespace zth {
 	 */
 	struct setName : public FiberManipulator {
 	public:
-		setName(char const* name) : m_name(name) {}
+		explicit setName(char const* name) : m_name(name) {}
 #if __cplusplus >= 201103L
-		setName(std::string const& name) : m_name(name) {}
-		setName(std::string&& name) : m_name(std::move(name)) {}
+		explicit setName(std::string const& name) : m_name(name) {}
+		explicit setName(std::string&& name) : m_name(std::move(name)) {}
 #else
-		setName(std::string const& name) : m_name(name.c_str()) {}
+		explicit setName(std::string const& name) : m_name(name.c_str()) {}
 #endif
 	protected:
 		virtual void apply(Fiber& fiber) const {
@@ -157,7 +157,7 @@ namespace zth {
 		char const* m_name;
 #endif
 	};
-	
+
 	/*!
 	 * \brief Makes the fiber pass the given gate upon exit.
 	 *
@@ -179,7 +179,7 @@ namespace zth {
 	 */
 	struct passOnExit : public FiberManipulator {
 	public:
-		passOnExit(Gate& gate) : m_gate(&gate) {}
+		explicit passOnExit(Gate& gate) : m_gate(&gate) {}
 	protected:
 		static void cleanup(Fiber& UNUSED_PAR(f), void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
 		virtual void apply(Fiber& fiber) const { fiber.addCleanup(&cleanup, (void*)m_gate); }
@@ -195,6 +195,7 @@ namespace zth {
 
 		AutoFuture() : base() {}
 		AutoFuture(AutoFuture const& af) : base() { *this = af; }
+		// cppcheck-suppress noExplicitConstructor
 		template <typename F> AutoFuture(TypedFiber<T,F>* fiber) { *this = fiber; }
 		virtual ~AutoFuture() {}
 
@@ -219,17 +220,17 @@ namespace zth {
 	class TypedFiber0 : public TypedFiber<R, R(*)()> {
 	public:
 		typedef TypedFiber<R, R(*)()> base;
-		TypedFiber0(typename base::Function function) : base(function) {}
+		explicit TypedFiber0(typename base::Function function) : base(function) {}
 		virtual ~TypedFiber0() {}
 	protected:
 		virtual void entry_() { this->setFuture(this->function()()); }
 	};
-	
+
 	template <>
 	class TypedFiber0<void> : public TypedFiber<void, void(*)()> {
 	public:
 		typedef TypedFiber<void, void(*)()> base;
-		TypedFiber0(typename base::Function function) : base(function) {}
+		explicit TypedFiber0(typename base::Function function) : base(function) {}
 		virtual ~TypedFiber0() {}
 	protected:
 		virtual void entry_() { this->function()(); this->setFuture(); }
@@ -246,7 +247,7 @@ namespace zth {
 	private:
 		A1 m_a1;
 	};
-	
+
 	template <typename A1>
 	class TypedFiber1<void, A1> : public TypedFiber<void, void(*)(A1)> {
 	public:
@@ -258,7 +259,7 @@ namespace zth {
 	private:
 		A1 m_a1;
 	};
-	
+
 	template <typename R, typename A1, typename A2>
 	class TypedFiber2 : public TypedFiber<R, R(*)(A1, A2)> {
 	public:
@@ -271,7 +272,7 @@ namespace zth {
 		A1 m_a1;
 		A2 m_a2;
 	};
-	
+
 	template <typename A1, typename A2>
 	class TypedFiber2<void, A1, A2> : public TypedFiber<void, void(*)(A1, A2)> {
 	public:
@@ -284,7 +285,7 @@ namespace zth {
 		A1 m_a1;
 		A2 m_a2;
 	};
-	
+
 	template <typename R, typename A1, typename A2, typename A3>
 	class TypedFiber3 : public TypedFiber<R, R(*)(A1, A2, A3)> {
 	public:
@@ -298,7 +299,7 @@ namespace zth {
 		A2 m_a2;
 		A3 m_a3;
 	};
-	
+
 	template <typename A1, typename A2, typename A3>
 	class TypedFiber3<void, A1, A2, A3> : public TypedFiber<void, void(*)(A1, A2, A3)> {
 	public:
@@ -342,7 +343,7 @@ namespace zth {
 		std::tuple<Args...> m_args;
 	};
 #endif
-	
+
 	template <typename F> struct TypedFiberType {};
 	template <typename R> struct TypedFiberType<R(*)()> {
 		struct NoArg {};
@@ -408,11 +409,11 @@ namespace zth {
 		TypedFiber_type* operator()() const {
 			return polish(*new TypedFiber_type(m_function));
 		}
-		
+
 		TypedFiber_type* operator()(A1 a1) const {
 			return polish(*new TypedFiber_type(m_function, a1));
 		}
-		
+
 		TypedFiber_type* operator()(A1 a1, A2 a2) const {
 			return polish(*new TypedFiber_type(m_function, a1, a2));
 		}
@@ -442,7 +443,7 @@ namespace zth {
 	};
 
 	namespace fibered {}
-	
+
 } // namespace
 
 #define zth_fiber_declare_1(f) \
@@ -508,8 +509,10 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg =
 	zth::Fiber* fiber = new zth::Fiber(f, arg);
 
 	if(unlikely(stack))
-		if((res = fiber->setStackSize(stack)))
+		if((res = fiber->setStackSize(stack))) {
+			delete fiber;
 			return res;
+		}
 
 	if(unlikely(name))
 		fiber->setName(name);

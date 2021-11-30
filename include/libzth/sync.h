@@ -65,7 +65,7 @@ namespace zth {
 	template <typename T>
 	class SharedPointer {
 	public:
-		SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
+		explicit SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
 		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
 		virtual ~SharedPointer() { reset(); }
 
@@ -78,7 +78,7 @@ namespace zth {
 		}
 
 		SharedPointer& operator=(RefCounted* object) { reset(object); return *this; }
-		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); }
+		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); return *this; }
 
 		T* get() const { return m_object ? static_cast<T*>(m_object) : NULL; }
 		operator T*() const { return get(); }
@@ -97,7 +97,7 @@ namespace zth {
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	public:
-		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
+		explicit Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
 		virtual ~Synchronizer() {
 			zth_dbg(sync, "[%s] Destruct", id_str());
 			zth_assert(m_queue.empty());
@@ -254,7 +254,7 @@ namespace zth {
 	 */
 	class Mutex : public Synchronizer {
 	public:
-		Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
+		explicit Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
 		virtual ~Mutex() {}
 
 		void lock() {
@@ -335,7 +335,7 @@ namespace zth {
 	 */
 	class Signal : public Synchronizer {
 	public:
-		Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
+		explicit Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
 		virtual ~Signal() {}
 
 		void wait() {
@@ -401,7 +401,8 @@ namespace zth {
 	class Future : public Synchronizer {
 	public:
 		typedef T type;
-		Future(char const* name = "Future") : Synchronizer(name), m_valid() {
+		// cppcheck-suppress uninitMemberVar
+		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {
 #ifdef ZTH_USE_VALGRIND
 			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #endif
@@ -446,10 +447,11 @@ namespace zth {
 	};
 
 	template <>
+	// cppcheck-suppress noConstructor
 	class Future<void> : public Synchronizer {
 	public:
 		typedef void type;
-		Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
+		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
 		virtual ~Future() {}
 
 		bool valid() const { return m_valid; }
@@ -509,7 +511,7 @@ struct zth_mutex_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
-	if(unlikely(!mutex))
+	if(unlikely(!mutex || mutex->p))
 		return EINVAL;
 
 	mutex->p = (void*)new zth::Mutex();
@@ -524,6 +526,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
 	if(unlikely(!mutex))
 		return EINVAL;
+	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!mutex->p))
 		// Already destroyed.
 		return 0;
@@ -579,7 +582,7 @@ struct zth_sem_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
-	if(unlikely(!sem))
+	if(unlikely(!sem || sem->p))
 		return EINVAL;
 
 	sem->p = (void*)new zth::Semaphore(value);
@@ -594,6 +597,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
 	if(unlikely(!sem))
 		return EINVAL;
+	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!sem->p))
 		// Already destroyed.
 		return 0;
@@ -675,7 +679,7 @@ struct zth_cond_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
-	if(unlikely(!cond))
+	if(unlikely(!cond || cond->p))
 		return EINVAL;
 
 	cond->p = (void*)new zth::Signal();
@@ -690,6 +694,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
 	if(unlikely(!cond))
 		return EINVAL;
+	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!cond->p))
 		// Already destroyed.
 		return 0;
@@ -747,7 +752,7 @@ typedef zth::Future<uintptr_t> zth_future_t_type;
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
-	if(unlikely(!future))
+	if(unlikely(!future || future->p))
 		return EINVAL;
 
 	future->p = (void*)new zth_future_t_type();
@@ -762,6 +767,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
 	if(unlikely(!future))
 		return EINVAL;
+	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!future->p))
 		// Already destroyed.
 		return 0;
@@ -835,7 +841,7 @@ struct zth_gate_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count) {
-	if(unlikely(!gate))
+	if(unlikely(!gate || gate->p))
 		return EINVAL;
 
 	gate->p = (void*)new zth::Gate(count);
@@ -850,6 +856,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count)
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
 	if(unlikely(!gate))
 		return EINVAL;
+	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!gate->p))
 		// Already destroyed.
 		return 0;

@@ -76,7 +76,7 @@ namespace zth {
 
 		PerfEvent() : type(Nothing) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber)
+		explicit PerfEvent(UniqueID<Fiber> const& fiber)
 			: fiber(fiber.id()), type(FiberName), str(strdup(fiber.name().c_str())) {}
 
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
@@ -217,7 +217,7 @@ namespace zth {
 	public:
 		typedef T type;
 
-		Load(type rc = 1)
+		explicit Load(type rc = 1)
 			: m_rc(rc)
 			, m_active()
 			, m_current(Timestamp::now())

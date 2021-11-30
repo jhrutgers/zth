@@ -839,6 +839,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 
 	return 0;
 
+	// cppcheck-suppress unusedLabel
 rollback_mmap:
 	__attribute__((unused));
 	context_deletestack(context);

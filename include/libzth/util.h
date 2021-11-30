@@ -283,16 +283,23 @@ namespace zth {
 	public:
 		cow_string() : m_cstr() {}
 		explicit cow_string(char const* s) : m_cstr(s) {}
-		cow_string(std::string const& s) : m_cstr(), m_str(s) {}
-		cow_string(cow_string const& s) : m_cstr(s.m_cstr), m_str(s.m_str) {}
+		explicit cow_string(std::string const& s) : m_cstr(), m_str(s) {}
+		cow_string(cow_string const& s) { *this = s; }
+		cow_string& operator=(cow_string const& s) {
+			m_cstr = s.m_cstr;
+			m_str = s.m_str;
+			return *this;
+		}
 
-		cow_string operator=(char const* s) { m_cstr = s; return *this; }
-		cow_string operator=(std::string const& s) { m_cstr = NULL; m_str = s; return *this; }
+		cow_string& operator=(char const* s) { m_cstr = s; return *this; }
+		cow_string& operator=(std::string const& s) { m_cstr = NULL; m_str = s; return *this; }
 
 #if __cplusplus >= 201103L
+		cow_string(cow_string&& s) noexcept = default;
+		cow_string& operator=(cow_string&& s) noexcept = default;
+
 		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
-		cow_string(cow_string&& s) : m_cstr(s.m_cstr), m_str(std::move(s.m_str)) {}
-		cow_string operator=(std::string&& s) { m_cstr = NULL; m_str = std::move(s); return *this; }
+		cow_string& operator=(std::string&& s) { m_cstr = NULL; m_str = std::move(s); return *this; }
 #endif
 
 		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
@@ -340,9 +347,10 @@ namespace zth {
 
 		if(c >= maxstack) {
 			hbuf = (char*)malloc(c + 1);
-			if(unlikely(!hbuf))
+			if(unlikely(!hbuf)) {
 				c = 0;
-			else {
+			} else {
+				// cppcheck-suppress nullPointerRedundantCheck
 				int c2 = vsprintf(hbuf, fmt, args2);
 				zth_assert(c2 <= c);
 				c = c2;
@@ -438,11 +446,11 @@ namespace zth {
 #endif
 				: ++m_nextId; }
 
-		UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
+		explicit UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
 #if __cplusplus >= 201103L
 		UniqueID(std::string&& name) : m_id(getID()), m_name(std::move(name)) {}
 #endif
-		UniqueID(char const* name = NULL) : m_id(getID()) { if(name) m_name = name; }
+		explicit UniqueID(char const* name = NULL) : m_id(getID()) { if(name) m_name = name; }
 		virtual ~UniqueID() {}
 
 		void const* normptr() const { return this; }

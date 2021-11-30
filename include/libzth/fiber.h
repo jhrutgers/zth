@@ -418,7 +418,7 @@ namespace zth {
 		}
 
 		static void cleanup_(Fiber& UNUSED_PAR(f), void* that) {
-			Runnable* r = (Runnable*)that;
+			Runnable* r = static_cast<Runnable*>(that);
 			if(r) {
 				zth_assert(&f == r->m_fiber);
 				r->cleanup();
@@ -426,7 +426,7 @@ namespace zth {
 		}
 
 		virtual void entry() = 0;
-		static void entry_(void* that) { if(that) ((Runnable*)that)->entry(); }
+		static void entry_(void* that) { if(that) static_cast<Runnable*>(that)->entry(); }
 
 	private:
 		Runnable(Runnable const&);

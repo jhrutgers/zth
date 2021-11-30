@@ -93,7 +93,7 @@ namespace zth {
 		/*!
 		 * \brief Ctor.
 		 */
-		constexpr explicit Pollable(Events e, void* user = nullptr) noexcept
+		constexpr explicit Pollable(Events const& e, void* user = nullptr) noexcept
 			: user_data(user), events(e), revents()
 		{}
 
@@ -135,7 +135,7 @@ namespace zth {
 		 * Do not pass ZeroMQ sockets as a file descriptor.
 		 * Use the socket \c void* for that.
 		 */
-		constexpr PollableFd(int fd, Events e, void* user = nullptr) noexcept
+		constexpr PollableFd(int fd, Events const& e, void* user = nullptr) noexcept
 			: Pollable(e, user)
 #ifdef ZTH_HAVE_LIBZMQ
 			, socket()
@@ -147,7 +147,7 @@ namespace zth {
 		/*!
 		 * \brief Ctor for a ZeroMQ socket.
 		 */
-		constexpr PollableFd(void* socket, Events e, void* user = nullptr) noexcept
+		constexpr PollableFd(void* socket, Events const& e, void* user = nullptr) noexcept
 			: Pollable(e, user), socket(socket), fd()
 		{}
 
@@ -348,7 +348,7 @@ namespace zth {
 #else
 	private:
 		PollerServer(PollerServer const&);
-		void operator=(PollerServer const&);
+		PollerServer& operator=(PollerServer const&);
 	public:
 #endif
 

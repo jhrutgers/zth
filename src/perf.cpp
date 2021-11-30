@@ -52,7 +52,7 @@ ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, NULL)
 
 class PerfFiber : public Runnable {
 public:
-	PerfFiber(Worker* worker)
+	explicit PerfFiber(Worker* worker)
 		: m_worker(*worker)
 		, m_vcd()
 		, m_vcdd()
@@ -253,7 +253,7 @@ protected:
 				int len = 0;
 				while(chunkEnd[1]) {
 					if(*chunkEnd < 33 || *chunkEnd > 126) {
-						if(fprintf(m_vcdd, "%.*s\\x%02hhx", len, chunkStart, *chunkEnd) < 0) {
+						if(fprintf(m_vcdd, "%.*s\\x%02hhx", len, chunkStart, (unsigned char)*chunkEnd) < 0) {
 							res = errno;
 							goto write_error;
 						}

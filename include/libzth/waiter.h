@@ -43,7 +43,7 @@ namespace zth {
 
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 	public:
-		TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
+		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
 		Timestamp const& timeout() const { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { return timeout() <= now; }

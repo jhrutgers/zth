@@ -224,3 +224,28 @@ if(ZTH_DOCUMENTATION)
 	)
 endif()
 
+find_program(CPPCHECK_CMD NAMES cppcheck)
+if(CPPCHECK_CMD)
+	add_custom_target(libzth-cppcheck
+		COMMAND
+			${CPPCHECK_CMD}
+			--enable=warning,style,information
+			--force
+			--inline-suppr
+			--quiet
+			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
+			--error-exitcode=1
+			"--template=[{file}:{line}]: ({severity},{id}) {message}"
+#			--xml
+			-I include
+			src
+#			--check-config
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		VERBATIM
+	)
+
+	option(ZTH_CPPCHECK "Run cppcheck by default" ${ZTH_DEV_OPTION})
+	if(ZTH_CPPCHECK)
+		add_custom_target(libzth-cppcheck-all ALL DEPENDS libzth-cppcheck)
+	endif()
+endif()
