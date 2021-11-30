@@ -79,6 +79,9 @@ char const* banner() {
 #ifdef _DEBUG
 		" debug"
 #endif
+#ifdef ZTH_DRAFT_API
+		" draft"
+#endif
 #if ZTH_THREADS
 		" threads"
 #endif

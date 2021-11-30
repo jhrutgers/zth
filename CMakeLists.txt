@@ -7,13 +7,17 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-  message(FATAL_ERROR "CMake generation is not allowed within the source directory! \
-    Remove the CMakeCache.txt file and try again from another folder, e.g.: \
-    \
-      rm CMakeCache.txt \
-      mkdir build \
-      cd build \
-      cmake ..")
+	message(FATAL_ERROR "CMake generation is not allowed within the source directory! \
+		Remove the CMakeCache.txt file and try again from another folder, e.g.: \
+		\
+		  rm CMakeCache.txt \
+		  mkdir build \
+		  cd build \
+		  cmake ..")
+endif()
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist" CACHE PATH "Override default install path" FORCE)
 endif()
 
 option(ZTH_DEV "Enable by default development related build options" OFF)
@@ -23,26 +27,27 @@ else()
 	set(ZTH_DEV_OPTION OFF)
 endif()
 
-option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
-if(ZTH_HAVE_LIBZMQ)
-	if(MINGW)
-		# See https://github.com/zeromq/libzmq/issues/3859
-		set(ZMQ_CV_IMPL "win32api" CACHE STRING "Override auto-detect" FORCE)
-	endif()
-
-	if(APPLE)
-		# Make sure home-brew headers are in there.
-		include_directories(BEFORE SYSTEM /usr/local/include)
-	endif()
-
-	set(BUILD_TESTS OFF CACHE BOOL "Disabling building tests")
-	set(BUILD_STATIC OFF CACHE BOOL "Don't build static library" FORCE)
-	add_subdirectory(external/libzmq)
+option(ZTH_DRAFT_API "Enable draft API" OFF)
+if(ZTH_DRAFT_API)
+	message(STATUS "Enable Zth draft API")
 endif()
 
-option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" OFF)
-option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" OFF)
-option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" OFF)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
+if(ZTH_HAVE_LIBZMQ)
+	find_package(ZeroMQ)
+endif()
+
+if(ZTH_DEV_OPTION AND NOT CMAKE_CROSSCOMPILING)
+	set(ZTH_SAN_DEFAULT ON)
+else()
+	set(ZTH_SAN_DEFAULT OFF)
+endif()
+
+option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" ${ZTH_SAN_DEFAULT})
+option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" ${ZTH_SAN_DEFAULT})
+option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" ${ZTH_SAN_DEFAULT})
 
 add_subdirectory(version)
 
@@ -67,13 +72,31 @@ add_library(libzth
 )
 set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
 
+if(ZTH_DRAFT_API)
+	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)
+endif()
+
 # Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp
 set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_SOURCE)
 
-target_include_directories(libzth PUBLIC include)
+target_include_directories(libzth PUBLIC
+	$<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>
+)
 
 target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -fstack-usage)
-#target_compile_options(libzth PRIVATE $<$<CONFIG:DEBUG>:-Og>)
+
+install(TARGETS libzth EXPORT libzth
+	ARCHIVE DESTINATION lib
+	PUBLIC_HEADER DESTINATION include
+)
+
+configure_file(cmake/libzth.cmake.in ${CMAKE_BINARY_DIR}/libzth.cmake)
+install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(FILES include/zth DESTINATION include)
+install(EXPORT libzth DESTINATION share/libzth/cmake)
+install(FILES ${CMAKE_BINARY_DIR}/libzth.cmake DESTINATION share/cmake/libzth)
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
@@ -82,11 +105,6 @@ if(ZTH_HAVE_LIBZMQ)
 		add_custom_command(TARGET libzth POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/external/libzmq/bin/libzmq.dll ${CMAKE_CURRENT_BINARY_DIR})
 	endif()
-endif()
-
-CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
-if(ZTH_HAVE_VALGRIND)
-	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
 if(NOT APPLE)
@@ -152,6 +170,11 @@ if(ZTH_ENABLE_UBSAN)
 	target_compile_options(libzth PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
 	target_compile_definitions(libzth PRIVATE -DZTH_ENABLE_UBSAN)
 	target_link_options(libzth INTERFACE -fsanitize=undefined)
+endif()
+
+CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
+if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND)
+	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
 if(NOT CMAKE_CROSSCOMPILING AND CMAKE_BUILD_TYPE STREQUAL "Debug")

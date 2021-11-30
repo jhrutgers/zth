@@ -1,0 +1,6 @@
+if(WIN32)
+	include(${CMAKE_INSTALL_PREFIX}/CMake/ZeroMQTargets.cmake OPTIONAL)
+else()
+	include(${CMAKE_INSTALL_PREFIX}/share/cmake/ZeroMQ/ZeroMQTargets.cmake OPTIONAL)
+endif()
+include(${CMAKE_INSTALL_PREFIX}/share/libzth/cmake/libzth.cmake)
