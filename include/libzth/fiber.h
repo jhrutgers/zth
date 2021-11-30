@@ -82,7 +82,7 @@ namespace zth {
 		typedef void(*Entry)(EntryArg);
 		static uintptr_t const ExitUnknown = (uintptr_t)-1;
 
-		Fiber(Entry entry, EntryArg arg = EntryArg())
+		explicit Fiber(Entry entry, EntryArg arg = EntryArg())
 			: UniqueID("zth::Fiber")
 			, m_state(Uninitialized)
 			, m_stateNext(Ready)
@@ -111,13 +111,13 @@ namespace zth {
 
 			setState(Uninitialized);
 			zth_assert(!fls());
-			size_t stackSize __attribute__((unused)) = this->stackSize();
-			size_t stackUsage __attribute__((unused)) = this->stackUsage();
+			size_t stackSize_ __attribute__((unused)) = this->stackSize();
+			size_t stackUsage_ __attribute__((unused)) = this->stackUsage();
 			context_destroy(m_context);
 			m_context = NULL;
 			zth_dbg(fiber, "[%s] Destructed. Stack usage: 0x%x of 0x%x, total CPU: %s",
 				id_str(),
-				(unsigned int)stackUsage, (unsigned int)stackSize,
+				(unsigned int)stackUsage_, (unsigned int)stackSize_,
 				m_totalTime.str().c_str());
 		}
 

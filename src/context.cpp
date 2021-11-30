@@ -756,6 +756,7 @@ static void context_deletestack(Context* context) {
 }
 
 static int context_newstack(Context* context, stack_t* stack) {
+	// cppcheck-suppress unreadVariable
 	int res = 0;
 	size_t const pagesize =
 #ifdef ZTH_HAVE_MMAN

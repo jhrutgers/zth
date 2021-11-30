@@ -473,7 +473,7 @@ namespace zth {
 
 	class Gate : public Synchronizer {
 	public:
-		Gate(size_t count, char const* name = "Gate")
+		explicit Gate(size_t count, char const* name = "Gate")
 			: Synchronizer(name), m_count(count), m_current() {}
 		virtual ~Gate() {}
 
@@ -664,7 +664,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) {
 		return EINVAL;
 
 	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
-	if(unlikely(s->value() <= 0))
+	if(unlikely(s->value() == 0))
 		return EAGAIN;
 
 	s->acquire();

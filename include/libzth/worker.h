@@ -366,7 +366,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() {
-		Worker& w = currentWorker();
+		Worker const& w = currentWorker();
 		Fiber* f = w.currentFiber();
 		zth_assert(f);
 		return *f;

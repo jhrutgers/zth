@@ -259,11 +259,11 @@ namespace zth {
 				doPrint = true;
 			}
 
-			double s = (double)rest + (double)m_t.tv_nsec * 1e-9;
+			double sec = (double)rest + (double)m_t.tv_nsec * 1e-9;
 			if(doPrint) {
-				res += format("%06.3f", s);
+				res += format("%06.3f", sec);
 			} else {
-				res += format("%g s", s);
+				res += format("%g s", sec);
 			}
 #endif
 

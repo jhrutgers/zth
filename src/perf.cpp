@@ -102,8 +102,8 @@ public:
 		}
 
 		// Almost full, but enough room to signal that we are going to process the buffer.
-		Fiber* currentFiber = m_worker.currentFiber();
-		if(unlikely(!currentFiber)) {
+		Fiber* currentFiber_ = m_worker.currentFiber();
+		if(unlikely(!currentFiber_)) {
 			// Huh? Do it here anyway.
 			processEventBuffer();
 			return;
@@ -117,7 +117,7 @@ public:
 		e.c_str = "Emerg flush";
 		eventBuffer().push_back(e);
 
-		e.fiber = currentFiber->id();
+		e.fiber = currentFiber_->id();
 		e.type = PerfEvent<>::FiberState;
 		e.fiberState = Fiber::Ready;
 		eventBuffer().push_back(e);
@@ -135,8 +135,8 @@ public:
 		e.fiberState = f->state();
 		eventBuffer().push_back(e);
 
-		e.fiber = currentFiber->id();
-		e.fiberState = currentFiber->state();
+		e.fiber = currentFiber_->id();
+		e.fiberState = currentFiber_->state();
 		eventBuffer().push_back(e);
 	}
 
@@ -146,12 +146,12 @@ public:
 	}
 
 protected:
-	virtual int fiberHook(Fiber& f) {
+	virtual int fiberHook(Fiber& f) override {
 		f.setName("zth::PerfFiber");
 		return Runnable::fiberHook(f);
 	}
 
-	virtual void entry() {
+	virtual void entry() override {
 		if(!m_vcd)
 			return;
 
@@ -178,7 +178,7 @@ protected:
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent<> const& e = eb[i];
 			TimeInterval t = e.t - startTime;
-			char const* str = NULL;
+			char const* s = NULL;
 
 			switch(e.type) {
 			case PerfEvent<>::FiberName:
@@ -235,12 +235,12 @@ protected:
 			case PerfEvent<>::Log:
 			{
 				if(true) {
-					str = e.c_str;
+					s = e.c_str;
 				} else {
 			case PerfEvent<>::Marker:
-					str = e.str;
+					s = e.str;
 				}
-				if(!str)
+				if(!s)
 					break;
 
 				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\ns", (uint64_t)t.ts().tv_sec, t.ts().tv_nsec) <= 0) {
@@ -248,7 +248,7 @@ protected:
 					goto write_error;
 				}
 
-				char const* chunkStart = str;
+				char const* chunkStart = s;
 				char const* chunkEnd = chunkStart;
 				int len = 0;
 				while(chunkEnd[1]) {

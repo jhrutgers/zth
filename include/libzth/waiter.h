@@ -46,9 +46,9 @@ namespace zth {
 		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
 		Timestamp const& timeout() const { return m_timeout; }
-		virtual bool poll(Timestamp const& now = Timestamp::now()) { return timeout() <= now; }
+		virtual bool poll(Timestamp const& now = Timestamp::now()) override { return timeout() <= now; }
 		bool operator<(TimedWaitable const& rhs) const { return timeout() < rhs.timeout(); }
-		virtual std::string str() const {
+		virtual std::string str() const override {
 			if(hasFiber())
 				return format("Waitable with %s timeout for %s", (timeout() - Timestamp::now()).str().c_str(), fiber().str().c_str());
 			else
@@ -125,13 +125,13 @@ namespace zth {
 	protected:
 		bool polling() const;
 
-		virtual int fiberHook(Fiber& f) {
+		virtual int fiberHook(Fiber& f) override {
 			f.setName("zth::Waiter");
 			f.suspend();
 			return Runnable::fiberHook(f);
 		}
 
-		virtual void entry();
+		virtual void entry() override;
 
 	private:
 		Worker& m_worker;
@@ -250,7 +250,7 @@ namespace zth {
 			m_interval = interval;
 		}
 
-		PeriodicWakeUp& operator=(TimeInterval& interval) {
+		PeriodicWakeUp& operator=(TimeInterval const& interval) {
 			setInterval(interval);
 			return *this;
 		}

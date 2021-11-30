@@ -122,7 +122,7 @@ namespace zth {
 	public:
 		explicit setStackSize(size_t stack) : m_stack(stack) {}
 	protected:
-		virtual void apply(Fiber& fiber) const { fiber.setStackSize(m_stack); }
+		virtual void apply(Fiber& fiber) const override { fiber.setStackSize(m_stack); }
 	private:
 		size_t m_stack;
 	};
@@ -143,7 +143,7 @@ namespace zth {
 		explicit setName(std::string const& name) : m_name(name.c_str()) {}
 #endif
 	protected:
-		virtual void apply(Fiber& fiber) const {
+		virtual void apply(Fiber& fiber) const override {
 #if __cplusplus >= 201103L
 			fiber.setName(std::move(m_name));
 #else
@@ -182,7 +182,7 @@ namespace zth {
 		explicit passOnExit(Gate& gate) : m_gate(&gate) {}
 	protected:
 		static void cleanup(Fiber& UNUSED_PAR(f), void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
-		virtual void apply(Fiber& fiber) const { fiber.addCleanup(&cleanup, (void*)m_gate); }
+		virtual void apply(Fiber& fiber) const override { fiber.addCleanup(&cleanup, (void*)m_gate); }
 	private:
 		Gate* m_gate;
 	};

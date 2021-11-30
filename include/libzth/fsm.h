@@ -530,17 +530,17 @@ namespace zth {
 				return;
 			}
 
-			PolledMemberWaiting<Fsm> wakeup(*this, &Fsm::trigger_, wait);
+			PolledMemberWaiting<Fsm> wake_up(*this, &Fsm::trigger_, wait);
 			do {
-				if(wakeup.interval().isInfinite()) {
+				if(wake_up.interval().isInfinite()) {
 					m_trigger.wait();
 				} else {
-					scheduleTask(wakeup);
+					scheduleTask(wake_up);
 					m_trigger.wait();
-					unscheduleTask(wakeup);
+					unscheduleTask(wake_up);
 				}
 				wait = eval();
-				wakeup.setInterval(wait, currentFiber().runningSince());
+				wake_up.setInterval(wait, currentFiber().runningSince());
 			} while(m_state->guard.valid());
 			goto done;
 		}
@@ -653,7 +653,7 @@ namespace zth {
 		CallbackArg callbackArg() const { return m_callbackArg; }
 
 	protected:
-		virtual void callback() {
+		virtual void callback() override {
 			if(m_callback) {
 				zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(), str(this->state()).c_str(), this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
 				m_callback(*this, m_callbackArg);
@@ -686,7 +686,7 @@ namespace zth {
 		virtual ~FsmCallback() {}
 
 	protected:
-		virtual void callback() {
+		virtual void callback() override {
 			if(m_callback) {
 				zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(), str(this->state()).c_str(), this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
 				m_callback(*this);

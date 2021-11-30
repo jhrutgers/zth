@@ -242,7 +242,6 @@ std::string formatv(char const* fmt, va_list args)
 		if(unlikely(!hbuf)) {
 			c = 0;
 		} else {
-			// cppcheck-suppress nullPointerRedundantCheck
 			int c2 = vsprintf(hbuf, fmt, args2);
 			zth_assert(c2 <= c);
 			c = c2;

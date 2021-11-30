@@ -133,7 +133,7 @@ namespace zth {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
 
 		PerfEvent() {}
-		PerfEvent(UniqueID<Fiber> const& fiber) {}
+		explicit PerfEvent(UniqueID<Fiber> const& fiber) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}

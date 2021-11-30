@@ -502,7 +502,7 @@ namespace zth {
 		}
 #endif
 
-		char const* id_str() const
+		char const* id_str() const override
 		{
 			if(unlikely(m_id_str.empty())) {
 				m_id_str =

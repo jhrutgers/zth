@@ -251,6 +251,7 @@ if(CPPCHECK_CMD)
 			--quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
 			--error-exitcode=1
+			--library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}"
 #			--xml
 			-I include

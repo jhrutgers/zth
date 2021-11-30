@@ -219,9 +219,7 @@ void Waiter::entry()
 					zth_dbg(waiter, "[%s] Out of other work than doing poll(); timeout is %s", id_str(), dt.str().c_str());
 					timeout_ms = std::max<int>(0, (int)(dt.s<float>() * 1000.0f));
 				}
-			}
 
-			if(doRealSleep) {
 				perf_mark("blocking poll()");
 				perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
 			}
