@@ -199,7 +199,8 @@ namespace zth {
 		friend class AlarmClock;
 
 		/*!
-		 * \copydoc #block_()
+		 * \brief Block, with timeout.
+		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 		 */
 		bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now()) {
 			if(timeout <= now)
@@ -210,7 +211,8 @@ namespace zth {
 		}
 
 		/*!
-		 * \copydoc #block_()
+		 * \brief Block, with timeout.
+		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 		 */
 		bool block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now()) {
 			if(timeout.isNegative() || timeout.isNull())
