@@ -526,7 +526,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
 	if(unlikely(!mutex))
 		return EINVAL;
-	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!mutex->p))
 		// Already destroyed.
 		return 0;
@@ -597,7 +596,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
 	if(unlikely(!sem))
 		return EINVAL;
-	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!sem->p))
 		// Already destroyed.
 		return 0;
@@ -694,7 +692,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
 	if(unlikely(!cond))
 		return EINVAL;
-	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!cond->p))
 		// Already destroyed.
 		return 0;
@@ -767,7 +764,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
 	if(unlikely(!future))
 		return EINVAL;
-	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!future->p))
 		// Already destroyed.
 		return 0;
@@ -856,7 +852,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count)
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
 	if(unlikely(!gate))
 		return EINVAL;
-	// cppcheck-suppress nullPointerRedundantCheck
 	if(unlikely(!gate->p))
 		// Already destroyed.
 		return 0;
