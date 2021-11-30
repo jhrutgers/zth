@@ -47,7 +47,7 @@ namespace zth {
 			, level()
 		{}
 
-		Listable& operator=(Listable const& rhs) {
+		Listable& operator=(Listable const& UNUSED_PAR(rhs)) {
 			if(Config::EnableAssert)
 				prev = next = NULL;
 			return *this;

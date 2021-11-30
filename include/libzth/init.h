@@ -35,7 +35,7 @@ extern struct zth_init_entry const* zth_init_head;
 extern struct zth_init_entry* zth_init_tail;
 EXTERN_C ZTH_EXPORT void zth_init();
 EXTERN_C ZTH_EXPORT void zth_preinit();
-EXTERN_C ZTH_EXPORT void zth_postdeinit();
+EXTERN_C ZTH_EXPORT int zth_postdeinit();
 
 #ifdef __cplusplus
 #ifndef ZTH_INIT_CALL

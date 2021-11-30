@@ -26,8 +26,9 @@
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
+#include <memory>
 
 namespace zth {
 	struct Env { enum { EnableDebugPrint, DoPerfEvent, PerfSyscall, CheckTimesliceOverrun }; };
@@ -116,6 +117,18 @@ namespace zth {
 #else
 			false;
 #endif
+
+		/*!
+		 * \brief Allocator type.
+		 *
+		 * \c Config::Allocator<int>::type is an allocator for ints.
+		 * \c Config::Allocator<int> behaves like std::allocator_traits<Alloc>
+		 *
+		 */
+		template <typename T>
+		struct Allocator {
+			typedef std::allocator<T> type;
+		};
 	};
 } // namespace
 #endif // __cplusplus

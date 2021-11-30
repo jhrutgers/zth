@@ -1,5 +1,3 @@
-#ifndef __ZTH_H
-#define __ZTH_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -18,33 +16,44 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*!
- * \defgroup zth_api_cpp C++ API
- * \brief C++ interface to Zth (but all \ref zth_api_c functions are available as well).
- */
-/*!
- * \defgroup zth_api_c C API
- * \brief C interface to Zth.
- */
+#include "gtest/gtest.h"
 
-#include <libzth/macros.h>
-#include <libzth/init.h>
-#include <libzth/zmq.h>
-#include <libzth/config.h>
-#include <libzth/util.h>
-#include <libzth/time.h>
-#include <libzth/version.h>
-#include <libzth/fiber.h>
-#include <libzth/worker.h>
-#include <libzth/poller.h>
-#include <libzth/io.h>
-#include <libzth/waiter.h>
-#include <libzth/sync.h>
-#include <libzth/async.h>
-#include <libzth/perf.h>
-#include <libzth/fsm.h>
+#include <zth>
 
-// You probably don't need these headers in your application.
-//#include <libzth/regs.h>
+namespace {
 
-#endif // __ZTH_H
+TEST(Zth, DummySuccess)
+{
+	SUCCEED();
+}
+
+#if 0
+TEST(Zth, DummyFail)
+{
+	FAIL();
+}
+#endif
+
+} // namespace
+
+static int test_main()
+{
+	return RUN_ALL_TESTS();
+}
+zth_fiber(test_main)
+
+int main(int argc, char** argv)
+{
+	int res = 0;
+	testing::InitGoogleTest(&argc, argv);
+	zth_preinit();
+	{
+		zth::Worker w;
+		test_main_future f = async test_main();
+		w.run();
+		res = f->value();
+	}
+	zth_postdeinit();
+	return res;
+}
+

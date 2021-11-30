@@ -19,8 +19,10 @@ __attribute__((weak)) void zth_preinit() {}
  *
  * This function can be used to run machine/board-specific cleanup in \c main() before returning.
  * The default (weak) implementation does nothing.
+ *
+ * \return the exit code of the application
  */
-__attribute__((weak)) void zth_postdeinit() {}
+__attribute__((weak)) int zth_postdeinit() { return 0; }
 
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
@@ -32,7 +34,6 @@ int main(int argc, char** argv) {
 		async main_fiber(argc, argv);
 		w.run();
 	}
-	zth_postdeinit();
-	return 0;
+	return zth_postdeinit();
 }
 

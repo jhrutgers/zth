@@ -23,24 +23,6 @@
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/time.h>
-#include <libzth/io.h>
-
-#ifdef ZTH_HAVE_LIBZMQ
-#  include <zmq.h>
-#  ifdef ZTH_HAVE_POLL
-#    undef POLLIN
-#    define POLLIN ZMQ_POLLIN
-#    undef POLLOUT
-#    define POLLOUT ZMQ_POLLOUT
-#    undef POLLERR
-#    define POLLERR ZMQ_POLLERR
-#    undef POLLPRI
-#    define POLLPRI ZMQ_POLLPRI
-#    undef POLLRDBAND
-#    undef POLLWRBAND
-#    undef POLLHUP
-#  endif
-#endif
 
 namespace zth {
 	class Worker;
@@ -53,6 +35,7 @@ namespace zth {
 		virtual bool poll(Timestamp const& now = Timestamp::now()) = 0;
 		virtual std::string str() const { return format("Waitable for %s", fiber().str().c_str()); }
 		void setFiber(Fiber& fiber) { m_fiber = &fiber; }
+		void resetFiber() { m_fiber = nullptr; }
 		bool hasFiber() const { return m_fiber; }
 	private:
 		Fiber* m_fiber;
@@ -60,7 +43,7 @@ namespace zth {
 
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 	public:
-		TimedWaitable(Timestamp const& timeout) : m_timeout(timeout) {}
+		TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
 		Timestamp const& timeout() const { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) { return timeout() <= now; }
@@ -123,73 +106,25 @@ namespace zth {
 		virtual ~PolledMemberWaiting() {}
 	};
 
-#ifdef ZTH_HAVE_POLLER
-
-	class AwaitFd : public Waitable, public Listable<AwaitFd> {
-	public:
-		AwaitFd(zth_pollfd_t *fds, int nfds, Timestamp const& timeout = Timestamp())
-			: m_fds(fds), m_nfds(nfds), m_timeout(timeout), m_error(-1), m_result(-1) { zth_assert(nfds > 0 && fds); }
-		virtual ~AwaitFd() {}
-		virtual bool poll(Timestamp const& UNUSED_PAR(now) = Timestamp::now()) { zth_abort("Don't call."); }
-
-		zth_pollfd_t* fds() const { return m_fds; }
-		int nfds() const { return m_nfds; }
-		Timestamp const& timeout() const { return m_timeout; }
-
-		virtual std::string str() const {
-			if(timeout().isNull())
-				return format("Waitable for %d fds for %s", (int)m_nfds, fiber().str().c_str());
-			else
-				return format("Waitable for %d fds for %s with %s timeout", (int)m_nfds, fiber().str().c_str(),
-					(timeout() - Timestamp::now()).str().c_str());
-		}
-
-		void setResult(int result, int error = 0) { m_result = result; m_error = error; }
-		bool finished() const { return m_error >= 0; }
-		int error() const { return finished() ? m_error : 0; }
-		int result() const { return m_result; }
-		bool intr() const { return error() == EINTR; }
-	private:
-		zth_pollfd_t* m_fds;
-		int m_nfds;
-		Timestamp m_timeout;
-		int m_error;
-		int m_result;
-	};
-
-	class Await1Fd : public AwaitFd {
-	public:
-		explicit Await1Fd(int fd, short events, Timestamp const& timeout = Timestamp())
-			: AwaitFd(&m_fd, 1, timeout), m_fd() { m_fd.fd = fd; m_fd.events = events; }
-#ifdef ZTH_HAVE_LIBZMQ
-		explicit Await1Fd(void* socket, short events, Timestamp const& timeout = Timestamp())
-			: AwaitFd(&m_fd, 1, timeout), m_fd() { m_fd.socket = socket; m_fd.events = events; }
-#endif
-		virtual ~Await1Fd() {}
-
-		zth_pollfd_t const& fd() const { return m_fd; }
-		zth_pollfd_t& fd() { return m_fd; }
-	private:
-		zth_pollfd_t m_fd;
-	};
-#endif
+	class PollerServerBase;
 
 	class Waiter : public Runnable {
 	public:
-		Waiter(Worker& worker)
-			: m_worker(worker)
-		{}
-		virtual ~Waiter() {}
+		explicit Waiter(Worker& worker);
+		virtual ~Waiter();
 
 		void wait(TimedWaitable& w);
 		void scheduleTask(TimedWaitable& w);
 		void unscheduleTask(TimedWaitable& w);
-#ifdef ZTH_HAVE_POLLER
-		void checkFdList();
-		int waitFd(AwaitFd& w);
-#endif
+		void wakeup(TimedWaitable& w);
+
+		PollerServerBase& poller();
+		void setPoller(PollerServerBase* p = nullptr);
+		void wakeup();
 
 	protected:
+		bool polling() const;
+
 		virtual int fiberHook(Fiber& f) {
 			f.setName("zth::Waiter");
 			f.suspend();
@@ -201,10 +136,8 @@ namespace zth {
 	private:
 		Worker& m_worker;
 		SortedList<TimedWaitable> m_waiting;
-#ifdef ZTH_HAVE_POLLER
-		List<AwaitFd> m_fdList;
-		std::vector<zth_pollfd_t> m_fdPollList;
-#endif
+		PollerServerBase* m_poller;
+		PollerServerBase* m_defaultPoller;
 	};
 
 	/*!
@@ -226,6 +159,7 @@ namespace zth {
 
 	void scheduleTask(TimedWaitable& w);
 	void unscheduleTask(TimedWaitable& w);
+	void wakeup(TimedWaitable& w);
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber
