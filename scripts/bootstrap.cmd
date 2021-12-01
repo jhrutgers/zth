@@ -1,6 +1,22 @@
 @echo off
 set here=%~dp0
-pushd %here%\..
+pushd "%here%\.."
+
+rem Usage: bootstrap.cmd [-f]
+rem
+rem Without -f, nothing is done when the dependencies are already fulfilled.
+rem When -f is provided, choco is used to install the dependencies.
+
+if "%1" == "-f" goto do_bootstrap
+
+call scripts\env.cmd
+if errorlevel 1 goto do_bootstrap
+echo.
+echo Your installation seems OK; skipping bootstrap.
+echo To force installing the dependencies anyway, provide the -f flag to %0.
+goto done
+
+:do_bootstrap
 
 net session > NUL 2> NUL
 if errorlevel 1 goto no_admin
