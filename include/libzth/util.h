@@ -531,6 +531,9 @@ namespace zth {
 #  endif
 						id());
 #endif
+				if(unlikely(m_id_str.empty()))
+					// Should not happen, but make sure the string is not empty.
+					m_id_str = "?";
 			}
 
 			return m_id_str.c_str();

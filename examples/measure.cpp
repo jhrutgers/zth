@@ -23,7 +23,7 @@ void context2entry(void* /*unused*/)
 
 void testContextInit()
 {
-	int res;
+	int res = 0;
 	context1 = zth::currentFiber().context();
 	if((res = zth::context_create(context2, zth::ContextAttr(&context2entry))))
 		zth::abort("Cannot create context2; %s", zth::err(res).c_str());
@@ -91,7 +91,7 @@ void testFiberCreate()
 
 void testCurrentFiber()
 {
-	zth::Fiber& f __attribute__((unused)) = zth::currentFiber();
+	zth::Fiber const& f __attribute__((unused)) = zth::currentFiber();
 }
 
 void testNap0()
@@ -228,7 +228,7 @@ static double runTest(char const* set, char const* name, void(*test)(), bool cal
 static void run_testset(char const* testset)
 {
 	bool all = strcmp("all", testset) == 0;
-	char const* set;
+	char const* set = nullptr;
 
 	set = "now";
 	if(all || strcmp(set, testset) == 0) {

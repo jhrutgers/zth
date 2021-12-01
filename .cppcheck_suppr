@@ -1,3 +1,8 @@
 missingIncludeSystem:*
 unmatchedSuppression:src/context.cpp
+unmatchedSuppression:examples/measure.cpp
 negativeContainerIndex:examples/measure.cpp
+unreadVariable:examples/measure.cpp
+unknownMacro:examples/*
+constParameter:examples/fsm.cpp
+constParameter:examples/measure.cpp

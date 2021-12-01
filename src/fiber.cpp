@@ -35,7 +35,7 @@ int Runnable::run() {
 		return EAGAIN;
 
 	Fiber* f = new Fiber(&Runnable::entry_, (void*)this);
-	int res;
+	int res = 0;
 	if(unlikely((res = fiberHook(*f)))) {
 		// Rollback.
 		delete f;

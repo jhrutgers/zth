@@ -1049,7 +1049,7 @@ void stack_watermark_init(void* stack, size_t size)
 	// Most likely, but growing up stack is not implemented here (yet?)
 	zth_assert(stack_grows_down(&size));
 
-	size_t* sizeptr;
+	size_t* sizeptr = nullptr;
 	stack_watermark_align(stack, sizeptr, &size);
 	*sizeptr = size;
 
@@ -1068,7 +1068,7 @@ size_t stack_watermark_size(void* stack)
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
-	size_t* sizeptr;
+	size_t* sizeptr = nullptr;
 	stack_watermark_align(stack, sizeptr);
 	return *sizeptr;
 }
@@ -1084,7 +1084,7 @@ size_t stack_watermark_maxused(void* stack)
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
-	size_t* sizeptr;
+	size_t* sizeptr = nullptr;
 	stack_watermark_align(stack, sizeptr);
 	size_t size = *sizeptr;
 
@@ -1105,7 +1105,7 @@ size_t stack_watermark_remaining(void* stack)
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
-	size_t* sizeptr;
+	size_t* sizeptr = nullptr;
 	stack_watermark_align(stack, sizeptr);
 	size_t size = *sizeptr;
 

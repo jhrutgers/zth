@@ -178,6 +178,8 @@ namespace zth {
 
 			case Ready:
 				{
+					zth_assert(&from != this);
+
 					// Update administration of the current fiber.
 					TimeInterval dt = now - from.m_startRun;
 					from.m_totalTime += dt;

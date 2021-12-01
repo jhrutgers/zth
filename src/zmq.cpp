@@ -34,7 +34,9 @@ static void zmq_global_deinit() {
 }
 
 static void* zmq_global_init() {
-	int major, minor, patch;
+	int major = 0;
+	int minor = 0;
+	int patch = 0;
 	zmq_version(&major, &minor, &patch);
 	zth_dbg(banner, "0MQ version is %d.%d.%d", major, minor, patch);
 

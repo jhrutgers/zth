@@ -56,7 +56,7 @@ TEST(Poller, PipeBasic)
 	EXPECT_EQ(zth::poll(zth::PollableFd(pipefd[0], zth::Pollable::PollIn), 100), 0);
 	EXPECT_EQ(zth::poll(zth::PollableFd(pipefd[0], zth::Pollable::PollIn), -1), 0);
 
-	char buf;
+	char buf = 0;
 	EXPECT_EQ(read(pipefd[0], &buf, 1), 1);
 	EXPECT_EQ(buf, '1');
 
@@ -66,7 +66,7 @@ TEST(Poller, PipeBasic)
 
 static void read_fiber(int fd)
 {
-	char buf;
+	char buf = 0;
 
 	// Fiber-aware blocking read.
 	zth::io::read(fd, &buf, 1);

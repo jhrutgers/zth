@@ -85,33 +85,33 @@ static Fsm_type::Description desc = {
 	// pointing to the same state.
 
 	State::init,
-		zth::guards::always,					State::blink_on,
+		zth::guards::always,			State::blink_on,
 		zth::guards::end,
 	State::peek,
 		zth::guards::peek<Fsm_type,traffic>,	State::amber,
-		zth::guards::always,					State::blink_on,
+		zth::guards::always,			State::blink_on,
 		zth::guards::end,
 	State::blink_on,
-		zth::guards::timeout_s<1>,				State::blink_off,
+		zth::guards::timeout_s<1>,		State::blink_off,
 		zth::guards::end,
 	State::blink_off,
-		zth::guards::timeout_s<1>,				State::peek,
+		zth::guards::timeout_s<1>,		State::peek,
 		zth::guards::end,
 	State::red_wait,
-		zth::guards::timeout_s<2>,				State::red,
+		zth::guards::timeout_s<2>,		State::red,
 		zth::guards::end,
 	State::red,
 		zth::guards::input<Fsm_type,traffic>,	State::green,
-		zth::guards::timeout_s<10>,				State::blink_off,
+		zth::guards::timeout_s<10>,		State::blink_off,
 		zth::guards::end,
 	State::green,
 		// Stay at green as long as there is traffic, but limited to some maximum time.
-		tooLongGreen,							State::amber,
+		tooLongGreen,				State::amber,
 		zth::guards::input<Fsm_type,traffic>,	State::green,
-		zth::guards::timeout_s<3>,				State::amber,
+		zth::guards::timeout_s<3>,		State::amber,
 		zth::guards::end,
 	State::amber,
-		zth::guards::timeout_s<2>,				State::red_wait,
+		zth::guards::timeout_s<2>,		State::red_wait,
 		zth::guards::end,
 
 	// The description must end with a state without guards:
@@ -124,7 +124,8 @@ static Fsm_type::Description desc = {
 
 // This is the callback function that is invoked when the Fsm changes something
 // to the state.
-static void cb(Fsm_type& fsm, zth::Timestamp& green) {
+static void cb(Fsm_type& fsm, zth::Timestamp& green)
+{
 	if(fsm.state() == State::red && fsm.exit() && fsm.next() == State::green)
 		green = zth::Timestamp::now();
 
@@ -235,16 +236,17 @@ static Fsm_type fsm(compiler, &cb, green);
 //static Fsm_type fsm(desc, &cb, green);
 //static Fsm_type fsm2(desc, &cb, green); // This is not OK, as desc will now be compiled multiple times.
 
-static void trafficDetect() {
-	char buf;
+static void trafficDetect()
+{
+	char buf = 0;
 	while(zth::io::read(0, &buf, 1) > 0)
 		fsm.input(traffic);
 }
 zth_fiber(trafficDetect)
 
-void main_fiber(int /*argc*/, char** /*argv*/) {
+void main_fiber(int /*argc*/, char** /*argv*/)
+{
 	async trafficDetect();
 	// Run the Fsm, until it hits a final state (but there is none in this example).
 	fsm.run();
 }
-

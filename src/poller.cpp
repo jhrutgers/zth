@@ -45,7 +45,7 @@ int PollerInterface::add(std::initializer_list<std::reference_wrapper<Pollable>>
 	for(Pollable& p : l) {
 		if((res = add(p))) {
 			// Rollback.
-			for(auto it = l.begin(); it != l.end() && count > 0; ++it, count--)
+			for(auto const* it = l.begin(); it != l.end() && count > 0; ++it, count--)
 				remove(*it);
 			break;
 		}
@@ -288,7 +288,7 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 	m_wait = TimedWaitable();
 	int res = p.poll(0);
 
-	if(!m_result.empty()) {
+	if(!m_result.empty()) { // NOLINT(bugprone-branch-clone)
 		// Completed already.
 	} else if(res && res != EAGAIN) {
 		// Completed with an error.

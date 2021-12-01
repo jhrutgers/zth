@@ -214,15 +214,15 @@ protected:
 
 			case PerfEvent<>::FiberState:
 			{
-				char x;
+				char x = '-';
 				bool doCleanup = false;
 				switch(e.fiberState) {
-				case Fiber::New:		x = 'L'; break;
-				case Fiber::Ready:		x = '0'; break;
+				case Fiber::New:	x = 'L'; break;
+				case Fiber::Ready:	x = '0'; break;
 				case Fiber::Running:	x = '1'; break;
 				case Fiber::Waiting:	x = 'W'; break;
 				case Fiber::Suspended:	x = 'Z'; break;
-				case Fiber::Dead:		x = 'X'; break;
+				case Fiber::Dead:	x = 'X'; break;
 				default:
 					x = '-';
 					doCleanup = true;
@@ -319,18 +319,20 @@ protected:
 			goto rollback;
 		}
 
-		time_t now;
-		if(time(&now) != -1) {
+		{
+			time_t now = -1;
+			if(time(&now) != -1) {
 #if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
-			char dateBuf[128];
-			char* strnow = ctime_r(&now, dateBuf);
+				char dateBuf[128];
+				char* strnow = ctime_r(&now, dateBuf);
 #else
-			// Possibly not thread-safe.
-			char* strnow = ctime(&now);
+				// Possibly not thread-safe.
+				char* strnow = ctime(&now);
 #endif
-			if(strnow)
-				if(fprintf(m_vcd, "$date %s$end\n", strnow) < 0)
-					goto write_error;
+				if(strnow)
+					if(fprintf(m_vcd, "$date %s$end\n", strnow) < 0)
+						goto write_error;
+			}
 		}
 
 		if(fprintf(m_vcd, "$version %s $end\n$timescale 1 ns $end\n$scope module top $end\n", banner()) < 0)
@@ -364,11 +366,14 @@ protected:
 			goto write_error;
 
 		rewind(m_vcdd);
-		char buf[1024];
-		size_t cnt;
-		while((cnt = fread(buf, 1, sizeof(buf), m_vcdd)) > 0)
-			if(fwrite(buf, cnt, 1, m_vcd) != 1)
-				goto write_error;
+
+		{
+			char buf[1024];
+			size_t cnt = 0;
+			while((cnt = fread(buf, 1, sizeof(buf), m_vcdd)) > 0)
+				if(fwrite(buf, cnt, 1, m_vcd) != 1)
+					goto write_error;
+		}
 
 		if(ferror(m_vcdd))
 			goto read_error;
@@ -437,7 +442,7 @@ int perf_init()
 	perf_eventBuffer = new std::vector<PerfEvent<> >();
 	perf_eventBuffer->reserve(Config::PerfEventBufferSize);
 
-	Worker* worker;
+	Worker* worker = nullptr;
 	getContext(&worker, nullptr);
 	perfFiber = new PerfFiber(worker);
 	return perfFiber->run();
@@ -482,11 +487,11 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 
 	while (unw_step(&cursor) > 0 && depth < maxDepth) {
 		if(depth == 0) {
-			unw_word_t sp;
+			unw_word_t sp = 0;
 			unw_get_reg(&cursor, UNW_REG_SP, &sp);
 		}
 
-		unw_word_t ip;
+		unw_word_t ip = 0;
 		unw_get_reg(&cursor, UNW_REG_IP, &ip);
 		m_bt.push_back(reinterpret_cast<void*>(ip));
 
@@ -544,7 +549,7 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 
 		Dl_info info;
 		if(dladdr(bt()[i], &info)) {
-			int status;
+			int status = -1;
 			char* demangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
 			if(status == 0 && demangled) {
 #  ifdef ZTH_OS_MAC

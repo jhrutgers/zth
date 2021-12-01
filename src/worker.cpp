@@ -128,7 +128,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 #if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)
 	return ENOSYS;
 #else
-	pid_t pid;
+	pid_t pid = 0;
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.vfork)
 	if((pid = vfork()) == 0) {
 		// In child.
@@ -168,7 +168,7 @@ void sigchld_check()
 
 	while(true) {
 		sigchld_cleanup = 0;
-		int wstatus;
+		int wstatus = 0;
 		pid_t pid = waitpid(-1, &wstatus, WNOHANG);
 
 		if(pid == 0) {

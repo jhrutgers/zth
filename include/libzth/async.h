@@ -506,18 +506,18 @@ namespace zth {
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = NULL, size_t stack = 0, char const* name = NULL) {
 	int res = 0;
-	zth::Fiber* fiber = new zth::Fiber(f, arg);
+	zth::Fiber* fib = new zth::Fiber(f, arg);
 
 	if(unlikely(stack))
-		if((res = fiber->setStackSize(stack))) {
-			delete fiber;
+		if((res = fib->setStackSize(stack))) {
+			delete fib;
 			return res;
 		}
 
 	if(unlikely(name))
-		fiber->setName(name);
+		fib->setName(name);
 
-	zth::currentWorker().add(fiber);
+	zth::currentWorker().add(fib);
 	return res;
 }
 #else // !__cplusplus

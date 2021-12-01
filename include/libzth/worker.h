@@ -177,31 +177,31 @@ namespace zth {
 				preferFiber = &m_workerFiber;
 			}
 
-			Fiber* fiber = preferFiber;
+			Fiber* nextFiber = preferFiber;
 			bool didSchedule = false;
 		reschedule:
-			if(likely(!fiber))
+			if(likely(!nextFiber))
 			{
 				if(likely(!m_runnableQueue.empty()))
 					// Use first of the queue.
-					fiber = &m_runnableQueue.front();
+					nextFiber = &m_runnableQueue.front();
 				else
 					// No fiber to switch to.
-					fiber = &m_workerFiber;
+					nextFiber = &m_workerFiber;
 			}
 
-			zth_assert(fiber == &m_workerFiber || fiber->listPrev());
-			zth_assert(fiber == &m_workerFiber || fiber->listNext());
+			zth_assert(nextFiber == &m_workerFiber || nextFiber->listPrev());
+			zth_assert(nextFiber == &m_workerFiber || nextFiber->listNext());
 
 			{
 				// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 				Fiber* prevFiber = m_currentFiber;
-				m_currentFiber = fiber;
+				m_currentFiber = nextFiber;
 
-				if(unlikely(fiber != &m_workerFiber))
-					m_runnableQueue.rotate(*fiber->listNext());
+				if(unlikely(nextFiber != &m_workerFiber))
+					m_runnableQueue.rotate(*nextFiber->listNext());
 
-				int res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
+				int res = nextFiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
 				// Warning! When res == 0, fiber might already have been deleted.
 				m_currentFiber = prevFiber;
 
@@ -215,9 +215,9 @@ namespace zth {
 					return didSchedule;
 				case EPERM:
 					// fiber just died.
-					cleanup(*fiber);
+					cleanup(*nextFiber);
 					// Retry to find a fiber.
-					fiber = NULL;
+					nextFiber = NULL;
 					didSchedule = true;
 					goto reschedule;
 				default:
@@ -393,10 +393,10 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false, Timestamp const& now = Timestamp::now()) {
-		Fiber& fiber = currentFiber();
+		Fiber& f = currentFiber();
 
 		perf_syscall("yield()", now);
-		if(unlikely(!alwaysYield && !fiber.allowYield(now)))
+		if(unlikely(!alwaysYield && !f.allowYield(now)))
 			return;
 
 		currentWorker().schedule(preferFiber, now);
@@ -411,9 +411,9 @@ namespace zth {
 
 	inline void suspend() {
 		Worker* worker;
-		Fiber* fiber;
-		getContext(&worker, &fiber);
-		worker->suspend(*fiber);
+		Fiber* f;
+		getContext(&worker, &f);
+		worker->suspend(*f);
 	}
 
 	inline void resume(Fiber& fiber) {

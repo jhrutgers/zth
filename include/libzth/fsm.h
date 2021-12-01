@@ -635,14 +635,16 @@ namespace zth {
 		typedef CallbackArg_ CallbackArg;
 		typedef void (*Callback)(FsmCallback&, CallbackArg);
 
-		explicit FsmCallback(typename base::Compiler const& compiler, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
+		// cppcheck-suppress constParameter
+		FsmCallback(typename base::Compiler const& compiler, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(compiler, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
 		{}
 
 		// cppcheck-suppress passedByValue
-		explicit FsmCallback(typename base::Description description, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
+		// cppcheck-suppress constParameter
+		FsmCallback(typename base::Description description, Callback callback, CallbackArg callbackArg, char const* name = "FSM")
 			: base(description, name)
 			, m_callback(callback)
 			, m_callbackArg(callbackArg)
