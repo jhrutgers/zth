@@ -233,7 +233,7 @@ namespace zth {
 		explicit TypedFiber0(typename base::Function function) : base(function) {}
 		virtual ~TypedFiber0() {}
 	protected:
-		virtual void entry_() { this->function()(); this->setFuture(); }
+		virtual void entry_() override { this->function()(); this->setFuture(); }
 	};
 
 	template <typename R, typename A1>

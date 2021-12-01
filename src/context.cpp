@@ -612,7 +612,7 @@ static int context_create_impl(Context* context, stack_t* stack)
 		// Stackless fiber only saves current context.
 		if((context->fiber = GetCurrentFiber()))
 			return 0;
-	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, (LPFIBER_START_ROUTINE)&context_entry, (LPVOID)context))) {
+	} else if((context->fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, reinterpret_cast<LPFIBER_START_ROUTINE>(&context_entry), (LPVOID)context))) {
 		zth_dbg(context, "[%s] Created fiber %p", currentWorker().id_str(), context->fiber);
 		return 0;
 	}

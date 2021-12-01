@@ -178,7 +178,7 @@ namespace zth {
 
 		class iterator {
 		public:
-			iterator(elem_type* start, elem_type* current = NULL) : m_start(start), m_current(current) {}
+			explicit iterator(elem_type* start, elem_type* current = NULL) : m_start(start), m_current(current) {}
 			bool atBegin() const { return !m_current && m_start; }
 			bool atEnd() const { return m_current == m_start; }
 			elem_type* get() const { return atBegin() ? m_start : m_current; }

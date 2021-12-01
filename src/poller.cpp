@@ -140,8 +140,18 @@ int PollPoller::init(Pollable const& p, struct pollfd& item) noexcept
 	// Zth only has PollableFds, so this is safe.
 	PollableFd const& pfd = static_cast<PollableFd const&>(p);
 
-	item.fd = p.fd;
-	item.events = p.events;
+	item.fd = pfd.fd;
+
+	item.events = 0;
+	if((pfd.events.test(Pollable::PollInIndex)))
+		item.events |= POLLIN;
+	if((pfd.events.test(Pollable::PollOutIndex)))
+		item.events |= POLLOUT;
+	if((pfd.events.test(Pollable::PollPriIndex)))
+		item.events |= POLLPRI;
+	if((pfd.events.test(Pollable::PollHupIndex)))
+		item.events |= POLLHUP;
+
 	return 0;
 }
 

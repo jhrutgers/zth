@@ -47,12 +47,12 @@
 // Compiler
 //
 
-#ifdef __clang__
+#ifdef __clang_analyzer__
 // We don't use clang for compiling, but we do use clang-tidy.
 #  define CLANG_TIDY
 #endif
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(CLANG_TIDY)
 // This is gcc
 #  ifdef __cplusplus
 #    if __cplusplus < 201103L && !defined(decltype)
@@ -80,6 +80,10 @@
 #  endif
 #else
 #  error Unsupported compiler. Please use gcc.
+#endif
+
+#ifdef CPPCHECK
+#  define __attribute__(x)
 #endif
 
 #if defined(__cplusplus) && __cplusplus >= 201703L
@@ -241,7 +245,7 @@ ZTH_EXPORT void foo();
 #  define ZTH_HAVE_POLL
 #  define ZTH_HAVE_MMAN
 #elif defined(__APPLE__)
-#  include "TargetConditionals.h"
+#  include <TargetConditionals.h>
 #  ifdef TARGET_OS_MAC
 #    define ZTH_OS_MAC 1
 #  else

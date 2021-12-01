@@ -724,6 +724,7 @@ namespace zth {
 		PollerClient();
 
 #if __cplusplus >= 201103L
+		// cppcheck-suppress noExplicitConstructor
 		PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l);
 #endif
 

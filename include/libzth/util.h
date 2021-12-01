@@ -130,7 +130,6 @@
 #ifdef __cplusplus
 #include <string>
 #include <cstring>
-#include <pthread.h>
 #include <limits>
 #include <memory>
 #include <cinttypes>
@@ -140,9 +139,6 @@
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
-#else
-#  include <sys/types.h>
-#  include <unistd.h>
 #endif
 
 #ifndef ZTH_OS_WINDOWS
@@ -332,14 +328,15 @@ namespace zth {
 			return *this;
 		}
 
-		cow_string& operator=(char const* s) { m_cstr = s; return *this; }
+		cow_string& operator=(char const* s) { m_cstr = s; m_str.clear(); return *this; }
 		cow_string& operator=(std::string const& s) { m_cstr = nullptr; m_str = s; return *this; }
 
 #if __cplusplus >= 201103L
 		cow_string(cow_string&& s) noexcept = default;
 		cow_string& operator=(cow_string&& s) noexcept = default;
 
-		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
+		// cppcheck-suppress noExplicitConstructor
+		cow_string(std::string&& s) noexcept : m_cstr(), m_str(std::move(s)) {}
 		cow_string& operator=(std::string&& s) noexcept { m_cstr = nullptr; m_str = std::move(s); return *this; }
 #endif
 
@@ -473,7 +470,7 @@ namespace zth {
 		{}
 
 #if __cplusplus >= 201103L
-		UniqueID(std::string&& name) noexcept
+		explicit UniqueID(std::string&& name) noexcept
 			: m_id(getID())
 			, m_name(std::move(name))
 		{}
@@ -688,6 +685,7 @@ namespace zth {
 		/*!
 		 * \brief Default ctor.
 		 */
+		// cppcheck-suppress uninitMemberVar
 		constexpr small_vector() noexcept
 			: m_size()
 		{

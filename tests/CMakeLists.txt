@@ -2,6 +2,7 @@ find_program(VALGRIND_EXE valgrind)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_CLANG_TIDY "")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -14,6 +15,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
+
+set(CMAKE_CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 
 if(WIN32 AND ZTH_HAVE_LIBZMQ)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libzmq.timestamp

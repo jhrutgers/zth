@@ -116,7 +116,7 @@ void _crt()
 
 	extern char __init_array_start;
 	extern char __init_array_end;
-	for(void** f = (void**)&__init_array_start; (char*)f < &__init_array_end; f++)
+	for(void** f = (void**)&__init_array_start; (uintptr_t)f < (uintptr_t)&__init_array_end; f++)
 		((void(*)(void))(*f))();
 }
 

@@ -28,6 +28,7 @@
 #include <libzth/config.h>
 #include <libzth/util.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <ctime>
 #include <cmath>

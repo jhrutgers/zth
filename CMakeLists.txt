@@ -41,6 +41,7 @@ endif()
 option(ZTH_DEV "Enable by default development related build options" OFF)
 if(ZTH_DEV)
 	set(ZTH_DEV_OPTION ON)
+	set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 else()
 	set(ZTH_DEV_OPTION OFF)
 endif()
@@ -57,7 +58,7 @@ if(ZTH_HAVE_LIBZMQ)
 	find_package(ZeroMQ)
 endif()
 
-if(ZTH_DEV_OPTION AND NOT CMAKE_CROSSCOMPILING)
+if(ZTH_DEV_OPTION AND NOT CMAKE_CROSSCOMPILING AND NOT MINGW)
 	set(ZTH_SAN_DEFAULT ON)
 else()
 	set(ZTH_SAN_DEFAULT OFF)
@@ -76,7 +77,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 	if(CLANG_TIDY_EXE AND (NOT CMAKE_CXX_STANDARD OR NOT CMAKE_CXX_STANDARD EQUAL 98))
 		# It seems that if clang is not installed, clang-tidy doesn't work properly.
 		find_program(CLANG_EXE NAMES "clang" DOC "Path to clang executable")
-		if(CLANG_EXE AND ZTH_DEV)
+		if(CLANG_EXE AND ZTH_DEV AND NOT WIN32)
 			option(ZTH_CLANG_TIDY "Run clang-tidy" ${ZTH_DEV_OPTION})
 		else()
 			option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
@@ -94,6 +95,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 				"-cppcoreguidelines-avoid-c-arrays,"
 				"-cppcoreguidelines-avoid-goto,"
 				"-cppcoreguidelines-avoid-magic-numbers,"
+				"-cppcoreguidelines-avoid-non-const-global-variables,"
 				"-cppcoreguidelines-explicit-virtual-functions,"
 				"-cppcoreguidelines-macro-usage,"
 				"-cppcoreguidelines-no-malloc,"
@@ -140,6 +142,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 			)
 			set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "${CLANG_TIDY_CHECKS}"
 				"--extra-arg=-I${PROJECT_SOURCE_DIR}/include"
+				"--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
 				"--warnings-as-errors=*"
 				"--extra-arg=-Wno-unknown-warning-option"
 			)
@@ -274,7 +277,7 @@ if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
-if(NOT CMAKE_CROSSCOMPILING AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(NOT CMAKE_CROSSCOMPILING AND CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MINGW)
 	# Improve backtraces.
 	target_link_options(libzth INTERFACE -rdynamic)
 endif()
@@ -332,8 +335,10 @@ if(CPPCHECK_CMD)
 			--quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
 			--error-exitcode=1
+			-j 4
 			--library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}"
+			-D__GNUC__=10 -DCPPCHECK
 #			--xml
 			-I include
 			src

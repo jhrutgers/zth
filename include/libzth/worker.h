@@ -28,7 +28,6 @@
 #include <libzth/init.h>
 
 #include <time.h>
-#include <pthread.h>
 #include <limits>
 #include <cstring>
 
@@ -381,12 +380,12 @@ namespace zth {
 	}
 
 	inline void getContext(Worker** worker, Fiber** fiber) {
-		Worker& currentWorker_ = currentWorker();
+		Worker& current_worker = currentWorker();
 		if(likely(worker))
-			*worker = &currentWorker_;
+			*worker = &current_worker;
 
 		if(likely(fiber)) {
-			Fiber* currentFiber_ = *fiber = currentWorker_.currentFiber();
+			Fiber* currentFiber_ = *fiber = current_worker.currentFiber();
 			if(unlikely(!currentFiber_))
 				zth_abort("Not within fiber context");
 		}

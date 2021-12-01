@@ -14,7 +14,7 @@ if "%1" == "" goto build
 set build_type=%1
 shift
 :args
-if "%1" == "" goto build
+if "%~1" == "" goto build
 set cmake_args=%cmake_args% "%~1"
 shift
 goto args

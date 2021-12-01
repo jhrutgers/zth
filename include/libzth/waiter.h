@@ -63,11 +63,11 @@ namespace zth {
 	template <typename F>
 	class PolledWaiting : public TimedWaitable {
 	public:
-		PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
+		explicit PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
 			: TimedWaitable(Timestamp()), m_f(f) { setInterval(interval); }
 		virtual ~PolledWaiting() {}
 
-		virtual bool poll(Timestamp const& now = Timestamp::now()) {
+		virtual bool poll(Timestamp const& now = Timestamp::now()) override {
 			if(m_f())
 				return true;
 

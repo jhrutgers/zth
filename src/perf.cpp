@@ -524,9 +524,9 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 		return;
 
 #  ifdef ZTH_OS_MAC
-	char atos[256];
 	FILE* atosf = nullptr;
 	if(Config::Debug) {
+		char atos[256];
 		int len = snprintf(atos, sizeof(atos), "atos -p %d\n", getpid());
 		if(len > 0 && (size_t)len < sizeof(atos))
 			atosf = popen(atos, "w");

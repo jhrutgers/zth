@@ -333,7 +333,7 @@ namespace zth {
 		}
 
 	protected:
-		virtual void changedName(std::string const& name) {
+		virtual void changedName(std::string const& name) override {
 			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
 		}
 
