@@ -69,6 +69,86 @@ add_subdirectory(version)
 
 set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
+	find_program(CLANG_TIDY_EXE NAMES "clang-tidy" DOC "Path to clang-tidy executable")
+	if(CLANG_TIDY_EXE AND (NOT CMAKE_CXX_STANDARD OR NOT CMAKE_CXX_STANDARD EQUAL 98))
+		# It seems that if clang is not installed, clang-tidy doesn't work properly.
+		find_program(CLANG_EXE NAMES "clang" DOC "Path to clang executable")
+		if(CLANG_EXE AND ZTH_DEV)
+			option(ZTH_CLANG_TIDY "Run clang-tidy" ${ZTH_DEV_OPTION})
+		else()
+			option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
+		endif()
+
+		if(ZTH_CLANG_TIDY)
+			message(STATUS "Enabled clang-tidy")
+
+			string(CONCAT CLANG_TIDY_CHECKS "-checks="
+				"bugprone-*,"
+				"clang-analyzer-*,"
+				"concurrency-*,"
+
+				"cppcoreguidelines-*,"
+				"-cppcoreguidelines-avoid-c-arrays,"
+				"-cppcoreguidelines-avoid-goto,"
+				"-cppcoreguidelines-avoid-magic-numbers,"
+				"-cppcoreguidelines-explicit-virtual-functions,"
+				"-cppcoreguidelines-macro-usage,"
+				"-cppcoreguidelines-no-malloc,"
+				"-cppcoreguidelines-owning-memory,"
+				"-cppcoreguidelines-pro-bounds-array-to-pointer-decay,"
+				"-cppcoreguidelines-pro-bounds-constant-array-index,"
+				"-cppcoreguidelines-pro-bounds-pointer-arithmetic,"
+				"-cppcoreguidelines-pro-type-reinterpret-cast,"
+				"-cppcoreguidelines-pro-type-union-access,"
+				"-cppcoreguidelines-pro-type-vararg,"
+
+				"hicpp-*,"
+				"-hicpp-avoid-c-arrays,"
+				"-hicpp-avoid-goto,"
+				"-hicpp-braces-around-statements,"
+				"-hicpp-member-init,"
+				"-hicpp-no-array-decay,"
+				"-hicpp-no-malloc,"
+				"-hicpp-signed-bitwise,"
+				"-hicpp-uppercase-literal-suffix,"
+				"-hicpp-use-auto,"
+				"-hicpp-use-override,"
+				"-hicpp-vararg,"
+
+				"misc-*,"
+				"-misc-no-recursion,"
+				"-misc-non-private-member-variables-in-classes,"
+
+				"readability-*,"
+				"-readability-braces-around-statements,"
+				"-readability-convert-member-functions-to-static,"
+				"-readability-else-after-return,"
+				"-readability-function-cognitive-complexity,"
+				"-readability-implicit-bool-conversion,"
+				"-readability-magic-numbers,"
+				"-readability-make-member-function-const,"
+				"-readability-redundant-access-specifiers,"
+				"-readability-uppercase-literal-suffix,"
+
+				"performance-*,"
+				"-performance-no-int-to-ptr," # Especially on WIN32 HANDLEs.
+
+				"portability-*,"
+			)
+			set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "${CLANG_TIDY_CHECKS}"
+				"--extra-arg=-I${PROJECT_SOURCE_DIR}/include"
+				"--warnings-as-errors=*"
+				"--extra-arg=-Wno-unknown-warning-option"
+			)
+
+			set(CMAKE_CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+		else()
+			set(CMAKE_CXX_CLANG_TIDY "")
+		endif()
+	endif()
+endif()
+
 add_library(libzth
 	src/config.cpp
 	src/context.cpp
@@ -101,7 +181,10 @@ target_include_directories(libzth PUBLIC
 	$<INSTALL_INTERFACE:include>
 )
 
-target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -fstack-usage)
+target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion)
+if(CMAKE_CROSSCOMPILING)
+	target_compile_options(libzth PRIVATE -fstack-usage)
+endif()
 
 install(TARGETS libzth EXPORT libzth
 	ARCHIVE DESTINATION lib

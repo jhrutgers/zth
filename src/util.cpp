@@ -39,7 +39,8 @@ namespace zth {
  * \brief Prints a banner line with version and configuration information.
  * \ingroup zth_api_cpp_util
  */
-char const* banner() noexcept {
+char const* banner() noexcept
+{
 	return "Zth " ZTH_VERSION
 #ifdef __GNUC__
 		" g++-" ZTH_STRINGIFY(__GNUC__) "." ZTH_STRINGIFY(__GNUC_MINOR__) "." ZTH_STRINGIFY(__GNUC_PATCHLEVEL__)
@@ -146,15 +147,16 @@ void abortv(char const* fmt, va_list args) noexcept
 }
 
 #ifndef ZTH_OS_BAREMETAL
-static void log_init() {
+static void log_init()
+{
 #  ifdef ZTH_OS_WINDOWS
 	// Windows does not support line buffering.
 	// If set anyway, this implies full buffering.
 	// Only do that when we expect much debug output.
 	if(zth_config(EnableDebugPrint)) {
 #  endif
-		setvbuf(stdout, NULL, _IOLBF, 4096);
-		setvbuf(stderr, NULL, _IOLBF, 4096);
+		setvbuf(stdout, nullptr, _IOLBF, 4096);
+		setvbuf(stderr, nullptr, _IOLBF, 4096);
 #  ifdef ZTH_OS_WINDOWS
 	}
 #  endif
@@ -230,7 +232,7 @@ std::string formatv(char const* fmt, va_list args)
 	int const maxstack = (int)sizeof(void*) * 8;
 
 	char sbuf[maxstack];
-	char* hbuf = NULL;
+	char* hbuf = nullptr;
 	char* buf = sbuf;
 
 	va_list args2;
@@ -238,7 +240,7 @@ std::string formatv(char const* fmt, va_list args)
 	int c = vsnprintf(sbuf, maxstack, fmt, args);
 
 	if(c >= maxstack) {
-		hbuf = (char*)malloc(c + 1);
+		hbuf = static_cast<char*>(malloc((size_t)c + 1));
 		if(unlikely(!hbuf)) {
 			c = 0;
 		} else {

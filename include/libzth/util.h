@@ -194,6 +194,23 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv
 #  endif
 #endif
 
+#ifndef ZTH_CLASS_NOCOPY
+#  if __cplusplus >= 201103L
+#    define ZTH_CLASS_NOCOPY(Class) \
+	public: \
+		Class(Class const&) = delete; \
+		Class(Class&&) = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) */ \
+		Class& operator=(Class const&) noexcept = delete; \
+		Class& operator=(Class&&) noexcept = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) */ \
+	private:
+#  else
+#    define ZTH_CLASS_NOCOPY(Class) \
+	private: \
+		Class(Class const&); \
+		Class& operator=(Class const&);
+#  endif
+#endif
+
 #include <libzth/zmq.h>
 
 namespace zth {
@@ -437,6 +454,7 @@ namespace zth {
 	 */
 	template <typename T, bool ThreadSafe = Config::EnableThreads>
 	class UniqueID : public UniqueIDBase {
+		ZTH_CLASS_NOCOPY(UniqueID)
 	public:
 		static uint64_t getID() noexcept
 		{
@@ -455,11 +473,6 @@ namespace zth {
 		{}
 
 #if __cplusplus >= 201103L
-		UniqueID(UniqueID const&) = delete;
-		UniqueID& operator=(UniqueID const&) = delete;
-		UniqueID(UniqueID&&) noexcept = delete;
-		UniqueID& operator=(UniqueID&&) noexcept = delete;
-
 		UniqueID(std::string&& name) noexcept
 			: m_id(getID())
 			, m_name(std::move(name))
@@ -527,11 +540,6 @@ namespace zth {
 		virtual void changedName(std::string const& UNUSED_PAR(name)) {}
 
 	private:
-#if __cplusplus < 201103L
-		UniqueID(UniqueID const&);
-		UniqueID& operator=(UniqueID const&);
-#endif
-
 		uint64_t const m_id;
 		std::string m_name;
 		std::string mutable m_id_str;

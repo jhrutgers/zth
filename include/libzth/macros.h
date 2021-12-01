@@ -47,6 +47,11 @@
 // Compiler
 //
 
+#ifdef __clang__
+// We don't use clang for compiling, but we do use clang-tidy.
+#  define CLANG_TIDY
+#endif
+
 #ifdef __GNUC__
 // This is gcc
 #  ifdef __cplusplus
@@ -64,7 +69,9 @@
 #  ifndef _GNU_SOURCE
 #    define _GNU_SOURCE
 #  endif
-#  define ZTH_ATTR_PRINTF	gnu_printf
+#  ifndef CLANG_TIDY
+#    define ZTH_ATTR_PRINTF	gnu_printf
+#  endif
 #  ifndef GCC_VERSION
 #    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
 #  endif

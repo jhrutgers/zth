@@ -35,7 +35,7 @@ zth_fiber(hello)
 // peripherals of an embedded system, override the weakly defined
 // zth_preinit(), which is by default doing nothing. It is called before any
 // Zth functionality is used.
-void main_fiber(int argc, char** argv)
+void main_fiber(int /*argc*/, char** /*argv*/)
 {
 	async hello();
 }

@@ -247,6 +247,7 @@ namespace zth {
 			zth_dbg(worker, "[%s] Fiber %s is dead; cleanup", id_str(), fiber.id_str());
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
+			zth_assert(&fiber != &m_workerFiber);
 			delete &fiber;
 
 			sigchld_check();

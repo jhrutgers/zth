@@ -19,7 +19,7 @@
 #include <libzth/config.h>
 
 #include <cstdlib>
-#include <string.h>
+#include <cstring>
 
 namespace zth {
 

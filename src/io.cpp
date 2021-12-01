@@ -39,6 +39,7 @@ ssize_t read(int fd, void* buf, size_t count) {
 	if(unlikely(flags == -1))
 		return -1; // with errno set
 
+	// NOLINTNEXTLINE(hicpp-signed-bitwise)
 	if((flags & O_NONBLOCK)) {
 		zth_dbg(io, "[%s] read(%d) non-blocking", currentFiber().str().c_str(), fd);
 		// Just do the call.
@@ -64,6 +65,7 @@ ssize_t write(int fd, void const* buf, size_t count) {
 	if(unlikely(flags == -1))
 		return -1; // with errno set
 
+	// NOLINTNEXTLINE(hicpp-signed-bitwise)
 	if((flags & O_NONBLOCK)) {
 		zth_dbg(io, "[%s] write(%d) non-blocking", currentFiber().str().c_str(), fd);
 		// Just do the call.

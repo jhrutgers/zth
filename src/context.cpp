@@ -47,7 +47,7 @@
 #  else
 #    define pthread_sigmask(...)	sigprocmask(__VA_ARGS__)
 #    define pthread_kill(...)		kill(__VA_ARGS__)
-#    define pthread_self()			getpid()
+#    define pthread_self()		getpid()
 #    define pthread_yield_np()		sched_yield()
 #  endif
 #endif
@@ -89,6 +89,7 @@ using namespace std;
 
 namespace zth {
 
+// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 class Context {
 public:
 	void* stack;
@@ -151,7 +152,8 @@ extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
-static int stack_guard_region() {
+static int stack_guard_region()
+{
 	if(!Config::EnableStackGuard || Config::EnableThreads)
 		return -1;
 
@@ -211,7 +213,8 @@ static int stack_guard_region() {
 	return region;
 }
 
-static void stack_guard(void* guard) {
+static void stack_guard(void* guard)
+{
 	if(!Config::EnableStackGuard || Config::EnableThreads)
 		return;
 
@@ -264,14 +267,15 @@ static void stack_guard(void* guard) {
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
 
-static void context_trampoline(Context* context, sigjmp_buf origin) {
+static void context_trampoline(Context* context, sigjmp_buf origin)
+{
 #ifdef ZTH_ENABLE_ASAN
-	void const* oldstack = NULL;
+	void const* oldstack = nullptr;
 	size_t oldsize = 0;
-	__sanitizer_finish_switch_fiber(NULL, &oldstack, &oldsize);
+	__sanitizer_finish_switch_fiber(nullptr, &oldstack, &oldsize);
 
 	// We are jumping back.
-	__sanitizer_start_switch_fiber(NULL, oldstack, oldsize);
+	__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
 #endif
 
 	if(sigsetjmp(context->env, Config::ContextSignals) == 0)
@@ -281,7 +285,8 @@ static void context_trampoline(Context* context, sigjmp_buf origin) {
 	context_entry(context);
 }
 
-static int context_create_impl(Context* context, stack_t* stack) {
+static int context_create_impl(Context* context, stack_t* stack)
+{
 	if(unlikely(!stack->ss_sp))
 		// Stackless fiber only saves current context; nothing to do.
 		return 0;
@@ -290,13 +295,13 @@ static int context_create_impl(Context* context, stack_t* stack) {
 	if(getcontext(&uc))
 		return EINVAL;
 
-	uc.uc_link = NULL;
+	uc.uc_link = nullptr;
 	uc.uc_stack = *stack;
 	sigjmp_buf origin;
-	makecontext(&uc, (void(*)(void))&context_trampoline, 2, context, origin);
+	makecontext(&uc, reinterpret_cast<void(*)(void)>(&context_trampoline), 2, context, origin);
 
 #ifdef ZTH_ENABLE_ASAN
-	void* fake_stack = NULL;
+	void* fake_stack = nullptr;
 	__sanitizer_start_switch_fiber(&fake_stack, stack->ss_sp, stack->ss_size);
 #endif
 
@@ -304,12 +309,13 @@ static int context_create_impl(Context* context, stack_t* stack) {
 		setcontext(&uc);
 
 #ifdef ZTH_ENABLE_ASAN
-	__sanitizer_finish_switch_fiber(fake_stack, NULL, NULL);
+	__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
 #endif
 	return 0;
 }
 
-static void context_switch_impl(Context* from, Context* to) {
+static void context_switch_impl(Context* from, Context* to)
+{
 	// switchcontext() restores signal masks, which is slow...
 	if(sigsetjmp(from->env, Config::ContextSignals) == 0)
 		siglongjmp(to->env, 1);
@@ -331,14 +337,15 @@ static void context_switch_impl(Context* from, Context* to) {
 #  error Invalid configuration combination sigaltstack with asan.
 #endif
 
-static void context_global_init() {
+static void context_global_init()
+{
 	// By default, block SIGUSR1 for the main/all thread(s).
 	int res = 0;
 
 	sigset_t sigs;
 	sigemptyset(&sigs);
 	sigaddset(&sigs, SIGUSR1);
-	if((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL)))
+	if((res = pthread_sigmask(SIG_BLOCK, &sigs, nullptr)))
 		goto error;
 
 	return;
@@ -352,11 +359,12 @@ static void bootstrap(Context* context) __attribute__((noreturn
 	,noinline
 #endif
 	));
-static void bootstrap(Context* context) {
+static void bootstrap(Context* context)
+{
 	zth_dbg(context, "Bootstrapping %p", context);
 
 	if(Config::ContextSignals) {
-		int res = pthread_sigmask(SIG_SETMASK, &context->mask, NULL);
+		int res = pthread_sigmask(SIG_SETMASK, &context->mask, nullptr);
 		if(unlikely(res))
 			zth_abort("Cannot set signal mask");
 	}
@@ -372,9 +380,10 @@ static void bootstrap(Context* context) {
 	context_entry(context);
 }
 
-ZTH_TLS_STATIC(Context*, trampoline_context, NULL)
+ZTH_TLS_STATIC(Context*, trampoline_context, nullptr)
 
-static void context_trampoline(int sig) {
+static void context_trampoline(int sig)
+{
 	// At this point, we are in the signal handler.
 
 	if(unlikely(sig != SIGUSR1))
@@ -399,13 +408,14 @@ static void context_trampoline(int sig) {
 	bootstrap(context);
 }
 
-static int context_init_impl() {
+static int context_init_impl()
+{
 	// Claim SIGUSR1 for context_create().
 	struct sigaction sa;
 	sa.sa_handler = &context_trampoline;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_ONSTACK;
-	if(sigaction(SIGUSR1, &sa, NULL))
+	if(sigaction(SIGUSR1, &sa, nullptr))
 		return errno;
 
 	// Let SIGUSR1 remain blocked.
@@ -414,20 +424,22 @@ static int context_init_impl() {
 	return 0;
 }
 
-static void context_deinit_impl() {
+static void context_deinit_impl()
+{
 	// Release SIGUSR1.
 	struct sigaction sa;
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR1, &sa, nullptr);
 }
 
 #ifdef ZTH_HAVE_VALGRIND
 static char dummyAltStack[MINSIGSTKSZ];
 #endif
 
-static int context_create_impl(Context* context, stack_t* stack) {
+static int context_create_impl(Context* context, stack_t* stack)
+{
 	if(unlikely(!stack->ss_sp))
 		// Stackless fiber only saves current context; nothing to do.
 		return 0;
@@ -437,7 +449,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 
 	// Let the new context inherit our signal mask.
 	if(Config::ContextSignals)
-		if(unlikely((res = pthread_sigmask(0, NULL, &context->mask))))
+		if(unlikely((res = pthread_sigmask(0, nullptr, &context->mask))))
 			return res;
 
 	stack_t& ss = *stack;
@@ -460,7 +472,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 	sigset_t sigs;
 	sigemptyset(&sigs);
 	sigaddset(&sigs, SIGUSR1);
-	if(unlikely((res = pthread_sigmask(SIG_UNBLOCK, &sigs, NULL))))
+	if(unlikely((res = pthread_sigmask(SIG_UNBLOCK, &sigs, nullptr))))
 		goto rollback_altstack;
 
 	// As we are not blocking SIGUSR1, we will get the signal.
@@ -472,14 +484,14 @@ static int context_create_impl(Context* context, stack_t* stack) {
 		pthread_yield_np();
 
 	// Block again.
-	if(unlikely((res = pthread_sigmask(SIG_BLOCK, &sigs, NULL))))
+	if(unlikely((res = pthread_sigmask(SIG_BLOCK, &sigs, nullptr))))
 		goto rollback_altstack;
 
 	if(Config::Debug)
-		ZTH_TLS_SET(trampoline_context, NULL);
+		ZTH_TLS_SET(trampoline_context, nullptr);
 
 	if(Config::EnableAssert) {
-		if(unlikely(sigaltstack(NULL, &ss))) {
+		if(unlikely(sigaltstack(nullptr, &ss))) {
 			res = errno;
 			goto rollback_altstack;
 		}
@@ -489,14 +501,14 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #ifndef SS_AUTODISARM
 	// Reset sigaltstack.
 	ss.ss_flags = SS_DISABLE;
-	if(unlikely(sigaltstack(&ss, NULL))) {
+	if(unlikely(sigaltstack(&ss, nullptr))) {
 		res = errno;
 		goto rollback_altstack;
 	}
 #endif
 
 	if(unlikely(!(oss.ss_flags & SS_DISABLE))) {
-		if(sigaltstack(&oss, NULL)) {
+		if(sigaltstack(&oss, nullptr)) {
 			res = errno;
 			goto rollback;
 		}
@@ -510,7 +522,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 		dss.ss_sp = dummyAltStack;
 		dss.ss_size = sizeof(dummyAltStack);
 		dss.ss_flags = 0;
-		if(unlikely(sigaltstack(&dss, NULL))) {
+		if(unlikely(sigaltstack(&dss, nullptr))) {
 			res = errno;
 			goto rollback;
 		}
@@ -534,7 +546,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 #endif
 
 	if(Config::EnableAssert) {
-		if(unlikely(sigaltstack(NULL, &oss))) {
+		if(unlikely(sigaltstack(nullptr, &oss))) {
 			res = errno;
 			goto rollback;
 		}
@@ -543,7 +555,7 @@ static int context_create_impl(Context* context, stack_t* stack) {
 
 	// context is setup properly and is ready for normal scheduling.
 	if(Config::Debug)
-		context->parent = NULL;
+		context->parent = nullptr;
 
 	return 0;
 
@@ -552,12 +564,13 @@ rollback_altstack:
 	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
 #endif
 	if(!(oss.ss_flags & SS_DISABLE))
-		sigaltstack(&oss, NULL);
+		sigaltstack(&oss, nullptr);
 rollback:
 	return res ? res : EINVAL;
 }
 
-static void context_switch_impl(Context* from, Context* to) {
+static void context_switch_impl(Context* from, Context* to)
+{
 	if(sigsetjmp(from->env, Config::ContextSignals) == 0) {
 		// Go switch away from here.
 		siglongjmp(to->env, 1);
@@ -581,9 +594,10 @@ struct stack_t {
 };
 #  define context_deinit_impl()
 
-static int context_init_impl() {
+static int context_init_impl()
+{
 	int res = 0;
-	if(ConvertThreadToFiber(NULL))
+	if(ConvertThreadToFiber(nullptr))
 		return 0;
 	else if((res = -(int)GetLastError()))
 		return res;
@@ -591,7 +605,8 @@ static int context_init_impl() {
 		return EINVAL;
 }
 
-static int context_create_impl(Context* context, stack_t* stack) {
+static int context_create_impl(Context* context, stack_t* stack)
+{
 	int res = 0;
 	if(unlikely(!stack->haveStack)) {
 		// Stackless fiber only saves current context.
@@ -608,7 +623,8 @@ static int context_create_impl(Context* context, stack_t* stack) {
 		return EINVAL;
 }
 
-static void context_destroy_impl(Context* context) {
+static void context_destroy_impl(Context* context)
+{
 	if(!context->fiber)
 		return;
 
@@ -617,10 +633,11 @@ static void context_destroy_impl(Context* context) {
 		zth_dbg(context, "[%s] Delete fiber %p", currentWorker().id_str(), context->fiber);
 		DeleteFiber(context->fiber);
 	}
-	context->fiber = NULL;
+	context->fiber = nullptr;
 }
 
-static void context_switch_impl(Context* UNUSED_PAR(from), Context* to) {
+static void context_switch_impl(Context* UNUSED_PAR(from), Context* to)
+{
 	zth_assert(to->fiber && to->fiber != GetCurrentFiber());
 	SwitchToFiber(to->fiber);
 }
@@ -638,7 +655,8 @@ static void context_switch_impl(Context* UNUSED_PAR(from), Context* to) {
 #  define context_destroy_impl(...)
 
 #ifdef ZTH_ARCH_ARM
-__attribute__((naked)) static void context_trampoline() {
+__attribute__((naked)) static void context_trampoline()
+{
 	__asm__ volatile (
 		"ldr r0, [sp]\n"
 		// Terminate stack frame list here, only for debugging purposes.
@@ -651,7 +669,8 @@ __attribute__((naked)) static void context_trampoline() {
 }
 #endif
 
-static int context_create_impl(Context* context, stack_t* stack) {
+static int context_create_impl(Context* context, stack_t* stack)
+{
 	if(unlikely(!stack->ss_sp))
 		// Stackless fiber only saves current context; nothing to do.
 		return 0;
@@ -683,7 +702,8 @@ static int context_create_impl(Context* context, stack_t* stack) {
 	return 0;
 }
 
-static void context_switch_impl(Context* from, Context* to) {
+static void context_switch_impl(Context* from, Context* to)
+{
 #if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
 	// newlib does not do saving/restoring of FPU registers.
 	// We have to do it here ourselves.
@@ -736,12 +756,14 @@ static void context_switch_impl(Context* from, Context* to) {
 #ifdef ZTH_CONTEXT_WINFIBER
 // Stack is implicit by CreateFiber().
 #  define context_deletestack(...)
-static int context_newstack(Context* context, stack_t* stack) {
+static int context_newstack(Context* context, stack_t* stack)
+{
 	stack->haveStack = context->stackSize > 0;
 	return 0;
 }
 #else // !ZTH_CONTEXT_WINFIBER
-static void context_deletestack(Context* context) {
+static void context_deletestack(Context* context)
+{
 	if(context->stack) {
 #ifdef ZTH_USE_VALGRIND
 		VALGRIND_STACK_DEREGISTER(context->valgrind_stack_id);
@@ -751,16 +773,17 @@ static void context_deletestack(Context* context) {
 #else
 		free(context->stack);
 #endif
-		context->stack = NULL;
+		context->stack = nullptr;
 	}
 }
 
-static int context_newstack(Context* context, stack_t* stack) {
+static int context_newstack(Context* context, stack_t* stack)
+{
 	// cppcheck-suppress unreadVariable
 	int res = 0;
 	size_t const pagesize =
 #ifdef ZTH_HAVE_MMAN
-		getpagesize();
+		(size_t)getpagesize();
 #elif defined(ZTH_ARM_HAVE_MPU)
 		Config::EnableStackGuard ? (size_t)ZTH_ARM_STACK_GUARD_SIZE : sizeof(void*);
 #else
@@ -779,20 +802,21 @@ static int context_newstack(Context* context, stack_t* stack) {
 	size_t stack_watermarked_size = 0;
 
 #ifdef ZTH_HAVE_MMAN
-	if(unlikely((context->stack = mmap(NULL, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED))
+	// NOLINTNEXTLINE(hicpp-signed-bitwise,cppcoreguidelines-pro-type-cstyle-cast)
+	if(unlikely((context->stack = mmap(nullptr, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED))
 #else
-	if(unlikely((context->stack = malloc(context->stackSize)) == NULL))
+	if(unlikely((context->stack = malloc(context->stackSize)) == nullptr))
 #endif
 	{
 		res = errno;
-		context->stack = NULL;
+		context->stack = nullptr;
 		goto rollback;
 	}
 
 #ifdef ZTH_HAVE_MMAN
 	if(Config::EnableStackGuard) {
 		// Exclude the pages at both sides of the stack.
-		context->stack_watermarked = stack->ss_sp = (char*)context->stack + pagesize;
+		context->stack_watermarked = stack->ss_sp = static_cast<char*>(context->stack) + pagesize;
 		stack_watermarked_size = stack->ss_size = context->stackSize - 2 * pagesize;
 	} else
 #elif defined(ZTH_ARM_HAVE_MPU)
@@ -815,7 +839,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 	if(Config::EnableStackWaterMark)
 		stack_watermark_init(context->stack_watermarked, stack_watermarked_size);
 	else
-		context->stack_watermarked = NULL;
+		context->stack_watermarked = nullptr;
 
 #ifdef ZTH_USE_VALGRIND
 	context->valgrind_stack_id = VALGRIND_STACK_REGISTER(stack->ss_sp, (char*)stack->ss_sp + stack->ss_size - 1);
@@ -830,7 +854,7 @@ static int context_newstack(Context* context, stack_t* stack) {
 		// Guard both ends of the stack.
 		if(unlikely(
 			mprotect(context->stack, pagesize, PROT_NONE) ||
-			mprotect((char*)context->stack + context->stackSize - pagesize, pagesize, PROT_NONE)))
+			mprotect(static_cast<char*>(context->stack) + context->stackSize - pagesize, pagesize, PROT_NONE)))
 		{
 			res = errno;
 			goto rollback_mmap;
@@ -855,19 +879,22 @@ rollback:
 ////////////////////////////////////////////////////////////
 // Common functions
 
-int context_init() {
+int context_init()
+{
 	zth_dbg(context, "[%s] Initialize", currentWorker().id_str());
 	return context_init_impl();
 }
 
-void context_deinit() {
+void context_deinit()
+{
 	zth_dbg(context, "[%s] Deinit", currentWorker().id_str());
 	context_deinit_impl();
 }
 
-void context_entry(Context* context) {
+void context_entry(Context* context)
+{
 #ifdef ZTH_ENABLE_ASAN
-	__sanitizer_finish_switch_fiber(NULL, NULL, NULL);
+	__sanitizer_finish_switch_fiber(nullptr, nullptr, nullptr);
 #endif
 
 	zth_assert(context);
@@ -886,14 +913,15 @@ void context_entry(Context* context) {
 	zth_abort("Returned to finished context");
 }
 
-int context_create(Context*& context, ContextAttr const& attr) {
+int context_create(Context*& context, ContextAttr const& attr)
+{
 	int res = 0;
 	context = new Context();
-	context->stack = NULL;
+	context->stack = nullptr;
 	context->stackSize = attr.stackSize;
 	context->attr = attr;
 #ifdef ZTH_ARM_HAVE_MPU
-	context->guard = NULL;
+	context->guard = nullptr;
 #endif
 #ifdef ZTH_ENABLE_ASAN
 	context->alive = true;
@@ -910,7 +938,8 @@ int context_create(Context*& context, ContextAttr const& attr) {
 #ifdef ZTH_CONTEXT_WINFIBER
 		zth_dbg(context, "[%s] New context %p", currentWorker().id_str(), context);
 #else
-		zth_dbg(context, "[%s] New context %p with stack: %p-%p", currentWorker().id_str(), context, stack.ss_sp, (char*)stack.ss_sp + stack.ss_size - 1);
+		zth_dbg(context, "[%s] New context %p with stack: %p-%p", currentWorker().id_str(),
+			context, stack.ss_sp, static_cast<char*>(stack.ss_sp) + stack.ss_size - 1);
 #endif
 	}
 	return 0;
@@ -923,31 +952,34 @@ rollback_new:
 	return res ? res : EINVAL;
 }
 
-void context_switch(Context* from, Context* to) {
+void context_switch(Context* from, Context* to)
+{
 	zth_assert(from);
 	zth_assert(to);
 
 #ifdef ZTH_ENABLE_ASAN
 	zth_assert(to->alive);
-	void* fake_stack = NULL;
-	__sanitizer_start_switch_fiber(from->alive ? &fake_stack : NULL, to->stack, to->stackSize);
+	void* fake_stack = nullptr;
+	__sanitizer_start_switch_fiber(from->alive ? &fake_stack : nullptr, to->stack, to->stackSize);
 #endif
 	context_switch_impl(from, to);
 #ifdef ZTH_ENABLE_ASAN
-	__sanitizer_finish_switch_fiber(fake_stack, NULL, NULL);
+	__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
 #endif
 
 	// Got back from somewhere else.
 	stack_guard(from->guard);
 }
 
-void context_destroy(Context* context) {
+void context_destroy(Context* context)
+{
 	if(!context)
 		return;
 
 	context_destroy_impl(context);
 	context_deletestack(context);
 	delete context;
+	// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 	zth_dbg(context, "[%s] Deleted context %p", currentWorker().id_str(), context);
 }
 
@@ -969,20 +1001,21 @@ namespace zth {
 __attribute__((noinline,unused)) static bool stack_grows_down(void const* reference)
 {
 	int i = 42;
-	return (uintptr_t)&i < (uintptr_t)reference;
+	return reinterpret_cast<uintptr_t>(&i) < reinterpret_cast<uintptr_t>(reference);
 }
 
 /*!
  * \brief Helper to align the stack pointer for watermarking.
  * \param stack the pointer to the stack memory region. The pointer updated because of alignment.
  * \param sizeptr set to the memory where the size of the stack region is stored
- * \param size if not \c NULL, it determines the size of \p stack. It is updated because of alignment.
+ * \param size if not \c nullptr, it determines the size of \p stack. It is updated because of alignment.
  */
-static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size = NULL) {
+static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size = nullptr)
+{
 	if(!stack)
 		return;
 
-	uintptr_t stack_ = (uintptr_t)stack;
+	uintptr_t stack_ = reinterpret_cast<uintptr_t>(stack);
 
 #ifdef ZTH_ARM_HAVE_MPU
 	// Skip guard
@@ -993,22 +1026,23 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 	// Align to size_t
 	stack_ = ((uintptr_t)stack_ + sizeof(size_t) - 1) & ~(uintptr_t)(sizeof(size_t) - 1);
 	// The stack size is stored here.
-	sizeptr = (size_t*)stack_;
+	sizeptr = reinterpret_cast<size_t*>(stack_);
 
 	// Reduce stack to store the size.
 	stack_ += sizeof(size_t);
 	if(size)
 		// Reduce remaining stack size.
-		*size -= stack_ - (uintptr_t)stack;
+		*size -= stack_ - reinterpret_cast<uintptr_t>(stack);
 
-	stack = (void*)stack_;
+	stack = reinterpret_cast<void*>(stack_);
 }
 
 /*!
  * \brief Initialize the memory region for stack high water marking.
  * \ingroup zth_api_cpp_stack
  */
-void stack_watermark_init(void* stack, size_t size) {
+void stack_watermark_init(void* stack, size_t size)
+{
 	if(!Config::EnableStackWaterMark || !stack || !size)
 		return;
 
@@ -1020,7 +1054,7 @@ void stack_watermark_init(void* stack, size_t size) {
 	*sizeptr = size;
 
 	for(size_t i = 0; i * sizeof(uint64_t) <= size - sizeof(uint64_t); i++)
-		((uint64_t*)stack)[i] = ZTH_STACK_WATERMARKER;
+		static_cast<uint64_t*>(stack)[i] = ZTH_STACK_WATERMARKER;
 }
 
 /*!
@@ -1029,7 +1063,8 @@ void stack_watermark_init(void* stack, size_t size) {
  * \param stack the same value as supplied to #zth::stack_watermark_init
  * \ingroup zth_api_cpp_stack
  */
-size_t stack_watermark_size(void* stack) {
+size_t stack_watermark_size(void* stack)
+{
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
@@ -1044,7 +1079,8 @@ size_t stack_watermark_size(void* stack) {
  * \param stack the same value as supplied to #zth::stack_watermark_init
  * \ingroup zth_api_cpp_stack
  */
-size_t stack_watermark_maxused(void* stack) {
+size_t stack_watermark_maxused(void* stack)
+{
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
@@ -1053,7 +1089,7 @@ size_t stack_watermark_maxused(void* stack) {
 	size_t size = *sizeptr;
 
 	size_t unused = 0;
-	for(uint64_t* s = (uint64_t*)stack; unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+	for(uint64_t* s = static_cast<uint64_t*>(stack); unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
 
 	return size - unused * sizeof(uint64_t);
 }
@@ -1064,7 +1100,8 @@ size_t stack_watermark_maxused(void* stack) {
  * \param stack the same value as supplied to #zth::stack_watermark_init
  * \ingroup zth_api_cpp_stack
  */
-size_t stack_watermark_remaining(void* stack) {
+size_t stack_watermark_remaining(void* stack)
+{
 	if(!Config::EnableStackWaterMark || !stack)
 		return 0;
 
@@ -1073,7 +1110,7 @@ size_t stack_watermark_remaining(void* stack) {
 	size_t size = *sizeptr;
 
 	size_t unused = 0;
-	for(uint64_t* s = (uint64_t*)stack; unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+	for(uint64_t* s = static_cast<uint64_t*>(stack); unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
 
 	return unused * sizeof(uint64_t);
 }
@@ -1082,7 +1119,8 @@ size_t stack_watermark_remaining(void* stack) {
  * \brief Return the high water mark of the stack of the given context.
  * \details This does not take any #zth::stack_switch() calls into account.
  */
-size_t context_stack_usage(Context* UNUSED_PAR(context)) {
+size_t context_stack_usage(Context* UNUSED_PAR(context))
+{
 #ifdef ZTH_CONTEXT_WINFIBER
 	return 0;
 #else
@@ -1098,29 +1136,30 @@ size_t context_stack_usage(Context* UNUSED_PAR(context)) {
 #ifdef ZTH_STACK_SWITCH
 #  ifdef ZTH_ARCH_ARM
 
-__attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*))) {
+__attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)))
+{
 	__asm__ volatile (
 		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"mrs r4, control\n"				// Save current control register
-		"bic r3, r4, #2\n"				// Set to use MSP
-		"msr control, r3\n"				// Enable MSP
+		"mrs r4, control\n"		// Save current control register
+		"bic r3, r4, #2\n"		// Set to use MSP
+		"msr control, r3\n"		// Enable MSP
 		"isb\n"
-		"and r4, r4, #2\n"				// r4 is set to only have the PSP bit
+		"and r4, r4, #2\n"		// r4 is set to only have the PSP bit
 
 		// We are on MSP now.
 
-		"push {" REG_FP ", lr}\n"		// Save frame pointer on MSP
+		"push {" REG_FP ", lr}\n"	// Save frame pointer on MSP
 		".setfp " REG_FP ", sp\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"blx r1\n"						// Call f(arg)
+		"blx r1\n"			// Call f(arg)
 
-		"mrs r3, control\n"				// Save current control register
-		"orr r3, r3, r4\n"				// Set to use previous PSP setting
-		"msr control, r3\n"				// Enable PSP setting
+		"mrs r3, control\n"		// Save current control register
+		"orr r3, r3, r4\n"		// Set to use previous PSP setting
+		"msr control, r3\n"		// Enable PSP setting
 		"isb\n"
 
 		// We are back on the previous stack.
@@ -1129,26 +1168,28 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_P
 	);
 }
 
-__attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)), void* UNUSED_PAR(sp)) {
+__attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)), void* UNUSED_PAR(sp))
+{
 	__asm__ volatile (
 		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"mov r4, sp\n"					// Save previous stack pointer
-		"mov sp, r2\n"					// Set new stack pointer
-		"push {" REG_FP ", lr}\n"		// Save previous frame pointer on new stack
+		"mov r4, sp\n"			// Save previous stack pointer
+		"mov sp, r2\n"			// Set new stack pointer
+		"push {" REG_FP ", lr}\n"	// Save previous frame pointer on new stack
 		".setfp " REG_FP ", sp\n"
 		"add " REG_FP ", sp, #0\n"
 
-		"blx r1\n"						// Call f(arg)
+		"blx r1\n"			// Call f(arg)
 
-		"mov sp, r4\n"					// Restore previous stack
+		"mov sp, r4\n"			// Restore previous stack
 		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
 	);
 }
 
-void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg) {
+void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
+{
 	zth::Worker* worker = zth::Worker::currentWorker();
 	void* res;
 
@@ -1160,8 +1201,8 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg) {
 	} else {
 		void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
 #ifdef ZTH_ARM_HAVE_MPU
-		void* prevGuard = NULL;
-		zth::Context* context = NULL;
+		void* prevGuard = nullptr;
+		zth::Context* context = nullptr;
 
 		if(zth::Config::EnableStackGuard && size) {
 			if(unlikely(!worker))
@@ -1199,4 +1240,3 @@ noguard:
 }
 #  endif // ZTH_ARCH_ARM
 #endif // ZTH_STACK_SWITCH
-

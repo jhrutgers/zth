@@ -74,7 +74,8 @@ ZmqPoller::~ZmqPoller() is_default
 
 int ZmqPoller::init(Pollable const& p, zmq_pollitem_t& item) noexcept
 {
-	// Zth only has PollableFds, so this is safe.
+	// Zth only has PollableFds, so casting is safe.
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
 	PollableFd const& pfd = static_cast<PollableFd const&>(p);
 
 	item.socket = pfd.socket;
@@ -105,11 +106,11 @@ int ZmqPoller::doPoll(int timeout_ms, typename base::PollItemList& items) noexce
 		if(item.revents) {
 			res--;
 
-			if(item.revents & ZMQ_POLLIN)
+			if(item.revents & ZMQ_POLLIN) // NOLINT(hicpp-signed-bitwise)
 				revents |= Pollable::PollIn;
-			if(item.revents & ZMQ_POLLOUT)
+			if(item.revents & ZMQ_POLLOUT) // NOLINT(hicpp-signed-bitwise)
 				revents |= Pollable::PollOut;
-			if(item.revents & ZMQ_POLLERR)
+			if(item.revents & ZMQ_POLLERR) // NOLINT(hicpp-signed-bitwise)
 				revents |= Pollable::PollErr;
 		}
 

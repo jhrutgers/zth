@@ -392,6 +392,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_util
 	 */
 	class Runnable {
+		ZTH_CLASS_NOCOPY(Runnable)
 	public:
 		Runnable()
 			: m_fiber()
@@ -429,8 +430,6 @@ namespace zth {
 		static void entry_(void* that) { if(that) static_cast<Runnable*>(that)->entry(); }
 
 	private:
-		Runnable(Runnable const&);
-		Runnable& operator=(Runnable&);
 		Fiber* m_fiber;
 	};
 
