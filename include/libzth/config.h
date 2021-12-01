@@ -27,7 +27,13 @@
 
 #ifdef __cplusplus
 #include <cstddef>
-#include <cstdint>
+
+#if __cplusplus >= 201103L
+#  include <cstdint>
+#else
+#  include <stdint.h>
+#endif
+
 #include <memory>
 
 namespace zth {

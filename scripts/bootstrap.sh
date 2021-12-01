@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 function gotErr {
 	echo -e "\nError occurred, stopping\n"
 	exit 1
@@ -24,6 +26,7 @@ case `uname -s` in
 		install_or_upgrade gnutls
 		install_or_upgrade gcc
 		install_or_upgrade doxygen
+		install_or_upgrade git
 		;;
 	*)
 		echo "Unknown OS"

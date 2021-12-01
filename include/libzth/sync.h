@@ -888,6 +888,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) {
 
 #else // !__cplusplus
 
+#include <stdint.h>
+
 typedef struct { void* p; } zth_mutex_t;
 ZTH_EXPORT int zth_mutex_init(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_destroy(zth_mutex_t* mutex);

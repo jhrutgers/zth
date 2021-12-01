@@ -286,7 +286,7 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int x) {
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x,
@@ -300,7 +300,7 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) {
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x / 1000ULL,
@@ -315,7 +315,7 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) {
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x / 1000000ULL,

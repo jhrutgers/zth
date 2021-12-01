@@ -155,7 +155,7 @@ int PollPoller::init(Pollable const& p, struct pollfd& item) noexcept
 	return 0;
 }
 
-int PollPoller::doPoll(int timeout_ms, base::PollItemsList& items) noexcept
+int PollPoller::doPoll(int timeout_ms, base::PollItemList& items) noexcept
 {
 	int res = ::poll(&items[0], items.size(), timeout_ms);
 	if(res < 0)

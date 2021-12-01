@@ -58,6 +58,12 @@
 #  define ZTH_HAVE_POLLER
 #endif
 
+#if defined(ZTH_HAVE_LIBZMQ)
+#  include <zmq.h>
+#elif defined(ZTH_HAVE_POLL)
+#  include <poll.h>
+#endif
+
 namespace zth {
 
 	//////////////////////////////////////////////
@@ -672,7 +678,7 @@ namespace zth {
 
 	private:
 		virtual int init(Pollable const& p, struct pollfd& item) noexcept override;
-		virtual int doPoll(int timeout_ms, base::PollItemsList& items) noexcept override;
+		virtual int doPoll(int timeout_ms, base::PollItemList& items) noexcept override;
 	};
 
 	typedef PollPoller DefaultPollerServer;

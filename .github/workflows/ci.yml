@@ -18,7 +18,7 @@ jobs:
       - name: bootstrap
         run: scripts/bootstrap.sh
       - name: build Debug
-        run: scripts/build.sh Debug
+        run: scripts/build.sh Debug -DZTH_DEV=ON
       - name: test
         run: cmake --build . -- test
         working-directory: build

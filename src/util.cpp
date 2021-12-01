@@ -46,6 +46,7 @@ char const* banner() noexcept
 		" g++-" ZTH_STRINGIFY(__GNUC__) "." ZTH_STRINGIFY(__GNUC_MINOR__) "." ZTH_STRINGIFY(__GNUC_PATCHLEVEL__)
 #endif
 #if __cplusplus < 201103L
+		" C++98"
 #elif __cplusplus == 201103L
 		" C++11"
 #elif __cplusplus == 201402L

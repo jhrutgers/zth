@@ -70,6 +70,7 @@
 
 #include <assert.h>
 #if __cplusplus && __cplusplus < 201103L && !defined(static_assert)
+#  pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #  define static_assert(expr, msg)	typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
@@ -132,10 +133,15 @@
 #include <cstring>
 #include <limits>
 #include <memory>
-#include <cinttypes>
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
+
+#if __cplusplus >= 201103L
+#  include <cinttypes>
+#else
+#  include <inttypes.h>
+#endif
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
@@ -318,7 +324,8 @@ namespace zth {
 	public:
 		cow_string() : m_cstr() {}
 		explicit cow_string(char const* s) : m_cstr(s) {}
-		explicit cow_string(std::string const& s) : m_cstr(), m_str(s) {}
+		// cppcheck-suppress noExplicitConstructor
+		cow_string(std::string const& s) : m_cstr(), m_str(s) {}
 		cow_string(cow_string const& s) { *this = s; }
 
 		cow_string& operator=(cow_string const& s)
@@ -332,12 +339,12 @@ namespace zth {
 		cow_string& operator=(std::string const& s) { m_cstr = nullptr; m_str = s; return *this; }
 
 #if __cplusplus >= 201103L
-		cow_string(cow_string&& s) noexcept = default;
-		cow_string& operator=(cow_string&& s) noexcept = default;
+		cow_string(cow_string&& s) = default;
+		cow_string& operator=(cow_string&& s) = default;
 
 		// cppcheck-suppress noExplicitConstructor
-		cow_string(std::string&& s) noexcept : m_cstr(), m_str(std::move(s)) {}
-		cow_string& operator=(std::string&& s) noexcept { m_cstr = nullptr; m_str = std::move(s); return *this; }
+		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
+		cow_string& operator=(std::string&& s) { m_cstr = nullptr; m_str = std::move(s); return *this; }
 #endif
 
 		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
@@ -947,7 +954,8 @@ namespace zth {
 		vector_type& vector() noexcept
 		{
 			zth_assert(!is_small());
-			return *reinterpret_cast<vector_type*>(m_buffer);
+			void* buffer = m_buffer;
+			return *reinterpret_cast<vector_type*>(buffer);
 		}
 
 		/*!
@@ -956,7 +964,8 @@ namespace zth {
 		vector_type const& vector() const noexcept
 		{
 			zth_assert(!is_small());
-			return *reinterpret_cast<vector_type const*>(m_buffer);
+			void const* buffer = m_buffer;
+			return *reinterpret_cast<vector_type const*>(buffer);
 		}
 
 		/*!

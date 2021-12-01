@@ -75,6 +75,9 @@
 #  ifndef GCC_VERSION
 #    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
 #  endif
+#  if GCC_VERSION < 50000
+#    pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#  endif
 #  ifndef UNUSED_PAR
 #    define UNUSED_PAR(name)	name __attribute__((unused))
 #  endif
@@ -160,6 +163,9 @@ ZTH_EXPORT void foo();
 #  ifndef constexpr
 #    define constexpr
 #  endif
+#  ifndef constexpr14
+#    define constexpr14
+#  endif
 #  ifndef override
 #    define override
 #  endif
@@ -175,7 +181,17 @@ ZTH_EXPORT void foo();
 #  ifndef nullptr
 #    define nullptr NULL
 #  endif
+#  ifndef alignas
+#    define alignas(...) __attribute__((aligned(sizeof(void*))))
+#  endif
 #else
+#  ifndef constexpr14
+#    if __cplusplus < 201402L
+#      define constexpr14
+#    else
+#      define constexpr14 constexpr
+#    endif
+#  endif
 #  ifndef is_default
 #    define is_default = default;
 #  endif
