@@ -23,7 +23,7 @@ trap gotErr ERR
 pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"/.. &> /dev/null; pwd -P)" > /dev/null
 
 BUILD_TYPE="${1:-Release}"
-shift
+shift || true
 
 mkdir -p build
 pushd build > /dev/null
