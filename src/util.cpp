@@ -238,6 +238,7 @@ std::string formatv(char const* fmt, va_list args)
 
 	va_list args2;
 	va_copy(args2, args);
+	// NOLINTNEXTLINE
 	int c = vsnprintf(sbuf, maxstack, fmt, args);
 
 	if(c >= maxstack) {
@@ -245,6 +246,7 @@ std::string formatv(char const* fmt, va_list args)
 		if(unlikely(!hbuf)) {
 			c = 0;
 		} else {
+			// NOLINTNEXTLINE
 			int c2 = vsprintf(hbuf, fmt, args2);
 			zth_assert(c2 <= c);
 			c = c2;
