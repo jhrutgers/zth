@@ -3,7 +3,8 @@
 static bool shutdown_flag = false;
 
 // A generic trigger function that signals a zth::Signal every given interval.
-void trigger(zth::Signal* s, zth::TimeInterval const& interval)
+// NOLINTNEXTLINE(performance-unnecessary-value-param)
+void trigger(zth::Signal* s, zth::TimeInterval interval)
 {
 	if(!s || interval.isNegative())
 		return;
