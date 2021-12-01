@@ -102,6 +102,9 @@ namespace zth {
 
 			perf_deinit();
 			context_deinit();
+
+			zth_assert(ZTH_TLS_GET(currentWorker_) == this);
+			ZTH_TLS_SET(currentWorker_, nullptr);
 		}
 
 		Waiter& waiter() { return m_waiter; }
