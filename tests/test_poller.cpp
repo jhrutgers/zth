@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
-
-#include <unistd.h>
 #include <zth>
+
+#include <gtest/gtest.h>
+#include <unistd.h>
 
 using zth::operator""_ms;
 

@@ -19,8 +19,10 @@ project(Zth)
 include(CheckIncludeFileCXX)
 
 if(NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE Release FORCE)
+	set(CMAKE_BUILD_TYPE Release FORCE)
 endif()
+
+message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 	message(FATAL_ERROR "CMake generation is not allowed within the source directory! \
@@ -181,7 +183,7 @@ target_include_directories(libzth PUBLIC
 	$<INSTALL_INTERFACE:include>
 )
 
-target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion)
+target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -ffunction-sections -fdata-sections)
 if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
 endif()
@@ -200,10 +202,6 @@ install(FILES ${CMAKE_BINARY_DIR}/libzth.cmake DESTINATION share/cmake/libzth)
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
 	target_link_libraries(libzth PUBLIC libzmq)
-	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-		add_custom_command(TARGET libzth POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/external/libzmq/bin/libzmq.dll ${CMAKE_CURRENT_BINARY_DIR})
-	endif()
 endif()
 
 if(NOT APPLE)

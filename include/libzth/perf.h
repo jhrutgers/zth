@@ -29,14 +29,16 @@
 
 #ifdef __cplusplus
 
+#include <libzth/macros.h>
 #include <libzth/config.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 #include <list>
 #include <vector>
-#include <stdlib.h>
-#include <string.h>
 
 namespace zth {
 

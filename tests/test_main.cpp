@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
-
 #include <zth>
+
+#include <gtest/gtest.h>
 
 namespace {
 
@@ -46,14 +46,12 @@ int main(int argc, char** argv)
 {
 	int res = 0;
 	testing::InitGoogleTest(&argc, argv);
-	zth_preinit();
 	{
 		zth::Worker w;
 		test_main_future f = async test_main();
 		w.run();
 		res = f->value();
 	}
-	zth_postdeinit();
 	return res;
 }
 
