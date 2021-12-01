@@ -3,63 +3,74 @@
 /////////////////////////////////////////////////
 // Tests
 
-void testEmpty() {
+void testEmpty()
+{
 }
 
-void testNow() {
+void testNow()
+{
 	zth::Timestamp::now();
 }
 
 static zth::Context* context1;
 static zth::Context* context2;
 
-void context2entry(void*) {
-	while(true) {
+void context2entry(void* /*unused*/)
+{
+	while(true)
 		zth::context_switch(context2, context1);
-	}
 }
 
-void testContextInit() {
+void testContextInit()
+{
 	int res;
 	context1 = zth::currentFiber().context();
 	if((res = zth::context_create(context2, zth::ContextAttr(&context2entry))))
 		zth::abort("Cannot create context2; %s", zth::err(res).c_str());
 }
 
-void testContext() {
+void testContext()
+{
 	zth::context_switch(context1, context2);
 }
 
-void testContextCleanup() {
+void testContextCleanup()
+{
 	zth::context_destroy(context2);
 }
 
-void testYield1() {
+void testYield1()
+{
 	zth::yield();
 }
 
-void testYield1Always() {
-	zth::yield(NULL, true);
+void testYield1Always()
+{
+	zth::yield(nullptr, true);
 }
 
-static zth::Fiber* testYieldFiberPtr = NULL;
-void testYieldFiber() {
+static zth::Fiber* testYieldFiberPtr = nullptr;
+void testYieldFiber()
+{
 	testYieldFiberPtr = &zth::currentFiber();
 
 	while(true)
-		zth::yield(NULL, true);
+		zth::yield(nullptr, true);
 }
 zth_fiber(testYieldFiber)
 
-void testYieldInit() {
+void testYieldInit()
+{
 	async testYieldFiber();
 }
 
-void testYield() {
-	zth::yield(NULL, true);
+void testYield()
+{
+	zth::yield(nullptr, true);
 }
 
-void testYieldCleanup() {
+void testYieldCleanup()
+{
 	if(!testYieldFiberPtr)
 		zth::abort("Test fiber did not run");
 
@@ -71,28 +82,33 @@ void testFiberCreateEntry()
 }
 zth_fiber(testFiberCreateEntry)
 
-void testFiberCreate() {
+void testFiberCreate()
+{
 	testFiberCreateEntry_future f = async testFiberCreateEntry();
 	f->wait();
-	zth::yield(NULL, true); // Make sure to clean up old fibers.
+	zth::yield(nullptr, true); // Make sure to clean up old fibers.
 }
 
-void testCurrentFiber() {
+void testCurrentFiber()
+{
 	zth::Fiber& f __attribute__((unused)) = zth::currentFiber();
 }
 
-void testNap0() {
+void testNap0()
+{
 	zth::nap(0);
 }
 
-void testNap100ms() {
+void testNap100ms()
+{
 	zth::nap(0.1);
 }
 
 /////////////////////////////////////////////////
 // Tester
 
-static std::string preciseTime(double s) {
+static std::string preciseTime(double s)
+{
 	std::string res;
 	if(s >= 0)
 		res = " ";
@@ -127,12 +143,14 @@ struct TestData {
 
 typedef zth::FsmCallback<State,TestData*> Fsm_type;
 
-static zth::TimeInterval maxIterations(Fsm_type& fsm) {
+static zth::TimeInterval maxIterations(Fsm_type& fsm)
+{
 	return (size_t)1 << fsm.callbackArg()->calibration > std::numeric_limits<size_t>::max() / 2
 		? zth::TimeInterval() : zth::TimeInterval(0.1);
 }
 
-static zth::TimeInterval calibrationTimeout(Fsm_type& fsm) {
+static zth::TimeInterval calibrationTimeout(Fsm_type& fsm)
+{
 	// Calibration should take at least 0.5 s; actual measurement is then twice as long.
 	return zth::TimeInterval(0.5) - (zth::Timestamp::now() - fsm.callbackArg()->start);
 }
@@ -142,8 +160,8 @@ Fsm_type::Description desc = {
 		zth::guards::always,		stateCalibrate,
 		zth::guards::end,
 	stateCalibrate,
-		calibrationTimeout,			stateMeasure,
-		maxIterations,				stateMeasure,
+		calibrationTimeout,		stateMeasure,
+		maxIterations,			stateMeasure,
 		zth::guards::always,		stateCalibrate,
 		zth::guards::end,
 	stateMeasure,
@@ -153,7 +171,8 @@ Fsm_type::Description desc = {
 		zth::guards::end,
 };
 
-static void cb(Fsm_type& fsm, TestData* testData) {
+static void cb(Fsm_type& fsm, TestData* testData)
+{
 	if(!fsm.entry())
 		return;
 
@@ -188,7 +207,8 @@ static void cb(Fsm_type& fsm, TestData* testData) {
 
 static Fsm_type::Compiler compiler(desc);
 
-static double runTest(char const* set, char const* name, void(*test)(), bool calibrationRun = false) {
+static double runTest(char const* set, char const* name, void(*test)(), bool calibrationRun = false)
+{
 	zth::yield();
 
 	static double calibration = 0;
@@ -205,7 +225,8 @@ static double runTest(char const* set, char const* name, void(*test)(), bool cal
 	return testData.singleResult - calibration;
 }
 
-static void run_testset(char const* testset) {
+static void run_testset(char const* testset)
+{
 	bool all = strcmp("all", testset) == 0;
 	char const* set;
 
@@ -220,7 +241,7 @@ static void run_testset(char const* testset) {
 		runTest(set, "2 context_switch()s", &testContext);
 		testContextCleanup();
 	}
-	
+
 	set = "yield";
 	if(all || strcmp(set, testset) == 0) {
 		runTest(set, "single-fiber yield()", &testYield1);
@@ -235,7 +256,7 @@ static void run_testset(char const* testset) {
 		runTest(set, "currentFiber()", &testCurrentFiber);
 		runTest(set, "create and cleanup fiber", &testFiberCreate);
 	}
-	
+
 	set = "nap";
 	if(all || strcmp(set, testset) == 0) {
 		runTest(set, "nap(0)", &testNap0);
@@ -246,7 +267,8 @@ static void run_testset(char const* testset) {
 // Specify on the command line the test set name(s) to be executed.  When none
 // is specified, 'all' is assumed. The test set name is printed between
 // brackets before the test description.
-void main_fiber(int argc, char** argv) {
+void main_fiber(int argc, char** argv)
+{
 	runTest("calib", "calibration", &testEmpty, true);
 	runTest("calib", "empty test", &testEmpty);
 

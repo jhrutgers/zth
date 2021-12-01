@@ -339,9 +339,12 @@ if(CPPCHECK_CMD)
 #			--xml
 			-I include
 			src
+			examples
+			tests
 #			--check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
+		COMMENT "Running cppcheck"
 	)
 
 	option(ZTH_CPPCHECK "Run cppcheck by default" ${ZTH_DEV_OPTION})

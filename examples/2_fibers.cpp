@@ -76,7 +76,7 @@ double fiber_ddddi(double a, double b, double c, int d)
 zth_fiber(fiber_ddddi)
 #endif
 
-void main_fiber(int argc, char** argv)
+void main_fiber(int /*argc*/, char** /*argv*/)
 {
 	// `async' is just like a function call, but its execution is postponed.
 	// Note that the order in which the fibers get initialized or execute is
@@ -105,7 +105,7 @@ void main_fiber(int argc, char** argv)
 	// - poll whether the fiber has finished and the future becomes therefore
 	//   valid;
 	printf("fddd is %s\n", fddd->valid() ? "valid" : "not valid yet");
-	
+
 	// - suspend the current fiber and wait until the fiber has finished;
 	fddd->wait();
 

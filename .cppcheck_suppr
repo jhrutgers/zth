@@ -1,2 +1,3 @@
 missingIncludeSystem:*
 unmatchedSuppression:src/context.cpp
+negativeContainerIndex:examples/measure.cpp

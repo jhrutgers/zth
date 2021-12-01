@@ -11,7 +11,7 @@ void fiber(void* arg)
 	printf("fiber()\n");
 }
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	printf("main_fiber()\n");
 	// Start a new fiber, with arg=NULL, default stack, and no name.

@@ -3,7 +3,8 @@
 static bool shutdown_flag = false;
 
 // A generic trigger function that signals a zth::Signal every given interval.
-void trigger(zth::Signal* s, zth::TimeInterval interval) {
+void trigger(zth::Signal* s, zth::TimeInterval const& interval)
+{
 	if(!s || interval.isNegative())
 		return;
 
@@ -21,7 +22,8 @@ zth_fiber(trigger)
 // daemon to perform its task.
 static zth::Signal triggerSomeDaemon("someDaemon trigger");
 
-void someDaemon() {
+void someDaemon()
+{
 	// The daemon is an infinite loop, which ends waiting for its trigger signal.
 	// The wait for the signal is blocking. If a wakeup is required at some
 	// interval, start a timer to do this.
@@ -30,13 +32,14 @@ void someDaemon() {
 	while(!shutdown_flag) {
 		printf("daemon wakeup\n");
 		// ...and do some work.
-		
+
 		triggerSomeDaemon.wait();
 	}
 }
 zth_fiber(someDaemon)
 
-void foo() {
+void foo()
+{
 	printf("foo\n");
 	// Trigger the daemon, but only wake it once if triggered multiple times.
 	triggerSomeDaemon.signal();
@@ -44,7 +47,8 @@ void foo() {
 }
 zth_fiber(foo)
 
-void main_fiber(int argc, char** argv) {
+void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+{
 	async someDaemon();
 
 	zth::Gate gate(4);
@@ -57,4 +61,3 @@ void main_fiber(int argc, char** argv) {
 	zth::nap(10);
 	shutdown_flag = true;
 }
-

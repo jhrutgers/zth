@@ -1,5 +1,5 @@
 #include <zth>
-#include <stdio.h>
+#include <cstdio>
 
 // Even though all code within a fiber is executed atomically when not yielded,
 // sometimes it is required to yield within a (long) critical section anyway.
@@ -11,7 +11,8 @@
 
 static zth::Mutex mutex;
 
-void fiber(int id) {
+void fiber(int id)
+{
 	for(int i = 0; i < 3; i++) {
 		printf("fiber %d outside of critical section\n", id);
 
@@ -23,7 +24,7 @@ void fiber(int id) {
 		zth::outOfWork();
 		printf(" } fiber %d at end of critical section\n", id);
 		mutex.unlock();
-	
+
 		zth::outOfWork();
 	}
 }
@@ -31,7 +32,8 @@ zth_fiber(fiber)
 
 static bool stopOther = false;
 
-void otherFiber() {
+void otherFiber()
+{
 	while(!stopOther) {
 		printf("Other fiber\n");
 		zth::outOfWork();
@@ -39,7 +41,8 @@ void otherFiber() {
 }
 zth_fiber(otherFiber)
 
-void main_fiber(int argc, char** argv) {
+void main_fiber(int /*argc*/, char** /*argv*/)
+{
 	fiber_future f1 = async fiber(1);
 	fiber_future f2 = async fiber(2);
 	fiber_future f3 = async fiber(3);
@@ -49,4 +52,3 @@ void main_fiber(int argc, char** argv) {
 	f3->wait();
 	stopOther = true;
 }
-
