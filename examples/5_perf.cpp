@@ -6,11 +6,13 @@
 
 // Tweak the load default value at will to observe differences depending on the
 // speed of your CPU.
-static void do_work(int amount, int load = 1000000) {
+static void do_work(int amount, int load = 1000000)
+{
 	for(int volatile i = 0; i < amount * load; i++);
 }
 
-void scheduling() {
+void scheduling()
+{
 	// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled,
 	// which includes generating a VCD file.  This VCD file shows every fiber
 	// in the system and indicates the state of every fiber at every instance
@@ -40,7 +42,8 @@ void scheduling() {
 }
 zth_fiber(scheduling)
 
-void measure() {
+void measure()
+{
 	// This example measures the duration of a task. There are several helpful
 	// functions for this.  First, take a time stamp. zth::Timestamp::now() is
 	// (supposed to be) fast and is used everywhere, so go ahead and safe t0.
@@ -92,7 +95,8 @@ zth_fiber(stack)
 
 
 
-void main_fiber(int argc, char** argv) {
+void main_fiber(int /*argc*/, char** /*argv*/)
+{
 	async scheduling();
 	async measure();
 	async stack();

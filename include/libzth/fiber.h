@@ -1,19 +1,19 @@
-#ifndef __ZTH_FIBER_H
-#define __ZTH_FIBER_H
+#ifndef ZTH_FIBER_H
+#define ZTH_FIBER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -36,9 +36,14 @@
 #include <libzth/perf.h>
 #include <libzth/init.h>
 
+#include <errno.h>
+#include <exception>
 #include <list>
 #include <utility>
-#include <errno.h>
+
+#if __cplusplus >= 201103L
+#  include <functional>
+#endif
 
 namespace zth {
 
@@ -50,13 +55,34 @@ namespace zth {
 	 */
 	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	public:
+		typedef void(FiberHook)(Fiber&);
+
+#if __cplusplus >= 201103L
+		/*!
+		 * \brief Hook to be called when a Fiber is created.
+		 *
+		 * This function is called after initialization of the fiber.
+		 */
+		static std::function<FiberHook> hookNew;
+
+		/*!
+		 * \brief Hook to be called when a Fiber is destroyed.
+		 *
+		 * This function is called just after the fiber has died.
+		 */
+		static std::function<FiberHook> hookDead;
+#else
+		static FiberHook* hookNew;
+		static FiberHook* hookDead;
+#endif
+
 		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
 
 		typedef ContextAttr::EntryArg EntryArg;
 		typedef void(*Entry)(EntryArg);
 		static uintptr_t const ExitUnknown = (uintptr_t)-1;
 
-		Fiber(Entry entry, EntryArg arg = EntryArg())
+		explicit Fiber(Entry entry, EntryArg arg = EntryArg())
 			: UniqueID("zth::Fiber")
 			, m_state(Uninitialized)
 			, m_stateNext(Ready)
@@ -80,18 +106,18 @@ namespace zth {
 
 			if(state() > Uninitialized && state() < Dead)
 				kill();
-			
+
 			perf_event(PerfEvent<>(*this));
 
 			setState(Uninitialized);
 			zth_assert(!fls());
-			size_t stackSize __attribute__((unused)) = this->stackSize();
-			size_t stackUsage __attribute__((unused)) = this->stackUsage();
+			size_t stackSize_ __attribute__((unused)) = this->stackSize();
+			size_t stackUsage_ __attribute__((unused)) = this->stackUsage();
 			context_destroy(m_context);
 			m_context = NULL;
 			zth_dbg(fiber, "[%s] Destructed. Stack usage: 0x%x of 0x%x, total CPU: %s",
 				id_str(),
-				(unsigned int)stackUsage, (unsigned int)stackSize,
+				(unsigned int)stackUsage_, (unsigned int)stackSize_,
 				m_totalTime.str().c_str());
 		}
 
@@ -145,10 +171,15 @@ namespace zth {
 				// First call, do implicit init.
 				if((res = init(now)))
 					return res;
+
+				if(hookNew)
+					hookNew(*this);
 				goto again;
 
 			case Ready:
 				{
+					zth_assert(&from != this);
+
 					// Update administration of the current fiber.
 					TimeInterval dt = now - from.m_startRun;
 					from.m_totalTime += dt;
@@ -232,7 +263,7 @@ namespace zth {
 
 			m_stateEnd = sleepUntil;
 		}
-		
+
 		void wakeup() {
 			if(likely(state() == Waiting)) {
 				setState(m_stateNext);
@@ -302,7 +333,7 @@ namespace zth {
 		}
 
 	protected:
-		virtual void changedName(std::string const& name) {
+		virtual void changedName(std::string const& name) override {
 			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
 		}
 
@@ -313,6 +344,9 @@ namespace zth {
 			m_state = state;
 
 			perf_event(PerfEvent<>(*this, m_state, t));
+
+			if(state == Dead && hookDead)
+				hookDead(*this);
 		}
 
 		static void fiberEntry(void* that) {
@@ -327,6 +361,8 @@ namespace zth {
 #endif
 				m_entry(m_entryArg);
 #ifdef __cpp_exceptions
+			} catch(std::exception const& e) {
+				zth_dbg(fiber, "[%s] Uncaught exception; %s", id_str(), e.what());
 			} catch(...) {
 				zth_dbg(fiber, "[%s] Uncaught exception", id_str());
 			}
@@ -358,8 +394,9 @@ namespace zth {
 	 * \ingroup zth_api_cpp_util
 	 */
 	class Runnable {
+		ZTH_CLASS_NOCOPY(Runnable)
 	public:
-		Runnable() 
+		Runnable()
 			: m_fiber()
 		{}
 
@@ -367,7 +404,7 @@ namespace zth {
 		int run();
 		Fiber* fiber() const { return m_fiber; }
 		operator Fiber&() { zth_assert(fiber()); return *fiber(); }
-		
+
 		char const* id_str() const {
 			return fiber() ? fiber()->id_str() : "detached Runnable";
 		}
@@ -384,7 +421,7 @@ namespace zth {
 		}
 
 		static void cleanup_(Fiber& UNUSED_PAR(f), void* that) {
-			Runnable* r = (Runnable*)that;
+			Runnable* r = static_cast<Runnable*>(that);
 			if(r) {
 				zth_assert(&f == r->m_fiber);
 				r->cleanup();
@@ -392,16 +429,14 @@ namespace zth {
 		}
 
 		virtual void entry() = 0;
-		static void entry_(void* that) { if(that) ((Runnable*)that)->entry(); }
+		static void entry_(void* that) { if(that) static_cast<Runnable*>(that)->entry(); }
 
 	private:
-		Runnable(Runnable const&);
-		Runnable& operator=(Runnable&);
 		Fiber* m_fiber;
 	};
-	
+
 	__attribute__((pure)) Fiber& currentFiber();
-	
+
 	// fiber-local storage
 	/*!
 	 * \ingroup zth_api_cpp_fiber
@@ -409,7 +444,7 @@ namespace zth {
 	ZTH_EXPORT inline void* fls() {
 		return currentFiber().fls();
 	}
-	
+
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
@@ -442,4 +477,4 @@ ZTH_EXPORT void* zth_setFls(void* data);
 
 EXTERN_C ZTH_EXPORT void main_fiber(int argc, char** argv);
 
-#endif // __ZTH_FIBER_H
+#endif // ZTH_FIBER_H

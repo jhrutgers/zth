@@ -13,7 +13,8 @@
 
 // Tweak the load default value at will to observe differences depending on the
 // speed of your CPU.
-static void do_work(int amount, int load = 1000) {
+static void do_work(int amount, int load = 1000)
+{
 	for(int volatile i = 0; i < amount * load; i++);
 }
 
@@ -123,7 +124,7 @@ zth_fiber(example_2)
 
 
 
-void main_fiber(int argc, char** argv)
+void main_fiber(int /*argc*/, char** /*argv*/)
 {
 	example_1();
 	example_2();

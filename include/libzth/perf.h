@@ -1,5 +1,5 @@
-#ifndef __ZTH_PERF_H
-#define __ZTH_PERF_H
+#ifndef ZTH_PERF_H
+#define ZTH_PERF_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -29,14 +29,16 @@
 
 #ifdef __cplusplus
 
+#include <libzth/macros.h>
 #include <libzth/config.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 #include <list>
 #include <vector>
-#include <stdlib.h>
-#include <string.h>
 
 namespace zth {
 
@@ -44,7 +46,8 @@ namespace zth {
 	void perf_deinit();
 
 	class Fiber;
-	__attribute__((pure)) UniqueID<Fiber> const& currentFiberID();
+	//__attribute__((pure)) UniqueID<Fiber> const& currentFiberID();
+	UniqueID<Fiber> const& currentFiberID();
 
 	class Backtrace {
 	public:
@@ -76,7 +79,7 @@ namespace zth {
 
 		PerfEvent() : type(Nothing) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber)
+		explicit PerfEvent(UniqueID<Fiber> const& fiber)
 			: fiber(fiber.id()), type(FiberName), str(strdup(fiber.name().c_str())) {}
 
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
@@ -133,7 +136,7 @@ namespace zth {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
 
 		PerfEvent() {}
-		PerfEvent(UniqueID<Fiber> const& fiber) {}
+		explicit PerfEvent(UniqueID<Fiber> const& fiber) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
@@ -217,7 +220,7 @@ namespace zth {
 	public:
 		typedef T type;
 
-		Load(type rc = 1)
+		explicit Load(type rc = 1)
 			: m_rc(rc)
 			, m_active()
 			, m_current(Timestamp::now())
@@ -328,4 +331,4 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_perf_logv(cha
  */
 #define zth_perf_mark(marker)	zth_perf_mark_("" marker)
 
-#endif // __ZTH_PERF_H
+#endif // ZTH_PERF_H

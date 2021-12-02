@@ -1,19 +1,19 @@
-#ifndef __ZTH_CONTEXT
-#define __ZTH_CONTEXT
+#ifndef ZTH_CONTEXT_H
+#define ZTH_CONTEXT_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -239,7 +239,8 @@ namespace zth {
 	template <typename R, typename A1, typename A2, typename A3, typename... A>
 	inline typename std::enable_if<!std::is_void<R>::value,R>::type stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{
-		impl::FunctionION<R,A1,A2,A3,A...> f_ = {{f, {a1, a2, a3, a...}}};
+		// cppcheck-suppress uselessAssignmentPtrArg
+		impl::FunctionION<R,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 
@@ -250,11 +251,12 @@ namespace zth {
 	template <typename A1, typename A2, typename A3, typename... A>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{
-		impl::FunctionION<void,A1,A2,A3,A...> f_ = {{f, {a1, a2, a3, a...}}};
+		// cppcheck-suppress uselessAssignmentPtrArg
+		impl::FunctionION<void,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
 		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
 #  endif
 } // namespace
 
 #endif // __cplusplus
-#endif // __ZTH_CONTEXT
+#endif // ZTH_CONTEXT_H

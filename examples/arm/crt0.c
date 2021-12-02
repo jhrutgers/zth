@@ -10,23 +10,23 @@ enum {
 	UART_FR_TXFF = 0x20,
 	UART0_ADDR = 0x09000000,
 };
- 
+
 #define UART_DR(baseaddr) (*(unsigned int volatile *)(baseaddr))
 #define UART_FR(baseaddr) (*(((unsigned int volatile *)(baseaddr))+6))
 
 int _close(int file) { return -1; }
- 
+
 int _fstat(int file, struct stat *st) {
 	st->st_mode = S_IFCHR;
 	return 0;
 }
- 
+
 int _isatty(int file) { return 1; }
- 
+
 int _lseek(int file, int ptr, int dir) { return 0; }
- 
+
 int _open(const char *name, int flags, int mode) { return -1; }
- 
+
 int _read(int file, char *ptr, int len) {
 	int todo;
 	if(len == 0)
@@ -40,7 +40,7 @@ int _read(int file, char *ptr, int len) {
 	}
 	return todo;
 }
- 
+
 int _unlink (const char *__path) { return 0; }
 void _exit (int __status) { while(1); }
 void abort (void) { while(1); }
@@ -71,7 +71,7 @@ caddr_t _sbrk(int incr) {
 	heap_end += incr;
 	return (caddr_t) prev_heap_end;
 }
- 
+
 int _write(int file, char *ptr, int len) {
 	int todo;
 
@@ -112,11 +112,11 @@ void _crt()
 {
 	extern char __bss_start__;
 	extern char __bss_end__;
-	memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
+	memset(&__bss_start__, 0, (uintptr_t)&__bss_end__ - (uintptr_t)&__bss_start__);
 
 	extern char __init_array_start;
 	extern char __init_array_end;
-	for(void** f = (void**)&__init_array_start; (char*)f < &__init_array_end; f++)
+	for(void** f = (void**)&__init_array_start; (uintptr_t)f < (uintptr_t)&__init_array_end; f++)
 		((void(*)(void))(*f))();
 }
 

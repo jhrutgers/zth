@@ -1,19 +1,19 @@
-#ifndef __ZTH_LIST_H
-#define __ZTH_LIST_H
+#ifndef ZTH_LIST_H
+#define ZTH_LIST_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,7 @@
 #include <functional>
 
 namespace zth {
-	
+
 	template <typename T> class List;
 	template <typename T, typename Compare = std::less<T> > class SortedList;
 
@@ -47,7 +47,7 @@ namespace zth {
 			, level()
 		{}
 
-		Listable& operator=(Listable const& rhs) {
+		Listable& operator=(Listable const& UNUSED_PAR(rhs)) {
 			if(Config::EnableAssert)
 				prev = next = NULL;
 			return *this;
@@ -105,7 +105,7 @@ namespace zth {
 				m_tail = elem.next->prev = elem.prev->next = &elem;
 			}
 		}
-		
+
 		void pop_back() {
 			zth_assert(!empty());
 
@@ -129,7 +129,7 @@ namespace zth {
 			zth_assert(!empty());
 			return *static_cast<type*>(m_head);
 		}
-		
+
 		void push_front(elem_type& elem) {
 			zth_assert(elem.prev == NULL);
 			zth_assert(elem.next == NULL);
@@ -143,7 +143,7 @@ namespace zth {
 				elem.prev->next = elem.next->prev = m_head = &elem;
 			}
 		}
-		
+
 		void pop_front() {
 			zth_assert(!empty());
 
@@ -175,10 +175,10 @@ namespace zth {
 			else
 				m_head = m_tail = NULL;
 		}
-		
+
 		class iterator {
 		public:
-			iterator(elem_type* start, elem_type* current = NULL) : m_start(start), m_current(current) {}
+			explicit iterator(elem_type* start, elem_type* current = NULL) : m_start(start), m_current(current) {}
 			bool atBegin() const { return !m_current && m_start; }
 			bool atEnd() const { return m_current == m_start; }
 			elem_type* get() const { return atBegin() ? m_start : m_current; }
@@ -342,7 +342,7 @@ namespace zth {
 			m_size--;
 			check();
 		}
-		
+
 		void clear() {
 			if(Config::EnableAssert) {
 				while(!empty())
@@ -415,7 +415,7 @@ namespace zth {
 			} else
 				return t;
 		}
-		
+
 		elem_type* insert_(elem_type& x, elem_type* t) {
 			if(!t) {
 				x.level = 1;
@@ -432,7 +432,7 @@ namespace zth {
 
 			if(t == m_head && t->left)
 				m_head = t->left;
-		
+
 			return split(skew(t));
 		}
 
@@ -482,7 +482,7 @@ namespace zth {
 			else
 				return lowest(t->left);
 		}
-		
+
 		static elem_type* highest(elem_type* t) {
 			if(!t)
 				return NULL;
@@ -495,7 +495,7 @@ namespace zth {
 		static elem_type* successor(elem_type* t) {
 			return t ? lowest(t->right) : NULL;
 		}
-		
+
 		static elem_type* predecessor(elem_type* t) {
 			return t ? highest(t->left) : NULL;
 		}
@@ -503,7 +503,7 @@ namespace zth {
 		static void decrease_level(elem_type* t) {
 			decltype(t->level) ll = t->left ? t->left->level : 0;
 			decltype(t->level) lr = t->right ? t->right->level : 0;
-			decltype(t->level) should_be = decltype(t->level)((ll < lr ? ll : lr) + 1);
+			decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
 			if(should_be < t->level) {
 				t->level = should_be;
 				if(t->right && should_be < t->right->level)
@@ -540,7 +540,7 @@ namespace zth {
 		}
 
 		static void print(elem_type* t, int indent = 0) {
-			if(Config::Print_list == 0 || !Config::EnableDebugPrint)
+			if(Config::Print_list == 0 || !Config::SupportDebugPrint)
 				return;
 
 			if(!t)
@@ -566,4 +566,4 @@ namespace zth {
 
 } // namespace
 #endif // __cplusplus
-#endif // __ZTH_LIST_H
+#endif // ZTH_LIST_H

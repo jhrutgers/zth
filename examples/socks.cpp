@@ -5,12 +5,17 @@ using namespace std;
 
 #ifdef ZTH_OS_WINDOWS
 #  define srand48(seed)	srand(seed)
-#  define drand48()		((double)rand() / (double)RAND_MAX)
+#  define drand48()	((double)rand() / (double)RAND_MAX)
 #endif
 
 struct Sock {
 	enum Side { Left, Right };
-	Sock(int i, Side side) : i(i), side(side), other(), str(zth::format("%s sock %d", side == Left ? "left" : "right", i)) {}
+	Sock(int i, Side side)
+		: i(i)
+		, side(side)
+		, other()
+		, str(zth::format("%s sock %d", side == Left ? "left" : "right", i))
+	{}
 
 	zth::Future<> done;
 	int i;
@@ -20,8 +25,14 @@ struct Sock {
 };
 
 struct Socks {
-	Socks(int i) : left(i, Sock::Left), right(i, Sock::Right), str(zth::format("socks %d", i)) {
-		left.other = &right; right.other = &left; }
+	explicit Socks(int i)
+		: left(i, Sock::Left)
+		, right(i, Sock::Right)
+		, str(zth::format("socks %d", i))
+	{
+		left.other = &right;
+		right.other = &left;
+	}
 
 	Sock left;
 	Sock right;
@@ -33,14 +44,19 @@ Socks* wearSocks(Socks& socks);
 void washSock(Sock& sock);
 zth_fiber(takeSocks, wearSocks, washSock)
 
-void takeSocks(int count) {
+void takeSocks(int count)
+{
 	std::list<wearSocks_future> allSocks;
 
 	for(int i = 1; i <= count; i++) {
 		Socks* socks = new Socks(i);
 		printf("Take %s\n", socks->str.c_str());
 
+#if __cplusplus >= 201103L
+		allSocks.emplace_back(async wearSocks(*socks));
+#else
 		allSocks.push_back(async wearSocks(*socks));
+#endif
 
 		zth::nap(0.5);
 	}
@@ -54,7 +70,8 @@ void takeSocks(int count) {
 	}
 }
 
-Socks* wearSocks(Socks& socks) {
+Socks* wearSocks(Socks& socks)
+{
 	zth::nap(drand48());
 	printf("Wear %s\n", socks.str.c_str());
 
@@ -70,7 +87,8 @@ Socks* wearSocks(Socks& socks) {
 	return &socks;
 }
 
-void washSock(Sock& sock) {
+void washSock(Sock& sock)
+{
 	zth::nap(drand48());
 
 	printf("Wash %s\n", sock.str.c_str());
@@ -82,10 +100,10 @@ void washSock(Sock& sock) {
 	sock.done.set();
 }
 
-int main() {
+int main()
+{
 	srand48(time(NULL));
 	zth::Worker w;
 	async takeSocks(10);
 	w.run();
 }
-

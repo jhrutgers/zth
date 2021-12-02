@@ -22,6 +22,7 @@
 #ifdef ZTH_HAVE_LIBZMQ
 
 #  include <libzth/zmq.h>
+#  include <libzth/poller.h>
 #  include <libzth/waiter.h>
 #  include <libzth/worker.h>
 
@@ -33,7 +34,9 @@ static void zmq_global_deinit() {
 }
 
 static void* zmq_global_init() {
-	int major, minor, patch;
+	int major = 0;
+	int minor = 0;
+	int patch = 0;
 	zmq_version(&major, &minor, &patch);
 	zth_dbg(banner, "0MQ version is %d.%d.%d", major, minor, patch);
 
@@ -80,17 +83,8 @@ int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags) {
 
 	zth_dbg(zmq, "[%s] zmq_msg_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	Await1Fd w(socket, ZMQ_POLLOUT);
-
-again:
-	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
-	case 0:
-		break;
-	case EINTR:
-		goto again;
-	default:
+	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
 		return -1;
-	}
 
 	return ::zmq_msg_send(msg, socket, flags | ZMQ_DONTWAIT);
 }
@@ -109,17 +103,8 @@ int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags) {
 
 	zth_dbg(zmq, "[%s] zmq_msg_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	Await1Fd w(socket, ZMQ_POLLIN);
-
-again:
-	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
-	case 0:
-		break;
-	case EINTR:
-		goto again;
-	default:
+	if((errno = poll(PollableFd(socket, Pollable::PollIn))))
 		return -1;
-	}
 
 	return ::zmq_msg_recv(msg, socket, flags | ZMQ_DONTWAIT);
 }
@@ -138,17 +123,8 @@ int zmq_send(void *socket, void *buf, size_t len, int flags) {
 
 	zth_dbg(zmq, "[%s] zmq_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	Await1Fd w(socket, ZMQ_POLLOUT);
-
-again:
-	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
-	case 0:
-		break;
-	case EINTR:
-		goto again;
-	default:
+	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
 		return -1;
-	}
 
 	return ::zmq_send(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
@@ -167,17 +143,8 @@ int zmq_recv(void *socket, void *buf, size_t len, int flags) {
 
 	zth_dbg(zmq, "[%s] zmq_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	Await1Fd w(socket, ZMQ_POLLIN);
-
-again:
-	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
-	case 0:
-		break;
-	case EINTR:
-		goto again;
-	default:
+	if((errno = poll(PollableFd(socket, Pollable::PollIn))))
 		return -1;
-	}
 
 	return ::zmq_recv(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
@@ -196,17 +163,8 @@ int zmq_send_const(void *socket, void *buf, size_t len, int flags) {
 
 	zth_dbg(zmq, "[%s] zmq_send_const(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	Await1Fd w(socket, ZMQ_POLLOUT);
-
-again:
-	switch((errno = zth::currentWorker().waiter().waitFd(w))) {
-	case 0:
-		break;
-	case EINTR:
-		goto again;
-	default:
+	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
 		return -1;
-	}
 
 	return ::zmq_send_const(socket, buf, len, flags | ZMQ_DONTWAIT);
 }

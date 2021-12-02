@@ -1,5 +1,5 @@
-#ifndef __ZTH_UTIL_H
-#define __ZTH_UTIL_H
+#ifndef ZTH_UTIL_H
+#define ZTH_UTIL_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -70,6 +70,7 @@
 
 #include <assert.h>
 #if __cplusplus && __cplusplus < 201103L && !defined(static_assert)
+#  pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #  define static_assert(expr, msg)	typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
@@ -77,23 +78,23 @@
 #define ZTH_GET_MACRO_ARGN(_0,_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
 
 #ifndef FOREACH
-#  define FOREACH_0(WHAT)														//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_1(WHAT, X)			WHAT(X)									//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_2(WHAT, X, ...)		WHAT(X)FOREACH_1(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_3(WHAT, X, ...)		WHAT(X)FOREACH_2(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_4(WHAT, X, ...)		WHAT(X)FOREACH_3(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_5(WHAT, X, ...)		WHAT(X)FOREACH_4(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_6(WHAT, X, ...)		WHAT(X)FOREACH_5(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_7(WHAT, X, ...)		WHAT(X)FOREACH_6(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_8(WHAT, X, ...)		WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_9(WHAT, X, ...)		WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_10(WHAT, X, ...)		WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)		//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_11(WHAT, X, ...)		WHAT(X)FOREACH_10(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_12(WHAT, X, ...)		WHAT(X)FOREACH_11(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_13(WHAT, X, ...)		WHAT(X)FOREACH_12(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_14(WHAT, X, ...)		WHAT(X)FOREACH_13(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_15(WHAT, X, ...)		WHAT(X)FOREACH_14(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
-#  define FOREACH_16(WHAT, X, ...)		WHAT(X)FOREACH_15(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_0(WHAT)							//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_1(WHAT, X)		WHAT(X)					//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_2(WHAT, X, ...)	WHAT(X)FOREACH_1(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_3(WHAT, X, ...)	WHAT(X)FOREACH_2(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_4(WHAT, X, ...)	WHAT(X)FOREACH_3(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_5(WHAT, X, ...)	WHAT(X)FOREACH_4(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_6(WHAT, X, ...)	WHAT(X)FOREACH_5(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_7(WHAT, X, ...)	WHAT(X)FOREACH_6(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_8(WHAT, X, ...)	WHAT(X)FOREACH_7(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_9(WHAT, X, ...)	WHAT(X)FOREACH_8(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_10(WHAT, X, ...)	WHAT(X)FOREACH_9(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_11(WHAT, X, ...)	WHAT(X)FOREACH_10(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_12(WHAT, X, ...)	WHAT(X)FOREACH_11(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_13(WHAT, X, ...)	WHAT(X)FOREACH_12(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_14(WHAT, X, ...)	WHAT(X)FOREACH_13(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_15(WHAT, X, ...)	WHAT(X)FOREACH_14(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
+#  define FOREACH_16(WHAT, X, ...)	WHAT(X)FOREACH_15(WHAT, __VA_ARGS__)	//!< \brief Helper for #FOREACH. \private
 //... repeat as needed
 
 /*!
@@ -122,25 +123,28 @@
 #  define REVERSE_15(a,...)	REVERSE_14(__VA_ARGS__),a
 #  define REVERSE_16(a,...)	REVERSE_15(__VA_ARGS__),a
 #  define REVERSE(...) \
-		ZTH_GET_MACRO_ARGN(0,##__VA_ARGS__,REVERSE_16,REVERSE_15,REVERSE_14,REVERSE_13,REVERSE_12,REVERSE_11,REVERSE_10,REVERSE_9,REVERSE_8,REVERSE_7,REVERSE_6,REVERSE_5,REVERSE_4,REVERSE_3,REVERSE_2,REVERSE_1,REVERSE_0)(__VA_ARGS__)
+	ZTH_GET_MACRO_ARGN(0,##__VA_ARGS__,REVERSE_16,REVERSE_15,REVERSE_14,REVERSE_13,REVERSE_12,REVERSE_11,REVERSE_10,REVERSE_9,REVERSE_8,REVERSE_7,REVERSE_6,REVERSE_5,REVERSE_4,REVERSE_3,REVERSE_2,REVERSE_1,REVERSE_0)(__VA_ARGS__)
 #endif
 
 #include <stdarg.h>
 
 #ifdef __cplusplus
 #include <string>
-#include <string.h>
-#include <pthread.h>
+#include <cstring>
+#include <limits>
 #include <memory>
-#include <inttypes.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include <vector>
+
+#if __cplusplus >= 201103L
+#  include <cinttypes>
+#else
+#  include <inttypes.h>
+#endif
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
-#else
-#  include <sys/types.h>
-#  include <unistd.h>
 #endif
 
 #ifndef ZTH_OS_WINDOWS
@@ -169,7 +173,7 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv
  */
 #  define zth_dbg(group, fmt, a...) \
 	do { \
-		if(::zth::Config::EnableDebugPrint && ::zth::Config::Print_##group > 0 && zth_config(EnableDebugPrint)) { \
+		if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0 && zth_config(EnableDebugPrint)) { \
 			if(::zth::Config::EnableColorLog) \
 				::zth::log_color(::zth::Config::Print_##group, ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a); \
 			else \
@@ -182,21 +186,41 @@ EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_logv
  * \brief \c assert(), but better integrated in Zth.
  */
 #  ifndef NDEBUG
-#    define zth_assert(expr) do { if(unlikely(::zth::Config::EnableAssert && !(expr))) \
-		::zth::abort("assertion failed at " __FILE__ ":" ZTH_STRINGIFY(__LINE__) ": " ZTH_STRINGIFY(expr)); } while(false)
+#    define zth_assert(expr) \
+	do { \
+		if(unlikely(::zth::Config::EnableAssert && !(expr))) \
+			::zth::abort("assertion failed at " __FILE__ ":" ZTH_STRINGIFY(__LINE__) ": " ZTH_STRINGIFY(expr)); \
+	} while(false)
 #  else
-#    define zth_assert(...)
+#    define zth_assert(...)	do {} while(0)
+#  endif
+#endif
+
+#ifndef ZTH_CLASS_NOCOPY
+#  if __cplusplus >= 201103L
+#    define ZTH_CLASS_NOCOPY(Class) \
+	public: \
+		Class(Class const&) = delete; \
+		Class(Class&&) = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) */ \
+		Class& operator=(Class const&) noexcept = delete; \
+		Class& operator=(Class&&) noexcept = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) */ \
+	private:
+#  else
+#    define ZTH_CLASS_NOCOPY(Class) \
+	private: \
+		Class(Class const&); \
+		Class& operator=(Class const&);
 #  endif
 #endif
 
 #include <libzth/zmq.h>
 
 namespace zth {
-	ZTH_EXPORT char const* banner();
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void abort(char const* fmt, ...);
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void abortv(char const* fmt, va_list args);
+	ZTH_EXPORT char const* banner() noexcept;
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void abort(char const* fmt, ...) noexcept;
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void abortv(char const* fmt, va_list args) noexcept;
 
-	ZTH_EXPORT bool log_supports_ansi_colors();
+	ZTH_EXPORT bool log_supports_ansi_colors() noexcept;
 	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void log_colorv(int color, char const* fmt, va_list args);
 
 	/*!
@@ -204,8 +228,14 @@ namespace zth {
 	 * \details #zth_logv() is used for the actual logging.
 	 * \ingroup zth_api_cpp_util
 	 */
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) inline void log_color(int color, char const* fmt, ...) {
-		va_list args; va_start(args, fmt); log_colorv(color, fmt, args); va_end(args); }
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3)))
+	inline void log_color(int color, char const* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		log_colorv(color, fmt, args);
+		va_end(args);
+	}
 
 	/*!
 	 * \brief Logs a given printf()-like formatted string.
@@ -213,8 +243,11 @@ namespace zth {
 	 * \see zth::log_colorv()
 	 * \ingroup zth_api_cpp_util
 	 */
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void logv(char const* fmt, va_list arg) {
-		::zth_logv(fmt, arg); }
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0)))
+	inline void logv(char const* fmt, va_list arg)
+	{
+		::zth_logv(fmt, arg);
+	}
 
 	/*!
 	 * \brief Logs a given printf()-like formatted string.
@@ -222,23 +255,96 @@ namespace zth {
 	 * \see zth::log_color()
 	 * \ingroup zth_api_cpp_util
 	 */
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void log(char const* fmt, ...) {
-		va_list args; va_start(args, fmt); logv(fmt, args); va_end(args); }
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
+	inline void log(char const* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		logv(fmt, args);
+		va_end(args);
+	}
+
+	/*!
+	 * \brief Wrapper for Config::Allocator::type::allocate().
+	 */
+	template <typename T>
+	__attribute__((warn_unused_result)) static inline T* allocate(size_t n = 1)
+	{
+		typename Config::Allocator<T>::type allocator;
+		return allocator.allocate(n);
+	}
+
+	template <typename T>
+	__attribute__((warn_unused_result)) static inline T* new_alloc()
+	{
+		T* o = allocate<T>(1);
+		new(o) T;
+		return o;
+	}
+
+	template <typename T, typename Arg>
+	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg const& arg)
+	{
+		T* o = allocate<T>(1);
+		new(o) T(arg);
+		return o;
+	}
+
+#if __cplusplus >= 201103L
+	template <typename T, typename... Arg>
+	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg)
+	{
+		T* o = allocate<T>(1);
+		new(o) T(std::forward<Arg>(arg)...);
+		return o;
+	}
+#endif
+
+	/*!
+	 * \brief Wrapper for Config::Allocator::type::deallocate().
+	 */
+	template <typename T>
+	static inline void deallocate(T* p, size_t n = 1) noexcept
+	{
+		typename Config::Allocator<T>::type allocator;
+		allocator.deallocate(p, n);
+	}
+
+	template <typename T>
+	static inline void delete_alloc(T* p) noexcept
+	{
+		if(unlikely(!p))
+			return;
+
+		p->~T();
+		deallocate(p, 1);
+	}
 
 	class cow_string {
 	public:
 		cow_string() : m_cstr() {}
 		explicit cow_string(char const* s) : m_cstr(s) {}
+		// cppcheck-suppress noExplicitConstructor
 		cow_string(std::string const& s) : m_cstr(), m_str(s) {}
-		cow_string(cow_string const& s) : m_cstr(s.m_cstr), m_str(s.m_str) {}
+		cow_string(cow_string const& s) { *this = s; }
 
-		cow_string operator=(char const* s) { m_cstr = s; return *this; }
-		cow_string operator=(std::string const& s) { m_cstr = NULL; m_str = s; return *this; }
+		cow_string& operator=(cow_string const& s)
+		{
+			m_cstr = s.m_cstr;
+			m_str = s.m_str;
+			return *this;
+		}
+
+		cow_string& operator=(char const* s) { m_cstr = s; m_str.clear(); return *this; }
+		cow_string& operator=(std::string const& s) { m_cstr = nullptr; m_str = s; return *this; }
 
 #if __cplusplus >= 201103L
+		cow_string(cow_string&& s) = default;
+		cow_string& operator=(cow_string&& s) = default;
+
+		// cppcheck-suppress noExplicitConstructor
 		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
-		cow_string(cow_string&& s) : m_cstr(s.m_cstr), m_str(std::move(s.m_str)) {}
-		cow_string operator=(std::string&& s) { m_cstr = NULL; m_str = std::move(s); return *this; }
+		cow_string& operator=(std::string&& s) { m_cstr = nullptr; m_str = std::move(s); return *this; }
 #endif
 
 		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
@@ -248,66 +354,43 @@ namespace zth {
 		char operator[](size_t pos) const { return m_cstr ? m_cstr[pos] : str()[pos]; }
 		char& operator[](size_t pos) { return local()[pos]; }
 		char const* data() const { return c_str(); }
-		bool empty() const { return m_cstr ? *m_cstr == 0 : m_str.empty(); }
-		size_t size() const { return str().size(); }
-		size_t length() const { return str().length(); }
-		void clear() { m_cstr = NULL; m_str.clear(); }
-		bool isConst() const { return m_cstr != NULL; }
-		bool isLocal() const { return m_cstr == NULL; }
+		bool empty() const noexcept { return m_cstr ? *m_cstr == 0 : m_str.empty(); }
+		size_t size() const noexcept { return str().size(); }
+		size_t length() const noexcept { return str().length(); }
+		void clear() noexcept { m_cstr = nullptr; m_str.clear(); }
+		bool isConst() const noexcept { return m_cstr != nullptr; }
+		bool isLocal() const noexcept { return m_cstr == nullptr; }
 
 	protected:
-		std::string const& local() const {
+		std::string const& local() const
+		{
 			if(unlikely(m_cstr)) {
 				m_str = m_cstr;
-				m_cstr = NULL;
+				m_cstr = nullptr;
 			}
 			return m_str;
 		}
-		std::string& local() { const_cast<cow_string const*>(this)->local(); return m_str; }
+
+		std::string& local()
+		{
+			const_cast<cow_string const*>(this)->local();
+			return m_str;
+		}
 
 	private:
 		mutable char const* m_cstr;
 		mutable std::string m_str;
 	};
 
-	/*!
-	 * \brief Format like \c vsprintf(), but save the result in an \c std::string.
-	 */
-	__attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline std::string formatv(char const* fmt, va_list args) {
-		int const maxstack = (int)sizeof(void*) * 8;
-
-		char sbuf[maxstack];
-		char* hbuf = NULL;
-		char* buf = sbuf;
-
-		va_list args2;
-		va_copy(args2, args);
-		int c = vsnprintf(sbuf, maxstack, fmt, args);
-
-		if(c >= maxstack) {
-			hbuf = (char*)malloc(c + 1);
-			if(unlikely(!hbuf))
-				c = 0;
-			else {
-				int c2 = vsprintf(hbuf, fmt, args2);
-				zth_assert(c2 <= c);
-				c = c2;
-				buf = hbuf;
-			}
-		}
-
-		va_end(args2);
-
-		std::string res(buf, (size_t)(c < 0 ? 0 : c));
-		if(hbuf)
-			free(hbuf);
-		return res;
-	}
+	__attribute__((format(ZTH_ATTR_PRINTF, 1, 0)))
+	std::string formatv(char const* fmt, va_list args);
 
 	/*!
 	 * \brief Format like \c sprintf(), but save the result in an \c std::string.
 	 */
-	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline std::string format(char const* fmt, ...) {
+	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
+	inline std::string format(char const* fmt, ...)
+	{
 		va_list args;
 		va_start(args, fmt);
 		std::string res = formatv(fmt, args);
@@ -335,13 +418,14 @@ namespace zth {
 	template <> inline cow_string str<double>(double value) { return format("%g", value); }
 	template <> inline cow_string str<long double>(long double value) { return format("%Lg", value); }
 #if __cplusplus >= 201103L
-	template <> inline cow_string str<std::string&&>(std::string&& value) { return std::string(std::move(value)); }
+	template <> inline cow_string str<std::string&&>(std::string&& value) { return cow_string(std::move(value)); }
 #endif
 
 	/*!
 	 * \brief Return a string like \c strerror() does, but as a \c std::string.
 	 */
-	inline std::string err(int e) {
+	inline std::string err(int e)
+	{
 #ifdef ZTH_HAVE_LIBZMQ
 		return format("%s (error %d)", zmq_strerror(e), e);
 #elif ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
@@ -362,7 +446,7 @@ namespace zth {
 	class UniqueIDBase {
 	protected:
 		virtual char const* id_str() const = 0;
-		virtual ~UniqueIDBase() {}
+		virtual ~UniqueIDBase() is_default
 		friend cow_string str<UniqueIDBase const&>(UniqueIDBase const&);
 	};
 
@@ -374,49 +458,70 @@ namespace zth {
 	 */
 	template <typename T, bool ThreadSafe = Config::EnableThreads>
 	class UniqueID : public UniqueIDBase {
+		ZTH_CLASS_NOCOPY(UniqueID)
 	public:
-		static uint64_t getID() {
+		static uint64_t getID() noexcept
+		{
 			return ThreadSafe ?
 #if GCC_VERSION < 40802L
 				__sync_add_and_fetch(&m_nextId, 1)
 #else
 				__atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
 #endif
-				: ++m_nextId; }
+				: ++m_nextId;
+		}
 
-		UniqueID(std::string const& name) : m_id(getID()), m_name(name) {}
+		explicit UniqueID(std::string const& name)
+			: m_id(getID())
+			, m_name(name)
+		{}
+
 #if __cplusplus >= 201103L
-		UniqueID(std::string&& name) : m_id(getID()), m_name(std::move(name)) {}
+		explicit UniqueID(std::string&& name) noexcept
+			: m_id(getID())
+			, m_name(std::move(name))
+		{}
 #endif
-		UniqueID(char const* name = NULL) : m_id(getID()) { if(name) m_name = name; }
-		virtual ~UniqueID() {}
 
-		void const* normptr() const { return this; }
+		explicit UniqueID(char const* name = nullptr)
+			: m_id(getID())
+		{
+			if(name)
+				m_name = name;
+		}
 
-		__attribute__((pure)) uint64_t id() const { return m_id; }
+		virtual ~UniqueID() is_default
 
-		std::string const& name() const { return m_name; }
+		void const* normptr() const noexcept { return this; }
 
-		void setName(std::string const& name) {
+		__attribute__((pure)) uint64_t id() const noexcept { return m_id; }
+
+		std::string const& name() const noexcept { return m_name; }
+
+		void setName(std::string const& name)
+		{
 			setName(name.c_str());
 		}
 
-		void setName(char const* name) {
+		void setName(char const* name)
+		{
 			m_name = name;
 			m_id_str.clear();
 			changedName(this->name());
 		}
 
 #if __cplusplus >= 201103L
-		void setName(std::string&& name) {
+		void setName(std::string&& name)
+		{
 			m_name = std::move(name);
 			m_id_str.clear();
 			changedName(this->name());
 		}
 #endif
 
-		char const* id_str() const {
-			if(unlikely(m_id_str.empty()))
+		char const* id_str() const override
+		{
+			if(unlikely(m_id_str.empty())) {
 				m_id_str =
 #ifdef ZTH_OS_BAREMETAL
 					// No OS, no pid. And if newlib is used, don't try to format 64-bit ints.
@@ -430,6 +535,10 @@ namespace zth {
 #  endif
 						id());
 #endif
+				if(unlikely(m_id_str.empty()))
+					// Should not happen, but make sure the string is not empty.
+					m_id_str = "?";
+			}
 
 			return m_id_str.c_str();
 		}
@@ -438,17 +547,6 @@ namespace zth {
 		virtual void changedName(std::string const& UNUSED_PAR(name)) {}
 
 	private:
-		UniqueID(UniqueID const&)
-#if __cplusplus >= 201103L
-			= delete
-#endif
-			;
-		UniqueID& operator=(UniqueID const&)
-#if __cplusplus >= 201103L
-			= delete
-#endif
-			;
-
 		uint64_t const m_id;
 		std::string m_name;
 		std::string mutable m_id_str;
@@ -514,12 +612,12 @@ namespace zth {
 
 		/*!
 		 * \brief Destructor.
-		 * \details After destruction, #instance() will return \c NULL.
+		 * \details After destruction, #instance() will return \c nullptr.
 		 */
 		~Singleton()
 		{
 			if(m_instance == static_cast<singleton_type*>(this))
-				m_instance = NULL;
+				m_instance = nullptr;
 		}
 
 	public:
@@ -527,16 +625,16 @@ namespace zth {
 		 * \brief Wrapper for a pointer, which checks validity of the pointer upon dereference.
 		 */
 #ifdef _DEBUG
-		class safe_ptr
-		{
+		class safe_ptr {
 		public:
-			safe_ptr(singleton_type* p) : m_p(p) {}
-			operator singleton_type*() const { return ptr(); }
-			operator bool() const { return ptr(); }
-			singleton_type* operator->() const { zth_assert(ptr()); return ptr(); }
-			singleton_type& operator*() const { zth_assert(ptr()); return *ptr(); }
+			// cppcheck-suppress noExplicitConstructor
+			constexpr safe_ptr(singleton_type* p) noexcept : m_p(p) {}
+			constexpr operator singleton_type*() const noexcept { return ptr(); }
+			constexpr operator bool() const noexcept { return ptr(); }
+			constexpr14 singleton_type* operator->() const noexcept { zth_assert(ptr()); return ptr(); }
+			constexpr14 singleton_type& operator*() const noexcept { zth_assert(ptr()); return *ptr(); }
 		protected:
-			singleton_type* ptr() const { return m_p; }
+			constexpr singleton_type* ptr() const noexcept { return m_p; }
 		private:
 			singleton_type* m_p;
 		};
@@ -546,9 +644,9 @@ namespace zth {
 
 		/*!
 		 * \brief Return the only instance of \p T.
-		 * \return the instance, or \c NULL when not constructed yet/anymore.
+		 * \return the instance, or \c nullptr when not constructed yet/anymore.
 		 */
-		__attribute__((pure)) static safe_ptr instance()
+		__attribute__((pure)) static safe_ptr instance() noexcept
 		{
 			return m_instance;
 		}
@@ -558,7 +656,358 @@ namespace zth {
 		static singleton_type* m_instance;
 	};
 
-	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = NULL;
+	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = nullptr;
+
+	/*!
+	 * \brief A simple std::vector, which can contain \p Prealloc without heap allocation.
+	 *
+	 * When the internal buffer is exhausted, the vector grows automatically
+	 * into an std::vector, using heap memory after all.
+	 *
+	 * In all cases, the elements are stored in contiguous memory, like
+	 * guaranteed by std::vector.  Upon a #push_back(), underlying memory may
+	 * be reallocated to accommodate the new element, which renders previous
+	 * pointers invalid.
+	 *
+	 * \tparam T the type of elements to contain
+	 * \tparam Prealloc the minimum number of elements to contain without using heap
+	 * \tparam Allocator the allocator to use for std::vector
+	 * \ingroup zth_api_cpp_util
+	 */
+	template <typename T, int8_t Prealloc = 1, typename Allocator = typename Config::Allocator<T>::type>
+	class small_vector {
+	public:
+		typedef T value_type;
+		typedef Allocator allocator_type;
+		typedef std::vector<value_type, allocator_type> vector_type;
+
+		enum {
+			prealloc_request = Prealloc > 0 ? Prealloc : 0,
+			prealloc_request_size = prealloc_request * sizeof(value_type),
+			vector_size = sizeof(vector_type),
+			buffer_size = prealloc_request_size > vector_size ? prealloc_request_size : vector_size,
+			prealloc = buffer_size / sizeof(value_type),
+		};
+
+		/*!
+		 * \brief Default ctor.
+		 */
+		// cppcheck-suppress uninitMemberVar
+		constexpr small_vector() noexcept
+			: m_size()
+		{
+			static_assert(prealloc < std::numeric_limits<uint8_t>::max(), "");
+		}
+
+		/*!
+		 * \brief Dtor.
+		 */
+		~small_vector()
+		{
+			if(is_small())
+				resize(0);
+			else
+				vector().~vector_type();
+		}
+
+		/*!
+		 * \brief Access an element.
+		 */
+		value_type& operator[](size_t index) noexcept
+		{
+			zth_assert(index < size());
+			return data()[index];
+		}
+
+		/*!
+		 * \brief Access an element.
+		 */
+		value_type const& operator[](size_t index) const noexcept
+		{
+			zth_assert(index < size());
+			return data()[index];
+		}
+
+		/*!
+		 * \brief Access the first element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type& front() noexcept
+		{
+			return (*this)[0];
+		}
+
+		/*!
+		 * \brief Access the first element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type const& front() const noexcept
+		{
+			return (*this)[0];
+		}
+
+		/*!
+		 * \brief Access the last element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type& back() noexcept
+		{
+			zth_assert(!empty());
+			return (*this)[size() - 1u];
+		}
+
+		/*!
+		 * \brief Access the last element.
+		 *
+		 * Do not call when the vector is #empty().
+		 */
+		value_type const& back() const noexcept
+		{
+			zth_assert(!empty());
+			return (*this)[size() - 1u];
+		}
+
+		/*!
+		 * \brief Access the data array.
+		 */
+		value_type* data() noexcept
+		{
+			return is_small() ? array() : vector().data();
+		}
+
+		/*!
+		 * \brief Access the data array.
+		 */
+		value_type const* data() const noexcept
+		{
+			return is_small() ? array() : vector().data();
+		}
+
+		/*!
+		 * \brief Check if the vector is empty.
+		 */
+		bool empty() const noexcept
+		{
+			return is_small() ? m_size == 0 : vector().empty();
+		}
+
+		/*!
+		 * \brief Return the number of elements stored in the vector.
+		 */
+		size_t size() const noexcept
+		{
+			return is_small() ? m_size : vector().size();
+		}
+
+		/*!
+		 * \brief Reserve memory to accommodate at least the given number of elements.
+		 * \exception std::bad_alloc when allocation fails
+		 * \see #capacity()
+		 */
+		void reserve(size_t new_cap)
+		{
+			if(is_small() && new_cap <= prealloc)
+				return;
+
+			if(is_small())
+				make_vector(new_cap);
+
+			vector().reserve(new_cap);
+		}
+
+		/*!
+		 * \brief Return the number of elements for which memory is currently reesrved.
+		 * \see #reserve()
+		 */
+		size_t capacity() const noexcept
+		{
+			return is_small() ? (size_t)prealloc : vector().capacity();
+		}
+
+		/*!
+		 * \brief Erase all elements from the vector.
+		 *
+		 * This does not release the memory.
+		 */
+		void clear() noexcept
+		{
+			if(is_small())
+				resize(0);
+			else
+				vector().clear();
+		}
+
+		/*!
+		 * \brief Erase all elements from the vector and release all heap memory.
+		 */
+		void clear_and_release() noexcept
+		{
+			if(is_small()) {
+				resize(0);
+			} else {
+				vector_type v;
+				v.swap(vector());
+			}
+		}
+
+		/*!
+		 * \brief Append an element to the vector using the copy constructor.
+		 * \exception std::bad_alloc when allocation fails
+		 */
+		void push_back(value_type const& v)
+		{
+			reserve(size() + 1u);
+
+			if(m_size < prealloc) {
+				new(&array()[m_size]) value_type(v);
+				m_size++;
+			} else
+				vector().push_back(v);
+		}
+
+#if __cplusplus >= 201103L
+		/*!
+		 * \brief Append an element to the vector by construct in-place.
+		 * \exception std::bad_alloc when allocation fails
+		 */
+		template< class... Args >
+		void emplace_back(Args&&... args)
+		{
+			reserve(size() + 1u);
+
+			if(m_size < prealloc) {
+				new(&array()[m_size]) value_type(std::forward<Args>(args)...);
+				m_size++;
+			} else
+				vector().emplace_back(std::forward<Args>(args)...);
+		}
+#endif
+
+		/*!
+		 * \brief Remove the last element.
+		 *
+		 * Make sure the vector is not #empty() before calling.
+		 */
+		void pop_back() noexcept
+		{
+			zth_assert(!empty());
+			if(is_small())
+				array()[--m_size].~value_type();
+			else
+				vector().pop_back();
+		}
+
+		/*!
+		 * \brief Resize the number of elements in the vector.
+		 * \param count the requested number of elements
+		 * \param x the value to save for newly constructed elements
+		 */
+		void resize(size_t count, value_type const& x = value_type())
+		{
+			if(is_small()) {
+				while(count < m_size)
+					array()[--m_size].~value_type();
+
+				if(count <= prealloc) {
+					while(count > m_size) {
+						new(&array()[m_size]) value_type(x);
+						m_size++;
+					}
+				} else {
+					make_vector(count);
+					vector().resize(count, x);
+				}
+			} else
+				vector().resize(count, x);
+		}
+
+	protected:
+		/*!
+		 * \brief Check if the current vector still fits in the internal buffer.
+		 */
+		bool is_small() const noexcept { return m_size <= prealloc; }
+
+		/*!
+		 * \brief Interpret buffer as the small vector.
+		 */
+		value_type* array() noexcept
+		{
+			zth_assert(is_small());
+			return reinterpret_cast<value_type*>(m_buffer);
+		}
+
+		/*!
+		 * \brief Interpret buffer as the small vector.
+		 */
+		value_type const* array() const noexcept
+		{
+			zth_assert(is_small());
+			return reinterpret_cast<value_type const*>(m_buffer);
+		}
+
+		/*!
+		 * \brief Interpret buffer as an std::vector.
+		 */
+		vector_type& vector() noexcept
+		{
+			zth_assert(!is_small());
+			void* buffer = m_buffer;
+			return *reinterpret_cast<vector_type*>(buffer);
+		}
+
+		/*!
+		 * \brief Interpret buffer as an std::vector.
+		 */
+		vector_type const& vector() const noexcept
+		{
+			zth_assert(!is_small());
+			void const* buffer = m_buffer;
+			return *reinterpret_cast<vector_type const*>(buffer);
+		}
+
+		/*!
+		 * \brief Make sure the std::vector is used as storage.
+		 */
+		void make_vector(size_t new_cap)
+		{
+			if(!is_small())
+				return;
+
+			vector_type v;
+			v.reserve(std::max(new_cap, (size_t)m_size));
+
+			for(size_t i = 0; i < m_size; i++) {
+#if __cplusplus >= 201103L
+				v.emplace_back(std::move(array()[i]));
+#else
+				v.push_back(array()[i]);
+#endif
+				array()[i].~value_type();
+			}
+
+			m_size = prealloc + 1u;
+			new(m_buffer) vector_type;
+			vector().swap(v);
+		}
+
+	private:
+		/*!
+		 * \brief The buffer that holds either an array of \c value_types, or an std::vector instance.
+		 */
+		alignas(vector_type) alignas(value_type) char m_buffer[buffer_size];
+
+		/*!
+		 * \brief The number of elements in the array.
+		 *
+		 * If the value is larger than \c prealloc, #m_buffer contains an
+		 * std::vector instance, otherwise #m_buffer is an array of \c prealloc
+		 * elements.
+		 */
+		uint8_t m_size;
+	};
 } // namespace
 
 #endif // __cplusplus
@@ -579,7 +1028,8 @@ ZTH_EXPORT void zth_banner();
  * \details This is a C-wrapper for zth::abort().
  * \ingroup zth_api_c_util
  */
-ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void zth_abort(char const* fmt, ...);
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn))
+void zth_abort(char const* fmt, ...);
 
 /*!
  * \copydoc zth::log_color()
@@ -587,10 +1037,17 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void zth_abo
  * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
-EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...) {
-	va_list args; va_start(args, fmt); zth::log_colorv(color, fmt, args); va_end(args); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 2, 3)))
+void zth_log_color(int color, char const* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	zth::log_colorv(color, fmt, args);
+	va_end(args);
+}
 #else
-ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int color, char const* fmt, ...);
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3)))
+void zth_log_color(int color, char const* fmt, ...);
 #endif
 
 /*!
@@ -599,10 +1056,17 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void zth_log_color(int
  * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
-EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...) {
-	va_list args; va_start(args, fmt); zth::logv(fmt, args); va_end(args); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
+void zth_log(char const* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	zth::logv(fmt, args);
+	va_end(args);
+}
 #else
-ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...);
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
+void zth_log(char const* fmt, ...);
 #endif
 
-#endif // __ZTH_UTIL_H
+#endif // ZTH_UTIL_H

@@ -1,19 +1,19 @@
-#ifndef __ZTH_ZMQ_H
-#define __ZTH_ZMQ_H
+#ifndef ZTH_ZMQ_H
+#define ZTH_ZMQ_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -129,4 +129,4 @@ ZTH_EXPORT int zth_zmq_send_const(void *socket, void *buf, size_t len, int flags
 #  endif // ZTH_REDIRECT_ZMQ
 
 #endif // ZTH_HAVE_LIBZMQ
-#endif // __ZTH_ZMQ_H
+#endif // ZTH_ZMQ_H

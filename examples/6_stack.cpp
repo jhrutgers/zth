@@ -33,21 +33,23 @@ static char altstack2[0x1000];
 static void vf0() {}
 static int f0() { return 1; }
 static void vf1(int i) { printf("%d\n", i); }
-static int f1(int) { return 1; }
+static int f1(int /*i*/) { return 1; }
 static void vf2(int i, double d) { printf("%d %g\n", i, d); }
-static int f2(int, double) {
+static int f2(int /*i*/, double /*d*/)
+{
 	// Switch stack again.
 	zth::stack_switch(altstack2, sizeof(altstack), &vf2, 10, 11.1);
 	return 1;
 }
 static void vf3(int i, double d, void* p) { printf("%d %g %p\n", i, d, p); }
-static int f3(int, double, void*) { return 1; }
+static int f3(int /*i*/, double /*d*/, void* /*p*/) { return 1; }
 #if __cplusplus >= 201103L
 static void vf4(int i, double d, void* p, int i2) { printf("%d %g %p %d\n", i, d, p, i2); }
-static int f4(int, double, void*, int) { return 1; }
+static int f4(int /*i*/, double /*d*/, void* /*p*/, int /*i2*/) { return 1; }
 #endif
 
-static void example_stack_switch() {
+static void example_stack_switch()
+{
 	// Normal function call, running on this stack.
 	vf0();
 
@@ -67,10 +69,10 @@ static void example_stack_switch() {
 	zth::stack_switch(altstack, sizeof(altstack), &vf4, 1, 3.14, (void*)NULL, 2);
 	zth::stack_switch(altstack, sizeof(altstack), &f4, 1, 3.14, (void*)NULL, 2);
 #endif
-	
+
 	// There is no limit in (nested) switching stacks. When the function
 	// returns, the previous stack is restored.
-	
+
 	printf("altstack usage: 0x%x\n", (unsigned)zth::stack_watermark_maxused(altstack));
 }
 
@@ -86,9 +88,10 @@ static void example_stack_switch() {
  * upon every switch.
  */
 static void overflow2(int i)
-{
+{	// NOLINT
 	printf("overflow %d\n", i);
-	// Recursive call, this will overflow.
+
+	// Recursive call, this will overflow the stack.
 	overflow2(i + 1);
 }
 
@@ -98,7 +101,8 @@ static void overflow1(int i)
 	zth::stack_switch(altstack2, sizeof(altstack2), &overflow2, i + 1);
 }
 
-static void example_stack_overflow() {
+static void example_stack_overflow()
+{
 	// Run the test on another stack.
 	zth::stack_switch(altstack, sizeof(altstack), &overflow1, 0);
 }
@@ -110,4 +114,3 @@ void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	example_stack_switch();
 	example_stack_overflow();
 }
-

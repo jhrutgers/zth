@@ -1,5 +1,5 @@
-#ifndef __ZTH_MACROS_H
-#define __ZTH_MACROS_H
+#ifndef ZTH_MACROS_H
+#define ZTH_MACROS_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -47,7 +47,12 @@
 // Compiler
 //
 
-#ifdef __GNUC__
+#ifdef __clang_analyzer__
+// We don't use clang for compiling, but we do use clang-tidy.
+#  define CLANG_TIDY
+#endif
+
+#if defined(__GNUC__) || defined(CLANG_TIDY)
 // This is gcc
 #  ifdef __cplusplus
 #    if __cplusplus < 201103L && !defined(decltype)
@@ -55,24 +60,33 @@
 #    endif
 #  endif
 #  if ZTH_THREADS
-#    define ZTH_TLS_DECLARE(type,var)			extern __thread type var;
-#    define ZTH_TLS_DEFINE(type,var,init)		__thread type var = init;
-#    define ZTH_TLS_STATIC(type,var,init)		static __thread type var = init;
-#    define ZTH_TLS_SET(var,value)				var = value
-#    define ZTH_TLS_GET(var)					var
+#    define ZTH_TLS_DECLARE(type,var)		extern __thread type var;
+#    define ZTH_TLS_DEFINE(type,var,init)	__thread type var = init;
+#    define ZTH_TLS_STATIC(type,var,init)	static __thread type var = init;
+#    define ZTH_TLS_SET(var,value)		var = value
+#    define ZTH_TLS_GET(var)			var
 #  endif
 #  ifndef _GNU_SOURCE
 #    define _GNU_SOURCE
 #  endif
-#  define ZTH_ATTR_PRINTF	gnu_printf
+#  ifndef CLANG_TIDY
+#    define ZTH_ATTR_PRINTF	gnu_printf
+#  endif
 #  ifndef GCC_VERSION
 #    define GCC_VERSION (__GNUC__ * 10000L + __GNUC_MINOR__ * 100L + __GNUC_PATCHLEVEL__)
+#  endif
+#  if GCC_VERSION < 50000
+#    pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #  endif
 #  ifndef UNUSED_PAR
 #    define UNUSED_PAR(name)	name __attribute__((unused))
 #  endif
 #else
 #  error Unsupported compiler. Please use gcc.
+#endif
+
+#ifdef CPPCHECK
+#  define __attribute__(x)
 #endif
 
 #if defined(__cplusplus) && __cplusplus >= 201703L
@@ -86,11 +100,11 @@
 #ifndef ZTH_TLS_DECLARE
 #  undef ZTH_THREADS
 #  define ZTH_THREADS 0
-#  define ZTH_TLS_DECLARE(type,var)				extern type var;
-#  define ZTH_TLS_DEFINE(type,var,init)			type var = init;
-#  define ZTH_TLS_STATIC(type,var,init)			static type var = init;
-#  define ZTH_TLS_SET(var,value)				var = value
-#  define ZTH_TLS_GET(var)						var
+#  define ZTH_TLS_DECLARE(type,var)		extern type var;
+#  define ZTH_TLS_DEFINE(type,var,init)		type var = init;
+#  define ZTH_TLS_STATIC(type,var,init)		static type var = init;
+#  define ZTH_TLS_SET(var,value)		var = value
+#  define ZTH_TLS_GET(var)			var
 #endif
 
 #ifndef ZTH_ATTR_PRINTF
@@ -145,8 +159,46 @@ ZTH_EXPORT void foo();
 #endif
 */
 
-#if defined(__cplusplus) && __cplusplus < 201103L && !defined(constexpr)
-#  define constexpr
+#if defined(__cplusplus) && __cplusplus < 201103L
+#  ifndef constexpr
+#    define constexpr
+#  endif
+#  ifndef constexpr14
+#    define constexpr14
+#  endif
+#  ifndef override
+#    define override
+#  endif
+#  ifndef final
+#    define final
+#  endif
+#  ifndef is_default
+#    define is_default {}
+#  endif
+#  ifndef noexcept
+#    define noexcept throw()
+#  endif
+#  ifndef nullptr
+#    define nullptr NULL
+#  endif
+#  ifndef alignas
+#    define alignas(...) __attribute__((aligned(sizeof(void*))))
+#  endif
+#else
+#  ifndef constexpr14
+#    if __cplusplus < 201402L
+#      define constexpr14
+#    else
+#      define constexpr14 constexpr
+#    endif
+#  endif
+#  ifndef is_default
+#    define is_default = default;
+#  endif
+#endif
+
+#if defined(__SANITIZE_ADDRESS__) && !defined(ZTH_ENABLE_ASAN)
+#  define ZTH_ENABLE_ASAN
 #endif
 
 
@@ -209,7 +261,7 @@ ZTH_EXPORT void foo();
 #  define ZTH_HAVE_POLL
 #  define ZTH_HAVE_MMAN
 #elif defined(__APPLE__)
-#  include "TargetConditionals.h"
+#  include <TargetConditionals.h>
 #  ifdef TARGET_OS_MAC
 #    define ZTH_OS_MAC 1
 #  else
@@ -284,4 +336,4 @@ ZTH_EXPORT void foo();
 #  endif
 #endif
 
-#endif // __ZTH_MACROS_H
+#endif // ZTH_MACROS_H

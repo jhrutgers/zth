@@ -1,19 +1,19 @@
-#ifndef __ZTH_SYNC_H
-#define __ZTH_SYNC_H
+#ifndef ZTH_SYNC_H
+#define ZTH_SYNC_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -65,7 +65,7 @@ namespace zth {
 	template <typename T>
 	class SharedPointer {
 	public:
-		SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
+		explicit SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
 		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
 		virtual ~SharedPointer() { reset(); }
 
@@ -76,10 +76,10 @@ namespace zth {
 				m_object->unused();
 			m_object = object;
 		}
-		
+
 		SharedPointer& operator=(RefCounted* object) { reset(object); return *this; }
-		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); }
-		
+		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); return *this; }
+
 		T* get() const { return m_object ? static_cast<T*>(m_object) : NULL; }
 		operator T*() const { return get(); }
 		T* operator*() const { zth_assert(get()); return get(); }
@@ -90,14 +90,14 @@ namespace zth {
 			m_object = NULL;
 			return object;
 		}
-		
+
 	private:
 		RefCounted* m_object;
 	};
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	public:
-		Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
+		explicit Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
 		virtual ~Synchronizer() {
 			zth_dbg(sync, "[%s] Destruct", id_str());
 			zth_assert(m_queue.empty());
@@ -114,6 +114,24 @@ namespace zth {
 			m_queue.push_back(*f);
 			f->nap(Timestamp::null());
 			w->schedule();
+		}
+
+		/*!
+		 * \brief Unblock the specific fiber.
+		 * \return \c true if unblocked, \c false when not queued by this Synchronizer.
+		 */
+		bool unblock(Fiber& f) {
+			if(!m_queue.contains(f))
+				return false;
+
+			Worker* w;
+			getContext(&w, NULL);
+
+			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
+			m_queue.erase(f);
+			f.wakeup();
+			w->add(&f);
+			return true;
 		}
 
 		bool unblockFirst() {
@@ -149,6 +167,84 @@ namespace zth {
 			return true;
 		}
 
+		class AlarmClock : public TimedWaitable {
+		public:
+			typedef TimedWaitable base;
+			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout)
+				: base(timeout)
+				, m_synchronizer(synchronizer)
+				, m_fiber(fiber)
+				, m_rang()
+			{}
+
+			virtual ~AlarmClock() {}
+
+			virtual bool poll(Timestamp const& now = Timestamp::now()) {
+				if(!base::poll(now))
+					return false;
+
+				zth_dbg(sync, "[%s] %s timed out", m_synchronizer.id_str(), m_fiber.id_str());
+				m_rang = m_synchronizer.unblock(m_fiber);
+				return true;
+			}
+
+			bool rang() const { return m_rang; }
+
+		private:
+			Synchronizer& m_synchronizer;
+			Fiber& m_fiber;
+			bool m_rang;
+		};
+
+		friend class AlarmClock;
+
+		/*!
+		 * \brief Block, with timeout.
+		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
+		 */
+		bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now()) {
+			if(timeout <= now)
+				// Immediate timeout.
+				return true;
+
+			return block_(timeout, now);
+		}
+
+		/*!
+		 * \brief Block, with timeout.
+		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
+		 */
+		bool block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now()) {
+			if(timeout.isNegative() || timeout.isNull())
+				// Immediate timeout.
+				return true;
+
+			return block_(now + timeout, now);
+		}
+
+	private:
+		/*!
+		 * \brief Block, with timeout.
+		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
+		 */
+		bool block_(Timestamp const& timeout, Timestamp const& now) {
+			Worker* w;
+			Fiber* f;
+			getContext(&w, &f);
+
+			zth_dbg(sync, "[%s] Block %s with timeout", id_str(), f->id_str());
+			w->release(*f);
+			m_queue.push_back(*f);
+			f->nap(Timestamp::null());
+
+			AlarmClock a(*this, *f, timeout);
+			w->waiter().scheduleTask(a);
+			w->schedule(NULL, now);
+
+			w->waiter().unscheduleTask(a);
+			return !a.rang();
+		}
+
 	private:
 		List<Fiber> m_queue;
 	};
@@ -158,7 +254,7 @@ namespace zth {
 	 */
 	class Mutex : public Synchronizer {
 	public:
-		Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
+		explicit Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
 		virtual ~Mutex() {}
 
 		void lock() {
@@ -192,7 +288,7 @@ namespace zth {
 	 */
 	class Semaphore : public Synchronizer {
 	public:
-		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {} 
+		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {}
 		virtual ~Semaphore() {}
 
 		void acquire(size_t count = 1) {
@@ -221,7 +317,7 @@ namespace zth {
 				m_count = std::numeric_limits<size_t>::max();
 			else
 				m_count += count;
-			
+
 			zth_dbg(sync, "[%s] Released %zu", id_str(), count);
 
 			if(likely(m_count > 0))
@@ -239,7 +335,7 @@ namespace zth {
 	 */
 	class Signal : public Synchronizer {
 	public:
-		Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
+		explicit Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
 		virtual ~Signal() {}
 
 		void wait() {
@@ -253,6 +349,25 @@ namespace zth {
 
 			if(m_signalled > 0)
 				m_signalled--;
+		}
+
+		bool wait(Timestamp const& timeout, Timestamp const& now = Timestamp::now()) {
+			if(!m_signalled) {
+				if(!block(timeout, now))
+					// Timeout.
+					return false;
+			} else
+				yield();
+
+			if(m_signalled > 0)
+				m_signalled--;
+
+			// Got signalled.
+			return true;
+		}
+
+		bool wait(TimeInterval const& timeout, Timestamp const& now = Timestamp::now()) {
+			return wait(now + timeout);
 		}
 
 		void signal(bool queue = true, bool queueEveryTime = false) {
@@ -286,7 +401,8 @@ namespace zth {
 	class Future : public Synchronizer {
 	public:
 		typedef T type;
-		Future(char const* name = "Future") : Synchronizer(name), m_valid() {
+		// cppcheck-suppress uninitMemberVar
+		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {
 #ifdef ZTH_USE_VALGRIND
 			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #endif
@@ -329,12 +445,13 @@ namespace zth {
 		char m_data[sizeof(type)] __attribute__((aligned(8)));
 		bool m_valid;
 	};
-	
+
 	template <>
+	// cppcheck-suppress noConstructor
 	class Future<void> : public Synchronizer {
 	public:
 		typedef void type;
-		Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
+		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
 		virtual ~Future() {}
 
 		bool valid() const { return m_valid; }
@@ -356,7 +473,7 @@ namespace zth {
 
 	class Gate : public Synchronizer {
 	public:
-		Gate(size_t count, char const* name = "Gate")
+		explicit Gate(size_t count, char const* name = "Gate")
 			: Synchronizer(name), m_count(count), m_current() {}
 		virtual ~Gate() {}
 
@@ -394,7 +511,7 @@ struct zth_mutex_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
-	if(unlikely(!mutex))
+	if(unlikely(!mutex || mutex->p))
 		return EINVAL;
 
 	mutex->p = (void*)new zth::Mutex();
@@ -464,7 +581,7 @@ struct zth_sem_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
-	if(unlikely(!sem))
+	if(unlikely(!sem || sem->p))
 		return EINVAL;
 
 	sem->p = (void*)new zth::Semaphore(value);
@@ -545,7 +662,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) {
 		return EINVAL;
 
 	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
-	if(unlikely(s->value() <= 0))
+	if(unlikely(s->value() == 0))
 		return EAGAIN;
 
 	s->acquire();
@@ -560,7 +677,7 @@ struct zth_cond_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
-	if(unlikely(!cond))
+	if(unlikely(!cond || cond->p))
 		return EINVAL;
 
 	cond->p = (void*)new zth::Signal();
@@ -632,7 +749,7 @@ typedef zth::Future<uintptr_t> zth_future_t_type;
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
-	if(unlikely(!future))
+	if(unlikely(!future || future->p))
 		return EINVAL;
 
 	future->p = (void*)new zth_future_t_type();
@@ -720,7 +837,7 @@ struct zth_gate_t { void* p; };
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count) {
-	if(unlikely(!gate))
+	if(unlikely(!gate || gate->p))
 		return EINVAL;
 
 	gate->p = (void*)new zth::Gate(count);
@@ -771,6 +888,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) {
 
 #else // !__cplusplus
 
+#include <stdint.h>
+
 typedef struct { void* p; } zth_mutex_t;
 ZTH_EXPORT int zth_mutex_init(zth_mutex_t* mutex);
 ZTH_EXPORT int zth_mutex_destroy(zth_mutex_t* mutex);
@@ -808,4 +927,4 @@ ZTH_EXPORT int zth_gate_pass(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_wait(zth_gate_t* gate);
 
 #endif // __cplusplus
-#endif // __ZTH_SYNC_H
+#endif // ZTH_SYNC_H

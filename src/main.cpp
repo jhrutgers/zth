@@ -1,3 +1,21 @@
+/*
+ * Zth (libzth), a cooperative userspace multitasking library.
+ * Copyright (C) 2019-2021  Jochem Rutgers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include <libzth/worker.h>
 #include <libzth/async.h>
 
@@ -19,8 +37,10 @@ __attribute__((weak)) void zth_preinit() {}
  *
  * This function can be used to run machine/board-specific cleanup in \c main() before returning.
  * The default (weak) implementation does nothing.
+ *
+ * \return the exit code of the application
  */
-__attribute__((weak)) void zth_postdeinit() {}
+__attribute__((weak)) int zth_postdeinit() { return 0; }
 
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
@@ -32,7 +52,5 @@ int main(int argc, char** argv) {
 		async main_fiber(argc, argv);
 		w.run();
 	}
-	zth_postdeinit();
-	return 0;
+	return zth_postdeinit();
 }
-

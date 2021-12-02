@@ -1,5 +1,5 @@
-#ifndef __ZTH_WORKER_H
-#define __ZTH_WORKER_H
+#ifndef ZTH_WORKER_H
+#define ZTH_WORKER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -28,7 +28,6 @@
 #include <libzth/init.h>
 
 #include <time.h>
-#include <pthread.h>
 #include <limits>
 #include <cstring>
 
@@ -102,6 +101,9 @@ namespace zth {
 
 			perf_deinit();
 			context_deinit();
+
+			zth_assert(ZTH_TLS_GET(currentWorker_) == this);
+			ZTH_TLS_SET(currentWorker_, nullptr);
 		}
 
 		Waiter& waiter() { return m_waiter; }
@@ -177,30 +179,31 @@ namespace zth {
 				preferFiber = &m_workerFiber;
 			}
 
-			Fiber* fiber = preferFiber;
+			Fiber* nextFiber = preferFiber;
 			bool didSchedule = false;
 		reschedule:
-			if(likely(!fiber))
+			if(likely(!nextFiber))
 			{
 				if(likely(!m_runnableQueue.empty()))
 					// Use first of the queue.
-					fiber = &m_runnableQueue.front();
+					nextFiber = &m_runnableQueue.front();
 				else
 					// No fiber to switch to.
-					fiber = &m_workerFiber;
+					nextFiber = &m_workerFiber;
 			}
 
-			zth_assert(fiber == &m_workerFiber || fiber->listPrev());
-			zth_assert(fiber == &m_workerFiber || fiber->listNext());
+			zth_assert(nextFiber == &m_workerFiber || nextFiber->listPrev());
+			zth_assert(nextFiber == &m_workerFiber || nextFiber->listNext());
 
 			{
+				// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 				Fiber* prevFiber = m_currentFiber;
-				m_currentFiber = fiber;
+				m_currentFiber = nextFiber;
 
-				if(unlikely(fiber != &m_workerFiber))
-					m_runnableQueue.rotate(*fiber->listNext());
+				if(unlikely(nextFiber != &m_workerFiber))
+					m_runnableQueue.rotate(*nextFiber->listNext());
 
-				int res = fiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
+				int res = nextFiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);
 				// Warning! When res == 0, fiber might already have been deleted.
 				m_currentFiber = prevFiber;
 
@@ -214,9 +217,9 @@ namespace zth {
 					return didSchedule;
 				case EPERM:
 					// fiber just died.
-					cleanup(*fiber);
+					cleanup(*nextFiber);
 					// Retry to find a fiber.
-					fiber = NULL;
+					nextFiber = NULL;
 					didSchedule = true;
 					goto reschedule;
 				default:
@@ -246,6 +249,7 @@ namespace zth {
 			zth_dbg(worker, "[%s] Fiber %s is dead; cleanup", id_str(), fiber.id_str());
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
+			zth_assert(&fiber != &m_workerFiber);
 			delete &fiber;
 
 			sigchld_check();
@@ -321,7 +325,7 @@ namespace zth {
 		}
 
 		void dbgStats() {
-			if(!Config::EnableDebugPrint || !Config::Print_worker)
+			if(!Config::SupportDebugPrint || !Config::Print_worker)
 				return;
 
 			zth_dbg(list, "[%s] Run queue:", id_str());
@@ -365,7 +369,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() {
-		Worker& w = currentWorker();
+		Worker const& w = currentWorker();
 		Fiber* f = w.currentFiber();
 		zth_assert(f);
 		return *f;
@@ -376,12 +380,12 @@ namespace zth {
 	}
 
 	inline void getContext(Worker** worker, Fiber** fiber) {
-		Worker& currentWorker_ = currentWorker();
+		Worker& current_worker = currentWorker();
 		if(likely(worker))
-			*worker = &currentWorker_;
+			*worker = &current_worker;
 
 		if(likely(fiber)) {
-			Fiber* currentFiber_ = *fiber = currentWorker_.currentFiber();
+			Fiber* currentFiber_ = *fiber = current_worker.currentFiber();
 			if(unlikely(!currentFiber_))
 				zth_abort("Not within fiber context");
 		}
@@ -391,10 +395,10 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false, Timestamp const& now = Timestamp::now()) {
-		Fiber& fiber = currentFiber();
+		Fiber& f = currentFiber();
 
 		perf_syscall("yield()", now);
-		if(unlikely(!alwaysYield && !fiber.allowYield(now)))
+		if(unlikely(!alwaysYield && !f.allowYield(now)))
 			return;
 
 		currentWorker().schedule(preferFiber, now);
@@ -409,9 +413,9 @@ namespace zth {
 
 	inline void suspend() {
 		Worker* worker;
-		Fiber* fiber;
-		getContext(&worker, &fiber);
-		worker->suspend(*fiber);
+		Fiber* f;
+		getContext(&worker, &f);
+		worker->suspend(*f);
 	}
 
 	inline void resume(Fiber& fiber) {
@@ -501,4 +505,4 @@ ZTH_EXPORT int zth_startWorkerThread(void(*f)(), size_t stack, char const* name)
 ZTH_EXPORT int zth_execvp(char const* file, char* const arg[]);
 
 #endif // __cplusplus
-#endif // __ZTH_WORKER_H
+#endif // ZTH_WORKER_H

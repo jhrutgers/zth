@@ -39,12 +39,14 @@ namespace zth {
  * \brief Prints a banner line with version and configuration information.
  * \ingroup zth_api_cpp_util
  */
-char const* banner() {
+char const* banner() noexcept
+{
 	return "Zth " ZTH_VERSION
 #ifdef __GNUC__
 		" g++-" ZTH_STRINGIFY(__GNUC__) "." ZTH_STRINGIFY(__GNUC_MINOR__) "." ZTH_STRINGIFY(__GNUC_PATCHLEVEL__)
 #endif
 #if __cplusplus < 201103L
+		" C++98"
 #elif __cplusplus == 201103L
 		" C++11"
 #elif __cplusplus == 201402L
@@ -79,6 +81,9 @@ char const* banner() {
 #ifdef _DEBUG
 		" debug"
 #endif
+#ifdef ZTH_DRAFT_API
+		" draft"
+#endif
 #if ZTH_THREADS
 		" threads"
 #endif
@@ -97,6 +102,15 @@ char const* banner() {
 #ifdef ZTH_HAVE_ZMQ
 		" zmq"
 #endif
+#ifdef ZTH_ENABLE_ASAN
+		" asan"
+#endif
+#ifdef ZTH_ENABLE_LSAN
+		" lsan"
+#endif
+#ifdef ZTH_ENABLE_UBSAN
+		" ubsan"
+#endif
 		;
 }
 
@@ -104,7 +118,7 @@ char const* banner() {
  * \brief Aborts the process after printing the given printf() formatted message.
  * \ingroup zth_api_cpp_util
  */
-void abort(char const* fmt, ...)
+void abort(char const* fmt, ...) noexcept
 {
 	va_list args;
 	va_start(args, fmt);
@@ -116,7 +130,7 @@ void abort(char const* fmt, ...)
  * \copybrief zth::abort()
  * \ingroup zth_api_cpp_util
  */
-void abortv(char const* fmt, va_list args)
+void abortv(char const* fmt, va_list args) noexcept
 {
 	static bool recurse = false;
 
@@ -134,15 +148,16 @@ void abortv(char const* fmt, va_list args)
 }
 
 #ifndef ZTH_OS_BAREMETAL
-static void log_init() {
+static void log_init()
+{
 #  ifdef ZTH_OS_WINDOWS
 	// Windows does not support line buffering.
 	// If set anyway, this implies full buffering.
 	// Only do that when we expect much debug output.
 	if(zth_config(EnableDebugPrint)) {
 #  endif
-		setvbuf(stdout, NULL, _IOLBF, 4096);
-		setvbuf(stderr, NULL, _IOLBF, 4096);
+		setvbuf(stdout, nullptr, _IOLBF, 4096);
+		setvbuf(stderr, nullptr, _IOLBF, 4096);
 #  ifdef ZTH_OS_WINDOWS
 	}
 #  endif
@@ -153,7 +168,7 @@ ZTH_INIT_CALL(log_init)
 /*!
  * \brief Returns if the system supports ANSI colors.
  */
-bool log_supports_ansi_colors()
+bool log_supports_ansi_colors() noexcept
 {
 #ifdef ZTH_OS_WINDOWS
 	static int support = 0;
@@ -210,6 +225,43 @@ void log_colorv(int color, char const* fmt, va_list args)
 		log("\x1b[0m");
 }
 
+/*!
+ * \brief Format like \c vsprintf(), but save the result in an \c std::string.
+ */
+std::string formatv(char const* fmt, va_list args)
+{
+	int const maxstack = (int)sizeof(void*) * 8;
+
+	char sbuf[maxstack];
+	char* hbuf = nullptr;
+	char* buf = sbuf;
+
+	va_list args2;
+	va_copy(args2, args);
+	// NOLINTNEXTLINE
+	int c = vsnprintf(sbuf, maxstack, fmt, args);
+
+	if(c >= maxstack) {
+		hbuf = static_cast<char*>(malloc((size_t)c + 1));
+		if(unlikely(!hbuf)) {
+			c = 0;
+		} else {
+			// NOLINTNEXTLINE
+			int c2 = vsprintf(hbuf, fmt, args2);
+			zth_assert(c2 <= c);
+			c = c2;
+			buf = hbuf;
+		}
+	}
+
+	va_end(args2);
+
+	std::string res(buf, (size_t)(c < 0 ? 0 : c));
+	if(hbuf)
+		free(hbuf);
+	return res;
+}
+
 } // namespace
 
 /*!
@@ -223,4 +275,3 @@ void zth_abort(char const* fmt, ...)
 	zth::abortv(fmt, va);
 	va_end(va);
 }
-

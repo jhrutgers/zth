@@ -1,19 +1,19 @@
-#ifndef __ZTH_CONFIG_H
-#define __ZTH_CONFIG_H
+#ifndef ZTH_CONFIG_H
+#define ZTH_CONFIG_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,8 +26,15 @@
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+
+#if __cplusplus >= 201103L
+#  include <cstdint>
+#else
+#  include <stdint.h>
+#endif
+
+#include <memory>
 
 namespace zth {
 	struct Env { enum { EnableDebugPrint, DoPerfEvent, PerfSyscall, CheckTimesliceOverrun }; };
@@ -44,20 +51,20 @@ namespace zth {
 #define zth_config(name)	(::zth::config(::zth::Env::name, ::zth::Config::name))
 
 	struct DefaultConfig {
-		static bool const Debug = 
+		static bool const Debug =
 #ifndef NDEBUG
 			true;
 #else
 			false;
 #endif
 
-		static bool const EnableAssert = 
+		static bool const EnableAssert =
 #ifndef NDEBUG
 			Debug;
 #else
 			false;
 #endif
-		
+
 		static bool const EnableThreads =
 #if ZTH_THREADS
 			true;
@@ -65,7 +72,20 @@ namespace zth {
 			false;
 #endif
 
-		static bool const EnableDebugPrint = Debug;
+		/*!
+		 * \brief Add support to enable debug output prints.
+		 *
+		 * The output is only actually printed when #EnableDebugPrint is \c true.
+		 */
+		static bool const SupportDebugPrint = Debug;
+		/*!
+		 * \brief Actually do print the debug output.
+		 *
+		 * Needs #SupportDebugPrint to be \c true.  Can be overridden by
+		 * \c ZTH_CONFIG_ENABLE_DEBUG_PRINT environment variable.
+		 */
+		static bool const EnableDebugPrint = false;
+		/*! \brief Enable colored output. */
 		static bool const EnableColorLog = true;
 
 		static int const Print_banner = 12;	// bright blue
@@ -87,7 +107,7 @@ namespace zth {
 		constexpr static double MinTimeslice_s() { return 1e-4; }
 		static int const TimesliceOverrunFactorReportThreshold = 4;
 		static bool const CheckTimesliceOverrun = Debug;
-		static bool const NamedSynchronizer = EnableDebugPrint && Print_sync > 0;
+		static bool const NamedSynchronizer = SupportDebugPrint && Print_sync > 0;
 
 		static size_t const PerfEventBufferSize = 128;
 		static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
@@ -103,10 +123,22 @@ namespace zth {
 #else
 			false;
 #endif
+
+		/*!
+		 * \brief Allocator type.
+		 *
+		 * \c Config::Allocator<int>::type is an allocator for ints.
+		 * \c Config::Allocator<int> behaves like std::allocator_traits<Alloc>
+		 *
+		 */
+		template <typename T>
+		struct Allocator {
+			typedef std::allocator<T> type;
+		};
 	};
 } // namespace
 #endif // __cplusplus
 
 #include "zth_config.h"
 
-#endif // __ZTH_CONFIG_H
+#endif // ZTH_CONFIG_H

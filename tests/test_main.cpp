@@ -16,16 +16,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <libzth/util.h>
+#include <zth>
 
-/*!
- * \brief Prints the given printf()-like formatted string to stdout.
- * \details This is a weak symbol. Override when required.
- * \ingroup zth_api_c_util
- */
-void zth_logv(char const* fmt, va_list arg)
+#include <gtest/gtest.h>
+
+namespace {
+
+TEST(Zth, DummySuccess)
 {
-	// NOLINTNEXTLINE
-	vprintf(fmt, arg);
+	SUCCEED();
+}
+
+#if 0
+TEST(Zth, DummyFail)
+{
+	FAIL();
+}
+#endif
+
+} // namespace
+
+static int test_main()
+{
+	return RUN_ALL_TESTS();
+}
+zth_fiber(test_main)
+
+int main(int argc, char** argv)
+{
+	int res = 0;
+	testing::InitGoogleTest(&argc, argv);
+	{
+		zth::Worker w;
+		test_main_future f = async test_main();
+		w.run();
+		res = f->value();
+	}
+	return res;
 }
 

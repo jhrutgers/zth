@@ -1,5 +1,5 @@
-#ifndef __ZTH_TIME_H
-#define __ZTH_TIME_H
+#ifndef ZTH_TIME_H
+#define ZTH_TIME_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -28,6 +28,7 @@
 #include <libzth/config.h>
 #include <libzth/util.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <ctime>
 #include <cmath>
@@ -66,11 +67,13 @@ namespace zth {
 		{}
 
 #if __cplusplus >= 201103L
+		// cppcheck-suppress noExplicitConstructor
 		constexpr TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t{s, ns}
 			, m_negative(negative)
 		{}
 #else
+		// cppcheck-suppress noExplicitConstructor
 		TimeInterval(time_t s, long ns = 0, bool negative = false)
 			: m_t()
 			, m_negative(negative)
@@ -81,6 +84,7 @@ namespace zth {
 		}
 #endif
 
+		// cppcheck-suppress noExplicitConstructor
 		constexpr TimeInterval(struct timespec const& ts)
 			: m_t(ts)
 			, m_negative()
@@ -92,12 +96,16 @@ namespace zth {
 			return *this;
 		}
 
-		TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
+		constexpr TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
 
-		TimeInterval(float dt) : m_t() { init_float<float>(dt); }
-		TimeInterval(double dt) : m_t() { init_float<double>(dt); }
-		TimeInterval(long double dt) : m_t() { init_float<long double>(dt); }
-		template <typename T> TimeInterval(T dt) : m_t() { init_int<T>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(float dt) : m_t(), m_negative() { init_float<float>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(double dt) : m_t(), m_negative() { init_float<double>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		TimeInterval(long double dt) : m_t(), m_negative() { init_float<long double>(dt); }
+		// cppcheck-suppress noExplicitConstructor
+		template <typename T> TimeInterval(T dt) : m_t(), m_negative() { init_int<T>(dt); }
 
 	private:
 		template <typename T>
@@ -252,11 +260,11 @@ namespace zth {
 				doPrint = true;
 			}
 
-			double s = (double)rest + (double)m_t.tv_nsec * 1e-9;
+			double sec = (double)rest + (double)m_t.tv_nsec * 1e-9;
 			if(doPrint) {
-				res += format("%06.3f", s);
+				res += format("%06.3f", sec);
 			} else {
-				res += format("%g s", s);
+				res += format("%g s", sec);
 			}
 #endif
 
@@ -278,7 +286,12 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _s(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x, (unsigned long long int)std::numeric_limits<time_t>::max)); }
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x,
+				(unsigned long long int)std::numeric_limits<time_t>::max()));
+	}
 
 	/*!
 	 * \brief Define literals like \c 123_ms, which is a #zth::TimeInterval of 123 milliseconds.
@@ -287,7 +300,13 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _ms(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000L) * 1000000L); }
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x / 1000ULL,
+				(unsigned long long int)std::numeric_limits<time_t>::max()),
+			((long)x % 1000L) * 1000000L);
+	}
 
 	/*!
 	 * \brief Define literals like \c 123_us, which is a #zth::TimeInterval of 123 microseconds.
@@ -296,7 +315,13 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr inline TimeInterval operator"" _us(unsigned long long int x) { return TimeInterval((time_t)std::min<unsigned long long int>(x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max), ((long)x % 1000000L) * 1000L); }
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) {
+		return TimeInterval(
+			(time_t)std::min<unsigned long long int>(
+				x / 1000000ULL,
+				(unsigned long long int)std::numeric_limits<time_t>::max()),
+			((long)x % 1000000L) * 1000L);
+	}
 
 	/*!
 	 * \brief Define literals like \c 12.3_s, which is a #zth::TimeInterval of 12.3 seconds.
@@ -320,6 +345,7 @@ namespace zth {
 			*this = null();
 		}
 
+		// cppcheck-suppress noExplicitConstructor
 		Timestamp(struct timespec const& ts) : m_t(ts) {}
 
 		Timestamp(time_t sec, long nsec)
@@ -392,4 +418,4 @@ namespace zth {
 } // namespace
 
 #endif // __cplusplus
-#endif // __ZTH_TIME_H
+#endif // ZTH_TIME_H
