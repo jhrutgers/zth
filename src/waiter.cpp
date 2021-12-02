@@ -231,7 +231,7 @@ void Waiter::entry()
 				perf_mark("wakeup");
 			}
 
-			if(res)
+			if(res && res != EAGAIN)
 				zth_dbg(waiter, "[%s] poll() failed; %s", id_str(), err(res).c_str());
 		} else if(doRealSleep) {
 			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().str().c_str());

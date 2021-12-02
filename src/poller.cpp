@@ -203,12 +203,12 @@ NoPoller::NoPoller()
 
 NoPoller::~NoPoller() is_default
 
-int NoPoller::init(Pollable& UNUSED_PAR(p), int& UNUSED_PAR(item)) noexcept
+int NoPoller::init(Pollable const& UNUSED_PAR(p), int& UNUSED_PAR(item)) noexcept
 {
 	return EINVAL;
 }
 
-int NoPoller::doPoll(int timeout_ms, base::PollItemsList& items) noexcept
+int NoPoller::doPoll(int UNUSED_PAR(timeout_ms), base::PollItemList& UNUSED_PAR(items)) noexcept
 {
 	return ENOSYS;
 }

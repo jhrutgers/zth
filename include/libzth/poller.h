@@ -699,8 +699,8 @@ namespace zth {
 		~NoPoller() final;
 
 	protected:
-		int init(Pollable& p, int& item) noexcept final;
-		int doPoll(int timeout_ms, base::PollItemsList& items) noexcept final;
+		int init(Pollable const& p, int& item) noexcept final;
+		int doPoll(int timeout_ms, base::PollItemList& items) noexcept final;
 	};
 
 	typedef NoPoller DefaultPollerServer;
