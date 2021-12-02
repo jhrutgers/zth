@@ -239,6 +239,7 @@ namespace zth {
 	template <typename R, typename A1, typename A2, typename A3, typename... A>
 	inline typename std::enable_if<!std::is_void<R>::value,R>::type stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{
+		// cppcheck-suppress uselessAssignmentPtrArg
 		impl::FunctionION<R,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
 		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}
@@ -250,6 +251,7 @@ namespace zth {
 	template <typename A1, typename A2, typename A3, typename... A>
 	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
 	{
+		// cppcheck-suppress uselessAssignmentPtrArg
 		impl::FunctionION<void,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
 		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
 	}

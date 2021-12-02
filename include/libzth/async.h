@@ -39,7 +39,7 @@ namespace zth {
 		typedef F Function;
 		typedef Future<Return> Future_type;
 
-		TypedFiber(Function function)
+		explicit TypedFiber(Function function)
 			: Fiber(&entry, this)
 			, m_function(function)
 		{}
