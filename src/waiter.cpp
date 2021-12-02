@@ -32,7 +32,7 @@ Waiter::Waiter(Worker& worker)
 Waiter::~Waiter()
 {
 	if(m_defaultPoller)
-		delete_alloc(m_defaultPoller);
+		delete_alloc(static_cast<DefaultPollerServer*>(m_defaultPoller));
 }
 
 void waitUntil(TimedWaitable& w)
