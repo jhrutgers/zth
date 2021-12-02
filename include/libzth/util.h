@@ -631,8 +631,8 @@ namespace zth {
 			constexpr safe_ptr(singleton_type* p) noexcept : m_p(p) {}
 			constexpr operator singleton_type*() const noexcept { return ptr(); }
 			constexpr operator bool() const noexcept { return ptr(); }
-			constexpr singleton_type* operator->() const noexcept { zth_assert(ptr()); return ptr(); }
-			constexpr singleton_type& operator*() const noexcept { zth_assert(ptr()); return *ptr(); }
+			constexpr14 singleton_type* operator->() const noexcept { zth_assert(ptr()); return ptr(); }
+			constexpr14 singleton_type& operator*() const noexcept { zth_assert(ptr()); return *ptr(); }
 		protected:
 			constexpr singleton_type* ptr() const noexcept { return m_p; }
 		private:
