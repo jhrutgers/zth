@@ -31,8 +31,10 @@ Waiter::Waiter(Worker& worker)
 
 Waiter::~Waiter()
 {
-	if(m_defaultPoller)
+	if(m_defaultPoller) {
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
 		delete_alloc(static_cast<DefaultPollerServer*>(m_defaultPoller));
+	}
 }
 
 void waitUntil(TimedWaitable& w)
