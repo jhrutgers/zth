@@ -36,7 +36,9 @@ jobs:
       - name: build Debug
         run: scripts/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
       - name: build Release
-        run: scripts/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
+        run: |
+          rm -r build
+          scripts/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
 
   build-windows:
     runs-on: windows-latest
@@ -54,7 +56,9 @@ jobs:
         run: cmake --build . --target=test
         working-directory: build
       - name: build Release
-        run: scripts\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
+        run: |
+          rmdir /s /q build
+          scripts\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
         working-directory: build
