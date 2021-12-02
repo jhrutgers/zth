@@ -832,6 +832,7 @@ static int context_newstack(Context* context, stack_t* stack)
 #endif
 	{
 		context->stack_watermarked = stack->ss_sp = context->stack;
+		// NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
 		stack_watermarked_size = stack->ss_size = context->stackSize;
 	}
 	stack->ss_flags = 0;
