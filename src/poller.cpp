@@ -137,7 +137,8 @@ PollPoller::~PollPoller()
 
 int PollPoller::init(Pollable const& p, struct pollfd& item) noexcept
 {
-	// Zth only has PollableFds, so this is safe.
+	// Zth only has PollableFds, so casting is safe.
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
 	PollableFd const& pfd = static_cast<PollableFd const&>(p);
 
 	item.fd = pfd.fd;

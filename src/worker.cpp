@@ -129,10 +129,8 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 	return ENOSYS;
 #else
 	pid_t pid = 0;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.vfork)
-	if((pid = vfork()) == 0) {
+	if((pid = fork()) == 0) {
 		// In child.
-		// NOLINTNEXTLINE(clang-analyzer-unix.Vfork). See https://reviews.llvm.org/D73629
 		execve(file, arg, environ);
 		// If we get here, we could not create the process.
 		_exit(127);
@@ -141,7 +139,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 		int res = errno;
 		Worker* w = Worker::currentWorker();
 		char const* id_str = w ? w->id_str() : "?";
-		zth_dbg(worker, "[%s] Could not vfork(); %s", id_str, err(res).c_str());
+		zth_dbg(worker, "[%s] Could not fork(); %s", id_str, err(res).c_str());
 		return res;
 	} else
 		return 0;
