@@ -32,7 +32,7 @@ if(WIN32 AND ZTH_HAVE_LIBZMQ)
 	)
 endif()
 
-macro(zth_add_test TESTNAME)
+function(zth_add_test TESTNAME)
 	add_executable(${TESTNAME} ${ARGN} test_main.cpp)
 	target_link_libraries(${TESTNAME} gtest gmock libzth)
 
@@ -43,11 +43,14 @@ macro(zth_add_test TESTNAME)
 		add_dependencies(${TESTNAME} test-prepare)
 	endif()
 
-	gtest_discover_tests(${TESTNAME}
-		PROPERTIES
-			ENVIRONMENT ZTH_CONFIG_ENABLE_DEBUG_PRINT=0
-			TIMEOUT 60)
-endmacro()
+	# Not using gtest_discover_tests(), because of:
+	# https://github.com/google/googletest/issues/3475
+	gtest_add_tests(TARGET ${TESTNAME} TEST_LIST tests)
+
+	set_tests_properties(${tests} PROPERTIES
+		ENVIRONMENT ZTH_CONFIG_ENABLE_DEBUG_PRINT=0
+		TIMEOUT 300)
+endfunction()
 
 zth_add_test(test_poller test_poller.cpp)
 
