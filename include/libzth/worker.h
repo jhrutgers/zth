@@ -250,6 +250,7 @@ namespace zth {
 			// Remove from runnable queue
 			m_runnableQueue.erase(fiber);
 			zth_assert(&fiber != &m_workerFiber);
+			// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 			delete &fiber;
 
 			sigchld_check();
