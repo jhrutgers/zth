@@ -16,6 +16,8 @@ function show_help {
 	exit 2
 }
 
+repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." &> /dev/null; pwd -P)"
+
 case ${1:-} in
 	-?|-h|--help)
 		show_help;;
@@ -100,7 +102,7 @@ if [[ ${use_ninja} == 1 ]]; then
 	cmake_opts="${cmake_opts} -G Ninja"
 fi
 
-cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ../../..
+cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ../../..
 cmake --build . -j`nproc`
 cmake --build . --target install -j`nproc`
 

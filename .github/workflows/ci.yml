@@ -54,14 +54,14 @@ jobs:
         run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
-        working-directory: build
+        working-directory: dist\win32\build
       - name: build Release
         run: |
           Remove-Item -path build -recurse -force
           dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
-        working-directory: build
+        working-directory: dist\win32\build
 
   build-mac:
     runs-on: macos-latest
