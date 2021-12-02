@@ -57,7 +57,7 @@ jobs:
         working-directory: build
       - name: build Release
         run: |
-          rmdir /s /q build
+          Remove-Item -path build -recurse -force
           scripts\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
