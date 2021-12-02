@@ -28,6 +28,11 @@
 #  include <unistd.h>
 #endif
 
+#ifdef ZTH_OS_MAC
+#  include <crt_externs.h>
+#  define environ (*_NSGetEnviron())
+#endif
+
 namespace zth {
 
 ZTH_TLS_DEFINE(Worker*, currentWorker_, nullptr)
