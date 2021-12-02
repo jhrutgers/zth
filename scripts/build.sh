@@ -32,6 +32,12 @@ pushd build > /dev/null
 cmake_opts=
 support_test=1
 do_test=0
+use_ninja=0
+
+if which ninja > /dev/null; then
+	use_ninja=1
+fi
+
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
 		C++98|C++03)
@@ -72,6 +78,8 @@ while [[ ! -z ${1:-} ]]; do
 			CC="${1#CC=}";;
 		CXX=*)
 			CXX="${1#CXX=}";;
+		make)
+			use_ninja=0;;
 		-*|*)
 			# Only cmake flags follow.
 			break;;
@@ -85,6 +93,10 @@ fi
 
 if [[ ${do_test} == 1 ]]; then
 	cmake_opts="${cmake_opts} -DZTH_TESTS=ON"
+fi
+
+if [[ ${use_ninja} == 1 ]]; then
+	cmake_opts="${cmake_opts} -G Ninja"
 fi
 
 case `uname -s` in
