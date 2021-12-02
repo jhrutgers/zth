@@ -329,6 +329,7 @@ if(CPPCHECK_CMD)
 	add_custom_target(libzth-cppcheck
 		COMMAND
 			${CPPCHECK_CMD}
+			--std=c++11 --language=c++ -D__cplusplus=201103L
 			--enable=warning,style,information
 			--force
 			--inline-suppr

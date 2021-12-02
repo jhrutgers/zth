@@ -37,7 +37,7 @@ jobs:
         run: scripts/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
       - name: build Release
         run: |
-          rm -r build
+          rm -rf build
           scripts/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
 
   build-windows:
@@ -71,15 +71,11 @@ jobs:
       - name: bootstrap
         run: scripts/bootstrap.sh
       - name: build Debug
-        run: scripts/build.sh Debug
-      - name: test
-        run: cmake --build . --target=test
-        working-directory: build
+        run: scripts/build.sh Debug test
       - name: build Release
-        run: scripts/build.sh Release
-      - name: test
-        run: cmake --build . --target=test
-        working-directory: build
+        run: |
+          rm -rf build
+          scripts/build.sh Release test
 
   documentation:
     if: github.ref == 'refs/heads/master'
