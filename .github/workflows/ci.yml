@@ -30,9 +30,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run:
-          - scripts/bootstrap.sh
-          - sudo apt install -y clang clang-tidy cppcheck
+        run: |
+          scripts/bootstrap.sh
+          sudo apt install -y clang clang-tidy cppcheck
       - name: build Debug
         run: scripts/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
       - name: build Release
