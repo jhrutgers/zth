@@ -72,4 +72,7 @@ zth_test_example(9_c_api)
 zth_test_example(daemon_pattern)
 zth_test_example(measure)
 zth_test_example(socks)
-zth_test_example(zmq 3)
+
+if(ZTH_HAVE_LIBZMQ)
+	zth_test_example(zmq 3)
+endif()

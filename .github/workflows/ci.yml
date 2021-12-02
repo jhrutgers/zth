@@ -49,12 +49,12 @@ jobs:
       - name: bootstrap
         run: scripts\bootstrap.cmd
       - name: build Debug
-        run: scripts\build.cmd Debug -DZTH_TESTS=ON -DZTH_HAVE_LIBZMQ=${{matrix.zmq}}
+        run: scripts\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
         working-directory: build
       - name: build Release
-        run: scripts\build.cmd Release -DZTH_TESTS=ON -DZTH_HAVE_LIBZMQ=${{matrix.zmq}}
+        run: scripts\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
         working-directory: build

@@ -104,7 +104,7 @@ cmake --build . -j`numproc`
 cmake --build . --target install -j`numproc`
 
 if [[ ${do_test} == 1 ]]; then
-	cmake --build .. --target test
+	cmake --build . --target test
 fi
 
 popd > /dev/null
