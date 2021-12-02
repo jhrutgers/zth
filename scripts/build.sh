@@ -30,12 +30,18 @@ pushd build > /dev/null
 
 # Simplify setting specific configuration flag.
 cmake_opts=
+support_test=1
+do_test=0
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
 		C++98|C++03)
-			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99";;
+			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99"
+			support_test=0
+			;;
 		C++11)
-			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=11 -DCMAKE_C_STANDARD=11";;
+			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=11 -DCMAKE_C_STANDARD=11"
+			support_test=0
+			;;
 		C++14)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=14 -DCMAKE_C_STANDARD=11";;
 		C++17)
@@ -43,7 +49,9 @@ while [[ ! -z ${1:-} ]]; do
 		C++20)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_STANDARD=17";;
 		dev)
-			cmake_opts="${cmake_opts} -DZTH_DEV=ON";;
+			cmake_opts="${cmake_opts} -DZTH_DEV=ON"
+			do_test=1
+			;;
 		draft)
 			cmake_opts="${cmake_opts} -DZTH_DRAFT_API=ON";;
 		zmq)
@@ -58,6 +66,8 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DZTH_THREADS=ON";;
 		nothreads)
 			cmake_opts="${cmake_opts} -DZTH_THREADS=OFF";;
+		test)
+			do_test=1;;
 		CC=*)
 			CC="${1#CC=}";;
 		CXX=*)
@@ -68,6 +78,14 @@ while [[ ! -z ${1:-} ]]; do
 	esac
 	shift
 done
+
+if [[ ${support_test} == 0 ]]; then
+	do_test=0
+fi
+
+if [[ ${do_test} == 1 ]]; then
+	cmake_opts="${cmake_opts} -DZTH_TESTS=ON"
+fi
 
 case `uname -s` in
 	Darwin*)
@@ -84,6 +102,10 @@ esac
 cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ..
 cmake --build . -j`numproc`
 cmake --build . --target install -j`numproc`
+
+if [[ ${do_test} == 1 ]]; then
+	cmake --build .. --target test
+fi
 
 popd > /dev/null
 

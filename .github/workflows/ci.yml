@@ -11,47 +11,52 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-18.04]
+        gcc: [7, 9, 10]
+        cxx: [C++03, C++11, C++14, C++17]
+        zmq: [zmq, nozmq]
+        exclude:
+          - os: ubuntu-latest
+            gcc: 7
+          - gcc: 7
+            cxx: C++17
+    runs-on: ${{matrix.os}}
+    env:
+      CC: gcc-${{matrix.gcc}}
+      CXX: g++-${{matrix.gcc}}
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run: scripts/bootstrap.sh
+        run:
+          - scripts/bootstrap.sh
+          - sudo apt install -y clang clang-tidy cppcheck
       - name: build Debug
-        run: scripts/build.sh Debug -DZTH_DEV=ON
-      - name: test
-        run: cmake --build . -- test
-        working-directory: build
+        run: scripts/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
       - name: build Release
-        run: scripts/build.sh Release
-      - name: test
-        run: cmake --build . -- test
-        working-directory: build
+        run: scripts/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
 
-      # If everything is OK, publish documentation
-      - name: deploy
-        if: github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./doxygen/html
-
-  build-windows-gcc:
+  build-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        zmq: [ON, OFF]
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
         run: scripts\bootstrap.cmd
       - name: build Debug
-        run: scripts\build.cmd Debug
+        run: scripts\build.cmd Debug -DZTH_TESTS=ON -DZTH_HAVE_LIBZMQ=${{matrix.zmq}}
       - name: test
-        run: cmake --build . -- test
+        run: cmake --build . --target=test
         working-directory: build
       - name: build Release
-        run: scripts\build.cmd Release
+        run: scripts\build.cmd Release -DZTH_TESTS=ON -DZTH_HAVE_LIBZMQ=${{matrix.zmq}}
       - name: test
-        run: cmake --build . -- test
+        run: cmake --build . --target=test
         working-directory: build
 
   build-mac:
@@ -64,11 +69,27 @@ jobs:
       - name: build Debug
         run: scripts/build.sh Debug
       - name: test
-        run: cmake --build . -- test
+        run: cmake --build . --target=test
         working-directory: build
       - name: build Release
         run: scripts/build.sh Release
       - name: test
-        run: cmake --build . -- test
+        run: cmake --build . --target=test
         working-directory: build
 
+  documentation:
+    if: github.ref == 'refs/heads/master'
+    needs: [build-ubuntu, build-windows, build-mac]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: bootstrap
+        run: scripts/bootstrap.sh
+      - name: build
+        run: scripts/build.sh -DZTH_DOCUMENTATION=ON
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doxygen/html

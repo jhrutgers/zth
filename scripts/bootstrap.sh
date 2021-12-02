@@ -11,8 +11,12 @@ trap gotErr ERR
 
 case `uname -s` in
 	Linux*)
-		sudo apt install -y build-essential git-core gcc-multilib cmake \
-			gdb-multiarch doxygen \
+		sudo apt install -y build-essential
+		[[ ! -z ${CXX:-} ]] || which g++ > /dev/null || sudo apt install -y g++-multilib gdb-multiarch
+		[[ ! -z ${CC:-} ]] || which gcc > /dev/null || sudo apt install -y gcc-multilib gdb-multiarch
+		which cmake > /dev/null || sudo apt install -y cmake
+		which doxygen > /dev/null || sudo apt install -y doxygen
+		which git > /dev/null || sudo apt install -y git-core
 		;;
 	Darwin*)
 		function install_or_upgrade {
@@ -27,6 +31,7 @@ case `uname -s` in
 		install_or_upgrade gcc
 		install_or_upgrade doxygen
 		install_or_upgrade git
+		install_or_upgrade zeromq
 		;;
 	*)
 		echo "Unknown OS"
