@@ -83,18 +83,14 @@ $(document).ready(function(){initNavTree('io_8h.html',''); initResizable(); });
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">io.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="poller_8h_source.html">libzth/poller.h</a>&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
-<code>#include &lt;poll.h&gt;</code><br />
-<code>#include &lt;<a class="el" href="zmq_8h_source.html">zmq.h</a>&gt;</code><br />
-<code>#include &lt;sys/select.h&gt;</code><br />
 </div>
 <p><a href="io_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -105,71 +101,21 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacezth_1_1io"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1io.html">zth::io</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ad2ad69bbdf715a58d1ead253e59da264"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8h.html#ad2ad69bbdf715a58d1ead253e59da264">ZTH_HAVE_POLLER</a></td></tr>
-<tr class="separator:ad2ad69bbdf715a58d1ead253e59da264"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a257aa5cefcd989386c0f6fb591ced38d"><td class="memItemLeft" align="right" valign="top">typedef zmq_pollitem_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a></td></tr>
-<tr class="separator:a257aa5cefcd989386c0f6fb591ced38d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga1eee4d1bd134d3b8477197f8aa08d5de"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a> (int fd, void *buf, size_t count)</td></tr>
 <tr class="memdesc:ga1eee4d1bd134d3b8477197f8aa08d5de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>read</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">More...</a><br /></td></tr>
 <tr class="separator:ga1eee4d1bd134d3b8477197f8aa08d5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4503a73ba8d182964110d66c87fc5ab4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">zth::io::select</a> (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)</td></tr>
-<tr class="memdesc:ga4503a73ba8d182964110d66c87fc5ab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>select</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">More...</a><br /></td></tr>
-<tr class="separator:ga4503a73ba8d182964110d66c87fc5ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga490a937d3d81dd0d27cb229b12966bab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">zth::io::poll</a> (<a class="el" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a> *fds, int nfds, int timeout)</td></tr>
-<tr class="memdesc:ga490a937d3d81dd0d27cb229b12966bab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>poll</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">More...</a><br /></td></tr>
-<tr class="separator:ga490a937d3d81dd0d27cb229b12966bab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab8f38dcb165392992ecd0b64b33511a1"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a> (int fd, void const  *buf, size_t count)</td></tr>
+<tr class="memdesc:gab8f38dcb165392992ecd0b64b33511a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>write</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">More...</a><br /></td></tr>
+<tr class="separator:gab8f38dcb165392992ecd0b64b33511a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6492b86f0888871a4cd4c642de61418f"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f">zth_read</a> (int fd, void *buf, size_t count)</td></tr>
 <tr class="memdesc:ga6492b86f0888871a4cd4c642de61418f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>read</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f">More...</a><br /></td></tr>
 <tr class="separator:ga6492b86f0888871a4cd4c642de61418f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf7d1d6cffe584297ce904e5d968c0124"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__io.html#gaf7d1d6cffe584297ce904e5d968c0124">zth_select</a> (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)</td></tr>
-<tr class="memdesc:gaf7d1d6cffe584297ce904e5d968c0124"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>select</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__c__io.html#gaf7d1d6cffe584297ce904e5d968c0124">More...</a><br /></td></tr>
-<tr class="separator:gaf7d1d6cffe584297ce904e5d968c0124"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7d3fe6f6bd9056d6b964139b68a999e8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__io.html#ga7d3fe6f6bd9056d6b964139b68a999e8">zth_poll</a> (<a class="el" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a> *fds, int nfds, int timeout)</td></tr>
-<tr class="memdesc:ga7d3fe6f6bd9056d6b964139b68a999e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>poll</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__c__io.html#ga7d3fe6f6bd9056d6b964139b68a999e8">More...</a><br /></td></tr>
-<tr class="separator:ga7d3fe6f6bd9056d6b964139b68a999e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga712a40cb189624bba1a78231f40c7706"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__io.html#ga712a40cb189624bba1a78231f40c7706">zth_write</a> (int fd, void const *buf, size_t count)</td></tr>
+<tr class="memdesc:ga712a40cb189624bba1a78231f40c7706"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like normal <code>write</code>(), but forwards the <code>poll</code>() to the <a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a> in case it would block.  <a href="group__zth__api__c__io.html#ga712a40cb189624bba1a78231f40c7706">More...</a><br /></td></tr>
+<tr class="separator:ga712a40cb189624bba1a78231f40c7706"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ad2ad69bbdf715a58d1ead253e59da264"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2ad69bbdf715a58d1ead253e59da264">&#9670;&nbsp;</a></span>ZTH_HAVE_POLLER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ZTH_HAVE_POLLER</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8h_source.html#l00034">34</a> of file <a class="el" href="io_8h_source.html">io.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Typedef Documentation</h2>
-<a id="a257aa5cefcd989386c0f6fb591ced38d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a257aa5cefcd989386c0f6fb591ced38d">&#9670;&nbsp;</a></span>zth_pollfd_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef zmq_pollitem_t <a class="el" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="io_8h_source.html#l00048">48</a> of file <a class="el" href="io_8h_source.html">io.h</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

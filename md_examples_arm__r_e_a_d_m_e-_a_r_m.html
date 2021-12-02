@@ -110,7 +110,7 @@ make arm
 </li>
 <li><p class="startli">Run Qemu with one of the examples. I have tested it with Qemu 3.0.0. (Note: Press 'Ctrl-A X' to terminate Qemu) </p><pre class="fragment">qemu-system-arm -machine virt -cpu cortex-a15 -s -m 8M -nographic -kernel examples/arm/zth-arm/examples/1_helloworld
 </pre><p class="startli">If you have a debug build, the output will include the banner, saying something like: </p><pre class="fragment">&gt; zth::banner: Zth 0.1.0 g++-8.3.1 C++14 baremetal newlib3.1.0 arm debug sjlj
-</pre><p class="startli">Note that there is no OS that supplies <code><a class="el" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab" title="Like normal poll(), but forwards the poll() to the zth::Waiter in case it would block.">poll()</a></code>. So reading stdin is a bit tricky and not all examples behave the same way as at your PC. Moreover, 0MQ isn't available either, of course.</p>
+</pre><p class="startli">Note that there is no OS that supplies <code><a class="el" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">poll()</a></code>. So reading stdin is a bit tricky and not all examples behave the same way as at your PC. Moreover, 0MQ isn't available either, of course.</p>
 </li>
 <li>Connect <code>gdb</code> to Qemu. If you supply the <code>-S</code> argument to Qemu, it waits for <code>gdb</code> to connect before it starts. That might make debugging a bit easier. <pre class="fragment">examples/arm/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-gdb -ex 'target remote :1234' -ex 'break main' -ex 'layout split' examples/arm/zth-arm/examples/1_helloworld
 </pre> </li>

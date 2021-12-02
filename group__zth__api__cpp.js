@@ -6,6 +6,7 @@ var group__zth__api__cpp =
     [ "fsm", "group__zth__api__cpp__fsm.html", "group__zth__api__cpp__fsm" ],
     [ "io", "group__zth__api__cpp__io.html", "group__zth__api__cpp__io" ],
     [ "perf", "group__zth__api__cpp__perf.html", "group__zth__api__cpp__perf" ],
+    [ "poller", "group__zth__api__cpp__poller.html", "group__zth__api__cpp__poller" ],
     [ "regs", "group__zth__api__cpp__regs.html", "group__zth__api__cpp__regs" ],
     [ "sync", "group__zth__api__cpp__sync.html", "group__zth__api__cpp__sync" ],
     [ "time", "group__zth__api__cpp__time.html", "group__zth__api__cpp__time" ],

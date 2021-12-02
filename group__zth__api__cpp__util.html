@@ -101,6 +101,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html">zth::Singleton&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1_singleton.html" title="Singleton pattern.">Singleton</a> pattern.  <a href="classzth_1_1_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -122,15 +125,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memItemLeft" align="right" valign="top">constexpr char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">zth::version</a> ()</td></tr>
 <tr class="memdesc:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version of Zth.  <a href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">More...</a><br /></td></tr>
 <tr class="separator:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3583a47f136d677960cb8f0bcdead6a8"><td class="memItemLeft" align="right" valign="top">char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga3583a47f136d677960cb8f0bcdead6a8">zth::banner</a> ()</td></tr>
-<tr class="memdesc:ga3583a47f136d677960cb8f0bcdead6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.  <a href="group__zth__api__cpp__util.html#ga3583a47f136d677960cb8f0bcdead6a8">More...</a><br /></td></tr>
-<tr class="separator:ga3583a47f136d677960cb8f0bcdead6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3f769b3137590c1dbfe2f972d81a2c38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38">zth::abort</a> (char const  *fmt,...)</td></tr>
-<tr class="memdesc:ga3f769b3137590c1dbfe2f972d81a2c38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.  <a href="group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38">More...</a><br /></td></tr>
-<tr class="separator:ga3f769b3137590c1dbfe2f972d81a2c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5fe15e1a38409a79aaefdcc0c306853a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga5fe15e1a38409a79aaefdcc0c306853a">zth::abortv</a> (char const  *fmt, va_list args)</td></tr>
-<tr class="memdesc:ga5fe15e1a38409a79aaefdcc0c306853a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.  <a href="group__zth__api__cpp__util.html#ga5fe15e1a38409a79aaefdcc0c306853a">More...</a><br /></td></tr>
-<tr class="separator:ga5fe15e1a38409a79aaefdcc0c306853a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="memItemLeft" align="right" valign="top">char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga80ce8ae8dab3a0f48abcbf9e977b60d9">zth::banner</a> () noexcept</td></tr>
+<tr class="memdesc:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.  <a href="group__zth__api__cpp__util.html#ga80ce8ae8dab3a0f48abcbf9e977b60d9">More...</a><br /></td></tr>
+<tr class="separator:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4889d34edbac39ba98e63d58173f3b88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a> (char const  *fmt,...) noexcept</td></tr>
+<tr class="memdesc:ga4889d34edbac39ba98e63d58173f3b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.  <a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">More...</a><br /></td></tr>
+<tr class="separator:ga4889d34edbac39ba98e63d58173f3b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadbc3a543d826740574ed356738ae3da8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gadbc3a543d826740574ed356738ae3da8">zth::abortv</a> (char const  *fmt, va_list args) noexcept</td></tr>
+<tr class="memdesc:gadbc3a543d826740574ed356738ae3da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.  <a href="group__zth__api__cpp__util.html#gadbc3a543d826740574ed356738ae3da8">More...</a><br /></td></tr>
+<tr class="separator:gadbc3a543d826740574ed356738ae3da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40">zth::log_colorv</a> (int color, char const  *fmt, va_list args)</td></tr>
 <tr class="memdesc:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string using an ANSI color code.  <a href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40">More...</a><br /></td></tr>
 <tr class="separator:ga3de356c7dddb81fb19a95e5b8a2c5c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,16 +182,19 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00170">170</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00174">174</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga3f769b3137590c1dbfe2f972d81a2c38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3f769b3137590c1dbfe2f972d81a2c38">&#9670;&nbsp;</a></span>abort()</h2>
+<a id="ga4889d34edbac39ba98e63d58173f3b88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4889d34edbac39ba98e63d58173f3b88">&#9670;&nbsp;</a></span>abort()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void zth::abort </td>
@@ -208,21 +214,29 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Aborts the process after printing the given printf() formatted message. </p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a7">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00107">107</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00121">121</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ga5fe15e1a38409a79aaefdcc0c306853a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5fe15e1a38409a79aaefdcc0c306853a">&#9670;&nbsp;</a></span>abortv()</h2>
+<a id="gadbc3a543d826740574ed356738ae3da8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadbc3a543d826740574ed356738ae3da8">&#9670;&nbsp;</a></span>abortv()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void zth::abortv </td>
@@ -242,19 +256,27 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Aborts the process after printing the given printf() formatted message. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00119">119</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00133">133</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ga3583a47f136d677960cb8f0bcdead6a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3583a47f136d677960cb8f0bcdead6a8">&#9670;&nbsp;</a></span>banner()</h2>
+<a id="ga80ce8ae8dab3a0f48abcbf9e977b60d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga80ce8ae8dab3a0f48abcbf9e977b60d9">&#9670;&nbsp;</a></span>banner()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">char const  * zth::banner </td>
@@ -263,6 +285,11 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Prints a banner line with version and configuration information. </p>
@@ -310,7 +337,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a6">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00225">225</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00259">259</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -357,7 +384,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00207">207</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00232">232</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +423,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00197">197</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00212">212</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -437,7 +464,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40" title="Logs a given printf()-like formatted string using an ANSI color code.">zth::log_colorv()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00216">216</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00247">247</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>

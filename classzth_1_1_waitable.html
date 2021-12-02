@@ -96,12 +96,11 @@ Inheritance diagram for zth::Waitable:</div>
  <div class="center">
   <img src="classzth_1_1_waitable.png" usemap="#zth::Waitable_map" alt=""/>
   <map id="zth::Waitable_map" name="zth::Waitable_map">
-<area href="classzth_1_1_await_fd.html" alt="zth::AwaitFd" shape="rect" coords="0,56,327,80"/>
-<area href="classzth_1_1_timed_waitable.html" alt="zth::TimedWaitable" shape="rect" coords="505,56,832,80"/>
-<area href="classzth_1_1_await1_fd.html" alt="zth::Await1Fd" shape="rect" coords="0,112,327,136"/>
-<area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;" shape="rect" coords="337,112,664,136"/>
-<area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; F &gt;" shape="rect" coords="674,112,1001,136"/>
-<area href="classzth_1_1_polled_member_waiting.html" alt="zth::PolledMemberWaiting&lt; C &gt;" shape="rect" coords="337,168,664,192"/>
+<area href="classzth_1_1_timed_waitable.html" alt="zth::TimedWaitable" shape="rect" coords="337,56,664,80"/>
+<area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;" shape="rect" coords="0,112,327,136"/>
+<area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; F &gt;" shape="rect" coords="337,112,664,136"/>
+<area href="classzth_1_1_synchronizer_1_1_alarm_clock.html" alt="zth::Synchronizer::AlarmClock" shape="rect" coords="674,112,1001,136"/>
+<area href="classzth_1_1_polled_member_waiting.html" alt="zth::PolledMemberWaiting&lt; C &gt;" shape="rect" coords="0,168,327,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -119,12 +118,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8856d642cc4173fe483c6ef0559541a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1d7e338029535e7ed24bc736d074350"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#aa1d7e338029535e7ed24bc736d074350">setFiber</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="classzth_1_1_waitable.html#ad973cc370e9a7e9b9cb610f216db1b0c">fiber</a>)</td></tr>
 <tr class="separator:aa1d7e338029535e7ed24bc736d074350"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e4ab075c2ff81b7df842d377c091037"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a4e4ab075c2ff81b7df842d377c091037">resetFiber</a> ()</td></tr>
+<tr class="separator:a4e4ab075c2ff81b7df842d377c091037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7535f7b484083792557ed714b2116548"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a7535f7b484083792557ed714b2116548">hasFiber</a> () const</td></tr>
 <tr class="separator:a7535f7b484083792557ed714b2116548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00048">48</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00030">30</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a41354477941eeaa06a97b3e2a138d120"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41354477941eeaa06a97b3e2a138d120">&#9670;&nbsp;</a></span>Waitable()</h2>
@@ -149,7 +150,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00050">50</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00032">32</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -176,7 +177,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00051">51</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00033">33</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -204,7 +205,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00052">52</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00034">34</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +232,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00056">56</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00039">39</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -259,7 +260,34 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1_polled_waiting.html#a780dee4b6ff79d7b8c6c025e1c5c709c">zth::PolledWaiting&lt; F &gt;</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a780dee4b6ff79d7b8c6c025e1c5c709c">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_timed_waitable.html#ad94b6163d89ff2581e386aea0e1dcaf8">zth::TimedWaitable</a>.</p>
+<p>Implemented in <a class="el" href="classzth_1_1_polled_waiting.html#afd2214bb62e7f944d6c3e3d3f2c40edf">zth::PolledWaiting&lt; F &gt;</a>, <a class="el" href="classzth_1_1_polled_waiting.html#afd2214bb62e7f944d6c3e3d3f2c40edf">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, <a class="el" href="classzth_1_1_timed_waitable.html#a3a65fa9e66301aba371bf31518333b57">zth::TimedWaitable</a>, and <a class="el" href="classzth_1_1_synchronizer_1_1_alarm_clock.html#a1fd52f4e069d8dc8a6c24290f158a356">zth::Synchronizer::AlarmClock</a>.</p>
+
+</div>
+</div>
+<a id="a4e4ab075c2ff81b7df842d377c091037"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e4ab075c2ff81b7df842d377c091037">&#9670;&nbsp;</a></span>resetFiber()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::Waitable::resetFiber </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00038">38</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -287,7 +315,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00055">55</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00037">37</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -314,9 +342,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classzth_1_1_await_fd.html#a3fef6370927fb3134da1c3e27ee67311">zth::AwaitFd</a>, and <a class="el" href="classzth_1_1_timed_waitable.html#ad28cf99b9a92b32c1b29ced461004b07">zth::TimedWaitable</a>.</p>
+<p>Reimplemented in <a class="el" href="classzth_1_1_timed_waitable.html#a852f594fd60287d79ea6a49118b3b2f7">zth::TimedWaitable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00054">54</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00036">36</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>

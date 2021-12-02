@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['likely_1569',['likely',['../util_8h.html#aa0672ea7123854cc5f51902a06c473fb',1,'util.h']]]
+  ['is_5fdefault_1678',['is_default',['../macros_8h.html#a5e97f6533b7a0a1e8b49c4cea10f75fc',1,'macros.h']]]
 ];

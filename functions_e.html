@@ -88,9 +88,16 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 : <a class="el" href="classzth_1_1_list.html#af1435fd0e3e37c9e2047ed5c3a4a0b5f">zth::List&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_sorted_list.html#aeafeeb4a220d749237d8f0f2047cb933">zth::SortedList&lt; T, Compare &gt;</a>
 </li>
+<li>emplace_back()
+: <a class="el" href="classzth_1_1small__vector.html#ab416995ee21c7a350a3ff32787fd4b70">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a>
+</li>
 <li>empty()
-: <a class="el" href="classzth_1_1cow__string.html#a9b90a0347b46ba0b74cc1a1495ac005c">zth::cow_string</a>
+: <a class="el" href="classzth_1_1cow__string.html#aeda4e178ed5e242468e5d8a0d9582917">zth::cow_string</a>
 , <a class="el" href="classzth_1_1_list.html#a345fa7ab8a9071944c253f75657ef9b4">zth::List&lt; T &gt;</a>
+, <a class="el" href="classzth_1_1_poller_client.html#a78d24220e0ebd3b781e72bdf9491a225">zth::PollerClient</a>
+, <a class="el" href="classzth_1_1_poller_interface.html#aca84c99a6f166315f43a70fb1540601d">zth::PollerInterface</a>
+, <a class="el" href="classzth_1_1_poller_server.html#ad26807dd08e22cefd03478d358fa9713">zth::PollerServer&lt; PollItem_ &gt;</a>
+, <a class="el" href="classzth_1_1small__vector.html#ace3f6027c98fdac3b683e1fbfa073f93">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a>
 , <a class="el" href="classzth_1_1_sorted_list.html#a74b70f29aaf66b44a27fa32df625100d">zth::SortedList&lt; T, Compare &gt;</a>
 </li>
 <li>EnableAssert
@@ -118,26 +125,24 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 <li>end()
 : <a class="el" href="classzth_1_1_list.html#a3072086b4405e6b43fd40c503f44915e">zth::List&lt; T &gt;</a>
 </li>
-<li>Entry
-: <a class="el" href="structzth_1_1_context_attr.html#ace4b75df925453deec5e09260a2cb2a2">zth::ContextAttr</a>
-</li>
 <li>entry
 : <a class="el" href="structzth_1_1_context_attr.html#ae1e24f243044f6570246f6eeeb902a02">zth::ContextAttr</a>
 </li>
 <li>Entry
-: <a class="el" href="classzth_1_1_fiber.html#a48e87df46636d2a8b91158fcb49f7035">zth::Fiber</a>
+: <a class="el" href="structzth_1_1_context_attr.html#ace4b75df925453deec5e09260a2cb2a2">zth::ContextAttr</a>
+, <a class="el" href="classzth_1_1_fiber.html#a48e87df46636d2a8b91158fcb49f7035">zth::Fiber</a>
 </li>
 <li>entry()
 : <a class="el" href="classzth_1_1_fsm.html#a77ff5652ba8b1daf79cda0d6d3b70733">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
-, <a class="el" href="classzth_1_1_perf_fiber.html#a82d04a6877b689d7442b0a5a8ff59abe">zth::PerfFiber</a>
+, <a class="el" href="classzth_1_1_perf_fiber.html#a870156d3380a575877410da1db1d22e7">zth::PerfFiber</a>
 , <a class="el" href="classzth_1_1_runnable.html#aebdf1efa390ce8ff7dd0224ff598be44">zth::Runnable</a>
 , <a class="el" href="classzth_1_1_typed_fiber.html#ac5f99ef14139870bc6908d8876b1052d">zth::TypedFiber&lt; R, F &gt;</a>
-, <a class="el" href="classzth_1_1_waiter.html#a420f11dab6abe45b58139d11b2951184">zth::Waiter</a>
+, <a class="el" href="classzth_1_1_waiter.html#a66a6123a0a80d5dfa16aee4739922d7c">zth::Waiter</a>
 </li>
 <li>entry_()
 : <a class="el" href="classzth_1_1_runnable.html#a86d9f41f1c259a25e0f188c45334a1cb">zth::Runnable</a>
 , <a class="el" href="classzth_1_1_typed_fiber0.html#a90b758eba2401666aedc367a5236f3e1">zth::TypedFiber0&lt; R &gt;</a>
-, <a class="el" href="classzth_1_1_typed_fiber0_3_01void_01_4.html#a97e8eee5818916063f52d98a11a02b74">zth::TypedFiber0&lt; void &gt;</a>
+, <a class="el" href="classzth_1_1_typed_fiber0_3_01void_01_4.html#a7b4ec9573055aa3261454e2d61d20aa0">zth::TypedFiber0&lt; void &gt;</a>
 , <a class="el" href="classzth_1_1_typed_fiber1.html#a0d133cc43f6a207b90ba2798acb87104">zth::TypedFiber1&lt; R, A1 &gt;</a>
 , <a class="el" href="classzth_1_1_typed_fiber1_3_01void_00_01_a1_01_4.html#a36dc134c1d23e749ec8366fb8779e12f">zth::TypedFiber1&lt; void, A1 &gt;</a>
 , <a class="el" href="classzth_1_1_typed_fiber2.html#a35d7b35d3d808133510843285c9324fb">zth::TypedFiber2&lt; R, A1, A2 &gt;</a>
@@ -156,11 +161,8 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 : <a class="el" href="classzth_1_1_context.html#af461aff07cd16426cbe7d2cf03c38ae2">zth::Context</a>
 </li>
 <li>erase()
-: <a class="el" href="classzth_1_1_list.html#ad426fe154e09131335321eeffcb90edf">zth::List&lt; T &gt;</a>
+: <a class="el" href="classzth_1_1_list.html#ac55222ea09f7d1669e3b179c79eaa5c2">zth::List&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_sorted_list.html#a09bbd36cb1235319cc4bf9d3b785a33a">zth::SortedList&lt; T, Compare &gt;</a>
-</li>
-<li>error()
-: <a class="el" href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">zth::AwaitFd</a>
 </li>
 <li>eval()
 : <a class="el" href="classzth_1_1_fsm.html#ae7a6c1b5829d1a0dfa7a6c4228d5e6c1">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
@@ -180,14 +182,28 @@ $(document).ready(function(){initNavTree('functions_e.html',''); initResizable()
 <li>evalReset
 : <a class="el" href="classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6da33955389f260851db701d5363b090b7a">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 </li>
-<li>EvalState
-: <a class="el" href="classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6d">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
-</li>
 <li>evalState
 : <a class="el" href="classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6da6ee97ca21bdb9f80f6d6192af1f67b4d">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 </li>
+<li>EvalState
+: <a class="el" href="classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6d">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
+</li>
+<li>event()
+: <a class="el" href="classzth_1_1_poller_client.html#af6e4ce9675752885f91a9e8d7938fe5b">zth::PollerClient</a>
+, <a class="el" href="classzth_1_1_poller_client_base.html#a7c3b74a31c683f4b1d468af0eb2b3512">zth::PollerClientBase</a>
+, <a class="el" href="classzth_1_1_poller_server.html#a570d05c6891ad1fb75d2c2cdb465abf0">zth::PollerServer&lt; PollItem_ &gt;</a>
+</li>
 <li>eventBuffer()
 : <a class="el" href="classzth_1_1_perf_fiber.html#a7a7d5d043c003746cbbee080997ba1fd">zth::PerfFiber</a>
+</li>
+<li>events
+: <a class="el" href="structzth_1_1_pollable.html#a51dc42ff43dd5da1959f091d28d5b353">zth::Pollable</a>
+</li>
+<li>Events
+: <a class="el" href="structzth_1_1_pollable.html#addbe7243c6513da6a93be7d057dbed07">zth::Pollable</a>
+</li>
+<li>EventsFlags
+: <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698">zth::Pollable</a>
 </li>
 <li>exit()
 : <a class="el" href="classzth_1_1_fsm.html#a09d17c2b94b4b31e3f49348db8a980e9">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>

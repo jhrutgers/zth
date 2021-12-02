@@ -85,16 +85,35 @@ $(document).ready(function(){initNavTree('zth__logv_8cpp_source.html',''); initR
 <div class="title">zth_logv.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="zth__logv_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">    8</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a>(<span class="keywordtype">char</span> <span class="keyword">const</span>* fmt, va_list arg)</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    vprintf(fmt, arg);</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<a href="zth__logv_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Zth (libzth), a cooperative userspace multitasking library.</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (C) 2019-2021  Jochem Rutgers</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This program is free software: you can redistribute it and/or modify</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * it under the terms of the GNU Lesser General Public License as published by</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * (at your option) any later version.</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> * This program is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * GNU Lesser General Public License for more details.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * You should have received a copy of the GNU Lesser General Public License</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">   26</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a>(<span class="keywordtype">char</span> <span class="keyword">const</span>* fmt, va_list arg)</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// NOLINTNEXTLINE</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    vprintf(fmt, arg);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__c__util_html_gad788be8c7c1b46f1ff90d1498d8f5b72"><div class="ttname"><a href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a></div><div class="ttdeci">void zth_logv(char const *fmt, va_list arg)</div><div class="ttdoc">Prints the given printf()-like formatted string to stdout.</div><div class="ttdef"><b>Definition:</b> <a href="zth__logv_8cpp_source.html#l00008">zth_logv.cpp:8</a></div></div>
+<div class="ttc" id="agroup__zth__api__c__util_html_gad788be8c7c1b46f1ff90d1498d8f5b72"><div class="ttname"><a href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a></div><div class="ttdeci">void zth_logv(char const *fmt, va_list arg)</div><div class="ttdoc">Prints the given printf()-like formatted string to stdout.</div><div class="ttdef"><b>Definition:</b> <a href="zth__logv_8cpp_source.html#l00026">zth_logv.cpp:26</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

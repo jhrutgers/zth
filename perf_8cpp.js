@@ -6,5 +6,5 @@ var perf_8cpp =
     [ "perf_deinit", "perf_8cpp.html#a3f8a6fdc27b5e9243380e5b67d672812", null ],
     [ "perf_flushEventBuffer", "perf_8cpp.html#a209869553938004bf0e2c93bb3d218da", null ],
     [ "perf_init", "perf_8cpp.html#a447f951e1169d6fe43f618bce52e75f6", null ],
-    [ "ZTH_TLS_STATIC", "perf_8cpp.html#a36eb2c67dba75e522a867dc0ddd4c3bb", null ]
+    [ "ZTH_TLS_STATIC", "perf_8cpp.html#a7ddae410c64e3b9366d42546768fea7b", null ]
 ];

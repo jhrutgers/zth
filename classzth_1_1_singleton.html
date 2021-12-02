@@ -111,9 +111,9 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a31cb39bc487d75e1a283106181de916c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classzth_1_1_singleton_1_1safe__ptr.html">safe_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html#a31cb39bc487d75e1a283106181de916c">instance</a> ()</td></tr>
-<tr class="memdesc:a31cb39bc487d75e1a283106181de916c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the only instance of <code>T</code>.  <a href="classzth_1_1_singleton.html#a31cb39bc487d75e1a283106181de916c">More...</a><br /></td></tr>
-<tr class="separator:a31cb39bc487d75e1a283106181de916c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae4e069dfce8981f99e996fb952deae7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classzth_1_1_singleton_1_1safe__ptr.html">safe_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html#aae4e069dfce8981f99e996fb952deae7">instance</a> () noexcept</td></tr>
+<tr class="memdesc:aae4e069dfce8981f99e996fb952deae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the only instance of <code>T</code>.  <a href="classzth_1_1_singleton.html#aae4e069dfce8981f99e996fb952deae7">More...</a><br /></td></tr>
+<tr class="separator:aae4e069dfce8981f99e996fb952deae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -129,7 +129,7 @@ Protected Member Functions</h2></td></tr>
 class zth::Singleton&lt; T &gt;</h3>
 
 <p><a class="el" href="classzth_1_1_singleton.html" title="Singleton pattern.">Singleton</a> pattern. </p>
-<p>When a class inherits this class, the single instance of that class is available via the static <a class="el" href="classzth_1_1_singleton.html#a31cb39bc487d75e1a283106181de916c" title="Return the only instance of T.">instance()</a> function.</p>
+<p>When a class inherits this class, the single instance of that class is available via the static <a class="el" href="classzth_1_1_singleton.html#aae4e069dfce8981f99e996fb952deae7" title="Return the only instance of T.">instance()</a> function.</p>
 <p>A class should use <a class="el" href="classzth_1_1_singleton.html#a964428351e685295af846f1533f2e3fb" title="Constructor.">Singleton</a> as follows:</p>
 <div class="fragment"><div class="line"><span class="keyword">class </span>Subclass : <span class="keyword">public</span> <a class="code" href="classzth_1_1_singleton.html#a964428351e685295af846f1533f2e3fb">Singleton</a>&lt;Subclass&gt;</div>
 <div class="line">{</div>
@@ -145,7 +145,7 @@ class zth::Singleton&lt; T &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00495">495</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00593">593</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a0159315c3abb2c943fd6fc9571b59fa9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0159315c3abb2c943fd6fc9571b59fa9">&#9670;&nbsp;</a></span>singleton_type</h2>
@@ -163,7 +163,7 @@ template&lt;typename T &gt; </div>
 
 <p>Alias of the <code>T</code> template parameter. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00499">499</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00597">597</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +196,7 @@ template&lt;typename T &gt; </div>
 <p>Constructor. </p>
 <p>(Only) the first instance of the <code>T</code> is recorded in <code>m_instance</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00506">506</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00604">604</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -226,15 +226,15 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Destructor. </p>
-<p>After destruction, <a class="el" href="classzth_1_1_singleton.html#a31cb39bc487d75e1a283106181de916c" title="Return the only instance of T.">instance()</a> will return <code>NULL</code>. </p>
+<p>After destruction, <a class="el" href="classzth_1_1_singleton.html#aae4e069dfce8981f99e996fb952deae7" title="Return the only instance of T.">instance()</a> will return <code>nullptr</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00519">519</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00617">617</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a31cb39bc487d75e1a283106181de916c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31cb39bc487d75e1a283106181de916c">&#9670;&nbsp;</a></span>instance()</h2>
+<a id="aae4e069dfce8981f99e996fb952deae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae4e069dfce8981f99e996fb952deae7">&#9670;&nbsp;</a></span>instance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,15 +253,15 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Return the only instance of <code>T</code>. </p>
-<dl class="section return"><dt>Returns</dt><dd>the instance, or <code>NULL</code> when not constructed yet/anymore. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the instance, or <code>nullptr</code> when not constructed yet/anymore. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00551">551</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00649">649</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +270,7 @@ template&lt;typename T &gt; </div>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aclasszth_1_1_singleton_html_a964428351e685295af846f1533f2e3fb"><div class="ttname"><a href="classzth_1_1_singleton.html#a964428351e685295af846f1533f2e3fb">zth::Singleton::Singleton</a></div><div class="ttdeci">Singleton()</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00506">util.h:506</a></div></div>
+<div class="ttc" id="aclasszth_1_1_singleton_html_a964428351e685295af846f1533f2e3fb"><div class="ttname"><a href="classzth_1_1_singleton.html#a964428351e685295af846f1533f2e3fb">zth::Singleton::Singleton</a></div><div class="ttdeci">Singleton()</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00604">util.h:604</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

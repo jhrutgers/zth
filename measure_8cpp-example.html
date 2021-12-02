@@ -100,65 +100,76 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line"> </div>
 <div class="line"><span class="comment">// Tests</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testEmpty() {</div>
+<div class="line"><span class="keywordtype">void</span> testEmpty()</div>
+<div class="line">{</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testNow() {</div>
+<div class="line"><span class="keywordtype">void</span> testNow()</div>
+<div class="line">{</div>
 <div class="line">    <a name="a0"></a><a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>();</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <a name="_a1"></a><a class="code" href="classzth_1_1_context.html">zth::Context</a>* context1;</div>
 <div class="line"><span class="keyword">static</span> <a class="code" href="classzth_1_1_context.html">zth::Context</a>* context2;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> context2entry(<span class="keywordtype">void</span>*) {</div>
-<div class="line">    <span class="keywordflow">while</span>(<span class="keyword">true</span>) {</div>
+<div class="line"><span class="keywordtype">void</span> context2entry(<span class="keywordtype">void</span>* <span class="comment">/*unused*/</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">while</span>(<span class="keyword">true</span>)</div>
 <div class="line">        <a name="a2"></a><a class="code" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a>(context2, context1);</div>
-<div class="line">    }</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testContextInit() {</div>
-<div class="line">    <span class="keywordtype">int</span> res;</div>
+<div class="line"><span class="keywordtype">void</span> testContextInit()</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">int</span> res = 0;</div>
 <div class="line">    context1 = <a name="a3"></a><a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a>().<a name="a4"></a><a class="code" href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">context</a>();</div>
 <div class="line">    <span class="keywordflow">if</span>((res = <a name="a5"></a><a class="code" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a>(context2, <a name="_a6"></a><a class="code" href="structzth_1_1_context_attr.html">zth::ContextAttr</a>(&amp;context2entry))))</div>
-<div class="line">        <a name="a7"></a><a class="code" href="group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38">zth::abort</a>(<span class="stringliteral">&quot;Cannot create context2; %s&quot;</span>, <a name="a8"></a><a class="code" href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a>(res).c_str());</div>
+<div class="line">        <a name="a7"></a><a class="code" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a>(<span class="stringliteral">&quot;Cannot create context2; %s&quot;</span>, <a name="a8"></a><a class="code" href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a>(res).c_str());</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testContext() {</div>
+<div class="line"><span class="keywordtype">void</span> testContext()</div>
+<div class="line">{</div>
 <div class="line">    <a class="code" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a>(context1, context2);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testContextCleanup() {</div>
+<div class="line"><span class="keywordtype">void</span> testContextCleanup()</div>
+<div class="line">{</div>
 <div class="line">    <a name="a9"></a><a class="code" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a>(context2);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testYield1() {</div>
+<div class="line"><span class="keywordtype">void</span> testYield1()</div>
+<div class="line">{</div>
 <div class="line">    <a name="a10"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testYield1Always() {</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(NULL, <span class="keyword">true</span>);</div>
+<div class="line"><span class="keywordtype">void</span> testYield1Always()</div>
+<div class="line">{</div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(<span class="keyword">nullptr</span>, <span class="keyword">true</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <a name="_a11"></a><a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a>* testYieldFiberPtr = NULL;</div>
-<div class="line"><span class="keywordtype">void</span> testYieldFiber() {</div>
+<div class="line"><span class="keyword">static</span> <a name="_a11"></a><a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a>* testYieldFiberPtr = <span class="keyword">nullptr</span>;</div>
+<div class="line"><span class="keywordtype">void</span> testYieldFiber()</div>
+<div class="line">{</div>
 <div class="line">    testYieldFiberPtr = &amp;<a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a>();</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">while</span>(<span class="keyword">true</span>)</div>
-<div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(NULL, <span class="keyword">true</span>);</div>
+<div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(<span class="keyword">nullptr</span>, <span class="keyword">true</span>);</div>
 <div class="line">}</div>
 <div class="line"><a name="a12"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(testYieldFiber)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testYieldInit() {</div>
+<div class="line"><span class="keywordtype">void</span> testYieldInit()</div>
+<div class="line">{</div>
 <div class="line">    <a name="a13"></a><a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> testYieldFiber();</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testYield() {</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(NULL, <span class="keyword">true</span>);</div>
+<div class="line"><span class="keywordtype">void</span> testYield()</div>
+<div class="line">{</div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(<span class="keyword">nullptr</span>, <span class="keyword">true</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testYieldCleanup() {</div>
+<div class="line"><span class="keywordtype">void</span> testYieldCleanup()</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span>(!testYieldFiberPtr)</div>
-<div class="line">        <a class="code" href="group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38">zth::abort</a>(<span class="stringliteral">&quot;Test fiber did not run&quot;</span>);</div>
+<div class="line">        <a class="code" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a>(<span class="stringliteral">&quot;Test fiber did not run&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    testYieldFiberPtr-&gt;<a name="a14"></a><a class="code" href="classzth_1_1_fiber.html#a7cc5457b323a67c952cb23c5b6d8c20b">kill</a>();</div>
 <div class="line">}</div>
@@ -168,27 +179,32 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">}</div>
 <div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(testFiberCreateEntry)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testFiberCreate() {</div>
+<div class="line"><span class="keywordtype">void</span> testFiberCreate()</div>
+<div class="line">{</div>
 <div class="line">    testFiberCreateEntry_future f = <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> testFiberCreateEntry();</div>
 <div class="line">    f-&gt;wait();</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(NULL, <span class="keyword">true</span>); <span class="comment">// Make sure to clean up old fibers.</span></div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>(<span class="keyword">nullptr</span>, <span class="keyword">true</span>); <span class="comment">// Make sure to clean up old fibers.</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testCurrentFiber() {</div>
-<div class="line">    <a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a>&amp; f __attribute__((unused)) = <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a>();</div>
+<div class="line"><span class="keywordtype">void</span> testCurrentFiber()</div>
+<div class="line">{</div>
+<div class="line">    <a class="code" href="classzth_1_1_fiber.html">zth::Fiber</a> <span class="keyword">const</span>&amp; f __attribute__((unused)) = <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a>();</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testNap0() {</div>
+<div class="line"><span class="keywordtype">void</span> testNap0()</div>
+<div class="line">{</div>
 <div class="line">    <a name="a15"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(0);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> testNap100ms() {</div>
+<div class="line"><span class="keywordtype">void</span> testNap100ms()</div>
+<div class="line">{</div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(0.1);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Tester</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> std::string preciseTime(<span class="keywordtype">double</span> s) {</div>
+<div class="line"><span class="keyword">static</span> std::string preciseTime(<span class="keywordtype">double</span> s)</div>
+<div class="line">{</div>
 <div class="line">    std::string res;</div>
 <div class="line">    <span class="keywordflow">if</span>(s &gt;= 0)</div>
 <div class="line">        res = <span class="stringliteral">&quot; &quot;</span>;</div>
@@ -223,12 +239,14 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line"> </div>
 <div class="line"><span class="keyword">typedef</span> <a name="_a20"></a><a class="code" href="classzth_1_1_fsm_callback.html">zth::FsmCallback&lt;State,TestData*&gt;</a> Fsm_type;</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> maxIterations(Fsm_type&amp; fsm) {</div>
+<div class="line"><span class="keyword">static</span> <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> maxIterations(Fsm_type&amp; fsm)</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> (<span class="keywordtype">size_t</span>)1 &lt;&lt; fsm.callbackArg()-&gt;calibration &gt; std::numeric_limits&lt;size_t&gt;::max() / 2</div>
 <div class="line">        ? <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a>() : <a class="code" href="namespacezth.html">zth</a>::TimeInterval(0.1);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> calibrationTimeout(Fsm_type&amp; fsm) {</div>
+<div class="line"><span class="keyword">static</span> <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> calibrationTimeout(Fsm_type&amp; fsm)</div>
+<div class="line">{</div>
 <div class="line">    <span class="comment">// Calibration should take at least 0.5 s; actual measurement is then twice as long.</span></div>
 <div class="line">    <span class="keywordflow">return</span> <a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a>(0.5) - (<a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>() - fsm.callbackArg()-&gt;start);</div>
 <div class="line">}</div>
@@ -238,8 +256,8 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">        <a name="a21"></a><a class="code" href="group__zth__api__cpp__fsm.html#ga4cc318fcef78da50252ecf3afb1c5f02">zth::guards::always</a>,        stateCalibrate,</div>
 <div class="line">        <a name="a22"></a><a class="code" href="group__zth__api__cpp__fsm.html#ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc">zth::guards::end</a>,</div>
 <div class="line">    stateCalibrate,</div>
-<div class="line">        calibrationTimeout,         stateMeasure,</div>
-<div class="line">        maxIterations,              stateMeasure,</div>
+<div class="line">        calibrationTimeout,     stateMeasure,</div>
+<div class="line">        maxIterations,          stateMeasure,</div>
 <div class="line">        <a class="code" href="group__zth__api__cpp__fsm.html#ga4cc318fcef78da50252ecf3afb1c5f02">zth::guards::always</a>,        stateCalibrate,</div>
 <div class="line">        <a class="code" href="group__zth__api__cpp__fsm.html#ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc">zth::guards::end</a>,</div>
 <div class="line">    stateMeasure,</div>
@@ -249,7 +267,8 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">        <a class="code" href="group__zth__api__cpp__fsm.html#ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc">zth::guards::end</a>,</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> cb(Fsm_type&amp; fsm, TestData* testData) {</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> cb(Fsm_type&amp; fsm, TestData* testData)</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span>(!fsm.entry())</div>
 <div class="line">        <span class="keywordflow">return</span>;</div>
 <div class="line"> </div>
@@ -284,7 +303,8 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> Fsm_type::Compiler compiler(desc);</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <span class="keywordtype">double</span> runTest(<span class="keywordtype">char</span> <span class="keyword">const</span>* set, <span class="keywordtype">char</span> <span class="keyword">const</span>* name, <span class="keywordtype">void</span>(*test)(), <span class="keywordtype">bool</span> calibrationRun = <span class="keyword">false</span>) {</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">double</span> runTest(<span class="keywordtype">char</span> <span class="keyword">const</span>* set, <span class="keywordtype">char</span> <span class="keyword">const</span>* name, <span class="keywordtype">void</span>(*test)(), <span class="keywordtype">bool</span> calibrationRun = <span class="keyword">false</span>)</div>
+<div class="line">{</div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">static</span> <span class="keywordtype">double</span> calibration = 0;</div>
@@ -301,9 +321,10 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">    <span class="keywordflow">return</span> testData.singleResult - calibration;</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> run_testset(<span class="keywordtype">char</span> <span class="keyword">const</span>* testset) {</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> run_testset(<span class="keywordtype">char</span> <span class="keyword">const</span>* testset)</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordtype">bool</span> all = strcmp(<span class="stringliteral">&quot;all&quot;</span>, testset) == 0;</div>
-<div class="line">    <span class="keywordtype">char</span> <span class="keyword">const</span>* set;</div>
+<div class="line">    <span class="keywordtype">char</span> <span class="keyword">const</span>* set = <span class="keyword">nullptr</span>;</div>
 <div class="line"> </div>
 <div class="line">    set = <span class="stringliteral">&quot;now&quot;</span>;</div>
 <div class="line">    <span class="keywordflow">if</span>(all || strcmp(set, testset) == 0) {</div>
@@ -316,7 +337,7 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">        runTest(set, <span class="stringliteral">&quot;2 context_switch()s&quot;</span>, &amp;testContext);</div>
 <div class="line">        testContextCleanup();</div>
 <div class="line">    }</div>
-<div class="line">    </div>
+<div class="line"> </div>
 <div class="line">    set = <span class="stringliteral">&quot;yield&quot;</span>;</div>
 <div class="line">    <span class="keywordflow">if</span>(all || strcmp(set, testset) == 0) {</div>
 <div class="line">        runTest(set, <span class="stringliteral">&quot;single-fiber yield()&quot;</span>, &amp;testYield1);</div>
@@ -331,7 +352,7 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line">        runTest(set, <span class="stringliteral">&quot;currentFiber()&quot;</span>, &amp;testCurrentFiber);</div>
 <div class="line">        runTest(set, <span class="stringliteral">&quot;create and cleanup fiber&quot;</span>, &amp;testFiberCreate);</div>
 <div class="line">    }</div>
-<div class="line">    </div>
+<div class="line"> </div>
 <div class="line">    set = <span class="stringliteral">&quot;nap&quot;</span>;</div>
 <div class="line">    <span class="keywordflow">if</span>(all || strcmp(set, testset) == 0) {</div>
 <div class="line">        runTest(set, <span class="stringliteral">&quot;nap(0)&quot;</span>, &amp;testNap0);</div>
@@ -342,7 +363,8 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line"><span class="comment">// Specify on the command line the test set name(s) to be executed.  When none</span></div>
 <div class="line"><span class="comment">// is specified, &#39;all&#39; is assumed. The test set name is printed between</span></div>
 <div class="line"><span class="comment">// brackets before the test description.</span></div>
-<div class="line"><span class="keywordtype">void</span> <a name="a26"></a><a class="code" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a26"></a><a class="code" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
+<div class="line">{</div>
 <div class="line">    runTest(<span class="stringliteral">&quot;calib&quot;</span>, <span class="stringliteral">&quot;calibration&quot;</span>, &amp;testEmpty, <span class="keyword">true</span>);</div>
 <div class="line">    runTest(<span class="stringliteral">&quot;calib&quot;</span>, <span class="stringliteral">&quot;empty test&quot;</span>, &amp;testEmpty);</div>
 <div class="line"> </div>
@@ -355,34 +377,34 @@ $(document).ready(function(){initNavTree('measure_8cpp-example.html',''); initRe
 <div class="line"> </div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga4889d34edbac39ba98e63d58173f3b88"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...) noexcept</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00121">util.cpp:121</a></div></div>
 <div class="ttc" id="afiber_8h_html_ae4bac78892423c78df857c97e5806cfa"><div class="ttname"><a href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a></div><div class="ttdeci">void main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an std::string() representation of the given value.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00322">util.h:322</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00332">time.h:332</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00500">async.h:500</a></div></div>
-<div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00185">util.h:185</a></div></div>
-<div class="ttc" id="aclasszth_1_1_fiber_html"><div class="ttname"><a href="classzth_1_1_fiber.html">zth::Fiber</a></div><div class="ttdoc">The fiber.</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00051">fiber.h:51</a></div></div>
+<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an std::string() representation of the given value.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00405">util.h:405</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00358">time.h:358</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00501">async.h:501</a></div></div>
+<div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00189">util.h:189</a></div></div>
+<div class="ttc" id="aclasszth_1_1_fiber_html"><div class="ttname"><a href="classzth_1_1_fiber.html">zth::Fiber</a></div><div class="ttdoc">The fiber.</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00056">fiber.h:56</a></div></div>
 <div class="ttc" id="astructzth_1_1_context_attr_html"><div class="ttname"><a href="structzth_1_1_context_attr.html">zth::ContextAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00056">context.h:56</a></div></div>
-<div class="ttc" id="anamespacezth_html_a635bff7e0b7baa3e3e46b6918b460187"><div class="ttname"><a href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a></div><div class="ttdeci">int context_create(Context *&amp;context, ContextAttr const &amp;attr)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00846">context.cpp:846</a></div></div>
+<div class="ttc" id="anamespacezth_html_a635bff7e0b7baa3e3e46b6918b460187"><div class="ttname"><a href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a></div><div class="ttdeci">int context_create(Context *&amp;context, ContextAttr const &amp;attr)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00916">context.cpp:916</a></div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00033">async.h:33</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaf6ab72b47eaa3d2e8b130d551b4a30a4"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a></div><div class="ttdeci">Fiber &amp; currentFiber()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00367">worker.h:367</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaf6ab72b47eaa3d2e8b130d551b4a30a4"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a></div><div class="ttdeci">Fiber &amp; currentFiber()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00371">worker.h:371</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fsm_html_ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc"><div class="ttname"><a href="group__zth__api__cpp__fsm.html#ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc">zth::guards::end</a></div><div class="ttdeci">@ end</div><div class="ttdoc">End-of-guard-list marker.</div><div class="ttdef"><b>Definition:</b> <a href="fsm_8h_source.html#l00045">fsm.h:45</a></div></div>
-<div class="ttc" id="aclasszth_1_1_time_interval_html"><div class="ttname"><a href="classzth_1_1_time_interval.html">zth::TimeInterval</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains a time interval.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00056">time.h:56</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html"><div class="ttname"><a href="classzth_1_1_context.html">zth::Context</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00088">context.cpp:88</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00233">waiter.h:233</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00393">worker.h:393</a></div></div>
-<div class="ttc" id="aclasszth_1_1_fiber_html_a7cc5457b323a67c952cb23c5b6d8c20b"><div class="ttname"><a href="classzth_1_1_fiber.html#a7cc5457b323a67c952cb23c5b6d8c20b">zth::Fiber::kill</a></div><div class="ttdeci">void kill()</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00200">fiber.h:200</a></div></div>
-<div class="ttc" id="aclasszth_1_1cow__string_html"><div class="ttname"><a href="classzth_1_1cow__string.html">zth::cow_string</a></div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00228">util.h:228</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00480">async.h:480</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00315">time.h:315</a></div></div>
-<div class="ttc" id="aclasszth_1_1cow__string_html_ad8395d41ca4a736e2ee2af07ced4526f"><div class="ttname"><a href="classzth_1_1cow__string.html#ad8395d41ca4a736e2ee2af07ced4526f">zth::cow_string::c_str</a></div><div class="ttdeci">char const  * c_str() const</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00244">util.h:244</a></div></div>
-<div class="ttc" id="anamespacezth_html_a564d80f05b6b71340c02bae5cf9dfc64"><div class="ttname"><a href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a></div><div class="ttdeci">void context_destroy(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00890">context.cpp:890</a></div></div>
+<div class="ttc" id="aclasszth_1_1_time_interval_html"><div class="ttname"><a href="classzth_1_1_time_interval.html">zth::TimeInterval</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains a time interval.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00057">time.h:57</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html"><div class="ttname"><a href="classzth_1_1_context.html">zth::Context</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00093">context.cpp:93</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00167">waiter.h:167</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00397">worker.h:397</a></div></div>
+<div class="ttc" id="aclasszth_1_1_fiber_html_a7cc5457b323a67c952cb23c5b6d8c20b"><div class="ttname"><a href="classzth_1_1_fiber.html#a7cc5457b323a67c952cb23c5b6d8c20b">zth::Fiber::kill</a></div><div class="ttdeci">void kill()</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00231">fiber.h:231</a></div></div>
+<div class="ttc" id="aclasszth_1_1cow__string_html"><div class="ttname"><a href="classzth_1_1cow__string.html">zth::cow_string</a></div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00323">util.h:323</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00481">async.h:481</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00340">time.h:340</a></div></div>
+<div class="ttc" id="aclasszth_1_1cow__string_html_ad8395d41ca4a736e2ee2af07ced4526f"><div class="ttname"><a href="classzth_1_1cow__string.html#ad8395d41ca4a736e2ee2af07ced4526f">zth::cow_string::c_str</a></div><div class="ttdeci">char const  * c_str() const</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00350">util.h:350</a></div></div>
+<div class="ttc" id="anamespacezth_html_a564d80f05b6b71340c02bae5cf9dfc64"><div class="ttname"><a href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a></div><div class="ttdeci">void context_destroy(Context *context)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00974">context.cpp:974</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fsm_html_ga4cc318fcef78da50252ecf3afb1c5f02"><div class="ttname"><a href="group__zth__api__cpp__fsm.html#ga4cc318fcef78da50252ecf3afb1c5f02">zth::guards::always</a></div><div class="ttdeci">TimeInterval always(Fsm &amp;fsm)</div><div class="ttdoc">A guard that is always true.</div><div class="ttdef"><b>Definition:</b> <a href="fsm_8h_source.html#l00051">fsm.h:51</a></div></div>
-<div class="ttc" id="aclasszth_1_1_fsm_callback_html"><div class="ttname"><a href="classzth_1_1_fsm_callback.html">zth::FsmCallback</a></div><div class="ttdef"><b>Definition:</b> <a href="fsm_8h_source.html#l00597">fsm.h:597</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga3f769b3137590c1dbfe2f972d81a2c38"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga3f769b3137590c1dbfe2f972d81a2c38">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...)</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00107">util.cpp:107</a></div></div>
-<div class="ttc" id="anamespacezth_html_ac54b77130623cec145c46d1f969271d4"><div class="ttname"><a href="namespacezth.html#ac54b77130623cec145c46d1f969271d4">zth::format</a></div><div class="ttdeci">std::string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an std::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00310">util.h:310</a></div></div>
-<div class="ttc" id="anamespacezth_html_a21a9e449fda2d98f4725cbc35daf5af5"><div class="ttname"><a href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a></div><div class="ttdeci">void context_switch(Context *from, Context *to)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00880">context.cpp:880</a></div></div>
-<div class="ttc" id="aclasszth_1_1_fiber_html_a9757a54835480c76a30637566d746cd4"><div class="ttname"><a href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">zth::Fiber::context</a></div><div class="ttdeci">Context * context() const</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00108">fiber.h:108</a></div></div>
-<div class="ttc" id="anamespacezth_html_a6cd6e84b95ba6c16333e8cf197d411e7"><div class="ttname"><a href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a></div><div class="ttdeci">std::string err(int e)</div><div class="ttdoc">Return a string like strerror() does, but as a std::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00344">util.h:344</a></div></div>
+<div class="ttc" id="aclasszth_1_1_fsm_callback_html"><div class="ttname"><a href="classzth_1_1_fsm_callback.html">zth::FsmCallback</a></div><div class="ttdef"><b>Definition:</b> <a href="fsm_8h_source.html#l00631">fsm.h:631</a></div></div>
+<div class="ttc" id="anamespacezth_html_ac54b77130623cec145c46d1f969271d4"><div class="ttname"><a href="namespacezth.html#ac54b77130623cec145c46d1f969271d4">zth::format</a></div><div class="ttdeci">std::string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an std::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00392">util.h:392</a></div></div>
+<div class="ttc" id="anamespacezth_html_a21a9e449fda2d98f4725cbc35daf5af5"><div class="ttname"><a href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a></div><div class="ttdeci">void context_switch(Context *from, Context *to)</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00955">context.cpp:955</a></div></div>
+<div class="ttc" id="aclasszth_1_1_fiber_html_a9757a54835480c76a30637566d746cd4"><div class="ttname"><a href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">zth::Fiber::context</a></div><div class="ttdeci">Context * context() const</div><div class="ttdef"><b>Definition:</b> <a href="fiber_8h_source.html#l00134">fiber.h:134</a></div></div>
+<div class="ttc" id="anamespacezth_html_a6cd6e84b95ba6c16333e8cf197d411e7"><div class="ttname"><a href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a></div><div class="ttdeci">std::string err(int e)</div><div class="ttdoc">Return a string like strerror() does, but as a std::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00427">util.h:427</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

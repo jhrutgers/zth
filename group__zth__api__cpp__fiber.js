@@ -2,17 +2,17 @@ var group__zth__api__cpp__fiber =
 [
     [ "setStackSize", "structzth_1_1set_stack_size.html", [
       [ "setStackSize", "structzth_1_1set_stack_size.html#a107c7ab35b9b5fa9124b798dde955f05", null ],
-      [ "apply", "structzth_1_1set_stack_size.html#a0232a01f28e5740267eabe3b9b4afd12", null ]
+      [ "apply", "structzth_1_1set_stack_size.html#aaa1a2d36db2a8e0b66358b6c05265767", null ]
     ] ],
     [ "setName", "structzth_1_1set_name.html", [
       [ "setName", "structzth_1_1set_name.html#a79250edd78c7253774b3be424aa7fff4", null ],
       [ "setName", "structzth_1_1set_name.html#a6d9cff6b0a22bc28df088f5180da5598", null ],
       [ "setName", "structzth_1_1set_name.html#afa0d43b7c5041c3bd431b5d1d4a06947", null ],
-      [ "apply", "structzth_1_1set_name.html#ade1356db18fe613d22e0433f15d50c1b", null ]
+      [ "apply", "structzth_1_1set_name.html#af7747b7399863db60b27f69b8e3fd2b6", null ]
     ] ],
     [ "passOnExit", "structzth_1_1pass_on_exit.html", [
       [ "passOnExit", "structzth_1_1pass_on_exit.html#a677ea86235687ed7ea0abdb088ff76e3", null ],
-      [ "apply", "structzth_1_1pass_on_exit.html#a4be69fa60d0ace48f1628f387625c6fe", null ]
+      [ "apply", "structzth_1_1pass_on_exit.html#a1a1b1956efca3f56799906b774e7b0ae", null ]
     ] ],
     [ "PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", [
       [ "PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html#a465ea9df4dda832ac7382a5ec22d2634", null ],
@@ -20,7 +20,7 @@ var group__zth__api__cpp__fiber =
       [ "nap", "classzth_1_1_periodic_wake_up.html#a7ce70e55e51bba67c051775fa1e73bcd", null ],
       [ "nap", "classzth_1_1_periodic_wake_up.html#a08fa25e933e4049ecab7aca3fcba581a", null ],
       [ "operator()", "classzth_1_1_periodic_wake_up.html#a4bc251d1aca21070c6f7bd98ce28665f", null ],
-      [ "operator=", "classzth_1_1_periodic_wake_up.html#a0c28746f65ff1b0c4b9089f23b6b28eb", null ],
+      [ "operator=", "classzth_1_1_periodic_wake_up.html#a0c27e39dabb0dd30a9f1afe41d2263d1", null ],
       [ "setInterval", "classzth_1_1_periodic_wake_up.html#a39f7e2494c4dacd991d5165f3b649335", null ],
       [ "t", "classzth_1_1_periodic_wake_up.html#a1661b2edf995f7b067350479e538dd45", null ]
     ] ],

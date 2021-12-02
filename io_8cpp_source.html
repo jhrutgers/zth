@@ -105,226 +105,83 @@ $(document).ready(function(){initNavTree('io_8cpp_source.html',''); initResizabl
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="config_8h.html">libzth/config.h</a>&gt;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="io_8h.html">libzth/io.h</a>&gt;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="worker_8h.html">libzth/worker.h</a>&gt;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="zmq_8h.html">libzth/zmq.h</a>&gt;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#if defined(ZTH_HAVE_POLLER) &amp;&amp; !defined(ZTH_OS_WINDOWS)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#  ifndef ZTH_OS_WINDOWS</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#    include &lt;alloca.h&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#  include &lt;fcntl.h&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#  ifndef POLLIN_SET</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="io_8cpp.html#ac9fa73e677a09e2fd9fe545b6d1d77cd">   32</a></span>&#160;<span class="preprocessor">#    define POLLIN_SET (</span><span class="comment">/*POLLRDBAND |*/</span><span class="preprocessor"> POLLIN | </span><span class="comment">/*POLLHUP |*/</span><span class="preprocessor"> POLLERR)</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#  ifndef POLLOUT_SET</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="io_8cpp.html#a05bc07e221ffe26edcad28478c37d6af">   35</a></span>&#160;<span class="preprocessor">#    define POLLOUT_SET (</span><span class="comment">/*POLLWRBAND |*/</span><span class="preprocessor"> POLLOUT | POLLERR)</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#  ifndef POLLEX_SET</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="io_8cpp.html#a6b4daebe6a1bd9d4cfdd7f7db6ef9674">   38</a></span>&#160;<span class="preprocessor">#    define POLLEX_SET (POLLPRI)</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> { <span class="keyword">namespace </span>io {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">   47</a></span>&#160;ssize_t <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">read</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span>* buf, <span class="keywordtype">size_t</span> count) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">perf_syscall</a>(<span class="stringliteral">&quot;read()&quot;</span>);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">int</span> flags = fcntl(fd, F_GETFL);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(flags == -1))</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordflow">return</span> -1; <span class="comment">// with errno set</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">if</span>((flags &amp; O_NONBLOCK)) {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] read(%d) non-blocking&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="comment">// Just do the call.</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">return ::read</a>(fd, buf, count);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a> fds = {};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    fds.fd = fd;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    fds.events = <a class="code" href="io_8cpp.html#ac9fa73e677a09e2fd9fe545b6d1d77cd">POLLIN_SET</a>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#  ifdef ZTH_HAVE_LIBZMQ</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">switch</span>(::zmq_poll(&amp;fds, 1, 0))</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#  else</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">switch</span>(::<a class="code" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">poll</a>(&amp;fds, 1, 0))</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">case</span> 0: {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="comment">// No data, so the read() would block.</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="comment">// Forward our request to the Waiter.</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] read(%d) hand-off&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <a class="code" href="classzth_1_1_await_fd.html">AwaitFd</a> w(&amp;fds, 1);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().waiter().waitFd(w)) {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="comment">// Got some error.</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            errno = w.<a class="code" href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">error</a>();</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="comment">// else: go read the data.</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        __attribute__((fallthrough));</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">case</span> 1:</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="comment">// Got data to read.</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] read(%d)&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">return ::read</a>(fd, buf, count);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="comment">// Huh?</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a>(<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        errno = EINVAL;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        __attribute__((fallthrough));</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordflow">case</span> -1:</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="comment">// Error. Return with errno set.</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">  102</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">select</a>(<span class="keywordtype">int</span> nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout) {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <a class="code" href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">perf_syscall</a>(<span class="stringliteral">&quot;select()&quot;</span>);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">if</span>(nfds &lt; 0) {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        errno = EINVAL;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    }</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">if</span>(nfds == 0)</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span>(timeout &amp;&amp; timeout-&gt;tv_sec == 0 &amp;&amp; timeout-&gt;tv_usec == 0)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="comment">// Non-blocking call.</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">return ::select</a>(nfds, readfds, writefds, exceptfds, timeout);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] select(%d) hand-off&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), nfds);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="comment">// Convert select() to poll()</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>* fds_heap = NULL;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>* fds = NULL;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordflow">if</span>(nfds &lt; 16)</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        fds = (<a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>*)alloca(<span class="keyword">sizeof</span>(<a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>*) * nfds * 3);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(!(fds = fds_heap = (<a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>*)malloc(<span class="keyword">sizeof</span>(<a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a>*) * nfds * 3))) {</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        errno = ENOMEM;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">int</span> nfds_poll = 0;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> fd = 0; fd &lt; nfds; fd++) {</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keywordflow">if</span>(readfds)</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            <span class="keywordflow">if</span>(FD_ISSET(fd, readfds)) {</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                fds[nfds_poll].fd = fd;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                fds[nfds_poll].events = <a class="code" href="io_8cpp.html#ac9fa73e677a09e2fd9fe545b6d1d77cd">POLLIN_SET</a>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                nfds_poll++;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            }</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keywordflow">if</span>(writefds)</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keywordflow">if</span>(FD_ISSET(fd, writefds)) {</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                fds[nfds_poll].fd = fd;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                fds[nfds_poll].events = <a class="code" href="io_8cpp.html#a05bc07e221ffe26edcad28478c37d6af">POLLOUT_SET</a>;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                nfds_poll++;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            }</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordflow">if</span>(exceptfds)</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            <span class="keywordflow">if</span>(FD_ISSET(fd, exceptfds)) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                fds[nfds_poll].fd = fd;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                fds[nfds_poll].events = <a class="code" href="io_8cpp.html#a6b4daebe6a1bd9d4cfdd7f7db6ef9674">POLLEX_SET</a>;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                nfds_poll++;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            }</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    }</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <a class="code" href="classzth_1_1_timestamp.html">Timestamp</a> t;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keywordflow">if</span>(timeout)</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        t = <a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>() + <a class="code" href="classzth_1_1_time_interval.html">TimeInterval</a>(timeout-&gt;tv_sec, (<span class="keywordtype">long</span>)timeout-&gt;tv_usec * 1000L);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <a class="code" href="classzth_1_1_await_fd.html">AwaitFd</a> w(fds, nfds_poll, t);</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().waiter().waitFd(w))</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="comment">// Some error;</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">goto</span> done;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="comment">// Success, convert poll() outcome to select() outcome</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordflow">if</span>(readfds)</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        FD_ZERO(readfds);</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordflow">if</span>(writefds)</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        FD_ZERO(writefds);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">if</span>(exceptfds)</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        FD_ZERO(exceptfds);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; nfds_poll; i++) {</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">if</span>(readfds &amp;&amp; (fds[i].revents &amp; <a class="code" href="io_8cpp.html#ac9fa73e677a09e2fd9fe545b6d1d77cd">POLLIN_SET</a>)) {</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            FD_SET(i, readfds);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            res++;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keywordflow">if</span>(writefds &amp;&amp; (fds[i].revents &amp; <a class="code" href="io_8cpp.html#a05bc07e221ffe26edcad28478c37d6af">POLLOUT_SET</a>)) {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            FD_SET(i, writefds);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            res++;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        }</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordflow">if</span>(exceptfds &amp;&amp; (fds[i].revents &amp; <a class="code" href="io_8cpp.html#a6b4daebe6a1bd9d4cfdd7f7db6ef9674">POLLEX_SET</a>)) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            FD_SET(i, exceptfds);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            res++;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        }</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    }</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;done:</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordflow">if</span>(fds_heap)</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        free(fds_heap);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">if</span>(w.<a class="code" href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">error</a>()) {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        errno = w.<a class="code" href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">error</a>();</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    }</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;}</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">  196</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">poll</a>(<a class="code" href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a> *fds, <span class="keywordtype">int</span> nfds, <span class="keywordtype">int</span> timeout) {</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <a class="code" href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">perf_syscall</a>(<span class="stringliteral">&quot;poll()&quot;</span>);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordflow">if</span>(timeout == 0)</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="comment">// Non-blocking poll.</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">#  ifdef ZTH_HAVE_LIBZMQ</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        return ::zmq_poll(fds, nfds, 0);</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#  else</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">return ::poll</a>(fds, (nfds_t)nfds, 0);</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="preprocessor">#  endif</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] poll(%d) hand-off&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), (<span class="keywordtype">int</span>)nfds);</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <a class="code" href="classzth_1_1_timestamp.html">Timestamp</a> t;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keywordflow">if</span>(timeout &gt; 0)</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        t = <a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>() + <a class="code" href="classzth_1_1_time_interval.html">TimeInterval</a>(timeout / 1000, (<span class="keywordtype">long</span>)(timeout % 1000) * 1000000L);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <a class="code" href="classzth_1_1_await_fd.html">AwaitFd</a> w(fds, nfds, t);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">currentWorker</a>().waiter().waitFd(w)) {</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="comment">// Some error;</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        errno = w.<a class="code" href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">error</a>();</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">return</span> -1;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    }</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">return</span> w.<a class="code" href="classzth_1_1_await_fd.html#aedb90a05a7d0b2cb581efb6002bd9f7c">result</a>();</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;} } <span class="comment">// namespace</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> no_io __attribute__((unused));</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="preprocessor">#endif // ZTH_HAVE_POLLER</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="poller_8h.html">libzth/poller.h</a>&gt;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="worker_8h.html">libzth/worker.h</a>&gt;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="zmq_8h.html">libzth/zmq.h</a>&gt;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#if defined(ZTH_HAVE_POLLER) &amp;&amp; !defined(ZTH_OS_WINDOWS)</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#  include &lt;fcntl.h&gt;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> { <span class="keyword">namespace </span>io {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">   35</a></span>&#160;ssize_t <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">read</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span>* buf, <span class="keywordtype">size_t</span> count) {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">perf_syscall</a>(<span class="stringliteral">&quot;read()&quot;</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">int</span> flags = fcntl(fd, F_GETFL);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(flags == -1))</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">return</span> -1; <span class="comment">// with errno set</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">// NOLINTNEXTLINE(hicpp-signed-bitwise)</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span>((flags &amp; O_NONBLOCK)) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] read(%d) non-blocking&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">// Just do the call.</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">return ::read</a>(fd, buf, count);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span>((errno = <a class="code" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">zth::poll</a>(<a class="code" href="structzth_1_1_pollable_fd.html">PollableFd</a>(fd, <a class="code" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a16b68757eb11d0ad72508e0f4c96b87c">Pollable::PollIn</a>), -1)))</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="comment">// Got data to read.</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] read(%d)&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">return ::read</a>(fd, buf, count);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">   61</a></span>&#160;ssize_t <a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">write</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span> <span class="keyword">const</span>* buf, <span class="keywordtype">size_t</span> count) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">perf_syscall</a>(<span class="stringliteral">&quot;write()&quot;</span>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">int</span> flags = fcntl(fd, F_GETFL);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(flags == -1))</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">return</span> -1; <span class="comment">// with errno set</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">// NOLINTNEXTLINE(hicpp-signed-bitwise)</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">if</span>((flags &amp; O_NONBLOCK)) {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] write(%d) non-blocking&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="comment">// Just do the call.</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">return ::write</a>(fd, buf, count);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">if</span>((errno = <a class="code" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">zth::poll</a>(<a class="code" href="structzth_1_1_pollable_fd.html">PollableFd</a>(fd, <a class="code" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ad7db9ac1a24e8e0f683c0a547f003627">Pollable::PollOut</a>), -1)))</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> -1;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="comment">// Go write the data.</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(io, <span class="stringliteral">&quot;[%s] write(%d)&quot;</span>, <a class="code" href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">currentFiber</a>().<a class="code" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>().c_str(), fd);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">return ::write</a>(fd, buf, count);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;} } <span class="comment">// namespace</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> no_io __attribute__((unused));</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif // ZTH_HAVE_POLLER</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an std::string() representation of the given value.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00322">util.h:322</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00332">time.h:332</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__io_html_ga1eee4d1bd134d3b8477197f8aa08d5de"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a></div><div class="ttdeci">ssize_t read(int fd, void *buf, size_t count)</div><div class="ttdoc">Like normal read(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00047">io.cpp:47</a></div></div>
-<div class="ttc" id="aio_8h_html_a257aa5cefcd989386c0f6fb591ced38d"><div class="ttname"><a href="io_8h.html#a257aa5cefcd989386c0f6fb591ced38d">zth_pollfd_t</a></div><div class="ttdeci">zmq_pollitem_t zth_pollfd_t</div><div class="ttdef"><b>Definition:</b> <a href="io_8h_source.html#l00048">io.h:48</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga15bf32dde0718b1eafdcdbc9057d36f7"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a></div><div class="ttdeci">#define zth_dbg(group, fmt, a...)</div><div class="ttdoc">Debug printf()-like function.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00170">util.h:170</a></div></div>
-<div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00185">util.h:185</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__io_html_ga490a937d3d81dd0d27cb229b12966bab"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga490a937d3d81dd0d27cb229b12966bab">zth::io::poll</a></div><div class="ttdeci">int poll(zth_pollfd_t *fds, int nfds, int timeout)</div><div class="ttdoc">Like normal poll(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00196">io.cpp:196</a></div></div>
+<div class="ttc" id="astructzth_1_1_pollable_fd_html"><div class="ttname"><a href="structzth_1_1_pollable_fd.html">zth::PollableFd</a></div><div class="ttdoc">A pollable file descriptor.</div><div class="ttdef"><b>Definition:</b> <a href="poller_8h_source.html#l00137">poller.h:137</a></div></div>
+<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an std::string() representation of the given value.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00405">util.h:405</a></div></div>
+<div class="ttc" id="anamespacezth_html_a043bfb5a7c98cdceb7c9386837ca466d"><div class="ttname"><a href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">zth::poll</a></div><div class="ttdeci">int poll(P pollable, int timeout_ms=-1)</div><div class="ttdef"><b>Definition:</b> <a href="poller_8h_source.html#l00764">poller.h:764</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__io_html_ga1eee4d1bd134d3b8477197f8aa08d5de"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a></div><div class="ttdeci">ssize_t read(int fd, void *buf, size_t count)</div><div class="ttdoc">Like normal read(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00035">io.cpp:35</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga15bf32dde0718b1eafdcdbc9057d36f7"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a></div><div class="ttdeci">#define zth_dbg(group, fmt, a...)</div><div class="ttdoc">Debug printf()-like function.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00174">util.h:174</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__io_html_gab8f38dcb165392992ecd0b64b33511a1"><div class="ttname"><a href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a></div><div class="ttdeci">ssize_t write(int fd, void const *buf, size_t count)</div><div class="ttdoc">Like normal write(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00061">io.cpp:61</a></div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00033">async.h:33</a></div></div>
 <div class="ttc" id="azmq_8h_html"><div class="ttname"><a href="zmq_8h.html">zmq.h</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaf6ab72b47eaa3d2e8b130d551b4a30a4"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a></div><div class="ttdeci">Fiber &amp; currentFiber()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00367">worker.h:367</a></div></div>
-<div class="ttc" id="aclasszth_1_1_await_fd_html_a7eb8e853302dfc82d2651f975bdc4de3"><div class="ttname"><a href="classzth_1_1_await_fd.html#a7eb8e853302dfc82d2651f975bdc4de3">zth::AwaitFd::error</a></div><div class="ttdeci">int error() const</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00149">waiter.h:149</a></div></div>
-<div class="ttc" id="aclasszth_1_1_time_interval_html"><div class="ttname"><a href="classzth_1_1_time_interval.html">zth::TimeInterval</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains a time interval.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00056">time.h:56</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaf6ab72b47eaa3d2e8b130d551b4a30a4"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaf6ab72b47eaa3d2e8b130d551b4a30a4">zth::currentFiber</a></div><div class="ttdeci">Fiber &amp; currentFiber()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00371">worker.h:371</a></div></div>
 <div class="ttc" id="aworker_8h_html"><div class="ttname"><a href="worker_8h.html">worker.h</a></div></div>
-<div class="ttc" id="aio_8cpp_html_a6b4daebe6a1bd9d4cfdd7f7db6ef9674"><div class="ttname"><a href="io_8cpp.html#a6b4daebe6a1bd9d4cfdd7f7db6ef9674">POLLEX_SET</a></div><div class="ttdeci">#define POLLEX_SET</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00038">io.cpp:38</a></div></div>
-<div class="ttc" id="aio_8cpp_html_a05bc07e221ffe26edcad28478c37d6af"><div class="ttname"><a href="io_8cpp.html#a05bc07e221ffe26edcad28478c37d6af">POLLOUT_SET</a></div><div class="ttdeci">#define POLLOUT_SET</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00035">io.cpp:35</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga1d6aed60e051b52215b105cb569ed186"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga1d6aed60e051b52215b105cb569ed186">zth::currentWorker</a></div><div class="ttdeci">Worker &amp; currentWorker()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00358">worker.h:358</a></div></div>
-<div class="ttc" id="anamespacezth_html_aee795ed003173435ab8653c545a9de9f"><div class="ttname"><a href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">zth::perf_syscall</a></div><div class="ttdeci">void perf_syscall(char const *syscall, Timestamp const &amp;t=Timestamp())</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00207">perf.h:207</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__io_html_ga4503a73ba8d182964110d66c87fc5ab4"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga4503a73ba8d182964110d66c87fc5ab4">zth::io::select</a></div><div class="ttdeci">int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)</div><div class="ttdoc">Like normal select(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00102">io.cpp:102</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00315">time.h:315</a></div></div>
-<div class="ttc" id="aclasszth_1_1_await_fd_html_aedb90a05a7d0b2cb581efb6002bd9f7c"><div class="ttname"><a href="classzth_1_1_await_fd.html#aedb90a05a7d0b2cb581efb6002bd9f7c">zth::AwaitFd::result</a></div><div class="ttdeci">int result() const</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00150">waiter.h:150</a></div></div>
-<div class="ttc" id="aclasszth_1_1_await_fd_html"><div class="ttname"><a href="classzth_1_1_await_fd.html">zth::AwaitFd</a></div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00128">waiter.h:128</a></div></div>
+<div class="ttc" id="astructzth_1_1_pollable_html_ab1118549d5ef78fea50fa9a64bfd0698ad7db9ac1a24e8e0f683c0a547f003627"><div class="ttname"><a href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ad7db9ac1a24e8e0f683c0a547f003627">zth::Pollable::PollOut</a></div><div class="ttdeci">@ PollOut</div><div class="ttdef"><b>Definition:</b> <a href="poller_8h_source.html#l00092">poller.h:92</a></div></div>
+<div class="ttc" id="anamespacezth_html_aee795ed003173435ab8653c545a9de9f"><div class="ttname"><a href="namespacezth.html#aee795ed003173435ab8653c545a9de9f">zth::perf_syscall</a></div><div class="ttdeci">void perf_syscall(char const *syscall, Timestamp const &amp;t=Timestamp())</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00210">perf.h:210</a></div></div>
+<div class="ttc" id="astructzth_1_1_pollable_html_ab1118549d5ef78fea50fa9a64bfd0698a16b68757eb11d0ad72508e0f4c96b87c"><div class="ttname"><a href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a16b68757eb11d0ad72508e0f4c96b87c">zth::Pollable::PollIn</a></div><div class="ttdeci">@ PollIn</div><div class="ttdef"><b>Definition:</b> <a href="poller_8h_source.html#l00092">poller.h:92</a></div></div>
 <div class="ttc" id="aio_8h_html"><div class="ttname"><a href="io_8h.html">io.h</a></div></div>
 <div class="ttc" id="aconfig_8h_html"><div class="ttname"><a href="config_8h.html">config.h</a></div></div>
-<div class="ttc" id="aio_8cpp_html_ac9fa73e677a09e2fd9fe545b6d1d77cd"><div class="ttname"><a href="io_8cpp.html#ac9fa73e677a09e2fd9fe545b6d1d77cd">POLLIN_SET</a></div><div class="ttdeci">#define POLLIN_SET</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00032">io.cpp:32</a></div></div>
+<div class="ttc" id="apoller_8h_html"><div class="ttname"><a href="poller_8h.html">poller.h</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

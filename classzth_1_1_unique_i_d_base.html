@@ -83,7 +83,6 @@ $(document).ready(function(){initNavTree('classzth_1_1_unique_i_d_base.html','')
 <div class="header">
   <div class="summary">
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#friends">Friends</a> &#124;
 <a href="classzth_1_1_unique_i_d_base-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">zth::UniqueIDBase Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -99,15 +98,17 @@ Inheritance diagram for zth::UniqueIDBase:</div>
   <map id="zth::UniqueIDBase_map" name="zth::UniqueIDBase_map">
 <area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Fiber &gt;" shape="rect" coords="0,56,595,80"/>
 <area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Fsm&lt; void, void, void &gt; &gt;" shape="rect" coords="1815,56,2410,80"/>
-<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Synchronizer &gt;" shape="rect" coords="3025,56,3620,80"/>
-<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Worker &gt;" shape="rect" coords="3630,56,4225,80"/>
-<area href="classzth_1_1_unique_i_d.html" title="Keeps track of a process-wide unique ID within the type T." alt="zth::UniqueID&lt; T, ThreadSafe &gt;" shape="rect" coords="4235,56,4830,80"/>
+<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; PollerInterface &gt;" shape="rect" coords="3025,56,3620,80"/>
+<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Synchronizer &gt;" shape="rect" coords="4235,56,4830,80"/>
+<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Worker &gt;" shape="rect" coords="4840,56,5435,80"/>
+<area href="classzth_1_1_unique_i_d.html" title="Keeps track of a process-wide unique ID within the type T." alt="zth::UniqueID&lt; T, ThreadSafe &gt;" shape="rect" coords="5445,56,6040,80"/>
 <area href="classzth_1_1_fiber.html" title="The fiber." alt="zth::Fiber" shape="rect" coords="0,112,595,136"/>
 <area href="classzth_1_1_fsm.html" alt="zth::Fsm&lt; State_, Input_, choose_type&lt; FsmImpl_, FsmCallback&lt; State_, void, Input_, void &gt; &gt;::type &gt;" shape="rect" coords="1210,112,1805,136"/>
 <area href="classzth_1_1_fsm.html" alt="zth::Fsm&lt; State_, int, choose_type&lt; void, FsmCallback&lt; State_, void, int, void &gt; &gt;::type &gt;" shape="rect" coords="1815,112,2410,136"/>
 <area href="classzth_1_1_fsm.html" title="A Finite-state machine." alt="zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;" shape="rect" coords="2420,112,3015,136"/>
-<area href="classzth_1_1_synchronizer.html" alt="zth::Synchronizer" shape="rect" coords="3025,112,3620,136"/>
-<area href="classzth_1_1_worker.html" alt="zth::Worker" shape="rect" coords="3630,112,4225,136"/>
+<area href="classzth_1_1_poller_interface.html" title="Abstract base class of a poller." alt="zth::PollerInterface" shape="rect" coords="3025,112,3620,136"/>
+<area href="classzth_1_1_synchronizer.html" alt="zth::Synchronizer" shape="rect" coords="4235,112,4830,136"/>
+<area href="classzth_1_1_worker.html" alt="zth::Worker" shape="rect" coords="4840,112,5435,136"/>
 <area href="classzth_1_1_typed_fiber.html" alt="zth::TypedFiber&lt; R, R(*)()&gt;" shape="rect" coords="605,168,1200,192"/>
 <area href="classzth_1_1_typed_fiber.html" alt="zth::TypedFiber&lt; R, R(*)(A1)&gt;" shape="rect" coords="605,224,1200,248"/>
 <area href="classzth_1_1_typed_fiber.html" alt="zth::TypedFiber&lt; R, R(*)(A1, A2)&gt;" shape="rect" coords="605,280,1200,304"/>
@@ -121,12 +122,14 @@ Inheritance diagram for zth::UniqueIDBase:</div>
 <area href="classzth_1_1_typed_fiber.html" alt="zth::TypedFiber&lt; R, F &gt;" shape="rect" coords="605,728,1200,752"/>
 <area href="classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html" alt="zth::FsmCallback&lt; State_, void, Input_, FsmImpl_ &gt;" shape="rect" coords="1210,168,1805,192"/>
 <area href="classzth_1_1_fsm_callback.html" alt="zth::FsmCallback&lt; State_, CallbackArg_, Input_, FsmImpl_ &gt;" shape="rect" coords="1815,168,2410,192"/>
-<area href="classzth_1_1_future.html" alt="zth::Future&lt; T &gt;" shape="rect" coords="3630,168,4225,192"/>
-<area href="classzth_1_1_future_3_01void_01_4.html" alt="zth::Future&lt; void &gt;" shape="rect" coords="3630,224,4225,248"/>
-<area href="classzth_1_1_gate.html" alt="zth::Gate" shape="rect" coords="3630,280,4225,304"/>
-<area href="classzth_1_1_mutex.html" alt="zth::Mutex" shape="rect" coords="3630,336,4225,360"/>
-<area href="classzth_1_1_semaphore.html" alt="zth::Semaphore" shape="rect" coords="3630,392,4225,416"/>
-<area href="classzth_1_1_signal.html" alt="zth::Signal" shape="rect" coords="3630,448,4225,472"/>
+<area href="classzth_1_1_poller_client_base.html" title="The abstract base class of a Poller client." alt="zth::PollerClientBase" shape="rect" coords="3630,168,4225,192"/>
+<area href="classzth_1_1_poller_server_base.html" title="Abstract base class of a Poller server." alt="zth::PollerServerBase" shape="rect" coords="3630,224,4225,248"/>
+<area href="classzth_1_1_future.html" alt="zth::Future&lt; T &gt;" shape="rect" coords="4840,168,5435,192"/>
+<area href="classzth_1_1_future_3_01void_01_4.html" alt="zth::Future&lt; void &gt;" shape="rect" coords="4840,224,5435,248"/>
+<area href="classzth_1_1_gate.html" alt="zth::Gate" shape="rect" coords="4840,280,5435,304"/>
+<area href="classzth_1_1_mutex.html" alt="zth::Mutex" shape="rect" coords="4840,336,5435,360"/>
+<area href="classzth_1_1_semaphore.html" alt="zth::Semaphore" shape="rect" coords="4840,392,5435,416"/>
+<area href="classzth_1_1_signal.html" alt="zth::Signal" shape="rect" coords="4840,448,5435,472"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -134,20 +137,15 @@ Inheritance diagram for zth::UniqueIDBase:</div>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a18cd1e461a7e732a004574bc8f2c729b"><td class="memItemLeft" align="right" valign="top">virtual char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#a18cd1e461a7e732a004574bc8f2c729b">id_str</a> () const =0</td></tr>
 <tr class="separator:a18cd1e461a7e732a004574bc8f2c729b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d95ac41fe61a0a29d4f8835f80e3c83"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#a0d95ac41fe61a0a29d4f8835f80e3c83">~UniqueIDBase</a> ()</td></tr>
-<tr class="separator:a0d95ac41fe61a0a29d4f8835f80e3c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
-Friends</h2></td></tr>
-<tr class="memitem:ae1278133db82154945ba196e58140b36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#ae1278133db82154945ba196e58140b36">str</a> (<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;)</td></tr>
-<tr class="separator:ae1278133db82154945ba196e58140b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6ab1fa764843f179d4d8232ca194a39"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#ad6ab1fa764843f179d4d8232ca194a39">~UniqueIDBase</a> () <a class="el" href="macros_8h.html#a5e97f6533b7a0a1e8b49c4cea10f75fc">is_default</a> friend <a class="el" href="classzth_1_1cow__string.html">cow_string</a> <a class="el" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>&lt; <a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp; &gt;(<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;)</td></tr>
+<tr class="separator:ad6ab1fa764843f179d4d8232ca194a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00362">362</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00446">446</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0d95ac41fe61a0a29d4f8835f80e3c83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d95ac41fe61a0a29d4f8835f80e3c83">&#9670;&nbsp;</a></span>~UniqueIDBase()</h2>
+<a id="ad6ab1fa764843f179d4d8232ca194a39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6ab1fa764843f179d4d8232ca194a39">&#9670;&nbsp;</a></span>~UniqueIDBase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,17 +157,15 @@ Friends</h2></td></tr>
           <td class="memname">virtual zth::UniqueIDBase::~UniqueIDBase </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const &amp;</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00365">365</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -197,34 +193,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1_unique_i_d.html#aafcde36353af71ec27b1a0b67d91d394">zth::UniqueID&lt; T, ThreadSafe &gt;</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="ae1278133db82154945ba196e58140b36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1278133db82154945ba196e58140b36">&#9670;&nbsp;</a></span>str</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classzth_1_1cow__string.html">cow_string</a> str </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Implemented in <a class="el" href="classzth_1_1_unique_i_d.html#ab4160a087be7f5b16b702803452068d7">zth::UniqueID&lt; T, ThreadSafe &gt;</a>.</p>
 
 </div>
 </div>

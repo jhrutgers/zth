@@ -124,7 +124,7 @@ Other fiber
  } fiber 1 at end of critical section
 Other fiber
 </pre><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Even though all code within a fiber is executed atomically when not yielded,</span></div>
 <div class="line"><span class="comment">// sometimes it is required to yield within a (long) critical section anyway.</span></div>
@@ -136,7 +136,8 @@ Other fiber
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <a name="_a0"></a><a class="code" href="classzth_1_1_mutex.html">zth::Mutex</a> mutex;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> fiber(<span class="keywordtype">int</span> <span class="keywordtype">id</span>) {</div>
+<div class="line"><span class="keywordtype">void</span> fiber(<span class="keywordtype">int</span> <span class="keywordtype">id</span>)</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 3; i++) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;fiber %d outside of critical section\n&quot;</span>, <span class="keywordtype">id</span>);</div>
 <div class="line"> </div>
@@ -148,7 +149,7 @@ Other fiber
 <div class="line">        <a name="a3"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a>();</div>
 <div class="line">        printf(<span class="stringliteral">&quot; } fiber %d at end of critical section\n&quot;</span>, <span class="keywordtype">id</span>);</div>
 <div class="line">        mutex.<a name="a4"></a><a class="code" href="classzth_1_1_mutex.html#aba8427ace2e3f1cffb87d62b7309327d">unlock</a>();</div>
-<div class="line">    </div>
+<div class="line"> </div>
 <div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a>();</div>
 <div class="line">    }</div>
 <div class="line">}</div>
@@ -156,7 +157,8 @@ Other fiber
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> stopOther = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> otherFiber() {</div>
+<div class="line"><span class="keywordtype">void</span> otherFiber()</div>
+<div class="line">{</div>
 <div class="line">    <span class="keywordflow">while</span>(!stopOther) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Other fiber\n&quot;</span>);</div>
 <div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a>();</div>
@@ -164,7 +166,8 @@ Other fiber
 <div class="line">}</div>
 <div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(otherFiber)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
+<div class="line">{</div>
 <div class="line">    fiber_future f1 = <a name="a7"></a><a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber(1);</div>
 <div class="line">    fiber_future f2 = <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber(2);</div>
 <div class="line">    fiber_future f3 = <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber(3);</div>
@@ -174,17 +177,16 @@ Other fiber
 <div class="line">    f3-&gt;wait();</div>
 <div class="line">    stopOther = <span class="keyword">true</span>;</div>
 <div class="line">}</div>
-<div class="line"> </div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="afiber_8h_html_ae4bac78892423c78df857c97e5806cfa"><div class="ttname"><a href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a></div><div class="ttdeci">void main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00500">async.h:500</a></div></div>
-<div class="ttc" id="aclasszth_1_1_mutex_html_acbe80768e7addbab9bcc61bf47927b18"><div class="ttname"><a href="classzth_1_1_mutex.html#acbe80768e7addbab9bcc61bf47927b18">zth::Mutex::lock</a></div><div class="ttdeci">void lock()</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00164">sync.h:164</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00393">worker.h:393</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00480">async.h:480</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga13b50598dd515c2310163b3e15cf7869"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a></div><div class="ttdeci">void outOfWork()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00406">worker.h:406</a></div></div>
-<div class="ttc" id="aclasszth_1_1_mutex_html"><div class="ttname"><a href="classzth_1_1_mutex.html">zth::Mutex</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00159">sync.h:159</a></div></div>
-<div class="ttc" id="aclasszth_1_1_mutex_html_aba8427ace2e3f1cffb87d62b7309327d"><div class="ttname"><a href="classzth_1_1_mutex.html#aba8427ace2e3f1cffb87d62b7309327d">zth::Mutex::unlock</a></div><div class="ttdeci">void unlock()</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00179">sync.h:179</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00501">async.h:501</a></div></div>
+<div class="ttc" id="aclasszth_1_1_mutex_html_acbe80768e7addbab9bcc61bf47927b18"><div class="ttname"><a href="classzth_1_1_mutex.html#acbe80768e7addbab9bcc61bf47927b18">zth::Mutex::lock</a></div><div class="ttdeci">void lock()</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00260">sync.h:260</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00397">worker.h:397</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00481">async.h:481</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga13b50598dd515c2310163b3e15cf7869"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a></div><div class="ttdeci">void outOfWork()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00410">worker.h:410</a></div></div>
+<div class="ttc" id="aclasszth_1_1_mutex_html"><div class="ttname"><a href="classzth_1_1_mutex.html">zth::Mutex</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00255">sync.h:255</a></div></div>
+<div class="ttc" id="aclasszth_1_1_mutex_html_aba8427ace2e3f1cffb87d62b7309327d"><div class="ttname"><a href="classzth_1_1_mutex.html#aba8427ace2e3f1cffb87d62b7309327d">zth::Mutex::unlock</a></div><div class="ttdeci">void unlock()</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00275">sync.h:275</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

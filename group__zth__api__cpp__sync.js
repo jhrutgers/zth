@@ -20,7 +20,9 @@ var group__zth__api__cpp__sync =
       [ "reset", "classzth_1_1_signal.html#a6f7d13b7101bf9f25f25118225918809", null ],
       [ "signal", "classzth_1_1_signal.html#a1041221a30f5a4dfa275e719ef1dc8ec", null ],
       [ "signalAll", "classzth_1_1_signal.html#a33438794118217f5a63ea8ccea7c2e31", null ],
-      [ "wait", "classzth_1_1_signal.html#a966e6b814a7f1300d418268bffd6ced2", null ]
+      [ "wait", "classzth_1_1_signal.html#a966e6b814a7f1300d418268bffd6ced2", null ],
+      [ "wait", "classzth_1_1_signal.html#aaa852a4d6180563dcdc4c55641770f2c", null ],
+      [ "wait", "classzth_1_1_signal.html#ab42701657d80df531fb8bdf317d0cdb1", null ]
     ] ],
     [ "Future", "classzth_1_1_future.html", [
       [ "type", "classzth_1_1_future.html#a4a0b915edb53a85c256637c2359f669b", null ],

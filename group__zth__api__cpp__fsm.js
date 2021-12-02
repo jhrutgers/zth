@@ -58,6 +58,7 @@ var group__zth__api__cpp__fsm =
       [ "next", "classzth_1_1_fsm.html#a54d0498437d222cde89b3a58a6f610f4", null ],
       [ "reset", "classzth_1_1_fsm.html#af9206a4cadeba4e8e7a3f1f09bc56b43", null ],
       [ "run", "classzth_1_1_fsm.html#a1b5b88d90cea16b6d78612da76eed3c3", null ],
+      [ "setInputsCapacity", "classzth_1_1_fsm.html#a729c34666f6ebec70eec81b275e2573d", null ],
       [ "setLockstep", "classzth_1_1_fsm.html#acfc9f49f2508f19f84327427606a3de4", null ],
       [ "state", "classzth_1_1_fsm.html#af45d5bdb4c9d7d418bb039310a09045e", null ],
       [ "step", "classzth_1_1_fsm.html#a1546015360633c6b2821268df50db27c", null ],

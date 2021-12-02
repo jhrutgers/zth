@@ -112,8 +112,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a4be69fa60d0ace48f1628f387625c6fe"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1pass_on_exit.html#a4be69fa60d0ace48f1628f387625c6fe">apply</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;fiber) const</td></tr>
-<tr class="separator:a4be69fa60d0ace48f1628f387625c6fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a1b1956efca3f56799906b774e7b0ae"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1pass_on_exit.html#a1a1b1956efca3f56799906b774e7b0ae">apply</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;fiber) const override</td></tr>
+<tr class="separator:a1a1b1956efca3f56799906b774e7b0ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_structzth_1_1_fiber_manipulator"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_structzth_1_1_fiber_manipulator')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="structzth_1_1_fiber_manipulator.html">zth::FiberManipulator</a></td></tr>
 <tr class="memitem:afe41bfc6bac9261880611465358b8aec inherit pro_methods_structzth_1_1_fiber_manipulator"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_fiber_manipulator.html#afe41bfc6bac9261880611465358b8aec">FiberManipulator</a> ()</td></tr>
 <tr class="separator:afe41bfc6bac9261880611465358b8aec inherit pro_methods_structzth_1_1_fiber_manipulator"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,7 +135,7 @@ Static Protected Member Functions</h2></td></tr>
 <div class="line">    gate.wait();</div>
 <div class="line">    <span class="comment">// If we get here, both foo()s have finished.</span></div>
 <div class="line">}</div>
-</div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="daemon_pattern_8cpp-example.html#_a11">daemon_pattern.cpp</a>.</dd>
+</div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="daemon_pattern_8cpp-example.html#_a12">daemon_pattern.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00180">180</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
@@ -159,7 +159,7 @@ Static Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -169,8 +169,8 @@ Static Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4be69fa60d0ace48f1628f387625c6fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4be69fa60d0ace48f1628f387625c6fe">&#9670;&nbsp;</a></span>apply()</h2>
+<a id="a1a1b1956efca3f56799906b774e7b0ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a1b1956efca3f56799906b774e7b0ae">&#9670;&nbsp;</a></span>apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,7 +188,7 @@ Static Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -243,9 +243,9 @@ Static Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="afiber_8h_html_ae4bac78892423c78df857c97e5806cfa"><div class="ttname"><a href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a></div><div class="ttdeci">void main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00500">async.h:500</a></div></div>
-<div class="ttc" id="aclasszth_1_1_gate_html"><div class="ttname"><a href="classzth_1_1_gate.html">zth::Gate</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00357">sync.h:357</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00480">async.h:480</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00501">async.h:501</a></div></div>
+<div class="ttc" id="aclasszth_1_1_gate_html"><div class="ttname"><a href="classzth_1_1_gate.html">zth::Gate</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00474">sync.h:474</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00481">async.h:481</a></div></div>
 <div class="ttc" id="astructzth_1_1pass_on_exit_html"><div class="ttname"><a href="structzth_1_1pass_on_exit.html">zth::passOnExit</a></div><div class="ttdoc">Makes the fiber pass the given gate upon exit.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00180">async.h:180</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

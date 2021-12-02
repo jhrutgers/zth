@@ -84,7 +84,6 @@ $(document).ready(function(){initNavTree('waiter_8h.html',''); initResizable(); 
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">waiter.h File Reference</div>  </div>
@@ -93,8 +92,6 @@ $(document).ready(function(){initNavTree('waiter_8h.html',''); initResizable(); 
 <div class="textblock"><code>#include &lt;<a class="el" href="fiber_8h_source.html">libzth/fiber.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="list_8h_source.html">libzth/list.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="time_8h_source.html">libzth/time.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="io_8h_source.html">libzth/io.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="zmq_8h_source.html">zmq.h</a>&gt;</code><br />
 </div>
 <p><a href="waiter_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -110,10 +107,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_polled_member_waiting.html">zth::PolledMemberWaiting&lt; C &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_await_fd.html">zth::AwaitFd</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_await1_fd.html">zth::Await1Fd</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_periodic_wake_up.html">zth::PeriodicWakeUp</a></td></tr>
@@ -124,17 +117,6 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacezth"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html">zth</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a52ac479a805051f59643588b096024ff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="waiter_8h.html#a52ac479a805051f59643588b096024ff">POLLIN</a>&#160;&#160;&#160;ZMQ_POLLIN</td></tr>
-<tr class="separator:a52ac479a805051f59643588b096024ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91b3c67129ac7675062f316b840a0d58"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="waiter_8h.html#a91b3c67129ac7675062f316b840a0d58">POLLOUT</a>&#160;&#160;&#160;ZMQ_POLLOUT</td></tr>
-<tr class="separator:a91b3c67129ac7675062f316b840a0d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1c532446408c98559d4aaaeeeb99820"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="waiter_8h.html#ab1c532446408c98559d4aaaeeeb99820">POLLERR</a>&#160;&#160;&#160;ZMQ_POLLERR</td></tr>
-<tr class="separator:ab1c532446408c98559d4aaaeeeb99820"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6f53b89c7a4cc5e8349f7c778d85168"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="waiter_8h.html#ab6f53b89c7a4cc5e8349f7c778d85168">POLLPRI</a>&#160;&#160;&#160;ZMQ_POLLPRI</td></tr>
-<tr class="separator:ab6f53b89c7a4cc5e8349f7c778d85168"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -150,6 +132,8 @@ Functions</h2></td></tr>
 <tr class="separator:a692cd6a88a74b1b98d863277624cb93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43a403677c60668b28e760f217473f30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a43a403677c60668b28e760f217473f30">zth::unscheduleTask</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="separator:a43a403677c60668b28e760f217473f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af655354b46fe80f1bf4fccf968e2fb4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#af655354b46fe80f1bf4fccf968e2fb4c">zth::wakeup</a> (TimedWaitable &amp;w)</td></tr>
+<tr class="separator:af655354b46fe80f1bf4fccf968e2fb4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0c69f207354e0928b738da3388bdd913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a> (Timestamp const &amp;sleepUntil)</td></tr>
 <tr class="separator:ga0c69f207354e0928b738da3388bdd913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga786a7557ff189b1f1e7552a37f772665"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665">zth::nap</a> (TimeInterval const &amp;sleepFor)</td></tr>
@@ -165,71 +149,6 @@ Functions</h2></td></tr>
 <tr class="memitem:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2">zth_unap</a> (long sleepFor_us)</td></tr>
 <tr class="separator:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ab1c532446408c98559d4aaaeeeb99820"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1c532446408c98559d4aaaeeeb99820">&#9670;&nbsp;</a></span>POLLERR</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define POLLERR&#160;&#160;&#160;ZMQ_POLLERR</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00036">36</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
-
-</div>
-</div>
-<a id="a52ac479a805051f59643588b096024ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52ac479a805051f59643588b096024ff">&#9670;&nbsp;</a></span>POLLIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define POLLIN&#160;&#160;&#160;ZMQ_POLLIN</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00032">32</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
-
-</div>
-</div>
-<a id="a91b3c67129ac7675062f316b840a0d58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91b3c67129ac7675062f316b840a0d58">&#9670;&nbsp;</a></span>POLLOUT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define POLLOUT&#160;&#160;&#160;ZMQ_POLLOUT</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00034">34</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
-
-</div>
-</div>
-<a id="ab6f53b89c7a4cc5e8349f7c778d85168"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6f53b89c7a4cc5e8349f7c778d85168">&#9670;&nbsp;</a></span>POLLPRI</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define POLLPRI&#160;&#160;&#160;ZMQ_POLLPRI</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00038">38</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

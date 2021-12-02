@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['zth_5ffuture_5ft_5ftype_1501',['zth_future_t_type',['../sync_8h.html#a3f919f7602b65744418c90430380312a',1,'sync.h']]],
-  ['zth_5fpollfd_5ft_1502',['zth_pollfd_t',['../io_8h.html#a257aa5cefcd989386c0f6fb591ced38d',1,'io.h']]]
+  ['value_5ftype_1597',['value_type',['../classzth_1_1small__vector.html#afac5f89ed69fd0f7dcb10ec527092c3c',1,'zth::small_vector']]],
+  ['vector_5ftype_1598',['vector_type',['../classzth_1_1small__vector.html#ab584d90f0f85535101e65d95c8738090',1,'zth::small_vector']]]
 ];

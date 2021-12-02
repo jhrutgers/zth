@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['stack_1457',['stack',['../classzth_1_1_context.html#af1d2ce204fc1c1b95fcb9c534c48f095',1,'zth::Context']]],
-  ['stack_5fwatermarked_1458',['stack_watermarked',['../classzth_1_1_context.html#aa7fdcbf6c4c739e1a36f374647caaf00',1,'zth::Context']]],
-  ['stacksize_1459',['stackSize',['../structzth_1_1_context_attr.html#ac114f02e8cb39f06e1b4d987e9e4481c',1,'zth::ContextAttr::stackSize()'],['../classzth_1_1_context.html#a330dff6f28da994b4796d4d2cbf3762a',1,'zth::Context::stackSize()']]],
-  ['starttime_1460',['startTime',['../namespacezth.html#a31108f9b5f0e9615402a50430b03978e',1,'zth']]],
-  ['starttime_5f_1461',['startTime_',['../time_8cpp.html#ae2b8b9019c25a909fe634b21a984b4d6',1,'time.cpp']]],
-  ['state_1462',['state',['../structzth_1_1_fsm_description.html#ae75c4a421ccf7cac4076b22226ed5436',1,'zth::FsmDescription']]],
-  ['stateaddr_1463',['stateAddr',['../structzth_1_1_fsm_description.html#a1e322a2192558ca027bc2b1b78430508',1,'zth::FsmDescription']]],
-  ['str_1464',['str',['../structzth_1_1_perf_event.html#a31ecabe5dacfe32e9bea2aa6bce6dbba',1,'zth::PerfEvent::str()'],['../structzth_1_1_perf_event_3_01false_01_4.html#ad233f7b0fe2e9a163d2f5b5d9496feb7',1,'zth::PerfEvent&lt; false &gt;::str()']]]
+  ['r_1539',['r',['../structzth_1_1impl_1_1_function_i_o0.html#a6a09f0fef30e211a57cf950d76756cdb',1,'zth::impl::FunctionIO0::r()'],['../structzth_1_1impl_1_1_function_i_o1.html#a6f6a2b3db874d0a3f1aad98893afc04d',1,'zth::impl::FunctionIO1::r()'],['../structzth_1_1impl_1_1_function_i_o2.html#a5d20d0f95784a97badfa92bdd7b77d87',1,'zth::impl::FunctionIO2::r()'],['../structzth_1_1impl_1_1_function_i_o3.html#a7f203ce8ef012360a5899211a55a9c5a',1,'zth::impl::FunctionIO3::r()'],['../structzth_1_1impl_1_1_function_i_o_n.html#aeb12cc255747c7a910c5798c7ea18c34',1,'zth::impl::FunctionION::r()']]],
+  ['revents_1540',['revents',['../structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242',1,'zth::Pollable']]],
+  ['right_1541',['right',['../classzth_1_1_listable.html#a2a65506d30d7f4a05e342a9ddbc3e366',1,'zth::Listable']]]
 ];

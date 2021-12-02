@@ -17,6 +17,7 @@ var dir_20dde55faf7a8688f354c9f881d8ae8f =
     ] ],
     [ "macros.h", "macros_8h.html", "macros_8h" ],
     [ "perf.h", "perf_8h.html", "perf_8h" ],
+    [ "poller.h", "poller_8h.html", "poller_8h" ],
     [ "regs.h", "regs_8h.html", "regs_8h" ],
     [ "sync.h", "sync_8h.html", "sync_8h" ],
     [ "time.h", "time_8h.html", "time_8h" ],
