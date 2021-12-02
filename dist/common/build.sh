@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This file is sourced from a dist/*/ directory. Do not call directly.
+
 set -euo pipefail
 
 function gotErr {
@@ -7,20 +9,17 @@ function gotErr {
 	exit 1
 }
 
-function numproc {
-	case `uname -s` in
-		Linux*)
-			nproc;;
-		Darwin*)
-			sysctl -n hw.logicalcpu;;
-		*)
-			echo 1;;
-	esac
-}
-
 trap gotErr ERR
 
-pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"/.. &> /dev/null; pwd -P)" > /dev/null
+function show_help {
+	echo "Usage: $0 <build type> [<short flag>...] [--] [<cmake argument>...]"
+	exit 2
+}
+
+case ${1:-} in
+	-?|-h|--help)
+		show_help;;
+esac
 
 BUILD_TYPE="${1:-Release}"
 shift || true
@@ -40,6 +39,8 @@ fi
 
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
+		-?|-h|--help|help)
+			show_help;;
 		C++98|C++03)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99"
 			support_test=0
@@ -99,25 +100,12 @@ if [[ ${use_ninja} == 1 ]]; then
 	cmake_opts="${cmake_opts} -G Ninja"
 fi
 
-case `uname -s` in
-	Darwin*)
-		# Use brew's gcc
-		[[ ! -z ${CC:-} ]]  || CC=`ls -1 /usr/local/bin/gcc-[0-9]* | sort -n | tail -n 1`
-		[[ ! -z ${CXX:-} ]] || CXX=`ls -1 /usr/local/bin/g++-[0-9]* | sort -n | tail -n 1`
-		;;
-	*)
-		[[ ! -z ${CC:-} ]]  || CC=gcc
-		[[ ! -z ${CXX:-} ]] || CXX=g++
-		;;
-esac
-
-cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ..
-cmake --build . -j`numproc`
-cmake --build . --target install -j`numproc`
+cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ../../..
+cmake --build . -j`nproc`
+cmake --build . --target install -j`nproc`
 
 if [[ ${do_test} == 1 ]]; then
 	cmake --build . --target test
 fi
 
 popd > /dev/null
-

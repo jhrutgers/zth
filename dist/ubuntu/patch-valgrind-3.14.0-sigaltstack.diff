@@ -1,5 +1,5 @@
---- ../valgrind-orig/coregrind/m_signals.c	2019-05-30 23:24:15.000000000 +0200
-+++ ./coregrind/m_signals.c	2019-05-30 23:25:23.000000000 +0200
+--- a/coregrind/m_signals.c	2019-05-30 23:24:15.000000000 +0200
++++ b/coregrind/m_signals.c	2019-05-30 23:25:23.000000000 +0200
 @@ -1101,7 +1101,8 @@ static Bool on_sig_stack ( ThreadId tid,
  {
     ThreadState *tst = VG_(get_ThreadState)(tid);
