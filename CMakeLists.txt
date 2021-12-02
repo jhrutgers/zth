@@ -354,3 +354,7 @@ if(CPPCHECK_CMD)
 		add_custom_target(libzth-cppcheck-all ALL DEPENDS libzth-cppcheck)
 	endif()
 endif()
+
+if(ZTH_DIST_DIR)
+	add_subdirectory(${ZTH_DIST_DIR})
+endif()

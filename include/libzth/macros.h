@@ -310,7 +310,7 @@ ZTH_EXPORT void foo();
 #elif defined(ZTH_OS_BAREMETAL)
 // Assume having newlib with setjmp/longjmp fiddling.
 #  define ZTH_CONTEXT_SJLJ
-#  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6
+#  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6 && defined(__ARM_ARCH_PROFILE) && __ARM_ARCH_PROFILE == 'M'
 #    define ZTH_ARM_USE_PSP
 #    define ZTH_STACK_SWITCH
 #  endif

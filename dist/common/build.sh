@@ -30,7 +30,6 @@ mkdir -p build
 pushd build > /dev/null
 
 # Simplify setting specific configuration flag.
-cmake_opts=
 support_test=1
 do_test=0
 use_ninja=0
@@ -102,7 +101,15 @@ if [[ ${use_ninja} == 1 ]]; then
 	cmake_opts="${cmake_opts} -G Ninja"
 fi
 
-cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ../../..
+if [[ ! -z ${CC:-} ]]; then
+	cmake_opts="${cmake_opts} -DCMAKE_C_COMPILER='${CC}'"
+fi
+
+if [[ ! -z ${CXX:-} ]]; then
+	cmake_opts="${cmake_opts} -DCMAKE_CXX_COMPILER='${CXX}'"
+fi
+
+cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ${cmake_opts} "$@" ../../..
 cmake --build . -j`nproc`
 cmake --build . --target install -j`nproc`
 

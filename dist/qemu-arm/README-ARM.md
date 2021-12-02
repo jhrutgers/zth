@@ -1,4 +1,4 @@
-# Using Zth on Bare-Metal ARM
+﻿# Using Zth on Bare-Metal ARM
 
 There is preliminary support for bare-metal ARM with Zth.
 Most of Zth's source code is just C++, so usable on any target.

@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.2.3)
-project(arm-example)
+if(FALSE)
 
 if(NOT CMAKE_CROSSCOMPILING)
 
@@ -80,7 +79,7 @@ add_custom_target(arm-newlib DEPENDS ${newlib}.stamp)
 add_custom_command(
 	OUTPUT zth-arm.stamp
 	COMMAND mkdir -p zth-arm
-	COMMAND cd zth-arm && ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -Dtoolchain_base=${toolchain_base} -Dnewlib=${newlib} -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake -DZTH_HAVE_LIBZMQ=OFF -DZTH_THREADS=OFF ${PROJECT_SOURCE_DIR}/../.. 
+	COMMAND cd zth-arm && ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -Dtoolchain_base=${toolchain_base} -Dnewlib=${newlib} -DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake -DZTH_HAVE_LIBZMQ=OFF -DZTH_THREADS=OFF ${PROJECT_SOURCE_DIR}/../..
 	COMMAND make -C zth-arm arm-bsp
 	COMMAND touch ${newlib}.stamp
 	DEPENDS arm-none-eabi-gcc
@@ -99,8 +98,12 @@ add_custom_target(arm DEPENDS arm-examples)
 
 else() # CMAKE_CROSSCOMPILING
 
-set_property(SOURCE startup.S PROPERTY LANGUAGE C)
-add_library(arm-bsp crt0.c startup.S)
-
 endif() # CMAKE_CROSSCOMPILING
+
+
+endif() # FALSE
+
+set_property(SOURCE src/startup.S PROPERTY LANGUAGE C)
+add_library(arm-bsp src/crt0.c src/startup.S)
+add_dependencies(libzth arm-bsp)
 

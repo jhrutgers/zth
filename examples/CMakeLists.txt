@@ -30,15 +30,11 @@ add_example(daemon_pattern daemon_pattern.cpp)
 add_example(measure measure.cpp)
 add_example(blinky blinky.cpp)
 
-if(NOT WIN32)
+if(UNIX)
 	add_example(work work.cpp)
 	add_example(fsm fsm.cpp)
 endif()
 
 if(ZTH_HAVE_LIBZMQ)
 	add_example(zmq zmq.cpp)
-endif()
-
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-	add_subdirectory(arm EXCLUDE_FROM_ALL)
 endif()
