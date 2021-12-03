@@ -86,7 +86,7 @@ char const* banner() noexcept
 #    endif
 #  endif
 #  ifdef __ARM_ARCH
-		ZTH_STRINGIFY(__ARM_ARCH)
+		"v" ZTH_STRINGIFY(__ARM_ARCH)
 #  endif
 #endif
 #ifdef ZTH_ARM_USE_PSP

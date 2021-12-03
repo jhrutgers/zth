@@ -467,7 +467,7 @@ extern "C" void context_entry(Context* context);
 Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	: m_t0(Timestamp::now())
 {
-	Worker* worker = Worker::currentWorker();
+	Worker* worker = Worker::instance();
 	m_fiber = worker ? worker->currentFiber() : nullptr;
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
 	m_truncated = true;

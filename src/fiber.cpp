@@ -30,7 +30,7 @@ Fiber::FiberHook* Fiber::hookDead = NULL;
 #endif
 
 int Runnable::run() {
-	Worker* w = Worker::currentWorker();
+	Worker* w = Worker::instance();
 	if(unlikely(!w))
 		return EAGAIN;
 

@@ -37,14 +37,11 @@ namespace zth {
 
 	class Worker;
 
-	ZTH_TLS_DECLARE(Worker*, currentWorker_)
-
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	class Worker : public UniqueID<Worker> {
+	class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
 	public:
-		static Worker* currentWorker() { return ZTH_TLS_GET(currentWorker_); }
 		Fiber* currentFiber() const { return m_currentFiber; }
 
 		Worker()
@@ -59,10 +56,8 @@ namespace zth {
 			int res = 0;
 			zth_dbg(worker, "[%s] Created", id_str());
 
-			if(currentWorker())
+			if(instance() != this)
 				zth_abort("Only one worker allowed per thread");
-
-			ZTH_TLS_SET(currentWorker_, this);
 
 			if((res = context_init()))
 				goto error;
@@ -101,9 +96,6 @@ namespace zth {
 
 			perf_deinit();
 			context_deinit();
-
-			zth_assert(ZTH_TLS_GET(currentWorker_) == this);
-			ZTH_TLS_SET(currentWorker_, nullptr);
 		}
 
 		Waiter& waiter() { return m_waiter; }
@@ -361,9 +353,8 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() {
-		Worker* w = Worker::currentWorker();
-		zth_assert(w);
-		return *w;
+		// Dereference is guarded by the safe_ptr.
+		return *Worker::instance();
 	}
 
 	/*!
@@ -449,7 +440,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_outOfWork() { zth::outOfWork(); }
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() {
-	if(!zth::Worker::currentWorker())
+	if(!zth::Worker::instance())
 		return EINVAL;
 
 	new zth::Worker();
@@ -460,7 +451,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() {
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = NULL) {
-	zth::Worker* w = zth::Worker::currentWorker();
+	zth::Worker* w = zth::Worker::instance();
 	if(unlikely(!w))
 		return;
 	w->run(ts ? zth::TimeInterval(ts->tv_sec, ts->tv_nsec) : zth::TimeInterval());
@@ -470,7 +461,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = N
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() {
-	zth::Worker* w = zth::Worker::currentWorker();
+	zth::Worker* w = zth::Worker::instance();
 	if(unlikely(!w))
 		return;
 	delete w;

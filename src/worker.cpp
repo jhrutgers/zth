@@ -35,8 +35,6 @@
 
 namespace zth {
 
-ZTH_TLS_DEFINE(Worker*, currentWorker_, nullptr)
-
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 static void sigchld_handler(int /*unused*/);
 #endif
@@ -142,7 +140,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 		return EAGAIN;
 	} else if(pid == -1) {
 		int res = errno;
-		Worker* w = Worker::currentWorker();
+		Worker* w = Worker::instance();
 		char const* id_str = w ? w->id_str() : "?";
 		zth_dbg(worker, "[%s] Could not fork(); %s", id_str, err(res).c_str());
 		return res;
@@ -166,7 +164,7 @@ void sigchld_check()
 	if(likely(sigchld_cleanup == 0))
 		return;
 
-	Worker* w = Worker::currentWorker();
+	Worker* w = Worker::instance();
 	char const* id_str = w ? w->id_str() : "?";
 
 	while(true) {

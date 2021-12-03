@@ -566,6 +566,35 @@ namespace zth {
 	template <size_t... S> struct SequenceGenerator<0, S...> { typedef Sequence<S...> type; };
 #  endif
 #endif
+	/*!
+	 * \brief Wrapper for a pointer, which checks validity of the pointer upon dereference.
+	 */
+#ifdef _DEBUG
+	template <typename T>
+	class safe_ptr {
+	public:
+		typedef safe_ptr type;
+		typedef T pointer_type;
+
+		// cppcheck-suppress noExplicitConstructor
+		constexpr safe_ptr(pointer_type* p) noexcept : m_p(p) {}
+		constexpr operator pointer_type*() const noexcept { return ptr(); }
+		constexpr operator bool() const noexcept { return ptr(); }
+		constexpr14 pointer_type* operator->() const noexcept { zth_assert(ptr()); return ptr(); }
+		constexpr14 pointer_type& operator*() const noexcept { zth_assert(ptr()); return *ptr(); }
+	protected:
+		constexpr pointer_type* ptr() const noexcept { return m_p; }
+	private:
+		pointer_type* m_p;
+	};
+#else // _DEBUG
+	// No checking, use use the pointer.
+	template <typename T>
+	class safe_ptr {
+	public:
+		typedef T* type;
+	};
+#endif // !_DEBUG
 
 	/*!
 	 * \brief Singleton pattern.
@@ -590,8 +619,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_util
 	 */
 	template <typename T>
-	class Singleton
-	{
+	class Singleton {
 	public:
 		/*! \brief Alias of the \p T template parameter. */
 		typedef T singleton_type;
@@ -601,7 +629,7 @@ namespace zth {
 		 * \brief Constructor.
 		 * \details (Only) the first instance of the \p T is recorded in \c m_instance.
 		 */
-		Singleton()
+		constexpr14 Singleton() noexcept
 		{
 			// Do not enforce construction of only one Singleton, only register the first one
 			// as 'the' instance.
@@ -622,31 +650,10 @@ namespace zth {
 
 	public:
 		/*!
-		 * \brief Wrapper for a pointer, which checks validity of the pointer upon dereference.
-		 */
-#ifdef _DEBUG
-		class safe_ptr {
-		public:
-			// cppcheck-suppress noExplicitConstructor
-			constexpr safe_ptr(singleton_type* p) noexcept : m_p(p) {}
-			constexpr operator singleton_type*() const noexcept { return ptr(); }
-			constexpr operator bool() const noexcept { return ptr(); }
-			constexpr14 singleton_type* operator->() const noexcept { zth_assert(ptr()); return ptr(); }
-			constexpr14 singleton_type& operator*() const noexcept { zth_assert(ptr()); return *ptr(); }
-		protected:
-			constexpr singleton_type* ptr() const noexcept { return m_p; }
-		private:
-			singleton_type* m_p;
-		};
-#else
-		typedef singleton_type* safe_ptr;
-#endif
-
-		/*!
 		 * \brief Return the only instance of \p T.
 		 * \return the instance, or \c nullptr when not constructed yet/anymore.
 		 */
-		__attribute__((pure)) static safe_ptr instance() noexcept
+		__attribute__((pure)) constexpr14 static typename safe_ptr<singleton_type>::type instance() noexcept
 		{
 			return m_instance;
 		}
@@ -657,6 +664,61 @@ namespace zth {
 	};
 
 	template <typename T> typename Singleton<T>::singleton_type* Singleton<T>::m_instance = nullptr;
+
+	/*!
+	 * \brief %Singleton pattern, but only per-thread.
+	 *
+	 * This is the same as the #zth::Singleton class, except that the instance is saved in thread-local storage.
+	 *
+	 * \tparam T the type of the subclass that inherits this #ThreadLocalSingleton.
+	 * \ingroup zth_api_cpp_util
+	 */
+	template <typename T>
+	class ThreadLocalSingleton {
+	public:
+		/*! \brief Alias of the \p T template parameter. */
+		typedef T singleton_type;
+
+	protected:
+		/*!
+		 * \brief Constructor.
+		 * \details (Only) the first instance of the \p T within the current thread is recorded in \c m_instance.
+		 */
+		ThreadLocalSingleton()
+		{
+			// Do not enforce construction of only one Singleton, only register the first one
+			// as 'the' instance.
+
+			if(!ZTH_TLS_GET(m_instance))
+				ZTH_TLS_SET(m_instance, static_cast<singleton_type*>(this));
+		}
+
+		/*!
+		 * \brief Destructor.
+		 * \details After destruction, #instance() will return \c nullptr.
+		 */
+		~ThreadLocalSingleton()
+		{
+			if(ZTH_TLS_GET(m_instance) == static_cast<singleton_type*>(this))
+				ZTH_TLS_SET(m_instance, nullptr);
+		}
+
+	public:
+		/*!
+		 * \brief Return the only instance of \p T within this thread.
+		 * \return the instance, or \c nullptr when not constructed yet/anymore.
+		 */
+		__attribute__((pure)) static typename safe_ptr<singleton_type>::type instance() noexcept
+		{
+			return ZTH_TLS_GET(m_instance);
+		}
+
+	private:
+		/*! \brief The only instance of \p T. */
+		ZTH_TLS_MEMBER(singleton_type*, m_instance)
+	};
+
+	template <typename T> ZTH_TLS_DEFINE(typename ThreadLocalSingleton<T>::singleton_type*, ThreadLocalSingleton<T>::m_instance, nullptr)
 
 	/*!
 	 * \brief A simple std::vector, which can contain \p Prealloc without heap allocation.
