@@ -2,3 +2,4 @@
 /doxygen/
 *.swp
 *.swo
+.gdb_history

@@ -189,6 +189,10 @@ if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
 endif()
 
+if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
+	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
+endif()
+
 install(TARGETS libzth EXPORT libzth
 	ARCHIVE DESTINATION lib
 	PUBLIC_HEADER DESTINATION include
