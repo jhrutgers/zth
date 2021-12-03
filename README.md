@@ -15,18 +15,21 @@ two fibers by using the `async` keyword:
 	#include <zth>
 	#include <cstdio>
 
-	void world() {
+	void world()
+	{
 		printf("World!!1\n");
 	}
 	zth_fiber(world)
 
-	void hello() {
+	void hello()
+	{
 		async world();
 		printf("Hello\n");
 	}
 	zth_fiber(hello)
 
-	void main_fiber(int argc, char** argv) {
+	void main_fiber(int argc, char** argv)
+	{
 		async hello();
 	}
 
@@ -40,14 +43,18 @@ they explicitly yield from one to another.
 
 [GNU Pth](https://www.gnu.org/software/pth/) has been a great inspiration for this library.
 
-Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc >=4 is supported.
-There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).
+Supported platforms are:
 
+- Ubuntu/macOS/Windows 32/64-bit
+- bare-metal 32-bit ARM (with newlib)
+- gcc 4 or newer
+- C++98 or newer, C99 or newer
 
 ## How to build
 
-To install all build dependencies, run `scripts/bootstrap` (as Administrator under Windows).
-Next, run `scripts/build` to build the library and all examples. This does effectively:
+To install all build dependencies, run `dist/<platform>/bootstrap` (as
+Administrator under Windows).  Next, run `dist/<platform>/build` to build the
+library and all examples. This does effectively:
 
 	mkdir build
 	cd build
@@ -57,7 +64,7 @@ Next, run `scripts/build` to build the library and all examples. This does effec
 After building, check out the `doxygen/html` directory for [documentation](https://jhrutgers.github.io/zth).
 
 By default, release builds are generated. To do debug builds, pass `Debug` as
-command line argument to `scripts/build`, or do something like:
+command line argument to `dist/<platform>/build`, or do something like:
 
 	cmake .. -D CMAKE_BUILD_TYPE=Debug
 

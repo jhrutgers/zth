@@ -31,14 +31,14 @@ jobs:
         uses: actions/checkout@v2
       - name: bootstrap
         run: |
-          scripts/bootstrap.sh
+          dist/ubuntu/bootstrap.sh
           sudo apt install -y clang clang-tidy cppcheck
       - name: build Debug
-        run: scripts/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
+        run: dist/ubuntu/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
       - name: build Release
         run: |
-          rm -rf build
-          scripts/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
 
   build-windows:
     runs-on: windows-latest
@@ -49,19 +49,19 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run: scripts\bootstrap.cmd
+        run: dist\win32\bootstrap.cmd
       - name: build Debug
-        run: scripts\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
+        run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
-        working-directory: build
+        working-directory: dist\win32\build
       - name: build Release
         run: |
-          Remove-Item -path build -recurse -force
-          scripts\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
+          Remove-Item -path dist\win32\build -recurse -force
+          dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
-        working-directory: build
+        working-directory: dist\win32\build
 
   build-mac:
     runs-on: macos-latest
@@ -69,25 +69,39 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run: scripts/bootstrap.sh
+        run: dist/macos/bootstrap.sh
       - name: build Debug
-        run: scripts/build.sh Debug test
+        run: dist/macos/build.sh Debug test
       - name: build Release
         run: |
-          rm -rf build
-          scripts/build.sh Release test
+          rm -rf dist/macos/build
+          dist/macos/build.sh Release test
 
-  documentation:
-    if: github.ref == 'refs/heads/master'
-    needs: [build-ubuntu, build-windows, build-mac]
+  build-arm:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run: scripts/bootstrap.sh
+        run: dist/qemu-arm/bootstrap.sh
+      - name: build Debug
+        run: dist/qemu-arm/build.sh Debug dev notest
+      - name: build Release
+        run: |
+          rm -rf dist/qemu-arm/build
+          dist/qemu-arm/build.sh Release
+
+  documentation:
+    if: github.ref == 'refs/heads/master'
+    needs: [build-ubuntu, build-windows, build-mac, build-arm]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: bootstrap
+        run: dist/ubuntu/bootstrap.sh
       - name: build
-        run: scripts/build.sh -DZTH_DOCUMENTATION=ON
+        run: dist/ubuntu/build.sh -DZTH_DOCUMENTATION=ON
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

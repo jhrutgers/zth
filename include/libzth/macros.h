@@ -63,6 +63,7 @@
 #    define ZTH_TLS_DECLARE(type,var)		extern __thread type var;
 #    define ZTH_TLS_DEFINE(type,var,init)	__thread type var = init;
 #    define ZTH_TLS_STATIC(type,var,init)	static __thread type var = init;
+#    define ZTH_TLS_MEMBER(type,var)		static __thread type var;
 #    define ZTH_TLS_SET(var,value)		var = value
 #    define ZTH_TLS_GET(var)			var
 #  endif
@@ -103,6 +104,7 @@
 #  define ZTH_TLS_DECLARE(type,var)		extern type var;
 #  define ZTH_TLS_DEFINE(type,var,init)		type var = init;
 #  define ZTH_TLS_STATIC(type,var,init)		static type var = init;
+#  define ZTH_TLS_MEMBER(type,var)		static type var;
 #  define ZTH_TLS_SET(var,value)		var = value
 #  define ZTH_TLS_GET(var)			var
 #endif
@@ -213,7 +215,7 @@ ZTH_EXPORT void foo();
 #  define ZTH_ARCH_X86 1
 #elif defined(__arm__)
 #  define ZTH_ARCH_ARM 1
-#  if defined(__ARM_ARCH) && __ARM_ARCH >= 6
+#  if defined(__ARM_ARCH) && __ARM_ARCH >= 6 && defined(__ARM_ARCH_PROFILE) && __ARM_ARCH_PROFILE == 'M'
 #    define ZTH_ARM_HAVE_MPU
 #  endif
 #  define __isb() __asm__ volatile ("isb":::"memory")
@@ -310,7 +312,7 @@ ZTH_EXPORT void foo();
 #elif defined(ZTH_OS_BAREMETAL)
 // Assume having newlib with setjmp/longjmp fiddling.
 #  define ZTH_CONTEXT_SJLJ
-#  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6
+#  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6 && defined(__ARM_ARCH_PROFILE) && __ARM_ARCH_PROFILE == 'M'
 #    define ZTH_ARM_USE_PSP
 #    define ZTH_STACK_SWITCH
 #  endif

@@ -35,7 +35,7 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist" CACHE PATH "Override default install path" FORCE)
+	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/deploy" CACHE PATH "Override default install path" FORCE)
 endif()
 
 option(ZTH_DEV "Enable by default development related build options" OFF)
@@ -51,11 +51,9 @@ if(ZTH_DRAFT_API)
 	message(STATUS "Enable Zth draft API")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
 option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
 if(ZTH_HAVE_LIBZMQ)
-	find_package(ZeroMQ)
+	find_package(ZeroMQ REQUIRED)
 endif()
 
 if(ZTH_DEV_OPTION AND NOT CMAKE_CROSSCOMPILING AND NOT MINGW)
@@ -189,6 +187,10 @@ target_include_directories(libzth PUBLIC
 target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -ffunction-sections -fdata-sections)
 if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
+endif()
+
+if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
+	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
 endif()
 
 install(TARGETS libzth EXPORT libzth
@@ -355,4 +357,8 @@ if(CPPCHECK_CMD)
 	if(ZTH_CPPCHECK)
 		add_custom_target(libzth-cppcheck-all ALL DEPENDS libzth-cppcheck)
 	endif()
+endif()
+
+if(ZTH_DIST_DIR)
+	add_subdirectory(${ZTH_DIST_DIR})
 endif()

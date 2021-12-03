@@ -1,6 +1,6 @@
 @echo off
 set here=%~dp0
-pushd "%here%\.."
+pushd "%here%"
 
 rem Usage: bootstrap.cmd [-f]
 rem
@@ -9,7 +9,7 @@ rem When -f is provided, choco is used to install the dependencies.
 
 if "%1" == "-f" goto do_bootstrap
 
-call scripts\env.cmd
+call env.cmd
 if errorlevel 1 goto do_bootstrap
 echo.
 echo Your installation seems OK; skipping bootstrap.

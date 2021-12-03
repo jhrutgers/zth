@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This file is sourced from a dist/*/ directory. Do not call directly.
+
 set -euo pipefail
 
 function gotErr {
@@ -7,20 +9,19 @@ function gotErr {
 	exit 1
 }
 
-function numproc {
-	case `uname -s` in
-		Linux*)
-			nproc;;
-		Darwin*)
-			sysctl -n hw.logicalcpu;;
-		*)
-			echo 1;;
-	esac
-}
-
 trap gotErr ERR
 
-pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")"/.. &> /dev/null; pwd -P)" > /dev/null
+function show_help {
+	echo "Usage: $0 <build type> [<short flag>...] [--] [<cmake argument>...]"
+	exit 2
+}
+
+repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." &> /dev/null; pwd -P)"
+
+case ${1:-} in
+	-?|-h|--help)
+		show_help;;
+esac
 
 BUILD_TYPE="${1:-Release}"
 shift || true
@@ -29,7 +30,6 @@ mkdir -p build
 pushd build > /dev/null
 
 # Simplify setting specific configuration flag.
-cmake_opts=
 support_test=1
 do_test=0
 use_ninja=0
@@ -40,6 +40,8 @@ fi
 
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
+		-?|-h|--help|help)
+			show_help;;
 		C++98|C++03)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99"
 			support_test=0
@@ -74,6 +76,8 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DZTH_THREADS=OFF";;
 		test)
 			do_test=1;;
+		notest)
+			do_test=0;;
 		CC=*)
 			CC="${1#CC=}";;
 		CXX=*)
@@ -93,31 +97,28 @@ fi
 
 if [[ ${do_test} == 1 ]]; then
 	cmake_opts="${cmake_opts} -DZTH_TESTS=ON"
+else
+	cmake_opts="${cmake_opts} -DZTH_TESTS=OFF"
 fi
 
 if [[ ${use_ninja} == 1 ]]; then
 	cmake_opts="${cmake_opts} -G Ninja"
 fi
 
-case `uname -s` in
-	Darwin*)
-		# Use brew's gcc
-		[[ ! -z ${CC:-} ]]  || CC=`ls -1 /usr/local/bin/gcc-[0-9]* | sort -n | tail -n 1`
-		[[ ! -z ${CXX:-} ]] || CXX=`ls -1 /usr/local/bin/g++-[0-9]* | sort -n | tail -n 1`
-		;;
-	*)
-		[[ ! -z ${CC:-} ]]  || CC=gcc
-		[[ ! -z ${CXX:-} ]] || CXX=g++
-		;;
-esac
+if [[ ! -z ${CC:-} ]]; then
+	cmake_opts="${cmake_opts} -DCMAKE_C_COMPILER='${CC}'"
+fi
 
-cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DCMAKE_C_COMPILER="${CC}" -DCMAKE_CXX_COMPILER="${CXX}" ${cmake_opts} "$@" ..
-cmake --build . -j`numproc`
-cmake --build . --target install -j`numproc`
+if [[ ! -z ${CXX:-} ]]; then
+	cmake_opts="${cmake_opts} -DCMAKE_CXX_COMPILER='${CXX}'"
+fi
+
+cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ${cmake_opts} "$@" ../../..
+cmake --build . -j`nproc`
+cmake --build . --target install -j`nproc`
 
 if [[ ${do_test} == 1 ]]; then
 	cmake --build . --target test
 fi
 
 popd > /dev/null
-

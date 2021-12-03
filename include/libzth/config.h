@@ -84,7 +84,12 @@ namespace zth {
 		 * Needs #SupportDebugPrint to be \c true.  Can be overridden by
 		 * \c ZTH_CONFIG_ENABLE_DEBUG_PRINT environment variable.
 		 */
-		static bool const EnableDebugPrint = false;
+		static bool const EnableDebugPrint =
+#ifdef ZTH_CONFIG_ENABLE_DEBUG_PRINT
+			ZTH_CONFIG_ENABLE_DEBUG_PRINT;
+#else
+			false;
+#endif
 		/*! \brief Enable colored output. */
 		static bool const EnableColorLog = true;
 

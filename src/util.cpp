@@ -74,6 +74,20 @@ char const* banner() noexcept
 #endif
 #ifdef ZTH_ARCH_ARM
 		" arm"
+#  ifdef __ARM_ARCH_PROFILE
+#    if __ARM_ARCH_PROFILE == 'A'
+		"A"
+#    elif __ARM_ARCH_PROFILE == 'R'
+		"R"
+#    elif __ARM_ARCH_PROFILE == 'M'
+		"M"
+#    elif __ARM_ARCH_PROFILE == 'S'
+		"S"
+#    endif
+#  endif
+#  ifdef __ARM_ARCH
+		"v" ZTH_STRINGIFY(__ARM_ARCH)
+#  endif
 #endif
 #ifdef ZTH_ARM_USE_PSP
 		" psp"

@@ -687,15 +687,28 @@ static int context_create_impl(Context* context, stack_t* stack)
 	void** sp = (void**)((uintptr_t)((char*)stack->ss_sp + stack->ss_size - sizeof(void*)) & ~(uintptr_t)7); // sp (must be dword aligned)
 	*sp = context; // push context argument on the new stack
 
-	size_t sp_offset =
-#  if (__ARM_ARCH_ISA_THUMB == 1 && !__ARM_ARCH_ISA_ARM) || defined(__thumb2__)
-		8;
-#  else
-		9;
-#  endif
+	static size_t lr_offset = 0;
 
-	context->env[sp_offset] = (intptr_t)sp;
-	context->env[sp_offset + 1] = (intptr_t)&context_trampoline; // lr
+	if(unlikely(lr_offset == 0)) {
+		// Not initialized yet.
+
+		// env is filled with several registers. The number of
+		// registers depends on the ARM architecture and Thumb mode,
+		// and compile settings for newlib. We have to change the sp
+		// and lr registers in this env.  These are always the last two
+		// registers in the list, and are always non-zero.  So, find
+		// the last non-zero register to determine the lr offset.
+
+		lr_offset = sizeof(context->env) / sizeof(context->env[0]) - 1;
+		for(; lr_offset > 1 && !context->env[lr_offset]; lr_offset--);
+	}
+
+	if(lr_offset <= 1)
+		// Should not be possible.
+		return EINVAL;
+
+	context->env[lr_offset - 1u] = (intptr_t)sp;
+	context->env[lr_offset] = (intptr_t)&context_trampoline; // lr
 #else
 #  error Unsupported architecture for setjmp/longjmp method.
 #endif
@@ -832,6 +845,7 @@ static int context_newstack(Context* context, stack_t* stack)
 #endif
 	{
 		context->stack_watermarked = stack->ss_sp = context->stack;
+		// NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
 		stack_watermarked_size = stack->ss_size = context->stackSize;
 	}
 	stack->ss_flags = 0;
