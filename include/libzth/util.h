@@ -729,7 +729,7 @@ namespace zth {
 	 * into an std::vector, using heap memory after all.
 	 *
 	 * In all cases, the elements are stored in contiguous memory, like
-	 * guaranteed by std::vector.  Upon a #push_back(), underlying memory may
+	 * guaranteed by std::vector.  Upon a \c push_back(), underlying memory may
 	 * be reallocated to accommodate the new element, which renders previous
 	 * pointers invalid.
 	 *
