@@ -1,5 +1,7 @@
 #include <zth>
 
+#include <cmath>
+
 /////////////////////////////////////////////////
 // Tests
 
@@ -109,22 +111,42 @@ void testNap100ms()
 
 static std::string preciseTime(double s)
 {
+	// We would like to do std::format("%.12f", s), but newlib may not
+	// support double formatting.  Therefore, do it the hard way...
+
+	if(s != s)
+		return "NaN";
+
+	if(s - s != s - s) // inf - inf == NaN
+		return s < 0 ? "-Inf" : "Inf";
+
 	std::string res;
-	if(s >= 0)
-		res = " ";
-	res += zth::format("%.12f", s);
-	std::string::iterator it = res.end();
-	size_t cnt = 0;
-	while(true) {
-		if(it == res.begin())
-			break;
-		if(*(it - 1) == '.')
-			break;
-		if(cnt > 0 && cnt % 3 == 0)
-			it = res.insert(it, '\'');
-		cnt++;
-		--it;
+
+	if(s < 0)
+		res += "-";
+
+	else
+		res += " ";
+
+	// We expect that all values are < 1 s, so simplify the formatting of
+	// the integral part.
+
+	double intpart;
+	s = modf(fabs(s), &intpart);
+	res += zth::format("%u.", (unsigned)intpart);
+
+	// Now print 12 decimals, grouped with '.
+
+	for(int i = 0; i < 4; i++) {
+		if(i)
+			res += "'";
+		s = modf(s * 1000.0, &intpart);
+		// Ok, there may be an exotic case because of rounding that
+		// intpart may become 1000. Ignore that for now.
+		res += zth::format("%03u", (unsigned)intpart);
 	}
+
+	// Last decimal may not be rounded properly. Ignore that.
 	res += " s";
 	return res;
 }
@@ -196,11 +218,11 @@ static void cb(Fsm_type& fsm, TestData* testData)
 		break;
 	case stateDone:
 		testData->singleResult += testData->duration.s() / ((size_t)1 << testData->calibration);
-		printf("%-50s: %s    (2^%2zu iterations, total %.2f s)\n",
+		printf("%-50s: %s    (2^%2u iterations, total %s)\n",
 			testData->description,
 			preciseTime(testData->singleResult).c_str(),
-			testData->calibration,
-			testData->duration.s());
+			(unsigned)testData->calibration,
+			testData->duration.str().c_str());
 		break;
 	}
 }
