@@ -101,8 +101,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html">zth::Singleton&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1_singleton.html" title="Singleton pattern.">Singleton</a> pattern.  <a href="classzth_1_1_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -122,6 +122,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">zth::log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">More...</a><br /></td></tr>
 <tr class="separator:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">zth::ZTH_TLS_DEFINE</a> (typename <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::singleton_type *, <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::m_instance, nullptr) template&lt; typename T</td></tr>
+<tr class="memdesc:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">More...</a><br /></td></tr>
+<tr class="separator:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memItemLeft" align="right" valign="top">constexpr char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">zth::version</a> ()</td></tr>
 <tr class="memdesc:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version of Zth.  <a href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">More...</a><br /></td></tr>
 <tr class="separator:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -225,7 +229,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a7">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00121">121</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00135">135</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -265,7 +269,7 @@ Functions</h2></td></tr>
 
 <p>Aborts the process after printing the given printf() formatted message. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00133">133</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00147">147</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -423,7 +427,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00212">212</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00226">226</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -494,6 +498,54 @@ Functions</h2></td></tr>
 <p>Returns the version of Zth. </p>
 
 <p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00036">36</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
+
+</div>
+</div>
+<a id="ga02bedd1baea68e40bc3a3472d8d997fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga02bedd1baea68e40bc3a3472d8d997fb">&#9670;&nbsp;</a></span>ZTH_TLS_DEFINE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">zth::ZTH_TLS_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">typename <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::singleton_type *&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::m_instance&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nullptr&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A simple std::vector, which can contain <code>Prealloc</code> without heap allocation. </p>
+<p>When the internal buffer is exhausted, the vector grows automatically into an std::vector, using heap memory after all.</p>
+<p>In all cases, the elements are stored in contiguous memory, like guaranteed by std::vector. Upon a <code>push_back()</code>, underlying memory may be reallocated to accommodate the new element, which renders previous pointers invalid.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the type of elements to contain </td></tr>
+    <tr><td class="paramname">Prealloc</td><td>the minimum number of elements to contain without using heap </td></tr>
+    <tr><td class="paramname">Allocator</td><td>the allocator to use for std::vector </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

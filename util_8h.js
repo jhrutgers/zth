@@ -5,7 +5,7 @@ var util_8h =
     [ "choose_type", "structzth_1_1choose__type.html", "structzth_1_1choose__type" ],
     [ "choose_type< void, WhenTIsVoid >", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4" ],
     [ "Sequence", "structzth_1_1_sequence.html", null ],
-    [ "safe_ptr", "classzth_1_1_singleton_1_1safe__ptr.html", "classzth_1_1_singleton_1_1safe__ptr" ],
+    [ "safe_ptr", "classzth_1_1safe__ptr.html", "classzth_1_1safe__ptr" ],
     [ "FOREACH", "util_8h.html#af066968dd1ddf024e9ebe92ca95fc633", null ],
     [ "FOREACH_0", "util_8h.html#a8337f44cec23ee734f085a4ea20ea094", null ],
     [ "FOREACH_1", "util_8h.html#ad662212bce1463fc00ab1fcc89451332", null ],
@@ -84,5 +84,8 @@ var util_8h =
     [ "zth_banner", "group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588", null ],
     [ "zth_log", "group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d", null ],
     [ "zth_log_color", "group__zth__api__c__util.html#ga9f263744ecb1252cd9a814ab3aed45a2", null ],
-    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ]
+    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ],
+    [ "ZTH_TLS_DEFINE", "util_8h.html#ga02bedd1baea68e40bc3a3472d8d997fb", null ],
+    [ "Allocator", "util_8h.html#a74ba2f5b5ab3684baa1416813485d338", null ],
+    [ "Prealloc", "util_8h.html#a181ba5f221925415543bb489406d852a", null ]
 ];

@@ -54,10 +54,10 @@ var hierarchy =
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
     ] ],
     [ "zth::SharedPointer< zth::Future >", "classzth_1_1_shared_pointer.html", null ],
-    [ "zth::small_vector< MetaItem, PollItemList::prealloc >", "classzth_1_1small__vector.html", null ],
-    [ "zth::small_vector< Pollable * >", "classzth_1_1small__vector.html", null ],
-    [ "zth::small_vector< PollItem, 4 >", "classzth_1_1small__vector.html", null ],
     [ "zth::SortedList< zth::TimedWaitable >", "classzth_1_1_sorted_list.html", null ],
+    [ "zth::ThreadLocalSingleton< Worker >", "classzth_1_1_thread_local_singleton.html", [
+      [ "zth::Worker", "classzth_1_1_worker.html", null ]
+    ] ],
     [ "zth::Backtrace", "classzth_1_1_backtrace.html", null ],
     [ "zth::choose_type< T, WhenTIsVoid >", "structzth_1_1choose__type.html", null ],
     [ "zth::choose_type< void, WhenTIsVoid >", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html", null ],
@@ -113,12 +113,12 @@ var hierarchy =
       [ "zth::PerfFiber", "classzth_1_1_perf_fiber.html", null ],
       [ "zth::Waiter", "classzth_1_1_waiter.html", null ]
     ] ],
+    [ "zth::safe_ptr< T >", "classzth_1_1safe__ptr.html", null ],
     [ "zth::Sequence<... >", "structzth_1_1_sequence.html", null ],
     [ "zth::SharedPointer< T >", "classzth_1_1_shared_pointer.html", null ],
     [ "zth::Singleton< T >", "classzth_1_1_singleton.html", null ],
-    [ "zth::Singleton< T >::safe_ptr", "classzth_1_1_singleton_1_1safe__ptr.html", null ],
-    [ "zth::small_vector< T, Prealloc, Allocator >", "classzth_1_1small__vector.html", null ],
     [ "zth::SortedList< T, Compare >", "classzth_1_1_sorted_list.html", null ],
+    [ "zth::ThreadLocalSingleton< T >", "classzth_1_1_thread_local_singleton.html", null ],
     [ "zth::TimeInterval", "classzth_1_1_time_interval.html", null ],
     [ "zth::Timestamp", "classzth_1_1_timestamp.html", null ],
     [ "zth::TypedFiberFactory< F >", "classzth_1_1_typed_fiber_factory.html", null ],

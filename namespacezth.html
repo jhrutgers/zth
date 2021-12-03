@@ -210,6 +210,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html">Runnable</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An abstract class, that can be started as a fiber.  <a href="classzth_1_1_runnable.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1safe__ptr.html">safe_ptr</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for a pointer, which checks validity of the pointer upon dereference.  <a href="classzth_1_1safe__ptr.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_semaphore.html">Semaphore</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_sequence.html">Sequence</a></td></tr>
@@ -227,12 +230,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html">Singleton</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1_singleton.html" title="Singleton pattern.">Singleton</a> pattern.  <a href="classzth_1_1_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">small_vector</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_sorted_list.html">SortedList</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_synchronizer.html">Synchronizer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html">TimedWaitable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -500,6 +503,10 @@ Functions</h2></td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">str&lt; UniqueIDBase const &amp; &gt;</a> (<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">ZTH_TLS_DEFINE</a> (typename <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::singleton_type *, <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::m_instance, nullptr) template&lt; typename T</td></tr>
+<tr class="memdesc:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">More...</a><br /></td></tr>
+<tr class="separator:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memItemLeft" align="right" valign="top">constexpr char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">version</a> ()</td></tr>
 <tr class="memdesc:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version of Zth.  <a href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">More...</a><br /></td></tr>
 <tr class="separator:ga47e7f0ee2498e20da08813db8cdec9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -563,6 +570,10 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:a31108f9b5f0e9615402a50430b03978e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a31108f9b5f0e9615402a50430b03978e">startTime</a></td></tr>
 <tr class="separator:a31108f9b5f0e9615402a50430b03978e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a181ba5f221925415543bb489406d852a"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a181ba5f221925415543bb489406d852a">Prealloc</a> = 1</td></tr>
+<tr class="separator:a181ba5f221925415543bb489406d852a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74ba2f5b5ab3684baa1416813485d338"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a74ba2f5b5ab3684baa1416813485d338">Allocator</a></td></tr>
+<tr class="separator:a74ba2f5b5ab3684baa1416813485d338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a95a629946907334556819bb73ba178c2"></a>
@@ -681,7 +692,7 @@ Variables</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a5">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00916">916</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00930">930</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +711,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00888">888</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00902">902</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -722,7 +733,7 @@ Variables</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a9">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00974">974</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00988">988</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -742,7 +753,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00894">894</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00908">908</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -761,7 +772,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00882">882</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00896">896</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -802,7 +813,7 @@ Variables</h2></td></tr>
 <p>Return the high water mark of the stack of the given context. </p>
 <p>This does not take any <a class="el" href="namespacezth.html#a279f8b9049990922013e96d3e4eba9e0" title="Call the function f using the new stack pointer.">zth::stack_switch()</a> calls into account. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l01122">1122</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l01136">1136</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -834,7 +845,7 @@ Variables</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a2">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00955">955</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00969">969</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -861,7 +872,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00378">378</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00370">370</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -995,7 +1006,7 @@ Variables</h2></td></tr>
 
 <p>Format like <code>vsprintf()</code>, but save the result in an <code>std::string</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00231">231</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00245">245</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -1033,7 +1044,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00382">382</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00374">374</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -1062,7 +1073,7 @@ Variables</h2></td></tr>
 
 <p>Returns if the system supports ANSI colors. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00171">171</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00185">185</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -1249,7 +1260,7 @@ template&lt;typename P &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00421">421</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00413">413</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -1288,7 +1299,7 @@ template&lt;typename P &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00163">163</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00161">161</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -1945,7 +1956,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00414">414</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00406">406</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -2004,7 +2015,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00044">44</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00042">42</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -2043,6 +2054,38 @@ template&lt;&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a74ba2f5b5ab3684baa1416813485d338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74ba2f5b5ab3684baa1416813485d338">&#9670;&nbsp;</a></span>Allocator</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int8_t zth::Allocator</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00741">741</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="a181ba5f221925415543bb489406d852a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a181ba5f221925415543bb489406d852a">&#9670;&nbsp;</a></span>Prealloc</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int8_t zth::Prealloc = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00741">741</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
 <a id="a31108f9b5f0e9615402a50430b03978e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a31108f9b5f0e9615402a50430b03978e">&#9670;&nbsp;</a></span>startTime</h2>
 

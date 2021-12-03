@@ -91,31 +91,40 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using the <code>async</code> keyword: </p><pre class="fragment">#include &lt;zth&gt;
 #include &lt;cstdio&gt;
 
-void world() {
+void world()
+{
     printf("World!!1\n");
 }
 zth_fiber(world)
 
-void hello() {
+void hello()
+{
     async world();
     printf("Hello\n");
 }
 zth_fiber(hello)
 
-void main_fiber(int argc, char** argv) {
+void main_fiber(int argc, char** argv)
+{
     async hello();
 }
 </pre><p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> for more details, including the full explanation of this example.</p>
 <p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
 <p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
-<p>Currently, Linux/Mac OSX/Windows, 32/64-bit, gcc &gt;=4 is supported. There is experimental support for bare-metal 32-bit ARM (with newlib 3.1.0).</p>
+<p>Supported platforms are:</p>
+<ul>
+<li>Ubuntu/macOS/Windows 32/64-bit</li>
+<li>bare-metal 32-bit ARM (with newlib)</li>
+<li>gcc 4 or newer</li>
+<li>C++98 or newer, C99 or newer</li>
+</ul>
 <h2>How to build</h2>
-<p>To install all build dependencies, run <code>scripts/bootstrap</code> (as Administrator under Windows). Next, run <code>scripts/build</code> to build the library and all examples. This does effectively: </p><pre class="fragment">mkdir build
+<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. This does effectively: </p><pre class="fragment">mkdir build
 cd build
 cmake ..
 cmake --build .
 </pre><p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
-<p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>scripts/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
+<p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
 </pre><h3>How to integrate in your project</h3>
 <p>Include the Zth top-level <code>CMakeLists.txt</code> in your project, and link to <code>libzth</code>. Configure Zth options as required, like this: </p><pre class="fragment">set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
 set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
@@ -124,7 +133,7 @@ set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
 add_subdirectory(zth)
 # Override search path to your own zth_config.h.
 target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
-</pre><p>This also works for cross-compiling. Refer to <code><a class="el" href="_r_e_a_d_m_e-_a_r_m_8md.html">examples/arm/README-ARM.md</a></code> for some hints when compiling for bare-metal ARM.</p>
+</pre><p>This also works for cross-compiling. Refer to <code>examples/arm/README-ARM.md</code> for some hints when compiling for bare-metal ARM.</p>
 <h2>How to run</h2>
 <p>libzth checks for environment variables, which are listed below. The environment is (usually) only checked once, so dynamically changing the variables after startup has no effect to libzth's behavior.</p>
 <ul>

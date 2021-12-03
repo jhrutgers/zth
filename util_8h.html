@@ -85,7 +85,8 @@ $(document).ready(function(){initNavTree('util_8h.html',''); initResizable(); })
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">util.h File Reference</div>  </div>
 </div><!--header-->
@@ -124,14 +125,14 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_sequence.html">zth::Sequence&lt;... &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1safe__ptr.html">zth::safe_ptr&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for a pointer, which checks validity of the pointer upon dereference.  <a href="classzth_1_1safe__ptr.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton.html">zth::Singleton&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1_singleton.html" title="Singleton pattern.">Singleton</a> pattern.  <a href="classzth_1_1_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_singleton_1_1safe__ptr.html">zth::Singleton&lt; T &gt;::safe_ptr</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for a pointer, which checks validity of the pointer upon dereference.  <a href="classzth_1_1_singleton_1_1safe__ptr.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -350,6 +351,10 @@ Functions</h2></td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">zth::str&lt; UniqueIDBase const &amp; &gt;</a> (UniqueIDBase const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">zth::ZTH_TLS_DEFINE</a> (typename ThreadLocalSingleton&lt; T &gt;::singleton_type *, ThreadLocalSingleton&lt; T &gt;::m_instance, nullptr) template&lt; typename T</td></tr>
+<tr class="memdesc:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">More...</a><br /></td></tr>
+<tr class="separator:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">zth_banner</a> ()</td></tr>
 <tr class="memdesc:ga4be59428e2559bcc589cdf4bbb4de588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.  <a href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">More...</a><br /></td></tr>
 <tr class="separator:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -362,6 +367,13 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d">zth_log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d">More...</a><br /></td></tr>
 <tr class="separator:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a181ba5f221925415543bb489406d852a"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a181ba5f221925415543bb489406d852a">zth::Prealloc</a> = 1</td></tr>
+<tr class="separator:a181ba5f221925415543bb489406d852a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74ba2f5b5ab3684baa1416813485d338"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a74ba2f5b5ab3684baa1416813485d338">zth::Allocator</a></td></tr>
+<tr class="separator:a74ba2f5b5ab3684baa1416813485d338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="af066968dd1ddf024e9ebe92ca95fc633"></a>
@@ -1857,7 +1869,7 @@ Functions</h2></td></tr>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga4889d34edbac39ba98e63d58173f3b88"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...) noexcept</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00121">util.cpp:121</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga4889d34edbac39ba98e63d58173f3b88"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...) noexcept</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00135">util.cpp:135</a></div></div>
 <div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00041">util.h:41</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
 <div class="ttc" id="astructzth_1_1_default_config_html_a228f4b3e903829a92bf0e5808be43bae"><div class="ttname"><a href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static const bool EnableAssert</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00061">config.h:61</a></div></div>

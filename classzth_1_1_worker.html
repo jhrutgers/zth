@@ -83,7 +83,6 @@ $(document).ready(function(){initNavTree('classzth_1_1_worker.html',''); initRes
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -100,8 +99,9 @@ Inheritance diagram for zth::Worker:</div>
  <div class="center">
   <img src="classzth_1_1_worker.png" usemap="#zth::Worker_map" alt=""/>
   <map id="zth::Worker_map" name="zth::Worker_map">
-<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Worker &gt;" shape="rect" coords="0,56,149,80"/>
-<area href="classzth_1_1_unique_i_d_base.html" alt="zth::UniqueIDBase" shape="rect" coords="0,0,149,24"/>
+<area href="classzth_1_1_unique_i_d.html" alt="zth::UniqueID&lt; Worker &gt;" shape="rect" coords="0,56,222,80"/>
+<area href="classzth_1_1_thread_local_singleton.html" alt="zth::ThreadLocalSingleton&lt; Worker &gt;" shape="rect" coords="232,56,454,80"/>
+<area href="classzth_1_1_unique_i_d_base.html" alt="zth::UniqueIDBase" shape="rect" coords="0,0,222,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -163,14 +163,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4160a087be7f5b16b702803452068d7 inherit pub_methods_classzth_1_1_unique_i_d"><td class="memItemLeft" align="right" valign="top">char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ab4160a087be7f5b16b702803452068d7">id_str</a> () const override</td></tr>
 <tr class="separator:ab4160a087be7f5b16b702803452068d7 inherit pub_methods_classzth_1_1_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae9c20dad103d7614efb970464968a6b6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classzth_1_1_worker.html">Worker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_worker.html#ae9c20dad103d7614efb970464968a6b6">currentWorker</a> ()</td></tr>
-<tr class="separator:ae9c20dad103d7614efb970464968a6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_static_methods_classzth_1_1_unique_i_d"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classzth_1_1_unique_i_d')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID&lt; Worker &gt;</a></td></tr>
-<tr class="memitem:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#adfdbcd7dd7133c865ecf4c9a3876cdc2">getID</a> () noexcept</td></tr>
-<tr class="separator:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a628a0151b623204dde065a7369ff18ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_worker.html#a628a0151b623204dde065a7369ff18ca">isInWorkerContext</a> () const</td></tr>
@@ -185,6 +177,13 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a18cd1e461a7e732a004574bc8f2c729b inherit pro_methods_classzth_1_1_unique_i_d_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6ab1fa764843f179d4d8232ca194a39 inherit pro_methods_classzth_1_1_unique_i_d_base"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#ad6ab1fa764843f179d4d8232ca194a39">~UniqueIDBase</a> () <a class="el" href="macros_8h.html#a5e97f6533b7a0a1e8b49c4cea10f75fc">is_default</a> friend <a class="el" href="classzth_1_1cow__string.html">cow_string</a> <a class="el" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>&lt; <a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp; &gt;(<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;)</td></tr>
 <tr class="separator:ad6ab1fa764843f179d4d8232ca194a39 inherit pro_methods_classzth_1_1_unique_i_d_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classzth_1_1_thread_local_singleton"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classzth_1_1_thread_local_singleton')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; Worker &gt;</a></td></tr>
+<tr class="memitem:ab69e081980e9c6491e4f80bbdcd612eb inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html#ab69e081980e9c6491e4f80bbdcd612eb">ThreadLocalSingleton</a> ()</td></tr>
+<tr class="memdesc:ab69e081980e9c6491e4f80bbdcd612eb inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="classzth_1_1_thread_local_singleton.html#ab69e081980e9c6491e4f80bbdcd612eb">More...</a><br /></td></tr>
+<tr class="separator:ab69e081980e9c6491e4f80bbdcd612eb inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5797d9a0aeba64cdf3d3e9e3ba039f4 inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html#aa5797d9a0aeba64cdf3d3e9e3ba039f4">~ThreadLocalSingleton</a> ()</td></tr>
+<tr class="memdesc:aa5797d9a0aeba64cdf3d3e9e3ba039f4 inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="classzth_1_1_thread_local_singleton.html#aa5797d9a0aeba64cdf3d3e9e3ba039f4">More...</a><br /></td></tr>
+<tr class="separator:aa5797d9a0aeba64cdf3d3e9e3ba039f4 inherit pro_methods_classzth_1_1_thread_local_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
 Static Protected Member Functions</h2></td></tr>
@@ -195,12 +194,26 @@ Static Protected Member Functions</h2></td></tr>
 Friends</h2></td></tr>
 <tr class="memitem:a2ce9b915665078d9d49f866be74d9b27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_worker.html#a2ce9b915665078d9d49f866be74d9b27">worker_global_init</a> ()</td></tr>
 <tr class="separator:a2ce9b915665078d9d49f866be74d9b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_types_classzth_1_1_thread_local_singleton"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classzth_1_1_thread_local_singleton')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; Worker &gt;</a></td></tr>
+<tr class="memitem:ad4930eeee5ac05807963cad72d315bc0 inherit pub_types_classzth_1_1_thread_local_singleton"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classzth_1_1_worker.html">Worker</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html#ad4930eeee5ac05807963cad72d315bc0">singleton_type</a></td></tr>
+<tr class="memdesc:ad4930eeee5ac05807963cad72d315bc0 inherit pub_types_classzth_1_1_thread_local_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias of the <code>T</code> template parameter.  <a href="classzth_1_1_thread_local_singleton.html#ad4930eeee5ac05807963cad72d315bc0">More...</a><br /></td></tr>
+<tr class="separator:ad4930eeee5ac05807963cad72d315bc0 inherit pub_types_classzth_1_1_thread_local_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classzth_1_1_unique_i_d"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classzth_1_1_unique_i_d')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID&lt; Worker &gt;</a></td></tr>
+<tr class="memitem:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#adfdbcd7dd7133c865ecf4c9a3876cdc2">getID</a> () noexcept</td></tr>
+<tr class="separator:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classzth_1_1_thread_local_singleton"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classzth_1_1_thread_local_singleton')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; Worker &gt;</a></td></tr>
+<tr class="memitem:a45886cc240ee770a8c2f40e2e4fd9159 inherit pub_static_methods_classzth_1_1_thread_local_singleton"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classzth_1_1safe__ptr.html">safe_ptr</a>&lt; <a class="el" href="classzth_1_1_thread_local_singleton.html#ad4930eeee5ac05807963cad72d315bc0">singleton_type</a> &gt;::type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html#a45886cc240ee770a8c2f40e2e4fd9159">instance</a> () noexcept</td></tr>
+<tr class="memdesc:a45886cc240ee770a8c2f40e2e4fd9159 inherit pub_static_methods_classzth_1_1_thread_local_singleton"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the only instance of <code>T</code> within this thread.  <a href="classzth_1_1_thread_local_singleton.html#a45886cc240ee770a8c2f40e2e4fd9159">More...</a><br /></td></tr>
+<tr class="separator:a45886cc240ee770a8c2f40e2e4fd9159 inherit pub_static_methods_classzth_1_1_thread_local_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#_a7">socks.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00045">45</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00043">43</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a986afdcdef9e9dbca7fcbec6cd4026a2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a986afdcdef9e9dbca7fcbec6cd4026a2">&#9670;&nbsp;</a></span>Worker()</h2>
@@ -225,7 +238,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00050">50</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00047">47</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -252,7 +265,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00089">89</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00084">84</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +294,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00111">111</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00103">103</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -309,7 +322,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00231">231</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00223">223</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +349,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00137">137</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00129">129</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -364,7 +377,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00129">129</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00121">121</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -391,7 +404,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00141">141</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00133">133</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -418,34 +431,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00048">48</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
-
-</div>
-</div>
-<a id="ae9c20dad103d7614efb970464968a6b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9c20dad103d7614efb970464968a6b6">&#9670;&nbsp;</a></span>currentWorker()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="classzth_1_1_worker.html">Worker</a>* zth::Worker::currentWorker </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00047">47</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00045">45</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +458,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00327">327</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00320">320</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -500,7 +486,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00319">319</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00312">312</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -527,7 +513,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00323">323</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00316">316</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -554,7 +540,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00314">314</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00307">307</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -582,7 +568,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00124">124</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00116">116</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -610,7 +596,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00145">145</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00137">137</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -638,7 +624,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00284">284</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00277">277</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -668,7 +654,7 @@ Friends</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#a8">socks.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00297">297</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00290">290</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -695,7 +681,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00293">293</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00286">286</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -733,7 +719,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00159">159</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00151">151</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -761,7 +747,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00258">258</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00251">251</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -788,7 +774,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00109">109</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00101">101</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -816,7 +802,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00044">44</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00042">42</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
