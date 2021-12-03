@@ -699,7 +699,7 @@ namespace zth {
 		 */
 		~ThreadLocalSingleton()
 		{
-			if(ZTH_TLS_GET(m_instance) == static_cast<singleton_type*>(this))
+			if(ZTH_TLS_GET(m_instance) == this)
 				ZTH_TLS_SET(m_instance, nullptr);
 		}
 
