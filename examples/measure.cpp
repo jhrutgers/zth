@@ -131,7 +131,7 @@ static zth::string preciseTime(double s)
 	// We expect that all values are < 1 s, so simplify the formatting of
 	// the integral part.
 
-	double intpart;
+	double intpart = 0;
 	s = modf(fabs(s), &intpart);
 	res += zth::format("%u.", (unsigned)intpart);
 
