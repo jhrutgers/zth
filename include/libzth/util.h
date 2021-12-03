@@ -684,6 +684,7 @@ namespace zth {
 		 * \brief Constructor.
 		 * \details (Only) the first instance of the \p T within the current thread is recorded in \c m_instance.
 		 */
+		__attribute__((no_sanitize_undefined))
 		ThreadLocalSingleton()
 		{
 			// Do not enforce construction of only one Singleton, only register the first one
@@ -697,9 +698,10 @@ namespace zth {
 		 * \brief Destructor.
 		 * \details After destruction, #instance() will return \c nullptr.
 		 */
+		__attribute__((no_sanitize_undefined))
 		~ThreadLocalSingleton()
 		{
-			if(ZTH_TLS_GET(m_instance) == this)
+			if(ZTH_TLS_GET(m_instance) == static_cast<singleton_type*>(this))
 				ZTH_TLS_SET(m_instance, nullptr);
 		}
 
