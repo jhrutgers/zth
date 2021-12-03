@@ -289,7 +289,7 @@ static void run_testset(char const* testset)
 // Specify on the command line the test set name(s) to be executed.  When none
 // is specified, 'all' is assumed. The test set name is printed between
 // brackets before the test description.
-void main_fiber(int argc, char** argv)
+int main_fiber(int argc, char** argv)
 {
 	runTest("calib", "calibration", &testEmpty, true);
 	runTest("calib", "empty test", &testEmpty);
@@ -299,5 +299,6 @@ void main_fiber(int argc, char** argv)
 	else
 		for(int i = 1; i < argc; i++)
 			run_testset(argv[i]);
-}
 
+	return 0;
+}

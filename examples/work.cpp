@@ -111,8 +111,9 @@ static void employer()
 }
 zth_fiber(employer)
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	employer();
+	return 0;
 }
 

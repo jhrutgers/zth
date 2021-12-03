@@ -95,10 +95,10 @@ zth_fiber(stack)
 
 
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	async scheduling();
 	async measure();
 	async stack();
+	return 0;
 }
-

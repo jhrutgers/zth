@@ -472,6 +472,6 @@ ZTH_EXPORT void* zth_setFls(void* data);
 
 #endif // __cplusplus
 
-EXTERN_C ZTH_EXPORT void main_fiber(int argc, char** argv);
+EXTERN_C ZTH_EXPORT int main_fiber(int argc, char** argv);
 
 #endif // ZTH_FIBER_H

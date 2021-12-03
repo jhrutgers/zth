@@ -76,7 +76,7 @@ double fiber_ddddi(double a, double b, double c, int d)
 zth_fiber(fiber_ddddi)
 #endif
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	// `async' is just like a function call, but its execution is postponed.
 	// Note that the order in which the fibers get initialized or execute is
@@ -119,5 +119,6 @@ void main_fiber(int /*argc*/, char** /*argv*/)
 	// Arbitrary fiber argument number example.
 	async fiber_ddddi(4, 5, 6, 7);
 #endif
-}
 
+	return 0;
+}

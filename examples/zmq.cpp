@@ -69,7 +69,7 @@ static void handler(int UNUSED_PAR(sig))
 	stop = 1;
 }
 
-void main_fiber(int argc, char** argv)
+int main_fiber(int argc, char** argv)
 {
 	printf("zmq main fiber\n");
 
@@ -93,4 +93,5 @@ void main_fiber(int argc, char** argv)
 
 	async server();
 	async client(messages);
+	return 0;
 }

@@ -113,8 +113,9 @@ namespace zth {
 	 * void foo() { ... }
 	 * zth_fiber(foo)
 	 *
-	 * void main_fiber(int argc, char** argv) {
+	 * int main_fiber(int argc, char** argv) {
 	 *     async foo() << zth::setStackSize(0x10000);
+	 *     return 0;
 	 * }
 	 * \endcode
 	 *
@@ -168,12 +169,13 @@ namespace zth {
 	 * void foo() { ... }
 	 * zth_fiber(foo)
 	 *
-	 * void main_fiber(int argc, char** argv) {
+	 * int main_fiber(int argc, char** argv) {
 	 *     zth::Gate gate(3);
 	 *     async foo() << zth::passOnExit(gate);
 	 *     async foo() << zth::passOnExit(gate);
 	 *     gate.wait();
 	 *     // If we get here, both foo()s have finished.
+	 *     return 0;
 	 * }
 	 * \endcode
 	 *
@@ -503,8 +505,9 @@ namespace zth {
  * void foo(int i) { ... }
  * zth_fiber(foo)
  *
- * void main_fiber(int argc, char** argv) {
+ * int main_fiber(int argc, char** argv) {
  *     async foo(42);
+ *     return 0;
  * }
  * \endcode
  *

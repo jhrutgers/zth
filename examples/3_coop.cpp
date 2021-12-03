@@ -124,8 +124,9 @@ zth_fiber(example_2)
 
 
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	example_1();
 	example_2();
+	return 0;
 }

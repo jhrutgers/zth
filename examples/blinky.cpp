@@ -1,6 +1,6 @@
 #include <zth>
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	zth::PeriodicWakeUp w(1);
 
