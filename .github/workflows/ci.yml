@@ -57,7 +57,7 @@ jobs:
         working-directory: dist\win32\build
       - name: build Release
         run: |
-          Remove-Item -path build -recurse -force
+          Remove-Item -path dist\win32\build -recurse -force
           dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
       - name: test
         run: cmake --build . --target=test
