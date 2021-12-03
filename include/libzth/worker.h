@@ -26,6 +26,7 @@
 #include <libzth/waiter.h>
 #include <libzth/perf.h>
 #include <libzth/init.h>
+#include <libzth/allocator.h>
 
 #include <time.h>
 #include <limits>
@@ -41,6 +42,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
+		ZTH_CLASS_NEW_DELETE(Worker)
 	public:
 		Fiber* currentFiber() const { return m_currentFiber; }
 

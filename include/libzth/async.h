@@ -22,6 +22,7 @@
 
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 #include <libzth/fiber.h>
 #include <libzth/sync.h>
 #include <libzth/worker.h>
@@ -34,6 +35,7 @@ namespace zth {
 
 	template <typename R, typename F>
 	class TypedFiber : public Fiber {
+		ZTH_CLASS_NEW_DELETE(TypedFiber)
 	public:
 		typedef R Return;
 		typedef F Function;
@@ -189,6 +191,7 @@ namespace zth {
 
 	template <typename T>
 	class AutoFuture : public SharedPointer<Future<T> > {
+		ZTH_CLASS_NEW_DELETE(AutoFuture)
 	public:
 		typedef SharedPointer<Future<T> > base;
 		typedef Future<T> Future_type;
@@ -218,6 +221,7 @@ namespace zth {
 
 	template <typename R>
 	class TypedFiber0 : public TypedFiber<R, R(*)()> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber0)
 	public:
 		typedef TypedFiber<R, R(*)()> base;
 		explicit TypedFiber0(typename base::Function function) : base(function) {}
@@ -228,6 +232,7 @@ namespace zth {
 
 	template <>
 	class TypedFiber0<void> : public TypedFiber<void, void(*)()> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber0)
 	public:
 		typedef TypedFiber<void, void(*)()> base;
 		explicit TypedFiber0(typename base::Function function) : base(function) {}
@@ -238,6 +243,7 @@ namespace zth {
 
 	template <typename R, typename A1>
 	class TypedFiber1 : public TypedFiber<R, R(*)(A1)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber1)
 	public:
 		typedef TypedFiber<R, R(*)(A1)> base;
 		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
@@ -250,6 +256,7 @@ namespace zth {
 
 	template <typename A1>
 	class TypedFiber1<void, A1> : public TypedFiber<void, void(*)(A1)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber1)
 	public:
 		typedef TypedFiber<void, void(*)(A1)> base;
 		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
@@ -262,6 +269,7 @@ namespace zth {
 
 	template <typename R, typename A1, typename A2>
 	class TypedFiber2 : public TypedFiber<R, R(*)(A1, A2)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber2)
 	public:
 		typedef TypedFiber<R, R(*)(A1, A2)> base;
 		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
@@ -275,6 +283,7 @@ namespace zth {
 
 	template <typename A1, typename A2>
 	class TypedFiber2<void, A1, A2> : public TypedFiber<void, void(*)(A1, A2)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber2)
 	public:
 		typedef TypedFiber<void, void(*)(A1, A2)> base;
 		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
@@ -288,6 +297,7 @@ namespace zth {
 
 	template <typename R, typename A1, typename A2, typename A3>
 	class TypedFiber3 : public TypedFiber<R, R(*)(A1, A2, A3)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber3)
 	public:
 		typedef TypedFiber<R, R(*)(A1, A2, A3)> base;
 		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
@@ -302,6 +312,7 @@ namespace zth {
 
 	template <typename A1, typename A2, typename A3>
 	class TypedFiber3<void, A1, A2, A3> : public TypedFiber<void, void(*)(A1, A2, A3)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiber3)
 	public:
 		typedef TypedFiber<void, void(*)(A1, A2, A3)> base;
 		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
@@ -317,6 +328,7 @@ namespace zth {
 #if __cplusplus >= 201103L
 	template <typename R, typename... Args>
 	class TypedFiberN : public TypedFiber<R, R(*)(Args...)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<R, R(*)(Args...)> base;
 		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}
@@ -331,6 +343,7 @@ namespace zth {
 
 	template <typename... Args>
 	class TypedFiberN<void, Args...> : public TypedFiber<void, void(*)(Args...)> {
+		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<void, void(*)(Args...)> base;
 		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}

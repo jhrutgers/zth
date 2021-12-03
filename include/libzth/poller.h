@@ -41,11 +41,10 @@
 
 #include <libzth/worker.h>
 #include <libzth/waiter.h>
+#include <libzth/allocator.h>
 
 #include <bitset>
 #include <memory>
-#include <map>
-#include <set>
 #include <stdexcept>
 #include <vector>
 
@@ -649,6 +648,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	class ZmqPoller : public PollerServer<zmq_pollitem_t> {
+		ZTH_CLASS_NEW_DELETE(ZmqPoller)
 	public:
 		typedef PollerServer<zmq_pollitem_t> base;
 
@@ -670,6 +670,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	class PollPoller : public PollerServer<struct pollfd> {
+		ZTH_CLASS_NEW_DELETE(PollPoller)
 	public:
 		typedef PollerServer<struct pollfd> base;
 
@@ -692,6 +693,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_poller
 	 */
 	class NoPoller final : public PollerServer<int> {
+		ZTH_CLASS_NEW_DELETE(NoPoller)
 	public:
 		typedef PollerServer<int> base;
 
@@ -721,8 +723,9 @@ namespace zth {
 	 * current Worker's Waiter.
 	 */
 	class PollerClient : public PollerClientBase {
-		typedef small_vector<Pollable*> Pollables;
+		ZTH_CLASS_NEW_DELETE(PollerClient)
 
+		typedef small_vector<Pollable*> Pollables;
 	public:
 		typedef PollerClientBase base;
 		using base::Result;

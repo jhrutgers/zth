@@ -19,6 +19,7 @@
 #define UNW_LOCAL_ONLY
 
 #include <libzth/macros.h>
+#include <libzth/allocator.h>
 
 #ifdef ZTH_OS_MAC
 #  ifndef _BSD_SOURCE
@@ -52,6 +53,7 @@ ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, nullptr)
 
 class PerfFiber : public Runnable {
 	ZTH_CLASS_NOCOPY(PerfFiber)
+	ZTH_CLASS_NEW_DELETE(PerfFiber)
 public:
 	explicit PerfFiber(Worker* worker)
 		: m_worker(*worker)
@@ -81,7 +83,7 @@ public:
 			for(size_t i = 0; i < perf_eventBuffer->size(); i++)
 				(*perf_eventBuffer)[i].release();
 
-			delete perf_eventBuffer;
+			delete_alloc(perf_eventBuffer);
 			perf_eventBuffer = nullptr;
 		}
 	}
@@ -439,7 +441,7 @@ int perf_init()
 	if(!zth_config(DoPerfEvent))
 		return 0;
 
-	perf_eventBuffer = new std::vector<PerfEvent<> >();
+	perf_eventBuffer = new_alloc<perf_eventBuffer_type>();
 	perf_eventBuffer->reserve(Config::PerfEventBufferSize);
 
 	Worker* worker = nullptr;

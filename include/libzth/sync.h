@@ -33,6 +33,7 @@
 #include <libzth/fiber.h>
 #include <libzth/worker.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 
 #include <new>
 
@@ -96,6 +97,7 @@ namespace zth {
 	};
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
+		ZTH_CLASS_NEW_DELETE(Synchronizer)
 	public:
 		explicit Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
 		virtual ~Synchronizer() {
@@ -253,6 +255,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_sync
 	 */
 	class Mutex : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Mutex)
 	public:
 		explicit Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
 		virtual ~Mutex() {}
@@ -287,6 +290,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_sync
 	 */
 	class Semaphore : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Semaphore)
 	public:
 		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {}
 		virtual ~Semaphore() {}
@@ -334,6 +338,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_sync
 	 */
 	class Signal : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Signal)
 	public:
 		explicit Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
 		virtual ~Signal() {}
@@ -399,6 +404,7 @@ namespace zth {
 	 */
 	template <typename T = void>
 	class Future : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Future)
 	public:
 		typedef T type;
 		// cppcheck-suppress uninitMemberVar
@@ -449,6 +455,7 @@ namespace zth {
 	template <>
 	// cppcheck-suppress noConstructor
 	class Future<void> : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Future)
 	public:
 		typedef void type;
 		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
@@ -472,6 +479,7 @@ namespace zth {
 	};
 
 	class Gate : public Synchronizer {
+		ZTH_CLASS_NEW_DELETE(Gate)
 	public:
 		explicit Gate(size_t count, char const* name = "Gate")
 			: Synchronizer(name), m_count(count), m_current() {}
@@ -530,7 +538,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
 		// Already destroyed.
 		return 0;
 
-	delete reinterpret_cast<zth::Mutex*>(mutex->p);
+	delete static_cast<zth::Mutex*>(mutex->p);
 	mutex->p = NULL;
 	return 0;
 }
@@ -544,7 +552,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_lock(zth_mutex_t* mutex) {
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Mutex*>(mutex->p)->lock();
+	static_cast<zth::Mutex*>(mutex->p)->lock();
 	return 0;
 }
 
@@ -557,7 +565,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_trylock(zth_mutex_t* mutex) {
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
-	return reinterpret_cast<zth::Mutex*>(mutex->p)->trylock() ? 0 : EBUSY;
+	return static_cast<zth::Mutex*>(mutex->p)->trylock() ? 0 : EBUSY;
 }
 
 /*!
@@ -569,7 +577,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_unlock(zth_mutex_t* mutex) {
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Mutex*>(mutex->p)->unlock();
+	static_cast<zth::Mutex*>(mutex->p)->unlock();
 	return 0;
 }
 
@@ -600,7 +608,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
 		// Already destroyed.
 		return 0;
 
-	delete reinterpret_cast<zth::Semaphore*>(sem->p);
+	delete static_cast<zth::Semaphore*>(sem->p);
 	sem->p = NULL;
 	return 0;
 }
@@ -614,7 +622,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_getvalue(zth_sem_t *__restrict__ sem,
 	if(unlikely(!sem || !sem->p || !value))
 		return EINVAL;
 
-	*value = reinterpret_cast<zth::Semaphore*>(sem->p)->value();
+	*value = static_cast<zth::Semaphore*>(sem->p)->value();
 	return 0;
 }
 
@@ -631,7 +639,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) {
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
-	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
+	zth::Semaphore* s = static_cast<zth::Semaphore*>(sem->p);
 	if(unlikely(s->value() == std::numeric_limits<size_t>::max()))
 		return EOVERFLOW;
 
@@ -648,7 +656,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_wait(zth_sem_t* sem) {
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Semaphore*>(sem->p)->acquire();
+	static_cast<zth::Semaphore*>(sem->p)->acquire();
 	return 0;
 }
 
@@ -661,7 +669,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) {
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
-	zth::Semaphore* s = reinterpret_cast<zth::Semaphore*>(sem->p);
+	zth::Semaphore* s = static_cast<zth::Semaphore*>(sem->p);
 	if(unlikely(s->value() == 0))
 		return EAGAIN;
 
@@ -696,7 +704,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
 		// Already destroyed.
 		return 0;
 
-	delete reinterpret_cast<zth::Signal*>(cond->p);
+	delete static_cast<zth::Signal*>(cond->p);
 	cond->p = NULL;
 	return 0;
 }
@@ -710,7 +718,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_signal(zth_cond_t* cond) {
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Signal*>(cond->p)->signal();
+	static_cast<zth::Signal*>(cond->p)->signal();
 	return 0;
 }
 
@@ -723,7 +731,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) {
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Signal*>(cond->p)->signalAll();
+	static_cast<zth::Signal*>(cond->p)->signalAll();
 	return 0;
 }
 
@@ -736,7 +744,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_wait(zth_cond_t* cond) {
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Signal*>(cond->p)->wait();
+	static_cast<zth::Signal*>(cond->p)->wait();
 	return 0;
 }
 
@@ -768,7 +776,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
 		// Already destroyed.
 		return 0;
 
-	delete reinterpret_cast<zth_future_t_type*>(future->p);
+	delete static_cast<zth_future_t_type*>(future->p);
 	future->p = NULL;
 	return 0;
 }
@@ -782,7 +790,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future) {
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
-	return reinterpret_cast<zth_future_t_type*>(future->p)->valid() ? 0 : EAGAIN;
+	return static_cast<zth_future_t_type*>(future->p)->valid() ? 0 : EAGAIN;
 }
 
 /*!
@@ -794,7 +802,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
-	zth_future_t_type* f = reinterpret_cast<zth_future_t_type*>(future->p);
+	zth_future_t_type* f = static_cast<zth_future_t_type*>(future->p);
 	if(f->valid())
 		return EAGAIN;
 
@@ -811,7 +819,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ fut
 	if(unlikely(!future || !future->p || !value))
 		return EINVAL;
 
-	*value = reinterpret_cast<zth_future_t_type*>(future->p)->value();
+	*value = static_cast<zth_future_t_type*>(future->p)->value();
 	return 0;
 }
 
@@ -824,7 +832,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future) {
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
-	reinterpret_cast<zth_future_t_type*>(future->p)->wait();
+	static_cast<zth_future_t_type*>(future->p)->wait();
 	return 0;
 }
 
@@ -856,7 +864,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
 		// Already destroyed.
 		return 0;
 
-	delete reinterpret_cast<zth::Gate*>(gate->p);
+	delete static_cast<zth::Gate*>(gate->p);
 	gate->p = NULL;
 	return 0;
 }
@@ -870,7 +878,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_pass(zth_gate_t* gate) {
 	if(unlikely(!gate || !gate->p))
 		return EINVAL;
 
-	return reinterpret_cast<zth::Gate*>(gate->p)->pass() ? 0 : EBUSY;
+	return static_cast<zth::Gate*>(gate->p)->pass() ? 0 : EBUSY;
 }
 
 /*!
@@ -882,7 +890,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) {
 	if(unlikely(!gate || !gate->p))
 		return EINVAL;
 
-	reinterpret_cast<zth::Gate*>(gate->p)->wait();
+	static_cast<zth::Gate*>(gate->p)->wait();
 	return 0;
 }
 

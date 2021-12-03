@@ -32,6 +32,7 @@
 #include <libzth/zmq.h>
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 #include <libzth/time.h>
 #include <libzth/version.h>
 #include <libzth/fiber.h>

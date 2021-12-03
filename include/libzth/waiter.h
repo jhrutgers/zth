@@ -23,11 +23,13 @@
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/time.h>
+#include <libzth/allocator.h>
 
 namespace zth {
 	class Worker;
 
 	class Waitable {
+		ZTH_CLASS_NEW_DELETE(Waitable)
 	public:
 		Waitable() : m_fiber() {}
 		virtual ~Waitable() {}
@@ -42,6 +44,7 @@ namespace zth {
 	};
 
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
+		ZTH_CLASS_NEW_DELETE(TimedWaitable)
 	public:
 		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
@@ -62,6 +65,7 @@ namespace zth {
 
 	template <typename F>
 	class PolledWaiting : public TimedWaitable {
+		ZTH_CLASS_NEW_DELETE(PolledWaiting)
 	public:
 		explicit PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
 			: TimedWaitable(Timestamp()), m_f(f) { setInterval(interval); }
@@ -99,6 +103,7 @@ namespace zth {
 
 	template <typename C>
 	class PolledMemberWaiting : public PolledWaiting<PolledMemberWaitingHelper<C> > {
+		ZTH_CLASS_NEW_DELETE(PolledMemberWaiting)
 	public:
 		typedef PolledWaiting<PolledMemberWaitingHelper<C> > base;
 		PolledMemberWaiting(C& that, bool (C::*f)(), TimeInterval interval)
@@ -109,6 +114,7 @@ namespace zth {
 	class PollerServerBase;
 
 	class Waiter : public Runnable {
+		ZTH_CLASS_NEW_DELETE(Waiter)
 	public:
 		explicit Waiter(Worker& worker);
 		virtual ~Waiter();
@@ -232,6 +238,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	class PeriodicWakeUp {
+		ZTH_CLASS_NEW_DELETE(PeriodicWakeUp)
 	public:
 		explicit PeriodicWakeUp(TimeInterval const& interval)
 			: m_interval(interval)

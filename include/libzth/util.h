@@ -264,62 +264,6 @@ namespace zth {
 		va_end(args);
 	}
 
-	/*!
-	 * \brief Wrapper for Config::Allocator::type::allocate().
-	 */
-	template <typename T>
-	__attribute__((warn_unused_result)) static inline T* allocate(size_t n = 1)
-	{
-		typename Config::Allocator<T>::type allocator;
-		return allocator.allocate(n);
-	}
-
-	template <typename T>
-	__attribute__((warn_unused_result)) static inline T* new_alloc()
-	{
-		T* o = allocate<T>(1);
-		new(o) T;
-		return o;
-	}
-
-	template <typename T, typename Arg>
-	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg const& arg)
-	{
-		T* o = allocate<T>(1);
-		new(o) T(arg);
-		return o;
-	}
-
-#if __cplusplus >= 201103L
-	template <typename T, typename... Arg>
-	__attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg)
-	{
-		T* o = allocate<T>(1);
-		new(o) T(std::forward<Arg>(arg)...);
-		return o;
-	}
-#endif
-
-	/*!
-	 * \brief Wrapper for Config::Allocator::type::deallocate().
-	 */
-	template <typename T>
-	static inline void deallocate(T* p, size_t n = 1) noexcept
-	{
-		typename Config::Allocator<T>::type allocator;
-		allocator.deallocate(p, n);
-	}
-
-	template <typename T>
-	static inline void delete_alloc(T* p) noexcept
-	{
-		if(unlikely(!p))
-			return;
-
-		p->~T();
-		deallocate(p, 1);
-	}
-
 	class cow_string {
 	public:
 		cow_string() : m_cstr() {}

@@ -29,6 +29,7 @@
 
 #ifdef __cplusplus
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 #include <libzth/time.h>
 #include <libzth/config.h>
 #include <libzth/context.h>
@@ -38,7 +39,6 @@
 
 #include <errno.h>
 #include <exception>
-#include <list>
 #include <utility>
 
 #if __cplusplus >= 201103L
@@ -54,27 +54,23 @@ namespace zth {
 	 *          and part of a #zth::Worker's administration. For example, a Fiber object is deleted by the Worker when it is dead.
 	 */
 	class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
+		ZTH_CLASS_NEW_DELETE(Fiber)
 	public:
 		typedef void(FiberHook)(Fiber&);
 
-#if __cplusplus >= 201103L
 		/*!
 		 * \brief Hook to be called when a Fiber is created.
 		 *
 		 * This function is called after initialization of the fiber.
 		 */
-		static std::function<FiberHook> hookNew;
+		static FiberHook* hookNew;
 
 		/*!
 		 * \brief Hook to be called when a Fiber is destroyed.
 		 *
 		 * This function is called just after the fiber has died.
 		 */
-		static std::function<FiberHook> hookDead;
-#else
-		static FiberHook* hookNew;
 		static FiberHook* hookDead;
-#endif
 
 		enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
 
@@ -384,7 +380,7 @@ namespace zth {
 		Timestamp m_stateEnd;
 		TimeInterval m_timeslice;
 		TimeInterval m_dtMax;
-		std::list<std::pair<void(*)(Fiber&,void*),void*> > m_cleanup;
+		list_type<std::pair<void(*)(Fiber&,void*),void*> >::type m_cleanup;
 	};
 
 	/*!
@@ -395,6 +391,7 @@ namespace zth {
 	 */
 	class Runnable {
 		ZTH_CLASS_NOCOPY(Runnable)
+		ZTH_CLASS_NEW_DELETE(Runnable)
 	public:
 		Runnable()
 			: m_fiber()

@@ -27,6 +27,7 @@
 
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -55,6 +56,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_time
 	 */
 	class TimeInterval {
+		ZTH_CLASS_NEW_DELETE(TimeInterval)
 	public:
 		static long const BILLION = 1000000000L;
 
@@ -338,6 +340,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_time
 	 */
 	class Timestamp {
+		ZTH_CLASS_NEW_DELETE(Timestamp)
 	public:
 		Timestamp()
 			: m_t()

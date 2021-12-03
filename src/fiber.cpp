@@ -21,15 +21,11 @@
 
 namespace zth {
 
-#if __cplusplus >= 201103L
-std::function<Fiber::FiberHook> Fiber::hookNew;
-std::function<Fiber::FiberHook> Fiber::hookDead;
-#else
-Fiber::FiberHook* Fiber::hookNew = NULL;
-Fiber::FiberHook* Fiber::hookDead = NULL;
-#endif
+Fiber::FiberHook* Fiber::hookNew = nullptr;
+Fiber::FiberHook* Fiber::hookDead = nullptr;
 
-int Runnable::run() {
+int Runnable::run()
+{
 	Worker* w = Worker::instance();
 	if(unlikely(!w))
 		return EAGAIN;
@@ -47,4 +43,3 @@ int Runnable::run() {
 }
 
 } // namespace
-
