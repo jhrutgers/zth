@@ -76,6 +76,8 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DZTH_THREADS=OFF";;
 		test)
 			do_test=1;;
+		notest)
+			do_test=0;;
 		CC=*)
 			CC="${1#CC=}";;
 		CXX=*)
@@ -95,6 +97,8 @@ fi
 
 if [[ ${do_test} == 1 ]]; then
 	cmake_opts="${cmake_opts} -DZTH_TESTS=ON"
+else
+	cmake_opts="${cmake_opts} -DZTH_TESTS=OFF"
 fi
 
 if [[ ${use_ninja} == 1 ]]; then

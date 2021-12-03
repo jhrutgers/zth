@@ -85,7 +85,7 @@ jobs:
       - name: bootstrap
         run: dist/qemu-arm/bootstrap.sh
       - name: build Debug
-        run: dist/qemu-arm/build.sh Debug dev
+        run: dist/qemu-arm/build.sh Debug dev notest
       - name: build Release
         run: |
           rm -rf dist/qemu-arm/build
