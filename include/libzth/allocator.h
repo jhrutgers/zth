@@ -36,10 +36,28 @@ namespace zth {
 	 * \ingroup zth_api_cpp_util
 	 */
 	template <typename T>
-	__attribute__((warn_unused_result)) static inline T* allocate(size_t n = 1)
+	__attribute__((warn_unused_result,returns_nonnull)) static inline T* allocate(size_t n = 1)
 	{
 		typename Config::Allocator<T>::type allocator;
 		return allocator.allocate(n);
+	}
+
+	/*!
+	 * \brief Wrapper for Config::Allocator::type::allocate().
+	 *
+	 * Does not throw \c std::bad_alloc upon allocation failure.
+	 * Instead, it returns null.
+	 *
+	 * \ingroup zth_api_cpp_util
+	 */
+	template <typename T>
+	__attribute__((warn_unused_result)) static inline T* allocate_noexcept(size_t n = 1) noexcept
+	{
+		__try {
+			return allocate<T>(n);
+		} __catch(...) {
+			return nullptr;
+		}
 	}
 
 	template <typename T>
@@ -75,6 +93,9 @@ namespace zth {
 	template <typename T>
 	static inline void deallocate(T* p, size_t n = 1) noexcept
 	{
+		if(!p)
+			return;
+
 		typename Config::Allocator<T>::type allocator;
 		allocator.deallocate(p, n);
 	}

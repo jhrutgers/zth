@@ -21,6 +21,7 @@
 #include <libzth/version.h>
 #include <libzth/perf.h>
 #include <libzth/init.h>
+#include <libzth/allocator.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -248,6 +249,7 @@ string formatv(char const* fmt, va_list args)
 
 	char sbuf[maxstack];
 	char* hbuf = nullptr;
+	size_t hbuf_size = 0;
 	char* buf = sbuf;
 
 	va_list args2;
@@ -256,7 +258,9 @@ string formatv(char const* fmt, va_list args)
 	int c = vsnprintf(sbuf, maxstack, fmt, args);
 
 	if(c >= maxstack) {
-		hbuf = static_cast<char*>(malloc((size_t)c + 1));
+		hbuf_size = (size_t)c + 1u;
+		hbuf = allocate_noexcept<char>(hbuf_size);
+
 		if(unlikely(!hbuf)) {
 			c = 0;
 		} else {
@@ -271,8 +275,7 @@ string formatv(char const* fmt, va_list args)
 	va_end(args2);
 
 	string res(buf, (size_t)(c < 0 ? 0 : c));
-	if(hbuf)
-		free(hbuf);
+	deallocate(hbuf, hbuf_size);
 	return res;
 }
 
