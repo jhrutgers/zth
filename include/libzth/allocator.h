@@ -101,7 +101,7 @@ namespace zth {
 	 */
 #define ZTH_CLASS_NEW_DELETE(T)						\
 	public:								\
-		void* operator new(std::size_t n)			\
+		void* operator new(std::size_t UNUSED_PAR(n))		\
 		{							\
 			zth_assert(n == sizeof(T));			\
 			return ::zth::allocate<T>();			\
