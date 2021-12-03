@@ -308,20 +308,20 @@ namespace zth {
 				m_stateNext = Ready;
 		}
 
-		std::string str() const {
-			std::string res = format("%s", id_str());
+		string str() const {
+			string res = format("%s", id_str());
 
 			switch(state()) {
-			case Uninitialized:		res += " Uninitialized"; break;
-			case New:				res += " New"; break;
-			case Ready:				res += " Ready"; break;
-			case Running:			res += " Running"; break;
-			case Waiting:			res += " Waiting";
-									if(!m_stateEnd.isNull())
-										res += format(" (%s remaining)", Timestamp::now().timeTo(stateEnd()).str().c_str());
-									break;
-			case Suspended:			res += " Suspended"; break;
-			case Dead:				res += " Dead"; break;
+			case Uninitialized:	res += " Uninitialized"; break;
+			case New:		res += " New"; break;
+			case Ready:		res += " Ready"; break;
+			case Running:		res += " Running"; break;
+			case Waiting:		res += " Waiting";
+						if(!m_stateEnd.isNull())
+							res += format(" (%s remaining)", Timestamp::now().timeTo(stateEnd()).str().c_str());
+						break;
+			case Suspended:		res += " Suspended"; break;
+			case Dead:		res += " Dead"; break;
 			}
 
 			res += format(" t=%s", m_totalTime.str().c_str());
@@ -329,7 +329,7 @@ namespace zth {
 		}
 
 	protected:
-		virtual void changedName(std::string const& name) override {
+		virtual void changedName(string const& name) override {
 			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
 		}
 

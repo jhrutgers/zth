@@ -21,7 +21,7 @@ struct Sock {
 	int i;
 	Side side;
 	Sock* other;
-	std::string str;
+	zth::string str;
 };
 
 struct Socks {
@@ -36,7 +36,7 @@ struct Socks {
 
 	Sock left;
 	Sock right;
-	std::string str;
+	zth::string str;
 };
 
 void takeSocks(int count);

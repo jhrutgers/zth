@@ -127,7 +127,16 @@ namespace zth {
 		typedef std::list<T, typename Config::Allocator<T>::type> type;
 	};
 
-	typedef std::basic_string<char, std::char_traits<char>, Config::Allocator<char>::type> string;
+	template <typename Traits, typename Allocator>
+	string to_zth_string(std::basic_string<char, Traits, Allocator> const& s)
+	{
+		return string(s.data(), s.size());
+	}
+
+	inline std::string to_std_string(string const& s)
+	{
+		return std::string(s.data(), s.size());
+	}
 
 } // namespace
 #endif // __cplusplus

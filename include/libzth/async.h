@@ -139,10 +139,10 @@ namespace zth {
 	public:
 		explicit setName(char const* name) : m_name(name) {}
 #if __cplusplus >= 201103L
-		explicit setName(std::string const& name) : m_name(name) {}
-		explicit setName(std::string&& name) : m_name(std::move(name)) {}
+		explicit setName(string const& name) : m_name(name) {}
+		explicit setName(string&& name) : m_name(std::move(name)) {}
 #else
-		explicit setName(std::string const& name) : m_name(name.c_str()) {}
+		explicit setName(string const& name) : m_name(name.c_str()) {}
 #endif
 	protected:
 		virtual void apply(Fiber& fiber) const override {
@@ -154,7 +154,7 @@ namespace zth {
 		}
 	private:
 #if __cplusplus >= 201103L
-		std::string m_name;
+		string m_name;
 #else
 		char const* m_name;
 #endif

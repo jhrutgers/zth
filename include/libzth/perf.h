@@ -87,7 +87,7 @@ namespace zth {
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(FiberState), fiberState(state) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp::now())
+		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(Log), str(strdup(str.c_str())) {}
 
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp::now())
@@ -140,7 +140,7 @@ namespace zth {
 		PerfEvent() {}
 		explicit PerfEvent(UniqueID<Fiber> const& fiber) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) {}

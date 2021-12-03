@@ -109,7 +109,7 @@ void testNap100ms()
 /////////////////////////////////////////////////
 // Tester
 
-static std::string preciseTime(double s)
+static zth::string preciseTime(double s)
 {
 	// We would like to do std::format("%.12f", s), but newlib may not
 	// support double formatting.  Therefore, do it the hard way...
@@ -120,7 +120,7 @@ static std::string preciseTime(double s)
 	if(s - s != s - s) // inf - inf == NaN
 		return s < 0 ? "-Inf" : "Inf";
 
-	std::string res;
+	zth::string res;
 
 	if(s < 0)
 		res += "-";

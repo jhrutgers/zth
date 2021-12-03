@@ -221,8 +221,8 @@ namespace zth {
 		template <typename T> TimeInterval& operator/=(T x) { mul<T>((T)1 / x); return *this; }
 		template <typename T> TimeInterval operator/(T x) const { return TimeInterval(s<T>() / x); }
 
-		std::string str() const {
-			std::string res;
+		string str() const {
+			string res;
 			if(isInfinite()) {
 				res = "infinity";
 				return res;

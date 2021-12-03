@@ -240,9 +240,9 @@ void log_colorv(int color, char const* fmt, va_list args)
 }
 
 /*!
- * \brief Format like \c vsprintf(), but save the result in an \c std::string.
+ * \brief Format like \c vsprintf(), but save the result in an \c zth::string.
  */
-std::string formatv(char const* fmt, va_list args)
+string formatv(char const* fmt, va_list args)
 {
 	int const maxstack = (int)sizeof(void*) * 8;
 
@@ -270,7 +270,7 @@ std::string formatv(char const* fmt, va_list args)
 
 	va_end(args2);
 
-	std::string res(buf, (size_t)(c < 0 ? 0 : c));
+	string res(buf, (size_t)(c < 0 ? 0 : c));
 	if(hbuf)
 		free(hbuf);
 	return res;

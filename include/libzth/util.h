@@ -264,12 +264,14 @@ namespace zth {
 		va_end(args);
 	}
 
+	typedef std::basic_string<char, std::char_traits<char>, Config::Allocator<char>::type> string;
+
 	class cow_string {
 	public:
 		cow_string() : m_cstr() {}
 		explicit cow_string(char const* s) : m_cstr(s) {}
 		// cppcheck-suppress noExplicitConstructor
-		cow_string(std::string const& s) : m_cstr(), m_str(s) {}
+		cow_string(string const& s) : m_cstr(), m_str(s) {}
 		cow_string(cow_string const& s) { *this = s; }
 
 		cow_string& operator=(cow_string const& s)
@@ -280,20 +282,20 @@ namespace zth {
 		}
 
 		cow_string& operator=(char const* s) { m_cstr = s; m_str.clear(); return *this; }
-		cow_string& operator=(std::string const& s) { m_cstr = nullptr; m_str = s; return *this; }
+		cow_string& operator=(string const& s) { m_cstr = nullptr; m_str = s; return *this; }
 
 #if __cplusplus >= 201103L
 		cow_string(cow_string&& s) = default;
 		cow_string& operator=(cow_string&& s) = default;
 
 		// cppcheck-suppress noExplicitConstructor
-		cow_string(std::string&& s) : m_cstr(), m_str(std::move(s)) {}
-		cow_string& operator=(std::string&& s) { m_cstr = nullptr; m_str = std::move(s); return *this; }
+		cow_string(string&& s) : m_cstr(), m_str(std::move(s)) {}
+		cow_string& operator=(string&& s) { m_cstr = nullptr; m_str = std::move(s); return *this; }
 #endif
 
 		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
-		std::string const& str() const { return local(); }
-		operator std::string const&() const { return str(); }
+		string const& str() const { return local(); }
+		operator string const&() const { return str(); }
 		char const& at(size_t pos) const { return str().at(pos); }
 		char operator[](size_t pos) const { return m_cstr ? m_cstr[pos] : str()[pos]; }
 		char& operator[](size_t pos) { return local()[pos]; }
@@ -306,7 +308,7 @@ namespace zth {
 		bool isLocal() const noexcept { return m_cstr == nullptr; }
 
 	protected:
-		std::string const& local() const
+		string const& local() const
 		{
 			if(unlikely(m_cstr)) {
 				m_str = m_cstr;
@@ -315,7 +317,7 @@ namespace zth {
 			return m_str;
 		}
 
-		std::string& local()
+		string& local()
 		{
 			const_cast<cow_string const*>(this)->local();
 			return m_str;
@@ -323,27 +325,27 @@ namespace zth {
 
 	private:
 		mutable char const* m_cstr;
-		mutable std::string m_str;
+		mutable string m_str;
 	};
 
 	__attribute__((format(ZTH_ATTR_PRINTF, 1, 0)))
-	std::string formatv(char const* fmt, va_list args);
+	string formatv(char const* fmt, va_list args);
 
 	/*!
-	 * \brief Format like \c sprintf(), but save the result in an \c std::string.
+	 * \brief Format like \c sprintf(), but save the result in an \c zth::string.
 	 */
 	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
-	inline std::string format(char const* fmt, ...)
+	inline string format(char const* fmt, ...)
 	{
 		va_list args;
 		va_start(args, fmt);
-		std::string res = formatv(fmt, args);
+		string res = formatv(fmt, args);
 		va_end(args);
 		return res;
 	}
 
 	/*!
-	 * \brief Returns an \c std::string() representation of the given value.
+	 * \brief Returns an \c zth::string() representation of the given value.
 	 * \details Specialize for your own types.
 	 */
 	template <typename T> inline cow_string str(T value) { return cow_string(value); }
@@ -362,13 +364,13 @@ namespace zth {
 	template <> inline cow_string str<double>(double value) { return format("%g", value); }
 	template <> inline cow_string str<long double>(long double value) { return format("%Lg", value); }
 #if __cplusplus >= 201103L
-	template <> inline cow_string str<std::string&&>(std::string&& value) { return cow_string(std::move(value)); }
+	template <> inline cow_string str<string&&>(string&& value) { return cow_string(std::move(value)); }
 #endif
 
 	/*!
-	 * \brief Return a string like \c strerror() does, but as a \c std::string.
+	 * \brief Return a string like \c strerror() does, but as a \c zth::string.
 	 */
-	inline std::string err(int e)
+	inline string err(int e)
 	{
 #ifdef ZTH_HAVE_LIBZMQ
 		return format("%s (error %d)", zmq_strerror(e), e);
@@ -415,13 +417,13 @@ namespace zth {
 				: ++m_nextId;
 		}
 
-		explicit UniqueID(std::string const& name)
+		explicit UniqueID(string const& name)
 			: m_id(getID())
 			, m_name(name)
 		{}
 
 #if __cplusplus >= 201103L
-		explicit UniqueID(std::string&& name) noexcept
+		explicit UniqueID(string&& name) noexcept
 			: m_id(getID())
 			, m_name(std::move(name))
 		{}
@@ -440,9 +442,9 @@ namespace zth {
 
 		__attribute__((pure)) uint64_t id() const noexcept { return m_id; }
 
-		std::string const& name() const noexcept { return m_name; }
+		string const& name() const noexcept { return m_name; }
 
-		void setName(std::string const& name)
+		void setName(string const& name)
 		{
 			setName(name.c_str());
 		}
@@ -455,7 +457,7 @@ namespace zth {
 		}
 
 #if __cplusplus >= 201103L
-		void setName(std::string&& name)
+		void setName(string&& name)
 		{
 			m_name = std::move(name);
 			m_id_str.clear();
@@ -488,12 +490,12 @@ namespace zth {
 		}
 
 	protected:
-		virtual void changedName(std::string const& UNUSED_PAR(name)) {}
+		virtual void changedName(string const& UNUSED_PAR(name)) {}
 
 	private:
 		uint64_t const m_id;
-		std::string m_name;
-		std::string mutable m_id_str;
+		string m_name;
+		string mutable m_id_str;
 		// If allocating once every ns, it takes more than 500 years until we run out of identifiers.
 		static uint64_t m_nextId;
 	};

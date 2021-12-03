@@ -196,7 +196,7 @@ protected:
 						if(*p < 33 || *p > 126)
 							*p = '_';
 					}
-					std::string const& id = vcdId(e.fiber);
+					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd, "$var wire 1 %s \\#%" PRIu64 "_%s $end\n$var real 0 %s! \\#%" PRIu64 "_%s/log $end\n",
 						id.c_str(), e.fiber, e.str, id.c_str(), e.fiber, e.str) <= 0)
 					{
@@ -204,7 +204,7 @@ protected:
 						goto write_error;
 					}
 				} else {
-					std::string const& id = vcdId(e.fiber);
+					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd, "$var wire 1 %s %" PRIu64 "_Fiber $end\n$var real 0 %s! %" PRIu64 "_Fiber_log $end\n",
 						id.c_str(), e.fiber, id.c_str(), e.fiber) <= 0)
 					{
@@ -397,9 +397,9 @@ protected:
 		return res ? res : EIO;
 	}
 
-	std::string const& vcdId(uint64_t fiber)
+	string const& vcdId(uint64_t fiber)
 	{
-		std::pair<decltype(m_vcdIds.begin()),bool> i = m_vcdIds.insert(std::make_pair(fiber, std::string()));
+		std::pair<decltype(m_vcdIds.begin()),bool> i = m_vcdIds.insert(std::make_pair(fiber, string()));
 		if(likely(!i.second))
 			// Already in the map. Return the value.
 			return i.first->second;
@@ -431,7 +431,7 @@ private:
 	Worker& m_worker;
 	FILE* m_vcd;
 	FILE* m_vcdd;
-	std::map<uint64_t,std::string> m_vcdIds;
+	map_type<uint64_t,string>::type m_vcdIds;
 };
 
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, nullptr);
