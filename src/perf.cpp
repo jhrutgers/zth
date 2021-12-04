@@ -458,10 +458,15 @@ void perf_deinit()
 	}
 }
 
-void perf_flushEventBuffer()
+void perf_flushEventBuffer() noexcept
 {
-	if(likely(perfFiber))
-		perfFiber->flushEventBuffer();
+	__try {
+		if(likely(perfFiber))
+			perfFiber->flushEventBuffer();
+	} __catch(...) {
+		// Something is wrong. Disable perf.
+		perf_deinit();
+	}
 }
 
 extern "C" void context_entry(Context* context);

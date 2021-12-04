@@ -160,12 +160,12 @@ namespace zth {
 	typedef vector_type<PerfEvent<> >::type perf_eventBuffer_type;
 	ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)
 
-	void perf_flushEventBuffer();
+	void perf_flushEventBuffer() noexcept;
 
 	/*!
 	 * \ingroup zth_api_cpp_perf
 	 */
-	ZTH_EXPORT inline void perf_event(PerfEvent<> const& event) {
+	ZTH_EXPORT inline void perf_event(PerfEvent<> const& event) noexcept {
 		if(!Config::EnablePerfEvent || unlikely(!perf_eventBuffer)) {
 			// Release now, as there is no event buffer...
 			PerfEvent<> e(event);
@@ -173,7 +173,15 @@ namespace zth {
 			return;
 		}
 
-		perf_eventBuffer->push_back(event);
+		__try {
+			perf_eventBuffer->push_back(event);
+		} __catch(...) {
+			// Cannot allocate buffer. Release now.
+			PerfEvent<> e(event);
+			e.release();
+			return;
+		}
+
 		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);
 
 		if(unlikely(perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))

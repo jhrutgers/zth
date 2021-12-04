@@ -44,7 +44,7 @@ namespace zth {
 	class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
 		ZTH_CLASS_NEW_DELETE(Worker)
 	public:
-		Fiber* currentFiber() const { return m_currentFiber; }
+		Fiber* currentFiber() const noexcept { return m_currentFiber; }
 
 		Worker()
 			: UniqueID("Worker")
@@ -354,7 +354,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() {
+	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() noexcept {
 		// Dereference is guarded by the safe_ptr.
 		return *Worker::instance();
 	}
@@ -362,7 +362,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() {
+	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept {
 		Worker const& w = currentWorker();
 		Fiber* f = w.currentFiber();
 		zth_assert(f);

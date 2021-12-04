@@ -96,7 +96,8 @@ namespace zth {
 			zth_dbg(fiber, "[%s] New fiber %p", id_str(), normptr());
 		}
 
-		virtual ~Fiber() {
+		virtual ~Fiber() override
+		{
 			for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 				it->first(*this, it->second);
 
@@ -110,14 +111,15 @@ namespace zth {
 			size_t stackSize_ __attribute__((unused)) = this->stackSize();
 			size_t stackUsage_ __attribute__((unused)) = this->stackUsage();
 			context_destroy(m_context);
-			m_context = NULL;
+			m_context = nullptr;
 			zth_dbg(fiber, "[%s] Destructed. Stack usage: 0x%x of 0x%x, total CPU: %s",
 				id_str(),
 				(unsigned int)stackUsage_, (unsigned int)stackSize_,
 				m_totalTime.str().c_str());
 		}
 
-		int setStackSize(size_t size) {
+		int setStackSize(size_t size) noexcept
+		{
 			if(state() != New)
 				return EPERM;
 
@@ -125,18 +127,19 @@ namespace zth {
 			return 0;
 		}
 
-		size_t stackSize() const { return m_contextAttr.stackSize; }
+		size_t stackSize() const noexcept { return m_contextAttr.stackSize; }
 		size_t stackUsage() const { return context_stack_usage(context()); }
-		Context* context() const { return m_context; }
-		State state() const { return m_state; }
-		void* fls() const { return m_fls; }
-		void setFls(void* data = NULL) { m_fls = data; }
-		Timestamp const& runningSince() const { return m_startRun; }
-		Timestamp const& stateEnd() const { return m_stateEnd; }
-		TimeInterval const& totalTime() const { return m_totalTime; }
+		Context* context() const noexcept { return m_context; }
+		State state() const noexcept { return m_state; }
+		void* fls() const noexcept { return m_fls; }
+		void setFls(void* data = nullptr) noexcept { m_fls = data; }
+		Timestamp const& runningSince() const noexcept { return m_startRun; }
+		Timestamp const& stateEnd() const noexcept { return m_stateEnd; }
+		TimeInterval const& totalTime() const noexcept { return m_totalTime; }
 		void addCleanup(void(*f)(Fiber&,void*), void* arg) { m_cleanup.push_back(std::make_pair(f, arg)); }
 
-		int init(Timestamp const& now = Timestamp::now()) {
+		int init(Timestamp const& now = Timestamp::now())
+		{
 			if(state() != New)
 				return EPERM;
 
@@ -157,7 +160,8 @@ namespace zth {
 			return 0;
 		}
 
-		int run(Fiber& from, Timestamp now = Timestamp::now()) {
+		int run(Fiber& from, Timestamp now = Timestamp::now())
+		{
 			int res = 0;
 
 		again:
@@ -220,11 +224,13 @@ namespace zth {
 			}
 		}
 
-		bool allowYield(Timestamp const& now = Timestamp::now()) {
+		bool allowYield(Timestamp const& now = Timestamp::now()) const noexcept
+		{
 			return state() != Running || m_stateEnd < now;
 		}
 
-		void kill() {
+		void kill() noexcept
+		{
 			if(state() == Dead)
 				return;
 
@@ -232,7 +238,8 @@ namespace zth {
 			setState(Dead);
 		}
 
-		void nap(Timestamp const& sleepUntil = Timestamp::null()) {
+		void nap(Timestamp const& sleepUntil = Timestamp::null()) noexcept
+		{
 			switch(state()) {
 			case New:
 				// Postpone actual sleep
@@ -260,7 +267,8 @@ namespace zth {
 			m_stateEnd = sleepUntil;
 		}
 
-		void wakeup() {
+		void wakeup() noexcept
+		{
 			if(likely(state() == Waiting)) {
 				setState(m_stateNext);
 				switch(state()) {
@@ -277,7 +285,8 @@ namespace zth {
 			}
 		}
 
-		void suspend() {
+		void suspend() noexcept
+		{
 			switch(state()) {
 			case New:
 				m_stateNext = New;
@@ -298,7 +307,8 @@ namespace zth {
 			setState(Suspended);
 		}
 
-		void resume() {
+		void resume() noexcept
+		{
 			if(state() != Suspended)
 				return;
 
@@ -308,7 +318,8 @@ namespace zth {
 				m_stateNext = Ready;
 		}
 
-		string str() const {
+		string str() const
+		{
 			string res = format("%s", id_str());
 
 			switch(state()) {
@@ -329,11 +340,13 @@ namespace zth {
 		}
 
 	protected:
-		virtual void changedName(string const& name) override {
+		virtual void changedName(string const& name) override
+		{
 			zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
 		}
 
-		void setState(State state, Timestamp const& t = Timestamp::now()) {
+		void setState(State state, Timestamp const& t = Timestamp::now()) noexcept
+		{
 			if(m_state == state)
 				return;
 
@@ -345,12 +358,14 @@ namespace zth {
 				hookDead(*this);
 		}
 
-		static void fiberEntry(void* that) {
+		static void fiberEntry(void* that) noexcept
+		{
 			zth_assert(that);
 			static_cast<Fiber*>(that)->fiberEntry_();
 		}
 
-		void fiberEntry_() {
+		void fiberEntry_() noexcept
+		{
 			zth_dbg(fiber, "[%s] Entry", id_str());
 #ifdef __cpp_exceptions
 			try {
@@ -392,60 +407,83 @@ namespace zth {
 	class Runnable {
 		ZTH_CLASS_NOCOPY(Runnable)
 		ZTH_CLASS_NEW_DELETE(Runnable)
-	public:
-		Runnable()
+	protected:
+		constexpr Runnable() noexcept
 			: m_fiber()
 		{}
 
-		virtual ~Runnable() {}
-		int run();
-		Fiber* fiber() const { return m_fiber; }
-		operator Fiber&() { zth_assert(fiber()); return *fiber(); }
+	public:
+		virtual ~Runnable() is_default
 
-		char const* id_str() const {
+		int run();
+
+		Fiber* fiber() const noexcept
+		{
+			return m_fiber;
+		}
+
+		operator Fiber&() const noexcept
+		{
+			zth_assert(fiber());
+			return *fiber();
+		}
+
+		char const* id_str() const
+		{
 			return fiber() ? fiber()->id_str() : "detached Runnable";
 		}
 
 	protected:
-		virtual int fiberHook(Fiber& f) {
+		virtual int fiberHook(Fiber& f)
+		{
 			f.addCleanup(&cleanup_, this);
 			m_fiber = &f;
 			return 0;
 		}
 
-		virtual void cleanup() {
-			m_fiber = NULL;
+		virtual void cleanup()
+		{
+			m_fiber = nullptr;
 		}
 
-		static void cleanup_(Fiber& UNUSED_PAR(f), void* that) {
+		virtual void entry() = 0;
+
+	private:
+		static void cleanup_(Fiber& UNUSED_PAR(f), void* that)
+		{
 			Runnable* r = static_cast<Runnable*>(that);
-			if(r) {
+			if(likely(r)) {
 				zth_assert(&f == r->m_fiber);
 				r->cleanup();
 			}
 		}
 
-		virtual void entry() = 0;
-		static void entry_(void* that) { if(that) static_cast<Runnable*>(that)->entry(); }
+		static void entry_(void* that)
+		{
+			if(likely(that))
+				static_cast<Runnable*>(that)->entry();
+		}
 
 	private:
 		Fiber* m_fiber;
 	};
 
-	__attribute__((pure)) Fiber& currentFiber();
+	__attribute__((pure)) Fiber& currentFiber() noexcept;
 
 	// fiber-local storage
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void* fls() {
+	ZTH_EXPORT inline void* fls() noexcept
+	{
 		return currentFiber().fls();
 	}
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void setFls(void* data = NULL) {
+	ZTH_EXPORT inline void setFls(void* data = nullptr) noexcept
+	{
 		return currentFiber().setFls(data);
 	}
 
@@ -463,7 +501,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_fls() { return zth::fls(); }
  * \details This is a C-wrapper for zth::setFls().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_setFls(void* data = NULL) { zth::setFls(data); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_setFls(void* data = nullptr) { zth::setFls(data); }
 
 #else // !__cplusplus
 
