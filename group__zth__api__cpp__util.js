@@ -12,17 +12,17 @@ var group__zth__api__cpp__util =
       [ "run", "classzth_1_1_runnable.html#a271c8712b982474d559dd49ec9634c1f", null ]
     ] ],
     [ "UniqueID", "classzth_1_1_unique_i_d.html", [
-      [ "UniqueID", "classzth_1_1_unique_i_d.html#a0cb189499d78e36ddc28479dcec049ee", null ],
-      [ "UniqueID", "classzth_1_1_unique_i_d.html#a8201c454a7d687ea69df57c6ec2c80b5", null ],
+      [ "UniqueID", "classzth_1_1_unique_i_d.html#ab203870f801f21b7f274abddbffe6adb", null ],
+      [ "UniqueID", "classzth_1_1_unique_i_d.html#a68db53bb46a163559cd7e646285f4eb6", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#ab27aec11817ca38c22fe6136c8a64c29", null ],
       [ "~UniqueID", "classzth_1_1_unique_i_d.html#a857aa509fb1059d093dc9ef0659912c7", null ],
-      [ "changedName", "classzth_1_1_unique_i_d.html#a14750d7d75774ce9b87bd7589b64b5e4", null ],
+      [ "changedName", "classzth_1_1_unique_i_d.html#abc80284bfa89243b9adb8ce4117d3213", null ],
       [ "id", "classzth_1_1_unique_i_d.html#a6b05d0f6b2279141000ed477e244a8f9", null ],
       [ "id_str", "classzth_1_1_unique_i_d.html#ab4160a087be7f5b16b702803452068d7", null ],
-      [ "name", "classzth_1_1_unique_i_d.html#a515e1e21b5bca010871fa8b02385bf87", null ],
+      [ "name", "classzth_1_1_unique_i_d.html#a30c804f7161c85e8ce7bf002dcce9d85", null ],
       [ "setName", "classzth_1_1_unique_i_d.html#ae5aca08fcf3fbc33f00fbf163c30f58d", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#a7f0a073e69553fdd678419b097657882", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#ab33cd5fdc81238b5159892cf38a1bb2b", null ]
+      [ "setName", "classzth_1_1_unique_i_d.html#ad9b0a8b7bbbe9a19586125c2e3089a5b", null ],
+      [ "setName", "classzth_1_1_unique_i_d.html#a97a42d84ff0129fae786157e4be4821b", null ]
     ] ],
     [ "Singleton", "classzth_1_1_singleton.html", [
       [ "singleton_type", "classzth_1_1_singleton.html#a0159315c3abb2c943fd6fc9571b59fa9", null ],
@@ -34,6 +34,7 @@ var group__zth__api__cpp__util =
       [ "ThreadLocalSingleton", "classzth_1_1_thread_local_singleton.html#ab69e081980e9c6491e4f80bbdcd612eb", null ],
       [ "~ThreadLocalSingleton", "classzth_1_1_thread_local_singleton.html#aa5797d9a0aeba64cdf3d3e9e3ba039f4", null ]
     ] ],
+    [ "ZTH_CLASS_NEW_DELETE", "group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4", null ],
     [ "zth_dbg", "group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7", null ],
     [ "abort", "group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88", null ],
     [ "abortv", "group__zth__api__cpp__util.html#gadbc3a543d826740574ed356738ae3da8", null ],

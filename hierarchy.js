@@ -6,6 +6,7 @@ var hierarchy =
     [ "zth::FsmGuard< zth::FsmImpl >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::FsmGuard< zth::zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::List< zth::Fiber >", "classzth_1_1_list.html", null ],
+    [ "zth::list_type< std::pair< void(*)(zth::Fiber &, void *), void * > >", "structzth_1_1list__type.html", null ],
     [ "zth::Listable< Fiber >", "classzth_1_1_listable.html", [
       [ "zth::Fiber", "classzth_1_1_fiber.html", [
         [ "zth::TypedFiber< R, R(*)()>", "classzth_1_1_typed_fiber.html", [
@@ -50,6 +51,7 @@ var hierarchy =
         [ "zth::Synchronizer::AlarmClock", "classzth_1_1_synchronizer_1_1_alarm_clock.html", null ]
       ] ]
     ] ],
+    [ "zth::map_type< uint64_t, string >", "structzth_1_1map__type.html", null ],
     [ "zth::SharedPointer< Future< T > >", "classzth_1_1_shared_pointer.html", [
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
     ] ],
@@ -58,6 +60,8 @@ var hierarchy =
     [ "zth::ThreadLocalSingleton< Worker >", "classzth_1_1_thread_local_singleton.html", [
       [ "zth::Worker", "classzth_1_1_worker.html", null ]
     ] ],
+    [ "zth::vector_type< Input >", "structzth_1_1vector__type.html", null ],
+    [ "zth::vector_type< void * >", "structzth_1_1vector__type.html", null ],
     [ "zth::Backtrace", "classzth_1_1_backtrace.html", null ],
     [ "zth::choose_type< T, WhenTIsVoid >", "structzth_1_1choose__type.html", null ],
     [ "zth::choose_type< void, WhenTIsVoid >", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html", null ],
@@ -89,8 +93,10 @@ var hierarchy =
     [ "zth::impl::FunctionION< void, A... >", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_8_8_8_01_4.html", null ],
     [ "zth::List< T >", "classzth_1_1_list.html", null ],
     [ "zth::List< T >::iterator", "classzth_1_1_list_1_1iterator.html", null ],
+    [ "zth::list_type< T >", "structzth_1_1list__type.html", null ],
     [ "zth::Listable< ChildClass >", "classzth_1_1_listable.html", null ],
     [ "zth::Load< T >", "classzth_1_1_load.html", null ],
+    [ "zth::map_type< Key, T, Compare >", "structzth_1_1map__type.html", null ],
     [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
     [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
     [ "zth::PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", null ],
@@ -167,6 +173,7 @@ var hierarchy =
       ] ],
       [ "zth::UniqueID< T, ThreadSafe >", "classzth_1_1_unique_i_d.html", null ]
     ] ],
+    [ "zth::vector_type< T >", "structzth_1_1vector__type.html", null ],
     [ "zth::Waitable", "classzth_1_1_waitable.html", [
       [ "zth::TimedWaitable", "classzth_1_1_timed_waitable.html", null ]
     ] ],

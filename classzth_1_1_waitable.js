@@ -7,5 +7,5 @@ var classzth_1_1_waitable =
     [ "poll", "classzth_1_1_waitable.html#af1b10b63ed008e16cc0ba54de98e99e3", null ],
     [ "resetFiber", "classzth_1_1_waitable.html#a4e4ab075c2ff81b7df842d377c091037", null ],
     [ "setFiber", "classzth_1_1_waitable.html#aa1d7e338029535e7ed24bc736d074350", null ],
-    [ "str", "classzth_1_1_waitable.html#a8856d642cc4173fe483c6ef0559541a7", null ]
+    [ "str", "classzth_1_1_waitable.html#a7c4216713ff1c0e99f499cc3bf71cc66", null ]
 ];

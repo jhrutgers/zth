@@ -85,6 +85,7 @@ $(document).ready(function(){initNavTree('util_8h.html',''); initResizable(); })
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -261,6 +262,11 @@ Macros</h2></td></tr>
 <tr class="memitem:ad7cc9064552d25659c36efeacc36936d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ad7cc9064552d25659c36efeacc36936d">ZTH_CLASS_NOCOPY</a>(Class)</td></tr>
 <tr class="separator:ad7cc9064552d25659c36efeacc36936d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a7a210137c60a4a060f81aeb19a9394c0"><td class="memItemLeft" align="right" valign="top">typedef std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td></tr>
+<tr class="separator:a7a210137c60a4a060f81aeb19a9394c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gad788be8c7c1b46f1ff90d1498d8f5b72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a> (char const *fmt, va_list arg)</td></tr>
@@ -290,15 +296,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">zth::log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">More...</a><br /></td></tr>
 <tr class="separator:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c8e4399c684d83bc6c472df5af6bd0f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a8c8e4399c684d83bc6c472df5af6bd0f">zth::formatv</a> (char const  *fmt, va_list args)</td></tr>
-<tr class="memdesc:a8c8e4399c684d83bc6c472df5af6bd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>vsprintf()</code>, but save the result in an <code>std::string</code>.  <a href="namespacezth.html#a8c8e4399c684d83bc6c472df5af6bd0f">More...</a><br /></td></tr>
-<tr class="separator:a8c8e4399c684d83bc6c472df5af6bd0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac54b77130623cec145c46d1f969271d4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ac54b77130623cec145c46d1f969271d4">zth::format</a> (char const *fmt,...)</td></tr>
-<tr class="memdesc:ac54b77130623cec145c46d1f969271d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>sprintf()</code>, but save the result in an <code>std::string</code>.  <a href="namespacezth.html#ac54b77130623cec145c46d1f969271d4">More...</a><br /></td></tr>
-<tr class="separator:ac54b77130623cec145c46d1f969271d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa519e50e41b8f4c2c98d4f680535ac90"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aa519e50e41b8f4c2c98d4f680535ac90">zth::formatv</a> (char const  *fmt, va_list args)</td></tr>
+<tr class="memdesc:aa519e50e41b8f4c2c98d4f680535ac90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>vsprintf()</code>, but save the result in an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#aa519e50e41b8f4c2c98d4f680535ac90">More...</a><br /></td></tr>
+<tr class="separator:aa519e50e41b8f4c2c98d4f680535ac90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebc0ef1729604ae4282d5eabf3830c95"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a> (char const *fmt,...)</td></tr>
+<tr class="memdesc:aebc0ef1729604ae4282d5eabf3830c95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>sprintf()</code>, but save the result in an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">More...</a><br /></td></tr>
+<tr class="separator:aebc0ef1729604ae4282d5eabf3830c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a> (T value)</td></tr>
-<tr class="memdesc:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an <code>std::string()</code> representation of the given value.  <a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">More...</a><br /></td></tr>
+<tr class="memdesc:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string()</a></code> representation of the given value.  <a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">More...</a><br /></td></tr>
 <tr class="separator:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a417b45d5a57e323dd4c79eb44f8d95"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a2a417b45d5a57e323dd4c79eb44f8d95"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a2a417b45d5a57e323dd4c79eb44f8d95">zth::str&lt; char &gt;</a> (char value)</td></tr>
@@ -342,12 +348,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a8148a20f2d8ae9a2fc79cc9643757de2">zth::str&lt; long double &gt;</a> (long double value)</td></tr>
 <tr class="separator:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53740b8c79b4ea9f5c3cea49c01c971a"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
-<tr class="memitem:a53740b8c79b4ea9f5c3cea49c01c971a"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a53740b8c79b4ea9f5c3cea49c01c971a">zth::str&lt; std::string &amp;&amp; &gt;</a> (std::string &amp;&amp;value)</td></tr>
-<tr class="separator:a53740b8c79b4ea9f5c3cea49c01c971a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cd6e84b95ba6c16333e8cf197d411e7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">zth::err</a> (int e)</td></tr>
-<tr class="memdesc:a6cd6e84b95ba6c16333e8cf197d411e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string like <code>strerror()</code> does, but as a <code>std::string</code>.  <a href="namespacezth.html#a6cd6e84b95ba6c16333e8cf197d411e7">More...</a><br /></td></tr>
-<tr class="separator:a6cd6e84b95ba6c16333e8cf197d411e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a088d2963f75280681ab7a239c7219fcc"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a088d2963f75280681ab7a239c7219fcc"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a088d2963f75280681ab7a239c7219fcc">zth::str&lt; string &amp;&amp; &gt;</a> (string &amp;&amp;value)</td></tr>
+<tr class="separator:a088d2963f75280681ab7a239c7219fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab92821411679b2d011e31c974cc60a5b"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">zth::err</a> (int e)</td></tr>
+<tr class="memdesc:ab92821411679b2d011e31c974cc60a5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string like <code>strerror()</code> does, but as a <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">More...</a><br /></td></tr>
+<tr class="separator:ab92821411679b2d011e31c974cc60a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">zth::str&lt; UniqueIDBase const &amp; &gt;</a> (UniqueIDBase const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1869,7 +1875,7 @@ Variables</h2></td></tr>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga4889d34edbac39ba98e63d58173f3b88"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...) noexcept</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00135">util.cpp:135</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga4889d34edbac39ba98e63d58173f3b88"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a></div><div class="ttdeci">void abort(char const *fmt,...) noexcept</div><div class="ttdoc">Aborts the process after printing the given printf() formatted message.</div><div class="ttdef"><b>Definition:</b> <a href="util_8cpp_source.html#l00136">util.cpp:136</a></div></div>
 <div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00041">util.h:41</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
 <div class="ttc" id="astructzth_1_1_default_config_html_a228f4b3e903829a92bf0e5808be43bae"><div class="ttname"><a href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static const bool EnableAssert</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00061">config.h:61</a></div></div>

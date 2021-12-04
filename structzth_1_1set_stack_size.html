@@ -122,11 +122,12 @@ Protected Member Functions</h2></td></tr>
 <p>This is a manipulator that calls <a class="el" href="classzth_1_1_fiber.html#a8df01dd96bbdff11e9e31474f7d51029">zth::Fiber::setStackSize()</a>. Example: </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> foo() { ... }</div>
 <div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(foo)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line"><span class="keywordtype">int</span> <a class="code" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a class="code" href="structzth_1_1set_stack_size.html">zth::setStackSize</a>(0x10000);</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00121">121</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00124">124</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a107c7ab35b9b5fa9124b798dde955f05"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a107c7ab35b9b5fa9124b798dde955f05">&#9670;&nbsp;</a></span>setStackSize()</h2>
@@ -152,7 +153,7 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00123">123</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00126">126</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -183,7 +184,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="structzth_1_1_fiber_manipulator.html#ab89e7d9dd4d8ce3e62e048e23a9a3f58">zth::FiberManipulator</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00125">125</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00128">128</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -192,10 +193,10 @@ Protected Member Functions</h2></td></tr>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="afiber_8h_html_ae4bac78892423c78df857c97e5806cfa"><div class="ttname"><a href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a></div><div class="ttdeci">void main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00501">async.h:501</a></div></div>
-<div class="ttc" id="astructzth_1_1set_stack_size_html"><div class="ttname"><a href="structzth_1_1set_stack_size.html">zth::setStackSize</a></div><div class="ttdoc">Change the stack size of a fiber returned by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00121">async.h:121</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00481">async.h:481</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00517">async.h:517</a></div></div>
+<div class="ttc" id="astructzth_1_1set_stack_size_html"><div class="ttname"><a href="structzth_1_1set_stack_size.html">zth::setStackSize</a></div><div class="ttdoc">Change the stack size of a fiber returned by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00124">async.h:124</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00496">async.h:496</a></div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

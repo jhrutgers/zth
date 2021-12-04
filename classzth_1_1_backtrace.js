@@ -1,7 +1,8 @@
 var classzth_1_1_backtrace =
 [
+    [ "bt_type", "classzth_1_1_backtrace.html#a5dc7e479267a2db6bdc6092b9590b5d1", null ],
     [ "Backtrace", "classzth_1_1_backtrace.html#ad4fbc8ee4ae2f87d6baed9eb9de1d6ad", null ],
-    [ "bt", "classzth_1_1_backtrace.html#a118b3f5e5e1c8e62b34ac8fe47d935f3", null ],
+    [ "bt", "classzth_1_1_backtrace.html#aeb7953434ba2cd9061f0e06122ccea83", null ],
     [ "fiber", "classzth_1_1_backtrace.html#a6083b09a38cf929dd951439b69287f30", null ],
     [ "fiberId", "classzth_1_1_backtrace.html#a6652d954bd9ec643de266702e6a73faf", null ],
     [ "print", "classzth_1_1_backtrace.html#aa375797537c3eaf7f007f45ac3400d19", null ],

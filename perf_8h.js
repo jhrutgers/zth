@@ -3,7 +3,7 @@ var perf_8h =
     [ "Backtrace", "classzth_1_1_backtrace.html", "classzth_1_1_backtrace" ],
     [ "PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", "structzth_1_1_perf_event_3_01false_01_4" ],
     [ "zth_perf_mark", "group__zth__api__c__perf.html#gae5ad38cc005a1b590020370a5d8362b9", null ],
-    [ "perf_eventBuffer_type", "perf_8h.html#a416aa411e238399ee9c2a779b3fe6986", null ],
+    [ "perf_eventBuffer_type", "perf_8h.html#a4c3bceeb47d721eab016705851f5f500", null ],
     [ "currentFiberID", "perf_8h.html#ac5029717fe3518c3cc26c0414db5ba9a", null ],
     [ "perf_deinit", "perf_8h.html#a3f8a6fdc27b5e9243380e5b67d672812", null ],
     [ "perf_event", "perf_8h.html#ga104419a80f14653afa2fa86a4cfa6d02", null ],

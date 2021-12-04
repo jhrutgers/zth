@@ -16,7 +16,7 @@ var classzth_1_1_fiber =
     [ "~Fiber", "classzth_1_1_fiber.html#a818bca2c60e2fded68b0e425f25dfb17", null ],
     [ "addCleanup", "classzth_1_1_fiber.html#addd14e42b758c8ac750eaf7c2b8fb42f", null ],
     [ "allowYield", "classzth_1_1_fiber.html#a9b3f93c1faaffd9fc6f96633b213501f", null ],
-    [ "changedName", "classzth_1_1_fiber.html#a572649a4c92d5bd46308f39137f75ab6", null ],
+    [ "changedName", "classzth_1_1_fiber.html#a511fc1c4278f65fcb79a3d94072f9219", null ],
     [ "context", "classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4", null ],
     [ "fiberEntry_", "classzth_1_1_fiber.html#a5f86ec47447fc3c4208afb129fb69f11", null ],
     [ "fls", "classzth_1_1_fiber.html#af9e12c6cd1be76dd57d7a07b3fa366d9", null ],
@@ -33,7 +33,7 @@ var classzth_1_1_fiber =
     [ "stackUsage", "classzth_1_1_fiber.html#ac2cb030d779202e19d6f8119bf7b54be", null ],
     [ "state", "classzth_1_1_fiber.html#abae0f2906552d2adf4b427f81bd9b20a", null ],
     [ "stateEnd", "classzth_1_1_fiber.html#a144b81c070f9117bff8dcc52d5c290bc", null ],
-    [ "str", "classzth_1_1_fiber.html#a8d4f51514defe6cb67caef04c51027f5", null ],
+    [ "str", "classzth_1_1_fiber.html#a894f64eea29ab8f124b6bd36209d7c9a", null ],
     [ "suspend", "classzth_1_1_fiber.html#a880ed20f6ebdcf87cc2193e9222de7d0", null ],
     [ "totalTime", "classzth_1_1_fiber.html#accf99513c219ac63495c6a27b135fcd1", null ],
     [ "wakeup", "classzth_1_1_fiber.html#aa67cec8a7410f5063e916d4d2993811b", null ]

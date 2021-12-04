@@ -90,6 +90,7 @@ $(document).ready(function(){initNavTree('fiber_8h.html',''); initResizable(); }
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="allocator_8h_source.html">libzth/allocator.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="time_8h_source.html">libzth/time.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="config_8h_source.html">libzth/config.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="context_8h_source.html">libzth/context.h</a>&gt;</code><br />
@@ -98,7 +99,6 @@ $(document).ready(function(){initNavTree('fiber_8h.html',''); initResizable(); }
 <code>#include &lt;<a class="el" href="init_8h_source.html">libzth/init.h</a>&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
 <code>#include &lt;exception&gt;</code><br />
-<code>#include &lt;list&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 </div>
@@ -130,18 +130,18 @@ Functions</h2></td></tr>
 <tr class="separator:ga40f59111b55fc6f54e2b2f6184809d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab2fba3d8675587334aa4763c95236c64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gab2fba3d8675587334aa4763c95236c64">zth_setFls</a> (void *data=NULL)</td></tr>
 <tr class="separator:gab2fba3d8675587334aa4763c95236c64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4bac78892423c78df857c97e5806cfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fiber_8h.html#ae4bac78892423c78df857c97e5806cfa">main_fiber</a> (int argc, char **argv)</td></tr>
-<tr class="separator:ae4bac78892423c78df857c97e5806cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8d3574f284314abb573cdb5762eaf94"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a> (int argc, char **argv)</td></tr>
+<tr class="separator:ac8d3574f284314abb573cdb5762eaf94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae4bac78892423c78df857c97e5806cfa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4bac78892423c78df857c97e5806cfa">&#9670;&nbsp;</a></span>main_fiber()</h2>
+<a id="ac8d3574f284314abb573cdb5762eaf94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8d3574f284314abb573cdb5762eaf94">&#9670;&nbsp;</a></span>main_fiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void main_fiber </td>
+          <td class="memname">int main_fiber </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>argc</em>, </td>

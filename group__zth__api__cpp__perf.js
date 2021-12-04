@@ -11,7 +11,7 @@ var group__zth__api__cpp__perf =
       [ "PerfEvent", "structzth_1_1_perf_event.html#a72f22960b2c1f08dcb0135436d23a7d7", null ],
       [ "PerfEvent", "structzth_1_1_perf_event.html#aae40369a32d5f3017d4b8035a0fbb1c5", null ],
       [ "PerfEvent", "structzth_1_1_perf_event.html#aebe85ae88127c3abd65a5cb7aa0932d3", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#a1174ab66584be8827e672eddd4a42cc5", null ],
+      [ "PerfEvent", "structzth_1_1_perf_event.html#abcfa5949d13735d8f85115e4a636f694", null ],
       [ "PerfEvent", "structzth_1_1_perf_event.html#a274b5c79b104fc4fee0b6a2bb228e94b", null ],
       [ "PerfEvent", "structzth_1_1_perf_event.html#a629c4f8203ed956905d35d0cd899a8c7", null ],
       [ "PerfEvent", "structzth_1_1_perf_event.html#a1a8bbec452c955fec83e43c7111c2f39", null ],

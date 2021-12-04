@@ -94,8 +94,8 @@ $(document).ready(function(){initNavTree('main_8cpp.html',''); initResizable(); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7057fdc9a877f18de210a8464bc63575"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a7057fdc9a877f18de210a8464bc63575">main_fiber</a> (int <a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argc), char **<a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argv))</td></tr>
-<tr class="separator:a7057fdc9a877f18de210a8464bc63575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8013fabbded8b4efe38ede84c104bb1e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber</a> (int <a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argc), char **<a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argv))</td></tr>
+<tr class="separator:a8013fabbded8b4efe38ede84c104bb1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa42004de097b0282398bd2ca61ea41bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a> ()</td></tr>
 <tr class="memdesc:aa42004de097b0282398bd2ca61ea41bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialization function to be called by the default-supplied <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code>, before doing anything else.  <a href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">More...</a><br /></td></tr>
 <tr class="separator:aa42004de097b0282398bd2ca61ea41bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,18 +134,18 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#a6">socks.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00048">48</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00051">51</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a7057fdc9a877f18de210a8464bc63575"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7057fdc9a877f18de210a8464bc63575">&#9670;&nbsp;</a></span>main_fiber()</h2>
+<a id="a8013fabbded8b4efe38ede84c104bb1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8013fabbded8b4efe38ede84c104bb1e">&#9670;&nbsp;</a></span>main_fiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void main_fiber </td>
+          <td class="memname">int main_fiber </td>
           <td>(</td>
           <td class="paramtype">int &#160;</td>
           <td class="paramname"><em>UNUSED_PAR</em>argc, </td>
@@ -185,9 +185,9 @@ Functions</h2></td></tr>
 
 <p>Initialization function to be called by the default-supplied <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code>, just before shutting down. </p>
 <p>This function can be used to run machine/board-specific cleanup in <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code> before returning. The default (weak) implementation does nothing.</p>
-<dl class="section return"><dt>Returns</dt><dd>the exit code of the application </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the exit code of the application, which overrides the returned value from <code><a class="el" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber()</a></code> when non-zero </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00043">43</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00046">46</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
@@ -209,7 +209,7 @@ Functions</h2></td></tr>
 <p>Initialization function to be called by the default-supplied <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code>, before doing anything else. </p>
 <p>This function can be used to run machine/board-specific initialization in <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code> even before <a class="el" href="init_8h.html#a5365d3450ca6f2a88551ea2192b4f0c7" title="Perform one-time global initialization of the Zth library.">zth_init()</a> is invoked. The default (weak) implementation does nothing. </p>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00033">33</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00036">36</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>

@@ -107,6 +107,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a>(T)</td></tr>
+<tr class="memdesc:gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define new/delete operators for a class, which are allocator-aware.  <a href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">More...</a><br /></td></tr>
+<tr class="separator:gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(group,  fmt,  a...)</td></tr>
 <tr class="memdesc:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug printf()-like function.  <a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">More...</a><br /></td></tr>
 <tr class="separator:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,6 +147,46 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="gaa75b5ec35bbb8ea9d385ef9707dd80b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa75b5ec35bbb8ea9d385ef9707dd80b4">&#9670;&nbsp;</a></span>ZTH_CLASS_NEW_DELETE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_CLASS_NEW_DELETE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">T</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">public</span>:                             \</div>
+<div class="line">        void* <span class="keyword">operator</span> <span class="keyword">new</span>(std::size_t <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(n))       \</div>
+<div class="line">        {                           \</div>
+<div class="line">            zth_assert(n == <span class="keyword">sizeof</span>(T));         \</div>
+<div class="line">            return ::zth::allocate&lt;T&gt;();            \</div>
+<div class="line">        }                           \</div>
+<div class="line">        void <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>* ptr)             \</div>
+<div class="line">        {                           \</div>
+<div class="line">            ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr)); \</div>
+<div class="line">        }                           \</div>
+<div class="line">    private:</div>
+</div><!-- fragment -->
+<p>Define new/delete operators for a class, which are allocator-aware. </p>
+<p>Put a call to this macro in the private section of your class definition. Additionally, make sure to have a virtual destructor to deallocate subclasses properly.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">T</td><td>the type of the class for which the operators are to be defined </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00123">123</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+
+</div>
+</div>
 <a id="ga15bf32dde0718b1eafdcdbc9057d36f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga15bf32dde0718b1eafdcdbc9057d36f7">&#9670;&nbsp;</a></span>zth_dbg</h2>
 
@@ -229,7 +272,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a7">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00135">135</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00136">136</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -269,7 +312,7 @@ Functions</h2></td></tr>
 
 <p>Aborts the process after printing the given printf() formatted message. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00147">147</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00148">148</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -298,7 +341,7 @@ Functions</h2></td></tr>
 
 <p>Prints a banner line with version and configuration information. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00042">42</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00043">43</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -427,7 +470,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00226">226</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00227">227</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -551,6 +594,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00083">macros.h:83</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
