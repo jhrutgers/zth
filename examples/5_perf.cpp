@@ -66,7 +66,7 @@ void measure()
 	zth::TimeInterval dt = zth::Timestamp::now() - t0;
 
 	// Let us format some log string.
-	std::string log = zth::format("do_work(1) took %s", dt.str().c_str());
+	zth::string log = zth::format("do_work(1) took %s", dt.str().c_str());
 	// Put the log string also in the VCD file...
 	zth::perf_log("%s", log.c_str());
 	// ...and to stdout.
@@ -95,10 +95,10 @@ zth_fiber(stack)
 
 
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	async scheduling();
 	async measure();
 	async stack();
+	return 0;
 }
-

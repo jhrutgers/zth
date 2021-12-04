@@ -31,10 +31,7 @@ Waiter::Waiter(Worker& worker)
 
 Waiter::~Waiter()
 {
-	if(m_defaultPoller) {
-		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
-		delete_alloc(static_cast<DefaultPollerServer*>(m_defaultPoller));
-	}
+	delete m_defaultPoller;
 }
 
 void waitUntil(TimedWaitable& w)
@@ -114,7 +111,7 @@ PollerServerBase& Waiter::poller()
 	if(m_defaultPoller)
 		return *m_defaultPoller;
 
-	m_defaultPoller = new_alloc<DefaultPollerServer>();
+	m_defaultPoller = new DefaultPollerServer();
 	return *m_defaultPoller;
 }
 
@@ -150,7 +147,7 @@ void Waiter::setPoller(PollerServerBase* p)
 		// Replace poller by default one.
 		if(!m_defaultPoller && !m_poller->empty()) {
 			// ...but it doesn't exist yet and we need it.
-			m_defaultPoller = new_alloc<DefaultPollerServer>();
+			m_defaultPoller = new DefaultPollerServer();
 		}
 
 		if(m_defaultPoller)

@@ -21,6 +21,7 @@
 #include <libzth/version.h>
 #include <libzth/perf.h>
 #include <libzth/init.h>
+#include <libzth/allocator.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -240,14 +241,15 @@ void log_colorv(int color, char const* fmt, va_list args)
 }
 
 /*!
- * \brief Format like \c vsprintf(), but save the result in an \c std::string.
+ * \brief Format like \c vsprintf(), but save the result in an \c zth::string.
  */
-std::string formatv(char const* fmt, va_list args)
+string formatv(char const* fmt, va_list args)
 {
 	int const maxstack = (int)sizeof(void*) * 8;
 
 	char sbuf[maxstack];
 	char* hbuf = nullptr;
+	size_t hbuf_size = 0;
 	char* buf = sbuf;
 
 	va_list args2;
@@ -256,7 +258,9 @@ std::string formatv(char const* fmt, va_list args)
 	int c = vsnprintf(sbuf, maxstack, fmt, args);
 
 	if(c >= maxstack) {
-		hbuf = static_cast<char*>(malloc((size_t)c + 1));
+		hbuf_size = (size_t)c + 1u;
+		hbuf = allocate_noexcept<char>(hbuf_size);
+
 		if(unlikely(!hbuf)) {
 			c = 0;
 		} else {
@@ -270,9 +274,8 @@ std::string formatv(char const* fmt, va_list args)
 
 	va_end(args2);
 
-	std::string res(buf, (size_t)(c < 0 ? 0 : c));
-	if(hbuf)
-		free(hbuf);
+	string res(buf, (size_t)(c < 0 ? 0 : c));
+	deallocate(hbuf, hbuf_size);
 	return res;
 }
 

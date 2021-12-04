@@ -48,7 +48,7 @@ void foo()
 }
 zth_fiber(foo)
 
-void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	async someDaemon();
 
@@ -61,4 +61,6 @@ void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	// Nap for a while, to show the interval trigger of the daemon.
 	zth::nap(10);
 	shutdown_flag = true;
+
+	return 0;
 }

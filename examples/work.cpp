@@ -5,7 +5,8 @@
 #include <csignal>
 #include <unistd.h>
 
-static void job(int length) {
+static void job(int length)
+{
 	static int id = 0;
 	int job_id = ++id;
 
@@ -16,13 +17,15 @@ static void job(int length) {
 zth_fiber(job)
 
 #ifndef ZTH_OS_BAREMETAL
-static void handler(int /*sig*/) {
+static void handler(int /*sig*/)
+{
 	char const* msg = "Got interrupted. Ignored. Press Ctrl+D to stop.\n";
 	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
 }
 #endif
 
-static void employer() {
+static void employer()
+{
 #ifndef ZTH_OS_BAREMETAL
 	struct sigaction sa = {};
 	sa.sa_flags = 0;
@@ -108,7 +111,9 @@ static void employer() {
 }
 zth_fiber(employer)
 
-void main_fiber(int /*argc*/, char** /*argv*/) {
+int main_fiber(int /*argc*/, char** /*argv*/)
+{
 	employer();
+	return 0;
 }
 

@@ -19,6 +19,7 @@
 #include <libzth/macros.h>
 #include <libzth/init.h>
 #include <libzth/regs.h>
+#include <libzth/allocator.h>
 
 #ifdef ZTH_OS_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
@@ -784,7 +785,7 @@ static void context_deletestack(Context* context)
 #ifdef ZTH_HAVE_MMAN
 		munmap(context->stack, context->stackSize);
 #else
-		free(context->stack);
+		deallocate(static_cast<char*>(context->stack), context->stackSize);
 #endif
 		context->stack = nullptr;
 	}
@@ -818,7 +819,7 @@ static int context_newstack(Context* context, stack_t* stack)
 	// NOLINTNEXTLINE(hicpp-signed-bitwise,cppcoreguidelines-pro-type-cstyle-cast)
 	if(unlikely((context->stack = mmap(nullptr, context->stackSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED))
 #else
-	if(unlikely((context->stack = malloc(context->stackSize)) == nullptr))
+	if(unlikely((context->stack = (void*)allocate_noexcept<char>(context->stackSize)) == nullptr))
 #endif
 	{
 		res = errno;

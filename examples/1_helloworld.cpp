@@ -35,9 +35,16 @@ zth_fiber(hello)
 // peripherals of an embedded system, override the weakly defined
 // zth_preinit(), which is by default doing nothing. It is called before any
 // Zth functionality is used.
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	async hello();
+
+	// This is the exit code of the application.  Although the application
+	// has not finished, the hello fiber is still running, this value is
+	// saved and used at exit later on. If you have to return a non-zero
+	// value, depending on the state of your application, do not let the
+	// main fiber return yet.
+	return 0;
 }
 // There is no need to call zth_fiber(main_fiber), as that is implicit for
 // main_fiber().

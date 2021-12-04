@@ -27,6 +27,7 @@
 
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -55,6 +56,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_time
 	 */
 	class TimeInterval {
+		ZTH_CLASS_NEW_DELETE(TimeInterval)
 	public:
 		static long const BILLION = 1000000000L;
 
@@ -219,8 +221,8 @@ namespace zth {
 		template <typename T> TimeInterval& operator/=(T x) { mul<T>((T)1 / x); return *this; }
 		template <typename T> TimeInterval operator/(T x) const { return TimeInterval(s<T>() / x); }
 
-		std::string str() const {
-			std::string res;
+		string str() const {
+			string res;
 			if(isInfinite()) {
 				res = "infinity";
 				return res;
@@ -338,6 +340,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_time
 	 */
 	class Timestamp {
+		ZTH_CLASS_NEW_DELETE(Timestamp)
 	public:
 		Timestamp()
 			: m_t()

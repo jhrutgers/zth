@@ -109,8 +109,9 @@ static void example_stack_overflow()
 
 
 
-void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	example_stack_switch();
 	example_stack_overflow();
+	return 0;
 }

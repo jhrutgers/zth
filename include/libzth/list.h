@@ -22,6 +22,7 @@
 
 #include <libzth/config.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 
 #include <functional>
 
@@ -73,6 +74,7 @@ namespace zth {
 
 	template <typename T>
 	class List {
+		ZTH_CLASS_NEW_DELETE(List)
 	public:
 		typedef T type;
 		typedef Listable<type> elem_type;
@@ -303,6 +305,7 @@ namespace zth {
 
 	template <typename T, typename Compare>
 	class SortedList {
+		ZTH_CLASS_NEW_DELETE(SortedList)
 	public:
 		typedef T type;
 		typedef Listable<type> elem_type;

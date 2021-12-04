@@ -33,12 +33,11 @@
 #include <libzth/config.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
+#include <libzth/allocator.h>
 
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
-#include <list>
-#include <vector>
 
 namespace zth {
 
@@ -50,11 +49,14 @@ namespace zth {
 	UniqueID<Fiber> const& currentFiberID();
 
 	class Backtrace {
+		ZTH_CLASS_NEW_DELETE(Backtrace)
 	public:
+		typedef vector_type<void*>::type bt_type;
+
 		Backtrace(size_t skip = 0, size_t maxDepth = 128);
 		Fiber* fiber() const { return m_fiber; }
 		uint64_t fiberId() const { return m_fiberId; }
-		std::vector<void*> const& bt() const { return m_bt; }
+		bt_type const& bt() const { return m_bt; }
 		bool truncated() const { return m_truncated; }
 		Timestamp const& t0() const { return m_t0; }
 		Timestamp const& t1() const { return m_t1; }
@@ -66,7 +68,7 @@ namespace zth {
 		Timestamp m_t1;
 		Fiber* m_fiber;
 		uint64_t m_fiberId;
-		std::vector<void*> m_bt;
+		bt_type m_bt;
 		bool m_truncated;
 	};
 
@@ -85,7 +87,7 @@ namespace zth {
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(FiberState), fiberState(state) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp::now())
+		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(Log), str(strdup(str.c_str())) {}
 
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp::now())
@@ -138,7 +140,7 @@ namespace zth {
 		PerfEvent() {}
 		explicit PerfEvent(UniqueID<Fiber> const& fiber) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, std::string const& str, Timestamp const& t = Timestamp()) {}
+		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) {}
 		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) {}
@@ -155,7 +157,7 @@ namespace zth {
 	};
 #pragma GCC diagnostic pop
 
-	typedef std::vector<PerfEvent<> > perf_eventBuffer_type;
+	typedef vector_type<PerfEvent<> >::type perf_eventBuffer_type;
 	ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)
 
 	void perf_flushEventBuffer();
@@ -217,6 +219,7 @@ namespace zth {
 	 */
 	template <typename T = float>
 	class Load {
+		ZTH_CLASS_NEW_DELETE(Load)
 	public:
 		typedef T type;
 

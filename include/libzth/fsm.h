@@ -27,9 +27,7 @@
 #include <libzth/time.h>
 #include <libzth/waiter.h>
 #include <libzth/util.h>
-
-#include <vector>
-#include <map>
+#include <libzth/allocator.h>
 
 // Suppress missing braces, as this is what you do when you specify the FSM.
 #pragma GCC diagnostic ignored "-Wmissing-braces"
@@ -210,7 +208,7 @@ namespace zth {
 			if(likely(m_compiled))
 				return;
 
-			std::map<typename Fsm::State,FsmDescription<Fsm> const*> stateAddr;
+			typename map_type<typename Fsm::State, FsmDescription<Fsm> const*>::type stateAddr;
 			FsmDescription<Fsm>* p = m_description;
 			while(true) {
 				// Register this state
@@ -259,6 +257,7 @@ namespace zth {
 	 */
 	template <typename State_, typename Input_ = int, typename FsmImpl_ = void>
 	class Fsm : public UniqueID<Fsm<void,void,void> > {
+		ZTH_CLASS_NEW_DELETE(Fsm)
 	public:
 		typedef typename choose_type<FsmImpl_,Fsm>::type FsmImpl;
 		typedef State_ State;
@@ -624,11 +623,12 @@ namespace zth {
 		bool m_exit;
 		Lockstep m_lockstep;
 		Signal m_trigger;
-		std::vector<Input> m_inputs;
+		typename vector_type<Input>::type m_inputs;
 	};
 
 	template <typename State_, typename CallbackArg_ = void, typename Input_ = int, typename FsmImpl_ = void>
 	class FsmCallback : public Fsm<State_,Input_,typename choose_type<FsmImpl_, FsmCallback<State_, CallbackArg_, Input_, void> >::type> {
+		ZTH_CLASS_NEW_DELETE(FsmCallback)
 	public:
 		typedef typename choose_type<FsmImpl_, FsmCallback<State_, CallbackArg_, Input_, void> >::type FsmImpl;
 		typedef Fsm<State_,Input_,FsmImpl> base;
@@ -669,6 +669,7 @@ namespace zth {
 
 	template <typename State_, typename Input_, typename FsmImpl_>
 	class FsmCallback<State_,void,Input_,FsmImpl_> : public Fsm<State_,Input_,typename choose_type<FsmImpl_,FsmCallback<State_,void,Input_,void> >::type> {
+		ZTH_CLASS_NEW_DELETE(FsmCallback)
 	public:
 		typedef typename choose_type<FsmImpl_, FsmCallback<State_, void, Input_, void> >::type FsmImpl;
 		typedef Fsm<State_,Input_,FsmImpl> base;

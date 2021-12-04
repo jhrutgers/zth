@@ -23,17 +23,19 @@
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/time.h>
+#include <libzth/allocator.h>
 
 namespace zth {
 	class Worker;
 
 	class Waitable {
+		ZTH_CLASS_NEW_DELETE(Waitable)
 	public:
 		Waitable() : m_fiber() {}
 		virtual ~Waitable() {}
 		Fiber& fiber() const { zth_assert(hasFiber()); return *m_fiber; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) = 0;
-		virtual std::string str() const { return format("Waitable for %s", fiber().str().c_str()); }
+		virtual string str() const { return format("Waitable for %s", fiber().str().c_str()); }
 		void setFiber(Fiber& fiber) { m_fiber = &fiber; }
 		void resetFiber() { m_fiber = nullptr; }
 		bool hasFiber() const { return m_fiber; }
@@ -42,13 +44,14 @@ namespace zth {
 	};
 
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
+		ZTH_CLASS_NEW_DELETE(TimedWaitable)
 	public:
 		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
 		virtual ~TimedWaitable() {}
 		Timestamp const& timeout() const { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) override { return timeout() <= now; }
 		bool operator<(TimedWaitable const& rhs) const { return timeout() < rhs.timeout(); }
-		virtual std::string str() const override {
+		virtual string str() const override {
 			if(hasFiber())
 				return format("Waitable with %s timeout for %s", (timeout() - Timestamp::now()).str().c_str(), fiber().str().c_str());
 			else
@@ -62,6 +65,7 @@ namespace zth {
 
 	template <typename F>
 	class PolledWaiting : public TimedWaitable {
+		ZTH_CLASS_NEW_DELETE(PolledWaiting)
 	public:
 		explicit PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
 			: TimedWaitable(Timestamp()), m_f(f) { setInterval(interval); }
@@ -99,6 +103,7 @@ namespace zth {
 
 	template <typename C>
 	class PolledMemberWaiting : public PolledWaiting<PolledMemberWaitingHelper<C> > {
+		ZTH_CLASS_NEW_DELETE(PolledMemberWaiting)
 	public:
 		typedef PolledWaiting<PolledMemberWaitingHelper<C> > base;
 		PolledMemberWaiting(C& that, bool (C::*f)(), TimeInterval interval)
@@ -109,6 +114,7 @@ namespace zth {
 	class PollerServerBase;
 
 	class Waiter : public Runnable {
+		ZTH_CLASS_NEW_DELETE(Waiter)
 	public:
 		explicit Waiter(Worker& worker);
 		virtual ~Waiter();
@@ -232,6 +238,7 @@ namespace zth {
 	 * \ingroup zth_api_cpp_fiber
 	 */
 	class PeriodicWakeUp {
+		ZTH_CLASS_NEW_DELETE(PeriodicWakeUp)
 	public:
 		explicit PeriodicWakeUp(TimeInterval const& interval)
 			: m_interval(interval)

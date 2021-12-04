@@ -41,7 +41,7 @@ void otherFiber()
 }
 zth_fiber(otherFiber)
 
-void main_fiber(int /*argc*/, char** /*argv*/)
+int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	fiber_future f1 = async fiber(1);
 	fiber_future f2 = async fiber(2);
@@ -51,4 +51,5 @@ void main_fiber(int /*argc*/, char** /*argv*/)
 	f2->wait();
 	f3->wait();
 	stopOther = true;
+	return 0;
 }

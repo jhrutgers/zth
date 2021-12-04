@@ -19,7 +19,10 @@
 #include <libzth/worker.h>
 #include <libzth/async.h>
 
-__attribute__((weak)) void main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv)) {}
+__attribute__((weak)) int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+{
+	return 0;
+}
 #ifndef DOXYGEN
 zth_fiber(main_fiber);
 #endif
@@ -38,19 +41,30 @@ __attribute__((weak)) void zth_preinit() {}
  * This function can be used to run machine/board-specific cleanup in \c main() before returning.
  * The default (weak) implementation does nothing.
  *
- * \return the exit code of the application
+ * \return the exit code of the application, which overrides the returned value from \c main_fiber() when non-zero
  */
 __attribute__((weak)) int zth_postdeinit() { return 0; }
 
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
 #endif
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 	zth_preinit();
+
+	int res = 0;
 	{
 		zth::Worker w;
-		async main_fiber(argc, argv);
+		main_fiber_future f = async main_fiber(argc, argv);
 		w.run();
+		if(f->valid())
+			res = f->value();
 	}
-	return zth_postdeinit();
+
+	int res_post = zth_postdeinit();
+	// cppcheck-suppress knownConditionTrueFalse
+	if(res_post)
+		res = res_post;
+
+	return res;
 }

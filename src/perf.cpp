@@ -19,6 +19,7 @@
 #define UNW_LOCAL_ONLY
 
 #include <libzth/macros.h>
+#include <libzth/allocator.h>
 
 #ifdef ZTH_OS_MAC
 #  ifndef _BSD_SOURCE
@@ -52,6 +53,7 @@ ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, nullptr)
 
 class PerfFiber : public Runnable {
 	ZTH_CLASS_NOCOPY(PerfFiber)
+	ZTH_CLASS_NEW_DELETE(PerfFiber)
 public:
 	explicit PerfFiber(Worker* worker)
 		: m_worker(*worker)
@@ -81,7 +83,7 @@ public:
 			for(size_t i = 0; i < perf_eventBuffer->size(); i++)
 				(*perf_eventBuffer)[i].release();
 
-			delete perf_eventBuffer;
+			delete_alloc(perf_eventBuffer);
 			perf_eventBuffer = nullptr;
 		}
 	}
@@ -194,7 +196,7 @@ protected:
 						if(*p < 33 || *p > 126)
 							*p = '_';
 					}
-					std::string const& id = vcdId(e.fiber);
+					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd, "$var wire 1 %s \\#%" PRIu64 "_%s $end\n$var real 0 %s! \\#%" PRIu64 "_%s/log $end\n",
 						id.c_str(), e.fiber, e.str, id.c_str(), e.fiber, e.str) <= 0)
 					{
@@ -202,7 +204,7 @@ protected:
 						goto write_error;
 					}
 				} else {
-					std::string const& id = vcdId(e.fiber);
+					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd, "$var wire 1 %s %" PRIu64 "_Fiber $end\n$var real 0 %s! %" PRIu64 "_Fiber_log $end\n",
 						id.c_str(), e.fiber, id.c_str(), e.fiber) <= 0)
 					{
@@ -395,9 +397,9 @@ protected:
 		return res ? res : EIO;
 	}
 
-	std::string const& vcdId(uint64_t fiber)
+	string const& vcdId(uint64_t fiber)
 	{
-		std::pair<decltype(m_vcdIds.begin()),bool> i = m_vcdIds.insert(std::make_pair(fiber, std::string()));
+		std::pair<decltype(m_vcdIds.begin()),bool> i = m_vcdIds.insert(std::make_pair(fiber, string()));
 		if(likely(!i.second))
 			// Already in the map. Return the value.
 			return i.first->second;
@@ -429,7 +431,7 @@ private:
 	Worker& m_worker;
 	FILE* m_vcd;
 	FILE* m_vcdd;
-	std::map<uint64_t,std::string> m_vcdIds;
+	map_type<uint64_t,string>::type m_vcdIds;
 };
 
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, nullptr);
@@ -439,7 +441,7 @@ int perf_init()
 	if(!zth_config(DoPerfEvent))
 		return 0;
 
-	perf_eventBuffer = new std::vector<PerfEvent<> >();
+	perf_eventBuffer = new_alloc<perf_eventBuffer_type>();
 	perf_eventBuffer->reserve(Config::PerfEventBufferSize);
 
 	Worker* worker = nullptr;
