@@ -31,6 +31,16 @@
 #  include <tuple>
 #endif
 
+#if __cplusplus < 201103L
+#  undef ZTH_TYPEDFIBER98
+// Always use C++98-compatible TypedFiber implementation.
+#  define ZTH_TYPEDFIBER98 1
+#elif !defined(ZTH_TYPEDFIBER98)
+// By default only use C++11 TypedFiber implementation, but this can be
+// overridden for testing purposes.
+#  define ZTH_TYPEDFIBER98 0
+#endif
+
 namespace zth {
 
 	template <typename R, typename F>
@@ -46,9 +56,10 @@ namespace zth {
 			, m_function(function)
 		{}
 
-		virtual ~TypedFiber() {}
+		virtual ~TypedFiber() override is_default
 
-		void registerFuture(Future_type* future) {
+		void registerFuture(Future_type* future)
+		{
 			m_future.reset(future);
 			zth_dbg(sync, "[%s] Registered to %s", future->id_str(), id_str());
 		}
@@ -56,7 +67,8 @@ namespace zth {
 		Future_type* future() const { return m_future; }
 
 	protected:
-		static void entry(void* that) {
+		static void entry(void* that)
+		{
 			if(likely(that))
 				static_cast<TypedFiber*>(that)->entry_();
 		}
@@ -64,17 +76,20 @@ namespace zth {
 		virtual void entry_() = 0;
 
 		template <typename T>
-		void setFuture(T const& r) {
+		void setFuture(T const& r)
+		{
 			if(m_future.get())
 				m_future->set(r);
 		}
 
-		void setFuture() {
+		void setFuture()
+		{
 			if(m_future.get())
 				m_future->set();
 		}
 
-		Function function() const {
+		Function function() const noexcept
+		{
 			return m_function;
 		}
 
@@ -83,22 +98,18 @@ namespace zth {
 		SharedPointer<Future_type> m_future;
 	};
 
-	struct FiberManipulator {
+	class FiberManipulator {
 	protected:
-		FiberManipulator() {}
+		constexpr FiberManipulator() noexcept is_default
+		virtual ~FiberManipulator() is_default
 		virtual void apply(Fiber& fiber) const = 0;
 
 		template <typename R, typename F> friend TypedFiber<R,F>* operator<<(TypedFiber<R,F>* f, FiberManipulator const& m);
-	private:
-		FiberManipulator(FiberManipulator const&)
-#if __cplusplus >= 201103L
-			= delete
-#endif
-			;
 	};
 
 	template <typename R, typename F>
-	TypedFiber<R,F>* operator<<(TypedFiber<R,F>* f, FiberManipulator const& m) {
+	TypedFiber<R,F>* operator<<(TypedFiber<R,F>* f, FiberManipulator const& m)
+	{
 		if(likely(f))
 			m.apply(*f);
 		return f;
@@ -121,11 +132,15 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	struct setStackSize : public FiberManipulator {
+	class setStackSize : public FiberManipulator {
 	public:
-		explicit setStackSize(size_t stack) : m_stack(stack) {}
+		constexpr explicit setStackSize(size_t stack) noexcept : m_stack(stack) {}
+		virtual ~setStackSize() override is_default
 	protected:
-		virtual void apply(Fiber& fiber) const override { fiber.setStackSize(m_stack); }
+		virtual void apply(Fiber& fiber) const override
+		{
+			fiber.setStackSize(m_stack);
+		}
 	private:
 		size_t m_stack;
 	};
@@ -136,7 +151,7 @@ namespace zth {
 	 * \see zth::setStackSize() for an example
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	struct setName : public FiberManipulator {
+	class setName : public FiberManipulator {
 	public:
 		explicit setName(char const* name) : m_name(name) {}
 #if __cplusplus >= 201103L
@@ -145,8 +160,10 @@ namespace zth {
 #else
 		explicit setName(string const& name) : m_name(name.c_str()) {}
 #endif
+		virtual ~setName() override is_default
 	protected:
-		virtual void apply(Fiber& fiber) const override {
+		virtual void apply(Fiber& fiber) const override
+		{
 #if __cplusplus >= 201103L
 			fiber.setName(std::move(m_name));
 #else
@@ -181,12 +198,20 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	struct passOnExit : public FiberManipulator {
+	class passOnExit : public FiberManipulator {
 	public:
-		explicit passOnExit(Gate& gate) : m_gate(&gate) {}
+		constexpr explicit passOnExit(Gate& gate) noexcept : m_gate(&gate) {}
+		virtual ~passOnExit() override is_default
 	protected:
-		static void cleanup(Fiber& UNUSED_PAR(f), void* gate) { reinterpret_cast<Gate*>(gate)->pass(); }
-		virtual void apply(Fiber& fiber) const override { fiber.addCleanup(&cleanup, (void*)m_gate); }
+		static void cleanup(Fiber& UNUSED_PAR(f), void* gate)
+		{
+			reinterpret_cast<Gate*>(gate)->pass();
+		}
+
+		virtual void apply(Fiber& fiber) const override
+		{
+			fiber.addCleanup(&cleanup, (void*)m_gate);
+		}
 	private:
 		Gate* m_gate;
 	};
@@ -198,14 +223,16 @@ namespace zth {
 		typedef SharedPointer<Future<T> > base;
 		typedef Future<T> Future_type;
 
-		AutoFuture() : base() {}
-		AutoFuture(AutoFuture const& af) : base() { *this = af; }
+		virtual ~AutoFuture() override is_default
+		constexpr14 AutoFuture() noexcept : base() {}
+		constexpr14 AutoFuture(AutoFuture const& af) noexcept : base(af) {}
+
 		// cppcheck-suppress noExplicitConstructor
 		template <typename F> AutoFuture(TypedFiber<T,F>* fiber) { *this = fiber; }
-		virtual ~AutoFuture() {}
 
 		template <typename F>
-		AutoFuture& operator=(TypedFiber<T,F>* fiber) {
+		AutoFuture& operator=(TypedFiber<T,F>* fiber)
+		{
 			if(fiber) {
 				this->reset(new Future_type(format("Future of %s", fiber->name().c_str()).c_str()));
 				fiber->registerFuture(this->get());
@@ -215,97 +242,99 @@ namespace zth {
 			return *this;
 		}
 
-		AutoFuture& operator=(AutoFuture const& af) {
+		AutoFuture& operator=(AutoFuture const& af)
+		{
 			this->reset(af.get());
 			return *this;
 		}
 	};
 
+#if ZTH_TYPEDFIBER98
 	template <typename R>
-	class TypedFiber0 : public TypedFiber<R, R(*)()> {
+	class TypedFiber0 final : public TypedFiber<R, R(*)()> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber0)
 	public:
 		typedef TypedFiber<R, R(*)()> base;
 		explicit TypedFiber0(typename base::Function function) : base(function) {}
-		virtual ~TypedFiber0() {}
+		virtual ~TypedFiber0() final is_default
 	protected:
-		virtual void entry_() { this->setFuture(this->function()()); }
+		virtual void entry_() final { this->setFuture(this->function()()); }
 	};
 
 	template <>
-	class TypedFiber0<void> : public TypedFiber<void, void(*)()> {
+	class TypedFiber0<void> final : public TypedFiber<void, void(*)()> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber0)
 	public:
 		typedef TypedFiber<void, void(*)()> base;
 		explicit TypedFiber0(typename base::Function function) : base(function) {}
-		virtual ~TypedFiber0() {}
+		virtual ~TypedFiber0() final is_default
 	protected:
-		virtual void entry_() override { this->function()(); this->setFuture(); }
+		virtual void entry_() final { this->function()(); this->setFuture(); }
 	};
 
 	template <typename R, typename A1>
-	class TypedFiber1 : public TypedFiber<R, R(*)(A1)> {
+	class TypedFiber1 final : public TypedFiber<R, R(*)(A1)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber1)
 	public:
 		typedef TypedFiber<R, R(*)(A1)> base;
 		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
-		virtual ~TypedFiber1() {}
+		virtual ~TypedFiber1() final is_default
 	protected:
-		virtual void entry_() { this->setFuture(this->function()(m_a1)); }
+		virtual void entry_() final { this->setFuture(this->function()(m_a1)); }
 	private:
 		A1 m_a1;
 	};
 
 	template <typename A1>
-	class TypedFiber1<void, A1> : public TypedFiber<void, void(*)(A1)> {
+	class TypedFiber1<void, A1> final : public TypedFiber<void, void(*)(A1)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber1)
 	public:
 		typedef TypedFiber<void, void(*)(A1)> base;
 		TypedFiber1(typename base::Function function, A1 a1) : base(function), m_a1(a1) {}
-		virtual ~TypedFiber1() {}
+		virtual ~TypedFiber1() final is_default
 	protected:
-		virtual void entry_() { this->function()(m_a1); this->setFuture(); }
+		virtual void entry_() final { this->function()(m_a1); this->setFuture(); }
 	private:
 		A1 m_a1;
 	};
 
 	template <typename R, typename A1, typename A2>
-	class TypedFiber2 : public TypedFiber<R, R(*)(A1, A2)> {
+	class TypedFiber2 final : public TypedFiber<R, R(*)(A1, A2)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber2)
 	public:
 		typedef TypedFiber<R, R(*)(A1, A2)> base;
 		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
-		virtual ~TypedFiber2() {}
+		virtual ~TypedFiber2() final is_default
 	protected:
-		virtual void entry_() { this->setFuture(this->function()(m_a1, m_a2)); }
+		virtual void entry_() final { this->setFuture(this->function()(m_a1, m_a2)); }
 	private:
 		A1 m_a1;
 		A2 m_a2;
 	};
 
 	template <typename A1, typename A2>
-	class TypedFiber2<void, A1, A2> : public TypedFiber<void, void(*)(A1, A2)> {
+	class TypedFiber2<void, A1, A2> final : public TypedFiber<void, void(*)(A1, A2)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber2)
 	public:
 		typedef TypedFiber<void, void(*)(A1, A2)> base;
 		TypedFiber2(typename base::Function function, A1 a1, A2 a2) : base(function), m_a1(a1), m_a2(a2) {}
-		virtual ~TypedFiber2() {}
+		virtual ~TypedFiber2() final is_default
 	protected:
-		virtual void entry_() { this->function()(m_a1, m_a2); this->setFuture(); }
+		virtual void entry_() final { this->function()(m_a1, m_a2); this->setFuture(); }
 	private:
 		A1 m_a1;
 		A2 m_a2;
 	};
 
 	template <typename R, typename A1, typename A2, typename A3>
-	class TypedFiber3 : public TypedFiber<R, R(*)(A1, A2, A3)> {
+	class TypedFiber3 final : public TypedFiber<R, R(*)(A1, A2, A3)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber3)
 	public:
 		typedef TypedFiber<R, R(*)(A1, A2, A3)> base;
 		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
-		virtual ~TypedFiber3() {}
+		virtual ~TypedFiber3() final is_default
 	protected:
-		virtual void entry_() { this->setFuture(this->function()(m_a1, m_a2, m_a3)); }
+		virtual void entry_() final { this->setFuture(this->function()(m_a1, m_a2, m_a3)); }
 	private:
 		A1 m_a1;
 		A2 m_a2;
@@ -313,30 +342,32 @@ namespace zth {
 	};
 
 	template <typename A1, typename A2, typename A3>
-	class TypedFiber3<void, A1, A2, A3> : public TypedFiber<void, void(*)(A1, A2, A3)> {
+	class TypedFiber3<void, A1, A2, A3> final : public TypedFiber<void, void(*)(A1, A2, A3)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiber3)
 	public:
 		typedef TypedFiber<void, void(*)(A1, A2, A3)> base;
 		TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3) : base(function), m_a1(a1), m_a2(a2), m_a3(a3) {}
-		virtual ~TypedFiber3() {}
+		virtual ~TypedFiber3() final is_default
 	protected:
-		virtual void entry_() { this->function()(m_a1, m_a2, m_a3); this->setFuture(); }
+		virtual void entry_() final { this->function()(m_a1, m_a2, m_a3); this->setFuture(); }
 	private:
 		A1 m_a1;
 		A2 m_a2;
 		A3 m_a3;
 	};
+#endif // ZTH_TYPEDFIBER98
 
 #if __cplusplus >= 201103L
 	template <typename R, typename... Args>
-	class TypedFiberN : public TypedFiber<R, R(*)(Args...)> {
+	class TypedFiberN final : public TypedFiber<R, R(*)(Args...)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<R, R(*)(Args...)> base;
-		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}
-		virtual ~TypedFiberN() {}
+		template <typename... Args_>
+		TypedFiberN(typename base::Function function, Args_&&... args) : base(function), m_args(std::forward<Args_>(args)...) {}
+		virtual ~TypedFiberN() final = default;
 	protected:
-		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
+		virtual void entry_() final { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
 	private:
 		template <size_t... S> void entry__(Sequence<S...>) { this->setFuture(this->function()(std::get<S>(m_args)...)); }
 	private:
@@ -344,22 +375,25 @@ namespace zth {
 	};
 
 	template <typename... Args>
-	class TypedFiberN<void, Args...> : public TypedFiber<void, void(*)(Args...)> {
+	class TypedFiberN<void, Args...> final : public TypedFiber<void, void(*)(Args...)> {
 		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<void, void(*)(Args...)> base;
-		TypedFiberN(typename base::Function function, Args... args) : base(function), m_args(args...) {}
-		virtual ~TypedFiberN() {}
+		template <typename... Args_>
+		TypedFiberN(typename base::Function function, Args_&&... args) : base(function), m_args(std::forward<Args_>(args)...) {}
+		virtual ~TypedFiberN() final = default;
 	protected:
-		virtual void entry_() { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
+		virtual void entry_() final { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
 	private:
 		template <size_t... S> void entry__(Sequence<S...>) { this->function()(std::get<S>(m_args)...); this->setFuture(); }
 	private:
 		std::tuple<Args...> m_args;
 	};
-#endif
+#endif // C++11
 
 	template <typename F> struct TypedFiberType {};
+
+#if ZTH_TYPEDFIBER98
 	template <typename R> struct TypedFiberType<R(*)()> {
 		struct NoArg {};
 		typedef R returnType;
@@ -392,6 +426,7 @@ namespace zth {
 		typedef A2 a2Type;
 		typedef A3 a3Type;
 	};
+#endif // ZTH_TYPEDFIBER98
 
 #if __cplusplus >= 201103L
 	template <typename R, typename... Args> struct TypedFiberType<R(*)(Args...)> {
@@ -403,7 +438,7 @@ namespace zth {
 		typedef NoArg a2Type;
 		typedef NoArg a3Type;
 	};
-#endif
+#endif // C++11
 
 	template <typename F>
 	class TypedFiberFactory {
@@ -416,35 +451,44 @@ namespace zth {
 		typedef typename TypedFiberType<Function>::a3Type A3;
 		typedef AutoFuture<Return> AutoFuture_type;
 
-		TypedFiberFactory(Function function, char const* name)
+		constexpr TypedFiberFactory(Function function, char const* name) noexcept
 			: m_function(function)
 			, m_name(name)
 		{}
 
-		TypedFiber_type* operator()() const {
+#if ZTH_TYPEDFIBER98
+		TypedFiber_type* operator()() const
+		{
 			return polish(*new TypedFiber_type(m_function));
 		}
 
-		TypedFiber_type* operator()(A1 a1) const {
+		TypedFiber_type* operator()(A1 a1) const
+		{
 			return polish(*new TypedFiber_type(m_function, a1));
 		}
 
-		TypedFiber_type* operator()(A1 a1, A2 a2) const {
+		TypedFiber_type* operator()(A1 a1, A2 a2) const
+		{
 			return polish(*new TypedFiber_type(m_function, a1, a2));
 		}
 
-		TypedFiber_type* operator()(A1 a1, A2 a2, A3 a3) const {
+		TypedFiber_type* operator()(A1 a1, A2 a2, A3 a3) const
+		{
 			return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 		}
+#endif // ZTH_TYPEDFIBER98
 
 #if __cplusplus >= 201103L
 		template <typename... Args>
-		TypedFiber_type* operator()(Args&&... args) const {
+		TypedFiber_type* operator()(Args&&... args) const
+		{
 			return polish(*new TypedFiber_type(m_function, std::forward<Args>(args)...));
 		}
-#endif
+#endif // C++11
 
-		TypedFiber_type* polish(TypedFiber_type& fiber) const {
+	protected:
+		TypedFiber_type* polish(TypedFiber_type& fiber) const
+		{
 			if(unlikely(m_name))
 				fiber.setName(m_name);
 
@@ -475,11 +519,12 @@ namespace zth {
 
 #define zth_fiber_define_1(storage, f) \
 	namespace zth { namespace fibered { \
-		storage ::zth::TypedFiberFactory<decltype(&::f)> const f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : NULL); \
+		storage ::zth::TypedFiberFactory<decltype(&::f)> const \
+			f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent ? ZTH_STRINGIFY(f) "()" : nullptr); /* NOLINT */ \
 	} } \
 	typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
 #define zth_fiber_define_extern_1(f)	zth_fiber_define_1(extern, f)
-#define zth_fiber_define_static_1(f)	zth_fiber_define_1(static, f)
+#define zth_fiber_define_static_1(f)	zth_fiber_define_1(static constexpr, f)
 
 /*!
  * \brief Do the definition part of #zth_fiber() (to be used in a .cpp file).
@@ -520,7 +565,8 @@ namespace zth {
  * \brief Run a function as a new fiber.
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = NULL, size_t stack = 0, char const* name = NULL) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = nullptr, size_t stack = 0, char const* name = nullptr)
+{
 	int res = 0;
 	zth::Fiber* fib = new zth::Fiber(f, arg);
 
@@ -540,5 +586,5 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg =
 
 ZTH_EXPORT int zth_fiber_create(void(*f)(void*), void* arg, size_t stack, char const* name);
 
-#endif // __cplusplus
+#endif // !__cplusplus
 #endif // ZTH_ASYNC_H
