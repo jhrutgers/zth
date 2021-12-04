@@ -45,15 +45,17 @@ namespace zth {
 
 	class RefCounted {
 	public:
-		RefCounted() : m_count() {}
-		virtual ~RefCounted() {}
+		constexpr RefCounted() noexcept : m_count() {}
+		virtual ~RefCounted() is_default
 
-		void used() {
+		constexpr14 void used() noexcept
+		{
 			zth_assert(m_count < std::numeric_limits<size_t>::max());
 			m_count++;
 		}
 
-		void unused() {
+		void unused()
+		{
 			zth_assert(m_count > 0);
 			if(--m_count == 0)
 				delete this;
@@ -66,11 +68,27 @@ namespace zth {
 	template <typename T>
 	class SharedPointer {
 	public:
-		explicit SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
-		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
-		virtual ~SharedPointer() { reset(); }
+		constexpr14 explicit SharedPointer(T* object = nullptr) noexcept
+			: m_object(object)
+		{
+			if(m_object)
+				m_object->used();
+		}
 
-		void reset(RefCounted* object = NULL) {
+		constexpr14 SharedPointer(SharedPointer const& p) noexcept
+			: m_object(p.get())
+		{
+			if(m_object)
+				m_object->used();
+		}
+
+		virtual ~SharedPointer()
+		{
+			reset();
+		}
+
+		void reset(T* object = nullptr)
+		{
 			if(object)
 				object->used();
 			if(m_object)
@@ -78,37 +96,74 @@ namespace zth {
 			m_object = object;
 		}
 
-		SharedPointer& operator=(RefCounted* object) { reset(object); return *this; }
-		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); return *this; }
+		SharedPointer& operator=(T* object)
+		{
+			reset(object);
+			return *this;
+		}
 
-		T* get() const { return m_object ? static_cast<T*>(m_object) : NULL; }
-		operator T*() const { return get(); }
-		T* operator*() const { zth_assert(get()); return get(); }
-		T* operator->() const { zth_assert(get()); return get(); }
+		SharedPointer& operator=(SharedPointer const& p)
+		{
+			reset(p.get());
+			return *this;
+		}
 
-		T* release() {
+#if __cplusplus >= 201103L
+		constexpr14 SharedPointer(SharedPointer&& p) noexcept
+			: m_object()
+		{
+			*this = std::move(p);
+		}
+
+		constexpr14 SharedPointer& operator=(SharedPointer&& p) noexcept
+		{
+			m_object = p.release();
+			return *this;
+		}
+#endif
+
+		constexpr T* get() const noexcept { return m_object; }
+		constexpr operator T*() const noexcept { return get(); }
+		constexpr14 T* operator*() const noexcept { zth_assert(get()); return get(); }
+		constexpr14 T* operator->() const noexcept { zth_assert(get()); return get(); }
+
+		constexpr14 T* release() noexcept
+		{
 			T* object = get();
-			m_object = NULL;
+			m_object = nullptr;
 			return object;
 		}
 
 	private:
-		RefCounted* m_object;
+		T* m_object;
 	};
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 		ZTH_CLASS_NEW_DELETE(Synchronizer)
 	public:
-		explicit Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
-		virtual ~Synchronizer() {
+		explicit Synchronizer(string const& name = "Synchronizer")
+			: RefCounted()
+			, UniqueID(Config::NamedSynchronizer ? name : string())
+		{}
+
+#if __cplusplus >= 201103L
+		explicit Synchronizer(string&& name)
+			: RefCounted()
+			, UniqueID(Config::NamedSynchronizer ? std::move(name) : string())
+		{}
+#endif
+
+		virtual ~Synchronizer() override
+		{
 			zth_dbg(sync, "[%s] Destruct", id_str());
 			zth_assert(m_queue.empty());
 		}
 
 	protected:
-		void block() {
-			Worker* w;
-			Fiber* f;
+		void block()
+		{
+			Worker* w = nullptr;
+			Fiber* f = nullptr;
 			getContext(&w, &f);
 
 			zth_dbg(sync, "[%s] Block %s", id_str(), f->id_str());
@@ -122,12 +177,13 @@ namespace zth {
 		 * \brief Unblock the specific fiber.
 		 * \return \c true if unblocked, \c false when not queued by this Synchronizer.
 		 */
-		bool unblock(Fiber& f) {
+		bool unblock(Fiber& f)
+		{
 			if(!m_queue.contains(f))
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 			m_queue.erase(f);
@@ -136,12 +192,13 @@ namespace zth {
 			return true;
 		}
 
-		bool unblockFirst() {
+		bool unblockFirst()
+		{
 			if(m_queue.empty())
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			Fiber& f = m_queue.front();
 			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
@@ -151,12 +208,13 @@ namespace zth {
 			return true;
 		}
 
-		bool unblockAll() {
+		bool unblockAll()
+		{
 			if(m_queue.empty())
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			zth_dbg(sync, "[%s] Unblock all", id_str());
 
@@ -172,14 +230,14 @@ namespace zth {
 		class AlarmClock : public TimedWaitable {
 		public:
 			typedef TimedWaitable base;
-			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout)
+			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout) noexcept
 				: base(timeout)
 				, m_synchronizer(synchronizer)
 				, m_fiber(fiber)
 				, m_rang()
 			{}
 
-			virtual ~AlarmClock() {}
+			virtual ~AlarmClock() override is_default
 
 			virtual bool poll(Timestamp const& now = Timestamp::now()) {
 				if(!base::poll(now))
@@ -241,7 +299,7 @@ namespace zth {
 
 			AlarmClock a(*this, *f, timeout);
 			w->waiter().scheduleTask(a);
-			w->schedule(NULL, now);
+			w->schedule(nullptr, now);
 
 			w->waiter().unscheduleTask(a);
 			return !a.rang();
@@ -539,7 +597,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
 		return 0;
 
 	delete static_cast<zth::Mutex*>(mutex->p);
-	mutex->p = NULL;
+	mutex->p = nullptr;
 	return 0;
 }
 
@@ -609,7 +667,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
 		return 0;
 
 	delete static_cast<zth::Semaphore*>(sem->p);
-	sem->p = NULL;
+	sem->p = nullptr;
 	return 0;
 }
 
@@ -705,7 +763,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
 		return 0;
 
 	delete static_cast<zth::Signal*>(cond->p);
-	cond->p = NULL;
+	cond->p = nullptr;
 	return 0;
 }
 
@@ -777,7 +835,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
 		return 0;
 
 	delete static_cast<zth_future_t_type*>(future->p);
-	future->p = NULL;
+	future->p = nullptr;
 	return 0;
 }
 
@@ -865,7 +923,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
 		return 0;
 
 	delete static_cast<zth::Gate*>(gate->p);
-	gate->p = NULL;
+	gate->p = nullptr;
 	return 0;
 }
 

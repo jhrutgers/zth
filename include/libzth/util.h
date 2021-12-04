@@ -423,7 +423,7 @@ namespace zth {
 		{}
 
 #if __cplusplus >= 201103L
-		explicit UniqueID(string&& name) noexcept
+		explicit UniqueID(string&& name)
 			: m_id(getID())
 			, m_name(std::move(name))
 		{}
@@ -465,7 +465,7 @@ namespace zth {
 		}
 #endif
 
-		char const* id_str() const override
+		virtual char const* id_str() const override
 		{
 			if(unlikely(m_id_str.empty())) {
 				m_id_str =
@@ -489,7 +489,7 @@ namespace zth {
 			return m_id_str.c_str();
 		}
 
-	protected:
+	private:
 		virtual void changedName(string const& UNUSED_PAR(name)) {}
 
 	private:

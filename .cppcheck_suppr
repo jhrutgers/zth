@@ -1,5 +1,3 @@
-missingIncludeSystem:*
-strdupCalled:*
 unmatchedSuppression:*
 
 unknownMacro:examples/*
