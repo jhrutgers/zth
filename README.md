@@ -28,9 +28,10 @@ two fibers by using the `async` keyword:
 	}
 	zth_fiber(hello)
 
-	void main_fiber(int argc, char** argv)
+	int main_fiber(int argc, char** argv)
 	{
 		async hello();
+		return 0;
 	}
 
 Check out the [examples](https://jhrutgers.github.io/zth/examples.html) for
