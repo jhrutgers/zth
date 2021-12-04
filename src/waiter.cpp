@@ -220,13 +220,13 @@ void Waiter::entry()
 				}
 
 				perf_mark("blocking poll()");
-				perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
+				zth_perf_event(*fiber(), Fiber::Waiting);
 			}
 
 			int res = poller().poll(timeout_ms);
 
 			if(doRealSleep) {
-				perf_event(PerfEvent<>(*fiber(), fiber()->state()));
+				zth_perf_event(*fiber(), fiber()->state());
 				perf_mark("wakeup");
 			}
 
@@ -235,9 +235,9 @@ void Waiter::entry()
 		} else if(doRealSleep) {
 			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().str().c_str());
 			perf_mark("idle system; sleep");
-			perf_event(PerfEvent<>(*fiber(), Fiber::Waiting));
+			zth_perf_event(*fiber(), Fiber::Waiting);
 			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), NULL);
-			perf_event(PerfEvent<>(*fiber(), fiber()->state()));
+			zth_perf_event(*fiber(), fiber()->state());
 			perf_mark("wakeup");
 		}
 

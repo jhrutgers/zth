@@ -104,7 +104,7 @@ namespace zth {
 			if(state() > Uninitialized && state() < Dead)
 				kill();
 
-			perf_event(PerfEvent<>(*this));
+			zth_perf_event(*this);
 
 			setState(Uninitialized);
 			zth_assert(!fls());
@@ -352,7 +352,7 @@ namespace zth {
 
 			m_state = state;
 
-			perf_event(PerfEvent<>(*this, m_state, t));
+			zth_perf_event(*this, m_state, t);
 
 			if(state == Dead && hookDead)
 				hookDead(*this);

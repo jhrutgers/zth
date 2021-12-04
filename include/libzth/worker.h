@@ -72,7 +72,7 @@ namespace zth {
 			if((res = perf_init()))
 				goto error;
 
-			perf_event(PerfEvent<>(m_workerFiber));
+			zth_perf_event(m_workerFiber);
 
 			if((res = waiter().run()))
 				goto error;

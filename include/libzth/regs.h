@@ -42,21 +42,23 @@ template <typename T, uintptr_t Addr, typename Fields>
 struct Register {
 	typedef T type;
 
-	Register() {
+	Register()
+	{
 		static_assert(sizeof(Fields) == sizeof(type), "");
 		read();
 	}
-	explicit Register(type v) : value(v) {}
+
+	constexpr explicit Register(type v) noexcept : value(v) {}
 
 	union { type value; Fields field; };
 
-	static type volatile* r() { return (type volatile*)Addr; }
-	type read() const { return *r(); }
-	type read() { return value = *r(); }
-	void write() const { *r() = value; }
-	void write(type v) const { *r() = v; }
-	void write(type v) { *r() = value = v; }
-	operator type() const { return value; }
+	static type volatile* r() noexcept { return (type volatile*)Addr; }
+	type read() const noexcept { return *r(); }
+	type read() noexcept { return value = *r(); }
+	void write() const noexcept { *r() = value; }
+	void write(type v) const noexcept { *r() = v; }
+	void write(type v) noexcept { *r() = value = v; }
+	operator type() const noexcept { return value; }
 };
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
