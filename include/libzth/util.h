@@ -269,7 +269,9 @@ namespace zth {
 	class cow_string {
 	public:
 		cow_string() : m_cstr() {}
-		explicit cow_string(char const* s) : m_cstr(s) {}
+
+		// cppcheck-suppress noExplicitConstructor
+		cow_string(char const* s) : m_cstr(s) {}
 		// cppcheck-suppress noExplicitConstructor
 		cow_string(string const& s) : m_cstr(), m_str(s) {}
 		cow_string(cow_string const& s) { *this = s; }
@@ -291,10 +293,12 @@ namespace zth {
 		// cppcheck-suppress noExplicitConstructor
 		cow_string(string&& s) : m_cstr(), m_str(std::move(s)) {}
 		cow_string& operator=(string&& s) { m_cstr = nullptr; m_str = std::move(s); return *this; }
+
+		string str() && { return std::move(local()); }
 #endif
 
+		string const& str() const LREF_QUALIFIED { return local(); }
 		char const* c_str() const { return m_cstr ? m_cstr : m_str.c_str(); }
-		string const& str() const { return local(); }
 		operator string const&() const { return str(); }
 		char const& at(size_t pos) const { return str().at(pos); }
 		char operator[](size_t pos) const { return m_cstr ? m_cstr[pos] : str()[pos]; }

@@ -373,7 +373,7 @@ namespace zth {
 		return currentFiber();
 	}
 
-	inline void getContext(Worker** worker, Fiber** fiber) {
+	inline void getContext(Worker** worker, Fiber** fiber) noexcept {
 		Worker& current_worker = currentWorker();
 		if(likely(worker))
 			*worker = &current_worker;

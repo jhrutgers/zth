@@ -64,7 +64,7 @@ void takeSocks(int count)
 	// Store the socks in the same order as they were worn.
 	for(decltype(allSocks.begin()) it = allSocks.begin(); it != allSocks.end(); ++it) {
 		// *it is a SharedPointer<Future<Socks*>>
-		Socks* socks = ***it;
+		Socks* socks = (**it)->value();
 		printf("Store %s\n", socks->str.c_str());
 		delete socks;
 	}

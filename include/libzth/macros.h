@@ -186,6 +186,9 @@ ZTH_EXPORT void foo();
 #  ifndef alignas
 #    define alignas(...) __attribute__((aligned(sizeof(void*))))
 #  endif
+#  ifndef LREF_QUALIFIED
+#    define LREF_QUALIFIED
+#  endif
 #else
 #  ifndef constexpr14
 #    if __cplusplus < 201402L
@@ -196,6 +199,9 @@ ZTH_EXPORT void foo();
 #  endif
 #  ifndef is_default
 #    define is_default = default;
+#  endif
+#  ifndef LREF_QUALIFIED
+#    define LREF_QUALIFIED &
 #  endif
 #endif
 
