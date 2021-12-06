@@ -494,14 +494,14 @@ namespace zth {
  * \details This is a C-wrapper for zth::fls().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_fls() { return zth::fls(); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void* zth_fls() noexcept { return zth::fls(); }
 
 /*!
  * \copydoc zth::setFls()
  * \details This is a C-wrapper for zth::setFls().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_setFls(void* data = nullptr) { zth::setFls(data); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_setFls(void* data = nullptr) noexcept { zth::setFls(data); }
 
 #else // !__cplusplus
 

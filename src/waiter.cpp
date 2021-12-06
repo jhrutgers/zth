@@ -249,7 +249,8 @@ void Waiter::entry()
 
 
 
-bool PeriodicWakeUp::nap(Timestamp const& reference, Timestamp const& now) {
+bool PeriodicWakeUp::nap(Timestamp const& reference, Timestamp const& now)
+{
 	m_t = reference + interval();
 	if(likely(m_t > now)) {
 		// Proper sleep till next deadline.
@@ -268,4 +269,3 @@ bool PeriodicWakeUp::nap(Timestamp const& reference, Timestamp const& now) {
 }
 
 } // namespace
-

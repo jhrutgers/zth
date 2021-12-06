@@ -44,8 +44,6 @@ namespace zth {
 	class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
 		ZTH_CLASS_NEW_DELETE(Worker)
 	public:
-		Fiber* currentFiber() const noexcept { return m_currentFiber; }
-
 		Worker()
 			: UniqueID("Worker")
 			, m_currentFiber()
@@ -83,7 +81,8 @@ namespace zth {
 			zth_abort("Cannot create Worker; %s (error %d)", strerror(res), res);
 		}
 
-		virtual ~Worker() {
+		virtual ~Worker() override
+		{
 			zth_dbg(worker, "[%s] Destruct", id_str());
 
 			while(!m_suspendedQueue.empty()) {
@@ -100,11 +99,21 @@ namespace zth {
 			context_deinit();
 		}
 
-		Waiter& waiter() { return m_waiter; }
+		Fiber* currentFiber() const noexcept
+		{
+			return m_currentFiber;
+		}
 
-		void add(Fiber* fiber) {
+		Waiter& waiter() noexcept
+		{
+			return m_waiter;
+		}
+
+		void add(Fiber* fiber) noexcept
+		{
 			zth_assert(fiber);
 			zth_assert(fiber->state() != Fiber::Waiting); // We don't manage 'Waiting' here.
+
 			if(unlikely(fiber->state() == Fiber::Suspended)) {
 				m_suspendedQueue.push_back(*fiber);
 				zth_dbg(worker, "[%s] Added suspended %s", id_str(), fiber->id_str());
@@ -112,15 +121,18 @@ namespace zth {
 				m_runnableQueue.push_front(*fiber);
 				zth_dbg(worker, "[%s] Added runnable %s", id_str(), fiber->id_str());
 			}
+
 			dbgStats();
 		}
 
-		Worker& operator<<(Fiber* fiber) {
+		Worker& operator<<(Fiber* fiber) noexcept
+		{
 			add(fiber);
 			return *this;
 		}
 
-		void contextSwitchEnable(bool enable = false) {
+		void contextSwitchEnable(bool enable = false) noexcept
+		{
 			if(enable) {
 				zth_assert(m_disableContextSwitch > 0);
 				m_disableContextSwitch--;
@@ -128,15 +140,18 @@ namespace zth {
 				m_disableContextSwitch++;
 		}
 
-		void contextSwitchDisable() {
+		void contextSwitchDisable() noexcept
+		{
 			contextSwitchEnable(false);
 		}
 
-		bool contextSwitchEnabled() const {
+		bool contextSwitchEnabled() const noexcept
+		{
 			return m_disableContextSwitch == 0;
 		}
 
-		void release(Fiber& fiber) {
+		void release(Fiber& fiber) noexcept
+		{
 			if(unlikely(fiber.state() == Fiber::Suspended)) {
 				m_suspendedQueue.erase(fiber);
 				zth_dbg(worker, "[%s] Removed %s from suspended queue", id_str(), fiber.id_str());
@@ -150,7 +165,8 @@ namespace zth {
 			dbgStats();
 		}
 
-		bool schedule(Fiber* preferFiber = NULL, Timestamp const& now = Timestamp::now()) {
+		bool schedule(Fiber* preferFiber = nullptr, Timestamp const& now = Timestamp::now())
+		{
 			if(unlikely(!contextSwitchEnabled()))
 				// Don't switch, immediately continue.
 				return true;
@@ -213,7 +229,7 @@ namespace zth {
 					// fiber just died.
 					cleanup(*nextFiber);
 					// Retry to find a fiber.
-					nextFiber = NULL;
+					nextFiber = nullptr;
 					didSchedule = true;
 					goto reschedule;
 				default:
@@ -222,7 +238,8 @@ namespace zth {
 			}
 		}
 
-		void cleanup(Fiber& fiber) {
+		void cleanup(Fiber& fiber)
+		{
 			zth_assert(fiber.state() == Fiber::Dead);
 
 			if(unlikely(m_currentFiber == &fiber))
@@ -250,7 +267,8 @@ namespace zth {
 			sigchld_check();
 		}
 
-		void suspend(Fiber& fiber) {
+		void suspend(Fiber& fiber)
+		{
 			switch(fiber.state()) {
 			case Fiber::New:
 			case Fiber::Ready:
@@ -276,7 +294,8 @@ namespace zth {
 			}
 		}
 
-		void resume(Fiber& fiber) {
+		void resume(Fiber& fiber) noexcept
+		{
 			if(fiber.state() != Fiber::Suspended)
 				return;
 
@@ -285,11 +304,13 @@ namespace zth {
 			add(&fiber);
 		}
 
-		Timestamp const& runEnd() const {
+		Timestamp const& runEnd() const noexcept
+		{
 			return m_end;
 		}
 
-		void run(TimeInterval const& duration = TimeInterval()) {
+		void run(TimeInterval const& duration = TimeInterval())
+		{
 			if(duration <= 0) {
 				zth_dbg(worker, "[%s] Run", id_str());
 				m_end = Timestamp::null();
@@ -306,20 +327,31 @@ namespace zth {
 			sigchld_check();
 		}
 
-		Load<>& load() {
+		typedef Load<> Load_type;
+
+		Load_type& load() noexcept
+		{
+			return m_load;
+		}
+
+		Load_type const& load() const noexcept
+		{
 			return m_load;
 		}
 
 	protected:
-		static void dummyWorkerEntry(void*) {
+		static void dummyWorkerEntry(void*)
+		{
 			zth_abort("The worker fiber should not be executed.");
 		}
 
-		bool isInWorkerContext() const {
-			return m_currentFiber == NULL || m_currentFiber == &m_workerFiber;
+		bool isInWorkerContext() const noexcept
+		{
+			return m_currentFiber == nullptr || m_currentFiber == &m_workerFiber;
 		}
 
-		void dbgStats() {
+		void dbgStats() noexcept
+		{
 			if(!Config::SupportDebugPrint || !Config::Print_worker)
 				return;
 
@@ -346,7 +378,7 @@ namespace zth {
 		Waiter m_waiter;
 		Timestamp m_end;
 		int m_disableContextSwitch;
-		Load<> m_load;
+		Load_type m_load;
 
 		friend void worker_global_init();
 	};
@@ -354,7 +386,8 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() noexcept {
+	ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() noexcept
+	{
 		// Dereference is guarded by the safe_ptr.
 		return *Worker::instance();
 	}
@@ -362,18 +395,21 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept {
+	ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept
+	{
 		Worker const& w = currentWorker();
 		Fiber* f = w.currentFiber();
 		zth_assert(f);
 		return *f;
 	}
 
-	__attribute__((pure)) inline UniqueID<Fiber> const& currentFiberID() {
+	__attribute__((pure)) inline UniqueID<Fiber> const& currentFiberID() noexcept
+	{
 		return currentFiber();
 	}
 
-	inline void getContext(Worker** worker, Fiber** fiber) noexcept {
+	inline void getContext(Worker** worker, Fiber** fiber) noexcept
+	{
 		Worker& current_worker = currentWorker();
 		if(likely(worker))
 			*worker = &current_worker;
@@ -388,7 +424,7 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void yield(Fiber* preferFiber = NULL, bool alwaysYield = false, Timestamp const& now = Timestamp::now())
+	ZTH_EXPORT inline void yield(Fiber* preferFiber = nullptr, bool alwaysYield = false, Timestamp const& now = Timestamp::now())
 	{
 		Fiber const& f = currentFiber();
 
@@ -402,25 +438,28 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void outOfWork() {
-		yield(NULL, true);
+	ZTH_EXPORT inline void outOfWork()
+	{
+		yield(nullptr, true);
 	}
 
-	inline void suspend() {
-		Worker* worker;
-		Fiber* f;
+	inline void suspend()
+	{
+		Worker* worker = nullptr;
+		Fiber* f = nullptr;
 		getContext(&worker, &f);
 		worker->suspend(*f);
 	}
 
-	inline void resume(Fiber& fiber) {
-		Worker* worker;
-		getContext(&worker, NULL);
+	inline void resume(Fiber& fiber)
+	{
+		Worker* worker = nullptr;
+		getContext(&worker, nullptr);
 		worker->resume(fiber);
 	}
 
-	int startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL);
-	int execlp(char const* file, char const* arg, ... /*, NULL */);
+	int startWorkerThread(void(*f)(), size_t stack = 0, char const* name = nullptr);
+	int execlp(char const* file, char const* arg, ... /*, nullptr */);
 	int execvp(char const* file, char* const arg[]);
 
 } // namespace
@@ -430,40 +469,50 @@ namespace zth {
  * \details This is a C-wrapper for zth::yield().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_yield() { zth::yield(); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_yield() noexcept { zth::yield(); }
 
 /*!
  * \copydoc zth::outOfWork()
  * \details This is a C-wrapper for zth::outOfWork().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_outOfWork() { zth::outOfWork(); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_outOfWork() noexcept { zth::outOfWork(); }
 
 /*!
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() noexcept
+{
 	if(!zth::Worker::instance())
 		return EINVAL;
 
-	new zth::Worker();
-	return 0;
+	__try {
+		new zth::Worker();
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = NULL) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = nullptr) noexcept
+{
 	zth::Worker* w = zth::Worker::instance();
 	if(unlikely(!w))
 		return;
+
 	w->run(ts ? zth::TimeInterval(ts->tv_sec, ts->tv_nsec) : zth::TimeInterval());
 }
 
 /*!
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() {
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() noexcept
+{
 	zth::Worker* w = zth::Worker::instance();
 	if(unlikely(!w))
 		return;
@@ -475,15 +524,20 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() {
  * \details This is a C-wrapper for zth::execvp().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_startWorkerThread(void(*f)(), size_t stack = 0, char const* name = NULL) {
-	return zth::startWorkerThread(f, stack, name); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_startWorkerThread(void(*f)(), size_t stack = 0, char const* name = nullptr) noexcept
+{
+	return zth::startWorkerThread(f, stack, name);
+}
 
 /*!
  * \copydoc zth::execvp()
  * \details This is a C-wrapper for zth::execvp().
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[]) { return zth::execvp(file, arg); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[]) noexcept
+{
+	return zth::execvp(file, arg);
+}
 
 #else // !__cplusplus
 

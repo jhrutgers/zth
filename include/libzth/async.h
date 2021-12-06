@@ -565,10 +565,18 @@ namespace zth {
  * \brief Run a function as a new fiber.
  * \ingroup zth_api_c_fiber
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = nullptr, size_t stack = 0, char const* name = nullptr)
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(void(*f)(void*), void* arg = nullptr, size_t stack = 0, char const* name = nullptr) noexcept
 {
 	int res = 0;
-	zth::Fiber* fib = new zth::Fiber(f, arg);
+	zth::Fiber* fib = nullptr;
+
+	__try {
+		fib = new zth::Fiber(f, arg);
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 
 	if(unlikely(stack))
 		if((res = fib->setStackSize(stack))) {

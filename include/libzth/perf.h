@@ -45,8 +45,8 @@ namespace zth {
 	void perf_deinit();
 
 	class Fiber;
-	//__attribute__((pure)) UniqueID<Fiber> const& currentFiberID();
-	UniqueID<Fiber> const& currentFiberID();
+	//__attribute__((pure)) UniqueID<Fiber> const& currentFiberID() noexcept;
+	UniqueID<Fiber> const& currentFiberID() noexcept;
 
 	class Backtrace {
 		ZTH_CLASS_NEW_DELETE(Backtrace)
