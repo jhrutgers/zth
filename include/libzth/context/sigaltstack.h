@@ -34,6 +34,9 @@
 
 #ifdef ZTH_HAVE_PTHREAD
 #  include <pthread.h>
+#  ifndef ZTH_OS_MAC
+#    define pthread_yield_np()	pthread_yield()
+#  endif
 #else
 #  define pthread_sigmask(...)	sigprocmask(__VA_ARGS__)
 #  define pthread_kill(...)	kill(__VA_ARGS__)
@@ -61,13 +64,18 @@ error:
 }
 ZTH_INIT_CALL(context_global_init)
 
-class ContextSigaltstack : public ContextArch<ContextSigaltstack>::type {
-	ZTH_CLASS_NEW_DELETE(ContextSigaltstack)
-public:
-	typedef ContextArch<ContextSigaltstack>::type base;
+} // namespace impl
 
-	constexpr explicit ContextSigaltstack(ContextAttr const& attr) noexcept
+class Context : public impl::ContextArch<Context> {
+	ZTH_CLASS_NEW_DELETE(Context)
+public:
+	typedef impl::ContextArch<Context> base;
+
+	constexpr explicit Context(ContextAttr const& attr) noexcept
 		: base(attr)
+		, m_trampoline_env()
+		, m_mask()
+		, m_did_trampoline()
 	{}
 
 private:
@@ -93,10 +101,10 @@ private:
 		}
 
 		// If we get here, we are not in the signal handler anymore, but in the actual fiber context.
-		zth_dbg(context, "Bootstrapping %p", this);
+		zth_dbg(context, "Bootstrapping %p", context);
 
 		if(Config::ContextSignals) {
-			int res = pthread_sigmask(SIG_SETMASK, &m_mask, nullptr);
+			int res = pthread_sigmask(SIG_SETMASK, &context->m_mask, nullptr);
 			if(unlikely(res))
 				zth_abort("Cannot set signal mask");
 		}
@@ -112,7 +120,7 @@ private:
 		context_entry(context);
 	}
 
-	ZTH_TLS_MEMBER(ContextSigaltstack*, trampoline_context)
+	ZTH_TLS_MEMBER(Context*, trampoline_context)
 
 public:
 	static int init() noexcept
@@ -153,24 +161,22 @@ public:
 		if(unlikely(res))
 			return res;
 
-		Stack const& stack_ = stack();
+		Stack const& stack_ = stackUsable();
 		if(unlikely(!stack_))
 			// Stackless fiber only saves current context; nothing to do.
 			return 0;
 
-		int res = 0;
 		m_did_trampoline = 0;
+		stack_t ss = {};
+		stack_t oss = {};
 
 		// Let the new context inherit our signal mask.
 		if(Config::ContextSignals)
 			if(unlikely((res = pthread_sigmask(0, nullptr, &m_mask))))
-				return res;
+				goto rollback;
 
-		stack_t ss;
 		ss.ss_sp = stack_.p;
 		ss.ss_size = stack_.size;
-
-		stack_t oss;
 
 #ifdef ZTH_USE_VALGRIND
 		// Disable checking during bootstrap.
@@ -180,10 +186,12 @@ public:
 #ifdef SS_AUTODISARM
 		ss.ss_flags |= SS_AUTODISARM;
 #endif
-		if(unlikely(sigaltstack(&ss, &oss)))
-			return errno;
+		if(unlikely(sigaltstack(&ss, &oss))) {
+			res = errno;
+			goto rollback;
+		}
 
-		ZTH_TLS_SET(trampoline_context, context);
+		ZTH_TLS_SET(trampoline_context, this);
 
 		// Ready to do the signal.
 		sigset_t sigs;
@@ -255,7 +263,7 @@ public:
 		sigjmp_buf me;
 		m_parent = &me;
 		if(sigsetjmp(me, Config::ContextSignals) == 0)
-			longjmp(context->trampoline_env, 1);
+			longjmp(m_trampoline_env, 1);
 
 #ifdef ZTH_USE_VALGRIND
 		// Disabled checking during bootstrap.
@@ -272,7 +280,7 @@ public:
 
 		// context is setup properly and is ready for normal scheduling.
 		if(Config::Debug)
-			context->parent = nullptr;
+			m_parent = nullptr;
 
 		return 0;
 
@@ -283,6 +291,7 @@ public:
 		if(!(oss.ss_flags & SS_DISABLE))
 			sigaltstack(&oss, nullptr);
 	rollback:
+		base::destroy();
 		return res ? res : EINVAL;
 	}
 
@@ -290,7 +299,7 @@ public:
 	{
 		if(sigsetjmp(m_env, Config::ContextSignals) == 0) {
 			// Go switch away from here.
-			siglongjmp(to->m_env, 1);
+			siglongjmp(to.m_env, 1);
 		}
 	}
 
@@ -309,15 +318,12 @@ private:
 #endif
 };
 
-ZTH_TLS_DEFINE(ContextSigaltstack*, ContextSigaltstack::trampoline_context, nullptr)
+ZTH_TLS_DEFINE(Context*, Context::trampoline_context, nullptr)
 
 #ifdef ZTH_HAVE_VALGRIND
-char ContextSigaltstack::dummyAltStack[MINSIGSTKSZ];
+char Context::dummyAltStack[MINSIGSTKSZ];
 #endif
 
-} // namespace impl
-
-typedef impl::ContextSigaltstack Context;
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_SIGALTSTACK_H

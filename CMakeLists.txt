@@ -178,6 +178,12 @@ endif()
 # Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp
 set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_SOURCE)
 
+if(ZTH_CONTEXT)
+	string(TOUPPER "${ZTH_CONTEXT}" ZTH_CONTEXT)
+	message(STATUS "Prefer context switch approach ${ZTH_CONTEXT}")
+	target_compile_definitions(libzth PUBLIC -DZTH_CONTEXT_${ZTH_CONTEXT})
+endif()
+
 target_include_directories(libzth PUBLIC
 	$<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
 	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -274,8 +280,10 @@ if(ZTH_ENABLE_UBSAN)
 	target_link_options(libzth INTERFACE -fsanitize=undefined)
 endif()
 
+option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
+
 CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
-if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND)
+if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND AND ZTH_ENABLE_VALGRIND)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
