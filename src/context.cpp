@@ -27,18 +27,37 @@
 
 namespace zth {
 
+/*!
+ * \brief One-time context mechanism initialization.
+ *
+ * Normally, let #zth::Worker call this function.
+ */
 int context_init() noexcept
 {
 	zth_dbg(context, "[%s] Initialize", currentWorker().id_str());
 	return Context::init();
 }
 
+/*!
+ * \brief Final cleanup.
+ *
+ * Normally, let #zth::Worker call this function.
+ */
 void context_deinit() noexcept
 {
 	zth_dbg(context, "[%s] Deinit", currentWorker().id_str());
 	Context::deinit();
 }
 
+/*!
+ * \brief Create a context.
+ *
+ * Normally, let #zth::Fiber manage the context.
+ *
+ * \param context the variable that will receive the newly created context, when successful
+ * \param attr the attributes used to create the context
+ * \return 0 on success, otherwise an errno
+ */
 int context_create(Context*& context, ContextAttr const& attr) noexcept
 {
 	__try {
@@ -73,6 +92,11 @@ int context_create(Context*& context, ContextAttr const& attr) noexcept
 	return 0;
 }
 
+/*!
+ * \brief Destroy and cleanup a context.
+ *
+ * Normally, let #zth::Fiber manage the context.
+ */
 void context_destroy(Context* context) noexcept
 {
 	if(!context)
@@ -84,6 +108,12 @@ void context_destroy(Context* context) noexcept
 	zth_dbg(context, "[%s] Deleted context %p", currentWorker().id_str(), context);
 }
 
+/*!
+ * \brief Perform context switch.
+ *
+ * Normally, let #zth::Fiber call this function, after scheduled by the
+ * #zth::Worker.
+ */
 void context_switch(Context* from, Context* to) noexcept
 {
 	zth_assert(from);
@@ -123,6 +153,17 @@ size_t context_stack_usage(Context* context) noexcept
 
 } // namespace
 
+/*!
+ * \brief Entry point of the fiber.
+ *
+ * This function is called by the actual context switching mechanism.  It will
+ * call the entry function, as specified by the Context's attributes during
+ * creation, which is #zth::Fiber::fiberEntry() by default.
+ *
+ * This function does not return. When the entry function returns, the context
+ * is considered dead, the Worker's scheduler is invoked, and the context is
+ * destroyed.
+ */
 void context_entry(zth::Context* context) noexcept
 {
 #ifdef ZTH_ENABLE_ASAN
@@ -237,7 +278,16 @@ size_t stack_watermark_maxused(void* stack) noexcept
 	size_t size = *sizeptr;
 
 	size_t unused = 0;
+
+#ifdef ZTH_USE_VALGRIND
+	VALGRIND_DISABLE_ADDR_ERROR_REPORTING_IN_RANGE(stack, size); // NOLINT
+#endif
+
 	for(uint64_t* s = static_cast<uint64_t*>(stack); unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+
+#ifdef ZTH_USE_VALGRIND
+	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(stack, size); // NOLINT
+#endif
 
 	return size - unused * sizeof(uint64_t);
 }
@@ -250,17 +300,7 @@ size_t stack_watermark_maxused(void* stack) noexcept
  */
 size_t stack_watermark_remaining(void* stack) noexcept
 {
-	if(!Config::EnableStackWaterMark || !stack)
-		return 0;
-
-	size_t* sizeptr = nullptr;
-	stack_watermark_align(stack, sizeptr);
-	size_t size = *sizeptr;
-
-	size_t unused = 0;
-	for(uint64_t* s = static_cast<uint64_t*>(stack); unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
-
-	return unused * sizeof(uint64_t);
+	return stack_watermark_size(stack) - stack_watermark_maxused(stack);
 }
 
 } // namespace

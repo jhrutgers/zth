@@ -51,6 +51,8 @@ public:
 private:
 	static void context_trampoline(Context* context, sigjmp_buf origin)
 	{
+		// We got here via setcontext().
+
 #ifdef ZTH_ENABLE_ASAN
 		void const* oldstack = nullptr;
 		size_t oldsize = 0;
@@ -60,6 +62,7 @@ private:
 		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
 #endif
 
+		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
 			siglongjmp(origin, 1);
 
@@ -78,15 +81,18 @@ public:
 			// Stackless fiber only saves current context; nothing to do.
 			return 0;
 
+		// Get current context, to inherit signals/masks.
 		ucontext_t uc;
 		if(getcontext(&uc))
 			return EINVAL;
 
+		// Modify the stack of the new context.
 		uc.uc_link = nullptr;
 		Stack const& stack_ = stackUsable();
 		uc.uc_stack.ss_sp = stack_.p;
 		uc.uc_stack.ss_size = stack_.size;
 
+		// Modify the function to call from this new context.
 		sigjmp_buf origin;
 		makecontext(&uc, reinterpret_cast<void(*)(void)>(&context_trampoline), 2, this, origin);
 
@@ -95,8 +101,15 @@ public:
 		__sanitizer_start_switch_fiber(&fake_stack, stack_.p, stack_.size);
 #endif
 
-		if(sigsetjmp(origin, Config::ContextSignals) == 0)
+		// switcontext() is slow, we want to use sigsetjmp/siglongjmp instead.
+		// So, we initialize the sigjmp_buf from the just created context.
+		// After this initial setup, context_switch() is good to go.
+		if(sigsetjmp(origin, Config::ContextSignals) == 0) {
+			// Here we go into the context for the first time.
 			setcontext(&uc);
+		}
+
+		// Got back from context_trampoline(). The context is ready now.
 
 #ifdef ZTH_ENABLE_ASAN
 		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);

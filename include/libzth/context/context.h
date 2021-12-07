@@ -18,6 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*!
+ * \file Context switch mechanism implementation.
+ *
+ * This file is a private header file, only used by src/context.cpp.  Do not
+ * include it otherwise.
+ */
+
 #ifdef __cplusplus
 
 #include "libzth/macros.h"
@@ -30,6 +37,7 @@
 #include "libzth/util.h"
 #include "libzth/allocator.h"
 #include "libzth/context.h"
+#include "libzth/worker.h"
 
 #include <setjmp.h>
 #include <unistd.h>
@@ -56,6 +64,22 @@
 namespace zth {
 namespace impl {
 
+/*!
+ * \brief Base class of the Context.
+ *
+ * The Context consists of three layers:
+ *
+ * - ContextBase: this class, which implements the basic functionality
+ * - ContextArch: a class that inherits ContextBase, which does CPU-specific
+ *   overrides and implementations of the ContextBase.
+ * - Context: a class that inherits ContextArch, with the specific context
+ *   switch approach.
+ *
+ * Although the classes inherit each other and override methods, they are not
+ * virtual.  All implementation is done in the header. The lowest subclass is
+ * passed as template parameter to the parents, which allows invoking the most
+ * specific methods.  This allows fully inlining and optimizing the functions.
+ */
 template <typename Impl>
 class ContextBase {
 	ZTH_CLASS_NOCOPY(ContextBase)
@@ -166,7 +190,7 @@ public:
 
 		if(unlikely((res = impl().stackGuardInit()))) {
 			// Uh, oh...
-			deallocStack(m_stack);
+			impl().deallocStack(m_stack);
 			return res;
 		}
 
@@ -208,7 +232,6 @@ public:
 		impl().stackAlign(usable);
 
 		stack_watermark_init(usable.p, usable.size);
-
 		return 0;
 	}
 
@@ -324,13 +347,13 @@ public:
 
 		// Align to page size.
 		uintptr_t stack_old = (uintptr_t)stack.p;
+		// calcStackSize() should have taken care of this.
+		zth_assert(stack.size > ps);
 
 		// The stack should not wrap.
 		zth_assert(stack_old + stack.size > stack_old);
 
 		uintptr_t stack_new = ((uintptr_t)(stack_old + ps - 1u) & ~(ps - 1u));
-		// Should be large enough, as determined by calcStackSize().
-		zth_assert(stack_new - stack_old <= stack.size);
 		stack.size = (stack.size - (stack_new - stack_old)) & ~(ps - 1u);
 
 #ifdef ZTH_HAVE_MMAN
@@ -384,7 +407,7 @@ public:
 			if(!m_stackUsable.p)
 				return 0;
 
-			size_t const ps = pageSize();
+			size_t const ps = impl().pageSize();
 			// Guard both ends of the stack.
 			if(unlikely(
 				mprotect(m_stackUsable.p - ps, ps, PROT_NONE) ||

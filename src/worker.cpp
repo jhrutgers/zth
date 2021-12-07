@@ -43,9 +43,15 @@ void worker_global_init()
 {
 	zth_dbg(banner, "%s", banner());
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-	struct sigaction sa = {};
-	sa.sa_handler = &sigchld_handler;
-	sigaction(SIGCHLD, &sa, nullptr);
+#  ifdef ZTH_USE_VALGRIND
+	// valgrind does not seem to like the sigaction below. Not sure why.
+	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
+#  endif
+	{
+		struct sigaction sa = {};
+		sa.sa_handler = &sigchld_handler;
+		sigaction(SIGCHLD, &sa, nullptr);
+	}
 #endif
 }
 ZTH_INIT_CALL(worker_global_init)
@@ -161,8 +167,12 @@ static void sigchld_handler(int /*unused*/)
 void sigchld_check()
 {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-	if(likely(sigchld_cleanup == 0))
-		return;
+#  ifdef ZTH_USE_VALGRIND
+	// The sigaction was disabled, so sigchld_cleanup will always be 0.
+	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
+#  endif
+		if(likely(sigchld_cleanup == 0))
+			return;
 
 	Worker* w = Worker::instance();
 	char const* id_str = w ? w->id_str() : "?";
