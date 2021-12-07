@@ -46,12 +46,12 @@ namespace zth {
 namespace impl {
 
 template <typename Impl>
-class ContextArchArm : public ContextBase<Impl> {
+class ContextArch : public ContextBase<Impl> {
 public:
 	typedef ContextBase<Impl> base;
 
 protected:
-	constexpr explicit ContextArchArm(ContextAttr const& attr) noexcept
+	constexpr explicit ContextArch(ContextAttr const& attr) noexcept
 		: base(attr)
 #ifdef ZTH_ARM_DO_STACK_GUARD
 		, m_guard
@@ -91,6 +91,8 @@ public:
 	void stackAlign(Stack& stack) noexcept
 	{
 		base::stackAlign(stack);
+		if(!stack.p || !stack.size)
+			return;
 
 #ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard) {
@@ -98,6 +100,8 @@ public:
 			zth_assert(stackGrowsDown(&stack));
 			m_guard = stack.p;
 			size_t const ps = impl().pageSize();
+			// There should be enough room, as computed by calcStackSize().
+			zth_assert(stack.size > ps);
 			stack.p += ps;
 			stack.size -= ps;
 		}
@@ -194,8 +198,7 @@ private:
 		return region;
 	}
 
-public:
-	void stackGuard() noexcept
+	static void stackGuard(void* guard) noexcept
 	{
 		if(!Config::EnableStackGuard || Config::EnableThreads)
 			return;
@@ -205,14 +208,14 @@ public:
 			return;
 
 		// Must be aligned to guard size
-		zth_assert(((uintptr_t)m_guard & (ZTH_ARM_STACK_GUARD_SIZE - 1)) == 0);
+		zth_assert(((uintptr_t)guard & (ZTH_ARM_STACK_GUARD_SIZE - 1)) == 0);
 
 		reg_mpu_rbar rbar(0);
 
-		if(likely(m_guard)) {
-			rbar.field.addr = (uintptr_t)m_guard >> 5;
+		if(likely(guard)) {
+			rbar.field.addr = (uintptr_t)guard >> 5;
 			register void* sp asm ("sp");
-			zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", m_guard, sp);
+			zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", guard, sp);
 		} else {
 			// Initialize at the top of the address space, so it is effectively unused.
 			rbar.field.addr = REG_MPU_RBAR_ADDR_UNUSED;
@@ -232,10 +235,22 @@ public:
 			__isb();
 		}
 	}
+
+public:
+	void stackGuard() noexcept
+	{
+		// The guard is outside of the usable stack area.
+		stackGuard(m_guard);
+	}
+
+	void stackGuard(Stack const& stack) noexcept
+	{
+		// The guard is at the end of the usable stack area.
+		stackGuard(stack.p);
+	}
+
 #pragma GCC diagnostic pop
 #endif // ZTH_ARM_DO_STACK_GUARD
-
-
 
 
 
@@ -362,14 +377,120 @@ public:
 
 private:
 #ifdef ZTH_ARM_DO_STACK_GUARD
-	// These are always the same.
-	void* guard;
+	void* m_guard;
 #endif
 };
 
 } // namespace impl
-
-typedef ContextArchArm ContextArch;
 } // namespace zth
+
+#ifdef ZTH_STACK_SWITCH
+#  ifdef ZTH_ARCH_ARM
+
+__attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)))
+{
+	__asm__ volatile (
+		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+		".save {r4, " REG_FP ", lr}\n"
+		"add " REG_FP ", sp, #0\n"
+
+		"mrs r4, control\n"		// Save current control register
+		"bic r3, r4, #2\n"		// Set to use MSP
+		"msr control, r3\n"		// Enable MSP
+		"isb\n"
+		"and r4, r4, #2\n"		// r4 is set to only have the PSP bit
+
+		// We are on MSP now.
+
+		"push {" REG_FP ", lr}\n"	// Save frame pointer on MSP
+		".setfp " REG_FP ", sp\n"
+		"add " REG_FP ", sp, #0\n"
+
+		"blx r1\n"			// Call f(arg)
+
+		"mrs r3, control\n"		// Save current control register
+		"orr r3, r3, r4\n"		// Set to use previous PSP setting
+		"msr control, r3\n"		// Enable PSP setting
+		"isb\n"
+
+		// We are back on the previous stack.
+
+		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+	);
+}
+
+__attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)), void* UNUSED_PAR(sp))
+{
+	__asm__ volatile (
+		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+		".save {r4, " REG_FP ", lr}\n"
+		"add " REG_FP ", sp, #0\n"
+
+		"mov r4, sp\n"			// Save previous stack pointer
+		"mov sp, r2\n"			// Set new stack pointer
+		"push {" REG_FP ", lr}\n"	// Save previous frame pointer on new stack
+		".setfp " REG_FP ", sp\n"
+		"add " REG_FP ", sp, #0\n"
+
+		"blx r1\n"			// Call f(arg)
+
+		"mov sp, r4\n"			// Restore previous stack
+		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+	);
+}
+
+void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
+{
+	zth::Worker* worker = zth::Worker::currentWorker();
+	void* res;
+
+	if(!stack) {
+		worker->contextSwitchDisable();
+		res = zth_stack_switch_msp(arg, f);
+		worker->contextSwitchEnable();
+		return res;
+	} else {
+		void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
+#ifdef ZTH_ARM_HAVE_MPU
+		void* prevGuard = nullptr;
+		zth::Context* context = nullptr;
+
+		if(zth::Config::EnableStackGuard && size) {
+			if(unlikely(!worker))
+				goto noguard;
+
+			zth::Fiber* fiber = worker->currentFiber();
+			if(unlikely(!fiber))
+				goto noguard;
+
+			context = fiber->context();
+			if(unlikely(!context))
+				goto noguard;
+
+			void* guard = (void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+			prevGuard = context->m_guard;
+			context->m_guard = guard;
+
+			context->stackGuard(guard);
+		}
+
+noguard:
+#endif
+
+		res = zth_stack_switch_psp(arg, f, sp);
+
+#ifdef ZTH_ARM_HAVE_MPU
+		if(prevGuard) {
+			context->m_guard = prevGuard;
+			context->stackGuard(prevGuard);
+		}
+#endif
+	}
+
+	return res;
+}
+#  endif // ZTH_ARCH_ARM
+#endif // ZTH_STACK_SWITCH
+
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_ARCH_ARM_H

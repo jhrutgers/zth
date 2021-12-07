@@ -27,7 +27,18 @@
 #  define NOGDI
 #endif
 
-#if defined(ZTH_HAVE_MMAN)
+#include "libzth/util.h"
+#include "libzth/allocator.h"
+#include "libzth/context.h"
+
+#include <setjmp.h>
+#include <unistd.h>
+
+#ifndef ZTH_OS_WINDOWS
+#  include <signal.h>
+#endif
+
+#ifdef ZTH_HAVE_MMAN
 #  include <sys/mman.h>
 #  ifndef MAP_STACK
 #    define MAP_STACK 0
@@ -45,18 +56,12 @@
 namespace zth {
 namespace impl {
 
-extern "C" void context_entry(Context* context) __attribute__((noreturn,used));
-
 template <typename Impl>
 class ContextBase {
 	ZTH_CLASS_NOCOPY(ContextBase)
 protected:
 	constexpr explicit ContextBase(ContextAttr const& attr) noexcept
 		: m_attr(attr)
-		, m_stack()
-		, m_stackSize()
-		, m_stackUsable()
-		, m_stackUsableSize()
 #ifdef ZTH_ENABLE_ASAN
 		, m_alive(true)
 #endif
@@ -92,8 +97,8 @@ public:
 	 * \brief Stack information.
 	 */
 	struct Stack {
-		constexpr Stack(char* p, size_t size) noexcept
-			: p(p)
+		constexpr Stack(void* p, size_t size) noexcept
+			: p(static_cast<char*>(p))
 			, size(size)
 		{}
 
@@ -101,6 +106,11 @@ public:
 			: p()
 			, size(size)
 		{}
+
+		constexpr operator bool() const noexcept
+		{
+			return p != nullptr && size > 0;
+		}
 
 		char* p;
 		size_t size;
@@ -170,7 +180,7 @@ public:
 	{
 		impl().stackGuardDeinit();
 		impl().valgrindDeregister();
-		impl().deleteStack(m_stack);
+		impl().deinitStack(m_stack);
 		m_stackUsable = m_stack = Stack();
 	}
 
@@ -196,6 +206,8 @@ public:
 		// Compute usable offsets.
 		usable = stack;
 		impl().stackAlign(usable);
+
+		stack_watermark_init(usable.p, usable.size);
 
 		return 0;
 	}
@@ -243,7 +255,9 @@ public:
 	 */
 	size_t calcStackSize(size_t size) noexcept
 	{
+#ifndef ZTH_OS_WINDOWS
 		size += MINSIGSTKSZ;
+#endif
 
 #ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard)
@@ -302,21 +316,33 @@ public:
 	 */
 	void stackAlign(Stack& stack) noexcept
 	{
+		if(!stack.p || !stack.size)
+			// Nothing to align.
+			return;
+
 		size_t const ps = pageSize();
 
 		// Align to page size.
 		uintptr_t stack_old = (uintptr_t)stack.p;
+
+		// The stack should not wrap.
+		zth_assert(stack_old + stack.size > stack_old);
+
 		uintptr_t stack_new = ((uintptr_t)(stack_old + ps - 1u) & ~(ps - 1u));
+		// Should be large enough, as determined by calcStackSize().
+		zth_assert(stack_new - stack_old <= stack.size);
 		stack.size = (stack.size - (stack_new - stack_old)) & ~(ps - 1u);
 
 #ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard) {
 			// Do not use the pages at both sides.
+			zth_assert(stack.size > ps * 2u);
 			stack_new += ps;
 			stack.size -= ps * 2u;
 		}
 #endif
 
+		zth_assert(stack.size > 0);
 		stack.p = (char*)stack_new;
 	}
 
@@ -397,6 +423,14 @@ public:
 	 */
 	void stackGuard() noexcept
 	{
+		impl().stackGuard(stackUsable());
+	}
+
+	/*!
+	 * \brief Configure the guard for the given stack.
+	 */
+	void stackGuard(Stack const& UNUSED_PAR(stack)) noexcept
+	{
 	}
 
 	/*!
@@ -412,7 +446,7 @@ public:
 	/*!
 	 * \brief Push data into the stack.
 	 */
-	static stack_push(void**& sp, void* p) noexcept;
+	static void stack_push(void**& sp, void* p) noexcept;
 
 	/*!
 	 * \brief Set the stack pointer in a \c jmp_buf.
@@ -423,16 +457,6 @@ public:
 	 * \brief Set the program counter in a \c jmp_buf.
 	 */
 	static void set_pc(jmp_buf& env, void* sp) noexcept;
-
-	/*!
-	 * \brief Set the stack pointer in a \c sigjmp_buf.
-	 */
-	static void set_sp(sigjmp_buf& env, void** sp) noexcept;
-
-	/*!
-	 * \brief Set the program counter in a \c sigjmp_buf.
-	 */
-	static void set_pc(sigjmp_buf& env, void* sp) noexcept;
 
 	/*!
 	 * \brief Entry point to jump to from a (sig)jmp_buf.
@@ -507,6 +531,8 @@ private:
 #else
 #  include "libzth/context/arch_generic.h"
 #endif
+
+extern "C" void context_entry(zth::Context* context) noexcept __attribute__((noreturn,used));
 
 #if defined(ZTH_CONTEXT_SIGALTSTACK)
 #  include "libzth/context/sigaltstack.h"

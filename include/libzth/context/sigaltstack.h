@@ -36,9 +36,9 @@
 #  include <pthread.h>
 #else
 #  define pthread_sigmask(...)	sigprocmask(__VA_ARGS__)
-#  define pthread_kill(...)		kill(__VA_ARGS__)
-#  define pthread_self()		getpid()
-#  define pthread_yield_np()		sched_yield()
+#  define pthread_kill(...)	kill(__VA_ARGS__)
+#  define pthread_self()	getpid()
+#  define pthread_yield_np()	sched_yield()
 #endif
 
 namespace zth {
@@ -61,10 +61,14 @@ error:
 }
 ZTH_INIT_CALL(context_global_init)
 
-class ContextSigaltstack : public ContextArch<ContextSigaltstack> {
+class ContextSigaltstack : public ContextArch<ContextSigaltstack>::type {
 	ZTH_CLASS_NEW_DELETE(ContextSigaltstack)
 public:
-	typedef ContextArch<ContextSigaltstack> base;
+	typedef ContextArch<ContextSigaltstack>::type base;
+
+	constexpr explicit ContextSigaltstack(ContextAttr const& attr) noexcept
+		: base(attr)
+	{}
 
 private:
 	static void context_trampoline(int sig)
@@ -78,13 +82,13 @@ private:
 		// Put the context on the stack, as trampoline_context is about to change.
 		Context* context = ZTH_TLS_GET(trampoline_context);
 
-		if(unlikely(!context || context->did_trampoline))
+		if(unlikely(!context || context->m_did_trampoline))
 			// Huh?
 			return;
 
-		if(setjmp(context->trampoline_env) == 0) {
+		if(setjmp(context->m_trampoline_env) == 0) {
 			// Return immediately to complete the signal handler.
-			context->did_trampoline = 1;
+			context->m_did_trampoline = 1;
 			return;
 		}
 
@@ -98,21 +102,25 @@ private:
 		}
 
 		// However, we still need to setup the context for the first time.
-		if(sigsetjmp(m_env, Config::ContextSignals) == 0) {
+		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
 			// Now, we are ready to be context switched to this fiber.
 			// Go back to our parent, as it was not our schedule turn to continue with actual execution.
-			siglongjmp(*m_parent, 1);
+			siglongjmp(*context->m_parent, 1);
 		}
 
 		// This is actually the first time we enter the fiber by the normal scheduler.
-		context_entry(this);
+		context_entry(context);
 	}
 
 	ZTH_TLS_MEMBER(ContextSigaltstack*, trampoline_context)
 
 public:
-	static int context_init() noexcept
+	static int init() noexcept
 	{
+		int res = base::init();
+		if(res)
+			return res;
+
 		// Claim SIGUSR1 for context_create().
 		struct sigaction sa;
 		sa.sa_handler = &context_trampoline;
@@ -127,7 +135,7 @@ public:
 		return 0;
 	}
 
-	static void context_deinit_impl() noexcept
+	static void deinit() noexcept
 	{
 		// Release SIGUSR1.
 		struct sigaction sa;
@@ -135,23 +143,33 @@ public:
 		sigemptyset(&sa.sa_mask);
 		sa.sa_flags = 0;
 		sigaction(SIGUSR1, &sa, nullptr);
+
+		base::deinit();
 	}
 
-	static int context_create_impl(Context* context, stack_t* stack)
+	int create() noexcept
 	{
-		if(unlikely(!stack->ss_sp))
+		int res = base::create();
+		if(unlikely(res))
+			return res;
+
+		Stack const& stack_ = stack();
+		if(unlikely(!stack_))
 			// Stackless fiber only saves current context; nothing to do.
 			return 0;
 
 		int res = 0;
-		context->did_trampoline = 0;
+		m_did_trampoline = 0;
 
 		// Let the new context inherit our signal mask.
 		if(Config::ContextSignals)
-			if(unlikely((res = pthread_sigmask(0, nullptr, &context->mask))))
+			if(unlikely((res = pthread_sigmask(0, nullptr, &m_mask))))
 				return res;
 
-		stack_t& ss = *stack;
+		stack_t ss;
+		ss.ss_sp = stack_.p;
+		ss.ss_size = stack_.size;
+
 		stack_t oss;
 
 #ifdef ZTH_USE_VALGRIND
@@ -179,7 +197,7 @@ public:
 			goto rollback_altstack;
 
 		// Shouldn't take long...
-		while(!context->did_trampoline)
+		while(!m_did_trampoline)
 			pthread_yield_np();
 
 		// Block again.
@@ -235,7 +253,7 @@ public:
 		// Now go back again and save a proper env.
 
 		sigjmp_buf me;
-		context->parent = &me;
+		m_parent = &me;
 		if(sigsetjmp(me, Config::ContextSignals) == 0)
 			longjmp(context->trampoline_env, 1);
 

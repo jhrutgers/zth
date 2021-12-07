@@ -73,12 +73,12 @@ namespace zth {
 	int context_create(Context*& context, ContextAttr const& attr) noexcept;
 	void context_switch(Context* from, Context* to) noexcept;
 	void context_destroy(Context* context) noexcept;
+	size_t context_stack_usage(Context* context) noexcept;
 
 	void stack_watermark_init(void* stack, size_t size) noexcept;
 	size_t stack_watermark_size(void* stack) noexcept;
 	size_t stack_watermark_maxused(void* stack) noexcept;
 	size_t stack_watermark_remaining(void* stack) noexcept;
-	size_t context_stack_usage(Context* context) noexcept;
 
 
 

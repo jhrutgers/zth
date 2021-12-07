@@ -29,10 +29,10 @@
 namespace zth {
 namespace impl {
 
-class ContextWinfiber : public ContextArch<ContextWinfiber> {
+class ContextWinfiber : public ContextArch<ContextWinfiber>::type {
 	ZTH_CLASS_NEW_DELETE(ContextWinfiber)
 public:
-	typedef ContextArch<ContextWinfiber> base;
+	typedef ContextArch<ContextWinfiber>::type base;
 
 	constexpr explicit ContextWinfiber(ContextAttr const& attr) noexcept
 		: base(attr)

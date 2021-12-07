@@ -30,10 +30,10 @@
 namespace zth {
 namespace impl {
 
-class ContextSjlj : public ContextArch<ContextSjlj> {
+class ContextSjlj : public ContextArch<ContextSjlj>::type {
 	ZTH_CLASS_NEW_DELETE(ContextSjlj)
 public:
-	typedef ContextArch<ContextSjlj> base;
+	typedef ContextArch<ContextSjlj>::type base;
 
 	constexpr explicit ContextSjlj(ContextAttr const& attr) noexcept
 		: base(attr)
@@ -81,7 +81,7 @@ public:
 			return 0;
 
 		setjmp(m_env);
-		void** sp_ = sp(Stack(stackUsable(), stackUsableSize()));
+		void** sp_ = sp(stackUsable());
 		set_sp(m_env, sp_);
 		set_pc(m_env, &context_trampoline_from_jmp_buf);
 		stack_push(sp_, this);

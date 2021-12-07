@@ -28,19 +28,17 @@ namespace zth {
 namespace impl {
 
 template <typename Impl>
-class ContextArchGeneric : public ContextBase<Impl> {
+class ContextArch : public ContextBase<Impl> {
 public:
 	typedef ContextBase<Impl> base;
 
 protected:
-	constexpr explicit ContextArchGeneric(ContextAttr const& attr) noexcept
+	constexpr explicit ContextArch(ContextAttr const& attr) noexcept
 		: base(attr)
 	{}
 };
 
 } // namespace impl
-
-typedef ContextArchGeneric ContextArch;
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_ARCH_GENERIC_H

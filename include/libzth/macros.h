@@ -263,6 +263,7 @@ ZTH_EXPORT void foo();
 #  endif
 #elif defined(__linux__)
 #  define ZTH_OS_LINUX 1
+#  define ZTH_OS_POSIX 1
 //#  define ZTH_HAVE_VALGRIND
 #  define ZTH_HAVE_PTHREAD
 //#  define ZTH_HAVE_LIBUNWIND
@@ -272,6 +273,7 @@ ZTH_EXPORT void foo();
 #  include <TargetConditionals.h>
 #  ifdef TARGET_OS_MAC
 #    define ZTH_OS_MAC 1
+#    define ZTH_OS_POSIX 1
 #  else
 #    error Unsupported Apple platform.
 #  endif

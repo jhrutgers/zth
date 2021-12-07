@@ -35,16 +35,15 @@
 #include <ucontext.h>
 
 namespace zth {
-namespace impl {
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
-class ContextUcontext : public ContextArch<ContextUcontext> {
-	ZTH_CLASS_NEW_DELETE(ContextUcontext)
+class Context : public impl::ContextArch<Context> {
+	ZTH_CLASS_NEW_DELETE(Context)
 public:
-	typedef ContextArch<ContextUcontext> base;
+	typedef impl::ContextArch<Context> base;
 
-	constexpr explicit ContextUcontext(ContextAttr const& attr)
+	constexpr explicit Context(ContextAttr const& attr) noexcept
 		: base(attr)
 		, m_env()
 	{}
@@ -89,7 +88,7 @@ public:
 		uc.uc_stack.ss_size = stack_.size;
 
 		sigjmp_buf origin;
-		makecontext(&uc, reinterpret_cast<void(*)(void)>(&context_trampoline), 2, context, origin);
+		makecontext(&uc, reinterpret_cast<void(*)(void)>(&context_trampoline), 2, this, origin);
 
 #ifdef ZTH_ENABLE_ASAN
 		void* fake_stack = nullptr;
@@ -109,7 +108,7 @@ public:
 	{
 		// switchcontext() restores signal masks, which is slow...
 		if(sigsetjmp(m_env, Config::ContextSignals) == 0)
-			siglongjmp(to->m_env, 1);
+			siglongjmp(to.m_env, 1);
 	}
 
 private:
@@ -117,9 +116,6 @@ private:
 };
 #pragma GCC diagnostic pop
 
-} // namespace impl
-
-typedef impl::ContextUcontext Context;
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_UCONTEXT_H
