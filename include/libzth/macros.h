@@ -313,22 +313,51 @@ ZTH_EXPORT void foo();
 // Context-switch approach
 //
 
+// We have the following approaches. If one of them is already defined, it is
+// used as preferred one, if compatible.
+//
+// - ZTH_CONTEXT_SIGALTSTACK
+// - ZTH_CONTEXT_SJLJ
+// - ZTH_CONTEXT_UCONTEXT
+// - ZTH_CONTEXT_WINFIBER
+
 #ifdef ZTH_OS_WINDOWS
-#  define ZTH_CONTEXT_WINFIBER
+#  ifndef ZTH_CONTEXT_WINFIBER
+#    define ZTH_CONTEXT_WINFIBER
+#  endif
+#  undef ZTH_CONTEXT_SIGALTSTACK
+#  undef ZTH_CONTEXT_SJLJ
+#  undef ZTH_CONTEXT_UCONTEXT
 #elif defined(ZTH_OS_BAREMETAL)
 // Assume having newlib with setjmp/longjmp fiddling.
-#  define ZTH_CONTEXT_SJLJ
+#  ifndef ZTH_CONTEXT_SJLJ
+#    define ZTH_CONTEXT_SJLJ
+#  endif
 #  if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6 && defined(__ARM_ARCH_PROFILE) && __ARM_ARCH_PROFILE == 'M'
 #    define ZTH_ARM_USE_PSP
 #    define ZTH_STACK_SWITCH
 #  endif
+#  undef ZTH_CONTEXT_SIGALTSTACK
+#  undef ZTH_CONTEXT_UCONTEXT
+#  undef ZTH_CONTEXT_WINFIBER
 #elif defined(ZTH_HAVE_VALGRIND)
 // Valgrind does not handle sigaltstack very well.
-#  define ZTH_CONTEXT_UCONTEXT
+#  ifndef ZTH_CONTEXT_UCONTEXT
+#    define ZTH_CONTEXT_UCONTEXT
+#  endif
+#  undef ZTH_CONTEXT_SIGALTSTACK
+#  undef ZTH_CONTEXT_SJLJ
+#  undef ZTH_CONTEXT_WINFIBER
 #else
-// Default approach.
-//#  define ZTH_CONTEXT_SIGALTSTACK
-#  define ZTH_CONTEXT_UCONTEXT
+// Default approach is ucontext.
+#  undef ZTH_CONTEXT_SJLJ
+#  undef ZTH_CONTEXT_WINFIBER
+#  if defined(ZTH_CONTEXT_UCONTEXT)
+#    undef ZTH_CONTEXT_SIGALTSTACK
+#  elif !defined(ZTH_CONTEXT_SIGALTSTACK) || defined(ZTH_ENABLE_ASAN)
+#    undef ZTH_CONTEXT_SIGALTSTACK
+#    define ZTH_CONTEXT_UCONTEXT
+#  endif
 #endif
 
 #ifdef ZTH_CONTEXT_WINFIBER
