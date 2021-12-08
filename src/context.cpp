@@ -60,12 +60,13 @@ void context_deinit() noexcept
  */
 int context_create(Context*& context, ContextAttr const& attr) noexcept
 {
-	__try {
+	try {
 		context = new Context(attr);
-	} __catch(std::bad_alloc const&) {
-		zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(), err(ENOMEM).c_str());
+	} catch(std::bad_alloc const&) {
+		zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(),
+			err(ENOMEM).c_str());
 		return ENOMEM;
-	} __catch(...) {
+	} catch(...) {
 		// Should not be thrown by new...
 		return EAGAIN;
 	}
@@ -75,7 +76,8 @@ int context_create(Context*& context, ContextAttr const& attr) noexcept
 	if((res = context->create())) {
 		delete context;
 		context = nullptr;
-		zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(), err(res).c_str());
+		zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(),
+			err(res).c_str());
 		return res;
 	}
 
@@ -122,7 +124,8 @@ void context_switch(Context* from, Context* to) noexcept
 #ifdef ZTH_ENABLE_ASAN
 	zth_assert(to->alive());
 	void* fake_stack = nullptr;
-	__sanitizer_start_switch_fiber(from->alive() ? &fake_stack : nullptr, to->stackUsable().p, to->stackUsable().size);
+	__sanitizer_start_switch_fiber(
+		from->alive() ? &fake_stack : nullptr, to->stackUsable().p, to->stackUsable().size);
 #endif
 
 	from->context_switch(*to);
@@ -146,12 +149,14 @@ size_t context_stack_usage(Context* context) noexcept
 
 	// Guards may be in place on the current stack. Do not iterate it, as
 	// you may trigger that guard.
-	zth_assert(!currentWorker().currentFiber() || currentWorker().currentFiber()->context() != context);
+	zth_assert(
+		!currentWorker().currentFiber()
+		|| currentWorker().currentFiber()->context() != context);
 
 	return stack_watermark_maxused(context->stackUsable().p);
 }
 
-} // namespace
+} // namespace zth
 
 /*!
  * \brief Entry point of the fiber.
@@ -175,9 +180,9 @@ void context_entry(zth::Context* context) noexcept
 	// Go execute the fiber.
 	context->stackGuard();
 
-	__try {
+	try {
 		context->attr().entry(context->attr().arg);
-	} __catch(...) {
+	} catch(...) {
 	}
 
 	// Fiber has quit. Switch to another one.
@@ -187,8 +192,6 @@ void context_entry(zth::Context* context) noexcept
 	// We should never get here, otherwise the fiber wasn't dead...
 	zth_abort("Returned to finished context");
 }
-
-
 
 
 
@@ -203,7 +206,8 @@ namespace zth {
  * \brief Helper to align the stack pointer for watermarking.
  * \param stack the pointer to the stack memory region. The pointer updated because of alignment.
  * \param sizeptr set to the memory where the size of the stack region is stored
- * \param size if not \c nullptr, it determines the size of \p stack. It is updated because of alignment.
+ * \param size if not \c nullptr, it determines the size of \p stack. It is updated because of
+ * alignment.
  */
 static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size = nullptr) noexcept
 {
@@ -283,7 +287,9 @@ size_t stack_watermark_maxused(void* stack) noexcept
 	VALGRIND_DISABLE_ADDR_ERROR_REPORTING_IN_RANGE(stack, size); // NOLINT
 #endif
 
-	for(uint64_t* s = static_cast<uint64_t*>(stack); unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++);
+	for(uint64_t* s = static_cast<uint64_t*>(stack);
+	    unused < size / sizeof(uint64_t) && *s == ZTH_STACK_WATERMARKER; unused++, s++)
+		;
 
 #ifdef ZTH_USE_VALGRIND
 	VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(stack, size); // NOLINT
@@ -303,4 +309,4 @@ size_t stack_watermark_remaining(void* stack) noexcept
 	return stack_watermark_size(stack) - stack_watermark_maxused(stack);
 }
 
-} // namespace
+} // namespace zth

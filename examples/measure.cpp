@@ -291,6 +291,8 @@ static void run_testset(char const* testset)
 // brackets before the test description.
 int main_fiber(int argc, char** argv)
 {
+	puts(zth::banner());
+
 	runTest("calib", "calibration", &testEmpty, true);
 	runTest("calib", "empty test", &testEmpty);
 

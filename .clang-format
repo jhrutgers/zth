@@ -3,7 +3,7 @@
 Language:        Cpp
 AccessModifierOffset: -8
 AlignAfterOpenBracket: AlwaysBreak
-AlignConsecutiveMacros: false
+AlignConsecutiveMacros: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
@@ -77,7 +77,7 @@ IncludeCategories:
   - Regex:           '.*'
     Priority:        2
     SortPriority:    0
-IncludeIsMainRegex: '(Test)?$'
+IncludeIsMainRegex: ''
 IncludeIsMainSourceRegex: ''
 IndentCaseLabels: false
 IndentGotoLabels: false

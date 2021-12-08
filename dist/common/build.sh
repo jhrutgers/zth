@@ -23,7 +23,7 @@ case ${1:-} in
 		show_help;;
 esac
 
-BUILD_TYPE="${1:-Release}"
+BUILD_TYPE="${1:-}"
 shift || true
 
 mkdir -p build
@@ -113,7 +113,11 @@ if [[ ! -z ${CXX:-} ]]; then
 	cmake_opts="${cmake_opts} -DCMAKE_CXX_COMPILER='${CXX}'"
 fi
 
-cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ${cmake_opts} "$@" ../../..
+if [[ ! -z ${BUILD_TYPE:-} ]]; then
+	cmake_opts="${cmake_opts} -DCMAKE_BUILD_TYPE=${BUILD_TYPE}"
+fi
+
+cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" ${cmake_opts} "$@" ../../..
 cmake --build . -j`nproc`
 cmake --build . --target install -j`nproc`
 

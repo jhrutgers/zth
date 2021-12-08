@@ -19,22 +19,21 @@
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#  error This file must be included by libzth/context/context.h.
+#	error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#include <windows.h>
+#	include <windows.h>
 
 namespace zth {
-namespace impl {
 
-class ContextWinfiber : public ContextArch<ContextWinfiber>::type {
-	ZTH_CLASS_NEW_DELETE(ContextWinfiber)
+class Context : public impl::ContextArch<Context> {
+	ZTH_CLASS_NEW_DELETE(Context)
 public:
-	typedef ContextArch<ContextWinfiber>::type base;
+	typedef impl::ContextArch<Context> base;
 
-	constexpr explicit ContextWinfiber(ContextAttr const& attr) noexcept
+	constexpr explicit Context(ContextAttr const& attr) noexcept
 		: base(attr)
 		, m_fiber()
 	{}
@@ -57,9 +56,7 @@ public:
 		return 0;
 	}
 
-	void deinitStack(Stack& UNUSED_PAR(stack)) noexcept
-	{
-	}
+	void deinitStack(Stack& UNUSED_PAR(stack)) noexcept {}
 
 	int stackGuardInit() noexcept
 	{
@@ -67,18 +64,14 @@ public:
 		return 0;
 	}
 
-	void stackGuardDeinit() noexcept
-	{
-	}
+	void stackGuardDeinit() noexcept {}
 
 	void valgrindRegister() noexcept
 	{
 		// There is no stack to register.
 	}
 
-	void valgrindDeregister() noexcept
-	{
-	}
+	void valgrindDeregister() noexcept {}
 
 	int create() noexcept
 	{
@@ -86,12 +79,16 @@ public:
 		if((res = base::create()))
 			return res;
 
-		if(unlikely(!stackSize())) {
+		if(unlikely(!stack().size)) {
 			// Stackless fiber only saves current context.
 			if((m_fiber = GetCurrentFiber()))
 				return 0;
-		} else if((m_fiber = CreateFiber((SIZE_T)Config::DefaultFiberStackSize, reinterpret_cast<LPFIBER_START_ROUTINE>(&context_entry), (LPVOID)this))) {
-			zth_dbg(context, "[%s] Created fiber %p", currentWorker().id_str(), m_fiber);
+		} else if((m_fiber = CreateFiber(
+				   (SIZE_T)Config::DefaultFiberStackSize,
+				   reinterpret_cast<LPFIBER_START_ROUTINE>(&context_entry),
+				   (LPVOID)this))) {
+			zth_dbg(context, "[%s] Created fiber %p", currentWorker().id_str(),
+				m_fiber);
 			return 0;
 		}
 
@@ -125,9 +122,6 @@ private:
 	LPVOID m_fiber;
 };
 
-} // namespace impl
-
-typedef impl::ContextWinfiber Context;
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_WINFIBER_H

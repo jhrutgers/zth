@@ -147,7 +147,9 @@
 #  include <pthread.h>
 #endif
 
-#ifndef ZTH_OS_WINDOWS
+#ifdef ZTH_OS_WINDOWS
+#  include <process.h>
+#else
 #  include <sys/types.h>
 #  include <unistd.h>
 #endif

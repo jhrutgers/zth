@@ -29,11 +29,6 @@
 
 #	include "libzth/macros.h"
 
-#	ifdef ZTH_OS_WINDOWS
-#		define WIN32_LEAN_AND_MEAN
-#		define NOGDI
-#	endif
-
 #	include "libzth/util.h"
 #	include "libzth/allocator.h"
 #	include "libzth/context.h"

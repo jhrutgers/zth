@@ -77,7 +77,7 @@ gtest_add_tests(TARGET test_fiber11
 zth_config_test(${tests})
 
 macro(zth_test_example EXAMPLE)
-	if(VALGRIND_EXE AND NOT ZTH_ENABLE_ASAN)
+	if(VALGRIND_EXE AND NOT ZTH_ENABLE_ASAN AND ZTH_ENABLE_VALGRIND)
 		# TODO: add --error-exitcode=1, but needs some investigation on current (false?) errors
 		add_test(NAME ${EXAMPLE}-valgrind
 			COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${VALGRIND_EXE} --leak-check=full $<TARGET_FILE:${EXAMPLE}> ${ARGN}
