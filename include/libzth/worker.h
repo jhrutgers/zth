@@ -325,6 +325,7 @@ namespace zth {
 			}
 
 			sigchld_check();
+			zth_dbg(worker, "[%s] Stopped", id_str());
 		}
 
 		typedef Load<> Load_type;

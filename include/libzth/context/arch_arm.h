@@ -19,28 +19,26 @@
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#  error This file must be included by libzth/context/context.h.
+#	error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
-#  define ZTH_ARM_DO_STACK_GUARD
-#endif
+#	if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
+#		define ZTH_ARM_DO_STACK_GUARD
+#	endif
 
-#ifdef ZTH_ARM_DO_STACK_GUARD
-#  define ZTH_ARM_STACK_GUARD_BITS 5
-#  define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
-#endif
+#	ifdef ZTH_ARM_DO_STACK_GUARD
+#		define ZTH_ARM_STACK_GUARD_BITS 5
+#		define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
+#	endif
 
-#ifdef ZTH_ARCH_ARM
 // Using the fp reg alias does not seem to work well...
-#  ifdef __thumb__
-#    define REG_FP	"r7"
-#  else
-#    define REG_FP	"r11"
-#  endif
-#endif
+#	ifdef __thumb__
+#		define REG_FP "r7"
+#	else
+#		define REG_FP "r11"
+#	endif
 
 namespace zth {
 namespace impl {
@@ -49,40 +47,41 @@ template <typename Impl>
 class ContextArch : public ContextBase<Impl> {
 public:
 	typedef ContextBase<Impl> base;
+	using typename base::Stack;
 
 protected:
 	constexpr explicit ContextArch(ContextAttr const& attr) noexcept
 		: base(attr)
-#ifdef ZTH_ARM_DO_STACK_GUARD
+#	ifdef ZTH_ARM_DO_STACK_GUARD
 		, m_guard
-#endif
+#	endif
 	{}
 
 public:
 	static size_t pageSize() noexcept
 	{
-#ifdef ZTH_ARM_DO_STACK_GUARD
+#	ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard)
 			return (size_t)ZTH_ARM_STACK_GUARD_SIZE;
-#endif
-		return base::page_size();
+#	endif
+		return std::max(sizeof(void*) * 2u, base::pageSize());
 	}
 
 	size_t calcStackSize(size_t size) noexcept
 	{
-#ifndef ZTH_ARM_USE_PSP
+#	ifndef ZTH_ARM_USE_PSP
 		// If using PSP switch, signals and interrupts are not
 		// executed on the fiber stack, but on the MSP.
 		size += MINSIGSTKSZ;
-#endif
+#	endif
 		if(Config::EnableStackGuard) {
-#if defined(ZTH_HAVE_MMAN)
+#	if defined(ZTH_HAVE_MMAN)
 			// Both ends of the stack are guarded using mprotect().
 			size += impl().page_size() * 2u;
-#elif defined(ZTH_ARM_DO_STACK_GUARD)
+#	elif defined(ZTH_ARM_DO_STACK_GUARD)
 			// Only the end of the stack is protected using MPU.
 			size += impl().page_size();
-#endif
+#	endif
 		}
 
 		return size;
@@ -94,7 +93,7 @@ public:
 		if(!stack.p || !stack.size)
 			return;
 
-#ifdef ZTH_ARM_DO_STACK_GUARD
+#	ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard) {
 			// Stack grows down, exclude the page at the end (lowest address).
 			zth_assert(stackGrowsDown(&stack));
@@ -105,7 +104,7 @@ public:
 			stack.p += ps;
 			stack.size -= ps;
 		}
-#endif
+#	endif
 
 		// Stack must be double-word aligned.  This should already be
 		// guaranteed by page alignment, but check anyway.
@@ -118,7 +117,7 @@ public:
 	////////////////////////////////////////////////////////////
 	// ARM MPU for stack guard
 
-#ifdef ZTH_ARM_DO_STACK_GUARD
+#	ifdef ZTH_ARM_DO_STACK_GUARD
 	int stackGuardInit() noexcept
 	{
 		// Don't do anything upon init, enable guards after context
@@ -126,16 +125,15 @@ public:
 		return 0;
 	}
 
-	void stackGuardDeinit() noexcept
-	{
-	}
-#endif
+	void stackGuardDeinit() noexcept {}
+#	endif
 
-#ifdef ZTH_ARM_DO_STACK_GUARD
-#  define REG_MPU_RBAR_ADDR_UNUSED ((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
+#	ifdef ZTH_ARM_DO_STACK_GUARD
+#		define REG_MPU_RBAR_ADDR_UNUSED \
+			((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
+#		pragma GCC diagnostic push
+#		pragma GCC diagnostic ignored "-Wconversion"
 private:
 	static int stackGuardRegion() noexcept
 	{
@@ -151,7 +149,8 @@ private:
 		reg_mpu_rnr rnr;
 		reg_mpu_rasr rasr;
 
-		// Do not try to use region 0, leave at least one unused for other application purposes.
+		// Do not try to use region 0, leave at least one unused for other application
+		// purposes.
 		for(; region > 0; --region) {
 			rnr.field.region = region;
 			rnr.write();
@@ -214,7 +213,7 @@ private:
 
 		if(likely(guard)) {
 			rbar.field.addr = (uintptr_t)guard >> 5;
-			register void* sp asm ("sp");
+			register void* sp asm("sp");
 			zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", guard, sp);
 		} else {
 			// Initialize at the top of the address space, so it is effectively unused.
@@ -228,9 +227,9 @@ private:
 
 		if(Config::Debug) {
 			// Only required if the settings should be in effect immediately.
-			// However, it takes some time, which may not be worth it in a release build.
-			// If skipped, it will take affect, but only after a few instructions, which
-			// are already in the pipeline.
+			// However, it takes some time, which may not be worth it in a release
+			// build. If skipped, it will take affect, but only after a few
+			// instructions, which are already in the pipeline.
 			__dsb();
 			__isb();
 		}
@@ -249,15 +248,15 @@ public:
 		stackGuard(stack.p);
 	}
 
-#pragma GCC diagnostic pop
-#endif // ZTH_ARM_DO_STACK_GUARD
+#		pragma GCC diagnostic pop
+#	endif // ZTH_ARM_DO_STACK_GUARD
 
 
 
 	////////////////////////////////////////////////////////////
 	// jmp_buf fiddling for sjlj
 
-#ifdef ZTH_OS_BAREMETAL
+#	ifdef ZTH_OS_BAREMETAL
 private:
 	static size_t get_lr_offset(jmp_buf const& env) noexcept
 	{
@@ -274,7 +273,8 @@ private:
 			// the last non-zero register to determine the lr offset.
 
 			lr_offset = sizeof(env) / sizeof(env[0]) - 1;
-			for(; lr_offset > 1 && !env[lr_offset]; lr_offset--);
+			for(; lr_offset > 1 && !env[lr_offset]; lr_offset--)
+				;
 
 			if(lr_offset <= 1) {
 				// Should not be possible.
@@ -286,13 +286,15 @@ private:
 	}
 
 public:
-	static void** sp(Stack const& stack) noexcept;
+	static void** sp(Stack const& stack) noexcept
 	{
-		zth_assert(stackGrowsDown(&stack));
-		return (void**)((uintptr_t)(stack.p + stack.size - sizeof(void*)) & ~(uintptr_t)7); // sp (must be dword aligned)
+		int dummy __attribute__((unused));
+		zth_assert(Impl::stackGrowsDown(&dummy));
+		// sp must be dword aligned
+		return (void**)((uintptr_t)(stack.p + stack.size - sizeof(void*)) & ~(uintptr_t)7);
 	}
 
-	static stack_push(void**& sp, void* p) noexcept
+	static void stack_push(void**& sp, void* p) noexcept
 	{
 		*sp = p;
 		sp--;
@@ -300,12 +302,12 @@ public:
 
 	static void set_sp(jmp_buf& env, void** sp) noexcept
 	{
-		env[get_lr_offset() - 1u] = (intptr_t)sp;
+		env[get_lr_offset(env) - 1u] = (intptr_t)sp;
 	}
 
 	static void set_pc(jmp_buf& env, void* pc) noexcept
 	{
-		env[get_lr_offset()] = (intptr_t)pc; // lr
+		env[get_lr_offset(env)] = (intptr_t)pc; // lr = pc after return
 	}
 
 	__attribute__((naked)) static void context_trampoline_from_jmp_buf()
@@ -314,44 +316,47 @@ public:
 		// the jmp_buf. Load it and call context_entry according to
 		// normal ABI.
 
-		asm volatile (
+		// clang-format off
+		asm volatile(
 			"ldr r0, [sp]\n"
 			// Terminate stack frame list here, only for debugging purposes.
 			"mov " REG_FP ", #0\n"
 			"mov lr, #0\n"
 			"push {" REG_FP ", lr}\n"
 			"mov " REG_FP ", sp\n"
-			"bl context_entry\n"
-		);
+			"bl context_entry\n");
+		// clang-format on
 	}
 
 	inline __attribute__((always_inline)) void context_push_regs() noexcept
 	{
-#if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
+#		if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
 		// newlib does not do saving/restoring of FPU registers.
 		// We have to do it here ourselves.
-		__asm__ volatile ("vpush {d8-d15}");
-#  define arm_fpu_pop() __asm__ volatile ("vpop {d8-d15}")
-#else
-#  define arm_fpu_pop() do{}while(0)
-#endif
+		asm volatile("vpush {d8-d15}");
+#			define arm_fpu_pop() asm volatile("vpop {d8-d15}")
+#		else
+#			define arm_fpu_pop() \
+				do {          \
+				} while(0)
+#		endif
 	}
 
 	inline __attribute__((always_inline)) void context_pop_regs() noexcept
 	{
 		arm_fpu_pop();
-#undef arm_fpu_pop
+#		undef arm_fpu_pop
 	}
 
-	inline __attribute__((always_inline)) void context_prepare_jmp(Context& to) noexcept
+	inline __attribute__((always_inline)) void context_prepare_jmp(Context& UNUSED_PAR(to)) noexcept
 	{
-#ifdef ZTH_ARM_USE_PSP
+#		ifdef ZTH_ARM_USE_PSP
 		// Use the PSP for fibers and the MSP for the worker.
 		// So, if there is no stack in the Context, assume it is a worker, running
 		// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.
 		if(unlikely(!stack || !to.stack)) {
 			int control;
-			__asm__ ("mrs %0, control\n" : "=r"(control));
+			asm("mrs %0, control\n" : "=r"(control));
 
 			if(to.stack)
 				control |= 2; // set SPSEL to PSP
@@ -360,36 +365,38 @@ public:
 
 			// As the SP changes, do not return from this function,
 			// but actually do the longjmp.
-			asm volatile (
+			asm volatile(
 				"msr control, %1\n"
 				"isb\n"
 				"mov r0, %0\n"
 				"movs r1, #1\n"
 				"b longjmp\n"
-				: : "r"(to->env), "r"(control) : "r0", "r1", "memory"
-			);
+				:
+				: "r"(to->env), "r"(control)
+				: "r0", "r1", "memory");
 		}
-#endif
+#		endif
 	}
-#endif // ZTH_OS_BAREMETAL
-
+#	endif // ZTH_OS_BAREMETAL
 
 
 private:
-#ifdef ZTH_ARM_DO_STACK_GUARD
+#	ifdef ZTH_ARM_DO_STACK_GUARD
 	void* m_guard;
-#endif
+#	endif
 };
 
 } // namespace impl
 } // namespace zth
 
-#ifdef ZTH_STACK_SWITCH
-#  ifdef ZTH_ARCH_ARM
 
-__attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)))
+#	ifdef ZTH_STACK_SWITCH
+
+__attribute__((naked, noinline)) static void*
+zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*)))
 {
-	__asm__ volatile (
+	// clang-format off
+	asm volatile(
 		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
@@ -417,11 +424,14 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_msp(void* UNUSED_P
 
 		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
 	);
+	// clang-format on
 }
 
-__attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void*(*f)(void*)), void* UNUSED_PAR(sp))
+__attribute__((naked, noinline)) static void*
+zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*)), void* UNUSED_PAR(sp))
 {
-	__asm__ volatile (
+	// clang-format off
+	asm volatile(
 		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 		".save {r4, " REG_FP ", lr}\n"
 		"add " REG_FP ", sp, #0\n"
@@ -437,9 +447,10 @@ __attribute__((naked,noinline)) static void* zth_stack_switch_psp(void* UNUSED_P
 		"mov sp, r4\n"			// Restore previous stack
 		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
 	);
+	// clang-format on
 }
 
-void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
+void* zth_stack_switch(void* stack, size_t size, void* (*f)(void*), void* arg)
 {
 	zth::Worker* worker = zth::Worker::currentWorker();
 	void* res;
@@ -451,7 +462,7 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
 		return res;
 	} else {
 		void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
-#ifdef ZTH_ARM_HAVE_MPU
+#		ifdef ZTH_ARM_HAVE_MPU
 		void* prevGuard = nullptr;
 		zth::Context* context = nullptr;
 
@@ -467,7 +478,9 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
 			if(unlikely(!context))
 				goto noguard;
 
-			void* guard = (void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1) & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+			void* guard =
+				(void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1)
+					& ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
 			prevGuard = context->m_guard;
 			context->m_guard = guard;
 
@@ -475,22 +488,21 @@ void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg)
 		}
 
 noguard:
-#endif
+#		endif
 
 		res = zth_stack_switch_psp(arg, f, sp);
 
-#ifdef ZTH_ARM_HAVE_MPU
+#		ifdef ZTH_ARM_HAVE_MPU
 		if(prevGuard) {
 			context->m_guard = prevGuard;
 			context->stackGuard(prevGuard);
 		}
-#endif
+#		endif
 	}
 
 	return res;
 }
-#  endif // ZTH_ARCH_ARM
-#endif // ZTH_STACK_SWITCH
+#	endif // ZTH_STACK_SWITCH
 
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_ARCH_ARM_H

@@ -19,7 +19,8 @@
  */
 
 /*!
- * \file Context switch mechanism implementation.
+ * \file
+ * \brief Context switch mechanism implementation.
  *
  * This file is a private header file, only used by src/context.cpp.  Do not
  * include it otherwise.

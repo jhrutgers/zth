@@ -32,14 +32,14 @@ namespace zth {
 	class Waitable {
 		ZTH_CLASS_NEW_DELETE(Waitable)
 	public:
-		constexpr Waitable() noexcept : m_fiber() {}
+		Waitable() noexcept : m_fiber() {}
 		virtual ~Waitable() is_default
 		Fiber& fiber() const noexcept { zth_assert(hasFiber()); return *m_fiber; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept = 0;
 		virtual string str() const { return format("Waitable for %s", fiber().str().c_str()); }
-		constexpr14 void setFiber(Fiber& fiber) noexcept { m_fiber = &fiber; }
-		constexpr14 void resetFiber() noexcept { m_fiber = nullptr; }
-		constexpr bool hasFiber() const noexcept { return m_fiber; }
+		void setFiber(Fiber& fiber) noexcept { m_fiber = &fiber; }
+		void resetFiber() noexcept { m_fiber = nullptr; }
+		bool hasFiber() const noexcept { return m_fiber; }
 	private:
 		Fiber* m_fiber;
 	};
@@ -47,11 +47,11 @@ namespace zth {
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 		ZTH_CLASS_NEW_DELETE(TimedWaitable)
 	public:
-		constexpr explicit TimedWaitable(Timestamp const& timeout = Timestamp()) noexcept : m_timeout(timeout) {}
+		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) noexcept : m_timeout(timeout) {}
 		virtual ~TimedWaitable() override is_default
-		constexpr Timestamp const& timeout() const noexcept { return m_timeout; }
+		Timestamp const& timeout() const noexcept { return m_timeout; }
 		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override { return timeout() <= now; }
-		constexpr bool operator<(TimedWaitable const& rhs) const noexcept { return timeout() < rhs.timeout(); }
+		bool operator<(TimedWaitable const& rhs) const noexcept { return timeout() < rhs.timeout(); }
 
 		virtual string str() const override
 		{
@@ -61,7 +61,7 @@ namespace zth {
 				return format("Waitable with %s timeout", (timeout() - Timestamp::now()).str().c_str());
 		}
 	protected:
-		constexpr14 void setTimeout(Timestamp const& t) noexcept { m_timeout = t; }
+		void setTimeout(Timestamp const& t) noexcept { m_timeout = t; }
 	private:
 		Timestamp m_timeout;
 	};

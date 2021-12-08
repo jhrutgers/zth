@@ -19,29 +19,28 @@
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#  error This file must be included by libzth/context/context.h.
+#	error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#include <csetjmp>
-#include <csignal>
+#	include <csetjmp>
+#	include <csignal>
 
 namespace zth {
-namespace impl {
 
-class ContextSjlj : public ContextArch<ContextSjlj>::type {
-	ZTH_CLASS_NEW_DELETE(ContextSjlj)
+class Context : public impl::ContextArch<Context> {
+	ZTH_CLASS_NEW_DELETE(Context)
 public:
-	typedef ContextArch<ContextSjlj>::type base;
+	typedef ContextArch<Context> base;
 
-	constexpr explicit ContextSjlj(ContextAttr const& attr) noexcept
+	constexpr explicit Context(ContextAttr const& attr) noexcept
 		: base(attr)
 		, m_env()
 	{}
 
 private:
-#ifdef ZTH_OS_BAREMETAL
+#	ifdef ZTH_OS_BAREMETAL
 	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
 
 	typedef jmp_buf jmp_buf_type;
@@ -55,7 +54,7 @@ private:
 	{
 		return ::longjmp(env, val);
 	}
-#else
+#	else
 	typedef sigjmp_buf jmp_buf_type;
 
 	int setjmp(sigjmp_buf env)
@@ -67,7 +66,7 @@ private:
 	{
 		return ::siglongjmp(env, val);
 	}
-#endif
+#	endif
 
 public:
 	int create() noexcept
@@ -83,7 +82,7 @@ public:
 		setjmp(m_env);
 		void** sp_ = sp(stackUsable());
 		set_sp(m_env, sp_);
-		set_pc(m_env, &context_trampoline_from_jmp_buf);
+		set_pc(m_env, reinterpret_cast<void*>(&context_trampoline_from_jmp_buf));
 		stack_push(sp_, this);
 		return 0;
 	}
@@ -104,9 +103,6 @@ private:
 	jmp_buf_type m_env;
 };
 
-} // namespace impl
-
-typedef impl::ContextSjlj Context;
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_SJLJ_H

@@ -46,10 +46,10 @@ namespace zth {
 	class RefCounted {
 		ZTH_CLASS_NOCOPY(RefCounted)
 	public:
-		constexpr RefCounted() noexcept : m_count() {}
+		RefCounted() noexcept : m_count() {}
 		virtual ~RefCounted() is_default
 
-		constexpr14 void used() noexcept
+		void used() noexcept
 		{
 			zth_assert(m_count < std::numeric_limits<size_t>::max());
 			m_count++;
@@ -232,7 +232,7 @@ namespace zth {
 			ZTH_CLASS_NEW_DELETE(AlarmClock)
 		public:
 			typedef TimedWaitable base;
-			constexpr AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout) noexcept
+			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout) noexcept
 				: base(timeout)
 				, m_synchronizer(synchronizer)
 				, m_fiber(fiber)
