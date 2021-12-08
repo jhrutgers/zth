@@ -91,9 +91,23 @@ jobs:
           rm -rf dist/qemu-arm/build
           dist/qemu-arm/build.sh Release
 
+  build-mingw:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: bootstrap
+        run: dist/mingw/bootstrap.sh
+      - name: build Debug
+        run: dist/mingw/build.sh Debug dev notest
+      - name: build Release
+        run: |
+          rm -rf dist/mingw/build
+          dist/mingw/build.sh Release
+
   documentation:
     if: github.ref == 'refs/heads/master'
-    needs: [build-ubuntu, build-windows, build-mac, build-arm]
+    needs: [build-ubuntu, build-windows, build-mac, build-arm, build-mingw]
     runs-on: ubuntu-latest
     steps:
       - name: checkout
