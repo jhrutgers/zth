@@ -795,7 +795,7 @@ INPUT                  = include \
                          include/zth \
                          src \
 			 examples/examples.doxygen \
-			 dist/qemu-arm/README-ARM.md \
+			 dist/qemu-arm-a15/README-ARM.md \
 			 README.md
 
 # This tag can be used to specify the character encoding of the source files

@@ -77,19 +77,19 @@ jobs:
           rm -rf dist/macos/build
           dist/macos/build.sh Release test
 
-  build-arm:
+  build-arm-a15:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: bootstrap
-        run: dist/qemu-arm/bootstrap.sh
+        run: dist/qemu-arm-a15/bootstrap.sh
       - name: build Debug
-        run: dist/qemu-arm/build.sh Debug dev notest
+        run: dist/qemu-arm-a15/build.sh Debug dev notest
       - name: build Release
         run: |
-          rm -rf dist/qemu-arm/build
-          dist/qemu-arm/build.sh Release
+          rm -rf dist/qemu-arm-a15/build
+          dist/qemu-arm-a15/build.sh Release
 
   build-mingw:
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
 
   documentation:
     if: github.ref == 'refs/heads/master'
-    needs: [build-ubuntu, build-windows, build-mac, build-arm, build-mingw]
+    needs: [build-ubuntu, build-windows, build-mac, build-arm-a15, build-mingw]
     runs-on: ubuntu-latest
     steps:
       - name: checkout

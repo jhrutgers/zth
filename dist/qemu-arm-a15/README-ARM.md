@@ -4,7 +4,7 @@ There is support for bare-metal ARM with Zth.  Most of Zth's source code is
 just C++, so usable on any target.  Only the context switching and
 hardware-related stuff like `clock_gettime()` is to be ported.
 
-The directory `dist/qemu-arm` contains a set of files that shows how to do
+The directory `dist/qemu-arm-a15` contains a set of files that shows how to do
 this.  It targets a Qemu virt machine to run the examples, and can be built on
 Ubuntu.  This virt machine uses an ARM Cortex-A15 with VFP (without NEON).  The
 implementation is not very sophisticated, but shows you where to start, if you

@@ -18,7 +18,7 @@ set(CMAKE_CXX_COMPILER "${toolchain_prefix}g++")
 set(CMAKE_C_FLAGS_INIT "${arm_cflags}" CACHE STRING "" FORCE)
 set(CMAKE_CXX_FLAGS_INIT "${arm_cxxflags}" CACHE STRING "" FORCE)
 set(CMAKE_ASM${ASM_DIALECT}_FLAGS_INIT "${arm_defines} ${arm_cpuflags}" CACHE STRING "" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "${arm_cpuflags} -Wl,--gc-sections --specs=nano.specs -Wl,--no-wchar-size-warning -T ${ZTH_DIST_DIR}/src/arm.ld -nostartfiles -L${CMAKE_CURRENT_BINARY_DIR}/dist/qemu-arm -lc -lstdc++ -lsupc++ -fno-use-cxa-atexit -Wl,--whole-archive -larm-bsp -Wl,--no-whole-archive" CACHE INTERNAL "")
+set(CMAKE_EXE_LINKER_FLAGS "${arm_cpuflags} -Wl,--gc-sections --specs=nano.specs -Wl,--no-wchar-size-warning -T ${ZTH_DIST_DIR}/src/arm.ld -nostartfiles -L${CMAKE_CURRENT_BINARY_DIR}/dist/qemu-arm-a15 -lc -lstdc++ -lsupc++ -fno-use-cxa-atexit -Wl,--whole-archive -larm-bsp -Wl,--no-whole-archive" CACHE INTERNAL "")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
