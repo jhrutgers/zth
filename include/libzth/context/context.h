@@ -27,39 +27,39 @@
 
 #ifdef __cplusplus
 
-#include "libzth/macros.h"
+#	include "libzth/macros.h"
 
-#ifdef ZTH_OS_WINDOWS
-#  define WIN32_LEAN_AND_MEAN
-#  define NOGDI
-#endif
+#	ifdef ZTH_OS_WINDOWS
+#		define WIN32_LEAN_AND_MEAN
+#		define NOGDI
+#	endif
 
-#include "libzth/util.h"
-#include "libzth/allocator.h"
-#include "libzth/context.h"
-#include "libzth/worker.h"
+#	include "libzth/util.h"
+#	include "libzth/allocator.h"
+#	include "libzth/context.h"
+#	include "libzth/worker.h"
 
-#include <setjmp.h>
-#include <unistd.h>
+#	include <setjmp.h>
+#	include <unistd.h>
 
-#ifndef ZTH_OS_WINDOWS
-#  include <signal.h>
-#endif
+#	ifndef ZTH_OS_WINDOWS
+#		include <signal.h>
+#	endif
 
-#ifdef ZTH_HAVE_MMAN
-#  include <sys/mman.h>
-#  ifndef MAP_STACK
-#    define MAP_STACK 0
-#  endif
-#endif
+#	ifdef ZTH_HAVE_MMAN
+#		include <sys/mman.h>
+#		ifndef MAP_STACK
+#			define MAP_STACK 0
+#		endif
+#	endif
 
-#ifdef ZTH_HAVE_VALGRIND
-#  include <valgrind/memcheck.h>
-#endif
+#	ifdef ZTH_HAVE_VALGRIND
+#		include <valgrind/memcheck.h>
+#	endif
 
-#ifdef ZTH_ENABLE_ASAN
-#  include <sanitizer/common_interface_defs.h>
-#endif
+#	ifdef ZTH_ENABLE_ASAN
+#		include <sanitizer/common_interface_defs.h>
+#	endif
 
 namespace zth {
 namespace impl {
@@ -86,9 +86,9 @@ class ContextBase {
 protected:
 	constexpr explicit ContextBase(ContextAttr const& attr) noexcept
 		: m_attr(attr)
-#ifdef ZTH_ENABLE_ASAN
+#	ifdef ZTH_ENABLE_ASAN
 		, m_alive(true)
-#endif
+#	endif
 	{}
 
 	/*!
@@ -151,9 +151,7 @@ public:
 	/*!
 	 * \brief Final system cleanup.
 	 */
-	static void deinit() noexcept
-	{
-	}
+	static void deinit() noexcept {}
 
 	/*!
 	 * \brief Return the context attributes, requested by the user.
@@ -249,11 +247,11 @@ public:
 	static size_t pageSize() noexcept
 	{
 		static size_t pz =
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 			(size_t)sysconf(_SC_PAGESIZE);
-#else
+#	else
 			sizeof(void*);
-#endif
+#	endif
 		return pz;
 	}
 
@@ -278,15 +276,15 @@ public:
 	 */
 	size_t calcStackSize(size_t size) noexcept
 	{
-#ifndef ZTH_OS_WINDOWS
+#	ifndef ZTH_OS_WINDOWS
 		size += MINSIGSTKSZ;
-#endif
+#	endif
 
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard)
 			// Both ends of the stack are guarded using mprotect().
 			size += pageSize() * 2;
-#endif
+#	endif
 
 		return size;
 	}
@@ -302,17 +300,20 @@ public:
 	{
 		void* stack = nullptr;
 
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 		// NOLINTNEXTLINE(hicpp-signed-bitwise,cppcoreguidelines-pro-type-cstyle-cast)
-		if(unlikely((stack = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0)) == MAP_FAILED)) {
+		stack =
+			mmap(nullptr, size, PROT_READ | PROT_WRITE,
+			     MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+
+		if(unlikely(stack == MAP_FAILED))
 			return nullptr;
-		}
-#else
+#	else
 		if(unlikely((stack = (void*)allocate_noexcept<char>(size)) == nullptr)) {
 			errno = ENOMEM;
 			return nullptr;
 		}
-#endif
+#	endif
 
 		return stack;
 	}
@@ -325,11 +326,11 @@ public:
 		if(!stack.p)
 			return;
 
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 		munmap(stack.p, stack.size);
-#else
+#	else
 		deallocate(static_cast<char*>(stack.p), stack.size);
-#endif
+#	endif
 
 		stack.p = nullptr;
 	}
@@ -356,14 +357,14 @@ public:
 		uintptr_t stack_new = ((uintptr_t)(stack_old + ps - 1u) & ~(ps - 1u));
 		stack.size = (stack.size - (stack_new - stack_old)) & ~(ps - 1u);
 
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard) {
 			// Do not use the pages at both sides.
 			zth_assert(stack.size > ps * 2u);
 			stack_new += ps;
 			stack.size -= ps * 2u;
 		}
-#endif
+#	endif
 
 		zth_assert(stack.size > 0);
 		stack.p = (char*)stack_new;
@@ -374,16 +375,17 @@ public:
 	 */
 	void valgrindRegister() noexcept
 	{
-#ifdef ZTH_USE_VALGRIND
+#	ifdef ZTH_USE_VALGRIND
 		if(!m_stackUsable.p)
 			return;
 
-		m_valgrind_stack_id = VALGRIND_STACK_REGISTER(m_stackUsable.p, m_stackUsable.p + m_stackUsable.size - 1u);
+		m_valgrind_stack_id = VALGRIND_STACK_REGISTER(
+			m_stackUsable.p, m_stackUsable.p + m_stackUsable.size - 1u);
 
 		if(RUNNING_ON_VALGRIND)
 			zth_dbg(context, "[%s] Stack of context %p has Valgrind id %u",
 				currentWorker().id_str(), this, m_valgrind_stack_id);
-#endif
+#	endif
 	}
 
 	/*!
@@ -391,10 +393,10 @@ public:
 	 */
 	void valgrindDeregister() noexcept
 	{
-#ifdef ZTH_USE_VALGRIND
+#	ifdef ZTH_USE_VALGRIND
 		VALGRIND_STACK_DEREGISTER(m_valgrind_stack_id);
 		m_valgrind_stack_id = 0;
-#endif
+#	endif
 	}
 
 	/*!
@@ -402,21 +404,19 @@ public:
 	 */
 	int stackGuardInit() noexcept
 	{
-#ifdef ZTH_HAVE_MMAN
+#	ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard) {
 			if(!m_stackUsable.p)
 				return 0;
 
 			size_t const ps = impl().pageSize();
 			// Guard both ends of the stack.
-			if(unlikely(
-				mprotect(m_stackUsable.p - ps, ps, PROT_NONE) ||
-				mprotect(m_stackUsable.p + m_stackUsable.size, ps, PROT_NONE)))
-			{
+			if(unlikely(mprotect(m_stackUsable.p - ps, ps, PROT_NONE)))
 				return errno;
-			}
+			if(unlikely(mprotect(m_stackUsable.p + m_stackUsable.size, ps, PROT_NONE)))
+				return errno;
 		}
-#endif
+#	endif
 		return 0;
 	}
 
@@ -452,9 +452,7 @@ public:
 	/*!
 	 * \brief Configure the guard for the given stack.
 	 */
-	void stackGuard(Stack const& UNUSED_PAR(stack)) noexcept
-	{
-	}
+	void stackGuard(Stack const& UNUSED_PAR(stack)) noexcept {}
 
 	/*!
 	 * \brief Perform a context switch.
@@ -512,9 +510,9 @@ public:
 	 */
 	void die() noexcept
 	{
-#ifdef ZTH_ENABLE_ASAN
+#	ifdef ZTH_ENABLE_ASAN
 		m_alive = false;
-#endif
+#	endif
 	}
 
 	/*!
@@ -522,11 +520,11 @@ public:
 	 */
 	bool alive() const noexcept
 	{
-#ifdef ZTH_ENABLE_ASAN
+#	ifdef ZTH_ENABLE_ASAN
 		return m_alive;
-#else
+#	else
 		return true;
-#endif
+#	endif
 	}
 
 private:
@@ -536,38 +534,38 @@ private:
 	Stack m_stack;
 	/*! \brief Actually used stack memory, within #m_stack. */
 	Stack m_stackUsable;
-#ifdef ZTH_USE_VALGRIND
+#	ifdef ZTH_USE_VALGRIND
 	/*! \brief valgrind ID of this context's stack. */
 	unsigned int m_valgrind_stack_id;
-#endif
-#ifdef ZTH_ENABLE_ASAN
+#	endif
+#	ifdef ZTH_ENABLE_ASAN
 	/*! \brief Flag if the fiber is still running. */
 	bool m_alive;
-#endif
+#	endif
 };
 
 } // namespace impl
 } // namespace zth
 
-#if defined(ZTH_ARCH_ARM)
-#  include "libzth/context/arch_arm.h"
-#else
-#  include "libzth/context/arch_generic.h"
-#endif
+#	if defined(ZTH_ARCH_ARM)
+#		include "libzth/context/arch_arm.h"
+#	else
+#		include "libzth/context/arch_generic.h"
+#	endif
 
-extern "C" void context_entry(zth::Context* context) noexcept __attribute__((noreturn,used));
+extern "C" void context_entry(zth::Context* context) noexcept __attribute__((noreturn, used));
 
-#if defined(ZTH_CONTEXT_SIGALTSTACK)
-#  include "libzth/context/sigaltstack.h"
-#elif defined(ZTH_CONTEXT_SJLJ)
-#  include "libzth/context/sjlj.h"
-#elif defined(ZTH_CONTEXT_UCONTEXT)
-#  include "libzth/context/ucontext.h"
-#elif defined(ZTH_CONTEXT_WINFIBER)
-#  include "libzth/context/winfiber.h"
-#else
-#  error Unknown context switching approach.
-#endif
+#	if defined(ZTH_CONTEXT_SIGALTSTACK)
+#		include "libzth/context/sigaltstack.h"
+#	elif defined(ZTH_CONTEXT_SJLJ)
+#		include "libzth/context/sjlj.h"
+#	elif defined(ZTH_CONTEXT_UCONTEXT)
+#		include "libzth/context/ucontext.h"
+#	elif defined(ZTH_CONTEXT_WINFIBER)
+#		include "libzth/context/winfiber.h"
+#	else
+#		error Unknown context switching approach.
+#	endif
 
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_CONTEXT_H

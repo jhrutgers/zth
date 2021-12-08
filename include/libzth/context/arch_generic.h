@@ -19,7 +19,7 @@
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#  error This file must be included by libzth/context/context.h.
+#	error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
