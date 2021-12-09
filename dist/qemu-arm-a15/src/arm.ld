@@ -11,7 +11,7 @@ MEMORY
 SECTIONS
 {
 	.startup : {
-		*(.startup)
+		KEEP(*(.startup))
 	} > ram
 
   /* Read-only sections, merged into text segment: */
@@ -180,7 +180,7 @@ SECTIONS
     *(.data .data.* .gnu.linkonce.d.*)
     SORT(CONSTRUCTORS)
   } > ram
-  .data1          : { *(.data1) 
+  .data1          : { *(.data1)
   _edata = .; PROVIDE (edata = .);
   } > ram
   .bss            :
@@ -209,7 +209,7 @@ SECTIONS
 		. = . + 0x400000;
 		heap_top = .; /* for _sbrk */
 	} > ram
-	
+
 	.stack ALIGN(8) (NOLOAD) : {
 		. = . + 0x10000; /* 64kB of stack memory */
 		stack_top = .; /* for startup.s */
@@ -256,7 +256,7 @@ SECTIONS
   .ARM.attributes 0 : { KEEP (*(.ARM.attributes)) KEEP (*(.gnu.attributes)) }
   .note.gnu.arm.ident 0 : { KEEP (*(.note.gnu.arm.ident)) }
   /DISCARD/ : { *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) }
-	
-	
-	
+
+
+
 }
