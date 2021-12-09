@@ -99,7 +99,8 @@ public:
 #	ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard) {
 			// Stack grows down, exclude the page at the end (lowest address).
-			zth_assert(Impl::stackGrowsDown(&stack));
+			int dummy __attribute__((unused)) = 0;
+			zth_assert(Impl::stackGrowsDown(&dummy));
 			m_guard = stack.p;
 			size_t const ps = impl().pageSize();
 			// There should be enough room, as computed by calcStackSize().
@@ -299,7 +300,7 @@ private:
 public:
 	static void** sp(Stack const& stack) noexcept
 	{
-		int dummy __attribute__((unused));
+		int dummy __attribute__((unused)) = 0;
 		zth_assert(Impl::stackGrowsDown(&dummy));
 		// sp must be dword aligned
 		return (void**)((uintptr_t)(stack.p + stack.size - sizeof(void*)) & ~(uintptr_t)7);
@@ -368,13 +369,13 @@ public:
 		// So, if there is no stack in the Context, assume it is a worker, running
 		// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.
 		if(unlikely(!impl().stackUsable() || !to.stackUsable())) {
-			int control;
+			unsigned int control;
 			asm("mrs %0, control\n" : "=r"(control));
 
 			if(to.stackUsable())
-				control |= 2; // set SPSEL to PSP
+				control |= 2u; // set SPSEL to PSP
 			else
-				control &= ~2; // set SPSEL to MSR
+				control &= ~2u; // set SPSEL to MSR
 
 			// As the SP changes, do not return from this function,
 			// but actually do the longjmp.

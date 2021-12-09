@@ -42,30 +42,13 @@ public:
 private:
 #	ifdef ZTH_OS_BAREMETAL
 	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
-
 	typedef jmp_buf jmp_buf_type;
-
-	int setjmp(jmp_buf env)
-	{
-		return ::setjmp(env);
-	}
-
-	void longjmp(jmp_buf env, int val = 1)
-	{
-		return ::longjmp(env, val);
-	}
+#		define zth_sjlj_setjmp(env)	   ::setjmp(env)
+#		define zth_sjlj_longjmp(env, val) ::longjmp(env, val)
 #	else
 	typedef sigjmp_buf jmp_buf_type;
-
-	int setjmp(sigjmp_buf env)
-	{
-		return ::sigsetjmp(env, Config::ContextSignals);
-	}
-
-	void longjmp(sigjmp_buf env, int val = 1)
-	{
-		return ::siglongjmp(env, val);
-	}
+#		define zth_sjlj_setjmp(env)	   ::sigsetjmp(env, Config::ContextSignals)
+#		define zth_sjlj_longjmp(env, val) ::siglongjmp(env, val)
 #	endif
 
 public:
@@ -79,7 +62,7 @@ public:
 			// Stackless fiber only saves current context; nothing to do.
 			return 0;
 
-		setjmp(m_env);
+		zth_sjlj_setjmp(m_env);
 		void** sp_ = sp(stackUsable());
 		set_sp(m_env, sp_);
 		set_pc(m_env, reinterpret_cast<void*>(&context_trampoline_from_jmp_buf));
@@ -91,9 +74,9 @@ public:
 	{
 		context_push_regs();
 
-		if(setjmp(m_env) == 0) {
+		if(zth_sjlj_setjmp(m_env) == 0) {
 			context_prepare_jmp(to, to.m_env);
-			longjmp(to.m_env, 1);
+			zth_sjlj_longjmp(to.m_env, 1);
 		}
 
 		context_pop_regs();

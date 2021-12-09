@@ -175,6 +175,10 @@ public:
 		m_stack = Stack(attr().stackSize);
 		m_stackUsable = Stack();
 
+		if(attr().stackSize == 0)
+			// No stack requested.
+			return 0;
+
 		// Allocate stack.
 		if((res = impl().initStack(m_stack, m_stackUsable)))
 			return res;
@@ -279,7 +283,7 @@ public:
 #	ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard)
 			// Both ends of the stack are guarded using mprotect().
-			size += pageSize() * 2;
+			size += impl().pageSize() * 2;
 #	endif
 
 		return size;
@@ -340,7 +344,7 @@ public:
 			// Nothing to align.
 			return;
 
-		size_t const ps = pageSize();
+		size_t const ps = impl().pageSize();
 
 		// Align to page size.
 		uintptr_t stack_old = (uintptr_t)stack.p;

@@ -175,15 +175,18 @@ SECTIONS
   .data.rel.ro : { *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*) *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*) } > flash
   .dynamic        : { *(.dynamic) } > flash
   .got            : { *(.got.plt) *(.igot.plt) *(.got) *(.igot) } > flash
+  .flash_end ALIGN(4) (NOLOAD) : {
+	  _data_flash = .;
+  } > flash
   .data           :
   {
     __data_start = .;
     *(.data .data.* .gnu.linkonce.d.*)
     SORT(CONSTRUCTORS)
-  } > ram
+  } >ram AT> flash
   .data1          : { *(.data1)
   _edata = .; PROVIDE (edata = .);
-  } > ram
+  } >ram AT> flash
   .bss            :
   {
   __bss_start = .;

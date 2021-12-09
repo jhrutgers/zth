@@ -65,7 +65,8 @@ caddr_t _sbrk(int incr) {
 
 	if (heap_end + incr > &heap_top) {
 		/* Heap and stack collision */
-		return (caddr_t)0;
+		errno = ENOMEM;
+		return (caddr_t)-1;
 	}
 
 	heap_end += incr;
@@ -89,18 +90,20 @@ int clock_gettime(int clk_id, struct timespec* res) {
 	if(clk_id != CLOCK_MONOTONIC)
 		return EINVAL;
 
-	// This is not a perfect implementation. A counter overflow it not
-	// handled correctly if the calls between clock_gettime() is more than
-	// 35 s. However, that is good enough for this example.
-	unsigned int const ns_per_tick = 50;
-
+	// The CYCCNT register is not implemented in Qemu's Cortex-M3.  We use
+	// TIM2 for at. It runs at 1 GHz. At this speed, it would overflow
+	// every 4.2 s.  This is not a perfect implementation. A counter
+	// overflow it not handled correctly if the calls between
+	// clock_gettime() is more than this interval. To reduce the chance
+	// that it happens, prescale it by 16.  This is good enough for this
+	// example.
 	static uint32_t cnt_prev = 0;
 	static uint32_t cnt_wraps = 0;
 
 	if(cnt_wraps == 0) {
 		// Initialization needed.
 		*((uint32_t volatile*)0x40000000) = 1; // TIM2_CR1: enable counter
-		*((uint32_t volatile*)0x40000028) = 5; // TIM2_PSC: set prescaler to have 50 ns per tick.
+		*((uint32_t volatile*)0x40000028) = 15; // TIM2_PSC: set prescaler to 16
 		cnt_wraps = 1;
 	}
 
@@ -111,7 +114,7 @@ int clock_gettime(int clk_id, struct timespec* res) {
 
 	cnt_prev = cnt;
 
-	uint64_t ns = (((uint64_t)cnt_wraps << 32u) | (uint64_t)cnt) * ns_per_tick;
+	uint64_t ns = (((uint64_t)cnt_wraps << 32u) | (uint64_t)cnt) * 16u;
 	res->tv_sec = ns / (uint64_t)1000000000UL;
 	res->tv_nsec = ns % (uint64_t)1000000000UL;
 	return 0;
@@ -122,6 +125,11 @@ void _crt()
 	extern char __bss_start__;
 	extern char __bss_end__;
 	memset(&__bss_start__, 0, (uintptr_t)&__bss_end__ - (uintptr_t)&__bss_start__);
+
+	extern char _data_flash;
+	extern char __data_start;
+	extern char _edata;
+	memcpy(&__data_start, &_data_flash, (uintptr_t)&_edata - (uintptr_t)&__data_start);
 
 	extern char __init_array_start;
 	extern char __init_array_end;
