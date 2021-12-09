@@ -24,6 +24,8 @@
 
 #ifdef __cplusplus
 
+#	include "libzth/regs.h"
+
 #	if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
 #		define ZTH_ARM_DO_STACK_GUARD
 #	endif
@@ -47,13 +49,14 @@ template <typename Impl>
 class ContextArch : public ContextBase<Impl> {
 public:
 	typedef ContextBase<Impl> base;
+	using base::impl;
 	using typename base::Stack;
 
 protected:
 	constexpr explicit ContextArch(ContextAttr const& attr) noexcept
 		: base(attr)
 #	ifdef ZTH_ARM_DO_STACK_GUARD
-		, m_guard
+		, m_guard()
 #	endif
 	{}
 
@@ -77,10 +80,10 @@ public:
 		if(Config::EnableStackGuard) {
 #	if defined(ZTH_HAVE_MMAN)
 			// Both ends of the stack are guarded using mprotect().
-			size += impl().page_size() * 2u;
+			size += impl().pageSize() * 2u;
 #	elif defined(ZTH_ARM_DO_STACK_GUARD)
 			// Only the end of the stack is protected using MPU.
-			size += impl().page_size();
+			size += impl().pageSize();
 #	endif
 		}
 
@@ -96,7 +99,7 @@ public:
 #	ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard) {
 			// Stack grows down, exclude the page at the end (lowest address).
-			zth_assert(stackGrowsDown(&stack));
+			zth_assert(Impl::stackGrowsDown(&stack));
 			m_guard = stack.p;
 			size_t const ps = impl().pageSize();
 			// There should be enough room, as computed by calcStackSize().
@@ -116,6 +119,15 @@ public:
 
 	////////////////////////////////////////////////////////////
 	// ARM MPU for stack guard
+
+	__attribute__((always_inline)) static void* sp() noexcept
+	{
+#	pragma GCC diagnostic push
+#	pragma GCC diagnostic ignored "-Wuninitialized"
+		register void* sp_reg asm("sp");
+		return sp_reg;
+#	pragma GCC diagnostic pop
+	}
 
 #	ifdef ZTH_ARM_DO_STACK_GUARD
 	int stackGuardInit() noexcept
@@ -213,8 +225,7 @@ private:
 
 		if(likely(guard)) {
 			rbar.field.addr = (uintptr_t)guard >> 5;
-			register void* sp asm("sp");
-			zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", guard, sp);
+			zth_dbg(context, "Set MPU stack guard to %p (sp=%p)", guard, sp());
 		} else {
 			// Initialize at the top of the address space, so it is effectively unused.
 			rbar.field.addr = REG_MPU_RBAR_ADDR_UNUSED;
@@ -328,37 +339,39 @@ public:
 		// clang-format on
 	}
 
+#		if defined(ZTH_CONTEXT_SJLJ)
 	inline __attribute__((always_inline)) void context_push_regs() noexcept
 	{
-#		if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
+#			if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
 		// newlib does not do saving/restoring of FPU registers.
 		// We have to do it here ourselves.
 		asm volatile("vpush {d8-d15}");
-#			define arm_fpu_pop() asm volatile("vpop {d8-d15}")
-#		else
-#			define arm_fpu_pop() \
-				do {          \
-				} while(0)
-#		endif
+#				define arm_fpu_pop() asm volatile("vpop {d8-d15}")
+#			else
+#				define arm_fpu_pop() \
+					do {          \
+					} while(0)
+#			endif
 	}
 
 	inline __attribute__((always_inline)) void context_pop_regs() noexcept
 	{
 		arm_fpu_pop();
-#		undef arm_fpu_pop
+#			undef arm_fpu_pop
 	}
 
-	inline __attribute__((always_inline)) void context_prepare_jmp(Context& UNUSED_PAR(to)) noexcept
+#			ifdef ZTH_ARM_USE_PSP
+	inline __attribute__((always_inline)) void
+	context_prepare_jmp(Impl& to, jmp_buf& env) noexcept
 	{
-#		ifdef ZTH_ARM_USE_PSP
 		// Use the PSP for fibers and the MSP for the worker.
 		// So, if there is no stack in the Context, assume it is a worker, running
 		// from MSP. Otherwise it is a fiber using PSP. Both are executed privileged.
-		if(unlikely(!stack || !to.stack)) {
+		if(unlikely(!impl().stackUsable() || !to.stackUsable())) {
 			int control;
 			asm("mrs %0, control\n" : "=r"(control));
 
-			if(to.stack)
+			if(to.stackUsable())
 				control |= 2; // set SPSEL to PSP
 			else
 				control &= ~2; // set SPSEL to MSR
@@ -372,13 +385,55 @@ public:
 				"movs r1, #1\n"
 				"b longjmp\n"
 				:
-				: "r"(to->env), "r"(control)
+				: "r"(env), "r"(control)
 				: "r0", "r1", "memory");
 		}
-#		endif
 	}
-#	endif // ZTH_OS_BAREMETAL
+#			endif
+#		endif // ZTH_CONTEXT_SJLJ
+#	endif	       // ZTH_OS_BAREMETAL
 
+private:
+#	ifdef ZTH_ARM_HAVE_MPU
+	// clang-format off
+	ZTH_REG_DEFINE(uint32_t, reg_mpu_type, 0xE000ED90,
+		reserved1 : 8,
+		region : 8,
+		dregion : 8,
+		reserved2 : 7,
+		separate : 1)
+
+	ZTH_REG_DEFINE(uint32_t, reg_mpu_ctrl, 0xE000ED94,
+		reserved : 29,
+		privdefena : 1,
+		hfnmiena : 1,
+		enable : 1)
+
+	ZTH_REG_DEFINE(uint32_t, reg_mpu_rnr, 0xE000ED98,
+		reserved : 24,
+		region : 8)
+
+	ZTH_REG_DEFINE(uint32_t, reg_mpu_rbar, 0xE000ED9C,
+		addr : 27,
+		valid : 1,
+		region : 4)
+
+	ZTH_REG_DEFINE(uint32_t, reg_mpu_rasr, 0xE000EDA0,
+		reserved1 : 3,
+		xn : 1,
+		reserved2 : 1,
+		ap : 3,
+		reserved3 : 2,
+		tex : 3,
+		s : 1,
+		c : 1,
+		b : 1,
+		srd : 8,
+		reserved4 : 2,
+		size : 5,
+		enable : 1)
+	// clang-format on
+#	endif // ZTH_ARM_HAVE_MPU
 
 private:
 #	ifdef ZTH_ARM_DO_STACK_GUARD

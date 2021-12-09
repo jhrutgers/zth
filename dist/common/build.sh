@@ -40,7 +40,7 @@ fi
 
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
-		-?|-h|--help|help)
+		"-?"|-h|--help|help)
 			show_help;;
 		C++98|C++03)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99"

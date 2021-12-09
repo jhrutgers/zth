@@ -347,7 +347,7 @@ ZTH_EXPORT void foo();
 #	if defined(ZTH_ARCH_ARM) && defined(__ARM_ARCH) && __ARM_ARCH >= 6 \
 		&& defined(__ARM_ARCH_PROFILE) && __ARM_ARCH_PROFILE == 'M'
 #		define ZTH_ARM_USE_PSP
-#		define ZTH_STACK_SWITCH
+//#		define ZTH_STACK_SWITCH
 #	endif
 #	undef ZTH_CONTEXT_SIGALTSTACK
 #	undef ZTH_CONTEXT_UCONTEXT

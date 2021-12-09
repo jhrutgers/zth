@@ -499,7 +499,7 @@ public:
 	/*!
 	 * \brief Pre-sjlj jump.
 	 */
-	void context_prepare_jmp(Context& UNUSED_PAR(to)) noexcept {}
+	void context_prepare_jmp(Impl& UNUSED_PAR(to), jmp_buf& UNUSED_PAR(env)) noexcept {}
 
 	/*!
 	 * \brief Flag fiber as died after it returned from \c context_entry().

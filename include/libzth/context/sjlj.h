@@ -92,7 +92,7 @@ public:
 		context_push_regs();
 
 		if(setjmp(m_env) == 0) {
-			context_prepare_jmp(to);
+			context_prepare_jmp(to, to.m_env);
 			longjmp(to.m_env, 1);
 		}
 

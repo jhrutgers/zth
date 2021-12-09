@@ -19,8 +19,8 @@
  */
 
 #ifdef __cplusplus
-#include <libzth/macros.h>
-#include <libzth/util.h>
+#	include <libzth/macros.h>
+#	include <libzth/util.h>
 
 /*!
  * \defgroup zth_api_cpp_regs regs
@@ -48,26 +48,58 @@ struct Register {
 		read();
 	}
 
-	constexpr explicit Register(type v) noexcept : value(v) {}
+	constexpr explicit Register(type v) noexcept
+		: value(v)
+	{}
 
-	union { type value; Fields field; };
+	union {
+		type value;
+		Fields field;
+	};
 
-	static type volatile* r() noexcept { return (type volatile*)Addr; }
-	type read() const noexcept { return *r(); }
-	type read() noexcept { return value = *r(); }
-	void write() const noexcept { *r() = value; }
-	void write(type v) const noexcept { *r() = v; }
-	void write(type v) noexcept { *r() = value = v; }
-	operator type() const noexcept { return value; }
+	static type volatile* r() noexcept
+	{
+		return (type volatile*)Addr;
+	}
+
+	type read() const noexcept
+	{
+		return *r();
+	}
+
+	type read() noexcept
+	{
+		return value = *r();
+	}
+
+	void write() const noexcept
+	{
+		*r() = value;
+	}
+
+	void write(type v) const noexcept
+	{
+		*r() = v;
+	}
+
+	void write(type v) noexcept
+	{
+		*r() = value = v;
+	}
+
+	operator type() const noexcept
+	{
+		return value;
+	}
 };
 
-#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#	if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 // In case of little-endian, gcc puts the last field at the highest bits.
 // This is counter intuitive for registers. Reverse them.
-#  define ZTH_REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
-#else
-#  define ZTH_REG_BITFIELDS(...) __VA_ARGS__
-#endif
+#		define ZTH_REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
+#	else
+#		define ZTH_REG_BITFIELDS(...) __VA_ARGS__
+#	endif
 
 /*!
  * \brief Define a hardware reference helper class, with bitfields.
@@ -75,6 +107,7 @@ struct Register {
  * Example to create \c zth::reg_mpu_type register:
  *
  * \code
+ * // clang-format off
  * ZTH_REG_DEFINE(uint32_t, reg_mpu_type, 0xE000ED90,
  * 	// 32-bit register definition in unsigned int fields,
  * 	// ordered from MSB to LSB.
@@ -83,6 +116,7 @@ struct Register {
  * 	dregion : 8,
  * 	reserved2 : 7,
  * 	separate : 1)
+ * // clang-format on
  * \endcode
  *
  * Afterwards, instantiate the \c zth::reg_mpu_type class to access the hardware register.
@@ -90,56 +124,21 @@ struct Register {
  * \see zth::Register
  * \ingroup zth_api_cpp_regs
  */
-#define ZTH_REG_DEFINE(T, name, addr, fields...) \
-	struct name##__type { T ZTH_REG_BITFIELDS(fields); } __attribute__((packed)); \
-	struct name : public zth::Register<T, addr, name##__type> { \
-		typedef zth::Register<T, addr, name##__type> base; \
-		using typename base::type; \
-		name() : base() {} \
-		explicit name(type v) : base(v) {} \
-	};
+#	define ZTH_REG_DEFINE(T, name, addr, fields...)                    \
+		struct name##__type {                                       \
+			T ZTH_REG_BITFIELDS(fields);                        \
+		} __attribute__((packed));                                  \
+		struct name : public zth::Register<T, addr, name##__type> { \
+			typedef zth::Register<T, addr, name##__type> base;  \
+			using typename base::type;                          \
+			name()                                              \
+				: base()                                    \
+			{}                                                  \
+			explicit name(type v)                               \
+				: base(v)                                   \
+			{}                                                  \
+		};
 
-#ifdef ZTH_ARCH_ARM
-#  ifdef ZTH_ARM_HAVE_MPU
-ZTH_REG_DEFINE(uint32_t, reg_mpu_type, 0xE000ED90,
-	reserved1 : 8,
-	region : 8,
-	dregion : 8,
-	reserved2 : 7,
-	separate : 1)
-
-ZTH_REG_DEFINE(uint32_t, reg_mpu_ctrl, 0xE000ED94,
-	reserved : 29,
-	privdefena : 1,
-	hfnmiena : 1,
-	enable : 1)
-
-ZTH_REG_DEFINE(uint32_t, reg_mpu_rnr, 0xE000ED98,
-	reserved : 24,
-	region : 8)
-
-ZTH_REG_DEFINE(uint32_t, reg_mpu_rbar, 0xE000ED9C,
-	addr : 27,
-	valid : 1,
-	region : 4)
-
-ZTH_REG_DEFINE(uint32_t, reg_mpu_rasr, 0xE000EDA0,
-	reserved1 : 3,
-	xn : 1,
-	reserved2 : 1,
-	ap : 3,
-	reserved3 : 2,
-	tex : 3,
-	s : 1,
-	c : 1,
-	b : 1,
-	srd : 8,
-	reserved4 : 2,
-	size : 5,
-	enable : 1)
-#  endif // ZTH_ARM_HAVE_MPU
-#endif // ZTH_ARCH_ARM
-
-} // namespace
+} // namespace zth
 #endif // __cplusplus
 #endif // ZTH_REGS_H
