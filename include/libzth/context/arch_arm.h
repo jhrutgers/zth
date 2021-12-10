@@ -25,6 +25,7 @@
 #ifdef __cplusplus
 
 #	include "libzth/regs.h"
+#	include "libzth/worker.h"
 
 #	if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
 #		define ZTH_ARM_DO_STACK_GUARD
@@ -139,15 +140,26 @@ public:
 	}
 
 	void stackGuardDeinit() noexcept {}
-#	endif
 
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+	void* guard()
+	{
+		return m_guard;
+	}
+
+	void* setGuard(void* guard)
+	{
+		void* old = m_guard;
+		m_guard = guard;
+		return old;
+	}
+
+private:
 #		define REG_MPU_RBAR_ADDR_UNUSED \
 			((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
 
 #		pragma GCC diagnostic push
 #		pragma GCC diagnostic ignored "-Wconversion"
-private:
+
 	static int stackGuardRegion() noexcept
 	{
 		if(!Config::EnableStackGuard || Config::EnableThreads)
@@ -394,6 +406,110 @@ public:
 #		endif // ZTH_CONTEXT_SJLJ
 #	endif	       // ZTH_OS_BAREMETAL
 
+#	ifdef ZTH_STACK_SWITCH
+private:
+	__attribute__((naked, noinline)) static void*
+	stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*) noexcept)) noexcept
+	{
+		// clang-format off
+		asm volatile(
+			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+			".save {r4, " REG_FP ", lr}\n"
+			"add " REG_FP ", sp, #0\n"
+
+			"mrs r4, control\n"		// Save current control register
+			"bic r3, r4, #2\n"		// Set to use MSP
+			"msr control, r3\n"		// Enable MSP
+			"isb\n"
+			"and r4, r4, #2\n"		// r4 is set to only have the PSP bit
+
+			// We are on MSP now.
+
+			"push {" REG_FP ", lr}\n"	// Save frame pointer on MSP
+			".setfp " REG_FP ", sp\n"
+			"add " REG_FP ", sp, #0\n"
+
+			"blx r1\n"			// Call f(arg)
+
+			"mrs r3, control\n"		// Save current control register
+			"orr r3, r3, r4\n"		// Set to use previous PSP setting
+			"msr control, r3\n"		// Enable PSP setting
+			"isb\n"
+
+			// We are back on the previous stack.
+
+			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+		);
+		// clang-format on
+	}
+
+	__attribute__((naked, noinline)) static void* stack_switch_psp(
+		void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*) noexcept),
+		void* UNUSED_PAR(sp)) noexcept
+	{
+		// clang-format off
+		asm volatile(
+			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+			".save {r4, " REG_FP ", lr}\n"
+			"add " REG_FP ", sp, #0\n"
+
+			"mov r4, sp\n"			// Save previous stack pointer
+			"mov sp, r2\n"			// Set new stack pointer
+			"push {" REG_FP ", lr}\n"	// Save previous frame pointer on new stack
+			".setfp " REG_FP ", sp\n"
+			"add " REG_FP ", sp, #0\n"
+
+			"blx r1\n"			// Call f(arg)
+
+			"mov sp, r4\n"			// Restore previous stack
+			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+		);
+		// clang-format on
+	}
+
+public:
+	void* stack_switch(void* stack, size_t size, void* (*f)(void*) noexcept, void* arg) noexcept
+	{
+		if(!stack) {
+			zth::Worker* worker = zth::Worker::instance();
+
+			if(worker)
+				worker->contextSwitchDisable();
+
+			void* res = stack_switch_msp(arg, f);
+
+			if(worker)
+				worker->contextSwitchEnable();
+
+			return res;
+		} else {
+			void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
+#		ifdef ZTH_ARM_HAVE_MPU
+			void* prevGuard = nullptr;
+
+			if(zth::Config::EnableStackGuard && size >= ZTH_ARM_STACK_GUARD_SIZE * 2) {
+				void* guard =
+					(void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE
+						 - 1)
+						& ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+				prevGuard = setGuard(guard);
+				stackGuard();
+			}
+#		endif
+
+			void* res = stack_switch_psp(arg, f, sp);
+
+#		ifdef ZTH_ARM_HAVE_MPU
+			if(prevGuard) {
+				setGuard(prevGuard);
+				stackGuard();
+			}
+#		endif
+			return res;
+		}
+	}
+#	endif // ZTH_STACK_SWITCH
+
 private:
 #	ifdef ZTH_ARM_HAVE_MPU
 	// clang-format off
@@ -444,121 +560,6 @@ private:
 
 } // namespace impl
 } // namespace zth
-
-
-#	ifdef ZTH_STACK_SWITCH
-
-__attribute__((naked, noinline)) static void*
-zth_stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*)))
-{
-	// clang-format off
-	asm volatile(
-		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
-		".save {r4, " REG_FP ", lr}\n"
-		"add " REG_FP ", sp, #0\n"
-
-		"mrs r4, control\n"		// Save current control register
-		"bic r3, r4, #2\n"		// Set to use MSP
-		"msr control, r3\n"		// Enable MSP
-		"isb\n"
-		"and r4, r4, #2\n"		// r4 is set to only have the PSP bit
-
-		// We are on MSP now.
-
-		"push {" REG_FP ", lr}\n"	// Save frame pointer on MSP
-		".setfp " REG_FP ", sp\n"
-		"add " REG_FP ", sp, #0\n"
-
-		"blx r1\n"			// Call f(arg)
-
-		"mrs r3, control\n"		// Save current control register
-		"orr r3, r3, r4\n"		// Set to use previous PSP setting
-		"msr control, r3\n"		// Enable PSP setting
-		"isb\n"
-
-		// We are back on the previous stack.
-
-		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
-	);
-	// clang-format on
-}
-
-__attribute__((naked, noinline)) static void*
-zth_stack_switch_psp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*)), void* UNUSED_PAR(sp))
-{
-	// clang-format off
-	asm volatile(
-		"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
-		".save {r4, " REG_FP ", lr}\n"
-		"add " REG_FP ", sp, #0\n"
-
-		"mov r4, sp\n"			// Save previous stack pointer
-		"mov sp, r2\n"			// Set new stack pointer
-		"push {" REG_FP ", lr}\n"	// Save previous frame pointer on new stack
-		".setfp " REG_FP ", sp\n"
-		"add " REG_FP ", sp, #0\n"
-
-		"blx r1\n"			// Call f(arg)
-
-		"mov sp, r4\n"			// Restore previous stack
-		"pop {r4, " REG_FP ", pc}\n"	// Return to caller
-	);
-	// clang-format on
-}
-
-void* zth_stack_switch(void* stack, size_t size, void* (*f)(void*), void* arg)
-{
-	zth::Worker* worker = zth::Worker::currentWorker();
-	void* res;
-
-	if(!stack) {
-		worker->contextSwitchDisable();
-		res = zth_stack_switch_msp(arg, f);
-		worker->contextSwitchEnable();
-		return res;
-	} else {
-		void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
-#		ifdef ZTH_ARM_HAVE_MPU
-		void* prevGuard = nullptr;
-		zth::Context* context = nullptr;
-
-		if(zth::Config::EnableStackGuard && size) {
-			if(unlikely(!worker))
-				goto noguard;
-
-			zth::Fiber* fiber = worker->currentFiber();
-			if(unlikely(!fiber))
-				goto noguard;
-
-			context = fiber->context();
-			if(unlikely(!context))
-				goto noguard;
-
-			void* guard =
-				(void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1)
-					& ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
-			prevGuard = context->m_guard;
-			context->m_guard = guard;
-
-			context->stackGuard(guard);
-		}
-
-noguard:
-#		endif
-
-		res = zth_stack_switch_psp(arg, f, sp);
-
-#		ifdef ZTH_ARM_HAVE_MPU
-		if(prevGuard) {
-			context->m_guard = prevGuard;
-			context->stackGuard(prevGuard);
-		}
-#		endif
-	}
-
-	return res;
-}
-#	endif // ZTH_STACK_SWITCH
 
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_ARCH_ARM_H

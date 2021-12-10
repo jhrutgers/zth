@@ -38,7 +38,7 @@
  * \ingroup zth_api_c_stack
  */
 #ifdef ZTH_STACK_SWITCH
-EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*), void* arg);
+EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*) noexcept, void* arg) noexcept;
 #else
 #  define zth_stack_switch(stack, size, f, arg) ({ (void)(stack); (void)(size); ((f)(arg)); })
 #endif

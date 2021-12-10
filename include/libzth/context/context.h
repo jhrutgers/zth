@@ -527,6 +527,11 @@ public:
 #	endif
 	}
 
+	void* stack_switch(void* UNUSED_PAR(stack), size_t UNUSED_PAR(size), void* (*f)(void*) noexcept, void* arg) noexcept
+	{
+		return f(arg);
+	}
+
 private:
 	/*! \brief Pre-set attributes. */
 	ContextAttr m_attr;
@@ -543,6 +548,9 @@ private:
 	bool m_alive;
 #	endif
 };
+
+template <typename Impl>
+static Impl* current_context() noexcept;
 
 } // namespace impl
 } // namespace zth

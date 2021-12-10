@@ -310,3 +310,25 @@ size_t stack_watermark_remaining(void* stack) noexcept
 }
 
 } // namespace zth
+
+#ifdef ZTH_STACK_SWITCH
+void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*) noexcept, void* arg) noexcept
+{
+	zth::Worker* worker = zth::Worker::instance();
+
+	if(!worker) {
+noswitch:
+		return f(arg);
+	}
+
+	zth::Fiber* fiber = worker->currentFiber();
+	if(!fiber)
+		goto noswitch;
+
+	zth::Context* context = fiber->context();
+	if(!context)
+		goto noswitch;
+
+	return context->stack_switch(stack, size, f, arg);
+}
+#endif // ZTH_STACK_SWITCH
