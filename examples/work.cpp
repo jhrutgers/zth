@@ -1,8 +1,9 @@
 // Not for Windows, as Windows cannot poll() stdin.
 
 #include <zth>
-#include <sys/select.h>
+
 #include <csignal>
+#include <sys/select.h>
 #include <unistd.h>
 
 static void job(int length)
@@ -14,13 +15,15 @@ static void job(int length)
 	zth::nap(0.1 * (double)length);
 	printf("job %d: finished  %d.%d s\n", job_id, length / 10, length % 10);
 }
-zth_fiber(job)
+zth_fiber(job);
 
 #ifndef ZTH_OS_BAREMETAL
 static void handler(int /*sig*/)
 {
 	char const* msg = "Got interrupted. Ignored. Press Ctrl+D to stop.\n";
-	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
+	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0;
+	    c = write(fileno(stderr), msg, len), len -= c, msg += c)
+		;
 }
 #endif
 
@@ -109,11 +112,10 @@ static void employer()
 		buf[len] = '\0';
 	}
 }
-zth_fiber(employer)
+zth_fiber(employer);
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	employer();
 	return 0;
 }
-

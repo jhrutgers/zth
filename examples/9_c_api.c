@@ -18,4 +18,3 @@ int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	zth_fiber_create(fiber, NULL, 0, NULL);
 	return 0;
 }
-

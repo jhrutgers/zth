@@ -16,7 +16,7 @@ void trigger(zth::Signal* s, zth::TimeInterval interval)
 		t += interval;
 	}
 }
-zth_fiber(trigger)
+zth_fiber(trigger);
 
 // A daemon just runs in the background. When another fiber does something that
 // is relevant for the daemon, it signals a global zth::Signal.  This wakes the
@@ -25,9 +25,9 @@ static zth::Signal triggerSomeDaemon("someDaemon trigger");
 
 void someDaemon()
 {
-	// The daemon is an infinite loop, which ends waiting for its trigger signal.
-	// The wait for the signal is blocking. If a wakeup is required at some
-	// interval, start a timer to do this.
+	// The daemon is an infinite loop, which ends waiting for its trigger
+	// signal.  The wait for the signal is blocking. If a wakeup is
+	// required at some interval, start a timer to do this.
 	async trigger(&triggerSomeDaemon, 1);
 
 	while(!shutdown_flag) {
@@ -37,16 +37,17 @@ void someDaemon()
 		triggerSomeDaemon.wait();
 	}
 }
-zth_fiber(someDaemon)
+zth_fiber(someDaemon);
 
 void foo()
 {
 	printf("foo\n");
-	// Trigger the daemon, but only wake it once if triggered multiple times.
+	// Trigger the daemon, but only wake it once if triggered multiple
+	// times.
 	triggerSomeDaemon.signal();
 	zth::nap(0.5);
 }
-zth_fiber(foo)
+zth_fiber(foo);
 
 int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {

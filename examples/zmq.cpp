@@ -1,4 +1,5 @@
 #include <zth>
+
 #include <csignal>
 
 static sig_atomic_t volatile stop = 0;
@@ -33,11 +34,11 @@ void server()
 		}
 
 		printf("Received %s\n", buffer);
-		zth::nap(1);          //  Do some 'work'
+		zth::nap(1); //  Do some 'work'
 		check(zmq_send(responder, (void*)"World", 5, 0));
 	}
 }
-zth_fiber(server)
+zth_fiber(server);
 
 void client(int messages)
 {
@@ -60,12 +61,14 @@ void client(int messages)
 	check(zmq_recv(requester, nullptr, 0, 0));
 	zmq_close(requester);
 }
-zth_fiber(client)
+zth_fiber(client);
 
 static void handler(int UNUSED_PAR(sig))
 {
 	char const* msg = "got interrupted\n";
-	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0; c = write(fileno(stderr), msg, len), len -= c, msg += c);
+	for(ssize_t len = strlen(msg), c = 1; c > 0 && len > 0;
+	    c = write(fileno(stderr), msg, len), len -= c, msg += c)
+		;
 	stop = 1;
 }
 

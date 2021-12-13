@@ -4,8 +4,8 @@
 using namespace std;
 
 #ifdef ZTH_OS_WINDOWS
-#  define srand48(seed)	srand(seed)
-#  define drand48()	((double)rand() / (double)RAND_MAX)
+#	define srand48(seed) srand(seed)
+#	define drand48()     ((double)rand() / (double)RAND_MAX)
 #endif
 
 struct Sock {
@@ -42,7 +42,7 @@ struct Socks {
 void takeSocks(int count);
 Socks* wearSocks(Socks& socks);
 void washSock(Sock& sock);
-zth_fiber(takeSocks, wearSocks, washSock)
+zth_fiber(takeSocks, wearSocks, washSock);
 
 void takeSocks(int count)
 {
@@ -76,8 +76,8 @@ Socks* wearSocks(Socks& socks)
 	printf("Wear %s\n", socks.str.c_str());
 
 	// Done wearing, go wash both socks.
-	async washSock(socks.left);		// in parallel
-	washSock(socks.right);			// done right here and now
+	async washSock(socks.left); // in parallel
+	washSock(socks.right);	    // done right here and now
 
 	// Wait till the washing sequence has completed.
 	socks.left.done.wait();
