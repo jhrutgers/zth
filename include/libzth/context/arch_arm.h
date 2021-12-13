@@ -124,11 +124,9 @@ public:
 
 	__attribute__((always_inline)) static void* sp() noexcept
 	{
-#	pragma GCC diagnostic push
-#	pragma GCC diagnostic ignored "-Wuninitialized"
-		register void* sp_reg asm("sp");
+		void* sp_reg;
+		asm ("mov %0, sp;" : "=r"(sp_reg));
 		return sp_reg;
-#	pragma GCC diagnostic pop
 	}
 
 #	ifdef ZTH_ARM_DO_STACK_GUARD

@@ -1,27 +1,27 @@
 #include <zth>
 
 /*
- * This example shows a few stack-related features.
- * It is designed for bare-metal ARM Cortex-M4, but it compiles fine on other systems,
- * but the MPU functionality is stripped out in that case.
+ * This example shows a few stack-related features.  It is designed for
+ * bare-metal ARM Cortex-M4, but it compiles fine on other systems, but the MPU
+ * functionality is stripped out in that case.
  */
 
 /*
- * The first example shows how to switch between stacks.
- * By default the MSP is used for the main worker, and all fibers run on their PSP.
- * One can switch the stack a fiber is using to another memory region, e.g. malloced(),
- * or switch back to the MSP. The reason to use an other stack can be that
- * the default allocated stack is kept small, but when a fiber needs sporadically
- * more stack, one can use a big stack for a short while. This way, system resources
- * can be used more efficiently.
+ * The first example shows how to switch between stacks.  By default the MSP is
+ * used for the main worker, and all fibers run on their PSP.  One can switch
+ * the stack a fiber is using to another memory region, e.g. malloced(), or
+ * switch back to the MSP. The reason to use an other stack can be that the
+ * default allocated stack is kept small, but when a fiber needs sporadically
+ * more stack, one can use a big stack for a short while. This way, system
+ * resources can be used more efficiently.
  *
- * For this, a function call must be wrapped in zth::stack_switch().
- * Functions of up to 3 arguments are supported for pre-C++11.
- * C++11 and later support any number of arguments.
+ * For this, a function call must be wrapped in zth::stack_switch().  Functions
+ * of up to 3 arguments are supported for pre-C++11.  C++11 and later support
+ * any number of arguments.
  *
- * When no stack region is specified, stack==NULL, the MSP is used.
- * In that case, context switching between fibers is disabled, as no one else can
- * use the MSP in that case. When the function returns to the previous stack,
+ * When no stack region is specified, stack==NULL, the MSP is used.  In that
+ * case, context switching between fibers is disabled, as no one else can use
+ * the MSP in that case. When the function returns to the previous stack,
  * context switching is enabled again.
  */
 
@@ -31,21 +31,54 @@ static char altstack2[0x1000];
 
 // Define a few different functions.
 static void vf0() {}
-static int f0() { return 1; }
-static void vf1(int i) { printf("%d\n", i); }
-static int f1(int /*i*/) { return 1; }
-static void vf2(int i, double d) { printf("%d %g\n", i, d); }
+
+static int f0()
+{
+	return 1;
+}
+
+static void vf1(int i)
+{
+	printf("%d\n", i);
+}
+
+static int f1(int /*i*/)
+{
+	return 1;
+}
+
+static void vf2(int i, double d)
+{
+	printf("%d %d\n", i, (int)(d * 100.0));
+}
+
 static int f2(int /*i*/, double /*d*/)
 {
 	// Switch stack again.
 	zth::stack_switch(altstack2, sizeof(altstack), &vf2, 10, 11.1);
 	return 1;
 }
-static void vf3(int i, double d, void* p) { printf("%d %g %p\n", i, d, p); }
-static int f3(int /*i*/, double /*d*/, void* /*p*/) { return 1; }
+
+static void vf3(int i, double d, void* p)
+{
+	printf("%d %d %p\n", i, (int)(d * 100.0), p);
+}
+
+static int f3(int /*i*/, double /*d*/, void* /*p*/)
+{
+	return 1;
+}
+
 #if __cplusplus >= 201103L
-static void vf4(int i, double d, void* p, int i2) { printf("%d %g %p %d\n", i, d, p, i2); }
-static int f4(int /*i*/, double /*d*/, void* /*p*/, int /*i2*/) { return 1; }
+static void vf4(int i, double d, void* p, int i2)
+{
+	printf("%d %d %p %d\n", i, (int)(d * 100.0), p, i2);
+}
+
+static int f4(int /*i*/, double /*d*/, void* /*p*/, int /*i2*/)
+{
+	return 1;
+}
 #endif
 
 static void example_stack_switch()
@@ -88,7 +121,7 @@ static void example_stack_switch()
  * upon every switch.
  */
 static void overflow2(int i)
-{	// NOLINT
+{ // NOLINT
 	printf("overflow %d\n", i);
 
 	// Recursive call, this will overflow the stack.

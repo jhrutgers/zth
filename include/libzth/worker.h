@@ -131,7 +131,7 @@ namespace zth {
 			return *this;
 		}
 
-		void contextSwitchEnable(bool enable = false) noexcept
+		void contextSwitchEnable(bool enable = true) noexcept
 		{
 			if(enable) {
 				zth_assert(m_disableContextSwitch > 0);
