@@ -4,7 +4,7 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 set(toolchain_prefix arm-none-eabi-)
 
 set(arm_defines "")
-set(arm_cpuflags "-mcpu=cortex-m3 -mthumb -mfloat-abi=soft")
+set(arm_cpuflags "-mcpu=cortex-m3 -mthumb -mthumb-interwork -mfloat-abi=soft")
 set(arm_cflags "${arm_defines} ${arm_cpuflags} -fno-strict-aliasing -fno-builtin -fshort-enums -Wno-psabi -fshort-wchar")
 set(arm_cxxflags "${arm_cflags} -fno-use-cxa-atexit -fno-threadsafe-statics")
 

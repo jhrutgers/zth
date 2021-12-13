@@ -5,7 +5,7 @@ just C++, so usable on any target.  Only the context switching and
 hardware-related stuff like `clock_gettime()` is to be ported.
 
 The directory `dist/qemu-arm-a15` contains a set of files that shows how to do
-this.  It targets a Qemu virt machine to run the examples, and can be built on
+this.  It targets a QEMU virt machine to run the examples, and can be built on
 Ubuntu.  This virt machine uses an ARM Cortex-A15 with VFP (without NEON).  The
 implementation is not very sophisticated, but shows you where to start, if you
 have your own ARM system.  The compiler, linker script, and startup files are
@@ -20,8 +20,8 @@ To get the stuff running, do this:
    and `startup.S`.  These files include the interrupt vector for the ARM,
    initialization of the VFP, C/C++-runtime boot code, and the system calls
    that `newlib` needs, like `_read()` and `_write()`.
-3. Run Qemu with one of the examples.  (Note: Press 'Ctrl-A X' to terminate
-   Qemu)
+3. Run QEMU with one of the examples.  (Note: Press 'Ctrl-A X' to terminate
+   QEMU)
 
 		qemu-system-arm -machine virt -cpu cortex-a15 -s -m 8M -nographic -kernel build/deploy/bin/1_helloworld
 
@@ -36,7 +36,7 @@ To get the stuff running, do this:
    Note that there is no OS that supplies `poll()`. So reading stdin is a bit
    tricky and not all examples behave the same way as at your PC.  Moreover,
    0MQ isn't available either, of course.
-4. Connect `gdb` to Qemu. If you supply the `-S` argument to Qemu (or via
+4. Connect `gdb` to QEMU. If you supply the `-S` argument to QEMU (or via
    `run.sh`), it waits for `gdb` to connect before it starts.  That might make
    debugging a bit easier.
 

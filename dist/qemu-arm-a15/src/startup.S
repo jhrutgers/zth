@@ -85,7 +85,7 @@ _start:
 	LDR r0, =(0xF << 20)
 	MCR p15, 0, r0, c1, c0, 2
 	// Set the FPEXC EN bit to enable the FPU:
-	MOV r3, #0x40000000 
+	MOV r3, #0x40000000
 	VMSR FPEXC, r3
 
 	// Go to CRT
@@ -93,5 +93,20 @@ _start:
 
 	// There we go!
 	bl main
+
+	// Ask QEMU to quit, which requires semihosting.
+	cmp r0, #0
+	ite eq
+	ldreq r1, .L_ADP_Stopped_ApplicationExit
+	ldrne r1, .L_ADP_Stopped_RunTimeErrorUnknown
+	mov r0, #0x18	// angel_SWIreason_ReportException
+	svc #0x00123456	// semihosting
+
+	// Halt, in case the svc didn't work.
 	b .
+
+.L_ADP_Stopped_RunTimeErrorUnknown:
+	.word 0x20023
+.L_ADP_Stopped_ApplicationExit:
+	.word 0x20026
 
