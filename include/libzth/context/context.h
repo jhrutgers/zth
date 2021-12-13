@@ -529,6 +529,7 @@ public:
 
 	void* stack_switch(void* UNUSED_PAR(stack), size_t UNUSED_PAR(size), void* (*f)(void*) noexcept, void* arg) noexcept
 	{
+		// cppcheck-suppress CastIntegerToAddressAtReturn
 		return f(arg);
 	}
 

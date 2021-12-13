@@ -81,6 +81,9 @@
 #	if GCC_VERSION < 50000
 #		pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #	endif
+#	if GCC_VERSION >= 70000 && defined(__cplusplus) && __cplusplus < 201703L
+#		pragma GCC diagnostic ignored "-Wnoexcept-type"
+#	endif
 #	ifndef UNUSED_PAR
 #		define UNUSED_PAR(name) name __attribute__((unused))
 #	endif
