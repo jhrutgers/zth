@@ -363,8 +363,11 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<R, R(*)(Args...)> base;
+
 		template <typename... Args_>
+		// cppcheck-suppress passedByValue
 		TypedFiberN(typename base::Function function, Args_&&... args) : base(function), m_args(std::forward<Args_>(args)...) {}
+
 		virtual ~TypedFiberN() final = default;
 	protected:
 		virtual void entry_() final { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }
@@ -379,8 +382,11 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(TypedFiberN)
 	public:
 		typedef TypedFiber<void, void(*)(Args...)> base;
+
 		template <typename... Args_>
+		// cppcheck-suppress passedByValue
 		TypedFiberN(typename base::Function function, Args_&&... args) : base(function), m_args(std::forward<Args_>(args)...) {}
+
 		virtual ~TypedFiberN() final = default;
 	protected:
 		virtual void entry_() final { entry__(typename SequenceGenerator<sizeof...(Args)>::type()); }

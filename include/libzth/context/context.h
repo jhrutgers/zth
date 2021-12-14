@@ -298,24 +298,24 @@ public:
 	 */
 	void* allocStack(size_t size) noexcept
 	{
-		void* stack = nullptr;
+		void* p = nullptr;
 
 #	ifdef ZTH_HAVE_MMAN
 		// NOLINTNEXTLINE(hicpp-signed-bitwise,cppcoreguidelines-pro-type-cstyle-cast)
-		stack =
+		p =
 			mmap(nullptr, size, PROT_READ | PROT_WRITE,
 			     MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
 
-		if(unlikely(stack == MAP_FAILED))
+		if(unlikely(p == MAP_FAILED))
 			return nullptr;
 #	else
-		if(unlikely((stack = (void*)allocate_noexcept<char>(size)) == nullptr)) {
+		if(unlikely((p = (void*)allocate_noexcept<char>(size)) == nullptr)) {
 			errno = ENOMEM;
 			return nullptr;
 		}
 #	endif
 
-		return stack;
+		return p;
 	}
 
 	/*!

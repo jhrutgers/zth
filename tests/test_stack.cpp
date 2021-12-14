@@ -141,7 +141,7 @@ TEST(StackTest, SS)
 	zth::stack_switch(stack, sizeof(stack), &f_SS, S());
 }
 
-static S f_SRSi(S& s, int /*o*/) noexcept
+static S f_SRSi(S const& s, int /*o*/) noexcept
 {
 	return s;
 }
@@ -149,7 +149,7 @@ static S f_SRSi(S& s, int /*o*/) noexcept
 TEST(StackTest, SRSi)
 {
 	S s;
-	zth::stack_switch<S, S&>(stack, sizeof(stack), &f_SRSi, s, 100);
+	zth::stack_switch<S, S const&>(stack, sizeof(stack), &f_SRSi, s, 100);
 }
 
 #if !ZTH_STACK_SWITCH98
