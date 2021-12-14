@@ -31,232 +31,416 @@
 
 /*!
  * \brief Call the function \p f using the new stack pointer.
- * \param stack the new stack area. If \c NULL, the Worker's stack is used. If \p size is 0, this is the stack pointer, otherwise the stack pointer is calculated according to the ABI (growing up/down) within \p stack + \p size.
- * \param size the new stack size. This is not required to make the jump, but if 0, there will not be any stack overflow guard used.
- * \param f the function with prototype \c void*(void*) to be called. When \p f returns, the previous stack is restored.
+ * \param stack the new stack area. If \c NULL, the Worker's stack is used. If
+ *	\p size is 0, this is the stack pointer, otherwise the stack pointer is
+ *	calculated according to the ABI (growing up/down) within \p stack + \p
+ *	size.
+ * \param size the new stack size. This is not required to make the jump, but
+ *	if 0, there will not be any stack overflow guard used.
+ * \param f the function with prototype \c void*(void*) to be called. When \p f
+ *	returns, the previous stack is restored.
  * \param arg the argument to pass to \p f.
  * \ingroup zth_api_c_stack
  */
 #ifdef ZTH_STACK_SWITCH
-EXTERN_C ZTH_EXPORT void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*) noexcept, void* arg) noexcept;
-#else
-#  define zth_stack_switch(stack, size, f, arg) ({ (void)(stack); (void)(size); ((f)(arg)); })
-#endif
+EXTERN_C ZTH_EXPORT void*
+zth_stack_switch(void* stack, size_t size, void* (*f)(void*) noexcept, void* arg) noexcept;
+#else // !ZTH_STACK_SWITCH
+#	define zth_stack_switch(stack, size, f, arg) \
+		({                                    \
+			(void)(stack);                \
+			(void)(size);                 \
+			((f)(arg));                   \
+		})
+#endif // !ZTH_STACK_SWITCH
 
 #ifdef __cplusplus
-#  include <libzth/util.h>
+#	include <libzth/util.h>
 
-#  if __cplusplus >= 201103L
-#    include <tuple>
-#  endif
+#	if __cplusplus >= 201103L
+#		include <tuple>
+#	endif
+
+#	if __cplusplus < 201103L
+#		undef ZTH_STACK_SWITCH98
+// Always use C++98-compatible stack_switch() implementation.
+#		define ZTH_STACK_SWITCH98 1
+#	elif !defined(ZTH_STACK_SWITCH98)
+// By default only use C++11 stack_switch() implementation, but this can be
+// overridden for testing purposes.
+#		define ZTH_STACK_SWITCH98 0
+#	endif
 
 namespace zth {
-	class Context;
 
-	struct ContextAttr {
-		typedef void* EntryArg;
-		typedef void(*Entry)(EntryArg);
+class Context;
 
-		constexpr explicit ContextAttr(Entry entry = nullptr, EntryArg arg = EntryArg()) noexcept
-			: stackSize(Config::DefaultFiberStackSize)
-			, entry(entry)
-			, arg(arg)
-		{}
+struct ContextAttr {
+	typedef void* EntryArg;
+	typedef void (*Entry)(EntryArg);
 
-		size_t stackSize;
-		Entry entry;
-		EntryArg arg;
+	constexpr explicit ContextAttr(Entry entry = nullptr, EntryArg arg = EntryArg()) noexcept
+		: stackSize(Config::DefaultFiberStackSize)
+		, entry(entry)
+		, arg(arg)
+	{}
+
+	size_t stackSize;
+	Entry entry;
+	EntryArg arg;
+};
+
+int context_init() noexcept;
+void context_deinit() noexcept;
+int context_create(Context*& context, ContextAttr const& attr) noexcept;
+void context_switch(Context* from, Context* to) noexcept;
+void context_destroy(Context* context) noexcept;
+size_t context_stack_usage(Context* context) noexcept;
+
+void stack_watermark_init(void* stack, size_t size) noexcept;
+size_t stack_watermark_size(void* stack) noexcept;
+size_t stack_watermark_maxused(void* stack) noexcept;
+size_t stack_watermark_remaining(void* stack) noexcept;
+
+
+
+namespace impl {
+
+#	if ZTH_STACK_SWITCH98
+template <typename R>
+struct FunctionIO0 {
+	union {
+		struct {
+			R (*f)();
+		};
+		R r;
 	};
 
-	int context_init() noexcept;
-	void context_deinit() noexcept;
-	int context_create(Context*& context, ContextAttr const& attr) noexcept;
-	void context_switch(Context* from, Context* to) noexcept;
-	void context_destroy(Context* context) noexcept;
-	size_t context_stack_usage(Context* context) noexcept;
+	void* operator()()
+	{
+		r = f();
+		return &r;
+	}
+};
 
-	void stack_watermark_init(void* stack, size_t size) noexcept;
-	size_t stack_watermark_size(void* stack) noexcept;
-	size_t stack_watermark_maxused(void* stack) noexcept;
-	size_t stack_watermark_remaining(void* stack) noexcept;
+template <>
+struct FunctionIO0<void> {
+	union {
+		struct {
+			void (*f)();
+		};
+	};
 
+	void* operator()()
+	{
+		f();
+		return NULL;
+	}
+};
 
+template <typename R, typename A1>
+struct FunctionIO1 {
+	union {
+		struct {
+			R (*f)(A1);
+			A1 a1;
+		};
+		R r;
+	};
 
+	void* operator()()
+	{
+		r = f(a1);
+		return &r;
+	}
+};
 
-	namespace impl {
-		template <typename R>
-		struct FunctionIO0 {
-			union { struct { R(*f)(); }; R r; };
-			void* operator()() { r = f(); return &r; }
+template <typename A1>
+struct FunctionIO1<void, A1> {
+	union {
+		struct {
+			void (*f)(A1);
+			A1 a1;
 		};
-		template <>
-		struct FunctionIO0<void> {
-			union { struct { void(*f)(); }; };
-			void* operator()() { f(); return NULL; }
-		};
-		template <typename R, typename A1>
-		struct FunctionIO1 {
-			union { struct { R(*f)(A1); A1 a1; }; R r; };
-			void* operator()() { r = f(a1); return &r; }
-		};
-		template <typename A1>
-		struct FunctionIO1<void,A1> {
-			union { struct { void(*f)(A1); A1 a1; }; };
-			void* operator()() { f(a1); return NULL; }
-		};
-		template <typename R, typename A1, typename A2>
-		struct FunctionIO2 {
-			union { struct { R(*f)(A1,A2); A1 a1; A2 a2; }; R r; };
-			void* operator()() { r = f(a1,a2); return &r; }
-		};
-		template <typename A1, typename A2>
-		struct FunctionIO2<void,A1,A2> {
-			union { struct { void(*f)(A1,A2); A1 a1; A2 a2; }; };
-			void* operator()() { f(a1,a2); return NULL; }
-		};
-		template <typename R, typename A1, typename A2, typename A3>
-		struct FunctionIO3 {
-			union { struct { R(*f)(A1,A2,A3); A1 a1; A2 a2; A3 a3; }; R r; };
-			void* operator()() { r = f(a1,a2,a3); return &r; }
-		};
-		template <typename A1, typename A2, typename A3>
-		struct FunctionIO3<void,A1,A2,A3> {
-			union { struct { void(*f)(A1,A2,A3); A1 a1; A2 a2; A3 a3; }; };
-			void* operator()() { f(a1,a2,a3); return NULL; }
-		};
-#if __cplusplus >= 201103L
-		template <typename R, typename... A>
-		struct FunctionION {
-			union { struct { R(*f)(A...); std::tuple<A...> a; }; R r; };
-			void* operator()() { call(typename SequenceGenerator<sizeof...(A)>::type()); return &r; }
-		private:
-			template <size_t... S> void call(Sequence<S...>) { r = f(std::get<S>(a)...); }
-		};
-		template <typename... A>
-		struct FunctionION<void,A...> {
-			union { struct { void(*f)(A...); std::tuple<A...> a; }; };
-			void* operator()() { call(typename SequenceGenerator<sizeof...(A)>::type()); return NULL; }
-		private:
-			template <size_t... S> void call(Sequence<S...>) { f(std::get<S>(a)...); }
-		};
-#endif
+	};
 
-		template <typename F> void* stack_switch_fwd(F* f) { return (*f)(); }
-	} // namespace
+	void* operator()()
+	{
+		f(a1);
+		return NULL;
+	}
+};
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 */
+template <typename R, typename A1, typename A2>
+struct FunctionIO2 {
+	union {
+		struct {
+			R (*f)(A1, A2);
+			A1 a1;
+			A2 a2;
+		};
+		R r;
+	};
+
+	void* operator()()
+	{
+		r = f(a1, a2);
+		return &r;
+	}
+};
+
+template <typename A1, typename A2>
+struct FunctionIO2<void, A1, A2> {
+	union {
+		struct {
+			void (*f)(A1, A2);
+			A1 a1;
+			A2 a2;
+		};
+	};
+
+	void* operator()()
+	{
+		f(a1, a2);
+		return NULL;
+	}
+};
+
+template <typename R, typename A1, typename A2, typename A3>
+struct FunctionIO3 {
+	union {
+		struct {
+			R (*f)(A1, A2, A3);
+			A1 a1;
+			A2 a2;
+			A3 a3;
+		};
+		R r;
+	};
+	void* operator()()
+	{
+		r = f(a1, a2, a3);
+		return &r;
+	}
+};
+
+template <typename A1, typename A2, typename A3>
+struct FunctionIO3<void, A1, A2, A3> {
+	union {
+		struct {
+			void (*f)(A1, A2, A3);
+			A1 a1;
+			A2 a2;
+			A3 a3;
+		};
+	};
+
+	void* operator()()
+	{
+		f(a1, a2, a3);
+		return NULL;
+	}
+};
+
+#	elif __cplusplus >= 201103L
+
+template <typename T>
+struct Packed {
+	using type = typename std::decay<T>::type;
+};
+
+template <typename T>
+struct Packed<T&> {
+	using type = std::reference_wrapper<typename std::decay<T>::type>;
+};
+
+template <typename... A>
+struct Arguments {
 	template <typename R>
-	inline R stack_switch(void* stack, size_t size, R(*f)())
+	using function_type = R(A...);
+	using tuple_type = std::tuple<typename Packed<A>::type...>;
+	constexpr static size_t size = sizeof...(A);
+};
+
+template <typename R, typename A, typename A_>
+struct FunctionION {
+	union {
+		struct {
+			typename A::template function_type<R>* f;
+			typename A_::tuple_type a;
+		};
+		typename Packed<R>::type r;
+	};
+
+	void* operator()() noexcept
 	{
-		impl::FunctionIO0<R> f_ = {{f}};
-		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
+		call(typename SequenceGenerator<A::size>::type(), A());
+		return &r;
 	}
 
-	/*!
-	 * \brief \copybrief zth_stack_switch()
-	 * \details Type-safe C++ wrapper for #zth_stack_switch().
-	 * \ingroup zth_api_cpp_stack
-	 */
-	inline void stack_switch(void* stack, size_t size, void(*f)())
+private:
+	template <size_t... S, typename... _A>
+	void call(Sequence<S...>, Arguments<_A...>) noexcept
 	{
-		impl::FunctionIO0<void> f_ = {{f}};
-		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
+		r = f(std::forward<_A>(std::get<S>(a))...);
+	}
+};
+
+template <typename A, typename A_>
+struct FunctionION<void, A, A_> {
+	union {
+		struct {
+			typename A::template function_type<void>* f;
+			typename A_::tuple_type a;
+		};
+	};
+
+	void* operator()() noexcept
+	{
+		call(typename SequenceGenerator<A::size>::type(), A());
+		return nullptr;
 	}
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename R, typename A1>
-	inline R stack_switch(void* stack, size_t size, R(*f)(A1), A1 a1)
+private:
+	template <size_t... S, typename... _A>
+	void call(Sequence<S...>, Arguments<_A...>) noexcept
 	{
-		impl::FunctionIO1<R,A1> f_ = {{f, a1}};
-		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
+		f(std::forward<_A>(std::get<S>(a))...);
 	}
+};
+#	endif // C++11
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename A1>
-	inline void stack_switch(void* stack, size_t size, void(*f)(A1), A1 a1)
-	{
-		impl::FunctionIO1<void,A1> f_ = {{f, a1}};
-		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+template <typename F>
+void* stack_switch_fwd(void* f) noexcept
+{
+	return (*static_cast<F*>(f))();
+}
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename R, typename A1, typename A2>
-	inline R stack_switch(void* stack, size_t size, R(*f)(A1,A2), A1 a1, A2 a2)
-	{
-		impl::FunctionIO2<R,A1,A2> f_ = {{f, a1, a2}};
-		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+} // namespace impl
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename A1, typename A2>
-	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2), A1 a1, A2 a2)
-	{
-		impl::FunctionIO2<void,A1,A2> f_ = {{f, a1, a2}};
-		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+#	if ZTH_STACK_SWITCH98
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ */
+template <typename R>
+inline R stack_switch(void* stack, size_t size, R (*f)())
+{
+	impl::FunctionIO0<R> f_ = {{f}};
+	return *static_cast<R*>(
+		zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_));
+}
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename R, typename A1, typename A2, typename A3>
-	inline R stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3)
-	{
-		impl::FunctionIO3<R,A1,A2,A3> f_ = {{f, a1, a2, a3}};
-		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+/*!
+ * \brief \copybrief zth_stack_switch()
+ * \details Type-safe C++ wrapper for #zth_stack_switch().
+ * \ingroup zth_api_cpp_stack
+ */
+inline void stack_switch(void* stack, size_t size, void (*f)())
+{
+	impl::FunctionIO0<void> f_ = {{f}};
+	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
+}
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename A1, typename A2, typename A3>
-	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3), A1 a1, A2 a2, A3 a3)
-	{
-		impl::FunctionIO3<void,A1,A2,A3> f_ = {{f, a1, a2, a3}};
-		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename R, typename A1>
+inline R stack_switch(void* stack, size_t size, R (*f)(A1), A1 a1)
+{
+	impl::FunctionIO1<R, A1> f_ = {{f, a1}};
+	return *static_cast<R*>(
+		zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_));
+}
 
-#  if __cplusplus >= 201103L
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename R, typename A1, typename A2, typename A3, typename... A>
-	inline typename std::enable_if<!std::is_void<R>::value,R>::type stack_switch(void* stack, size_t size, R(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
-	{
-		// cppcheck-suppress uselessAssignmentPtrArg
-		impl::FunctionION<R,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
-		return *(R*)zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename A1>
+inline void stack_switch(void* stack, size_t size, void (*f)(A1), A1 a1)
+{
+	impl::FunctionIO1<void, A1> f_ = {{f, a1}};
+	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
+}
 
-	/*!
-	 * \copydoc zth::stack_switch(void*,size_t,void(*)())
-	 * \ingroup zth_api_cpp_stack
-	 */
-	template <typename A1, typename A2, typename A3, typename... A>
-	inline void stack_switch(void* stack, size_t size, void(*f)(A1,A2,A3,A...), A1 a1, A2 a2, A3 a3, A... a)
-	{
-		// cppcheck-suppress uselessAssignmentPtrArg
-		impl::FunctionION<void,A1,A2,A3,A...> f_ = {{f, std::make_tuple(a1, a2, a3, a...)}};
-		zth_stack_switch(stack, size, (void*(*)(void*))&impl::stack_switch_fwd<decltype(f_)>, &f_);
-	}
-#  endif
-} // namespace
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename R, typename A1, typename A2>
+inline R stack_switch(void* stack, size_t size, R (*f)(A1, A2), A1 a1, A2 a2)
+{
+	impl::FunctionIO2<R, A1, A2> f_ = {{f, a1, a2}};
+	return *static_cast<R*>(
+		zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_));
+}
 
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename A1, typename A2>
+inline void stack_switch(void* stack, size_t size, void (*f)(A1, A2), A1 a1, A2 a2)
+{
+	impl::FunctionIO2<void, A1, A2> f_ = {{f, a1, a2}};
+	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
+}
+
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename R, typename A1, typename A2, typename A3>
+inline R stack_switch(void* stack, size_t size, R (*f)(A1, A2, A3), A1 a1, A2 a2, A3 a3)
+{
+	impl::FunctionIO3<R, A1, A2, A3> f_ = {{f, a1, a2, a3}};
+	return *static_cast<R*>(
+		zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_));
+}
+
+/*!
+ * \copydoc zth::stack_switch(void,size_t,void(*)())
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename A1, typename A2, typename A3>
+inline void stack_switch(void* stack, size_t size, void (*f)(A1, A2, A3), A1 a1, A2 a2, A3 a3)
+{
+	impl::FunctionIO3<void, A1, A2, A3> f_ = {{f, a1, a2, a3}};
+	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
+}
+
+#	elif __cplusplus >= 201103L // !ZTH_STACK_SWITCH98
+
+/*!
+ * \brief \copybrief zth_stack_switch()
+ * \details Type-safe C++ wrapper for #zth_stack_switch().
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename R, typename... A, typename... A_>
+inline typename std::enable_if<!std::is_void<R>::value, R>::type
+stack_switch(void* stack, size_t size, R (*f)(A...) noexcept, A_&&... a) noexcept
+{
+	impl::FunctionION<R, impl::Arguments<A...>, impl::Arguments<A_&&...>> f_{
+		{f, {std::forward<A_>(a)...}}};
+	return std::move(*static_cast<typename impl::Packed<R>::type*>(
+		zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_)));
+}
+
+/*!
+ * \brief \copybrief zth_stack_switch()
+ * \details Type-safe C++ wrapper for #zth_stack_switch().
+ * \ingroup zth_api_cpp_stack
+ */
+template <typename... A, typename... A_>
+inline void stack_switch(void* stack, size_t size, void (*f)(A...) noexcept, A_&&... a) noexcept
+{
+	impl::FunctionION<void, impl::Arguments<A...>, impl::Arguments<A_&&...>> f_{
+		{f, {std::forward<A_>(a)...}}};
+	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
+}
+#	endif			     // !ZTH_STACK_SWITCH98
+
+} // namespace zth
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_H

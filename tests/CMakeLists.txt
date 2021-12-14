@@ -79,8 +79,22 @@ if(ZTH_USE_GTEST)
 	zth_config_test(${tests})
 
 	zth_add_test_binary(test_fiber98 test_fiber98.cpp)
-	gtest_add_tests(TARGET test_fiber11
+	gtest_add_tests(TARGET test_fiber98
 		SOURCES test_fiber.cpp
+		TEST_PREFIX CXX98
+		TEST_LIST tests)
+	zth_config_test(${tests})
+
+	zth_add_test_binary(test_stack11 test_stack11.cpp)
+	gtest_add_tests(TARGET test_stack11
+		SOURCES test_stack.cpp
+		TEST_PREFIX CXX11
+		TEST_LIST tests)
+	zth_config_test(${tests})
+
+	zth_add_test_binary(test_stack98 test_stack98.cpp)
+	gtest_add_tests(TARGET test_stack98
+		SOURCES test_stack.cpp
 		TEST_PREFIX CXX98
 		TEST_LIST tests)
 	zth_config_test(${tests})

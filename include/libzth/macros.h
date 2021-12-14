@@ -166,7 +166,11 @@ ZTH_EXPORT void foo();
 #endif
 */
 
-#if defined(__cplusplus) && __cplusplus < 201103L
+#ifndef __cplusplus
+#	ifndef noexcept
+#		define noexcept
+#	endif
+#elif __cplusplus < 201103L
 #	ifndef constexpr
 #		define constexpr
 #	endif

@@ -19,7 +19,7 @@
  * of up to 3 arguments are supported for pre-C++11.  C++11 and later support
  * any number of arguments.
  *
- * When no stack region is specified, stack==NULL, the MSP is used.  In that
+ * When no stack region is specified, stack==nullptr, the MSP is used.  In that
  * case, context switching between fibers is disabled, as no one else can use
  * the MSP in that case. When the function returns to the previous stack,
  * context switching is enabled again.
@@ -30,52 +30,52 @@ static char altstack[0x1000];
 static char altstack2[0x1000];
 
 // Define a few different functions.
-static void vf0() {}
+static void vf0() noexcept {}
 
-static int f0()
+static int f0() noexcept
 {
 	return 1;
 }
 
-static void vf1(int i)
+static void vf1(int i) noexcept
 {
 	printf("%d\n", i);
 }
 
-static int f1(int /*i*/)
+static int f1(int /*i*/) noexcept
 {
 	return 1;
 }
 
-static void vf2(int i, double d)
+static void vf2(int i, double d) noexcept
 {
 	printf("%d %d\n", i, (int)(d * 100.0));
 }
 
-static int f2(int /*i*/, double /*d*/)
+static int f2(int /*i*/, double /*d*/) noexcept
 {
 	// Switch stack again.
 	zth::stack_switch(altstack2, sizeof(altstack), &vf2, 10, 11.1);
 	return 1;
 }
 
-static void vf3(int i, double d, void* p)
+static void vf3(int i, double d, void* p) noexcept
 {
 	printf("%d %d %p\n", i, (int)(d * 100.0), p);
 }
 
-static int f3(int /*i*/, double /*d*/, void* /*p*/)
+static int f3(int /*i*/, double /*d*/, void* /*p*/) noexcept
 {
 	return 1;
 }
 
 #if __cplusplus >= 201103L
-static void vf4(int i, double d, void* p, int i2)
+static void vf4(int i, double d, void* p, int i2) noexcept
 {
 	printf("%d %d %p %d\n", i, (int)(d * 100.0), p, i2);
 }
 
-static int f4(int /*i*/, double /*d*/, void* /*p*/, int /*i2*/)
+static int f4(int /*i*/, double /*d*/, void* /*p*/, int /*i2*/) noexcept
 {
 	return 1;
 }
@@ -95,12 +95,12 @@ static void example_stack_switch()
 	zth::stack_switch(altstack, sizeof(altstack), &f1, 1);
 	zth::stack_switch(altstack, sizeof(altstack), &vf2, 1, 3.14);
 	zth::stack_switch(altstack, sizeof(altstack), &f2, 1, 3.14);
-	zth::stack_switch(altstack2, sizeof(altstack2), &vf3, 1, 3.14, (void*)NULL);
+	zth::stack_switch(altstack2, sizeof(altstack2), &vf3, 1, 3.14, (void*)nullptr);
 	// The following function runs on the MSP.
-	zth::stack_switch(NULL, 0, &f3, 1, 3.14, (void*)NULL);
+	zth::stack_switch(nullptr, 0, &f3, 1, 3.14, (void*)nullptr);
 #if __cplusplus >= 201103L
-	zth::stack_switch(altstack, sizeof(altstack), &vf4, 1, 3.14, (void*)NULL, 2);
-	zth::stack_switch(altstack, sizeof(altstack), &f4, 1, 3.14, (void*)NULL, 2);
+	zth::stack_switch(altstack, sizeof(altstack), &vf4, 1, 3.14, (void*)nullptr, 2);
+	zth::stack_switch(altstack, sizeof(altstack), &f4, 1, 3.14, (void*)nullptr, 2);
 #endif
 
 	// There is no limit in (nested) switching stacks. When the function
@@ -120,7 +120,7 @@ static void example_stack_switch()
  * This functionality is compatible with using zth::stack_switch; the MPU is reconfigured
  * upon every switch.
  */
-static void overflow2(int i)
+static void overflow2(int i) noexcept
 { // NOLINT
 	printf("overflow %d\n", i);
 
@@ -128,7 +128,7 @@ static void overflow2(int i)
 	overflow2(i + 1);
 }
 
-static void overflow1(int i)
+static void overflow1(int i) noexcept
 {
 	// Switch stack again.
 	zth::stack_switch(altstack2, sizeof(altstack2), &overflow2, i + 1);
