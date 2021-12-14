@@ -6,6 +6,15 @@ function nproc {
 	sysctl -n hw.logicalcpu
 }
 
+if ! pkg-config libzmq > /dev/null; then
+	# Brew does not seem to add libzmq.pc to the search path.
+	libzmq_version="`brew info --json=v1 zmq | jq ".[].installed[].version" -r`"
+	libzmq_path="/usr/local/Cellar/zeromq/${libzmq_version}/lib/pkgconfig"
+	if [[ -e ${libzmq_path}/libzmq.pc ]]; then
+		export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${libzmq_path}"
+	fi
+fi
+
 pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)" > /dev/null
 
 # Use brew's gcc

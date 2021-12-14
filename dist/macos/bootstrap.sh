@@ -23,3 +23,4 @@ install_or_upgrade gcc
 install_or_upgrade doxygen
 install_or_upgrade git
 install_or_upgrade zeromq
+install_or_upgrade jq

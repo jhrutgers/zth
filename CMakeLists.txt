@@ -66,6 +66,15 @@ option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" ${ZTH_SAN_DEFAULT})
 
+if(APPLE)
+	list(APPEND CMAKE_INSTALL_RPATH "@executable_path/../lib")
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.8")
+		list(APPEND CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	else()
+		set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+	endif()
+endif()
+
 add_subdirectory(version)
 
 set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
@@ -353,7 +362,7 @@ if(CPPCHECK_CMD)
 			-j 4
 			--library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}"
-			-D__GNUC__=10 -DCPPCHECK
+			-D__GNUC__=10 -DCPPCHECK -U__ARM_ARCH
 #			--xml
 			-I include
 			src
