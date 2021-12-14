@@ -120,13 +120,19 @@ static void zmq_fiber()
 	char buf[4];
 
 	rc = zmq_recv(socket, buf, sizeof(buf), 0);
-	zth_assert(rc >= 0);
+
+	if(rc < 0) {
+		printf("ZMQ error: %s\n", zth::err(errno).c_str());
+		// Continue anyway, such that the test can terminate properly.
+		rc = 0;
+	}
+
 	zth_assert((size_t)rc < sizeof(buf));
 
-	for(size_t i = 0; i < rc; i++)
+	for(int i = 0; i < rc; i++)
 		buf[i]++;
 
-	rc = zmq_send(socket, buf, rc, 0);
+	rc = zmq_send(socket, buf, (size_t)rc, 0);
 	zth_assert(rc > 0);
 
 	zmq_close(socket);

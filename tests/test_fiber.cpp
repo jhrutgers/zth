@@ -137,7 +137,7 @@ TEST(FiberTest, did)
 
 static void fiber_viRdf(int i, double& d, float f)
 {
-	d = d * i * f;
+	d = d * (double)i * (double)f;
 }
 zth_fiber(fiber_viRdf)
 
@@ -155,7 +155,7 @@ TEST(FiberTest, viRdf)
 
 static double fiber_didf(int i, double d, float f)
 {
-	return d * i * f;
+	return d * (double)i * (double)f;
 }
 zth_fiber(fiber_didf)
 
@@ -172,7 +172,7 @@ TEST(FiberTest, didf)
 
 static void fiber_viRdfPl(int i, double& d, float f, long* l)
 {
-	d = d * i * f + *l;
+	d = d * (double)i * (double)f + (double)*l;
 }
 zth_fiber(fiber_viRdfPl)
 
@@ -191,7 +191,7 @@ TEST(FiberTest, viRdfPl)
 
 static double fiber_diRdfPl(int i, double& d, float f, long* l)
 {
-	return d = d * i * f + *l;
+	return d = d * (double)i * (double)f + (double)*l;
 }
 zth_fiber(fiber_diRdfPl)
 

@@ -44,7 +44,11 @@ if(ZTH_USE_GTEST)
 	FetchContent_MakeAvailable(googletest)
 
 	include(GoogleTest)
+endif()
 
+add_compile_options(-Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion)
+
+if(ZTH_USE_GTEST)
 	set(CMAKE_CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 
 	function(zth_add_test_binary TESTNAME)

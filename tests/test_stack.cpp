@@ -32,7 +32,10 @@ TEST(StackTest, Dummy)
 
 static char stack[0x1000];
 
-static int f_vv() noexcept {}
+static int f_vv() noexcept
+{
+	return 0;
+}
 
 TEST(StackTest, vv)
 {
@@ -164,7 +167,7 @@ TEST(StackTest, RSRS)
 
 static double f_ddRfPi(double d, float const& f, int* i) noexcept
 {
-	return d + f * *i;
+	return d + (double)f * (double)*i;
 }
 
 TEST(StackTest, ddRfPi)

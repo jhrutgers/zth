@@ -3,7 +3,7 @@ project(examples)
 
 function(add_example example)
 	add_executable(${example} ${ARGN})
-	target_compile_options(${example} PRIVATE -Wall -Werror -Wno-error=missing-braces -Wno-missing-braces)
+	target_compile_options(${example} PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -Wno-error=missing-braces -Wno-missing-braces -Wno-missing-field-initializers)
 	target_link_libraries(${example} libzth)
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

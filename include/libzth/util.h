@@ -69,7 +69,7 @@
 #endif
 
 #include <assert.h>
-#if __cplusplus && __cplusplus < 201103L && !defined(static_assert)
+#if defined(__cplusplus) && __cplusplus < 201103L && !defined(static_assert)
 #  pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #  define static_assert(expr, msg)	typedef int static_assert_[(expr) ? 1 : -1]
 #endif

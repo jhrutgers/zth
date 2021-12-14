@@ -227,7 +227,7 @@ static void cb(Fsm_type& fsm, TestData* testData)
 		break;
 	case stateDone:
 		testData->singleResult +=
-			testData->duration.s() / ((size_t)1 << testData->calibration);
+			testData->duration.s() / (double)((size_t)1 << testData->calibration);
 		printf("%-50s: %s    (2^%2u iterations, total %s)\n", testData->description,
 		       preciseTime(testData->singleResult).c_str(), (unsigned)testData->calibration,
 		       testData->duration.str().c_str());
