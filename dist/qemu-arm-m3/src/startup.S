@@ -70,10 +70,15 @@ _ivt:
 	.word _unknown_irq
 	.word _unknown_irq
 
+.global abort
 .global _unknown_irq
 .section .text
 .thumb_func
+abort:
 _unknown_irq:
+	ldr r1, .L_ADP_Stopped_RunTimeErrorUnknown
+	mov r0, #0x18	// angel_SWIreason_ReportException
+	bkpt #0xab	// semihosting
 	b .
 
 .global _start

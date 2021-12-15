@@ -66,9 +66,14 @@ _ivt:
 	b _unknown_irq
 	b _unknown_irq
 
+.global abort
 .global _unknown_irq
 .section .text
+abort:
 _unknown_irq:
+	ldr r1, .L_ADP_Stopped_RunTimeErrorUnknown
+	mov r0, #0x18	// angel_SWIreason_ReportException
+	svc #0x00123456	// semihosting
 	b .
 
 .global _start

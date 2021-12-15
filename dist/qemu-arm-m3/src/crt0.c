@@ -45,15 +45,13 @@ int _unlink(const char* __path)
 {
 	return 0;
 }
+
+// See startup.S.
+void abort(void);
+
 void _exit(int __status)
 {
-	while(1)
-		;
-}
-void abort(void)
-{
-	while(1)
-		;
+	abort();
 }
 
 int _kill(pid_t p, int sig)

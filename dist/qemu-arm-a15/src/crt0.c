@@ -42,8 +42,11 @@ int _read(int file, char *ptr, int len) {
 }
 
 int _unlink (const char *__path) { return 0; }
-void _exit (int __status) { while(1); }
-void abort (void) { while(1); }
+
+// See startup.S.
+void abort (void);
+void _exit (int __status) { abort(); }
+
 int _kill (pid_t p, int sig) { return 0; }
 pid_t _getpid (void) { return 0; }
 int _gettimeofday (struct timeval *__p, void *__tz) {
