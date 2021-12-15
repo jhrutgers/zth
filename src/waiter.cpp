@@ -175,11 +175,13 @@ void Waiter::entry()
 					m_worker.add(&w.fiber());
 				}
 			} else {
-				// Reinsert, as the timeout() might have changed (and therefore the position in the list).
+				// Reinsert, as the timeout() might have changed (and therefore the
+				// position in the list).
 				m_waiting.insert(w);
 
-				// Update administration, although that does not influence the actual sleep time.
-				// It is mostly handy for debugging while printing fiber information.
+				// Update administration, although that does not influence the
+				// actual sleep time. It is mostly handy for debugging while
+				// printing fiber information.
 				if(Config::Debug && w.hasFiber())
 					w.fiber().nap(w.timeout());
 			}
@@ -194,8 +196,9 @@ void Waiter::entry()
 			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", id_str());
 			m_worker.suspend(*fiber());
 		} else if(!m_worker.schedule()) {
-			// When true, we were not rescheduled, which means that we are the only runnable fiber.
-			// Do a real sleep, until something interesting happens in the system.
+			// When true, we were not rescheduled, which means that we are the only
+			// runnable fiber. Do a real sleep, until something interesting happens in
+			// the system.
 			doRealSleep = true;
 			m_worker.load().stop(now);
 		}
@@ -212,11 +215,16 @@ void Waiter::entry()
 				if(!end) {
 					// Infinite sleep.
 					timeout_ms = -1;
-					zth_dbg(waiter, "[%s] Out of other work than doing poll()", id_str());
+					zth_dbg(waiter, "[%s] Out of other work than doing poll()",
+						id_str());
 				} else {
 					TimeInterval dt = *end - Timestamp::now();
-					zth_dbg(waiter, "[%s] Out of other work than doing poll(); timeout is %s", id_str(), dt.str().c_str());
-					timeout_ms = std::max<int>(0, (int)(dt.s<float>() * 1000.0f));
+					zth_dbg(waiter,
+						"[%s] Out of other work than doing poll(); timeout "
+						"is %s",
+						id_str(), dt.str().c_str());
+					timeout_ms =
+						std::max<int>(0, (int)(dt.s<float>() * 1000.0f));
 				}
 
 				perf_mark("blocking poll()");
@@ -231,9 +239,11 @@ void Waiter::entry()
 			}
 
 			if(res && res != EAGAIN)
-				zth_dbg(waiter, "[%s] poll() failed; %s", id_str(), err(res).c_str());
+				zth_dbg(waiter, "[%s] poll() failed; %s", id_str(),
+					err(res).c_str());
 		} else if(doRealSleep) {
-			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s", id_str(), m_waiting.front().str().c_str());
+			zth_dbg(waiter, "[%s] Out of work; suspend thread, while waiting for %s",
+				id_str(), m_waiting.front().str().c_str());
 			perf_mark("idle system; sleep");
 			zth_perf_event(*fiber(), Fiber::Waiting);
 			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), NULL);
@@ -244,8 +254,6 @@ void Waiter::entry()
 		sigchld_check();
 	}
 }
-
-
 
 
 
@@ -268,4 +276,4 @@ bool PeriodicWakeUp::nap(Timestamp const& reference, Timestamp const& now)
 	}
 }
 
-} // namespace
+} // namespace zth

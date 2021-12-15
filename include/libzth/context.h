@@ -31,10 +31,10 @@
 
 /*!
  * \brief Call the function \p f using the new stack pointer.
- * \param stack the new stack area. If \c NULL, the Worker's stack is used. If
- *	\p size is 0, this is the stack pointer, otherwise the stack pointer is
- *	calculated according to the ABI (growing up/down) within \p stack + \p
- *	size.
+ * \param stack the new stack area. If \c nullptr, the Worker's stack is used.
+ *	If \p size is 0, this is the stack pointer, otherwise the stack pointer
+ *	is calculated according to the ABI (growing up/down) within \p stack +
+ *	\p size.
  * \param size the new stack size. This is not required to make the jump, but
  *	if 0, there will not be any stack overflow guard used.
  * \param f the function with prototype \c void*(void*) to be called. When \p f
@@ -134,7 +134,7 @@ struct FunctionIO0<void> {
 	void* operator()()
 	{
 		f();
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -167,7 +167,7 @@ struct FunctionIO1<void, A1> {
 	void* operator()()
 	{
 		f(a1);
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -202,7 +202,7 @@ struct FunctionIO2<void, A1, A2> {
 	void* operator()()
 	{
 		f(a1, a2);
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -238,7 +238,7 @@ struct FunctionIO3<void, A1, A2, A3> {
 	void* operator()()
 	{
 		f(a1, a2, a3);
-		return NULL;
+		return nullptr;
 	}
 };
 

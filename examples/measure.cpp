@@ -58,7 +58,7 @@ void testYieldFiber()
 	while(true)
 		zth::yield(nullptr, true);
 }
-zth_fiber(testYieldFiber);
+zth_fiber(testYieldFiber)
 
 void testYieldInit()
 {
@@ -79,7 +79,7 @@ void testYieldCleanup()
 }
 
 void testFiberCreateEntry() {}
-zth_fiber(testFiberCreateEntry);
+zth_fiber(testFiberCreateEntry)
 
 void testFiberCreate()
 {

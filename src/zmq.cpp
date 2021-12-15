@@ -19,14 +19,16 @@
 #define ZTH_REDIRECT_ZMQ 0
 
 #include <libzth/macros.h>
+
 #ifdef ZTH_HAVE_LIBZMQ
 
-#  include <libzth/zmq.h>
-#  include <libzth/poller.h>
-#  include <libzth/waiter.h>
-#  include <libzth/worker.h>
+#	include <libzth/poller.h>
+#	include <libzth/waiter.h>
+#	include <libzth/worker.h>
+#	include <libzth/zmq.h>
 
-namespace zth { namespace zmq {
+namespace zth {
+namespace zmq {
 
 static void zmq_global_deinit()
 {
@@ -77,7 +79,7 @@ void* zmq_socket(int type)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_msg_send().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags)
+int zmq_msg_send(zmq_msg_t* msg, void* socket, int flags)
 {
 	perf_syscall("zmq_msg_send()");
 
@@ -98,7 +100,7 @@ int zmq_msg_send(zmq_msg_t *msg, void *socket, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_msg_recv().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags)
+int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags)
 {
 	perf_syscall("zmq_msg_recv()");
 
@@ -119,7 +121,7 @@ int zmq_msg_recv(zmq_msg_t *msg, void *socket, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send(void *socket, void *buf, size_t len, int flags)
+int zmq_send(void* socket, void* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send()");
 
@@ -140,7 +142,7 @@ int zmq_send(void *socket, void *buf, size_t len, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_recv().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_recv(void *socket, void *buf, size_t len, int flags)
+int zmq_recv(void* socket, void* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_recv()");
 
@@ -161,7 +163,7 @@ int zmq_recv(void *socket, void *buf, size_t len, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send_const().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send_const(void *socket, void *buf, size_t len, int flags)
+int zmq_send_const(void* socket, void* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send_const()");
 
@@ -178,7 +180,8 @@ int zmq_send_const(void *socket, void *buf, size_t len, int flags)
 	return ::zmq_send_const(socket, buf, len, flags | ZMQ_DONTWAIT);
 }
 
-} } // namespace
+} // namespace zmq
+} // namespace zth
 #else
 static int no_zmq __attribute__((unused));
 #endif // ZTH_HAVE_LIBZMQ

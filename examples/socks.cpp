@@ -42,7 +42,7 @@ struct Socks {
 void takeSocks(int count);
 Socks* wearSocks(Socks& socks);
 void washSock(Sock& sock);
-zth_fiber(takeSocks, wearSocks, washSock);
+zth_fiber(takeSocks, wearSocks, washSock)
 
 void takeSocks(int count)
 {
@@ -63,7 +63,7 @@ void takeSocks(int count)
 
 	// Store the socks in the same order as they were worn.
 	for(decltype(allSocks.begin()) it = allSocks.begin(); it != allSocks.end(); ++it) {
-		// *it is a SharedPointer<Future<Socks*>>
+		// *it is a SharedPointer<Future<Socks*> >
 		Socks* socks = (**it)->value();
 		printf("Store %s\n", socks->str.c_str());
 		delete socks;

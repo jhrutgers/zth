@@ -38,7 +38,7 @@ void server()
 		check(zmq_send(responder, (void*)"World", 5, 0));
 	}
 }
-zth_fiber(server);
+zth_fiber(server)
 
 void client(int messages)
 {
@@ -61,7 +61,7 @@ void client(int messages)
 	check(zmq_recv(requester, nullptr, 0, 0));
 	zmq_close(requester);
 }
-zth_fiber(client);
+zth_fiber(client)
 
 static void handler(int UNUSED_PAR(sig))
 {

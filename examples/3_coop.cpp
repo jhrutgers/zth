@@ -29,7 +29,7 @@ void nice_fiber()
 
 	printf("nice_fiber() done\n");
 }
-zth_fiber(nice_fiber);
+zth_fiber(nice_fiber)
 
 void nicer_fiber()
 {
@@ -46,7 +46,7 @@ void nicer_fiber()
 
 	printf("nicer_fiber() done\n");
 }
-zth_fiber(nicer_fiber);
+zth_fiber(nicer_fiber)
 
 void example_1()
 {
@@ -56,7 +56,6 @@ void example_1()
 	nice->wait();
 	nicer->wait();
 }
-zth_fiber(example_1);
 
 // As nicer_fiber() yields a 100 times more often than nice_fiber(),
 // nice_fiber() make significantly more progress; nice_fiber() finishes before
@@ -98,7 +97,7 @@ void server()
 		}
 	}
 }
-zth_fiber(server);
+zth_fiber(server)
 
 void client()
 {
@@ -109,7 +108,7 @@ void client()
 		zth::yield();
 	}
 }
-zth_fiber(client);
+zth_fiber(client)
 
 void example_2()
 {
@@ -120,7 +119,6 @@ void example_2()
 	terminate_server = true;
 	s->wait();
 }
-zth_fiber(example_2);
 
 
 

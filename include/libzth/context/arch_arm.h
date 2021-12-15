@@ -125,7 +125,7 @@ public:
 	__attribute__((always_inline)) static void* sp() noexcept
 	{
 		void* sp_reg;
-		asm ("mov %0, sp;" : "=r"(sp_reg));
+		asm("mov %0, sp;" : "=r"(sp_reg));
 		return sp_reg;
 	}
 

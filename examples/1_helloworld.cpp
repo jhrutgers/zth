@@ -10,9 +10,8 @@ void world()
 	printf("World!!1\n");
 }
 // The zth_fiber() marks the given list of function as fiber entries and does
-// everything that is required to allow `async world()'. The ; is not required,
-// but keeps clang-format happy.
-zth_fiber(world);
+// everything that is required to allow `async world()'.
+zth_fiber(world)
 
 void hello()
 {
@@ -27,7 +26,7 @@ void hello()
 	// deterministic; the printf()s will not be reordered.
 	printf("Hello\n");
 }
-zth_fiber(hello);
+zth_fiber(hello)
 
 // main() is weakly defined by Zth. If not implemented by the program, Zth
 // supplies one that just starts a worker and schedules main_fiber() as the

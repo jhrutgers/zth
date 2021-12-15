@@ -15,7 +15,7 @@ static void job(int length)
 	zth::nap(0.1 * (double)length);
 	printf("job %d: finished  %d.%d s\n", job_id, length / 10, length % 10);
 }
-zth_fiber(job);
+zth_fiber(job)
 
 #ifndef ZTH_OS_BAREMETAL
 static void handler(int /*sig*/)
@@ -34,7 +34,7 @@ static void employer()
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
-	if(sigaction(SIGINT, &sa, NULL) == -1)
+	if(sigaction(SIGINT, &sa, nullptr) == -1)
 		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 #endif
 
@@ -112,7 +112,6 @@ static void employer()
 		buf[len] = '\0';
 	}
 }
-zth_fiber(employer);
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {

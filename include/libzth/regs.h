@@ -42,7 +42,7 @@ template <typename T, uintptr_t Addr, typename Fields>
 struct Register {
 	typedef T type;
 
-	Register()
+	Register() noexcept
 	{
 		static_assert(sizeof(Fields) == sizeof(type), "");
 		read();
@@ -131,10 +131,10 @@ struct Register {
 		struct name : public zth::Register<T, addr, name##__type> { \
 			typedef zth::Register<T, addr, name##__type> base;  \
 			using typename base::type;                          \
-			name()                                              \
+			name() noexcept                                     \
 				: base()                                    \
 			{}                                                  \
-			explicit name(type v)                               \
+			constexpr explicit name(type v) noexcept            \
 				: base(v)                                   \
 			{}                                                  \
 		};

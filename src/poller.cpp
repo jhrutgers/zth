@@ -33,9 +33,9 @@ namespace zth {
  */
 int PollerInterface::add(std::initializer_list<std::reference_wrapper<Pollable>> l) noexcept
 {
-	__try {
+	try {
 		reserve(l.size());
-	} __catch(...) {
+	} catch(...) {
 		return ENOMEM;
 	}
 
@@ -217,7 +217,6 @@ int NoPoller::doPoll(int UNUSED_PAR(timeout_ms), base::PollItemList& UNUSED_PAR(
 
 
 
-
 //////////////////////////////////////////////
 // PollerClient
 //
@@ -232,13 +231,16 @@ PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable
 {
 	errno = add(l);
 
-#  ifdef __cpp_exceptions
+#	ifdef __cpp_exceptions
 	switch(errno) {
-	case 0: break;
-	case ENOMEM: throw std::bad_alloc();
-	default: throw std::runtime_error("");
+	case 0:
+		break;
+	case ENOMEM:
+		throw std::bad_alloc();
+	default:
+		throw std::runtime_error("");
 	}
-#  endif
+#	endif
 }
 #endif
 
@@ -252,12 +254,12 @@ void PollerClient::reserve(size_t more)
 
 int PollerClient::add(Pollable& p) noexcept
 {
-	__try {
+	try {
 		m_result.reserve(m_pollables.size() + 1u);
 		m_pollables.push_back(&p);
 		zth_dbg(io, "[%s] poll %p for events 0x%lu", id_str(), &p, p.events.to_ulong());
 		return 0;
-	} __catch(...) {
+	} catch(...) {
 		return ENOMEM;
 	}
 }
@@ -293,14 +295,15 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 		p.add(*m_pollables[i], this);
 
 	// Go do the poll.
-	zth_dbg(io, "[%s] polling %u items for %d ms", id_str(), (unsigned)m_pollables.size(), timeout_ms);
+	zth_dbg(io, "[%s] polling %u items for %d ms", id_str(), (unsigned)m_pollables.size(),
+		timeout_ms);
 
 	// First try, in the current fiber's context.
 	m_wait = TimedWaitable();
 	int res = p.poll(0);
 
 	if(!m_result.empty()) { // NOLINT(bugprone-branch-clone)
-		// Completed already.
+				// Completed already.
 	} else if(res && res != EAGAIN) {
 		// Completed with an error.
 	} else if(timeout_ms == 0) {
@@ -312,7 +315,9 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 		suspend();
 	} else {
 		zth_dbg(io, "[%s] hand-off to server with timeout", id_str());
-		m_wait = TimedWaitable(Timestamp::now() + TimeInterval(timeout_ms / 1000L, (timeout_ms * 1000000L) % 1000000000L));
+		m_wait = TimedWaitable(
+			Timestamp::now()
+			+ TimeInterval(timeout_ms / 1000L, (timeout_ms * 1000000L) % 1000000000L));
 		waitUntil(m_wait);
 	}
 
@@ -327,7 +332,8 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 	if(res)
 		zth_dbg(io, "[%s] poll returned %s", id_str(), err(res).c_str());
 	else
-		zth_dbg(io, "[%s] poll returned %u pollable(s)", id_str(), (unsigned)m_result.size());
+		zth_dbg(io, "[%s] poll returned %u pollable(s)", id_str(),
+			(unsigned)m_result.size());
 
 	errno = res;
 	return m_result;
@@ -351,4 +357,4 @@ bool PollerClient::empty() const noexcept
 	return m_pollables.empty();
 }
 
-} // namespace
+} // namespace zth

@@ -28,24 +28,21 @@
  */
 
 #include <libzth/macros.h>
-#include <libzth/init.h>
-#include <libzth/zmq.h>
-#include <libzth/config.h>
-#include <libzth/util.h>
 #include <libzth/allocator.h>
-#include <libzth/time.h>
-#include <libzth/version.h>
-#include <libzth/fiber.h>
-#include <libzth/worker.h>
-#include <libzth/poller.h>
-#include <libzth/io.h>
-#include <libzth/waiter.h>
-#include <libzth/sync.h>
 #include <libzth/async.h>
-#include <libzth/perf.h>
+#include <libzth/config.h>
+#include <libzth/fiber.h>
 #include <libzth/fsm.h>
-
-// You probably don't need these headers in your application.
-//#include <libzth/regs.h>
+#include <libzth/init.h>
+#include <libzth/io.h>
+#include <libzth/perf.h>
+#include <libzth/poller.h>
+#include <libzth/sync.h>
+#include <libzth/time.h>
+#include <libzth/util.h>
+#include <libzth/version.h>
+#include <libzth/waiter.h>
+#include <libzth/worker.h>
+#include <libzth/zmq.h>
 
 #endif // ZTH_H

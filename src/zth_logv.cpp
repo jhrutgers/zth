@@ -28,4 +28,3 @@ void zth_logv(char const* fmt, va_list arg)
 	// NOLINTNEXTLINE
 	vprintf(fmt, arg);
 }
-

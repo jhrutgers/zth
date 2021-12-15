@@ -17,20 +17,21 @@
  */
 
 #include <libzth/worker.h>
+
 #include <libzth/async.h>
 
 #include <csignal>
 #include <vector>
 
 #ifndef ZTH_OS_WINDOWS
-#  include <sys/types.h>
-#  include <sys/wait.h>
-#  include <unistd.h>
+#	include <sys/types.h>
+#	include <sys/wait.h>
+#	include <unistd.h>
 #endif
 
 #ifdef ZTH_OS_MAC
-#  include <crt_externs.h>
-#  define environ (*_NSGetEnviron())
+#	include <crt_externs.h>
+#	define environ (*_NSGetEnviron())
 #endif
 
 namespace zth {
@@ -43,10 +44,10 @@ void worker_global_init()
 {
 	zth_dbg(banner, "%s", banner());
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#  ifdef ZTH_USE_VALGRIND
+#	ifdef ZTH_USE_VALGRIND
 	// valgrind does not seem to like the sigaction below. Not sure why.
 	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
-#  endif
+#	endif
 	{
 		struct sigaction sa = {};
 		sa.sa_handler = &sigchld_handler;
@@ -69,7 +70,8 @@ static void* worker_main(void* fiber)
 /*!
  * \ingroup zth_api_cpp_fiber
  */
-int startWorkerThread(UNUSED_PAR(void(*f)()), size_t UNUSED_PAR(stack), char const* UNUSED_PAR(name))
+int startWorkerThread(
+	UNUSED_PAR(void (*f)()), size_t UNUSED_PAR(stack), char const* UNUSED_PAR(name))
 {
 #ifdef ZTH_USE_PTHREAD
 	pthread_t t;
@@ -77,7 +79,7 @@ int startWorkerThread(UNUSED_PAR(void(*f)()), size_t UNUSED_PAR(stack), char con
 
 	zth_dbg(thread, "[%s] starting new Worker", thread_id_str().c_str());
 
-	Fiber* fiber = new Fiber((void(*)(void*))f, nullptr);
+	Fiber* fiber = new Fiber((void (*)(void*))f, nullptr);
 	if(stack)
 		if((res = fiber->setStackSize(stack)))
 			return res;
@@ -137,13 +139,14 @@ __attribute__((unused)) static cow_string thread_id_str() noexcept
 	if(w)
 		return w->id_str();
 
-	return format("pid %u",
+	return format(
+		"pid %u",
 #ifdef ZTH_OS_WINDOWS
-			(unsigned int)_getpid()
+		(unsigned int)_getpid()
 #else
-			(unsigned int)getpid()
+		(unsigned int)getpid()
 #endif
-		);
+	);
 }
 
 /*!
@@ -166,7 +169,8 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 		return EAGAIN;
 	} else if(pid == -1) {
 		int res = errno;
-		zth_dbg(thread, "[%s] Could not fork(); %s", thread_id_str().c_str(), err(res).c_str());
+		zth_dbg(thread, "[%s] Could not fork(); %s", thread_id_str().c_str(),
+			err(res).c_str());
 		return res;
 	} else
 		return 0;
@@ -185,10 +189,10 @@ static void sigchld_handler(int /*unused*/)
 void sigchld_check()
 {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#  ifdef ZTH_USE_VALGRIND
+#	ifdef ZTH_USE_VALGRIND
 	// The sigaction was disabled, so sigchld_cleanup will always be 0.
 	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
-#  endif
+#	endif
 		if(likely(sigchld_cleanup == 0))
 			return;
 
@@ -207,10 +211,11 @@ void sigchld_check()
 			zth_dbg(worker, "[%s] waitpid() failed; %s", id_str, err(errno).c_str());
 			return;
 		} else {
-			zth_dbg(worker, "[%s] Child process %u terminated with exit code %d", id_str, (unsigned int)pid, wstatus);
+			zth_dbg(worker, "[%s] Child process %u terminated with exit code %d",
+				id_str, (unsigned int)pid, wstatus);
 		}
 	}
 #endif
 }
 
-} // namespace
+} // namespace zth

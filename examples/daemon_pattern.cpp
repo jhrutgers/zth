@@ -16,7 +16,7 @@ void trigger(zth::Signal* s, zth::TimeInterval interval)
 		t += interval;
 	}
 }
-zth_fiber(trigger);
+zth_fiber(trigger)
 
 // A daemon just runs in the background. When another fiber does something that
 // is relevant for the daemon, it signals a global zth::Signal.  This wakes the
@@ -37,7 +37,7 @@ void someDaemon()
 		triggerSomeDaemon.wait();
 	}
 }
-zth_fiber(someDaemon);
+zth_fiber(someDaemon)
 
 void foo()
 {
@@ -47,7 +47,7 @@ void foo()
 	triggerSomeDaemon.signal();
 	zth::nap(0.5);
 }
-zth_fiber(foo);
+zth_fiber(foo)
 
 int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {

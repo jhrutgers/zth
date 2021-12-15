@@ -294,9 +294,7 @@ ZTH_EXPORT void foo();
 #	else
 #		error Unsupported Apple platform.
 #	endif
-//#  define ZTH_HAVE_VALGRIND
 #	define ZTH_HAVE_PTHREAD
-//#  define ZTH_HAVE_LIBUNWIND
 #	define ZTH_HAVE_POLL
 #	define ZTH_HAVE_MMAN
 #	include <Availability.h>
