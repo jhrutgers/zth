@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('group__zth__api__c__stack.html',''); i
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga0529a22f9d0b9190a0b94c568f489ca5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">zth_stack_switch</a>(stack,  size,  f,  arg)&#160;&#160;&#160;({ (void)(stack); (void)(size); ((f)(arg)); })</td></tr>
+<tr class="memitem:ga0529a22f9d0b9190a0b94c568f489ca5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">zth_stack_switch</a>(stack,  size,  f,  arg)</td></tr>
 <tr class="memdesc:ga0529a22f9d0b9190a0b94c568f489ca5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the function <code>f</code> using the new stack pointer.  <a href="group__zth__api__c__stack.html#ga0529a22f9d0b9190a0b94c568f489ca5">More...</a><br /></td></tr>
 <tr class="separator:ga0529a22f9d0b9190a0b94c568f489ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -129,11 +129,16 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;({ (void)(stack); (void)(size); ((f)(arg)); })</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line">        ({                                    \</div>
+<div class="line">            (void)(stack);                \</div>
+<div class="line">            (void)(size);                 \</div>
+<div class="line">            ((f)(arg));                   \</div>
+<div class="line">        })</div>
+</div><!-- fragment -->
 <p>Call the function <code>f</code> using the new stack pointer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -145,7 +150,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00043">43</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00049">49</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>

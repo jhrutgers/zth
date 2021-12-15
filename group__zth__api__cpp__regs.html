@@ -140,17 +140,24 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">struct </span>name##__type { T <a class="code" href="regs_8h.html#a02a0a65bfd1c31de486ef9df116723f2">ZTH_REG_BITFIELDS</a>(fields); } __attribute__((packed)); \</div>
-<div class="line">    struct name : <span class="keyword">public</span> <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> { \</div>
-<div class="line">        typedef <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> base; \</div>
-<div class="line">        using <span class="keyword">typename</span> base::type; \</div>
-<div class="line">        name() : base() {} \</div>
-<div class="line">        explicit name(type v) : base(v) {} \</div>
-<div class="line">    };</div>
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keyword">struct </span>name##__type {                                       \</div>
+<div class="line">            T <a class="code" href="regs_8h.html#a02a0a65bfd1c31de486ef9df116723f2">ZTH_REG_BITFIELDS</a>(fields);                        \</div>
+<div class="line">        } __attribute__((packed));                                  \</div>
+<div class="line">        struct name : <span class="keyword">public</span> <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> { \</div>
+<div class="line">            typedef <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> base;  \</div>
+<div class="line">            using <span class="keyword">typename</span> base::type;                          \</div>
+<div class="line">            name()                                              \</div>
+<div class="line">                : base()                                    \</div>
+<div class="line">            {}                                                  \</div>
+<div class="line">            explicit name(type v)                               \</div>
+<div class="line">                : base(v)                                   \</div>
+<div class="line">            {}                                                  \</div>
+<div class="line">        };</div>
 </div><!-- fragment -->
 <p>Define a hardware reference helper class, with bitfields. </p>
 <p>Example to create <code>zth::reg_mpu_type</code> register:</p>
-<div class="fragment"><div class="line"><a class="code" href="group__zth__api__cpp__regs.html#gace392403f8e7a887629d211fc1ea2f87">ZTH_REG_DEFINE</a>(uint32_t, reg_mpu_type, 0xE000ED90,</div>
+<div class="fragment"><div class="line"><span class="comment">// clang-format off</span></div>
+<div class="line"><a class="code" href="group__zth__api__cpp__regs.html#gace392403f8e7a887629d211fc1ea2f87">ZTH_REG_DEFINE</a>(uint32_t, reg_mpu_type, 0xE000ED90,</div>
 <div class="line">    <span class="comment">// 32-bit register definition in unsigned int fields,</span></div>
 <div class="line">    <span class="comment">// ordered from MSB to LSB.</span></div>
 <div class="line">    reserved1 : 8,</div>
@@ -158,18 +165,19 @@ Macros</h2></td></tr>
 <div class="line">    dregion : 8,</div>
 <div class="line">    reserved2 : 7,</div>
 <div class="line">    separate : 1)</div>
+<div class="line"><span class="comment">// clang-format on</span></div>
 </div><!-- fragment --><p>Afterwards, instantiate the <code>zth::reg_mpu_type</code> class to access the hardware register.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structzth_1_1_register.html" title="Helper class to read/write (bitfields in) hardware registers.">zth::Register</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="regs_8h_source.html#l00091">91</a> of file <a class="el" href="regs_8h_source.html">regs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="regs_8h_source.html#l00127">127</a> of file <a class="el" href="regs_8h_source.html">regs.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aregs_8h_html_a02a0a65bfd1c31de486ef9df116723f2"><div class="ttname"><a href="regs_8h.html#a02a0a65bfd1c31de486ef9df116723f2">ZTH_REG_BITFIELDS</a></div><div class="ttdeci">#define ZTH_REG_BITFIELDS(...)</div><div class="ttdef"><b>Definition:</b> <a href="regs_8h_source.html#l00067">regs.h:67</a></div></div>
+<div class="ttc" id="aregs_8h_html_a02a0a65bfd1c31de486ef9df116723f2"><div class="ttname"><a href="regs_8h.html#a02a0a65bfd1c31de486ef9df116723f2">ZTH_REG_BITFIELDS</a></div><div class="ttdeci">#define ZTH_REG_BITFIELDS(...)</div><div class="ttdef"><b>Definition:</b> <a href="regs_8h_source.html#l00101">regs.h:101</a></div></div>
 <div class="ttc" id="astructzth_1_1_register_html"><div class="ttname"><a href="structzth_1_1_register.html">zth::Register</a></div><div class="ttdoc">Helper class to read/write (bitfields in) hardware registers.</div><div class="ttdef"><b>Definition:</b> <a href="regs_8h_source.html#l00042">regs.h:42</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__regs_html_gace392403f8e7a887629d211fc1ea2f87"><div class="ttname"><a href="group__zth__api__cpp__regs.html#gace392403f8e7a887629d211fc1ea2f87">ZTH_REG_DEFINE</a></div><div class="ttdeci">#define ZTH_REG_DEFINE(T, name, addr, fields...)</div><div class="ttdoc">Define a hardware reference helper class, with bitfields.</div><div class="ttdef"><b>Definition:</b> <a href="regs_8h_source.html#l00091">regs.h:91</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__regs_html_gace392403f8e7a887629d211fc1ea2f87"><div class="ttname"><a href="group__zth__api__cpp__regs.html#gace392403f8e7a887629d211fc1ea2f87">ZTH_REG_DEFINE</a></div><div class="ttdeci">#define ZTH_REG_DEFINE(T, name, addr, fields...)</div><div class="ttdoc">Define a hardware reference helper class, with bitfields.</div><div class="ttdef"><b>Definition:</b> <a href="regs_8h_source.html#l00127">regs.h:127</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

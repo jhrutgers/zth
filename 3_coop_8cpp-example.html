@@ -147,37 +147,38 @@ Serving 9
 <div class="line"><span class="comment">// speed of your CPU.</span></div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> do_work(<span class="keywordtype">int</span> amount, <span class="keywordtype">int</span> load = 1000)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <span class="keyword">volatile</span> i = 0; i &lt; amount * load; i++);</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <span class="keyword">volatile</span> i = 0; i &lt; amount * load; i++)</div>
+<div class="line">        ;</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> nice_fiber()</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 10; i++) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Be nice %d\n&quot;</span>, i);</div>
-<div class="line">        do_work(100);   <span class="comment">// do some work</span></div>
-<div class="line">        <a name="a0"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
+<div class="line">        do_work(100); <span class="comment">// do some work</span></div>
+<div class="line">        <a name="a0"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    printf(<span class="stringliteral">&quot;nice_fiber() done\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a name="a1"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(nice_fiber)</div>
+<div class="line"><a name="a1"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(nice_fiber);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> nicer_fiber()</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 10; i++) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Be nicer %d\n&quot;</span>, i);</div>
-<div class="line">        <span class="comment">// I am going to do do_work(100) too, like nice_fiber(), but I am not</span></div>
-<div class="line">        <span class="comment">// sure how much time that would take without yielding.  So, I am</span></div>
-<div class="line">        <span class="comment">// really nice to split the work in small packets.</span></div>
+<div class="line">        <span class="comment">// I am going to do do_work(100) too, like nice_fiber(), but I</span></div>
+<div class="line">        <span class="comment">// am not sure how much time that would take without yielding.</span></div>
+<div class="line">        <span class="comment">// So, I am really nice to split the work in small packets.</span></div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> w = 0; w &lt; 100; w++) {</div>
 <div class="line">            do_work(1);</div>
-<div class="line">            <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
+<div class="line">            <a class="code" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    printf(<span class="stringliteral">&quot;nicer_fiber() done\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(nicer_fiber)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(nicer_fiber);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> example_1()</div>
 <div class="line">{</div>
@@ -187,7 +188,7 @@ Serving 9
 <div class="line">    nice-&gt;wait();</div>
 <div class="line">    nicer-&gt;wait();</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(example_1)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(example_1);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// As nicer_fiber() yields a 100 times more often than nice_fiber(),</span></div>
 <div class="line"><span class="comment">// nice_fiber() make significantly more progress; nice_fiber() finishes before</span></div>
@@ -212,24 +213,24 @@ Serving 9
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> server()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">while</span>(<span class="keyword">true</span>)</div>
-<div class="line">    {</div>
+<div class="line">    <span class="keywordflow">while</span>(<span class="keyword">true</span>) {</div>
 <div class="line">        <span class="keywordflow">if</span>(!work.empty()) {</div>
 <div class="line">            printf(<span class="stringliteral">&quot;Serving %d\n&quot;</span>, work.front());</div>
 <div class="line">            work.pop_front();</div>
 <div class="line">            <span class="comment">// I am nice...</span></div>
-<div class="line">            <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
+<div class="line">            <a class="code" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span>(terminate_server) {</div>
 <div class="line">            <span class="keywordflow">break</span>;</div>
 <div class="line">        } <span class="keywordflow">else</span> {</div>
-<div class="line">            <span class="comment">// If we would call zth::yield() here, we would effectively do a</span></div>
-<div class="line">            <span class="comment">// useless busy-wait for zth::Config::MinTimeslice_s() before</span></div>
-<div class="line">            <span class="comment">// client() would get a chance to enqueue more work.</span></div>
+<div class="line">            <span class="comment">// If we would call zth::yield() here, we would</span></div>
+<div class="line">            <span class="comment">// effectively do a useless busy-wait for</span></div>
+<div class="line">            <span class="comment">// zth::Config::MinTimeslice_s() before client() would</span></div>
+<div class="line">            <span class="comment">// get a chance to enqueue more work.</span></div>
 <div class="line">            <a name="a3"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a>();</div>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(server)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(server);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> client()</div>
 <div class="line">{</div>
@@ -237,10 +238,10 @@ Serving 9
 <div class="line">        printf(<span class="stringliteral">&quot;Requesting %d\n&quot;</span>, i);</div>
 <div class="line">        do_work(10);</div>
 <div class="line">        work.push_back(i);</div>
-<div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a>();</div>
+<div class="line">        <a class="code" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(client)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(client);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> example_2()</div>
 <div class="line">{</div>
@@ -251,8 +252,7 @@ Serving 9
 <div class="line">    terminate_server = <span class="keyword">true</span>;</div>
 <div class="line">    s-&gt;wait();</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(example_2)</div>
-<div class="line"> </div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(example_2);</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"> </div>
@@ -264,11 +264,11 @@ Serving 9
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00517">async.h:517</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga37a6599e1ea8abaeab108030b1c9a196"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga37a6599e1ea8abaeab108030b1c9a196">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=NULL, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00391">worker.h:391</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00496">async.h:496</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga13b50598dd515c2310163b3e15cf7869"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a></div><div class="ttdeci">void outOfWork()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00404">worker.h:404</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00568">async.h:568</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00547">async.h:547</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga13b50598dd515c2310163b3e15cf7869"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork</a></div><div class="ttdeci">void outOfWork()</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00442">worker.h:442</a></div></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga727bc20a95cfe9f95c19a5c0367a77dc"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=nullptr, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00428">worker.h:428</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

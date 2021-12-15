@@ -1,9 +1,10 @@
 var classzth_1_1_gate =
 [
-    [ "Gate", "classzth_1_1_gate.html#ad4d38121d98148707473492cc49a9ee8", null ],
-    [ "~Gate", "classzth_1_1_gate.html#a9fdefae21c999b1ee52253a8b91cdf0e", null ],
-    [ "count", "classzth_1_1_gate.html#ae251bac249bed86e99802bf205713cd5", null ],
-    [ "current", "classzth_1_1_gate.html#ad00f4fcddd9f19ab711a536d151b46b9", null ],
-    [ "pass", "classzth_1_1_gate.html#a1df95340a52931ebbce27afdaca79e24", null ],
+    [ "Gate", "classzth_1_1_gate.html#aa540abf1462f82ce6baad7e11a2549fe", null ],
+    [ "Gate", "classzth_1_1_gate.html#a048fc220cc92944302dae55460b3cbd6", null ],
+    [ "~Gate", "classzth_1_1_gate.html#a2728075229cccf6cb88770b9a5a9b7e8", null ],
+    [ "count", "classzth_1_1_gate.html#a305f196785bf7b37bca16d37403b6dab", null ],
+    [ "current", "classzth_1_1_gate.html#a04fab68fcafa19909c108bef89d40db4", null ],
+    [ "pass", "classzth_1_1_gate.html#ac954d5ff3d598dbf039b606047153227", null ],
     [ "wait", "classzth_1_1_gate.html#a811f63fc2e40c04df084dcc15ac7c7cc", null ]
 ];

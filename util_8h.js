@@ -43,7 +43,6 @@ var util_8h =
     [ "REVERSE_7", "util_8h.html#a40b844674404f4f594752b87b6c0b383", null ],
     [ "REVERSE_8", "util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499", null ],
     [ "REVERSE_9", "util_8h.html#a8821eb9be4c015186eb7e9e8d014502b", null ],
-    [ "static_assert", "util_8h.html#a25b4da9c1f0b06ff0b92509c874234a1", null ],
     [ "unlikely", "util_8h.html#ad8700448546b3b5111404cc021061fd5", null ],
     [ "zth_assert", "util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2", null ],
     [ "ZTH_CLASS_NOCOPY", "util_8h.html#ad7cc9064552d25659c36efeacc36936d", null ],

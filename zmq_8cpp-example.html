@@ -87,6 +87,7 @@ $(document).ready(function(){initNavTree('zmq_8cpp-example.html',''); initResiza
 <div class="contents">
 <p>0MQ integration</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
+<div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;csignal&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> sig_atomic_t <span class="keyword">volatile</span> stop = 0;</div>
@@ -121,11 +122,11 @@ $(document).ready(function(){initNavTree('zmq_8cpp-example.html',''); initResiza
 <div class="line">        }</div>
 <div class="line"> </div>
 <div class="line">        printf(<span class="stringliteral">&quot;Received %s\n&quot;</span>, buffer);</div>
-<div class="line">        <a name="a5"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(1);          <span class="comment">//  Do some &#39;work&#39;</span></div>
+<div class="line">        <a name="a5"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(1); <span class="comment">//  Do some &#39;work&#39;</span></div>
 <div class="line">        check(<a class="code" href="zmq_8h.html#a1d54f447d3ab2c3d0519d5168a5d5cd7">zmq_send</a>(responder, (<span class="keywordtype">void</span>*)<span class="stringliteral">&quot;World&quot;</span>, 5, 0));</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line"><a name="a6"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(server)</div>
+<div class="line"><a name="a6"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(server);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> client(<span class="keywordtype">int</span> messages)</div>
 <div class="line">{</div>
@@ -148,12 +149,14 @@ $(document).ready(function(){initNavTree('zmq_8cpp-example.html',''); initResiza
 <div class="line">    check(<a class="code" href="zmq_8h.html#a51a05f54c59a9b9d1bb68c030fe382f3">zmq_recv</a>(requester, <span class="keyword">nullptr</span>, 0, 0));</div>
 <div class="line">    zmq_close(requester);</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(client)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(client);</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> handler(<span class="keywordtype">int</span> <a name="a7"></a><a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(sig))</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">char</span> <span class="keyword">const</span>* msg = <span class="stringliteral">&quot;got interrupted\n&quot;</span>;</div>
-<div class="line">    <span class="keywordflow">for</span>(ssize_t len = strlen(msg), c = 1; c &gt; 0 &amp;&amp; len &gt; 0; c = <a name="a8"></a><a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">write</a>(fileno(stderr), msg, len), len -= c, msg += c);</div>
+<div class="line">    <span class="keywordflow">for</span>(ssize_t len = (ssize_t)strlen(msg), c = 1; c &gt; 0 &amp;&amp; len &gt; 0;</div>
+<div class="line">        c = <a name="a8"></a><a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">write</a>(fileno(stderr), msg, (<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>)len), len -= c, msg += c)</div>
+<div class="line">        ;</div>
 <div class="line">    stop = 1;</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -185,16 +188,16 @@ $(document).ready(function(){initNavTree('zmq_8cpp-example.html',''); initResiza
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00517">async.h:517</a></div></div>
-<div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00189">util.h:189</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__io_html_gab8f38dcb165392992ecd0b64b33511a1"><div class="ttname"><a href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a></div><div class="ttdeci">ssize_t write(int fd, void const *buf, size_t count)</div><div class="ttdoc">Like normal write(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00061">io.cpp:61</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00568">async.h:568</a></div></div>
+<div class="ttc" id="autil_8h_html_a68e25b27d7e03b3711eb1ac56ef4c1f2"><div class="ttname"><a href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2">zth_assert</a></div><div class="ttdeci">#define zth_assert(expr)</div><div class="ttdoc">assert(), but better integrated in Zth.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00191">util.h:191</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__io_html_gab8f38dcb165392992ecd0b64b33511a1"><div class="ttname"><a href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a></div><div class="ttdeci">ssize_t write(int fd, void const *buf, size_t count)</div><div class="ttdoc">Like normal write(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00062">io.cpp:62</a></div></div>
 <div class="ttc" id="agroup__zth__api__c__zmq_html_ga10e4decc817c09889792c7a89db1586b"><div class="ttname"><a href="group__zth__api__c__zmq.html#ga10e4decc817c09889792c7a89db1586b">zth_zmq_socket</a></div><div class="ttdeci">void * zth_zmq_socket(int type)</div><div class="ttdoc">Fiber-aware wrapper for 0MQ's zmq_socket().</div><div class="ttdef"><b>Definition:</b> <a href="zmq_8h_source.html#l00069">zmq.h:69</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00173">waiter.h:173</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00496">async.h:496</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00206">waiter.h:206</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00547">async.h:547</a></div></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00083">macros.h:83</a></div></div>
+<div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00088">macros.h:88</a></div></div>
 <div class="ttc" id="azmq_8h_html_a51a05f54c59a9b9d1bb68c030fe382f3"><div class="ttname"><a href="zmq_8h.html#a51a05f54c59a9b9d1bb68c030fe382f3">zmq_recv</a></div><div class="ttdeci">#define zmq_recv</div><div class="ttdef"><b>Definition:</b> <a href="zmq_8h_source.html#l00127">zmq.h:127</a></div></div>
-<div class="ttc" id="anamespacezth_html_ab92821411679b2d011e31c974cc60a5b"><div class="ttname"><a href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">zth::err</a></div><div class="ttdeci">string err(int e)</div><div class="ttdoc">Return a string like strerror() does, but as a zth::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00373">util.h:373</a></div></div>
+<div class="ttc" id="anamespacezth_html_ab92821411679b2d011e31c974cc60a5b"><div class="ttname"><a href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">zth::err</a></div><div class="ttdeci">string err(int e)</div><div class="ttdoc">Return a string like strerror() does, but as a zth::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00379">util.h:379</a></div></div>
 <div class="ttc" id="azmq_8h_html_a1d54f447d3ab2c3d0519d5168a5d5cd7"><div class="ttname"><a href="zmq_8h.html#a1d54f447d3ab2c3d0519d5168a5d5cd7">zmq_send</a></div><div class="ttdeci">#define zmq_send</div><div class="ttdef"><b>Definition:</b> <a href="zmq_8h_source.html#l00126">zmq.h:126</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->

@@ -87,6 +87,10 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 <li>c_str()
 : <a class="el" href="classzth_1_1cow__string.html#ad8395d41ca4a736e2ee2af07ced4526f">zth::cow_string</a>
 </li>
+<li>calcStackSize()
+: <a class="el" href="classzth_1_1impl_1_1_context_arch.html#aef2bb9c80834351742b4059b6b3e943b">zth::impl::ContextArch&lt; Impl &gt;</a>
+, <a class="el" href="classzth_1_1impl_1_1_context_base.html#ae8f66edbcfd263818a9ff2e80909fbb6">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
 <li>callback()
 : <a class="el" href="classzth_1_1_fsm.html#a36b76ca58021325a6d2d0f3acc3056a1">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 , <a class="el" href="classzth_1_1_fsm_callback.html#ae8e3b7b0ad133f6728145932d0684a8b">zth::FsmCallback&lt; State_, CallbackArg_, Input_, FsmImpl_ &gt;</a>
@@ -97,24 +101,20 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 </li>
 <li>changedName()
 : <a class="el" href="classzth_1_1_fiber.html#a511fc1c4278f65fcb79a3d94072f9219">zth::Fiber</a>
-, <a class="el" href="classzth_1_1_unique_i_d.html#abc80284bfa89243b9adb8ce4117d3213">zth::UniqueID&lt; T, ThreadSafe &gt;</a>
 </li>
 <li>check()
-: <a class="el" href="classzth_1_1_sorted_list.html#a54d99a6a98874baeae585b8024e2f163">zth::SortedList&lt; T, Compare &gt;</a>
+: <a class="el" href="classzth_1_1_sorted_list.html#a0c09000d8c882fcf693b541bc4932c85">zth::SortedList&lt; T, Compare &gt;</a>
 </li>
 <li>cleanup()
-: <a class="el" href="structzth_1_1pass_on_exit.html#a3c458578eea33aaad9a487e9811bef8b">zth::passOnExit</a>
+: <a class="el" href="classzth_1_1pass_on_exit.html#a3c458578eea33aaad9a487e9811bef8b">zth::passOnExit</a>
 , <a class="el" href="classzth_1_1_runnable.html#aa1b2ae115fa74502cd4d3be12570c5b1">zth::Runnable</a>
 , <a class="el" href="classzth_1_1_worker.html#a7f110c974413be8ca3bfed0ab2f55115">zth::Worker</a>
 </li>
-<li>cleanup_()
-: <a class="el" href="classzth_1_1_runnable.html#a7c597c0de6a02b76de25357202bdf61a">zth::Runnable</a>
-</li>
 <li>clear()
 : <a class="el" href="classzth_1_1cow__string.html#ae43db2e8647cc7df16ac73186c2c597b">zth::cow_string</a>
-, <a class="el" href="classzth_1_1_list.html#ab322cec9e490f6070b32a593116d1e41">zth::List&lt; T &gt;</a>
+, <a class="el" href="classzth_1_1_list.html#ab99d52ef8e3f58fcf3a679a92f9b3bb5">zth::List&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_poller_server.html#ab177d07a41abee44420818d63ded668b">zth::PollerServer&lt; PollItem_ &gt;</a>
-, <a class="el" href="classzth_1_1_sorted_list.html#ab307934c818c3b907a4002dec87c957d">zth::SortedList&lt; T, Compare &gt;</a>
+, <a class="el" href="classzth_1_1_sorted_list.html#a0c7fa88c2b1a8fbaf8c7783ac2c4d42e">zth::SortedList&lt; T, Compare &gt;</a>
 </li>
 <li>clearInput()
 : <a class="el" href="classzth_1_1_fsm.html#a0c2f7f7f1a52349e4491a24e62cc7634">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
@@ -126,38 +126,65 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 : <a class="el" href="classzth_1_1_fsm_compiler.html#a6e46f966ecf9048271de88bae0ad8406">zth::FsmCompiler&lt; Fsm &gt;</a>
 </li>
 <li>contains()
-: <a class="el" href="classzth_1_1_list.html#af6394f31ddc9274a5270ac5d9f780171">zth::List&lt; T &gt;</a>
-, <a class="el" href="classzth_1_1_sorted_list.html#a270b507aaab55e6020d2d182fed47df0">zth::SortedList&lt; T, Compare &gt;</a>
+: <a class="el" href="classzth_1_1_list.html#a5efa30ebceb8f497b0ad1cfdb653be99">zth::List&lt; T &gt;</a>
+, <a class="el" href="classzth_1_1_sorted_list.html#a2ee431c24bd08357311fab1e47600faf">zth::SortedList&lt; T, Compare &gt;</a>
+</li>
+<li>Context()
+: <a class="el" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">zth::Context</a>
 </li>
 <li>context()
-: <a class="el" href="classzth_1_1_fiber.html#a9757a54835480c76a30637566d746cd4">zth::Fiber</a>
+: <a class="el" href="classzth_1_1_fiber.html#a87c66858461ba41c5d74edc3e0102044">zth::Fiber</a>
+</li>
+<li>context_pop_regs()
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#a116c33ba65cacefeaa91f1514f1c4220">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
+<li>context_prepare_jmp()
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#ad04bb39edd290373e9be35db6f3bf2e2">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
+<li>context_push_regs()
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#af8e9139894e7131e5e1f0d7769dededb">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
+<li>context_switch()
+: <a class="el" href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">zth::Context</a>
+, <a class="el" href="classzth_1_1impl_1_1_context_base.html#ac2f6f1c0314d8d770dce613184859825">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
+<li>context_trampoline_from_jmp_buf()
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#a64f2f74a7c10c6b90022b144e02ad7da">zth::impl::ContextBase&lt; Impl &gt;</a>
+</li>
+<li>ContextArch()
+: <a class="el" href="classzth_1_1impl_1_1_context_arch.html#a6170808d1d6f5e46cc0f56c54ae3d29f">zth::impl::ContextArch&lt; Impl &gt;</a>
 </li>
 <li>ContextAttr()
-: <a class="el" href="structzth_1_1_context_attr.html#a1a7a1979f8badb98e46ca20c1fd88049">zth::ContextAttr</a>
+: <a class="el" href="structzth_1_1_context_attr.html#aee47302644063a5ad7380b9a10f24a2b">zth::ContextAttr</a>
+</li>
+<li>ContextBase()
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#aef558e6ff8778ce3cd6b4bb6cfe50f05">zth::impl::ContextBase&lt; Impl &gt;</a>
 </li>
 <li>contextSwitchDisable()
-: <a class="el" href="classzth_1_1_worker.html#a165bec5e1f31063c5e702143c1d242a2">zth::Worker</a>
+: <a class="el" href="classzth_1_1_worker.html#a199b875598608007b9926332d671893f">zth::Worker</a>
 </li>
 <li>contextSwitchEnable()
-: <a class="el" href="classzth_1_1_worker.html#a6868dd2eef03852938a1bb34c7aba84e">zth::Worker</a>
+: <a class="el" href="classzth_1_1_worker.html#a7a8fb039dfeb184b12a9a285d64cb7cd">zth::Worker</a>
 </li>
 <li>contextSwitchEnabled()
-: <a class="el" href="classzth_1_1_worker.html#ac1f2a6dfe206c2737b3538f35c97fcd8">zth::Worker</a>
+: <a class="el" href="classzth_1_1_worker.html#a8c2bc72f29781751f0501d7911616037">zth::Worker</a>
 </li>
 <li>count()
-: <a class="el" href="classzth_1_1_gate.html#ae251bac249bed86e99802bf205713cd5">zth::Gate</a>
+: <a class="el" href="classzth_1_1_gate.html#a305f196785bf7b37bca16d37403b6dab">zth::Gate</a>
 </li>
 <li>cow_string()
-: <a class="el" href="classzth_1_1cow__string.html#aedc2bfa6567053009b48b5d24124ba86">zth::cow_string</a>
+: <a class="el" href="classzth_1_1cow__string.html#a6a9c83a64b38a724fe2b6edcbedbbb67">zth::cow_string</a>
 </li>
 <li>create()
-: <a class="el" href="classzth_1_1_fsm_compiler.html#a4953ca022d6d5944878412d46c4623d7">zth::FsmCompiler&lt; Fsm &gt;</a>
+: <a class="el" href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">zth::Context</a>
+, <a class="el" href="classzth_1_1_fsm_compiler.html#a4953ca022d6d5944878412d46c4623d7">zth::FsmCompiler&lt; Fsm &gt;</a>
+, <a class="el" href="classzth_1_1impl_1_1_context_base.html#a7a64a9ccfa7a1db5347467f61cdc030c">zth::impl::ContextBase&lt; Impl &gt;</a>
 </li>
 <li>current()
-: <a class="el" href="classzth_1_1_gate.html#ad00f4fcddd9f19ab711a536d151b46b9">zth::Gate</a>
+: <a class="el" href="classzth_1_1_gate.html#a04fab68fcafa19909c108bef89d40db4">zth::Gate</a>
 </li>
 <li>currentFiber()
-: <a class="el" href="classzth_1_1_worker.html#a8a82376965a01056e9956d86c52c2fae">zth::Worker</a>
+: <a class="el" href="classzth_1_1_worker.html#aa52deed77b4390f69d4a22cb72fff113">zth::Worker</a>
 </li>
 </ul>
 </div><!-- contents -->

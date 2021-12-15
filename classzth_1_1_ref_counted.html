@@ -108,12 +108,12 @@ Inheritance diagram for zth::RefCounted:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a746d7e21664728d4870ab2768adb68cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a746d7e21664728d4870ab2768adb68cf">RefCounted</a> ()</td></tr>
-<tr class="separator:a746d7e21664728d4870ab2768adb68cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4faa6a6764df1c35975c16e2eb10d42"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#ad4faa6a6764df1c35975c16e2eb10d42">~RefCounted</a> ()</td></tr>
-<tr class="separator:ad4faa6a6764df1c35975c16e2eb10d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a614b42954bf53d4165836bb9f323e000"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a614b42954bf53d4165836bb9f323e000">used</a> ()</td></tr>
-<tr class="separator:a614b42954bf53d4165836bb9f323e000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a121c2911b34179ca50d51afe6833e8e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a121c2911b34179ca50d51afe6833e8e3">RefCounted</a> () noexcept</td></tr>
+<tr class="separator:a121c2911b34179ca50d51afe6833e8e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c70a650a251b667665056aa06127da6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a3c70a650a251b667665056aa06127da6">~RefCounted</a> ()=default</td></tr>
+<tr class="separator:a3c70a650a251b667665056aa06127da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb79bb67fd9dbc34b5dc226a2359fdb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#aeb79bb67fd9dbc34b5dc226a2359fdb5">used</a> () noexcept</td></tr>
+<tr class="separator:aeb79bb67fd9dbc34b5dc226a2359fdb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a579d5d4632a89625b8567ec47ec1c997"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a579d5d4632a89625b8567ec47ec1c997">unused</a> ()</td></tr>
 <tr class="separator:a579d5d4632a89625b8567ec47ec1c997"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -121,8 +121,8 @@ Public Member Functions</h2></td></tr>
 <div class="textblock">
 <p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00046">46</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a746d7e21664728d4870ab2768adb68cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a746d7e21664728d4870ab2768adb68cf">&#9670;&nbsp;</a></span>RefCounted()</h2>
+<a id="a121c2911b34179ca50d51afe6833e8e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a121c2911b34179ca50d51afe6833e8e3">&#9670;&nbsp;</a></span>RefCounted()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,17 +139,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00048">48</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00049">49</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
-<a id="ad4faa6a6764df1c35975c16e2eb10d42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4faa6a6764df1c35975c16e2eb10d42">&#9670;&nbsp;</a></span>~RefCounted()</h2>
+<a id="a3c70a650a251b667665056aa06127da6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c70a650a251b667665056aa06127da6">&#9670;&nbsp;</a></span>~RefCounted()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,12 +166,10 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00049">49</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -199,12 +197,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00056">56</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00058">58</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
-<a id="a614b42954bf53d4165836bb9f323e000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a614b42954bf53d4165836bb9f323e000">&#9670;&nbsp;</a></span>used()</h2>
+<a id="aeb79bb67fd9dbc34b5dc226a2359fdb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb79bb67fd9dbc34b5dc226a2359fdb5">&#9670;&nbsp;</a></span>used()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,12 +219,12 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00051">51</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00052">52</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>

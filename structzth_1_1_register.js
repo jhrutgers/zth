@@ -2,13 +2,13 @@ var structzth_1_1_register =
 [
     [ "type", "structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404", null ],
     [ "Register", "structzth_1_1_register.html#aa11237fb3150806808a4e3d9c37787a2", null ],
-    [ "Register", "structzth_1_1_register.html#a1cc186d6f66e4aa9b19747f6252c4b6a", null ],
-    [ "operator type", "structzth_1_1_register.html#a929a315398485924e87a5602cc458757", null ],
-    [ "read", "structzth_1_1_register.html#ab2a9b5677921d29029538ab5c8511b49", null ],
-    [ "read", "structzth_1_1_register.html#a9db8db8bf00e27de4ccbefe0bd0a08cb", null ],
-    [ "write", "structzth_1_1_register.html#a0f8306909855e7ca7e4e329c564bbd91", null ],
-    [ "write", "structzth_1_1_register.html#a942cb246d64675d98433d9f1a8fd31b1", null ],
-    [ "write", "structzth_1_1_register.html#a26ebcb3b62f2600ce120901f96741173", null ],
+    [ "Register", "structzth_1_1_register.html#a7ac1d5407bb6d1fe57699d1f30ffaccb", null ],
+    [ "operator type", "structzth_1_1_register.html#a439768b4a13668df1a59f88e5f6121af", null ],
+    [ "read", "structzth_1_1_register.html#abd85296ff7795a288f4764e437011dc2", null ],
+    [ "read", "structzth_1_1_register.html#a7bbfb56dcfd2d430d26fc84dd878c8fe", null ],
+    [ "write", "structzth_1_1_register.html#ae34e273f60d41646f4848c4033dcce99", null ],
+    [ "write", "structzth_1_1_register.html#acedb9aed2d5174120bc6c4848d6856ed", null ],
+    [ "write", "structzth_1_1_register.html#ab10f5cec48b23ed63a2843442d017c67", null ],
     [ "field", "structzth_1_1_register.html#ab49fbeee79d3fe262d9ac4feacca30fe", null ],
     [ "value", "structzth_1_1_register.html#af65af071a7dcb155751f71046ebbaac9", null ]
 ];

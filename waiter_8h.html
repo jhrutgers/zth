@@ -89,7 +89,8 @@ $(document).ready(function(){initNavTree('waiter_8h.html',''); initResizable(); 
 <div class="title">waiter.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;<a class="el" href="fiber_8h_source.html">libzth/fiber.h</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="fiber_8h_source.html">libzth/fiber.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="list_8h_source.html">libzth/list.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="time_8h_source.html">libzth/time.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="allocator_8h_source.html">libzth/allocator.h</a>&gt;</code><br />
@@ -123,12 +124,12 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:gabd067566b5f56fb4aa9186880f568d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">zth::waitUntil</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="separator:gabd067566b5f56fb4aa9186880f568d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaccda3c092e2dd2870ca6005999cf8721"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
-<tr class="memitem:gaccda3c092e2dd2870ca6005999cf8721"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gaccda3c092e2dd2870ca6005999cf8721">zth::waitUntil</a> (F f, TimeInterval const &amp;pollInterval)</td></tr>
-<tr class="separator:gaccda3c092e2dd2870ca6005999cf8721"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
-<tr class="memitem:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga663fe4d8f1bbd9e3a5f39890a3b7474c">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), TimeInterval const &amp;pollInterval)</td></tr>
-<tr class="separator:ga663fe4d8f1bbd9e3a5f39890a3b7474c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">zth::waitUntil</a> (F f, TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
+<tr class="separator:ga8de540dbd2d282a44c5083295bf37234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
+<tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
+<tr class="separator:ga355b0425f58035f985050fbd0435d254"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a692cd6a88a74b1b98d863277624cb93f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a692cd6a88a74b1b98d863277624cb93f">zth::scheduleTask</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="separator:a692cd6a88a74b1b98d863277624cb93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43a403677c60668b28e760f217473f30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a43a403677c60668b28e760f217473f30">zth::unscheduleTask</a> (TimedWaitable &amp;w)</td></tr>

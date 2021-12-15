@@ -82,7 +82,6 @@ $(document).ready(function(){initNavTree('context_8cpp.html',''); initResizable(
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -91,26 +90,12 @@ $(document).ready(function(){initNavTree('context_8cpp.html',''); initResizable(
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="init_8h_source.html">libzth/init.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="regs_8h_source.html">libzth/regs.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="allocator_8h_source.html">libzth/allocator.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="context_8h_source.html">libzth/context.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="context_2context_8h_source.html">libzth/context/context.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="worker_8h_source.html">libzth/worker.h</a>&gt;</code><br />
-<code>#include &lt;unistd.h&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;csetjmp&gt;</code><br />
-<code>#include &lt;csignal&gt;</code><br />
-<code>#include &lt;ucontext.h&gt;</code><br />
-<code>#include &lt;sys/mman.h&gt;</code><br />
 </div>
 <p><a href="context_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_context.html">zth::Context</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacezth"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html">zth</a></td></tr>
@@ -118,144 +103,46 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a06c706c6cc07f13a3d0e1252e923ec69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a06c706c6cc07f13a3d0e1252e923ec69">MAP_STACK</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:a06c706c6cc07f13a3d0e1252e923ec69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65aedcc237ae1a6c31bc46a69e0a0df5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a65aedcc237ae1a6c31bc46a69e0a0df5">stack_guard</a>(...)</td></tr>
-<tr class="separator:a65aedcc237ae1a6c31bc46a69e0a0df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afabd1c7a0ae6bd251aa3c27bd6d5c5ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#afabd1c7a0ae6bd251aa3c27bd6d5c5ed">context_init_impl</a>()&#160;&#160;&#160;0</td></tr>
-<tr class="separator:afabd1c7a0ae6bd251aa3c27bd6d5c5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d0d4301ff4007a924f781152da07e88"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a8d0d4301ff4007a924f781152da07e88">context_deinit_impl</a>()</td></tr>
-<tr class="separator:a8d0d4301ff4007a924f781152da07e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cb7adc9d0f938941fb2d2bc39fd0dac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a3cb7adc9d0f938941fb2d2bc39fd0dac">context_destroy_impl</a>(...)</td></tr>
-<tr class="separator:a3cb7adc9d0f938941fb2d2bc39fd0dac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1924dd076a12fdc086a08bcdad7f1251"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a1924dd076a12fdc086a08bcdad7f1251">ZTH_STACK_WATERMARKER</a>&#160;&#160;&#160;((uint64_t)0x5a7468574de2889eULL)</td></tr>
 <tr class="separator:a1924dd076a12fdc086a08bcdad7f1251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a11d3236714aa5890b5217c28f9ade701"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">zth::context_entry</a> (Context *context)</td></tr>
-<tr class="separator:a11d3236714aa5890b5217c28f9ade701"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cc2b699e671d9c8373356bf40747ac6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a9cc2b699e671d9c8373356bf40747ac6">zth::context_init</a> ()</td></tr>
-<tr class="separator:a9cc2b699e671d9c8373356bf40747ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3885498f0afd7b826c718b359cdfb3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aa3885498f0afd7b826c718b359cdfb3d">zth::context_deinit</a> ()</td></tr>
-<tr class="separator:aa3885498f0afd7b826c718b359cdfb3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a635bff7e0b7baa3e3e46b6918b460187"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a635bff7e0b7baa3e3e46b6918b460187">zth::context_create</a> (Context *&amp;context, ContextAttr const &amp;attr)</td></tr>
-<tr class="separator:a635bff7e0b7baa3e3e46b6918b460187"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21a9e449fda2d98f4725cbc35daf5af5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a21a9e449fda2d98f4725cbc35daf5af5">zth::context_switch</a> (Context *from, Context *to)</td></tr>
-<tr class="separator:a21a9e449fda2d98f4725cbc35daf5af5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a564d80f05b6b71340c02bae5cf9dfc64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a564d80f05b6b71340c02bae5cf9dfc64">zth::context_destroy</a> (Context *context)</td></tr>
-<tr class="separator:a564d80f05b6b71340c02bae5cf9dfc64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga44fe90bba77464eb5410d27b6d70584d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">zth::stack_watermark_init</a> (void *stack, size_t size)</td></tr>
-<tr class="memdesc:ga44fe90bba77464eb5410d27b6d70584d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the memory region for stack high water marking.  <a href="group__zth__api__cpp__stack.html#ga44fe90bba77464eb5410d27b6d70584d">More...</a><br /></td></tr>
-<tr class="separator:ga44fe90bba77464eb5410d27b6d70584d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga278d1ff87cf2af45717ce4e16661350b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">zth::stack_watermark_size</a> (void *stack)</td></tr>
-<tr class="memdesc:ga278d1ff87cf2af45717ce4e16661350b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of the given stack region.  <a href="group__zth__api__cpp__stack.html#ga278d1ff87cf2af45717ce4e16661350b">More...</a><br /></td></tr>
-<tr class="separator:ga278d1ff87cf2af45717ce4e16661350b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga76af3738586eef284086d9aa9b4713c6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">zth::stack_watermark_maxused</a> (void *stack)</td></tr>
-<tr class="memdesc:ga76af3738586eef284086d9aa9b4713c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack.  <a href="group__zth__api__cpp__stack.html#ga76af3738586eef284086d9aa9b4713c6">More...</a><br /></td></tr>
-<tr class="separator:ga76af3738586eef284086d9aa9b4713c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac37cad431ecd2830e62722d9c4f46e13"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">zth::stack_watermark_remaining</a> (void *stack)</td></tr>
-<tr class="memdesc:gac37cad431ecd2830e62722d9c4f46e13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remaining stack size that was never touched.  <a href="group__zth__api__cpp__stack.html#gac37cad431ecd2830e62722d9c4f46e13">More...</a><br /></td></tr>
-<tr class="separator:gac37cad431ecd2830e62722d9c4f46e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">zth::context_stack_usage</a> (Context *<a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(context))</td></tr>
-<tr class="memdesc:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack of the given context.  <a href="namespacezth.html#afcbfcd2cc3f8013c9c1b4bc011a8933b">More...</a><br /></td></tr>
-<tr class="separator:afcbfcd2cc3f8013c9c1b4bc011a8933b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab48e45b9e6125fbe34ec4e1c29824cd0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab48e45b9e6125fbe34ec4e1c29824cd0">zth::context_init</a> () noexcept</td></tr>
+<tr class="memdesc:ab48e45b9e6125fbe34ec4e1c29824cd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">One-time context mechanism initialization.  <a href="namespacezth.html#ab48e45b9e6125fbe34ec4e1c29824cd0">More...</a><br /></td></tr>
+<tr class="separator:ab48e45b9e6125fbe34ec4e1c29824cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad71d79254080a6fd0d6406710e703da7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ad71d79254080a6fd0d6406710e703da7">zth::context_deinit</a> () noexcept</td></tr>
+<tr class="memdesc:ad71d79254080a6fd0d6406710e703da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Final cleanup.  <a href="namespacezth.html#ad71d79254080a6fd0d6406710e703da7">More...</a><br /></td></tr>
+<tr class="separator:ad71d79254080a6fd0d6406710e703da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb33d66cd3fb31d12ce3484142344644"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aeb33d66cd3fb31d12ce3484142344644">zth::context_create</a> (Context *&amp;context, ContextAttr const  &amp;attr) noexcept</td></tr>
+<tr class="memdesc:aeb33d66cd3fb31d12ce3484142344644"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a context.  <a href="namespacezth.html#aeb33d66cd3fb31d12ce3484142344644">More...</a><br /></td></tr>
+<tr class="separator:aeb33d66cd3fb31d12ce3484142344644"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4920454e285d2a95d26e6119743be0c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a4920454e285d2a95d26e6119743be0c0">zth::context_destroy</a> (Context *context) noexcept</td></tr>
+<tr class="memdesc:a4920454e285d2a95d26e6119743be0c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy and cleanup a context.  <a href="namespacezth.html#a4920454e285d2a95d26e6119743be0c0">More...</a><br /></td></tr>
+<tr class="separator:a4920454e285d2a95d26e6119743be0c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a412fb0c421700a4ee9de722e86086a39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a412fb0c421700a4ee9de722e86086a39">zth::context_switch</a> (Context *from, Context *to) noexcept</td></tr>
+<tr class="memdesc:a412fb0c421700a4ee9de722e86086a39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform context switch.  <a href="namespacezth.html#a412fb0c421700a4ee9de722e86086a39">More...</a><br /></td></tr>
+<tr class="separator:a412fb0c421700a4ee9de722e86086a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc800d78eff9eada8e76e53e825eb7e8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#afc800d78eff9eada8e76e53e825eb7e8">zth::context_stack_usage</a> (Context *context) noexcept</td></tr>
+<tr class="memdesc:afc800d78eff9eada8e76e53e825eb7e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack of the given context.  <a href="namespacezth.html#afc800d78eff9eada8e76e53e825eb7e8">More...</a><br /></td></tr>
+<tr class="separator:afc800d78eff9eada8e76e53e825eb7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69e1432351e06094fc1d3043ca923d61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="context_8cpp.html#a69e1432351e06094fc1d3043ca923d61">context_entry</a> (<a class="el" href="classzth_1_1_context.html">zth::Context</a> *context) noexcept</td></tr>
+<tr class="memdesc:a69e1432351e06094fc1d3043ca923d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry point of the fiber.  <a href="context_8cpp.html#a69e1432351e06094fc1d3043ca923d61">More...</a><br /></td></tr>
+<tr class="separator:a69e1432351e06094fc1d3043ca923d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga43e8ef3081d77b40c5de9dcca1207a84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga43e8ef3081d77b40c5de9dcca1207a84">zth::stack_watermark_init</a> (void *stack, size_t size) noexcept</td></tr>
+<tr class="memdesc:ga43e8ef3081d77b40c5de9dcca1207a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the memory region for stack high water marking.  <a href="group__zth__api__cpp__stack.html#ga43e8ef3081d77b40c5de9dcca1207a84">More...</a><br /></td></tr>
+<tr class="separator:ga43e8ef3081d77b40c5de9dcca1207a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad013e6e402e70af18cf38d10f94d75ea"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#gad013e6e402e70af18cf38d10f94d75ea">zth::stack_watermark_size</a> (void *stack) noexcept</td></tr>
+<tr class="memdesc:gad013e6e402e70af18cf38d10f94d75ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of the given stack region.  <a href="group__zth__api__cpp__stack.html#gad013e6e402e70af18cf38d10f94d75ea">More...</a><br /></td></tr>
+<tr class="separator:gad013e6e402e70af18cf38d10f94d75ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga558512ab80129ca990ab762abfa02ff0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga558512ab80129ca990ab762abfa02ff0">zth::stack_watermark_maxused</a> (void *stack) noexcept</td></tr>
+<tr class="memdesc:ga558512ab80129ca990ab762abfa02ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the high water mark of the stack.  <a href="group__zth__api__cpp__stack.html#ga558512ab80129ca990ab762abfa02ff0">More...</a><br /></td></tr>
+<tr class="separator:ga558512ab80129ca990ab762abfa02ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2cb0b9d1a5546505a1316c3537080c02"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__stack.html#ga2cb0b9d1a5546505a1316c3537080c02">zth::stack_watermark_remaining</a> (void *stack) noexcept</td></tr>
+<tr class="memdesc:ga2cb0b9d1a5546505a1316c3537080c02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remaining stack size that was never touched.  <a href="group__zth__api__cpp__stack.html#ga2cb0b9d1a5546505a1316c3537080c02">More...</a><br /></td></tr>
+<tr class="separator:ga2cb0b9d1a5546505a1316c3537080c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a8d0d4301ff4007a924f781152da07e88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d0d4301ff4007a924f781152da07e88">&#9670;&nbsp;</a></span>context_deinit_impl</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define context_deinit_impl</td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00266">266</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a3cb7adc9d0f938941fb2d2bc39fd0dac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3cb7adc9d0f938941fb2d2bc39fd0dac">&#9670;&nbsp;</a></span>context_destroy_impl</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define context_destroy_impl</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00267">267</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
-
-</div>
-</div>
-<a id="afabd1c7a0ae6bd251aa3c27bd6d5c5ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afabd1c7a0ae6bd251aa3c27bd6d5c5ed">&#9670;&nbsp;</a></span>context_init_impl</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define context_init_impl</td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td>&#160;&#160;&#160;0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00265">265</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a06c706c6cc07f13a3d0e1252e923ec69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06c706c6cc07f13a3d0e1252e923ec69">&#9670;&nbsp;</a></span>MAP_STACK</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MAP_STACK&#160;&#160;&#160;0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00072">72</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a65aedcc237ae1a6c31bc46a69e0a0df5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65aedcc237ae1a6c31bc46a69e0a0df5">&#9670;&nbsp;</a></span>stack_guard</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define stack_guard</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00257">257</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a1924dd076a12fdc086a08bcdad7f1251"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1924dd076a12fdc086a08bcdad7f1251">&#9670;&nbsp;</a></span>ZTH_STACK_WATERMARKER</h2>
 
@@ -268,7 +155,40 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l01009">1009</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00209">209</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a69e1432351e06094fc1d3043ca923d61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69e1432351e06094fc1d3043ca923d61">&#9670;&nbsp;</a></span>context_entry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void context_entry </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_context.html">zth::Context</a> *&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Entry point of the fiber. </p>
+<p>This function is called by the actual context switching mechanism. It will call the entry function, as specified by the Context's attributes during creation, which is <a class="el" href="classzth_1_1_fiber.html#aef28910522bc765dd1f9e91f28351658">zth::Fiber::fiberEntry()</a> by default.</p>
+<p>This function does not return. When the entry function returns, the context is considered dead, the Worker's scheduler is invoked, and the context is destroyed. </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00178">178</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>

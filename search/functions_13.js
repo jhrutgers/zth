@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['valid_1364',['valid',['../classzth_1_1_fsm_guard.html#a264deeba570acd6ade6a203b6e0b415c',1,'zth::FsmGuard::valid()'],['../classzth_1_1_future.html#ad291647be20c856bc27cec718bb7c9b3',1,'zth::Future::valid()'],['../classzth_1_1_future_3_01void_01_4.html#afe6aa93010dc4f39793991ed1b1f03d1',1,'zth::Future&lt; void &gt;::valid()']]],
-  ['value_1365',['value',['../classzth_1_1_semaphore.html#a4513f20788db1cca9856f94ddea47b81',1,'zth::Semaphore::value()'],['../classzth_1_1_future.html#a28f660287f6b640b595a31dc96b0aedc',1,'zth::Future::value()'],['../classzth_1_1_future.html#a84f20c0ce95872cfb7a88a5a19e84462',1,'zth::Future::value() const']]],
-  ['vcdid_1366',['vcdId',['../classzth_1_1_perf_fiber.html#a385207c92315865f7054cac46ee9ad57',1,'zth::PerfFiber']]],
-  ['vcdidrelease_1367',['vcdIdRelease',['../classzth_1_1_perf_fiber.html#ad30af969718c97daca7c8ebbdcb9078d',1,'zth::PerfFiber']]],
-  ['version_1368',['version',['../group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5',1,'zth']]]
+  ['valgrindderegister_1407',['valgrindDeregister',['../classzth_1_1impl_1_1_context_base.html#ad11f10b4fa1fbaaf5543161a8adf5aac',1,'zth::impl::ContextBase::valgrindDeregister()'],['../classzth_1_1_context.html#ab5a632ac8c438e9ea7e175a62d455bd1',1,'zth::Context::valgrindDeregister()']]],
+  ['valgrindregister_1408',['valgrindRegister',['../classzth_1_1impl_1_1_context_base.html#abdf2f3d7284457a034147db5a8379e22',1,'zth::impl::ContextBase::valgrindRegister()'],['../classzth_1_1_context.html#a36edd16bee43ffcc0bb6329e980d0b6c',1,'zth::Context::valgrindRegister()']]],
+  ['valid_1409',['valid',['../classzth_1_1_fsm_guard.html#a264deeba570acd6ade6a203b6e0b415c',1,'zth::FsmGuard::valid()'],['../classzth_1_1_future.html#aa9870317240cec34f74403706e48fbba',1,'zth::Future::valid()'],['../classzth_1_1_future_3_01void_01_4.html#ae8f4969340cb0292712585672b7b3166',1,'zth::Future&lt; void &gt;::valid()']]],
+  ['value_1410',['value',['../classzth_1_1_semaphore.html#ab89e952fbd76a111dc473545c22960f9',1,'zth::Semaphore::value()'],['../classzth_1_1_future.html#a3f9aa4c961ca2b03d3540b159aae323c',1,'zth::Future::value() &amp;'],['../classzth_1_1_future.html#a935ba7103969731f1855c3bf2ba528be',1,'zth::Future::value() const &amp;'],['../classzth_1_1_future.html#a2a7eee219b503a5be77ecceb61a44ed7',1,'zth::Future::value() &amp;&amp;']]],
+  ['vcdid_1411',['vcdId',['../classzth_1_1_perf_fiber.html#a385207c92315865f7054cac46ee9ad57',1,'zth::PerfFiber']]],
+  ['vcdidrelease_1412',['vcdIdRelease',['../classzth_1_1_perf_fiber.html#ad30af969718c97daca7c8ebbdcb9078d',1,'zth::PerfFiber']]],
+  ['version_1413',['version',['../group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5',1,'zth']]]
 ];

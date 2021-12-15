@@ -25,5 +25,6 @@ var classzth_1_1cow__string =
     [ "operator[]", "classzth_1_1cow__string.html#a9347aae9765386468b45b97495064296", null ],
     [ "operator[]", "classzth_1_1cow__string.html#a00f313895a910f3fc813877cc5f9208a", null ],
     [ "size", "classzth_1_1cow__string.html#ac63b8de21cb4a5e312e163205cb5386e", null ],
-    [ "str", "classzth_1_1cow__string.html#a00dd880696ed4225d57bb73cacfb7ede", null ]
+    [ "str", "classzth_1_1cow__string.html#a025a9c99a7c702b2bc7e40adeb196509", null ],
+    [ "str", "classzth_1_1cow__string.html#ad1f198668c9b9b7acab9ee4b4e477919", null ]
 ];

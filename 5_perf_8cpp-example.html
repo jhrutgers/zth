@@ -90,23 +90,25 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line"> </div>
 <div class="line"><span class="comment">// To generate VCD output, run this example like:</span></div>
 <div class="line"><span class="comment">//   ZTH_CONFIG_DO_PERF_EVENT=1 examples/5_perf</span></div>
-<div class="line"><span class="comment">// Play around by setting ZTH_CONFIG_ENABLE_DEBUG_PRINT=[01] or running the Debug or Release build.</span></div>
+<div class="line"><span class="comment">// Play around by setting ZTH_CONFIG_ENABLE_DEBUG_PRINT=[01] or running the</span></div>
+<div class="line"><span class="comment">// Debug or Release build.</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Tweak the load default value at will to observe differences depending on the</span></div>
 <div class="line"><span class="comment">// speed of your CPU.</span></div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> do_work(<span class="keywordtype">int</span> amount, <span class="keywordtype">int</span> load = 1000000)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <span class="keyword">volatile</span> i = 0; i &lt; amount * load; i++);</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <span class="keyword">volatile</span> i = 0; i &lt; amount * load; i++)</div>
+<div class="line">        ;</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> scheduling()</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled,</span></div>
-<div class="line">    <span class="comment">// which includes generating a VCD file.  This VCD file shows every fiber</span></div>
-<div class="line">    <span class="comment">// in the system and indicates the state of every fiber at every instance</span></div>
-<div class="line">    <span class="comment">// in time.  This allows you to investigate the scheduling behavior of</span></div>
-<div class="line">    <span class="comment">// fibers.  The state of every fiber is indicated in IEEE 1164 std_logic</span></div>
-<div class="line">    <span class="comment">// format, using the following values:</span></div>
+<div class="line">    <span class="comment">// which includes generating a VCD file.  This VCD file shows every</span></div>
+<div class="line">    <span class="comment">// fiber in the system and indicates the state of every fiber at every</span></div>
+<div class="line">    <span class="comment">// instance in time.  This allows you to investigate the scheduling</span></div>
+<div class="line">    <span class="comment">// behavior of fibers.  The state of every fiber is indicated in IEEE</span></div>
+<div class="line">    <span class="comment">// 1164 std_logic format, using the following values:</span></div>
 <div class="line">    <span class="comment">// - U (undefined): the fiber has not been created yet</span></div>
 <div class="line">    <span class="comment">// - L (low): the fiber has been created, but not initialized</span></div>
 <div class="line">    <span class="comment">//   (zth::Fiber::New state)</span></div>
@@ -124,23 +126,25 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">    <span class="comment">// The VCD file will show for this fiber the following sequence:</span></div>
 <div class="line">    <span class="comment">//   U L 1 W 0 1 X -</span></div>
 <div class="line">    <span class="comment">// The Waiter (usually fiber #3) manages the mnap of below.  Open the</span></div>
-<div class="line">    <span class="comment">// generated VCD file, using gtkwave, for example.  Try to understand the</span></div>
-<div class="line">    <span class="comment">// relation between fibers in the VCD.</span></div>
+<div class="line">    <span class="comment">// generated VCD file, using gtkwave, for example.  Try to understand</span></div>
+<div class="line">    <span class="comment">// the relation between fibers in the VCD.</span></div>
 <div class="line">    <a name="a0"></a><a class="code" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap</a>(10);</div>
 <div class="line">}</div>
-<div class="line"><a name="a1"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(scheduling)</div>
+<div class="line"><a name="a1"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(scheduling);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> measure()</div>
 <div class="line">{</div>
-<div class="line">    <span class="comment">// This example measures the duration of a task. There are several helpful</span></div>
-<div class="line">    <span class="comment">// functions for this.  First, take a time stamp. zth::Timestamp::now() is</span></div>
-<div class="line">    <span class="comment">// (supposed to be) fast and is used everywhere, so go ahead and safe t0.</span></div>
+<div class="line">    <span class="comment">// This example measures the duration of a task. There are several</span></div>
+<div class="line">    <span class="comment">// helpful functions for this.  First, take a time stamp.</span></div>
+<div class="line">    <span class="comment">// zth::Timestamp::now() is (supposed to be) fast and is used</span></div>
+<div class="line">    <span class="comment">// everywhere, so go ahead and safe t0.</span></div>
 <div class="line">    <a name="_a2"></a><a class="code" href="classzth_1_1_timestamp.html">zth::Timestamp</a> t0 = <a name="a3"></a><a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>();</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// perf_mark() allow you to put very efficiently a marker (which must be a</span></div>
-<div class="line">    <span class="comment">// C string literal) in the VCD log at the current time. We are going to</span></div>
-<div class="line">    <span class="comment">// use this to double check our measurements in the VCD file. This is like</span></div>
-<div class="line">    <span class="comment">// printf()-debugging, but with accurate timing information.</span></div>
+<div class="line">    <span class="comment">// perf_mark() allow you to put very efficiently a marker (which must</span></div>
+<div class="line">    <span class="comment">// be a C string literal) in the VCD log at the current time. We are</span></div>
+<div class="line">    <span class="comment">// going to use this to double check our measurements in the VCD file.</span></div>
+<div class="line">    <span class="comment">// This is like printf()-debugging, but with accurate timing</span></div>
+<div class="line">    <span class="comment">// information.</span></div>
 <div class="line">    <a name="a4"></a><a class="code" href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a>(<span class="stringliteral">&quot;do_work(1)&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Go do some lengthy work.</span></div>
@@ -149,8 +153,8 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">    <span class="comment">// Set another marker.</span></div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a>(<span class="stringliteral">&quot;do_work(1) done&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Compute time difference. This is not completely fair, as this includes</span></div>
-<div class="line">    <span class="comment">// running perf_mark() twice.</span></div>
+<div class="line">    <span class="comment">// Compute time difference. This is not completely fair, as this</span></div>
+<div class="line">    <span class="comment">// includes running perf_mark() twice.</span></div>
 <div class="line">    <a name="_a5"></a><a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> dt = <a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>() - t0;</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Let us format some log string.</span></div>
@@ -161,12 +165,12 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">    printf(<span class="stringliteral">&quot;%s\n&quot;</span>, <a class="code" href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">log</a>.c_str());</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Open the generated VCD file.  Every fiber has two &#39;signals&#39;: the</span></div>
-<div class="line">    <span class="comment">// schedule state of the fiber, and a string with logs.  The perf_mark()</span></div>
-<div class="line">    <span class="comment">// and perf_log() should show up there.  Try to measure the length between</span></div>
-<div class="line">    <span class="comment">// the perf_mark()s in the VCD log string and compare it with the measured</span></div>
-<div class="line">    <span class="comment">// time interval.</span></div>
+<div class="line">    <span class="comment">// schedule state of the fiber, and a string with logs.  The</span></div>
+<div class="line">    <span class="comment">// perf_mark() and perf_log() should show up there.  Try to measure the</span></div>
+<div class="line">    <span class="comment">// length between the perf_mark()s in the VCD log string and compare it</span></div>
+<div class="line">    <span class="comment">// with the measured time interval.</span></div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(measure)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(measure);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> stack()</div>
 <div class="line">{</div>
@@ -179,7 +183,7 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">    <a class="code" href="classzth_1_1_backtrace.html">zth::Backtrace</a> bt2;</div>
 <div class="line">    bt2.<a name="a12"></a><a class="code" href="classzth_1_1_backtrace.html#a25ef5267cbd53e2e821b42ea21d65d15">printDelta</a>(bt);</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(stack)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(stack);</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"> </div>
@@ -192,22 +196,22 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="anamespacezth_html_a7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00267">util.h:267</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00361">time.h:361</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__perf_html_ga1c4be8da3bfdda3cd7edfb6bbbc98428"><div class="ttname"><a href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a></div><div class="ttdeci">void perf_mark(char const *marker)</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00186">perf.h:186</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00517">async.h:517</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga94e8d014d5e2cda9cb70e4a46f0b2d51"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">zth::log</a></div><div class="ttdeci">void log(char const *fmt,...)</div><div class="ttdoc">Logs a given printf()-like formatted string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00259">util.h:259</a></div></div>
-<div class="ttc" id="aclasszth_1_1_backtrace_html_a25ef5267cbd53e2e821b42ea21d65d15"><div class="ttname"><a href="classzth_1_1_backtrace.html#a25ef5267cbd53e2e821b42ea21d65d15">zth::Backtrace::printDelta</a></div><div class="ttdeci">void printDelta(Backtrace const &amp;other, int color=-1) const</div><div class="ttdef"><b>Definition:</b> <a href="perf_8cpp_source.html#l00603">perf.cpp:603</a></div></div>
+<div class="ttc" id="anamespacezth_html_a7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00269">util.h:269</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00383">time.h:383</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__perf_html_ga1c4be8da3bfdda3cd7edfb6bbbc98428"><div class="ttname"><a href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a></div><div class="ttdeci">void perf_mark(char const *marker)</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00243">perf.h:243</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00568">async.h:568</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga94e8d014d5e2cda9cb70e4a46f0b2d51"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">zth::log</a></div><div class="ttdeci">void log(char const *fmt,...)</div><div class="ttdoc">Logs a given printf()-like formatted string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00261">util.h:261</a></div></div>
+<div class="ttc" id="aclasszth_1_1_backtrace_html_a25ef5267cbd53e2e821b42ea21d65d15"><div class="ttname"><a href="classzth_1_1_backtrace.html#a25ef5267cbd53e2e821b42ea21d65d15">zth::Backtrace::printDelta</a></div><div class="ttdeci">void printDelta(Backtrace const &amp;other, int color=-1) const</div><div class="ttdef"><b>Definition:</b> <a href="perf_8cpp_source.html#l00610">perf.cpp:610</a></div></div>
 <div class="ttc" id="aclasszth_1_1_backtrace_html"><div class="ttname"><a href="classzth_1_1_backtrace.html">zth::Backtrace</a></div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00051">perf.h:51</a></div></div>
 <div class="ttc" id="aclasszth_1_1_time_interval_html"><div class="ttname"><a href="classzth_1_1_time_interval.html">zth::TimeInterval</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains a time interval.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00058">time.h:58</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00496">async.h:496</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00342">time.h:342</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00547">async.h:547</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00363">time.h:363</a></div></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="aclasszth_1_1_time_interval_html_a5eaa6c233f3fd97f62434184485d1e73"><div class="ttname"><a href="classzth_1_1_time_interval.html#a5eaa6c233f3fd97f62434184485d1e73">zth::TimeInterval::str</a></div><div class="ttdeci">string str() const</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00224">time.h:224</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gabb282193c9fb32207257bb6474436152"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap</a></div><div class="ttdeci">void mnap(long sleepFor_ms)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00183">waiter.h:183</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__perf_html_ga37750cc0aa9a7e2dde894e68c125292e"><div class="ttname"><a href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">zth::perf_log</a></div><div class="ttdeci">void perf_log(char const *fmt,...)</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00194">perf.h:194</a></div></div>
-<div class="ttc" id="aclasszth_1_1_backtrace_html_aa375797537c3eaf7f007f45ac3400d19"><div class="ttname"><a href="classzth_1_1_backtrace.html#aa375797537c3eaf7f007f45ac3400d19">zth::Backtrace::print</a></div><div class="ttdeci">void print(int color=-1) const</div><div class="ttdef"><b>Definition:</b> <a href="perf_8cpp_source.html#l00589">perf.cpp:589</a></div></div>
-<div class="ttc" id="anamespacezth_html_aebc0ef1729604ae4282d5eabf3830c95"><div class="ttname"><a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a></div><div class="ttdeci">string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an zth::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00338">util.h:338</a></div></div>
+<div class="ttc" id="aclasszth_1_1_time_interval_html_a5eaa6c233f3fd97f62434184485d1e73"><div class="ttname"><a href="classzth_1_1_time_interval.html#a5eaa6c233f3fd97f62434184485d1e73">zth::TimeInterval::str</a></div><div class="ttdeci">string str() const</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00241">time.h:241</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gabb282193c9fb32207257bb6474436152"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap</a></div><div class="ttdeci">void mnap(long sleepFor_ms)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00216">waiter.h:216</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__perf_html_ga37750cc0aa9a7e2dde894e68c125292e"><div class="ttname"><a href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">zth::perf_log</a></div><div class="ttdeci">void perf_log(char const *fmt,...)</div><div class="ttdef"><b>Definition:</b> <a href="perf_8h_source.html#l00252">perf.h:252</a></div></div>
+<div class="ttc" id="aclasszth_1_1_backtrace_html_aa375797537c3eaf7f007f45ac3400d19"><div class="ttname"><a href="classzth_1_1_backtrace.html#aa375797537c3eaf7f007f45ac3400d19">zth::Backtrace::print</a></div><div class="ttdeci">void print(int color=-1) const</div><div class="ttdef"><b>Definition:</b> <a href="perf_8cpp_source.html#l00596">perf.cpp:596</a></div></div>
+<div class="ttc" id="anamespacezth_html_aebc0ef1729604ae4282d5eabf3830c95"><div class="ttname"><a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a></div><div class="ttdeci">string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an zth::string.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00344">util.h:344</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

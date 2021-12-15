@@ -104,9 +104,10 @@ void hello()
 }
 zth_fiber(hello)
 
-void main_fiber(int argc, char** argv)
+int main_fiber(int argc, char** argv)
 {
     async hello();
+    return 0;
 }
 </pre><p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> for more details, including the full explanation of this example.</p>
 <p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>

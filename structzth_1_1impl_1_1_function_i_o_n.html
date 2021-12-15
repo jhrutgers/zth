@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Zth (libzth): zth::impl::FunctionION&lt; R, A &gt; Struct Template Reference</title>
+<title>Zth (libzth): zth::impl::FunctionION&lt; R, A, A_ &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -86,7 +86,7 @@ $(document).ready(function(){initNavTree('structzth_1_1impl_1_1_function_i_o_n.h
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structzth_1_1impl_1_1_function_i_o_n-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">zth::impl::FunctionION&lt; R, A &gt; Struct Template Reference</div>  </div>
+<div class="title">zth::impl::FunctionION&lt; R, A, A_ &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -94,44 +94,44 @@ $(document).ready(function(){initNavTree('structzth_1_1impl_1_1_function_i_o_n.h
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa6c978166dccd11ccd9fdc473f6e7bd4"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#aa6c978166dccd11ccd9fdc473f6e7bd4">operator()</a> ()</td></tr>
-<tr class="separator:aa6c978166dccd11ccd9fdc473f6e7bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add6f16ba1746957454f1a010c4737086"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#add6f16ba1746957454f1a010c4737086">operator()</a> () noexcept</td></tr>
+<tr class="separator:add6f16ba1746957454f1a010c4737086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab3b7c244173207329db102d2b91dc503"><td class="memItemLeft" >union {</td></tr>
-<tr class="memitem:a204a74d50e6c2b287f6683d327bc819f"><td class="memItemLeft" >&#160;&#160;&#160;struct {</td></tr>
-<tr class="memitem:a633f6185252f9814f5e40553cab99616"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;R(*&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#af9f3702c2c9ac588a69dabae4cfb088a">f</a> )(A...)</td></tr>
-<tr class="separator:a633f6185252f9814f5e40553cab99616"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bb8cbfee35ae69a898c42ad30ea0c5a"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;std::tuple&lt; A... &gt;&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#a64d691142dbdd2315a77d952ba819718">a</a></td></tr>
-<tr class="separator:a9bb8cbfee35ae69a898c42ad30ea0c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a204a74d50e6c2b287f6683d327bc819f"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a204a74d50e6c2b287f6683d327bc819f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c32086c7b71ac657722db3a8d9dfa91"><td class="memItemLeft" >&#160;&#160;&#160;R&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#aeb12cc255747c7a910c5798c7ea18c34">r</a></td></tr>
-<tr class="separator:a7c32086c7b71ac657722db3a8d9dfa91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3b7c244173207329db102d2b91dc503"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:ab3b7c244173207329db102d2b91dc503"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a129a027ca1f7ae71262227b5337b4905"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:a579727b18bff977e91bee0126aac57f3"><td class="memItemLeft" >&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:ad365f6fe9811ea87782b925a4f73753f"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;A::template function_type&lt; R &gt; *&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#affad756b2cba0334ec01282798660ff4">f</a></td></tr>
+<tr class="separator:ad365f6fe9811ea87782b925a4f73753f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e28a2b900b8b707550acbb83de0907e"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;A_::tuple_type&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#ac902609b6341cc8737296df935b5a036">a</a></td></tr>
+<tr class="separator:a9e28a2b900b8b707550acbb83de0907e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a579727b18bff977e91bee0126aac57f3"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a579727b18bff977e91bee0126aac57f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19ddad4ee526c5e9c936cbc399e02cc1"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_packed.html">Packed</a>&lt; R &gt;::type&#160;&#160;&#160;<a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html#a51d2206c54f534d60dbac2331a4bcfd2">r</a></td></tr>
+<tr class="separator:a19ddad4ee526c5e9c936cbc399e02cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a129a027ca1f7ae71262227b5337b4905"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a129a027ca1f7ae71262227b5337b4905"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename R, typename... A&gt;<br />
-struct zth::impl::FunctionION&lt; R, A &gt;</h3>
+<div class="textblock"><h3>template&lt;typename R, typename A, typename A_&gt;<br />
+struct zth::impl::FunctionION&lt; R, A, A_ &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00129">129</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00266">266</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa6c978166dccd11ccd9fdc473f6e7bd4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6c978166dccd11ccd9fdc473f6e7bd4">&#9670;&nbsp;</a></span>operator()()</h2>
+<a id="add6f16ba1746957454f1a010c4737086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add6f16ba1746957454f1a010c4737086">&#9670;&nbsp;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename R , typename... A&gt; </div>
+template&lt;typename R , typename A , typename A_ &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void* <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A &gt;::operator() </td>
+          <td class="memname">void* <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A, A_ &gt;::operator() </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -139,18 +139,18 @@ template&lt;typename R , typename... A&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00131">131</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00275">275</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab3b7c244173207329db102d2b91dc503"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3b7c244173207329db102d2b91dc503">&#9670;&nbsp;</a></span>@34</h2>
+<a id="a129a027ca1f7ae71262227b5337b4905"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a129a027ca1f7ae71262227b5337b4905">&#9670;&nbsp;</a></span>@6</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,57 +163,57 @@ template&lt;typename R , typename... A&gt; </div>
 
 </div>
 </div>
-<a id="a64d691142dbdd2315a77d952ba819718"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64d691142dbdd2315a77d952ba819718">&#9670;&nbsp;</a></span>a</h2>
+<a id="ac902609b6341cc8737296df935b5a036"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac902609b6341cc8737296df935b5a036">&#9670;&nbsp;</a></span>a</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename R , typename... A&gt; </div>
+template&lt;typename R , typename A , typename A_ &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt;A...&gt; <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A &gt;::a</td>
+          <td class="memname">A_::tuple_type <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A, A_ &gt;::a</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00130">130</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00270">270</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
-<a id="af9f3702c2c9ac588a69dabae4cfb088a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9f3702c2c9ac588a69dabae4cfb088a">&#9670;&nbsp;</a></span>f</h2>
+<a id="affad756b2cba0334ec01282798660ff4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affad756b2cba0334ec01282798660ff4">&#9670;&nbsp;</a></span>f</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename R , typename... A&gt; </div>
+template&lt;typename R , typename A , typename A_ &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">R(* <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A &gt;::f) (A...)</td>
+          <td class="memname">A::template function_type&lt;R&gt;* <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A, A_ &gt;::f</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00130">130</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00269">269</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
-<a id="aeb12cc255747c7a910c5798c7ea18c34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb12cc255747c7a910c5798c7ea18c34">&#9670;&nbsp;</a></span>r</h2>
+<a id="a51d2206c54f534d60dbac2331a4bcfd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51d2206c54f534d60dbac2331a4bcfd2">&#9670;&nbsp;</a></span>r</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename R , typename... A&gt; </div>
+template&lt;typename R , typename A , typename A_ &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">R <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A &gt;::r</td>
+          <td class="memname"><a class="el" href="structzth_1_1impl_1_1_packed.html">Packed</a>&lt;R&gt;::type <a class="el" href="structzth_1_1impl_1_1_function_i_o_n.html">zth::impl::FunctionION</a>&lt; R, A, A_ &gt;::r</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00130">130</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00272">272</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>

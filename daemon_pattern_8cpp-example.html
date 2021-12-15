@@ -94,17 +94,17 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line"><span class="comment">// NOLINTNEXTLINE(performance-unnecessary-value-param)</span></div>
 <div class="line"><span class="keywordtype">void</span> trigger(<a name="_a0"></a><a class="code" href="classzth_1_1_signal.html">zth::Signal</a>* s, <a name="_a1"></a><a class="code" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> interval)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span>(!s || interval.<a name="a2"></a><a class="code" href="classzth_1_1_time_interval.html#a95218f161942c014e19d8fb436f49dc5">isNegative</a>())</div>
+<div class="line">    <span class="keywordflow">if</span>(!s || interval.<a name="a2"></a><a class="code" href="classzth_1_1_time_interval.html#a9e9a2fed835627252cad22d2c8a4df59">isNegative</a>())</div>
 <div class="line">        <span class="keywordflow">return</span>;</div>
 <div class="line"> </div>
 <div class="line">    <a name="_a3"></a><a class="code" href="classzth_1_1_timestamp.html">zth::Timestamp</a> t = <a name="a4"></a><a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>() + interval;</div>
 <div class="line">    <span class="keywordflow">while</span>(!shutdown_flag) {</div>
 <div class="line">        <a name="a5"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(t);</div>
-<div class="line">        s-&gt;<a name="a6"></a><a class="code" href="classzth_1_1_signal.html#a1041221a30f5a4dfa275e719ef1dc8ec">signal</a>();</div>
+<div class="line">        s-&gt;<a name="a6"></a><a class="code" href="classzth_1_1_signal.html#a16165fbebc104cbabdd7be23c51f46bf">signal</a>();</div>
 <div class="line">        t += interval;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line"><a name="a7"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trigger)</div>
+<div class="line"><a name="a7"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trigger);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// A daemon just runs in the background. When another fiber does something that</span></div>
 <div class="line"><span class="comment">// is relevant for the daemon, it signals a global zth::Signal.  This wakes the</span></div>
@@ -113,9 +113,9 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> someDaemon()</div>
 <div class="line">{</div>
-<div class="line">    <span class="comment">// The daemon is an infinite loop, which ends waiting for its trigger signal.</span></div>
-<div class="line">    <span class="comment">// The wait for the signal is blocking. If a wakeup is required at some</span></div>
-<div class="line">    <span class="comment">// interval, start a timer to do this.</span></div>
+<div class="line">    <span class="comment">// The daemon is an infinite loop, which ends waiting for its trigger</span></div>
+<div class="line">    <span class="comment">// signal.  The wait for the signal is blocking. If a wakeup is</span></div>
+<div class="line">    <span class="comment">// required at some interval, start a timer to do this.</span></div>
 <div class="line">    <a name="a8"></a><a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> trigger(&amp;triggerSomeDaemon, 1);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">while</span>(!shutdown_flag) {</div>
@@ -125,25 +125,26 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line">        triggerSomeDaemon.wait();</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(someDaemon)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(someDaemon);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> foo()</div>
 <div class="line">{</div>
 <div class="line">    printf(<span class="stringliteral">&quot;foo\n&quot;</span>);</div>
-<div class="line">    <span class="comment">// Trigger the daemon, but only wake it once if triggered multiple times.</span></div>
+<div class="line">    <span class="comment">// Trigger the daemon, but only wake it once if triggered multiple</span></div>
+<div class="line">    <span class="comment">// times.</span></div>
 <div class="line">    triggerSomeDaemon.signal();</div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(0.5);</div>
 <div class="line">}</div>
-<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(foo)</div>
+<div class="line"><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(foo);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> <a name="a9"></a><a class="code" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <a name="a10"></a><a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argc), <span class="keywordtype">char</span>** <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argv))</div>
 <div class="line">{</div>
 <div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> someDaemon();</div>
 <div class="line"> </div>
 <div class="line">    <a name="_a11"></a><a class="code" href="classzth_1_1_gate.html">zth::Gate</a> gate(4);</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a name="_a12"></a><a class="code" href="structzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a class="code" href="structzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
-<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a class="code" href="structzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a name="_a12"></a><a class="code" href="classzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a class="code" href="classzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
+<div class="line">    <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> foo() &lt;&lt; <a class="code" href="classzth_1_1pass_on_exit.html">zth::passOnExit</a>(gate);</div>
 <div class="line">    gate.wait();</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Nap for a while, to show the interval trigger of the daemon.</span></div>
@@ -154,19 +155,19 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aclasszth_1_1_time_interval_html_a95218f161942c014e19d8fb436f49dc5"><div class="ttname"><a href="classzth_1_1_time_interval.html#a95218f161942c014e19d8fb436f49dc5">zth::TimeInterval::isNegative</a></div><div class="ttdeci">constexpr bool isNegative() const</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00141">time.h:141</a></div></div>
-<div class="ttc" id="aclasszth_1_1_signal_html_a1041221a30f5a4dfa275e719ef1dc8ec"><div class="ttname"><a href="classzth_1_1_signal.html#a1041221a30f5a4dfa275e719ef1dc8ec">zth::Signal::signal</a></div><div class="ttdeci">void signal(bool queue=true, bool queueEveryTime=false)</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00378">sync.h:378</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00361">time.h:361</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00517">async.h:517</a></div></div>
-<div class="ttc" id="aclasszth_1_1_signal_html"><div class="ttname"><a href="classzth_1_1_signal.html">zth::Signal</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00340">sync.h:340</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00383">time.h:383</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00568">async.h:568</a></div></div>
+<div class="ttc" id="aclasszth_1_1_signal_html"><div class="ttname"><a href="classzth_1_1_signal.html">zth::Signal</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00431">sync.h:431</a></div></div>
 <div class="ttc" id="aclasszth_1_1_time_interval_html"><div class="ttname"><a href="classzth_1_1_time_interval.html">zth::TimeInterval</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains a time interval.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00058">time.h:58</a></div></div>
-<div class="ttc" id="aclasszth_1_1_gate_html"><div class="ttname"><a href="classzth_1_1_gate.html">zth::Gate</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00481">sync.h:481</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00173">waiter.h:173</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00496">async.h:496</a></div></div>
-<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00342">time.h:342</a></div></div>
+<div class="ttc" id="aclasszth_1_1_signal_html_a16165fbebc104cbabdd7be23c51f46bf"><div class="ttname"><a href="classzth_1_1_signal.html#a16165fbebc104cbabdd7be23c51f46bf">zth::Signal::signal</a></div><div class="ttdeci">void signal(bool queue=true, bool queueEveryTime=false) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00484">sync.h:484</a></div></div>
+<div class="ttc" id="aclasszth_1_1_gate_html"><div class="ttname"><a href="classzth_1_1_gate.html">zth::Gate</a></div><div class="ttdef"><b>Definition:</b> <a href="sync_8h_source.html#l00698">sync.h:698</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdef"><b>Definition:</b> <a href="waiter_8h_source.html#l00206">waiter.h:206</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00547">async.h:547</a></div></div>
+<div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00363">time.h:363</a></div></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
-<div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00083">macros.h:83</a></div></div>
-<div class="ttc" id="astructzth_1_1pass_on_exit_html"><div class="ttname"><a href="structzth_1_1pass_on_exit.html">zth::passOnExit</a></div><div class="ttdoc">Makes the fiber pass the given gate upon exit.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00184">async.h:184</a></div></div>
+<div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00088">macros.h:88</a></div></div>
+<div class="ttc" id="aclasszth_1_1pass_on_exit_html"><div class="ttname"><a href="classzth_1_1pass_on_exit.html">zth::passOnExit</a></div><div class="ttdoc">Makes the fiber pass the given gate upon exit.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00201">async.h:201</a></div></div>
+<div class="ttc" id="aclasszth_1_1_time_interval_html_a9e9a2fed835627252cad22d2c8a4df59"><div class="ttname"><a href="classzth_1_1_time_interval.html#a9e9a2fed835627252cad22d2c8a4df59">zth::TimeInterval::isNegative</a></div><div class="ttdeci">constexpr bool isNegative() const noexcept</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00147">time.h:147</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

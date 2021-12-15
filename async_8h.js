@@ -1,27 +1,11 @@
 var async_8h =
 [
     [ "TypedFiber", "classzth_1_1_typed_fiber.html", "classzth_1_1_typed_fiber" ],
-    [ "FiberManipulator", "structzth_1_1_fiber_manipulator.html", "structzth_1_1_fiber_manipulator" ],
+    [ "FiberManipulator", "classzth_1_1_fiber_manipulator.html", "classzth_1_1_fiber_manipulator" ],
     [ "AutoFuture", "classzth_1_1_auto_future.html", "classzth_1_1_auto_future" ],
-    [ "TypedFiber0", "classzth_1_1_typed_fiber0.html", "classzth_1_1_typed_fiber0" ],
-    [ "TypedFiber0< void >", "classzth_1_1_typed_fiber0_3_01void_01_4.html", "classzth_1_1_typed_fiber0_3_01void_01_4" ],
-    [ "TypedFiber1", "classzth_1_1_typed_fiber1.html", "classzth_1_1_typed_fiber1" ],
-    [ "TypedFiber1< void, A1 >", "classzth_1_1_typed_fiber1_3_01void_00_01_a1_01_4.html", "classzth_1_1_typed_fiber1_3_01void_00_01_a1_01_4" ],
-    [ "TypedFiber2", "classzth_1_1_typed_fiber2.html", "classzth_1_1_typed_fiber2" ],
-    [ "TypedFiber2< void, A1, A2 >", "classzth_1_1_typed_fiber2_3_01void_00_01_a1_00_01_a2_01_4.html", "classzth_1_1_typed_fiber2_3_01void_00_01_a1_00_01_a2_01_4" ],
-    [ "TypedFiber3", "classzth_1_1_typed_fiber3.html", "classzth_1_1_typed_fiber3" ],
-    [ "TypedFiber3< void, A1, A2, A3 >", "classzth_1_1_typed_fiber3_3_01void_00_01_a1_00_01_a2_00_01_a3_01_4.html", "classzth_1_1_typed_fiber3_3_01void_00_01_a1_00_01_a2_00_01_a3_01_4" ],
     [ "TypedFiberN", "classzth_1_1_typed_fiber_n.html", "classzth_1_1_typed_fiber_n" ],
     [ "TypedFiberN< void, Args... >", "classzth_1_1_typed_fiber_n_3_01void_00_01_args_8_8_8_01_4.html", "classzth_1_1_typed_fiber_n_3_01void_00_01_args_8_8_8_01_4" ],
     [ "TypedFiberType", "structzth_1_1_typed_fiber_type.html", null ],
-    [ "TypedFiberType< R(*)()>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_08_4.html", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_08_4" ],
-    [ "NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_08_4_1_1_no_arg.html", null ],
-    [ "TypedFiberType< R(*)(A1)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_08_4.html", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_08_4" ],
-    [ "NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_08_4_1_1_no_arg.html", null ],
-    [ "TypedFiberType< R(*)(A1, A2)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_08_4.html", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_08_4" ],
-    [ "NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_08_4_1_1_no_arg.html", null ],
-    [ "TypedFiberType< R(*)(A1, A2, A3)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_00_01_a3_08_4.html", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_00_01_a3_08_4" ],
-    [ "NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_a1_00_01_a2_00_01_a3_08_4_1_1_no_arg.html", null ],
     [ "TypedFiberType< R(*)(Args...)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4" ],
     [ "NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4_1_1_no_arg.html", null ],
     [ "TypedFiberFactory", "classzth_1_1_typed_fiber_factory.html", "classzth_1_1_typed_fiber_factory" ],
@@ -33,6 +17,7 @@ var async_8h =
     [ "zth_fiber_define_1", "async_8h.html#afb3ae6515265b8f35da7d52abf77b9a1", null ],
     [ "zth_fiber_define_extern_1", "async_8h.html#a82c868d46d7f90e06b018a8d10287a94", null ],
     [ "zth_fiber_define_static_1", "async_8h.html#a75bb21d40fcb77e3190087d93513ab9a", null ],
+    [ "ZTH_TYPEDFIBER98", "async_8h.html#a43337f1be31a98e81e1888320847e6d8", null ],
     [ "operator<<", "async_8h.html#aafea64122556ec2e7a3e9940e8dce06e", null ],
-    [ "zth_fiber_create", "group__zth__api__c__fiber.html#ga063e3fd7e1bf867857181a9960299bce", null ]
+    [ "zth_fiber_create", "group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3", null ]
 ];

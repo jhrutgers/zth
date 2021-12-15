@@ -155,8 +155,6 @@ Macros</h2></td></tr>
 <tr class="memitem:ad8700448546b3b5111404cc021061fd5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(expr)&#160;&#160;&#160;__builtin_expect(!!(expr), 0)</td></tr>
 <tr class="memdesc:ad8700448546b3b5111404cc021061fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Marks the given expression to likely be evaluated to true.  <a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">More...</a><br /></td></tr>
 <tr class="separator:ad8700448546b3b5111404cc021061fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25b4da9c1f0b06ff0b92509c874234a1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a25b4da9c1f0b06ff0b92509c874234a1">static_assert</a>(expr,  msg)&#160;&#160;&#160;typedef int static_assert_[(expr) ? 1 : -1]</td></tr>
-<tr class="separator:a25b4da9c1f0b06ff0b92509c874234a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa53bc832a852797693a57131a8473413"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa53bc832a852797693a57131a8473413">ZTH_GET_MACRO_ARGN</a>(_0,  _1,  _2,  _3,  _4,  _5,  _6,  _7,  _8,  _9,  _10,  _11,  _12,  _13,  _14,  _15,  _16,  NAME, ...)&#160;&#160;&#160;NAME</td></tr>
 <tr class="memdesc:aa53bc832a852797693a57131a8473413"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper for <a class="el" href="util_8h.html#af066968dd1ddf024e9ebe92ca95fc633" title="Evaluates to action(x) for every argument.">FOREACH</a> and <a class="el" href="util_8h.html#ad521206ac9d2802714225a04c48dc442">REVERSE</a>.  <a href="util_8h.html#aa53bc832a852797693a57131a8473413">More...</a><br /></td></tr>
 <tr class="separator:aa53bc832a852797693a57131a8473413"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1570,36 +1568,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a25b4da9c1f0b06ff0b92509c874234a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25b4da9c1f0b06ff0b92509c874234a1">&#9670;&nbsp;</a></span>static_assert</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define static_assert</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">expr, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">msg&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;typedef int static_assert_[(expr) ? 1 : -1]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00074">74</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
-
-</div>
-</div>
 <a id="ad8700448546b3b5111404cc021061fd5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8700448546b3b5111404cc021061fd5">&#9670;&nbsp;</a></span>unlikely</h2>
 
@@ -1647,7 +1615,7 @@ Variables</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a23">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a2">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00189">189</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00191">191</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1673,7 +1641,7 @@ Variables</h2></td></tr>
 <div class="line">        Class&amp; operator=(Class&amp;&amp;) noexcept = delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) */</span> \</div>
 <div class="line">    private:</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00201">201</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00203">203</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1691,7 +1659,7 @@ Variables</h2></td></tr>
 
 <p>Prefix for every <a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7" title="Debug printf()-like function.">zth_dbg()</a> call. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00162">162</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00164">164</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>

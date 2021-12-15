@@ -23,7 +23,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "Zth (libzth)", "index.html", [
-    [ "Using Zth on Bare-Metal ARM", "md_dist_qemu-arm__r_e_a_d_m_e-_a_r_m.html", null ],
+    [ "Using Zth on Bare-Metal ARM", "md_dist_qemu-arm-a15__r_e_a_d_m_e-_a_r_m.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
@@ -67,12 +67,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "1_helloworld_8cpp-example.html",
-"classzth_1_1_load.html#a956473247b7187b46c20bf88c8cdad51",
-"classzth_1_1_typed_fiber.html#ac45ce5da6f2a5212f7879518ece20963",
-"functions_b.html",
-"group__zth__api__cpp__time.html#ga89f549305d29a1f0d515f4f46f515113",
-"structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_08_4.html#a5cb129f260fc0485a1237ba1c4656a30",
-"worker_8cpp_source.html"
+"classzth_1_1_list.html#af9cc69fa797d8aa19bf4af7541630c7f",
+"classzth_1_1_time_interval.html#aaa40db0f18249097d43d6b90553ce854",
+"context_8cpp.html#ga2cb0b9d1a5546505a1316c3537080c02",
+"group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2",
+"structzth_1_1_perf_event_3_01false_01_4.html#a0a9e08ba5485e9e2c96d85322b56d907",
+"worker_8cpp.html#ab890ee9e183611f6310c009078be7d53"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

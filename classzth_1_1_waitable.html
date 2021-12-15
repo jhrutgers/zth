@@ -106,29 +106,29 @@ Inheritance diagram for zth::Waitable:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a41354477941eeaa06a97b3e2a138d120"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a41354477941eeaa06a97b3e2a138d120">Waitable</a> ()</td></tr>
-<tr class="separator:a41354477941eeaa06a97b3e2a138d120"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a265395e5c9575694b381ee22fa9b6ea5"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a265395e5c9575694b381ee22fa9b6ea5">~Waitable</a> ()</td></tr>
-<tr class="separator:a265395e5c9575694b381ee22fa9b6ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad973cc370e9a7e9b9cb610f216db1b0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#ad973cc370e9a7e9b9cb610f216db1b0c">fiber</a> () const</td></tr>
-<tr class="separator:ad973cc370e9a7e9b9cb610f216db1b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1b10b63ed008e16cc0ba54de98e99e3"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#af1b10b63ed008e16cc0ba54de98e99e3">poll</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>())=0</td></tr>
-<tr class="separator:af1b10b63ed008e16cc0ba54de98e99e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6884ef1eba50bf039c48a01feee637fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a6884ef1eba50bf039c48a01feee637fc">Waitable</a> () noexcept</td></tr>
+<tr class="separator:a6884ef1eba50bf039c48a01feee637fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a637360e1bdfab0aca1321eb5c80e7f75"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a637360e1bdfab0aca1321eb5c80e7f75">~Waitable</a> ()=default</td></tr>
+<tr class="separator:a637360e1bdfab0aca1321eb5c80e7f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abec17c6d14e0bafb0b3789811e1df460"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#abec17c6d14e0bafb0b3789811e1df460">fiber</a> () const noexcept</td></tr>
+<tr class="separator:abec17c6d14e0bafb0b3789811e1df460"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af846f895a0af95e2f24d319db3634773"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#af846f895a0af95e2f24d319db3634773">poll</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) noexcept=0</td></tr>
+<tr class="separator:af846f895a0af95e2f24d319db3634773"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c4216713ff1c0e99f499cc3bf71cc66"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">string</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a7c4216713ff1c0e99f499cc3bf71cc66">str</a> () const</td></tr>
 <tr class="separator:a7c4216713ff1c0e99f499cc3bf71cc66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1d7e338029535e7ed24bc736d074350"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#aa1d7e338029535e7ed24bc736d074350">setFiber</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="classzth_1_1_waitable.html#ad973cc370e9a7e9b9cb610f216db1b0c">fiber</a>)</td></tr>
-<tr class="separator:aa1d7e338029535e7ed24bc736d074350"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e4ab075c2ff81b7df842d377c091037"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a4e4ab075c2ff81b7df842d377c091037">resetFiber</a> ()</td></tr>
-<tr class="separator:a4e4ab075c2ff81b7df842d377c091037"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7535f7b484083792557ed714b2116548"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a7535f7b484083792557ed714b2116548">hasFiber</a> () const</td></tr>
-<tr class="separator:a7535f7b484083792557ed714b2116548"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cf9f222314470c0f53ffa352b897ad5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a2cf9f222314470c0f53ffa352b897ad5">setFiber</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="classzth_1_1_waitable.html#abec17c6d14e0bafb0b3789811e1df460">fiber</a>) noexcept</td></tr>
+<tr class="separator:a2cf9f222314470c0f53ffa352b897ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad67deb9a3cbba853f02f03372511ab02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#ad67deb9a3cbba853f02f03372511ab02">resetFiber</a> () noexcept</td></tr>
+<tr class="separator:ad67deb9a3cbba853f02f03372511ab02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af58a46ce86b80584d868d16dbe418e24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#af58a46ce86b80584d868d16dbe418e24">hasFiber</a> () const noexcept</td></tr>
+<tr class="separator:af58a46ce86b80584d868d16dbe418e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00031">31</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00032">32</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a41354477941eeaa06a97b3e2a138d120"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41354477941eeaa06a97b3e2a138d120">&#9670;&nbsp;</a></span>Waitable()</h2>
+<a id="a6884ef1eba50bf039c48a01feee637fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6884ef1eba50bf039c48a01feee637fc">&#9670;&nbsp;</a></span>Waitable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,17 +145,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00034">34</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00035">35</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
-<a id="a265395e5c9575694b381ee22fa9b6ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a265395e5c9575694b381ee22fa9b6ea5">&#9670;&nbsp;</a></span>~Waitable()</h2>
+<a id="a637360e1bdfab0aca1321eb5c80e7f75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a637360e1bdfab0aca1321eb5c80e7f75">&#9670;&nbsp;</a></span>~Waitable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,18 +172,16 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00035">35</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad973cc370e9a7e9b9cb610f216db1b0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad973cc370e9a7e9b9cb610f216db1b0c">&#9670;&nbsp;</a></span>fiber()</h2>
+<a id="abec17c6d14e0bafb0b3789811e1df460"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec17c6d14e0bafb0b3789811e1df460">&#9670;&nbsp;</a></span>fiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -200,17 +198,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00036">36</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00037">37</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
-<a id="a7535f7b484083792557ed714b2116548"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7535f7b484083792557ed714b2116548">&#9670;&nbsp;</a></span>hasFiber()</h2>
+<a id="af58a46ce86b80584d868d16dbe418e24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af58a46ce86b80584d868d16dbe418e24">&#9670;&nbsp;</a></span>hasFiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,17 +225,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00041">41</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00042">42</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
-<a id="af1b10b63ed008e16cc0ba54de98e99e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af1b10b63ed008e16cc0ba54de98e99e3">&#9670;&nbsp;</a></span>poll()</h2>
+<a id="af846f895a0af95e2f24d319db3634773"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af846f895a0af95e2f24d319db3634773">&#9670;&nbsp;</a></span>poll()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -255,17 +253,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1_polled_waiting.html#afd2214bb62e7f944d6c3e3d3f2c40edf">zth::PolledWaiting&lt; F &gt;</a>, <a class="el" href="classzth_1_1_polled_waiting.html#afd2214bb62e7f944d6c3e3d3f2c40edf">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, <a class="el" href="classzth_1_1_timed_waitable.html#a3a65fa9e66301aba371bf31518333b57">zth::TimedWaitable</a>, and <a class="el" href="classzth_1_1_synchronizer_1_1_alarm_clock.html#a1fd52f4e069d8dc8a6c24290f158a356">zth::Synchronizer::AlarmClock</a>.</p>
+<p>Implemented in <a class="el" href="classzth_1_1_synchronizer_1_1_alarm_clock.html#a19a8f55e4e2032c3fea7c468b143b901">zth::Synchronizer::AlarmClock</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; F &gt;</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_timed_waitable.html#a27360262a2425148f076c99f7223847b">zth::TimedWaitable</a>.</p>
 
 </div>
 </div>
-<a id="a4e4ab075c2ff81b7df842d377c091037"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e4ab075c2ff81b7df842d377c091037">&#9670;&nbsp;</a></span>resetFiber()</h2>
+<a id="ad67deb9a3cbba853f02f03372511ab02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67deb9a3cbba853f02f03372511ab02">&#9670;&nbsp;</a></span>resetFiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -282,17 +280,17 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00040">40</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00041">41</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
-<a id="aa1d7e338029535e7ed24bc736d074350"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1d7e338029535e7ed24bc736d074350">&#9670;&nbsp;</a></span>setFiber()</h2>
+<a id="a2cf9f222314470c0f53ffa352b897ad5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cf9f222314470c0f53ffa352b897ad5">&#9670;&nbsp;</a></span>setFiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -310,12 +308,12 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00039">39</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00040">40</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -344,7 +342,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classzth_1_1_timed_waitable.html#abf9ddf73918a86386356c0e3630ed522">zth::TimedWaitable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00038">38</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00039">39</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>

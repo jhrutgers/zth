@@ -1,11 +1,11 @@
 var classzth_1_1_waitable =
 [
-    [ "Waitable", "classzth_1_1_waitable.html#a41354477941eeaa06a97b3e2a138d120", null ],
-    [ "~Waitable", "classzth_1_1_waitable.html#a265395e5c9575694b381ee22fa9b6ea5", null ],
-    [ "fiber", "classzth_1_1_waitable.html#ad973cc370e9a7e9b9cb610f216db1b0c", null ],
-    [ "hasFiber", "classzth_1_1_waitable.html#a7535f7b484083792557ed714b2116548", null ],
-    [ "poll", "classzth_1_1_waitable.html#af1b10b63ed008e16cc0ba54de98e99e3", null ],
-    [ "resetFiber", "classzth_1_1_waitable.html#a4e4ab075c2ff81b7df842d377c091037", null ],
-    [ "setFiber", "classzth_1_1_waitable.html#aa1d7e338029535e7ed24bc736d074350", null ],
+    [ "Waitable", "classzth_1_1_waitable.html#a6884ef1eba50bf039c48a01feee637fc", null ],
+    [ "~Waitable", "classzth_1_1_waitable.html#a637360e1bdfab0aca1321eb5c80e7f75", null ],
+    [ "fiber", "classzth_1_1_waitable.html#abec17c6d14e0bafb0b3789811e1df460", null ],
+    [ "hasFiber", "classzth_1_1_waitable.html#af58a46ce86b80584d868d16dbe418e24", null ],
+    [ "poll", "classzth_1_1_waitable.html#af846f895a0af95e2f24d319db3634773", null ],
+    [ "resetFiber", "classzth_1_1_waitable.html#ad67deb9a3cbba853f02f03372511ab02", null ],
+    [ "setFiber", "classzth_1_1_waitable.html#a2cf9f222314470c0f53ffa352b897ad5", null ],
     [ "str", "classzth_1_1_waitable.html#a7c4216713ff1c0e99f499cc3bf71cc66", null ]
 ];

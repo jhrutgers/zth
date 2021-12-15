@@ -1,7 +1,7 @@
 var classzth_1_1_waiter =
 [
     [ "Waiter", "classzth_1_1_waiter.html#acc9a8c88bf782ff202b77d2a811025bc", null ],
-    [ "~Waiter", "classzth_1_1_waiter.html#aa52176fb6a5ebb9f04968d497fe47b0a", null ],
+    [ "~Waiter", "classzth_1_1_waiter.html#a11e583c053c33d0168d7a6bae1a03eda", null ],
     [ "entry", "classzth_1_1_waiter.html#a66a6123a0a80d5dfa16aee4739922d7c", null ],
     [ "fiberHook", "classzth_1_1_waiter.html#a538665d6dfc4d60014fa96a54535b604", null ],
     [ "poller", "classzth_1_1_waiter.html#ac936151312a09231499c80593faf0581", null ],

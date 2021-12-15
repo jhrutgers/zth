@@ -84,7 +84,6 @@ $(document).ready(function(){initNavTree('classzth_1_1_runnable.html',''); initR
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="classzth_1_1_runnable-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">zth::Runnable Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span><div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a> &raquo; <a class="el" href="group__zth__api__cpp__util.html">util</a></div></div>  </div>
@@ -108,43 +107,36 @@ Inheritance diagram for zth::Runnable:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aebfd5b25f655ff921abb25a10de58cb2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#aebfd5b25f655ff921abb25a10de58cb2">Runnable</a> ()</td></tr>
-<tr class="separator:aebfd5b25f655ff921abb25a10de58cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3634b01ceddb5f224ca461926d0aa8f1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a3634b01ceddb5f224ca461926d0aa8f1">~Runnable</a> ()</td></tr>
-<tr class="separator:a3634b01ceddb5f224ca461926d0aa8f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4b93ad3d334fac1bd395c7501f08b7c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#ab4b93ad3d334fac1bd395c7501f08b7c">~Runnable</a> ()=default</td></tr>
+<tr class="separator:ab4b93ad3d334fac1bd395c7501f08b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a271c8712b982474d559dd49ec9634c1f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a271c8712b982474d559dd49ec9634c1f">run</a> ()</td></tr>
 <tr class="separator:a271c8712b982474d559dd49ec9634c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae45c4e31aad2cd6eba78cc2b1cfd7d79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#ae45c4e31aad2cd6eba78cc2b1cfd7d79">fiber</a> () const</td></tr>
-<tr class="separator:ae45c4e31aad2cd6eba78cc2b1cfd7d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45dfbb0549ab046e28eee9a7a9172ce7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a45dfbb0549ab046e28eee9a7a9172ce7">operator Fiber &amp;</a> ()</td></tr>
-<tr class="separator:a45dfbb0549ab046e28eee9a7a9172ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d111f6a4697b273bfcf1476e0f3f427"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a8d111f6a4697b273bfcf1476e0f3f427">fiber</a> () const noexcept</td></tr>
+<tr class="separator:a8d111f6a4697b273bfcf1476e0f3f427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72ad7d55ba1c56fc9ea15839a37aaaf1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a72ad7d55ba1c56fc9ea15839a37aaaf1">operator Fiber &amp;</a> () const noexcept</td></tr>
+<tr class="separator:a72ad7d55ba1c56fc9ea15839a37aaaf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dbb127d9716bc92ee2382094f308484"><td class="memItemLeft" align="right" valign="top">char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a7dbb127d9716bc92ee2382094f308484">id_str</a> () const</td></tr>
 <tr class="separator:a7dbb127d9716bc92ee2382094f308484"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:adb04fea6d29ce97aa87d25b80b98d00e"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#adb04fea6d29ce97aa87d25b80b98d00e">Runnable</a> () noexcept</td></tr>
+<tr class="separator:adb04fea6d29ce97aa87d25b80b98d00e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53e52412bdbfe1a4124e88db6108e3b6"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a53e52412bdbfe1a4124e88db6108e3b6">fiberHook</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;f)</td></tr>
 <tr class="separator:a53e52412bdbfe1a4124e88db6108e3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1b2ae115fa74502cd4d3be12570c5b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#aa1b2ae115fa74502cd4d3be12570c5b1">cleanup</a> ()</td></tr>
 <tr class="separator:aa1b2ae115fa74502cd4d3be12570c5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebdf1efa390ce8ff7dd0224ff598be44"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#aebdf1efa390ce8ff7dd0224ff598be44">entry</a> ()=0</td></tr>
 <tr class="separator:aebdf1efa390ce8ff7dd0224ff598be44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
-Static Protected Member Functions</h2></td></tr>
-<tr class="memitem:a7c597c0de6a02b76de25357202bdf61a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a7c597c0de6a02b76de25357202bdf61a">cleanup_</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(f), void *that)</td></tr>
-<tr class="separator:a7c597c0de6a02b76de25357202bdf61a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86d9f41f1c259a25e0f188c45334a1cb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a86d9f41f1c259a25e0f188c45334a1cb">entry_</a> (void *that)</td></tr>
-<tr class="separator:a86d9f41f1c259a25e0f188c45334a1cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An abstract class, that can be started as a fiber. </p>
 <p>Create a subclass of this class if you want to have an object that can be started as a fiber. In contrast to a <a class="el" href="classzth_1_1_fiber.html" title="The fiber.">zth::Fiber</a>, this class does not have to be on the heap and exists before and after the actual fiber. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00392">392</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00407">407</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aebfd5b25f655ff921abb25a10de58cb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebfd5b25f655ff921abb25a10de58cb2">&#9670;&nbsp;</a></span>Runnable()</h2>
+<a id="adb04fea6d29ce97aa87d25b80b98d00e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb04fea6d29ce97aa87d25b80b98d00e">&#9670;&nbsp;</a></span>Runnable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,7 +145,7 @@ Static Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">zth::Runnable::Runnable </td>
+          <td class="memname">constexpr zth::Runnable::Runnable </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -161,17 +153,17 @@ Static Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00396">396</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00411">411</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
-<a id="a3634b01ceddb5f224ca461926d0aa8f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3634b01ceddb5f224ca461926d0aa8f1">&#9670;&nbsp;</a></span>~Runnable()</h2>
+<a id="ab4b93ad3d334fac1bd395c7501f08b7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4b93ad3d334fac1bd395c7501f08b7c">&#9670;&nbsp;</a></span>~Runnable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,12 +180,10 @@ Static Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00400">400</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -221,45 +211,7 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00416">416</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
-
-</div>
-</div>
-<a id="a7c597c0de6a02b76de25357202bdf61a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c597c0de6a02b76de25357202bdf61a">&#9670;&nbsp;</a></span>cleanup_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void zth::Runnable::cleanup_ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;&#160;</td>
-          <td class="paramname"><em>UNUSED_PAR</em>f, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>that</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00420">420</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00444">444</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -286,40 +238,12 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1_perf_fiber.html#a870156d3380a575877410da1db1d22e7">zth::PerfFiber</a>, and <a class="el" href="classzth_1_1_waiter.html#a66a6123a0a80d5dfa16aee4739922d7c">zth::Waiter</a>.</p>
+<p>Implemented in <a class="el" href="classzth_1_1_waiter.html#a66a6123a0a80d5dfa16aee4739922d7c">zth::Waiter</a>, and <a class="el" href="classzth_1_1_perf_fiber.html#a870156d3380a575877410da1db1d22e7">zth::PerfFiber</a>.</p>
 
 </div>
 </div>
-<a id="a86d9f41f1c259a25e0f188c45334a1cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86d9f41f1c259a25e0f188c45334a1cb">&#9670;&nbsp;</a></span>entry_()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void zth::Runnable::entry_ </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>that</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00429">429</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
-
-</div>
-</div>
-<a id="ae45c4e31aad2cd6eba78cc2b1cfd7d79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae45c4e31aad2cd6eba78cc2b1cfd7d79">&#9670;&nbsp;</a></span>fiber()</h2>
+<a id="a8d111f6a4697b273bfcf1476e0f3f427"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d111f6a4697b273bfcf1476e0f3f427">&#9670;&nbsp;</a></span>fiber()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,12 +260,12 @@ Static Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00402">402</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00420">420</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -369,9 +293,9 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classzth_1_1_perf_fiber.html#a162a00847e82f65a1d8b0cbb9304ef93">zth::PerfFiber</a>, and <a class="el" href="classzth_1_1_waiter.html#a538665d6dfc4d60014fa96a54535b604">zth::Waiter</a>.</p>
+<p>Reimplemented in <a class="el" href="classzth_1_1_waiter.html#a538665d6dfc4d60014fa96a54535b604">zth::Waiter</a>, and <a class="el" href="classzth_1_1_perf_fiber.html#a162a00847e82f65a1d8b0cbb9304ef93">zth::PerfFiber</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00410">410</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00437">437</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -398,12 +322,12 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00405">405</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00431">431</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
-<a id="a45dfbb0549ab046e28eee9a7a9172ce7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45dfbb0549ab046e28eee9a7a9172ce7">&#9670;&nbsp;</a></span>operator Fiber &amp;()</h2>
+<a id="a72ad7d55ba1c56fc9ea15839a37aaaf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72ad7d55ba1c56fc9ea15839a37aaaf1">&#9670;&nbsp;</a></span>operator Fiber &amp;()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -415,17 +339,17 @@ Static Protected Member Functions</h2></td></tr>
           <td class="memname">zth::Runnable::operator <a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp; </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00403">403</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00425">425</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>

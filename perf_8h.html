@@ -120,6 +120,8 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga6bc9fae666913eb0855d1402f45bf302"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302">zth_perf_event</a>(...)</td></tr>
+<tr class="separator:ga6bc9fae666913eb0855d1402f45bf302"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae5ad38cc005a1b590020370a5d8362b9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__perf.html#gae5ad38cc005a1b590020370a5d8362b9">zth_perf_mark</a>(marker)</td></tr>
 <tr class="separator:gae5ad38cc005a1b590020370a5d8362b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -134,12 +136,13 @@ Functions</h2></td></tr>
 <tr class="separator:a447f951e1169d6fe43f618bce52e75f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8a6fdc27b5e9243380e5b67d672812"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a3f8a6fdc27b5e9243380e5b67d672812">zth::perf_deinit</a> ()</td></tr>
 <tr class="separator:a3f8a6fdc27b5e9243380e5b67d672812"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5029717fe3518c3cc26c0414db5ba9a"><td class="memItemLeft" align="right" valign="top">UniqueID&lt; Fiber &gt; const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ac5029717fe3518c3cc26c0414db5ba9a">zth::currentFiberID</a> ()</td></tr>
-<tr class="separator:ac5029717fe3518c3cc26c0414db5ba9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a209869553938004bf0e2c93bb3d218da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a209869553938004bf0e2c93bb3d218da">zth::perf_flushEventBuffer</a> ()</td></tr>
-<tr class="separator:a209869553938004bf0e2c93bb3d218da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga104419a80f14653afa2fa86a4cfa6d02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga104419a80f14653afa2fa86a4cfa6d02">zth::perf_event</a> (PerfEvent&lt;&gt; const &amp;event)</td></tr>
-<tr class="separator:ga104419a80f14653afa2fa86a4cfa6d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfaff359fbc3634fd92a8f4a26aa5216"><td class="memItemLeft" align="right" valign="top">UniqueID&lt; Fiber &gt; const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#acfaff359fbc3634fd92a8f4a26aa5216">zth::currentFiberID</a> () noexcept</td></tr>
+<tr class="separator:acfaff359fbc3634fd92a8f4a26aa5216"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71e3a50748da2dbfad52f9678bd8c179"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a71e3a50748da2dbfad52f9678bd8c179">zth::perf_flushEventBuffer</a> () noexcept</td></tr>
+<tr class="separator:a71e3a50748da2dbfad52f9678bd8c179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0a9cb2d2794cd2768a0b5fde149f179"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:aa0a9cb2d2794cd2768a0b5fde149f179"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aa0a9cb2d2794cd2768a0b5fde149f179">zth::perf_event</a> (Args &amp;&amp;... args) noexcept</td></tr>
+<tr class="separator:aa0a9cb2d2794cd2768a0b5fde149f179"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a> (char const *marker)</td></tr>
 <tr class="separator:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga37750cc0aa9a7e2dde894e68c125292e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">zth::perf_log</a> (char const *fmt,...)</td></tr>
@@ -172,7 +175,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00304">304</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00373">373</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
 
 </div>
 </div>
