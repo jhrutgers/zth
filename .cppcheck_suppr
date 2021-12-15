@@ -15,3 +15,6 @@ unreadVariable:examples/measure.cpp
 constParameter:examples/fsm.cpp
 constParameterCallback:examples/fsm.cpp
 unmatchedSuppression:examples/fsm.cpp
+
+constParameter:include/libzth/context.h
+unmatchedSuppression:include/libzth/context.h
