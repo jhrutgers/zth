@@ -16,6 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <libzth/macros.h>
+
+#ifdef ZTH_OS_MAC
+#	define _XOPEN_SOURCE
+#endif
+
 #include <libzth/context.h>
 #include <libzth/context/context.h>
 #include <libzth/worker.h>

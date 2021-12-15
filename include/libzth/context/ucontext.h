@@ -26,7 +26,9 @@
 
 #	ifdef ZTH_OS_MAC
 // For ucontext_t
-#		define _XOPEN_SOURCE
+#		ifndef _XOPEN_SOURCE
+#			error Please define _XOPEN_SOURCE before including headers.
+#		endif
 #		include <sched.h>
 #	endif
 
@@ -103,7 +105,7 @@ public:
 		__sanitizer_start_switch_fiber(&fake_stack, stack_.p, stack_.size);
 #	endif
 
-		// switcontext() is slow, we want to use sigsetjmp/siglongjmp instead.
+		// switchcontext() is slow, we want to use sigsetjmp/siglongjmp instead.
 		// So, we initialize the sigjmp_buf from the just created context.
 		// After this initial setup, context_switch() is good to go.
 		if(sigsetjmp(origin, Config::ContextSignals) == 0) {
