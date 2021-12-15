@@ -19,7 +19,7 @@ project(Zth)
 include(CheckIncludeFileCXX)
 
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release FORCE)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
 message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
@@ -65,6 +65,15 @@ endif()
 option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" ${ZTH_SAN_DEFAULT})
+
+if(APPLE)
+	list(APPEND CMAKE_INSTALL_RPATH "@executable_path/../lib")
+	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.8")
+		list(APPEND CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	else()
+		set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+	endif()
+endif()
 
 add_subdirectory(version)
 
@@ -178,6 +187,12 @@ endif()
 # Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp
 set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_SOURCE)
 
+if(ZTH_CONTEXT)
+	string(TOUPPER "${ZTH_CONTEXT}" ZTH_CONTEXT)
+	message(STATUS "Prefer context switch approach ${ZTH_CONTEXT}")
+	target_compile_definitions(libzth PUBLIC -DZTH_CONTEXT_${ZTH_CONTEXT})
+endif()
+
 target_include_directories(libzth PUBLIC
 	$<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
 	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -274,8 +289,10 @@ if(ZTH_ENABLE_UBSAN)
 	target_link_options(libzth INTERFACE -fsanitize=undefined)
 endif()
 
+option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
+
 CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
-if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND)
+if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND AND ZTH_ENABLE_VALGRIND)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
@@ -291,7 +308,11 @@ endif()
 
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
 	if(CMAKE_CROSSCOMPILING)
-		set(ZTH_TESTS_DEFAULT OFF)
+		if(UNIX AND ZTH_DIST_DIR AND EXISTS ${ZTH_DIST_DIR}/run.sh)
+			set(ZTH_TESTS_DEFAULT ${ZTH_DEV_OPTION})
+		else()
+			set(ZTH_TESTS_DEFAULT OFF)
+		endif()
 	else()
 		set(ZTH_TESTS_DEFAULT ${ZTH_DEV_OPTION})
 	endif()
@@ -341,7 +362,7 @@ if(CPPCHECK_CMD)
 			-j 4
 			--library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}"
-			-D__GNUC__=10 -DCPPCHECK
+			-D__GNUC__=10 -DCPPCHECK -U__ARM_ARCH
 #			--xml
 			-I include
 			src

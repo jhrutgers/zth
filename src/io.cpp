@@ -32,7 +32,8 @@ namespace zth { namespace io {
  * \brief Like normal \c %read(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
  * \ingroup zth_api_cpp_io
  */
-ssize_t read(int fd, void* buf, size_t count) {
+ssize_t read(int fd, void* buf, size_t count)
+{
 	perf_syscall("read()");
 
 	int flags = fcntl(fd, F_GETFL);
@@ -58,7 +59,8 @@ ssize_t read(int fd, void* buf, size_t count) {
  * \brief Like normal \c %write(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
  * \ingroup zth_api_cpp_io
  */
-ssize_t write(int fd, void const* buf, size_t count) {
+ssize_t write(int fd, void const* buf, size_t count)
+{
 	perf_syscall("write()");
 
 	int flags = fcntl(fd, F_GETFL);

@@ -4,8 +4,8 @@
 using namespace std;
 
 #ifdef ZTH_OS_WINDOWS
-#  define srand48(seed)	srand(seed)
-#  define drand48()	((double)rand() / (double)RAND_MAX)
+#	define srand48(seed) srand(seed)
+#	define drand48()     ((double)rand() / (double)RAND_MAX)
 #endif
 
 struct Sock {
@@ -42,7 +42,7 @@ struct Socks {
 void takeSocks(int count);
 Socks* wearSocks(Socks& socks);
 void washSock(Sock& sock);
-zth_fiber(takeSocks, wearSocks, washSock)
+zth_fiber(takeSocks, wearSocks, washSock);
 
 void takeSocks(int count)
 {
@@ -64,7 +64,7 @@ void takeSocks(int count)
 	// Store the socks in the same order as they were worn.
 	for(decltype(allSocks.begin()) it = allSocks.begin(); it != allSocks.end(); ++it) {
 		// *it is a SharedPointer<Future<Socks*>>
-		Socks* socks = ***it;
+		Socks* socks = (**it)->value();
 		printf("Store %s\n", socks->str.c_str());
 		delete socks;
 	}
@@ -76,8 +76,8 @@ Socks* wearSocks(Socks& socks)
 	printf("Wear %s\n", socks.str.c_str());
 
 	// Done wearing, go wash both socks.
-	async washSock(socks.left);		// in parallel
-	washSock(socks.right);			// done right here and now
+	async washSock(socks.left); // in parallel
+	washSock(socks.right);	    // done right here and now
 
 	// Wait till the washing sequence has completed.
 	socks.left.done.wait();
@@ -102,7 +102,7 @@ void washSock(Sock& sock)
 
 int main()
 {
-	srand48(time(NULL));
+	srand48((long)time(nullptr));
 	zth::Worker w;
 	async takeSocks(10);
 	w.run();

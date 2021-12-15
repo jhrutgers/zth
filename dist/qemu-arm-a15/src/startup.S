@@ -66,9 +66,14 @@ _ivt:
 	b _unknown_irq
 	b _unknown_irq
 
+.global abort
 .global _unknown_irq
 .section .text
+abort:
 _unknown_irq:
+	ldr r1, .L_ADP_Stopped_RunTimeErrorUnknown
+	mov r0, #0x18	// angel_SWIreason_ReportException
+	svc #0x00123456	// semihosting
 	b .
 
 .global _start
@@ -85,13 +90,31 @@ _start:
 	LDR r0, =(0xF << 20)
 	MCR p15, 0, r0, c1, c0, 2
 	// Set the FPEXC EN bit to enable the FPU:
-	MOV r3, #0x40000000 
+	MOV r3, #0x40000000
 	VMSR FPEXC, r3
 
 	// Go to CRT
 	bl _crt
 
 	// There we go!
+	mov r0, #0	// argc
+	mov r1, #0	// argv
+	mov r2, #0	// envp
 	bl main
+
+	// Ask QEMU to quit, which requires semihosting.
+	cmp r0, #0
+	ite eq
+	ldreq r1, .L_ADP_Stopped_ApplicationExit
+	ldrne r1, .L_ADP_Stopped_RunTimeErrorUnknown
+	mov r0, #0x18	// angel_SWIreason_ReportException
+	svc #0x00123456	// semihosting
+
+	// Halt, in case the svc didn't work.
 	b .
+
+.L_ADP_Stopped_RunTimeErrorUnknown:
+	.word 0x20023
+.L_ADP_Stopped_ApplicationExit:
+	.word 0x20026
 

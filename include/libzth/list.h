@@ -36,26 +36,44 @@ namespace zth {
 	public:
 		typedef ChildClass type;
 
-		Listable()
+		constexpr Listable() noexcept
 			: prev()
 			, next()
 			, level()
 		{}
 
-		Listable(Listable const& e)
+		constexpr Listable(Listable const& e) noexcept
 			: prev()
 			, next()
 			, level()
 		{}
 
-		Listable& operator=(Listable const& UNUSED_PAR(rhs)) {
+		Listable& operator=(Listable const& UNUSED_PAR(rhs)) noexcept
+		{
 			if(Config::EnableAssert)
-				prev = next = NULL;
+				prev = next = nullptr;
 			return *this;
 		}
 
-		type* listNext() const { zth_assert(level == 0 && next); return static_cast<type*>(next); }
-		type* listPrev() const { zth_assert(level == 0 && prev); return static_cast<type*>(prev); }
+#if __cplusplus >= 201103L
+		Listable(Listable&& l) noexcept
+		{
+			*this = std::move(l);
+		}
+
+		Listable& operator=(Listable&& l) noexcept
+		{
+			// Cannot move while in a list.
+			zth_assert(!prev);
+			zth_assert(!l.prev);
+			zth_assert(!next);
+			zth_assert(!l.next);
+			return *this;
+		}
+#endif
+
+		type* listNext() const noexcept { zth_assert(level == 0 && next); return static_cast<type*>(next); }
+		type* listPrev() const noexcept { zth_assert(level == 0 && prev); return static_cast<type*>(prev); }
 
 	private:
 		union {
@@ -74,32 +92,36 @@ namespace zth {
 
 	template <typename T>
 	class List {
+		ZTH_CLASS_NOCOPY(List)
 		ZTH_CLASS_NEW_DELETE(List)
 	public:
 		typedef T type;
 		typedef Listable<type> elem_type;
 
-		List()
+		constexpr List() noexcept
 			: m_head()
 			, m_tail()
 		{}
 
-		~List() {
+		~List() noexcept
+		{
 			if(Config::EnableAssert)
 				clear();
 		}
 
-		type& back() {
+		type& back() const noexcept
+		{
 			zth_assert(!empty());
 			return *static_cast<type*>(m_tail);
 		}
 
-		void push_back(elem_type& elem) {
-			zth_assert(elem.prev == NULL);
-			zth_assert(elem.next == NULL);
+		void push_back(elem_type& elem) noexcept
+		{
+			zth_assert(elem.prev == nullptr);
+			zth_assert(elem.next == nullptr);
 
-			if(m_tail == NULL) {
-				zth_assert(m_head == NULL);
+			if(m_tail == nullptr) {
+				zth_assert(m_head == nullptr);
 				m_tail = m_head = elem.prev = elem.next = &elem;
 			} else {
 				elem.next = m_tail->next;
@@ -108,13 +130,14 @@ namespace zth {
 			}
 		}
 
-		void pop_back() {
+		void pop_back() noexcept
+		{
 			zth_assert(!empty());
 
 			elem_type* elem = m_tail;
 
 			if(m_tail == m_head) {
-				m_tail = m_head = NULL;
+				m_tail = m_head = nullptr;
 				zth_assert(elem->prev == elem->next);
 				zth_assert(elem->prev == elem);
 			} else {
@@ -124,20 +147,22 @@ namespace zth {
 			}
 
 			if(Config::EnableAssert)
-				elem->prev = elem->next = NULL;
+				elem->prev = elem->next = nullptr;
 		}
 
-		type& front() {
+		type& front() const noexcept
+		{
 			zth_assert(!empty());
 			return *static_cast<type*>(m_head);
 		}
 
-		void push_front(elem_type& elem) {
-			zth_assert(elem.prev == NULL);
-			zth_assert(elem.next == NULL);
+		void push_front(elem_type& elem) noexcept
+		{
+			zth_assert(elem.prev == nullptr);
+			zth_assert(elem.next == nullptr);
 
-			if(m_head == NULL) {
-				zth_assert(m_tail == NULL);
+			if(m_head == nullptr) {
+				zth_assert(m_tail == nullptr);
 				m_tail = m_head = elem.prev = elem.next = &elem;
 			} else {
 				elem.next = m_head;
@@ -146,13 +171,14 @@ namespace zth {
 			}
 		}
 
-		void pop_front() {
+		void pop_front() noexcept
+		{
 			zth_assert(!empty());
 
 			elem_type* elem = m_head;
 
 			if(m_tail == m_head) {
-				m_tail = m_head = NULL;
+				m_tail = m_head = nullptr;
 				zth_assert(elem->prev == elem->next);
 				zth_assert(elem->prev == elem);
 			} else {
@@ -162,82 +188,93 @@ namespace zth {
 			}
 
 			if(Config::EnableAssert)
-				elem->prev = elem->next = NULL;
+				elem->prev = elem->next = nullptr;
 		}
 
-		bool empty() const {
-			zth_assert(m_head != NULL || m_tail == NULL);
-			return m_head == NULL;
+		bool empty() const noexcept
+		{
+			zth_assert(m_head != nullptr || m_tail == nullptr);
+			return m_head == nullptr;
 		}
 
-		void clear() {
+		void clear() noexcept
+		{
 			if(Config::EnableAssert)
 				while(!empty())
 					pop_front();
 			else
-				m_head = m_tail = NULL;
+				m_head = m_tail = nullptr;
 		}
 
 		class iterator {
 		public:
-			explicit iterator(elem_type* start, elem_type* current = NULL) : m_start(start), m_current(current) {}
-			bool atBegin() const { return !m_current && m_start; }
-			bool atEnd() const { return m_current == m_start; }
-			elem_type* get() const { return atBegin() ? m_start : m_current; }
-			bool operator==(iterator const& rhs) const { return m_current == rhs.m_current; }
-			bool operator!=(iterator const& rhs) const { return !(*this == rhs); }
+			constexpr explicit iterator(elem_type* start, elem_type* current = nullptr) noexcept
+				: m_start(start), m_current(current) {}
+			bool atBegin() const noexcept { return !m_current && m_start; }
+			bool atEnd() const noexcept { return m_current == m_start; }
+			elem_type* get() const noexcept { return atBegin() ? m_start : m_current; }
+			bool operator==(iterator const& rhs) const noexcept { return m_current == rhs.m_current; }
+			bool operator!=(iterator const& rhs) const noexcept { return !(*this == rhs); }
 
-			void next() {
+			void next() noexcept
+			{
 				zth_assert(!atEnd());
 				m_current = atBegin() ? m_start->next : m_current->next;
 			}
 
-			void prev() {
+			void prev() noexcept
+			{
 				zth_assert(!atBegin());
 				zth_assert(m_start);
-				m_current = m_current->prev == m_start ? NULL : m_current->prev;
+				m_current = m_current->prev == m_start ? nullptr : m_current->prev;
 			}
 
-			iterator& operator++() { next(); return *this; }
-			iterator operator++(int) { iterator i = *this; next(); return i; }
-			iterator& operator--() { prev(); return *this; }
-			iterator operator--(int) { iterator i = *this; prev(); return i; }
+			iterator& operator++() noexcept { next(); return *this; }
+			iterator operator++(int) noexcept { iterator i = *this; next(); return i; }
+			iterator& operator--() noexcept { prev(); return *this; }
+			iterator operator--(int) noexcept { iterator i = *this; prev(); return i; }
 
-			type& operator*() const {
+			type& operator*() const noexcept
+			{
 				elem_type* elem = get();
 				zth_assert(elem);
 				return *static_cast<type*>(elem);
 			}
-			type* operator->() const { return &this->operator*(); }
+			type* operator->() const noexcept { return &this->operator*(); }
 
 		private:
 			elem_type* m_start;
 			elem_type* m_current;
 		};
 
-		iterator begin() const {
+		iterator begin() const noexcept
+		{
 			return iterator(m_head);
 		}
 
-		iterator end() const {
+		iterator end() const noexcept
+		{
 			return iterator(m_head, m_head);
 		}
 
-		bool contains(elem_type& elem) const {
+		bool contains(elem_type& elem) const noexcept
+		{
 			for(iterator it = begin(); it != end(); ++it)
 				if(it.get() == &elem)
 					return true;
 			return false;
 		}
 
-		size_t size() const {
+		size_t size() const noexcept
+		{
 			size_t res = 0;
 			for(iterator it = begin(); it != end(); ++it)
 				res++;
 			return res;
 		}
 
-		iterator insert(iterator const& pos, elem_type& elem) {
+		iterator insert(iterator const& pos, elem_type& elem) noexcept
+		{
 			if(pos.atEnd()) {
 				push_back(elem);
 				return iterator(m_head, &elem);
@@ -253,7 +290,8 @@ namespace zth {
 			}
 		}
 
-		iterator erase(iterator const& pos) {
+		iterator erase(iterator const& pos) noexcept
+		{
 			zth_assert(!pos.atEnd());
 			if(pos.atBegin()) {
 				erase(*pos.get());
@@ -268,7 +306,8 @@ namespace zth {
 			}
 		}
 
-		void erase(elem_type& elem) {
+		void erase(elem_type& elem) noexcept
+		{
 			zth_assert(contains(elem));
 			if(m_head == &elem) {
 				pop_front();
@@ -278,50 +317,52 @@ namespace zth {
 				elem.prev->next = elem.next;
 				elem.next->prev = elem.prev;
 				if(Config::EnableAssert)
-					elem.next = elem.prev = NULL;
+					elem.next = elem.prev = nullptr;
 			}
 		}
 
-		bool contains(type& elem) const {
+		bool contains(type& elem) const noexcept
+		{
 			for(iterator it = begin(); it != end(); ++it)
 				if(it.get() == &elem)
 					return true;
 			return false;
 		}
 
-		void rotate(elem_type& elem) {
+		void rotate(elem_type& elem) noexcept
+		{
 			zth_assert(contains(elem));
 			m_head = &elem;
 			m_tail = elem.prev;
 		}
 
 	private:
-		List(List const&);
-		List& operator=(List const&);
-
 		elem_type* m_head;
 		elem_type* m_tail;
 	};
 
 	template <typename T, typename Compare>
 	class SortedList {
+		ZTH_CLASS_NOCOPY(SortedList)
 		ZTH_CLASS_NEW_DELETE(SortedList)
 	public:
 		typedef T type;
 		typedef Listable<type> elem_type;
 
-		SortedList()
+		constexpr SortedList() noexcept
 			: m_comp()
 			, m_t()
 			, m_head()
 			, m_size()
 		{}
 
-		~SortedList() {
+		~SortedList() noexcept
+		{
 			clear();
 		}
 
-		void insert(elem_type& x) {
+		void insert(elem_type& x) noexcept
+		{
 			zth_assert(!x.left);
 			zth_assert(!x.right);
 			zth_assert(x.level == 0);
@@ -333,40 +374,45 @@ namespace zth {
 			check();
 		}
 
-		void erase(elem_type& x) {
+		void erase(elem_type& x) noexcept
+		{
 			zth_assert(contains(x));
 			m_t = delete_(x, m_t);
 			if(m_head == &x)
 				m_head = lowest(m_t);
 			if(Config::EnableAssert) {
 				x.level = 0;
-				x.left = x.right = NULL;
+				x.left = x.right = nullptr;
 			}
 			m_size--;
 			check();
 		}
 
-		void clear() {
+		void clear() noexcept
+		{
 			if(Config::EnableAssert) {
 				while(!empty())
 					erase(*m_t);
 			} else {
-				m_t = m_head = NULL;
+				m_t = m_head = nullptr;
 				m_size = 0;
 			}
 		}
 
-		size_t size() const {
+		size_t size() const noexcept
+		{
 			zth_assert(m_size > 0 || !m_t);
 			return m_size;
 		}
 
-		bool empty() const {
+		bool empty() const noexcept
+		{
 			zth_assert(m_size > 0 || !m_t);
 			return !m_t;
 		}
 
-		bool contains(elem_type& x) const {
+		bool contains(elem_type& x) const noexcept
+		{
 			elem_type* t = m_t;
 			while(t) {
 				if(t == &x)
@@ -383,15 +429,17 @@ namespace zth {
 			return false;
 		}
 
-		type& front() const {
+		type& front() const noexcept
+		{
 			zth_assert(m_head && m_t);
 			return static_cast<type&>(*m_head);
 		}
 
 	protected:
-		static elem_type* skew(elem_type* t) {
+		static elem_type* skew(elem_type* t) noexcept
+		{
 			if(!t)
-				return NULL;
+				return nullptr;
 			else if(!t->left)
 				return t;
 			else if(t->left->level == t->level) {
@@ -403,9 +451,10 @@ namespace zth {
 				return t;
 		}
 
-		static elem_type* split(elem_type* t) {
+		static elem_type* split(elem_type* t) noexcept
+		{
 			if(!t)
-				return NULL;
+				return nullptr;
 			else if(!t->right || !t->right->right)
 				return t;
 			else if(t->level == t->right->right->level) {
@@ -419,10 +468,11 @@ namespace zth {
 				return t;
 		}
 
-		elem_type* insert_(elem_type& x, elem_type* t) {
+		elem_type* insert_(elem_type& x, elem_type* t) noexcept
+		{
 			if(!t) {
 				x.level = 1;
-				x.left = x.right = NULL;
+				x.left = x.right = nullptr;
 				return &x;
 			} else if(m_comp(static_cast<type&>(x), static_cast<type&>(*t)))
 				t->left = insert_(x, t->left);
@@ -439,12 +489,13 @@ namespace zth {
 			return split(skew(t));
 		}
 
-		elem_type* delete_(elem_type& x, elem_type* t) {
+		elem_type* delete_(elem_type& x, elem_type* t) noexcept
+		{
 			if(!t)
-				return NULL;
+				return nullptr;
 			else if(&x == t) {
 				if(!t->left && !t->right) {
-					return NULL;
+					return nullptr;
 				} else if(!t->left) {
 					elem_type* l = successor(t);
 					l->right = delete_(*l, t->right);
@@ -477,33 +528,38 @@ namespace zth {
 			return t;
 		}
 
-		static elem_type* lowest(elem_type* t) {
+		static elem_type* lowest(elem_type* t) noexcept
+		{
 			if(!t)
-				return NULL;
+				return nullptr;
 			else if(!t->left)
 				return t;
 			else
 				return lowest(t->left);
 		}
 
-		static elem_type* highest(elem_type* t) {
+		static elem_type* highest(elem_type* t) noexcept
+		{
 			if(!t)
-				return NULL;
+				return nullptr;
 			else if(!t->right)
 				return t;
 			else
 				return highest(t->right);
 		}
 
-		static elem_type* successor(elem_type* t) {
-			return t ? lowest(t->right) : NULL;
+		static elem_type* successor(elem_type* t) noexcept
+		{
+			return t ? lowest(t->right) : nullptr;
 		}
 
-		static elem_type* predecessor(elem_type* t) {
-			return t ? highest(t->left) : NULL;
+		static elem_type* predecessor(elem_type* t) noexcept
+		{
+			return t ? highest(t->left) : nullptr;
 		}
 
-		static void decrease_level(elem_type* t) {
+		static void decrease_level(elem_type* t) noexcept
+		{
 			decltype(t->level) ll = t->left ? t->left->level : 0;
 			decltype(t->level) lr = t->right ? t->right->level : 0;
 			decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
@@ -514,14 +570,16 @@ namespace zth {
 			}
 		}
 
-		void check() {
+		void check() const noexcept
+		{
 			zth_dbg(list, "SortedList %p (head %p):", this, m_head);
 			print(m_t, 2);
 			zth_assert(m_size == check(m_t));
 			zth_assert((!m_t && !m_head) || (m_t && m_head && lowest(m_t) == m_head));
 		}
 
-		size_t check(elem_type* t) {
+		size_t check(elem_type* t) const noexcept
+		{
 			if(!Config::EnableAssert)
 				return 0;
 			if(!t)
@@ -542,7 +600,8 @@ namespace zth {
 			return 1 + check(t->left) + check(t->right);
 		}
 
-		static void print(elem_type* t, int indent = 0) {
+		static void print(elem_type* t, int indent = 0) noexcept
+		{
 			if(Config::Print_list == 0 || !Config::SupportDebugPrint)
 				return;
 
@@ -558,9 +617,6 @@ namespace zth {
 		}
 
 	private:
-		SortedList(SortedList const&);
-		SortedList& operator=(SortedList const&);
-
 		Compare m_comp;
 		elem_type* m_t;
 		elem_type* m_head;

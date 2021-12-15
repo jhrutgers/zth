@@ -43,9 +43,15 @@ void worker_global_init()
 {
 	zth_dbg(banner, "%s", banner());
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-	struct sigaction sa = {};
-	sa.sa_handler = &sigchld_handler;
-	sigaction(SIGCHLD, &sa, nullptr);
+#  ifdef ZTH_USE_VALGRIND
+	// valgrind does not seem to like the sigaction below. Not sure why.
+	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
+#  endif
+	{
+		struct sigaction sa = {};
+		sa.sa_handler = &sigchld_handler;
+		sigaction(SIGCHLD, &sa, nullptr);
+	}
 #endif
 }
 ZTH_INIT_CALL(worker_global_init)
@@ -68,6 +74,8 @@ int startWorkerThread(UNUSED_PAR(void(*f)()), size_t UNUSED_PAR(stack), char con
 #ifdef ZTH_USE_PTHREAD
 	pthread_t t;
 	int res = 0;
+
+	zth_dbg(thread, "[%s] starting new Worker", thread_id_str().c_str());
 
 	Fiber* fiber = new Fiber((void(*)(void*))f, nullptr);
 	if(stack)
@@ -123,6 +131,21 @@ int execlp(char const* file, char const* arg, ... /*, nullptr */)
 	return res;
 }
 
+__attribute__((unused)) static cow_string thread_id_str() noexcept
+{
+	Worker* w = Worker::instance();
+	if(w)
+		return w->id_str();
+
+	return format("pid %u",
+#ifdef ZTH_OS_WINDOWS
+			(unsigned int)_getpid()
+#else
+			(unsigned int)getpid()
+#endif
+		);
+}
+
 /*!
  * \ingroup zth_api_cpp_fiber
  */
@@ -131,6 +154,9 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 #if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)
 	return ENOSYS;
 #else
+	perf_syscall("execvp()");
+	zth_dbg(thread, "[%s] execvp %s", thread_id_str().c_str(), file);
+
 	pid_t pid = 0;
 	if((pid = fork()) == 0) {
 		// In child.
@@ -140,9 +166,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 		return EAGAIN;
 	} else if(pid == -1) {
 		int res = errno;
-		Worker* w = Worker::instance();
-		char const* id_str = w ? w->id_str() : "?";
-		zth_dbg(worker, "[%s] Could not fork(); %s", id_str, err(res).c_str());
+		zth_dbg(thread, "[%s] Could not fork(); %s", thread_id_str().c_str(), err(res).c_str());
 		return res;
 	} else
 		return 0;
@@ -161,8 +185,12 @@ static void sigchld_handler(int /*unused*/)
 void sigchld_check()
 {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-	if(likely(sigchld_cleanup == 0))
-		return;
+#  ifdef ZTH_USE_VALGRIND
+	// The sigaction was disabled, so sigchld_cleanup will always be 0.
+	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
+#  endif
+		if(likely(sigchld_cleanup == 0))
+			return;
 
 	Worker* w = Worker::instance();
 	char const* id_str = w ? w->id_str() : "?";

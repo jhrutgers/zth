@@ -20,22 +20,6 @@
 
 #include <gtest/gtest.h>
 
-namespace {
-
-TEST(Zth, DummySuccess)
-{
-	SUCCEED();
-}
-
-#if 0
-TEST(Zth, DummyFail)
-{
-	FAIL();
-}
-#endif
-
-} // namespace
-
 static int test_main()
 {
 	return RUN_ALL_TESTS();

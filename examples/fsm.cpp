@@ -27,22 +27,32 @@
 struct State {
 	typedef enum { init, peek, blink_on, blink_off, red_wait, red, amber, green, end } type;
 };
+
 // Do provide a str() specialization for this type.
-namespace zth { template <> cow_string str<State::type>(State::type value) { return str((int)value); } }
+namespace zth {
+
+template <>
+cow_string str<State::type>(State::type value)
+{
+	return str((int)value);
+}
+
+} // namespace zth
 #else
 // Nicely named states, which eases debugging.
 namespace State {
-	static char const* init = "init";
-	static char const* peek = "peek";
-	static char const* blink_on = "blink on";
-	static char const* blink_off = "blink off";
-	static char const* red_wait = "red (wait)";
-	static char const* red = "red (ready)";
-	static char const* amber = "amber";
-	static char const* green = "green";
-	static char const* end = "end";
-	typedef char const* type;
-}
+static char const* init = "init";
+static char const* peek = "peek";
+static char const* blink_on = "blink on";
+static char const* blink_off = "blink off";
+static char const* red_wait = "red (wait)";
+static char const* red = "red (ready)";
+static char const* amber = "amber";
+static char const* green = "green";
+static char const* end = "end";
+typedef char const* type;
+} // namespace State
+
 // There exists an str() specialization for char const*, so we don't have to define one.
 #endif
 
@@ -50,7 +60,16 @@ namespace State {
 // on.  This way, async input symbols are collected, like the traffic
 // generation in the trafficDetect() function below.
 enum Input { traffic };
-namespace zth { template <> cow_string str<Input>(Input value) { return str((int)value); } }
+
+namespace zth {
+
+template <>
+cow_string str<Input>(Input value)
+{
+	return str((int)value);
+}
+
+} // namespace zth
 
 // As the type of the Fsm is quite complex, and you need it multiple times,
 // please to a typedef.
@@ -59,11 +78,16 @@ typedef zth::FsmCallback<State::type, zth::Timestamp&, Input> Fsm_type;
 // This is a custom guard function. The Fsm template is deducted, but is
 // effectively Fsm_type.
 template <typename Fsm>
-static zth::TimeInterval tooLongGreen(Fsm& fsm) { return zth::TimeInterval(10) - (zth::Timestamp::now() - fsm.callbackArg()); }
+static zth::TimeInterval tooLongGreen(Fsm& fsm)
+{
+	return zth::TimeInterval(10) - (zth::Timestamp::now() - fsm.callbackArg());
+}
 
 // This is the description of the state machine.  States, guards, and
 // transitions are constant; it is impossible to define them dynamically.  The
 // desc object is to be processed during initialization. Don't make it const.
+//
+// clang-format off
 static Fsm_type::Description desc = {
 	// The structure is as follows:
 	//
@@ -121,6 +145,7 @@ static Fsm_type::Description desc = {
 	// not matter.) This is the marker that there are no more states after
 	// this.  Anything below here, will be ignored.
 };
+// clang-format on
 
 // This is the callback function that is invoked when the Fsm changes something
 // to the state.
@@ -132,7 +157,8 @@ static void cb(Fsm_type& fsm, zth::Timestamp& green)
 	if(!fsm.entry())
 		return;
 
-	// I know, switch(fsm.state()) is nicer, but then the State must be some integral type...
+	// I know, switch(fsm.state()) is nicer, but then the State must be
+	// some integral type...
 	if(fsm.state() == State::init) {
 		printf("\x1b[0m ________ \n");
 		printf("/        \\\n");
@@ -223,18 +249,21 @@ static void cb(Fsm_type& fsm, zth::Timestamp& green)
 // Something to be passed to the callback function.
 static zth::Timestamp green;
 
-// Here we actually create the Fsm.
-// The description has to be compiled in order to be used by a Fsm.
-// You could create multiple Fsms using the same description, but it has to be compiled only once.
-// Therefore, create one compiler for one description.
+// Here we actually create the Fsm.  The description has to be compiled in
+// order to be used by a Fsm.  You could create multiple Fsms using the same
+// description, but it has to be compiled only once.  Therefore, create one
+// compiler for one description.
 static typename Fsm_type::Compiler compiler(desc);
 static Fsm_type fsm(compiler, &cb, green);
-//static Fsm_type fsm2(compiler, &cb, green2); // This is OK.
-//static Fsm_type fsm3(compiler, &cb, green3); // This is OK.
+// static Fsm_type fsm2(compiler, &cb, green2); // This is OK.
+// static Fsm_type fsm3(compiler, &cb, green3); // This is OK.
 
-// If you would only create one Fsm for the description, you can pass it directly to the Fsm instance.
-//static Fsm_type fsm(desc, &cb, green);
-//static Fsm_type fsm2(desc, &cb, green); // This is not OK, as desc will now be compiled multiple times.
+// If you would only create one Fsm for the description, you can pass it
+// directly to the Fsm instance.
+//
+// static Fsm_type fsm(desc, &cb, green);
+// static Fsm_type fsm2(desc, &cb, green);	// This is not OK, as desc will now
+//						// be compiled multiple times.
 
 static void trafficDetect()
 {
@@ -242,7 +271,7 @@ static void trafficDetect()
 	while(zth::io::read(0, &buf, 1) > 0)
 		fsm.input(traffic);
 }
-zth_fiber(trafficDetect)
+zth_fiber(trafficDetect);
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {

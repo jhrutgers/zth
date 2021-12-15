@@ -6,7 +6,7 @@
 // In constrast to C++, fiber entry function must have type void(void*).  There
 // is no need to do zth_fiber() and friends, just use zth_fiber_create() to run
 // the fiber.
-void fiber(void* arg)
+void fiber(void* UNUSED_PAR(arg))
 {
 	printf("fiber()\n");
 }
@@ -18,4 +18,3 @@ int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	zth_fiber_create(fiber, NULL, 0, NULL);
 	return 0;
 }
-

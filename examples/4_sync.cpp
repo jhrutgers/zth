@@ -1,4 +1,5 @@
 #include <zth>
+
 #include <cstdio>
 
 // Even though all code within a fiber is executed atomically when not yielded,
@@ -18,8 +19,9 @@ void fiber(int id)
 
 		mutex.lock();
 		printf(" { fiber %d at start of critical section\n", id);
-		// It does not matter how and how often we yield, other fibers trying
-		// to lock the mutex will not be scheduled, but others may.
+		// It does not matter how and how often we yield, other fibers
+		// trying to lock the mutex will not be scheduled, but others
+		// may.
 		zth::yield();
 		zth::outOfWork();
 		printf(" } fiber %d at end of critical section\n", id);
@@ -28,7 +30,7 @@ void fiber(int id)
 		zth::outOfWork();
 	}
 }
-zth_fiber(fiber)
+zth_fiber(fiber);
 
 static bool stopOther = false;
 
@@ -39,7 +41,7 @@ void otherFiber()
 		zth::outOfWork();
 	}
 }
-zth_fiber(otherFiber)
+zth_fiber(otherFiber);
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {

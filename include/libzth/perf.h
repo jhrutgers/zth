@@ -45,21 +45,21 @@ namespace zth {
 	void perf_deinit();
 
 	class Fiber;
-	//__attribute__((pure)) UniqueID<Fiber> const& currentFiberID();
-	UniqueID<Fiber> const& currentFiberID();
+	//__attribute__((pure)) UniqueID<Fiber> const& currentFiberID() noexcept;
+	UniqueID<Fiber> const& currentFiberID() noexcept;
 
 	class Backtrace {
 		ZTH_CLASS_NEW_DELETE(Backtrace)
 	public:
 		typedef vector_type<void*>::type bt_type;
 
-		Backtrace(size_t skip = 0, size_t maxDepth = 128);
-		Fiber* fiber() const { return m_fiber; }
-		uint64_t fiberId() const { return m_fiberId; }
-		bt_type const& bt() const { return m_bt; }
-		bool truncated() const { return m_truncated; }
-		Timestamp const& t0() const { return m_t0; }
-		Timestamp const& t1() const { return m_t1; }
+		explicit Backtrace(size_t skip = 0, size_t maxDepth = 128);
+		Fiber* fiber() const noexcept { return m_fiber; }
+		uint64_t fiberId() const noexcept { return m_fiberId; }
+		bt_type const& bt() const noexcept { return m_bt; }
+		bool truncated() const noexcept { return m_truncated; }
+		Timestamp const& t0() const noexcept { return m_t0; }
+		Timestamp const& t1() const noexcept { return m_t1; }
 		void printPartial(size_t start, ssize_t end = -1, int color = -1) const;
 		void print(int color = -1) const;
 		void printDelta(Backtrace const& other, int color = -1) const;
@@ -79,42 +79,50 @@ namespace zth {
 	struct PerfEvent {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
 
-		PerfEvent() : type(Nothing) {}
+		constexpr PerfEvent() noexcept : fiber(), type(Nothing), unused() {}
 
 		explicit PerfEvent(UniqueID<Fiber> const& fiber)
 			: fiber(fiber.id()), type(FiberName), str(strdup(fiber.name().c_str())) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now())
+		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp::now()) noexcept
 			: t(t), fiber(fiber.id()), type(FiberState), fiberState(state) {}
 
 		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp::now())
 			: t(t), fiber(fiber.id()), type(Log), str(strdup(str.c_str())) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp::now())
+		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp::now()) noexcept
 			: t(t), fiber(fiber.id()), type(Marker), c_str(marker) {}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5)))
+		__attribute__((format(ZTH_ATTR_PRINTF, 4, 5)))
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...)
 			: t(t), fiber(fiber.id()), type(Log)
 		{
 			va_list args;
 			va_start(args, fmt);
 			if(vasprintf(&str, fmt, args) == -1)
-				str = NULL;
+				str = nullptr;
 			va_end(args);
 		}
 
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0)))
-			: t(t), fiber(fiber.id()), type(Log) { if(vasprintf(&str, fmt, args) == -1) str = NULL; }
+		__attribute__((format(ZTH_ATTR_PRINTF, 4, 0)))
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args)
+			: t(t), fiber(fiber.id()), type(Log)
+		{
+			if(vasprintf(&str, fmt, args) == -1)
+				str = nullptr;
+		}
+
+		// Use default copy/move-ctor and copy/move-assignment, which
+		// duplicate the allocated string pointers.  In that case, only
+		// one of the copies must be release()d later on.
 
 		// release() is called by PerfFiber (see perf.cpp), not by the dtor of PerfEvent.
-		void release() {
+		void release() const
+		{
 			switch(type) {
 			case FiberName:
 			case Log:
-				if(str) {
-					free(str);
-					str = NULL;
-				}
+				free(str);
 				break;
 			default:;
 			}
@@ -125,6 +133,7 @@ namespace zth {
 		Type type;
 
 		union {
+			void* unused;
 			char* str;
 			char const* c_str;
 			int fiberState;
@@ -137,16 +146,22 @@ namespace zth {
 	struct PerfEvent<false> {
 		enum Type { Nothing, FiberName, FiberState, Log, Marker };
 
-		PerfEvent() {}
-		explicit PerfEvent(UniqueID<Fiber> const& fiber) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp()) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) __attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) {}
-		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) __attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) {}
-		void release() {}
+		constexpr PerfEvent() noexcept : unused() {}
+		constexpr explicit PerfEvent(UniqueID<Fiber> const& fiber) noexcept : unused() {}
+		constexpr PerfEvent(UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) noexcept : unused() {}
+		constexpr PerfEvent(UniqueID<Fiber> const& fiber, string const& str, Timestamp const& t = Timestamp()) noexcept : unused() {}
+		constexpr PerfEvent(UniqueID<Fiber> const& fiber, char const* marker, Timestamp const& t = Timestamp()) noexcept : unused() {}
+
+		__attribute__((format(ZTH_ATTR_PRINTF, 4, 5)))
+		constexpr PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) noexcept : unused() {}
+
+		__attribute__((format(ZTH_ATTR_PRINTF, 4, 0)))
+		PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args) noexcept : unused() {}
+
+		void release() const noexcept {}
 
 		union {
+			void* unused;
 			struct timespec t;
 			uint64_t fiber;
 			Type type;
@@ -160,58 +175,104 @@ namespace zth {
 	typedef vector_type<PerfEvent<> >::type perf_eventBuffer_type;
 	ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)
 
-	void perf_flushEventBuffer();
+	void perf_flushEventBuffer() noexcept;
 
 	/*!
+	 * \def zth_perf_event
+	 *
+	 * Construct a PerfEvent with provided parameters, and forward it to
+	 * the perf buffer for later processing.
+	 *
+	 * \hideinitializer
 	 * \ingroup zth_api_cpp_perf
 	 */
-	ZTH_EXPORT inline void perf_event(PerfEvent<> const& event) {
+#if __cplusplus >= 201103L
+	// Construct PerfEvent in-place in buffer.
+	template <typename... Args>
+	inline void perf_event(Args&&... args) noexcept
+	{
 		if(!Config::EnablePerfEvent || unlikely(!perf_eventBuffer)) {
-			// Release now, as there is no event buffer...
-			PerfEvent<> e(event);
-			e.release();
+			// Drop, as there is no event buffer...
 			return;
 		}
 
-		perf_eventBuffer->push_back(event);
+		__try {
+			perf_eventBuffer->emplace_back(std::forward<Args>(args)...);
+		} __catch(...) {
+			// Cannot allocate buffer. Drop.
+			return;
+		}
+
 		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);
 
 		if(unlikely(perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
 			perf_flushEventBuffer();
 	}
 
+#  define zth_perf_event(...)	zth::perf_event(__VA_ARGS__)
+#else
+	// Copy PerfEvent into buffer.
+	inline void perf_event(PerfEvent<> const& event) noexcept
+	{
+		if(!Config::EnablePerfEvent || unlikely(!perf_eventBuffer)) {
+			// Release now, as there is no event buffer...
+			event.release();
+			return;
+		}
+
+		__try {
+			perf_eventBuffer->push_back(event);
+		} __catch(...) {
+			// Cannot allocate buffer. Release now and drop.
+			event.release();
+			return;
+		}
+
+		zth_assert(perf_eventBuffer->size() <= Config::PerfEventBufferSize);
+
+		if(unlikely(perf_eventBuffer->size() >= Config::PerfEventBufferThresholdToTriggerVCDWrite))
+			perf_flushEventBuffer();
+	}
+
+#  define zth_perf_event(...)	zth::perf_event(PerfEvent<>(__VA_ARGS__))
+#endif
+
 	/*!
 	 * \ingroup zth_api_cpp_perf
 	 */
-	ZTH_EXPORT inline void perf_mark(char const* marker) {
+	ZTH_EXPORT inline void perf_mark(char const* marker)
+	{
 		if(Config::EnablePerfEvent)
-			perf_event(PerfEvent<>(currentFiberID(), marker));
+			zth_perf_event(currentFiberID(), marker);
 	}
 
 	/*!
 	 * \ingroup zth_api_cpp_perf
 	 */
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void perf_log(char const* fmt, ...) {
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void perf_log(char const* fmt, ...)
+	{
 		if(!Config::EnablePerfEvent)
 			return;
 
 		va_list args;
 		va_start(args, fmt);
-		perf_event(PerfEvent<>(currentFiberID(), Timestamp::now(), fmt, args));
+		zth_perf_event(currentFiberID(), Timestamp::now(), fmt, args);
 		va_end(args);
 	}
 
 	/*!
 	 * \ingroup zth_api_cpp_perf
 	 */
-	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void perf_logv(char const* fmt, va_list args) {
+	ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void perf_logv(char const* fmt, va_list args)
+	{
 		if(Config::EnablePerfEvent)
-			perf_event(PerfEvent<>(currentFiberID(), Timestamp::now(), fmt, args));
+			zth_perf_event(currentFiberID(), Timestamp::now(), fmt, args);
 	}
 
-	inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp()) {
+	inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp())
+	{
 		if(Config::EnablePerfEvent && zth_config(PerfSyscall))
-			perf_event(PerfEvent<>(currentFiberID(), syscall, t.isNull() ? Timestamp::now() : t));
+			zth_perf_event(currentFiberID(), syscall, t.isNull() ? Timestamp::now() : t);
 	}
 
 	/*!
@@ -223,18 +284,19 @@ namespace zth {
 	public:
 		typedef T type;
 
-		explicit Load(type rc = 1)
+		explicit Load(type rc = 1) noexcept
 			: m_rc(rc)
 			, m_active()
 			, m_current(Timestamp::now())
 			, m_load()
 		{}
 
-		type rc() const { return m_rc; }
+		type rc() const noexcept { return m_rc; }
 
-		void setRc(type rc) { m_rc = rc; }
+		void setRc(type rc) noexcept { m_rc = rc; }
 
-		void start(Timestamp const& now = Timestamp::now()) {
+		void start(Timestamp const& now = Timestamp::now()) noexcept
+		{
 			if(isActive())
 				return;
 
@@ -243,7 +305,8 @@ namespace zth {
 			m_active = true;
 		}
 
-		void stop(Timestamp const& now = Timestamp::now()) {
+		void stop(Timestamp const& now = Timestamp::now()) noexcept
+		{
 			if(!isActive())
 				return;
 
@@ -252,11 +315,12 @@ namespace zth {
 			m_active = false;
 		}
 
-		bool isActive() const { return m_active; }
+		bool isActive() const noexcept { return m_active; }
 
-		type load() const { return m_load; }
+		type load() const noexcept { return m_load; }
 
-		type load(Timestamp const& now) const {
+		type load(Timestamp const& now) const noexcept
+		{
 			type dt_s = (type)(now - m_current).s();
 			if(isActive())
 				return active(load(), dt_s);
@@ -264,23 +328,27 @@ namespace zth {
 				return idle(load(), dt_s);
 		}
 
-		void idle(type dt_s) {
+		void idle(type dt_s) noexcept
+		{
 			m_load = idle(load(), dt_s);
 		}
 
-		void active(type dt_s) {
+		void active(type dt_s) noexcept
+		{
 			m_load = active(load(), dt_s);
 		}
 
 	protected:
-		type idle(type load, type dt_s) const {
+		type idle(type load, type dt_s) const noexcept
+		{
 			if(dt_s <= 0)
 				return load;
 
 			return ((type)1 - alpha(dt_s)) * load;
 		}
 
-		type active(type load, type dt_s) const {
+		type active(type load, type dt_s) const noexcept
+		{
 			if(dt_s <= 0)
 				return load;
 
@@ -288,7 +356,8 @@ namespace zth {
 			return a + ((type)1 - a) * load;
 		}
 
-		type alpha(type dt_s) const {
+		type alpha(type dt_s) const noexcept
+		{
 			return dt_s / (rc() + dt_s);
 		}
 
@@ -308,15 +377,25 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_mark_(char const* marker) { zth::pe
  * \details This is a C-wrapper for zth::perf_log().
  * \ingroup zth_api_c_perf
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_perf_log(char const* fmt, ...) {
-	va_list args; va_start(args, fmt); zth::perf_logv(fmt, args); va_end(args); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2)))
+void zth_perf_log(char const* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	zth::perf_logv(fmt, args);
+	va_end(args);
+}
 
 /*!
  * \copydoc zth::perf_logv()
  * \details This is a C-wrapper for zth::perf_logv().
  * \ingroup zth_api_c_perf
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void zth_perf_logv(char const* fmt, va_list args) { zth::perf_logv(fmt, args); }
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 0)))
+void zth_perf_logv(char const* fmt, va_list args)
+{
+	zth::perf_logv(fmt, args);
+}
 
 #else // !__cplusplus
 

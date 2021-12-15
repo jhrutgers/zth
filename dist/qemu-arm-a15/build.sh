@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)"
 pushd "${here}" > /dev/null

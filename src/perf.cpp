@@ -458,10 +458,15 @@ void perf_deinit()
 	}
 }
 
-void perf_flushEventBuffer()
+void perf_flushEventBuffer() noexcept
 {
-	if(likely(perfFiber))
-		perfFiber->flushEventBuffer();
+	__try {
+		if(likely(perfFiber))
+			perfFiber->flushEventBuffer();
+	} __catch(...) {
+		// Something is wrong. Disable perf.
+		perf_deinit();
+	}
 }
 
 extern "C" void context_entry(Context* context);
@@ -530,8 +535,10 @@ void Backtrace::printPartial(size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), 
 	if(Config::Debug) {
 		char atos[256];
 		int len = snprintf(atos, sizeof(atos), "atos -p %d\n", getpid());
-		if(len > 0 && (size_t)len < sizeof(atos))
+		if(len > 0 && (size_t)len < sizeof(atos)) {
+			fflush(nullptr);
 			atosf = popen(atos, "w");
+		}
 	}
 #  endif
 
@@ -623,8 +630,13 @@ void Backtrace::printDelta(Backtrace const& other, int color) const
 
 	// Find common base
 	ssize_t common = 0;
-	while(bt()[bt().size() - 1 - (size_t)common] == other.bt()[other.bt().size() - 1 - (size_t)common])
-		common++;
+	{
+		Backtrace::bt_type const& this_bt = bt();
+		Backtrace::bt_type const& other_bt = other.bt();
+		size_t max_common = std::min(this_bt.size(), other_bt.size());
+		while((size_t)common < max_common && this_bt[this_bt.size() - 1 - (size_t)common] == other_bt[other_bt.size() - 1 - (size_t)common])
+			common++;
+	}
 
 	log_color(color, "%sExecution from fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
 	other.printPartial(0, -common - 1, color);

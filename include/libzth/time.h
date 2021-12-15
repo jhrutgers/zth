@@ -60,23 +60,23 @@ namespace zth {
 	public:
 		static long const BILLION = 1000000000L;
 
-		constexpr static TimeInterval infinity() { return TimeInterval(std::numeric_limits<time_t>::max()); }
-		constexpr static TimeInterval null() { return TimeInterval(); }
+		constexpr static TimeInterval infinity() noexcept { return TimeInterval(std::numeric_limits<time_t>::max()); }
+		constexpr static TimeInterval null() noexcept { return TimeInterval(); }
 
-		constexpr TimeInterval()
+		constexpr TimeInterval() noexcept
 			: m_t()
 			, m_negative()
 		{}
 
 #if __cplusplus >= 201103L
 		// cppcheck-suppress noExplicitConstructor
-		constexpr TimeInterval(time_t s, long ns = 0, bool negative = false)
+		constexpr TimeInterval(time_t s, long ns = 0, bool negative = false) noexcept
 			: m_t{s, ns}
 			, m_negative(negative)
 		{}
 #else
 		// cppcheck-suppress noExplicitConstructor
-		TimeInterval(time_t s, long ns = 0, bool negative = false)
+		TimeInterval(time_t s, long ns = 0, bool negative = false) noexcept
 			: m_t()
 			, m_negative(negative)
 		{
@@ -87,18 +87,22 @@ namespace zth {
 #endif
 
 		// cppcheck-suppress noExplicitConstructor
-		constexpr TimeInterval(struct timespec const& ts)
+		constexpr TimeInterval(struct timespec const& ts) noexcept
 			: m_t(ts)
 			, m_negative()
 		{}
 
-		TimeInterval& operator=(TimeInterval const& t) {
+		TimeInterval& operator=(TimeInterval const& t) noexcept
+		{
 			m_t = t.m_t;
 			m_negative = t.m_negative;
 			return *this;
 		}
 
-		constexpr TimeInterval(TimeInterval const& t) : m_t(t.ts()), m_negative(t.isNegative()) {}
+		constexpr TimeInterval(TimeInterval const& t) noexcept
+			: m_t(t.ts())
+			, m_negative(t.isNegative())
+		{}
 
 		// cppcheck-suppress noExplicitConstructor
 		TimeInterval(float dt) : m_t(), m_negative() { init_float<float>(dt); }
@@ -107,11 +111,12 @@ namespace zth {
 		// cppcheck-suppress noExplicitConstructor
 		TimeInterval(long double dt) : m_t(), m_negative() { init_float<long double>(dt); }
 		// cppcheck-suppress noExplicitConstructor
-		template <typename T> TimeInterval(T dt) : m_t(), m_negative() { init_int<T>(dt); }
+		template <typename T> constexpr14 TimeInterval(T dt) noexcept : m_t(), m_negative() { init_int<T>(dt); }
 
 	private:
 		template <typename T>
-		void init_float(T dt) {
+		void init_float(T dt)
+		{
 			zth_assert(dt == dt); // Should not be NaN
 
 			m_negative = dt < 0;
@@ -129,7 +134,8 @@ namespace zth {
 		}
 
 		template <typename T>
-		void init_int(T dt) {
+		constexpr14 void init_int(T dt) noexcept
+		{
 			// seconds only.
 			m_negative = dt < 0;
 			m_t.tv_sec = (time_t)(dt >= 0 ? dt : -dt);
@@ -137,40 +143,49 @@ namespace zth {
 		}
 
 	public:
-		constexpr bool isNormal() const { return m_t.tv_sec >= 0 && m_t.tv_nsec >= 0 && m_t.tv_nsec < BILLION; }
-		constexpr bool isNegative() const { return m_negative; }
-		constexpr bool isPositive() const { return !isNegative(); }
-		constexpr bool isNull() const { return m_t.tv_sec == 0 && m_t.tv_nsec == 0; }
-		constexpr bool isInfinite() const { return m_t.tv_sec > std::numeric_limits<time_t>::max() / 2; }
-		constexpr bool hasPassed() const { return isNegative() || isNull(); }
-		constexpr struct timespec const& ts() const { return m_t; }
-		double s() const { return s<double>(); }
+		constexpr bool isNormal() const noexcept { return m_t.tv_sec >= 0 && m_t.tv_nsec >= 0 && m_t.tv_nsec < BILLION; }
+		constexpr bool isNegative() const noexcept { return m_negative; }
+		constexpr bool isPositive() const noexcept { return !isNegative(); }
+		constexpr bool isNull() const noexcept { return m_t.tv_sec == 0 && m_t.tv_nsec == 0; }
+		constexpr bool isInfinite() const noexcept { return m_t.tv_sec > std::numeric_limits<time_t>::max() / 2; }
+		constexpr bool hasPassed() const noexcept { return isNegative() || isNull(); }
+		constexpr struct timespec const& ts() const noexcept { return m_t; }
+		constexpr14 double s() const noexcept { return s<double>(); }
 
-		template <typename T> T s() const {
+		template <typename T> constexpr14 T s() const noexcept
+		{
 			T t = (T)m_t.tv_sec + (T)m_t.tv_nsec * (T)1e-9;
 			if(m_negative)
 				t = -t;
 			return t;
 		}
 
-		constexpr bool isAbsBiggerThan(TimeInterval const& t) const {
+		constexpr bool isAbsBiggerThan(TimeInterval const& t) const noexcept
+		{
 			return m_t.tv_sec > t.m_t.tv_sec || (m_t.tv_sec == t.m_t.tv_sec && m_t.tv_nsec > t.m_t.tv_nsec);
 		}
 
-		constexpr bool isBiggerThan(TimeInterval const& t) const {
+		constexpr bool isBiggerThan(TimeInterval const& t) const noexcept
+		{
 			return
 				(!m_negative && t.m_negative) ||
 				(!m_negative && !t.m_negative && this->isAbsBiggerThan(t)) ||
 				(m_negative && t.m_negative && t.isAbsBiggerThan(*this));
 		}
 
-		constexpr bool operator==(TimeInterval const& rhs) const { return m_t.tv_nsec == rhs.m_t.tv_nsec && m_t.tv_sec == rhs.m_t.tv_sec && m_negative == rhs.m_negative; }
-		constexpr bool operator>(TimeInterval const& rhs) const { return this->isBiggerThan(rhs); }
-		constexpr bool operator>=(TimeInterval const& rhs) const { return *this == rhs || this->isBiggerThan(rhs); }
-		constexpr bool operator<(TimeInterval const& rhs) const { return !(*this >= rhs); }
-		constexpr bool operator<=(TimeInterval const& rhs) const { return *this == rhs || !(*this > rhs); }
+		constexpr bool operator==(TimeInterval const& rhs) const noexcept {
+			return m_t.tv_nsec == rhs.m_t.tv_nsec && m_t.tv_sec == rhs.m_t.tv_sec && m_negative == rhs.m_negative; }
+		constexpr bool operator>(TimeInterval const& rhs) const noexcept {
+			return this->isBiggerThan(rhs); }
+		constexpr bool operator>=(TimeInterval const& rhs) const noexcept {
+			return *this == rhs || this->isBiggerThan(rhs); }
+		constexpr bool operator<(TimeInterval const& rhs) const noexcept {
+			return !(*this >= rhs); }
+		constexpr bool operator<=(TimeInterval const& rhs) const noexcept {
+			return *this == rhs || !(*this > rhs); }
 
-		void add(TimeInterval const& t) {
+		constexpr14 void add(TimeInterval const& t) noexcept
+		{
 			if(t.m_negative == m_negative) {
 				// Check for overflow.
 				if(isInfinite() || t.isInfinite() || std::numeric_limits<time_t>::max() - m_t.tv_sec - 1 <= t.m_t.tv_sec) {
@@ -202,26 +217,29 @@ namespace zth {
 			}
 		}
 
-		void sub(TimeInterval const& t) {
+		constexpr14 void sub(TimeInterval const& t) noexcept
+		{
 			add(TimeInterval(t.ts().tv_sec, t.ts().tv_nsec, !t.isNegative()));
 		}
 
 		template <typename T>
-		void mul(T x) {
+		constexpr14 void mul(T x) noexcept
+		{
 			*this = TimeInterval(s<T>() * x);
 		}
 
-		TimeInterval& operator+=(TimeInterval const& rhs) { add(rhs); return *this; }
-		TimeInterval operator+(TimeInterval const& rhs) const { TimeInterval ti(*this); ti += rhs; return ti; }
-		TimeInterval& operator-=(TimeInterval const& rhs) { sub(rhs); return *this; }
-		TimeInterval operator-(TimeInterval const& rhs) const { TimeInterval ti(*this); ti -= rhs; return ti; }
-		TimeInterval operator-() const { return TimeInterval(ts().tv_sec, ts().tv_nsec, !isNegative()); }
-		template <typename T> TimeInterval& operator*=(T x) { mul<T>(x); return *this; }
-		template <typename T> TimeInterval operator*(T x) const { return TimeInterval(s<T>() * x); }
-		template <typename T> TimeInterval& operator/=(T x) { mul<T>((T)1 / x); return *this; }
-		template <typename T> TimeInterval operator/(T x) const { return TimeInterval(s<T>() / x); }
+		constexpr14 TimeInterval& operator+=(TimeInterval const& rhs) noexcept { add(rhs); return *this; }
+		constexpr14 TimeInterval operator+(TimeInterval const& rhs) const noexcept { TimeInterval ti(*this); ti += rhs; return ti; }
+		constexpr14 TimeInterval& operator-=(TimeInterval const& rhs) noexcept { sub(rhs); return *this; }
+		constexpr14 TimeInterval operator-(TimeInterval const& rhs) const noexcept { TimeInterval ti(*this); ti -= rhs; return ti; }
+		constexpr14 TimeInterval operator-() const noexcept { return TimeInterval(ts().tv_sec, ts().tv_nsec, !isNegative()); }
+		template <typename T> constexpr14 TimeInterval& operator*=(T x) noexcept { mul<T>(x); return *this; }
+		template <typename T> constexpr14 TimeInterval operator*(T x) const noexcept { return TimeInterval(s<T>() * x); }
+		template <typename T> constexpr14 TimeInterval& operator/=(T x) noexcept { mul<T>((T)1 / x); return *this; }
+		template <typename T> constexpr14 TimeInterval operator/(T x) const noexcept { return TimeInterval(s<T>() / x); }
 
-		string str() const {
+		string str() const
+		{
 			string res;
 			if(isInfinite()) {
 				res = "infinity";
@@ -288,7 +306,8 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int x) noexcept
+	{
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x,
@@ -302,7 +321,8 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) noexcept
+	{
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x / 1000ULL,
@@ -317,7 +337,8 @@ namespace zth {
 	 *
 	 * \ingroup zth_api_cpp_time
 	 */
-	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) {
+	ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) noexcept
+	{
 		return TimeInterval(
 			(time_t)std::min<unsigned long long int>(
 				x / 1000000ULL,
@@ -342,68 +363,83 @@ namespace zth {
 	class Timestamp {
 		ZTH_CLASS_NEW_DELETE(Timestamp)
 	public:
-		Timestamp()
+		// null
+		constexpr Timestamp() noexcept
 			: m_t()
-		{
-			*this = null();
-		}
+		{}
 
 		// cppcheck-suppress noExplicitConstructor
-		Timestamp(struct timespec const& ts) : m_t(ts) {}
+		constexpr Timestamp(struct timespec const& ts) noexcept
+			: m_t(ts)
+		{}
 
-		Timestamp(time_t sec, long nsec)
+		constexpr14 explicit Timestamp(time_t sec, long nsec = 0) noexcept
 			: m_t()
 		{
 			m_t.tv_sec = sec;
 			m_t.tv_nsec = nsec;
 		}
 
-		static Timestamp now() {
-			Timestamp t(0, 0);
+		static Timestamp now()
+		{
+			Timestamp t;
 			int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &t.m_t);
 			zth_assert(res == 0);
 			zth_assert(!t.isNull());
 			return t;
 		}
 
-		struct timespec const& ts() const { return m_t; }
-		operator struct timespec const&() const { return ts(); }
+		constexpr struct timespec const& ts() const noexcept { return m_t; }
+		constexpr operator struct timespec const&() const noexcept { return ts(); }
 
-		bool isBefore(Timestamp const& t) const {
-			return ts().tv_sec < t.ts().tv_sec || (ts().tv_sec == t.ts().tv_sec && ts().tv_nsec < t.ts().tv_nsec);
+		constexpr bool isBefore(Timestamp const& t) const noexcept
+		{
+			return
+				ts().tv_sec < t.ts().tv_sec ||
+				(ts().tv_sec == t.ts().tv_sec && ts().tv_nsec < t.ts().tv_nsec);
 		}
 
-		bool isAfter(Timestamp const& t) const {
+		constexpr bool isAfter(Timestamp const& t) const noexcept
+		{
 			return t.isBefore(*this);
 		}
 
-		bool operator==(Timestamp const& rhs) const { return ts().tv_nsec == rhs.ts().tv_nsec && ts().tv_sec == rhs.ts().tv_sec; }
-		bool operator!=(Timestamp const& rhs) const { return !(*this == rhs); }
-		bool operator<(Timestamp const& rhs) const { return this->isBefore(rhs); }
-		bool operator<=(Timestamp const& rhs) const { return *this == rhs || this->isBefore(rhs); }
-		bool operator>(Timestamp const& rhs) const { return rhs.isBefore(*this); }
-		bool operator>=(Timestamp const& rhs) const { return *this == rhs || rhs.isBefore(*this); }
+		constexpr bool operator==(Timestamp const& rhs) const noexcept
+		{
+			return
+				ts().tv_nsec == rhs.ts().tv_nsec &&
+				ts().tv_sec == rhs.ts().tv_sec;
+		}
 
-		TimeInterval timeTo(Timestamp const& t) const {
+		constexpr bool operator!=(Timestamp const& rhs) const noexcept { return !(*this == rhs); }
+		constexpr bool operator<(Timestamp const& rhs) const noexcept { return this->isBefore(rhs); }
+		constexpr bool operator<=(Timestamp const& rhs) const noexcept { return *this == rhs || this->isBefore(rhs); }
+		constexpr bool operator>(Timestamp const& rhs) const noexcept { return rhs.isBefore(*this); }
+		constexpr bool operator>=(Timestamp const& rhs) const noexcept { return *this == rhs || rhs.isBefore(*this); }
+
+		constexpr14 TimeInterval timeTo(Timestamp const& t) const
+		{
 			return TimeInterval(t.ts().tv_sec, t.ts().tv_nsec) - TimeInterval(ts().tv_sec, ts().tv_nsec);
 		}
 
-		void add(TimeInterval const& dt) {
+		constexpr14 void add(TimeInterval const& dt) noexcept
+		{
 			TimeInterval t(m_t.tv_sec, m_t.tv_nsec);
 			t += dt;
 			zth_assert(t.isPositive());
 			m_t = t.ts();
 		}
 
-		Timestamp& operator+=(TimeInterval const& dt) { add(dt); return *this; }
-		Timestamp operator+(TimeInterval const& dt) const { Timestamp t(*this); return t += dt; }
-		Timestamp& operator-=(TimeInterval const& dt) { add(-dt); return *this; }
-		Timestamp operator-(TimeInterval const& dt) const { Timestamp t(*this); return t -= dt; }
-		TimeInterval operator-(Timestamp const& rhs) const { return rhs.timeTo(*this); }
+		constexpr14 Timestamp& operator+=(TimeInterval const& dt) noexcept { add(dt); return *this; }
+		constexpr14 Timestamp operator+(TimeInterval const& dt) const noexcept { Timestamp t(*this); return t += dt; }
+		constexpr14 Timestamp& operator-=(TimeInterval const& dt) noexcept { add(-dt); return *this; }
+		constexpr14 Timestamp operator-(TimeInterval const& dt) const noexcept { Timestamp t(*this); return t -= dt; }
+		constexpr14 TimeInterval operator-(Timestamp const& rhs) const noexcept { return rhs.timeTo(*this); }
 
-		static Timestamp null() { return Timestamp(0, 0); }
+		static constexpr Timestamp null() noexcept { return Timestamp(); }
 
-		bool isNull() const {
+		constexpr bool isNull() const noexcept
+		{
 			return m_t.tv_sec == 0 && m_t.tv_nsec == 0;
 		}
 

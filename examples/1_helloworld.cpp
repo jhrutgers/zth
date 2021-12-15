@@ -10,23 +10,24 @@ void world()
 	printf("World!!1\n");
 }
 // The zth_fiber() marks the given list of function as fiber entries and does
-// everything that is required to allow `async world()'.
-zth_fiber(world)
+// everything that is required to allow `async world()'. The ; is not required,
+// but keeps clang-format happy.
+zth_fiber(world);
 
 void hello()
 {
 	// The following line does not call the function world() directly, but
-	// creates a fiber and schedules it at the current Worker.  world() will
-	// now be executed asynchronously to hello().
+	// creates a fiber and schedules it at the current Worker.  world()
+	// will now be executed asynchronously to hello().
 	async world();
 
-	// Even though world() was started before the following print statement,
-	// 'Hello' will always be printed first, as we did not yield the processor
-	// to any other fiber in between. So, the output is deterministic; the
-	// printf()s will not be reordered.
+	// Even though world() was started before the following print
+	// statement, 'Hello' will always be printed first, as we did not yield
+	// the processor to any other fiber in between. So, the output is
+	// deterministic; the printf()s will not be reordered.
 	printf("Hello\n");
 }
-zth_fiber(hello)
+zth_fiber(hello);
 
 // main() is weakly defined by Zth. If not implemented by the program, Zth
 // supplies one that just starts a worker and schedules main_fiber() as the
@@ -48,4 +49,3 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 }
 // There is no need to call zth_fiber(main_fiber), as that is implicit for
 // main_fiber().
-

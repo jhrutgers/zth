@@ -20,6 +20,7 @@
 
 #ifdef __cplusplus
 
+#include <libzth/util.h>
 #include <libzth/fiber.h>
 #include <libzth/list.h>
 #include <libzth/time.h>
@@ -31,14 +32,14 @@ namespace zth {
 	class Waitable {
 		ZTH_CLASS_NEW_DELETE(Waitable)
 	public:
-		Waitable() : m_fiber() {}
-		virtual ~Waitable() {}
-		Fiber& fiber() const { zth_assert(hasFiber()); return *m_fiber; }
-		virtual bool poll(Timestamp const& now = Timestamp::now()) = 0;
+		Waitable() noexcept : m_fiber() {}
+		virtual ~Waitable() is_default
+		Fiber& fiber() const noexcept { zth_assert(hasFiber()); return *m_fiber; }
+		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept = 0;
 		virtual string str() const { return format("Waitable for %s", fiber().str().c_str()); }
-		void setFiber(Fiber& fiber) { m_fiber = &fiber; }
-		void resetFiber() { m_fiber = nullptr; }
-		bool hasFiber() const { return m_fiber; }
+		void setFiber(Fiber& fiber) noexcept { m_fiber = &fiber; }
+		void resetFiber() noexcept { m_fiber = nullptr; }
+		bool hasFiber() const noexcept { return m_fiber; }
 	private:
 		Fiber* m_fiber;
 	};
@@ -46,19 +47,21 @@ namespace zth {
 	class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 		ZTH_CLASS_NEW_DELETE(TimedWaitable)
 	public:
-		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) : m_timeout(timeout) {}
-		virtual ~TimedWaitable() {}
-		Timestamp const& timeout() const { return m_timeout; }
-		virtual bool poll(Timestamp const& now = Timestamp::now()) override { return timeout() <= now; }
-		bool operator<(TimedWaitable const& rhs) const { return timeout() < rhs.timeout(); }
-		virtual string str() const override {
+		explicit TimedWaitable(Timestamp const& timeout = Timestamp()) noexcept : m_timeout(timeout) {}
+		virtual ~TimedWaitable() override is_default
+		Timestamp const& timeout() const noexcept { return m_timeout; }
+		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override { return timeout() <= now; }
+		bool operator<(TimedWaitable const& rhs) const noexcept { return timeout() < rhs.timeout(); }
+
+		virtual string str() const override
+		{
 			if(hasFiber())
 				return format("Waitable with %s timeout for %s", (timeout() - Timestamp::now()).str().c_str(), fiber().str().c_str());
 			else
 				return format("Waitable with %s timeout", (timeout() - Timestamp::now()).str().c_str());
 		}
 	protected:
-		void setTimeout(Timestamp const& t) { m_timeout = t; }
+		void setTimeout(Timestamp const& t) noexcept { m_timeout = t; }
 	private:
 		Timestamp m_timeout;
 	};
@@ -67,11 +70,17 @@ namespace zth {
 	class PolledWaiting : public TimedWaitable {
 		ZTH_CLASS_NEW_DELETE(PolledWaiting)
 	public:
-		explicit PolledWaiting(F f, TimeInterval const& interval = TimeInterval())
-			: TimedWaitable(Timestamp()), m_f(f) { setInterval(interval); }
-		virtual ~PolledWaiting() {}
+		explicit PolledWaiting(F const& f, TimeInterval const& interval = TimeInterval())
+			: TimedWaitable(Timestamp())
+			, m_f(f)
+		{
+			setInterval(interval);
+		}
 
-		virtual bool poll(Timestamp const& now = Timestamp::now()) override {
+		virtual ~PolledWaiting() override is_default
+
+		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override
+		{
 			if(m_f())
 				return true;
 
@@ -83,11 +92,14 @@ namespace zth {
 			return false;
 		}
 
-		TimeInterval const& interval() const { return m_interval; }
-		void setInterval(TimeInterval const& interval, Timestamp const& now = Timestamp::now()) {
+		TimeInterval const& interval() const noexcept { return m_interval; }
+
+		void setInterval(TimeInterval const& interval, Timestamp const& now = Timestamp::now()) noexcept
+		{
 			m_interval = interval;
 			setTimeout(now + interval);
 		}
+
 	private:
 		F m_f;
 		TimeInterval m_interval;
@@ -95,8 +107,17 @@ namespace zth {
 
 	template <typename C>
 	struct PolledMemberWaitingHelper {
-		PolledMemberWaitingHelper(C& that, bool (C::*f)()) : that(that), f(f) {}
-		bool operator()() const { return (that.*f)(); }
+		constexpr PolledMemberWaitingHelper(C& that, bool (C::*f)()) noexcept
+			: that(that)
+			, f(f)
+		{}
+
+		bool operator()() const
+		{
+			zth_assert(f != nullptr);
+			return (that.*f)();
+		}
+
 		C& that;
 		bool (C::*f)();
 	};
@@ -106,9 +127,12 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(PolledMemberWaiting)
 	public:
 		typedef PolledWaiting<PolledMemberWaitingHelper<C> > base;
-		PolledMemberWaiting(C& that, bool (C::*f)(), TimeInterval interval)
-			: base(PolledMemberWaitingHelper<C>(that, f), interval) {}
-		virtual ~PolledMemberWaiting() {}
+
+		constexpr PolledMemberWaiting(C& that, bool (C::*f)(), TimeInterval const& interval = TimeInterval()) noexcept
+			: base(PolledMemberWaitingHelper<C>(that, f), interval)
+		{}
+
+		virtual ~PolledMemberWaiting() override is_default
 	};
 
 	class PollerServerBase;
@@ -117,7 +141,7 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(Waiter)
 	public:
 		explicit Waiter(Worker& worker);
-		virtual ~Waiter();
+		virtual ~Waiter() override;
 
 		void wait(TimedWaitable& w);
 		void scheduleTask(TimedWaitable& w);
@@ -131,7 +155,8 @@ namespace zth {
 	protected:
 		bool polling() const;
 
-		virtual int fiberHook(Fiber& f) override {
+		virtual int fiberHook(Fiber& f) override
+		{
 			f.setName("zth::Waiter");
 			f.suspend();
 			return Runnable::fiberHook(f);
@@ -154,14 +179,22 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	template <typename F> void waitUntil(F f, TimeInterval const& pollInterval) {
-		PolledWaiting<F> w(f, pollInterval); waitUntil(w); }
+	template <typename F>
+	void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
+	{
+		PolledWaiting<F> w(f, pollInterval);
+		waitUntil(w);
+	}
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	template <typename C> void waitUntil(C& that, bool (C::*f)(), TimeInterval const& pollInterval) {
-		PolledMemberWaiting<C> w(that, f, pollInterval); waitUntil(w); }
+	template <typename C>
+	void waitUntil(C& that, bool (C::*f)(), TimeInterval const& pollInterval = TimeInterval())
+	{
+		PolledMemberWaiting<C> w(that, f, pollInterval);
+		waitUntil(w);
+	}
 
 	void scheduleTask(TimedWaitable& w);
 	void unscheduleTask(TimedWaitable& w);
@@ -180,12 +213,12 @@ namespace zth {
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void mnap(long sleepFor_ms)				{ nap(TimeInterval((time_t)(sleepFor_ms / 1000L), sleepFor_ms % 1000L * 1000000L)); }
+	ZTH_EXPORT inline void mnap(long sleepFor_ms)			{ nap(TimeInterval((time_t)(sleepFor_ms / 1000L), sleepFor_ms % 1000L * 1000000L)); }
 
 	/*!
 	 * \ingroup zth_api_cpp_fiber
 	 */
-	ZTH_EXPORT inline void unap(long sleepFor_us)				{ nap(TimeInterval((time_t)(sleepFor_us / 1000000L), sleepFor_us % 1000000L * 1000L)); }
+	ZTH_EXPORT inline void unap(long sleepFor_us)			{ nap(TimeInterval((time_t)(sleepFor_us / 1000000L), sleepFor_us % 1000000L * 1000L)); }
 
 	/*!
 	 * \brief Periodic wakeup after fixed interval.
@@ -245,30 +278,36 @@ namespace zth {
 			, m_t(Timestamp::now())
 		{}
 
-		Timestamp const& t() const {
+		Timestamp const& t() const noexcept
+		{
 			return m_t;
 		}
 
-		TimeInterval const& interval() const {
+		TimeInterval const& interval() const noexcept
+		{
 			return m_interval;
 		}
 
-		void setInterval(TimeInterval const& interval) {
+		void setInterval(TimeInterval const& interval) noexcept
+		{
 			m_interval = interval;
 		}
 
-		PeriodicWakeUp& operator=(TimeInterval const& interval) {
+		PeriodicWakeUp& operator=(TimeInterval const& interval) noexcept
+		{
 			setInterval(interval);
 			return *this;
 		}
 
-		bool nap() {
+		bool nap()
+		{
 			return nap(t());
 		}
 
 		bool nap(Timestamp const& reference, Timestamp const& now = Timestamp::now());
 
-		void operator()() {
+		void operator()()
+		{
 			nap();
 		}
 

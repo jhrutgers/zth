@@ -44,16 +44,19 @@
 namespace zth {
 
 	class RefCounted {
+		ZTH_CLASS_NOCOPY(RefCounted)
 	public:
-		RefCounted() : m_count() {}
-		virtual ~RefCounted() {}
+		RefCounted() noexcept : m_count() {}
+		virtual ~RefCounted() is_default
 
-		void used() {
+		void used() noexcept
+		{
 			zth_assert(m_count < std::numeric_limits<size_t>::max());
 			m_count++;
 		}
 
-		void unused() {
+		void unused()
+		{
 			zth_assert(m_count > 0);
 			if(--m_count == 0)
 				delete this;
@@ -66,11 +69,27 @@ namespace zth {
 	template <typename T>
 	class SharedPointer {
 	public:
-		explicit SharedPointer(RefCounted* object = NULL) : m_object() { reset(object); }
-		SharedPointer(SharedPointer const& p) : m_object() { *this = p; }
-		virtual ~SharedPointer() { reset(); }
+		constexpr14 explicit SharedPointer(T* object = nullptr) noexcept
+			: m_object(object)
+		{
+			if(m_object)
+				m_object->used();
+		}
 
-		void reset(RefCounted* object = NULL) {
+		constexpr14 SharedPointer(SharedPointer const& p) noexcept
+			: m_object(p.get())
+		{
+			if(m_object)
+				m_object->used();
+		}
+
+		virtual ~SharedPointer()
+		{
+			reset();
+		}
+
+		void reset(T* object = nullptr)
+		{
 			if(object)
 				object->used();
 			if(m_object)
@@ -78,37 +97,74 @@ namespace zth {
 			m_object = object;
 		}
 
-		SharedPointer& operator=(RefCounted* object) { reset(object); return *this; }
-		SharedPointer& operator=(SharedPointer const& p) { reset(p.get()); return *this; }
+		SharedPointer& operator=(T* object)
+		{
+			reset(object);
+			return *this;
+		}
 
-		T* get() const { return m_object ? static_cast<T*>(m_object) : NULL; }
-		operator T*() const { return get(); }
-		T* operator*() const { zth_assert(get()); return get(); }
-		T* operator->() const { zth_assert(get()); return get(); }
+		SharedPointer& operator=(SharedPointer const& p)
+		{
+			reset(p.get());
+			return *this;
+		}
 
-		T* release() {
+#if __cplusplus >= 201103L
+		constexpr14 SharedPointer(SharedPointer&& p) noexcept
+			: m_object()
+		{
+			*this = std::move(p);
+		}
+
+		constexpr14 SharedPointer& operator=(SharedPointer&& p) noexcept
+		{
+			m_object = p.release();
+			return *this;
+		}
+#endif
+
+		constexpr T* get() const noexcept { return m_object; }
+		constexpr operator T*() const noexcept { return get(); }
+		constexpr14 T* operator*() const noexcept { zth_assert(get()); return get(); }
+		constexpr14 T* operator->() const noexcept { zth_assert(get()); return get(); }
+
+		constexpr14 T* release() noexcept
+		{
 			T* object = get();
-			m_object = NULL;
+			m_object = nullptr;
 			return object;
 		}
 
 	private:
-		RefCounted* m_object;
+		T* m_object;
 	};
 
 	class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 		ZTH_CLASS_NEW_DELETE(Synchronizer)
 	public:
-		explicit Synchronizer(char const* name = "Synchronizer") : RefCounted(), UniqueID(Config::NamedSynchronizer ? name : NULL) {}
-		virtual ~Synchronizer() {
+		explicit Synchronizer(cow_string const& name = "Synchronizer")
+			: RefCounted()
+			, UniqueID(Config::NamedSynchronizer ? name.str() : string())
+		{}
+
+#if __cplusplus >= 201103L
+		explicit Synchronizer(cow_string&& name)
+			: RefCounted()
+			, UniqueID(Config::NamedSynchronizer ? std::move(name).str() : string())
+		{}
+#endif
+
+		virtual ~Synchronizer() override
+		{
 			zth_dbg(sync, "[%s] Destruct", id_str());
 			zth_assert(m_queue.empty());
 		}
 
 	protected:
-		void block() {
-			Worker* w;
-			Fiber* f;
+		void block()
+		{
+			Worker* w = nullptr;
+			Fiber* f = nullptr;
 			getContext(&w, &f);
 
 			zth_dbg(sync, "[%s] Block %s", id_str(), f->id_str());
@@ -122,12 +178,13 @@ namespace zth {
 		 * \brief Unblock the specific fiber.
 		 * \return \c true if unblocked, \c false when not queued by this Synchronizer.
 		 */
-		bool unblock(Fiber& f) {
+		bool unblock(Fiber& f) noexcept
+		{
 			if(!m_queue.contains(f))
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 			m_queue.erase(f);
@@ -136,12 +193,13 @@ namespace zth {
 			return true;
 		}
 
-		bool unblockFirst() {
+		bool unblockFirst() noexcept
+		{
 			if(m_queue.empty())
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			Fiber& f = m_queue.front();
 			zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
@@ -151,12 +209,13 @@ namespace zth {
 			return true;
 		}
 
-		bool unblockAll() {
+		bool unblockAll() noexcept
+		{
 			if(m_queue.empty())
 				return false;
 
-			Worker* w;
-			getContext(&w, NULL);
+			Worker* w = nullptr;
+			getContext(&w, nullptr);
 
 			zth_dbg(sync, "[%s] Unblock all", id_str());
 
@@ -170,18 +229,20 @@ namespace zth {
 		}
 
 		class AlarmClock : public TimedWaitable {
+			ZTH_CLASS_NEW_DELETE(AlarmClock)
 		public:
 			typedef TimedWaitable base;
-			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout)
+			AlarmClock(Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout) noexcept
 				: base(timeout)
 				, m_synchronizer(synchronizer)
 				, m_fiber(fiber)
 				, m_rang()
 			{}
 
-			virtual ~AlarmClock() {}
+			virtual ~AlarmClock() override is_default
 
-			virtual bool poll(Timestamp const& now = Timestamp::now()) {
+			virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override
+			{
 				if(!base::poll(now))
 					return false;
 
@@ -190,7 +251,7 @@ namespace zth {
 				return true;
 			}
 
-			bool rang() const { return m_rang; }
+			bool rang() const noexcept { return m_rang; }
 
 		private:
 			Synchronizer& m_synchronizer;
@@ -204,7 +265,8 @@ namespace zth {
 		 * \brief Block, with timeout.
 		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 		 */
-		bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now()) {
+		bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now())
+		{
 			if(timeout <= now)
 				// Immediate timeout.
 				return true;
@@ -216,7 +278,8 @@ namespace zth {
 		 * \brief Block, with timeout.
 		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 		 */
-		bool block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now()) {
+		bool block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now())
+		{
 			if(timeout.isNegative() || timeout.isNull())
 				// Immediate timeout.
 				return true;
@@ -229,7 +292,8 @@ namespace zth {
 		 * \brief Block, with timeout.
 		 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 		 */
-		bool block_(Timestamp const& timeout, Timestamp const& now) {
+		bool block_(Timestamp const& timeout, Timestamp const& now)
+		{
 			Worker* w;
 			Fiber* f;
 			getContext(&w, &f);
@@ -241,7 +305,7 @@ namespace zth {
 
 			AlarmClock a(*this, *f, timeout);
 			w->waiter().scheduleTask(a);
-			w->schedule(NULL, now);
+			w->schedule(nullptr, now);
 
 			w->waiter().unscheduleTask(a);
 			return !a.rang();
@@ -257,17 +321,30 @@ namespace zth {
 	class Mutex : public Synchronizer {
 		ZTH_CLASS_NEW_DELETE(Mutex)
 	public:
-		explicit Mutex(char const* name = "Mutex") : Synchronizer(name), m_locked() {}
-		virtual ~Mutex() {}
+		explicit Mutex(cow_string const& name = "Mutex")
+			: Synchronizer(name)
+			, m_locked()
+		{}
 
-		void lock() {
+#if __cplusplus >= 201103L
+		explicit Mutex(cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_locked()
+		{}
+#endif
+
+		virtual ~Mutex() override is_default
+
+		void lock()
+		{
 			while(unlikely(m_locked))
 				block();
 			m_locked = true;
 			zth_dbg(sync, "[%s] Locked", id_str());
 		}
 
-		bool trylock() {
+		bool trylock() noexcept
+		{
 			if(m_locked)
 				return false;
 			m_locked = true;
@@ -275,7 +352,8 @@ namespace zth {
 			return true;
 		}
 
-		void unlock() {
+		void unlock() noexcept
+		{
 			zth_assert(m_locked);
 			zth_dbg(sync, "[%s] Unlocked", id_str());
 			m_locked = false;
@@ -292,10 +370,22 @@ namespace zth {
 	class Semaphore : public Synchronizer {
 		ZTH_CLASS_NEW_DELETE(Semaphore)
 	public:
-		Semaphore(size_t init = 0, char const* name = "Semaphore") : Synchronizer(name), m_count(init) {}
-		virtual ~Semaphore() {}
+		explicit Semaphore(size_t init = 0, cow_string const& name = "Semaphore")
+			: Synchronizer(name)
+			, m_count(init)
+		{}
 
-		void acquire(size_t count = 1) {
+#if __cplusplus >= 201103L
+		Semaphore(size_t init, cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_count(init)
+		{}
+#endif
+
+		virtual ~Semaphore() override is_default
+
+		void acquire(size_t count = 1)
+		{
 			size_t remaining = count;
 			while(remaining > 0) {
 				if(remaining <= m_count) {
@@ -313,7 +403,8 @@ namespace zth {
 			zth_dbg(sync, "[%s] Acquired %zu", id_str(), count);
 		}
 
-		void release(size_t count = 1) {
+		void release(size_t count = 1) noexcept
+		{
 			zth_assert(m_count + count >= m_count); // ...otherwise it wrapped around, which is probably not want you wanted...
 
 			if(unlikely(m_count + count < m_count))
@@ -328,7 +419,7 @@ namespace zth {
 				unblockFirst();
 		}
 
-		size_t value() const { return m_count; }
+		size_t value() const noexcept { return m_count; }
 
 	private:
 		size_t m_count;
@@ -340,23 +431,37 @@ namespace zth {
 	class Signal : public Synchronizer {
 		ZTH_CLASS_NEW_DELETE(Signal)
 	public:
-		explicit Signal(char const* name = "Signal") : Synchronizer(name) , m_signalled() {}
-		virtual ~Signal() {}
+		explicit Signal(cow_string const& name = "Signal")
+			: Synchronizer(name)
+			, m_signalled()
+		{}
 
-		void wait() {
-			if(!m_signalled)
+#if __cplusplus >= 201103L
+		explicit Signal(cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_signalled()
+		{}
+#endif
+
+		virtual ~Signal() override is_default
+
+		void wait()
+		{
+			if(!m_signalled) {
 				block();
-			else
+			} else {
 				// Do a yield() here, as one might rely on the signal to block
 				// regularly when the signal is used in a loop (see daemon
 				// pattern).
 				yield();
+			}
 
 			if(m_signalled > 0)
 				m_signalled--;
 		}
 
-		bool wait(Timestamp const& timeout, Timestamp const& now = Timestamp::now()) {
+		bool wait(Timestamp const& timeout, Timestamp const& now = Timestamp::now())
+		{
 			if(!m_signalled) {
 				if(!block(timeout, now))
 					// Timeout.
@@ -371,11 +476,13 @@ namespace zth {
 			return true;
 		}
 
-		bool wait(TimeInterval const& timeout, Timestamp const& now = Timestamp::now()) {
+		bool wait(TimeInterval const& timeout, Timestamp const& now = Timestamp::now())
+		{
 			return wait(now + timeout);
 		}
 
-		void signal(bool queue = true, bool queueEveryTime = false) {
+		void signal(bool queue = true, bool queueEveryTime = false) noexcept
+		{
 			zth_dbg(sync, "[%s] Signal", id_str());
 			if(!unblockFirst() && queue && m_signalled >= 0) {
 				if(m_signalled == 0 || queueEveryTime)
@@ -384,14 +491,16 @@ namespace zth {
 			}
 		}
 
-		void signalAll(bool queue = true) {
+		void signalAll(bool queue = true) noexcept
+		{
 			zth_dbg(sync, "[%s] Signal all", id_str());
 			unblockAll();
 			if(queue)
 				m_signalled = -1;
 		}
 
-		void reset() {
+		void reset() noexcept
+		{
 			m_signalled = 0;
 		}
 
@@ -407,13 +516,31 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(Future)
 	public:
 		typedef T type;
+
 		// cppcheck-suppress uninitMemberVar
-		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {
+		explicit Future(cow_string const& name = "Future")
+			: Synchronizer(name)
+			, m_valid()
+		{
 #ifdef ZTH_USE_VALGRIND
 			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #endif
 		}
-		virtual ~Future() {
+
+#if __cplusplus >= 201103L
+		// cppcheck-suppress uninitMemberVar
+		explicit Future(cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_valid()
+		{
+#  ifdef ZTH_USE_VALGRIND
+			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
+#  endif
+		}
+#endif
+
+		virtual ~Future() override
+		{
 			if(valid())
 				value().~type();
 #ifdef ZTH_USE_VALGRIND
@@ -421,34 +548,105 @@ namespace zth {
 #endif
 		}
 
-		bool valid() const { return m_valid; }
-		operator bool() const { return valid(); }
+		bool valid() const noexcept { return m_valid; }
+		operator bool() const noexcept { return valid(); }
 
-		void wait() { if(!valid()) block(); }
-		void set(type const& value = type()) {
-			zth_assert(!valid());
-			if(valid())
-				return;
-#ifdef ZTH_USE_VALGRIND
-			VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
-#endif
-			new(m_data) type(value);
-			m_valid = true;
-			zth_dbg(sync, "[%s] Set", id_str());
-			unblockAll();
+		void wait()
+		{
+			if(!valid())
+				block();
 		}
-		Future& operator=(type const& value) { set(value); return *this; }
 
-		type& value() { wait(); char* p = m_data; return *reinterpret_cast<type*>(p); }
-		type const& value() const { wait(); char const* p = m_data; return *reinterpret_cast<type const*>(p); }
-		operator type const&() const { return value(); }
-		operator type&() { return value(); }
+		void set()
+		{
+			if(!set_prepare())
+				return;
+
+			new(m_data) type();
+			set_finalize();
+		}
+
+		void set(type const& value)
+		{
+			if(!set_prepare())
+				return;
+
+			new(m_data) type(value);
+			set_finalize();
+		}
+
+		Future& operator=(type const& value)
+		{
+			set(value);
+			return *this;
+		}
+
+#if __cplusplus >= 201103L
+		void set(type&& value)
+		{
+			if(!set_prepare())
+				return;
+
+			new(m_data) type(std::move(value));
+			set_finalize();
+		}
+
+		Future& operator=(type&& value)
+		{
+			set(std::move(value));
+			return *this;
+		}
+#endif
+
+		type& value() LREF_QUALIFIED
+		{
+			wait();
+			void* p = m_data;
+			return *static_cast<type*>(p);
+		}
+
+		type const& value() const LREF_QUALIFIED
+		{
+			wait();
+			void const* p = m_data;
+			return *static_cast<type const*>(p);
+		}
+
+#if __cplusplus >= 201103L
+		type value() &&
+		{
+			wait();
+			void* p = m_data;
+			return std::move(*static_cast<type*>(p));
+		}
+#endif
+
 		type const* operator*() const { return &value(); }
 		type* operator*() { return &value(); }
 		type const* operator->() const { return &value(); }
 		type* operator->() { return &value(); }
+
 	private:
-		char m_data[sizeof(type)] __attribute__((aligned(8)));
+		bool set_prepare() noexcept
+		{
+			zth_assert(!valid());
+			if(valid())
+				return false;
+#ifdef ZTH_USE_VALGRIND
+			VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
+#endif
+			return true;
+		}
+
+		void set_finalize() noexcept
+		{
+			m_valid = true;
+			zth_dbg(sync, "[%s] Set", id_str());
+			unblockAll();
+		}
+
+	private:
+		alignas(type) char m_data[sizeof(type)];
 		bool m_valid;
 	};
 
@@ -458,17 +656,36 @@ namespace zth {
 		ZTH_CLASS_NEW_DELETE(Future)
 	public:
 		typedef void type;
-		explicit Future(char const* name = "Future") : Synchronizer(name), m_valid() {}
-		virtual ~Future() {}
 
-		bool valid() const { return m_valid; }
-		operator bool() const { return valid(); }
+		explicit Future(cow_string const& name = "Future")
+			: Synchronizer(name)
+			, m_valid()
+		{}
 
-		void wait() { if(!valid()) block(); }
-		void set() {
+#if __cplusplus >= 201103L
+		explicit Future(cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_valid()
+		{}
+#endif
+
+		virtual ~Future() override is_default
+
+		bool valid() const noexcept { return m_valid; }
+		operator bool() const noexcept { return valid(); }
+
+		void wait()
+		{
+			if(!valid())
+				block();
+		}
+
+		void set() noexcept
+		{
 			zth_assert(!valid());
 			if(valid())
 				return;
+
 			m_valid = true;
 			zth_dbg(sync, "[%s] Set", id_str());
 			unblockAll();
@@ -481,11 +698,24 @@ namespace zth {
 	class Gate : public Synchronizer {
 		ZTH_CLASS_NEW_DELETE(Gate)
 	public:
-		explicit Gate(size_t count, char const* name = "Gate")
-			: Synchronizer(name), m_count(count), m_current() {}
-		virtual ~Gate() {}
+		explicit Gate(size_t count, cow_string const& name = "Gate")
+			: Synchronizer(name)
+			, m_count(count)
+			, m_current()
+		{}
 
-		bool pass() {
+#if __cplusplus >= 201103L
+		Gate(size_t count, cow_string&& name)
+			: Synchronizer(std::move(name))
+			, m_count(count)
+			, m_current()
+		{}
+#endif
+
+		virtual ~Gate() override is_default
+
+		bool pass() noexcept
+		{
 			zth_dbg(sync, "[%s] Pass", id_str());
 			if(++m_current >= count()) {
 				m_current -= count();
@@ -496,13 +726,14 @@ namespace zth {
 			}
 		}
 
-		void wait() {
+		void wait()
+		{
 			if(!pass())
 				block();
 		}
 
-		size_t count() const { return m_count; }
-		size_t current() const { return m_current; }
+		size_t count() const noexcept { return m_count; }
+		size_t current() const noexcept { return m_current; }
 
 	private:
 		size_t const m_count;
@@ -518,12 +749,19 @@ struct zth_mutex_t { void* p; };
  * \details This is a C-wrapper to create a new zth::Mutex.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) noexcept
+{
 	if(unlikely(!mutex || mutex->p))
 		return EINVAL;
 
-	mutex->p = (void*)new zth::Mutex();
-	return 0;
+	__try {
+		mutex->p = (void*)new zth::Mutex();
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
@@ -531,7 +769,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) {
  * \details This is a C-wrapper to delete a zth::Mutex.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) noexcept
+{
 	if(unlikely(!mutex))
 		return EINVAL;
 	if(unlikely(!mutex->p))
@@ -539,7 +778,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
 		return 0;
 
 	delete static_cast<zth::Mutex*>(mutex->p);
-	mutex->p = NULL;
+	mutex->p = nullptr;
 	return 0;
 }
 
@@ -548,7 +787,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_destroy(zth_mutex_t* mutex) {
  * \details This is a C-wrapper for zth::Mutex::lock().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_lock(zth_mutex_t* mutex) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_lock(zth_mutex_t* mutex) noexcept
+{
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
@@ -561,7 +801,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_lock(zth_mutex_t* mutex) {
  * \details This is a C-wrapper for zth::Mutex::trylock().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_trylock(zth_mutex_t* mutex) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_trylock(zth_mutex_t* mutex) noexcept
+{
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
@@ -573,7 +814,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_trylock(zth_mutex_t* mutex) {
  * \details This is a C-wrapper for zth::Mutex::unlock().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_unlock(zth_mutex_t* mutex) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_unlock(zth_mutex_t* mutex) noexcept
+{
 	if(unlikely(!mutex || !mutex->p))
 		return EINVAL;
 
@@ -588,12 +830,19 @@ struct zth_sem_t { void* p; };
  * \details This is a C-wrapper to create a new zth::Semaphore.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) noexcept
+{
 	if(unlikely(!sem || sem->p))
 		return EINVAL;
 
-	sem->p = (void*)new zth::Semaphore(value);
-	return 0;
+	__try {
+		sem->p = (void*)new zth::Semaphore(value);
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
@@ -601,7 +850,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) {
  * \details This is a C-wrapper to delete a zth::Semaphore.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) noexcept
+{
 	if(unlikely(!sem))
 		return EINVAL;
 	if(unlikely(!sem->p))
@@ -609,7 +859,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
 		return 0;
 
 	delete static_cast<zth::Semaphore*>(sem->p);
-	sem->p = NULL;
+	sem->p = nullptr;
 	return 0;
 }
 
@@ -618,7 +868,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_destroy(zth_sem_t* sem) {
  * \details This is a C-wrapper for zth::Semaphore::value().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_getvalue(zth_sem_t *__restrict__ sem, size_t *__restrict__ value) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_getvalue(zth_sem_t *__restrict__ sem, size_t *__restrict__ value) noexcept
+{
 	if(unlikely(!sem || !sem->p || !value))
 		return EINVAL;
 
@@ -635,7 +886,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_getvalue(zth_sem_t *__restrict__ sem,
  * \details This is a C-wrapper for zth::Mutex::release() of 1.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) noexcept
+{
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
@@ -652,7 +904,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) {
  * \details This is a C-wrapper for zth::Mutex::acquire() of 1.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_wait(zth_sem_t* sem) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_wait(zth_sem_t* sem) noexcept
+{
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
@@ -665,7 +918,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_wait(zth_sem_t* sem) {
  * \details This is a C-wrapper based on zth::Mutex::acquire().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_trywait(zth_sem_t* sem) noexcept
+{
 	if(unlikely(!sem || !sem->p))
 		return EINVAL;
 
@@ -684,12 +938,19 @@ struct zth_cond_t { void* p; };
  * \details This is a C-wrapper to create a new zth::Signal.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) noexcept
+{
 	if(unlikely(!cond || cond->p))
 		return EINVAL;
 
-	cond->p = (void*)new zth::Signal();
-	return 0;
+	__try {
+		cond->p = (void*)new zth::Signal();
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
@@ -697,7 +958,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) {
  * \details This is a C-wrapper to delete a zth::Signal.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) noexcept
+{
 	if(unlikely(!cond))
 		return EINVAL;
 	if(unlikely(!cond->p))
@@ -705,7 +967,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
 		return 0;
 
 	delete static_cast<zth::Signal*>(cond->p);
-	cond->p = NULL;
+	cond->p = nullptr;
 	return 0;
 }
 
@@ -714,7 +976,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_destroy(zth_cond_t* cond) {
  * \details This is a C-wrapper for zth::Signal::signal().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_signal(zth_cond_t* cond) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_signal(zth_cond_t* cond) noexcept
+{
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
@@ -727,7 +990,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_signal(zth_cond_t* cond) {
  * \details This is a C-wrapper for zth::Signal::signalAll().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) noexcept
+{
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
@@ -740,7 +1004,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) {
  * \details This is a C-wrapper for zth::Signal::wait().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_wait(zth_cond_t* cond) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_wait(zth_cond_t* cond) noexcept
+{
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
@@ -756,12 +1021,19 @@ typedef zth::Future<uintptr_t> zth_future_t_type;
  * \details This is a C-wrapper to create a new zth::Future.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) noexcept
+{
 	if(unlikely(!future || future->p))
 		return EINVAL;
 
-	future->p = (void*)new zth_future_t_type();
-	return 0;
+	__try {
+		future->p = (void*)new zth_future_t_type();
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
@@ -769,7 +1041,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) {
  * \details This is a C-wrapper to delete a zth::Future.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) noexcept
+{
 	if(unlikely(!future))
 		return EINVAL;
 	if(unlikely(!future->p))
@@ -777,7 +1050,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
 		return 0;
 
 	delete static_cast<zth_future_t_type*>(future->p);
-	future->p = NULL;
+	future->p = nullptr;
 	return 0;
 }
 
@@ -786,7 +1059,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_destroy(zth_future_t* future) {
  * \details This is a C-wrapper for zth::Future::valid().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future) noexcept
+{
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
@@ -798,7 +1072,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_valid(zth_future_t* future) {
  * \details This is a C-wrapper for zth::Future::set().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_t value) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_t value) noexcept
+{
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
@@ -815,7 +1090,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_set(zth_future_t* future, uintptr_
  * \details This is a C-wrapper for zth::Future::value().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ future, uintptr_t *__restrict__ value) noexcept
+{
 	if(unlikely(!future || !future->p || !value))
 		return EINVAL;
 
@@ -828,7 +1104,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_get(zth_future_t *__restrict__ fut
  * \details This is a C-wrapper for zth::Future::wait().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_wait(zth_future_t* future) noexcept
+{
 	if(unlikely(!future || !future->p))
 		return EINVAL;
 
@@ -844,12 +1121,19 @@ struct zth_gate_t { void* p; };
  * \details This is a C-wrapper to create a new zth::Gate.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count) noexcept
+{
 	if(unlikely(!gate || gate->p))
 		return EINVAL;
 
-	gate->p = (void*)new zth::Gate(count);
-	return 0;
+	__try {
+		gate->p = (void*)new zth::Gate(count);
+		return 0;
+	} __catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} __catch(...) {
+		return EAGAIN;
+	}
 }
 
 /*!
@@ -857,7 +1141,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count)
  * \details This is a C-wrapper to delete a zth::Gate.
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) noexcept
+{
 	if(unlikely(!gate))
 		return EINVAL;
 	if(unlikely(!gate->p))
@@ -865,7 +1150,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
 		return 0;
 
 	delete static_cast<zth::Gate*>(gate->p);
-	gate->p = NULL;
+	gate->p = nullptr;
 	return 0;
 }
 
@@ -874,7 +1159,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_destroy(zth_gate_t* gate) {
  * \details This is a C-wrapper for zth::Gate::pass().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_pass(zth_gate_t* gate) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_pass(zth_gate_t* gate) noexcept
+{
 	if(unlikely(!gate || !gate->p))
 		return EINVAL;
 
@@ -886,7 +1172,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_pass(zth_gate_t* gate) {
  * \details This is a C-wrapper for zth::Gate::wait().
  * \ingroup zth_api_c_sync
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) {
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) noexcept
+{
 	if(unlikely(!gate || !gate->p))
 		return EINVAL;
 
@@ -934,5 +1221,5 @@ ZTH_EXPORT int zth_gate_destroy(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_pass(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_wait(zth_gate_t* gate);
 
-#endif // __cplusplus
+#endif // !__cplusplus
 #endif // ZTH_SYNC_H

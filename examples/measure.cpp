@@ -5,9 +5,7 @@
 /////////////////////////////////////////////////
 // Tests
 
-void testEmpty()
-{
-}
+void testEmpty() {}
 
 void testNow()
 {
@@ -52,6 +50,7 @@ void testYield1Always()
 }
 
 static zth::Fiber* testYieldFiberPtr = nullptr;
+
 void testYieldFiber()
 {
 	testYieldFiberPtr = &zth::currentFiber();
@@ -59,7 +58,7 @@ void testYieldFiber()
 	while(true)
 		zth::yield(nullptr, true);
 }
-zth_fiber(testYieldFiber)
+zth_fiber(testYieldFiber);
 
 void testYieldInit()
 {
@@ -79,10 +78,8 @@ void testYieldCleanup()
 	testYieldFiberPtr->kill();
 }
 
-void testFiberCreateEntry()
-{
-}
-zth_fiber(testFiberCreateEntry)
+void testFiberCreateEntry() {}
+zth_fiber(testFiberCreateEntry);
 
 void testFiberCreate()
 {
@@ -152,7 +149,16 @@ static zth::string preciseTime(double s)
 }
 
 typedef enum { stateInit, stateCalibrate, stateMeasure, stateDone } State;
-namespace zth { template <> inline cow_string str<State>(State value) { return str((int)value); } }
+
+namespace zth {
+
+template <>
+inline cow_string str<State>(State value)
+{
+	return str((int)value);
+}
+
+} // namespace zth
 
 struct TestData {
 	char const* description;
@@ -163,12 +169,13 @@ struct TestData {
 	zth::TimeInterval duration;
 };
 
-typedef zth::FsmCallback<State,TestData*> Fsm_type;
+typedef zth::FsmCallback<State, TestData*> Fsm_type;
 
 static zth::TimeInterval maxIterations(Fsm_type& fsm)
 {
 	return (size_t)1 << fsm.callbackArg()->calibration > std::numeric_limits<size_t>::max() / 2
-		? zth::TimeInterval() : zth::TimeInterval(0.1);
+		       ? zth::TimeInterval()
+		       : zth::TimeInterval(0.1);
 }
 
 static zth::TimeInterval calibrationTimeout(Fsm_type& fsm)
@@ -177,6 +184,7 @@ static zth::TimeInterval calibrationTimeout(Fsm_type& fsm)
 	return zth::TimeInterval(0.5) - (zth::Timestamp::now() - fsm.callbackArg()->start);
 }
 
+// clang-format off
 Fsm_type::Description desc = {
 	stateInit,
 		zth::guards::always,		stateCalibrate,
@@ -192,6 +200,7 @@ Fsm_type::Description desc = {
 	stateDone,
 		zth::guards::end,
 };
+// clang-format on
 
 static void cb(Fsm_type& fsm, TestData* testData)
 {
@@ -217,19 +226,19 @@ static void cb(Fsm_type& fsm, TestData* testData)
 		testData->duration = fsm.dt();
 		break;
 	case stateDone:
-		testData->singleResult += testData->duration.s() / ((size_t)1 << testData->calibration);
-		printf("%-50s: %s    (2^%2u iterations, total %s)\n",
-			testData->description,
-			preciseTime(testData->singleResult).c_str(),
-			(unsigned)testData->calibration,
-			testData->duration.str().c_str());
+		testData->singleResult +=
+			testData->duration.s() / (double)((size_t)1 << testData->calibration);
+		printf("%-50s: %s    (2^%2u iterations, total %s)\n", testData->description,
+		       preciseTime(testData->singleResult).c_str(), (unsigned)testData->calibration,
+		       testData->duration.str().c_str());
 		break;
 	}
 }
 
 static Fsm_type::Compiler compiler(desc);
 
-static double runTest(char const* set, char const* name, void(*test)(), bool calibrationRun = false)
+static double
+runTest(char const* set, char const* name, void (*test)(), bool calibrationRun = false)
 {
 	zth::yield();
 
@@ -238,7 +247,7 @@ static double runTest(char const* set, char const* name, void(*test)(), bool cal
 		calibration = 0;
 
 	zth::cow_string testname = zth::format("[%-10s]  %s", set, name);
-	TestData testData = { testname.c_str(), test, calibration };
+	TestData testData = {testname.c_str(), test, calibration};
 	Fsm_type(compiler, &cb, &testData).run();
 
 	if(calibrationRun)
@@ -291,6 +300,8 @@ static void run_testset(char const* testset)
 // brackets before the test description.
 int main_fiber(int argc, char** argv)
 {
+	puts(zth::banner());
+
 	runTest("calib", "calibration", &testEmpty, true);
 	runTest("calib", "empty test", &testEmpty);
 
@@ -302,3 +313,6 @@ int main_fiber(int argc, char** argv)
 
 	return 0;
 }
+
+// Override log output, as it influences our measurements.
+void zth_logv(char const* UNUSED_PAR(fmt), va_list UNUSED_PAR(arg)) {}

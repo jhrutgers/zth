@@ -15,28 +15,29 @@
 // speed of your CPU.
 static void do_work(int amount, int load = 1000)
 {
-	for(int volatile i = 0; i < amount * load; i++);
+	for(int volatile i = 0; i < amount * load; i++)
+		;
 }
 
 void nice_fiber()
 {
 	for(int i = 0; i < 10; i++) {
 		printf("Be nice %d\n", i);
-		do_work(100);	// do some work
+		do_work(100); // do some work
 		zth::yield();
 	}
 
 	printf("nice_fiber() done\n");
 }
-zth_fiber(nice_fiber)
+zth_fiber(nice_fiber);
 
 void nicer_fiber()
 {
 	for(int i = 0; i < 10; i++) {
 		printf("Be nicer %d\n", i);
-		// I am going to do do_work(100) too, like nice_fiber(), but I am not
-		// sure how much time that would take without yielding.  So, I am
-		// really nice to split the work in small packets.
+		// I am going to do do_work(100) too, like nice_fiber(), but I
+		// am not sure how much time that would take without yielding.
+		// So, I am really nice to split the work in small packets.
 		for(int w = 0; w < 100; w++) {
 			do_work(1);
 			zth::yield();
@@ -45,7 +46,7 @@ void nicer_fiber()
 
 	printf("nicer_fiber() done\n");
 }
-zth_fiber(nicer_fiber)
+zth_fiber(nicer_fiber);
 
 void example_1()
 {
@@ -55,7 +56,7 @@ void example_1()
 	nice->wait();
 	nicer->wait();
 }
-zth_fiber(example_1)
+zth_fiber(example_1);
 
 // As nicer_fiber() yields a 100 times more often than nice_fiber(),
 // nice_fiber() make significantly more progress; nice_fiber() finishes before
@@ -80,8 +81,7 @@ static std::deque<int> work;
 
 void server()
 {
-	while(true)
-	{
+	while(true) {
 		if(!work.empty()) {
 			printf("Serving %d\n", work.front());
 			work.pop_front();
@@ -90,14 +90,15 @@ void server()
 		} else if(terminate_server) {
 			break;
 		} else {
-			// If we would call zth::yield() here, we would effectively do a
-			// useless busy-wait for zth::Config::MinTimeslice_s() before
-			// client() would get a chance to enqueue more work.
+			// If we would call zth::yield() here, we would
+			// effectively do a useless busy-wait for
+			// zth::Config::MinTimeslice_s() before client() would
+			// get a chance to enqueue more work.
 			zth::outOfWork();
 		}
 	}
 }
-zth_fiber(server)
+zth_fiber(server);
 
 void client()
 {
@@ -108,7 +109,7 @@ void client()
 		zth::yield();
 	}
 }
-zth_fiber(client)
+zth_fiber(client);
 
 void example_2()
 {
@@ -119,8 +120,7 @@ void example_2()
 	terminate_server = true;
 	s->wait();
 }
-zth_fiber(example_2)
-
+zth_fiber(example_2);
 
 
 
