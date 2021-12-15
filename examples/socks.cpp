@@ -102,7 +102,7 @@ void washSock(Sock& sock)
 
 int main()
 {
-	srand48(time(NULL));
+	srand48((long)time(nullptr));
 	zth::Worker w;
 	async takeSocks(10);
 	w.run();

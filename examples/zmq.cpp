@@ -67,7 +67,7 @@ static void handler(int UNUSED_PAR(sig))
 {
 	char const* msg = "got interrupted\n";
 	for(ssize_t len = (ssize_t)strlen(msg), c = 1; c > 0 && len > 0;
-	    c = write(fileno(stderr), msg, (size_t)len), len -= c, msg += c)
+	    c = write(fileno(stderr), msg, (unsigned long)len), len -= c, msg += c)
 		;
 	stop = 1;
 }

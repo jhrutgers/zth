@@ -313,3 +313,6 @@ int main_fiber(int argc, char** argv)
 
 	return 0;
 }
+
+// Override log output, as it influences our measurements.
+void zth_logv(char const* UNUSED_PAR(fmt), va_list UNUSED_PAR(arg)) {}
