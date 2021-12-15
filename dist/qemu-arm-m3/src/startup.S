@@ -88,6 +88,9 @@ _start:
 	bl _crt
 
 	// There we go!
+	mov r0, #0	// argc
+	mov r1, #0	// argv
+	mov r2, #0	// envp
 	bl main
 
 	// Ask QEMU to quit, which requires semihosting.
