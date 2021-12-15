@@ -351,25 +351,20 @@ public:
 	}
 
 #		if defined(ZTH_CONTEXT_SJLJ)
+#			if defined(__ARM_FP) && !defined(__SOFTFP__)
+#				define ZTH_CONTEXT_FPU
 	inline __attribute__((always_inline)) void context_push_regs() noexcept
 	{
-#			if defined(__ARM_PCS_VFP) && !defined(__SOFTFP__)
 		// newlib does not do saving/restoring of FPU registers.
 		// We have to do it here ourselves.
-		asm volatile("vpush {d8-d15}");
-#				define arm_fpu_pop() asm volatile("vpop {d8-d15}")
-#			else
-#				define arm_fpu_pop() \
-					do {          \
-					} while(0)
-#			endif
+		asm volatile("vstm %0, {d8-d15}" : : "r"(m_fpu_env));
 	}
 
 	inline __attribute__((always_inline)) void context_pop_regs() noexcept
 	{
-		arm_fpu_pop();
-#			undef arm_fpu_pop
+		asm volatile("vldm %0, {d8-d15}" : : "r"(m_fpu_env));
 	}
+#			endif
 
 #			ifdef ZTH_ARM_USE_PSP
 	inline __attribute__((always_inline)) void
@@ -553,6 +548,9 @@ private:
 private:
 #	ifdef ZTH_ARM_DO_STACK_GUARD
 	void* m_guard;
+#	endif
+#	ifdef ZTH_CONTEXT_FPU
+	double m_fpu_env[8];
 #	endif
 };
 
