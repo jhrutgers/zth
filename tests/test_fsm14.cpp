@@ -21,98 +21,357 @@
 
 #include <gtest/gtest.h>
 
-TEST(Fsm14, a)
+#if __cplusplus < 201402L
+#	error Compile as C++14 or newer.
+#endif
+
+TEST(Fsm14, Grammar)
 {
 	using namespace zth::fsm;
 
 	// clang-format off
 	constexpr auto transitions = compile(
-		"a"_S	>>= "b",
-		"b"	>>= "end"_S,
-		"end" + stop
+		"a"_S					>>= "b",
+		"b"					>>= "c"_S,
+		"c"	+ always			>>= "d",
+		"d"			/ nothing	>>= "e",
+		"e"	+ always	/ nothing	>>= "f",
+			+ always			>>= "g",
+			+ always	/ nothing	>>= "h",
+			  always			>>= "i",
+			  always	/ nothing	>>= "j",
+					  nothing	>>= "a",
+		"f"_S					,
+		"g"					,
+		"h"	+ always			,
+		"i"			/ nothing	,
+		"j"	+ always	/ nothing	,
+			+ always			,
+			+ always	/ nothing	,
+			  always			,
+			  always	/ nothing	,
+					  nothing
 	);
 	// clang-format on
 
 	transitions.dump();
 }
 
-#if 0
-namespace ns {
-
-	using namespace fsm;
-
-static int i = 42;
-static bool positive()
+TEST(Fsm14, RuntimeGrammar)
 {
-	return i > 0;
+	using namespace zth::fsm;
+
+	// clang-format off
+	auto transitions = compile(
+		"a"_S					>>= "b",
+		"b"					>>= "c"_S,
+		"c"	+ always			>>= "d",
+		"d"			/ nothing	>>= "e",
+		"e"	+ always	/ nothing	>>= "f",
+			+ always			>>= "g",
+			+ always	/ nothing	>>= "h",
+			  always			>>= "i",
+			  always	/ nothing	>>= "j",
+					  nothing	>>= "a",
+		"f"_S					,
+		"g"					,
+		"h"	+ always			,
+		"i"			/ nothing	,
+		"j"	+ always	/ nothing	,
+			+ always			,
+			+ always	/ nothing	,
+			  always			,
+			  always	/ nothing	,
+					  nothing
+	);
+	// clang-format on
+
+	transitions.dump();
 }
-static constexpr auto big_i = guard(positive);
-static constexpr auto print = action([&](){ printf("p %d\n", i); });
 
-struct MyFsm : public Fsm {
-	int i = 1;
-	bool flag = true;
+TEST(Fsm14, InvalidFirst)
+{
+	using namespace zth::fsm;
 
-	virtual void enter() override
+	EXPECT_THROW({ compile(always); }, invalid_fsm);
+}
+
+TEST(Fsm14, NonContiguous)
+{
+	using namespace zth::fsm;
+
+	EXPECT_THROW(
+		{
+			// clang-format on
+			compile("a", "b", "a");
+			// clang-format off
+	}, invalid_fsm);
+}
+
+TEST(Fsm14, UnknownTarget)
+{
+	using namespace zth::fsm;
+
+	EXPECT_THROW({
+			// clang-format on
+			compile("a" + always >>= "b");
+			// clang-format off
+	}, invalid_fsm);
+}
+
+TEST(Fsm14, Empty)
+{
+	using namespace zth::fsm;
+
+	constexpr auto transitions = compile();
+	auto fsm = transitions.spawn();
+	EXPECT_TRUE(fsm.valid());
+	fsm.run();
+
+	Fsm fsm2;
+	EXPECT_FALSE(fsm2.valid());
+	transitions.init(fsm2);
+	EXPECT_TRUE(fsm2.valid());
+	fsm2.run();
+}
+
+static bool f_check_flag;
+
+static void f_check()
+{
+	f_check_flag = true;
+}
+
+TEST(Fsm14, CallbackFunction)
+{
+	using namespace zth::fsm;
+
+	static constexpr auto check = action(f_check);
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a" + entry / check
+	);
+	// clang-format on
+
+	auto fsm = transitions.spawn();
+	EXPECT_TRUE(fsm.valid());
+	EXPECT_FALSE(f_check_flag);
+
+	fsm.run();
+	EXPECT_TRUE(f_check_flag);
+}
+
+struct CheckFsm : public zth::fsm::Fsm {
+	void check()
 	{
-		printf("enter\n");
-		Fsm::enter();
+		flag = true;
 	}
 
-	bool inci2()
+	void check_const() const
 	{
-		printf("%d\n", i++);
-		return i < 15;
+		flag = true;
 	}
 
-	bool haveFlag()
-	{
-		bool res = flag;
-		flag = false;
-		return res;
-	}
+	mutable bool flag = false;
 };
 
-static constexpr auto inci = guard([](MyFsm& fsm) {
-		printf("%d\n", fsm.i++);
-		return fsm.i < 10;
-	});
-
-template <int value>
-constexpr auto incif_v = guard([](MyFsm& fsm) {
-	printf("%d\n", fsm.i++);
-	return fsm.i < value;
-});
-
-static constexpr auto inci2 = guard(&MyFsm::inci2);
-
-static constexpr auto haveFlag = guard(&MyFsm::haveFlag);
-
-static constexpr auto s = compile(
-	"initial"_S						>>= "state",
-	"state"				/ nothing	>>= "a",
-	"state"		+ big_i / print		>>= "state",
-	"a"			+ entry / print,
-	"a"			+ incif_v<8>		>>= "a",
-	"a"			+ inci2,
-	"a"								>>= "b"_S,
-	"b"			+ never				>>= "b",
-				+ always			>>= "d",
-	"c"			+ never,
-	"d"			+ haveFlag / push	>>= "pushed",
-				+ always			>>= "c",
-	"pushed"			/ pop
-);
-
-} // ns
-
-int main()
+TEST(Fsm14, CallbackMember)
 {
+	using namespace zth::fsm;
 
+	static constexpr auto check = action(&CheckFsm::check);
 
-//	printf("en %s\n", s.enabled() ? "yes" : "no");
-//	ns::s.dump();
-	ns::MyFsm f;
-	ns::s.init(f).run();
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a" + entry / check
+	);
+	// clang-format on
+
+	CheckFsm fsm;
+	EXPECT_FALSE(fsm.valid());
+
+	transitions.init(fsm);
+	EXPECT_TRUE(fsm.valid());
+	EXPECT_FALSE(fsm.flag);
+
+	fsm.run();
+	EXPECT_TRUE(fsm.flag);
 }
-#endif
+
+TEST(Fsm14, CallbackConstMember)
+{
+	using namespace zth::fsm;
+
+	static constexpr auto check = action(&CheckFsm::check_const);
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a" + entry / check
+	);
+	// clang-format on
+
+	CheckFsm fsm;
+	EXPECT_FALSE(fsm.valid());
+
+	transitions.init(fsm);
+	EXPECT_TRUE(fsm.valid());
+	EXPECT_FALSE(fsm.flag);
+
+	fsm.run();
+	EXPECT_TRUE(fsm.flag);
+}
+
+struct CountingFsm : public zth::fsm::Fsm {
+	void action_()
+	{
+		count++;
+	}
+
+	bool guard_true_()
+	{
+		count++;
+		return true;
+	}
+
+	bool guard_false_()
+	{
+		count++;
+		return false;
+	}
+
+	int count = 0;
+};
+
+static constexpr auto count_action = zth::fsm::action(&CountingFsm::action_);
+static constexpr auto count_guard_true = zth::fsm::guard(&CountingFsm::guard_true_);
+static constexpr auto count_guard_false = zth::fsm::guard(&CountingFsm::guard_false_);
+
+TEST(Fsm14, Action)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"		/ count_action	>>= "b",
+		"b" + never	/ count_action	>>= "a",
+		"b" + entry	/ count_action
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+
+	EXPECT_EQ(fsm.count, 2);
+}
+
+TEST(Fsm14, GuardFalse)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a" + count_guard_false	>>= "b",
+		"a" + count_guard_false	>>= "b",
+		"a" + always		>>= "b",
+		"b" + count_guard_false
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+
+	EXPECT_EQ(fsm.count, 3);
+}
+
+TEST(Fsm14, GuardTrue)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a" + count_guard_true	>>= "b",
+		"a" + count_guard_false	>>= "b",
+		"a" + always		>>= "b",
+		"b" + count_guard_false
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+
+	EXPECT_EQ(fsm.count, 2);
+}
+
+TEST(Fsm14, Entry)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"	+ entry		/ count_action	,
+			+ always			>>= "b",
+		"b"	+ entry		/ count_action	>>= "c",
+		"c"
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+
+	EXPECT_EQ(fsm.count, 2);
+}
+
+TEST(Fsm14, Stop)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"			>>= "b"_S,
+		"b"	+ entry / stop	,
+			+ always	>>= "c",
+		"c"
+	);
+	// clang-format on
+
+	auto fsm = transitions.spawn();
+	fsm.run();
+
+	EXPECT_TRUE(fsm.flag(Fsm::Flag::stop));
+	EXPECT_EQ(fsm.state(), "b"_S);
+
+	fsm.run();
+	EXPECT_FALSE(fsm.flag(Fsm::Flag::stop));
+	EXPECT_EQ(fsm.state(), "c"_S);
+}
+
+TEST(Fsm14, Stack)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"	+ entry		/ count_action	,		// hit twice
+			+ popped			>>= "b",
+			+ always	/ push		>>= "x",
+		"b"	+ popped			>>= "c",
+			+ always	/ push		>>= "x",
+		"c"					,
+
+		"x"			/ count_action	>>= "y",	// hit twice
+		"y"			/ pop
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+
+	EXPECT_EQ(fsm.state(), "c"_S);
+	EXPECT_EQ(fsm.count, 4);
+}

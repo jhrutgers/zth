@@ -157,7 +157,7 @@ public:
 
 	char const* str() const noexcept
 	{
-		return m_symbol;
+		return m_symbol ? m_symbol : "-";
 	}
 
 	operator char const *() const noexcept
@@ -250,7 +250,7 @@ class Callback<T, R, false, false, true> : public Named<> {
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
-		: Named<>{name}
+		: Named{name}
 		, m_callback{std::forward<T_>(c)}
 	{}
 
@@ -268,7 +268,7 @@ class Callback<T, R, true, false, true> : public Named<> {
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
-		: Named<>{name}
+		: Named{name}
 		, m_callback{std::forward<T_>(c)}
 	{}
 
@@ -305,7 +305,7 @@ class Callback<T, R, false, true, true> : public Named<> {
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
-		: Named<>{name}
+		: Named{name}
 		, m_callback{std::forward<T_>(c)}
 	{}
 
@@ -384,8 +384,8 @@ inline bool always_guard()
  * \ingroup zth_api_cpp_fsm14
  */
 // This could be solved simply by using [](){ return true; } as function, but
-// clang-tidy trips on it.  For now, just use the seperate function.  Might be
-// related to: https://bugs.llvm.org/show_bug.cgi?id=20209
+// using lambda in constexpr is only allowed since C++17. So, use the separate
+// function instead.
 inline17 constexpr auto always = guard(always_guard, "always");
 
 inline bool never_guard()
@@ -542,9 +542,28 @@ class Transition;
 
 class TransitionStart final : public GuardedActionBase {
 public:
-	template <typename S>
-	constexpr TransitionStart(S&& state, GuardedAction&& guardedAction)
-		: m_state{std::forward<S>(state)}
+	constexpr TransitionStart(State&& state)
+		: m_state{std::move(state)}
+		, m_guardedAction{never / nothing}
+	{}
+
+	constexpr TransitionStart(Guard const& guard)
+		: m_state{}
+		, m_guardedAction{guard / nothing}
+	{}
+
+	constexpr TransitionStart(Action const& action)
+		: m_state{}
+		, m_guardedAction{always / action}
+	{}
+
+	constexpr TransitionStart(GuardedAction&& ga)
+		: m_state{}
+		, m_guardedAction{std::move(ga)}
+	{}
+
+	constexpr TransitionStart(State&& state, GuardedAction&& guardedAction)
+		: m_state{std::move(state)}
 		, m_guardedAction{std::move(guardedAction)}
 	{}
 
@@ -593,9 +612,9 @@ constexpr inline auto operator+(State&& state, Guard const& guard)
 	return TransitionStart{std::move(state), GuardedAction{guard, nothing}};
 }
 
-constexpr inline auto operator+(Guard const& guard)
+constexpr inline auto const& operator+(Guard const& guard)
 {
-	return TransitionStart{State{}, GuardedAction{guard, nothing}};
+	return guard;
 }
 
 constexpr inline auto operator/(State&& state, Action const& action)
@@ -667,6 +686,11 @@ constexpr inline Transition operator>>=(State&& from, State&& to)
 	return Transition{std::move(from) + always, std::move(to)};
 }
 
+constexpr inline Transition operator>>=(char const* from, State&& to)
+{
+	return Transition{State{from} + always, std::move(to)};
+}
+
 constexpr inline Transition operator>>=(Guard const& from, State&& to)
 {
 	return Transition{State{} + from, std::move(to)};
@@ -692,7 +716,7 @@ public:
 	virtual index_type to(index_type i) const = 0;
 	virtual State const& state(index_type i) const = 0;
 
-	Fsm init() const;
+	Fsm spawn() const;
 
 	template <typename F, std::enable_if_t<std::is_base_of<Fsm, F>::value, int> = 0>
 	F& init(F& fsm) const
@@ -709,6 +733,12 @@ public:
 				guard(i).name().c_str(), action(i).name().c_str(), to(i));
 		}
 	}
+};
+
+struct invalid_fsm : public std::logic_error {
+	invalid_fsm(char const* str)
+		: std::logic_error(str)
+	{}
 };
 
 template <size_t Size>
@@ -746,6 +776,9 @@ public:
 			f.m_transitions[0].guard = &always;
 			f.m_transitions[0].action = &nothing;
 			f.m_transitions[0].to = 1;
+
+			if(!l.begin()->from().valid())
+				throw invalid_fsm{"First state must be valid"};
 		}
 
 		index_type i = 1;
@@ -755,8 +788,8 @@ public:
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)
-					throw std::invalid_argument(
-						"State transitions are not contiguous");
+					throw invalid_fsm{
+						"State transitions are not contiguous"};
 			}
 			f.m_transitions[i].guard = &t.guard();
 			f.m_transitions[i].action = &t.action();
@@ -814,10 +847,10 @@ private:
 		// but triggers https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67371 otherwise.
 		if(i >= l.size())
 #	endif
-			throw std::invalid_argument{"Target state not found"};
+			throw invalid_fsm{"Target state not found"};
 
 		// Unreachable.
-		return 0;
+		return Size + 1u;
 	}
 
 private:
@@ -853,15 +886,25 @@ public:
 		flags, // Not a flag, just a count of the other flags.
 	};
 
-	Fsm() = default;
+	Fsm()
+		: UniqueID("FSM")
+	{}
 
-	Fsm(Fsm&& f) noexcept
+	Fsm(Fsm&& f)
+		: Fsm()
 	{
 		*this = std::move(f);
 	}
 
-	Fsm& operator=(Fsm&&) noexcept
+	Fsm& operator=(Fsm&& f) noexcept
 	{
+		m_fsm = f.m_fsm;
+		m_flags = f.m_flags;
+		m_prev = f.m_prev;
+		m_transition = f.m_transition;
+		m_state = f.m_state;
+		m_stack = std::move(f.m_stack);
+		f.reset();
 		return *this;
 	}
 
@@ -870,6 +913,11 @@ public:
 	bool valid() const
 	{
 		return m_fsm;
+	}
+
+	void reserveStack(size_t size)
+	{
+		m_stack.reserve(size);
 	}
 
 	virtual void reset()
@@ -907,17 +955,15 @@ public:
 		auto to = m_fsm->to(i);
 
 		clearFlag(Flag::blocked);
-		clearFlag(Flag::popped);
-		clearFlag(Flag::pushed);
 
 		if(!to) {
 			// No transition, only do the action.
-			zth_dbg(fsm, "[%s] Guard %s enabled, no transition\n", id_str(),
+			zth_dbg(fsm, "[%s] Guard %s enabled, no transition", id_str(),
 				m_fsm->guard(i).name().c_str());
 			clearFlag(Flag::transition);
 			enter();
 		} else {
-			zth_dbg(fsm, "[%s] Guard %s enabled, transition %s -> %s\n", id_str(),
+			zth_dbg(fsm, "[%s] Guard %s enabled, transition %s -> %s", id_str(),
 				m_fsm->guard(i).name().c_str(), m_fsm->state(m_state).str(),
 				m_fsm->state(to).str());
 
@@ -929,7 +975,10 @@ public:
 			m_prev = m_state;
 			m_state = to;
 
+			clearFlag(Flag::popped);
+			clearFlag(Flag::pushed);
 			enter();
+
 			setFlag(Flag::entry);
 		}
 
@@ -957,7 +1006,7 @@ public:
 
 		m_stack.push_back(m_prev);
 		setFlag(Flag::pushed);
-		zth_dbg(fsm, "[%s] Push", id_str());
+		zth_dbg(fsm, "[%s] Push %s", id_str(), m_fsm->state(m_state).str());
 	}
 
 	virtual void pop()
@@ -972,18 +1021,29 @@ public:
 			m_fsm->state(to).str());
 
 		clearFlag(Flag::blocked);
-		clearFlag(Flag::pushed);
 		setFlag(Flag::selfloop, m_state == to);
-		setFlag(Flag::transition);
-		leave();
+
+		if(!flag(Flag::transition)) {
+			// leave() was not called by step().
+			setFlag(Flag::transition);
+			leave();
+		}
 
 		m_prev = m_state;
 		m_state = to;
 		m_stack.pop_back();
-		setFlag(Flag::popped);
+		m_transition = 0;
 
+		clearFlag(Flag::pushed);
+		setFlag(Flag::popped);
 		enter();
+
 		setFlag(Flag::entry);
+	}
+
+	bool popped() const
+	{
+		return flag(Flag::popped);
 	}
 
 	bool flag(Flag f) const
@@ -1019,14 +1079,14 @@ protected:
 
 	virtual void enter()
 	{
-		if(flag(Flag::popped)) {
-			zth_dbg(fsm, "[%s] Enter %s (popped)", id_str(), state().str());
-		} else {
+		if(m_transition) {
 			zth_dbg(fsm, "[%s] Enter %s%s; run action %s", id_str(), state().str(),
 				flag(Flag::selfloop) ? " (loop)" : "",
 				m_fsm->action(m_transition).name().c_str());
 
 			m_fsm->action(m_transition).run(*this);
+		} else {
+			zth_dbg(fsm, "[%s] Enter %s (dummy transition)", id_str(), state().str());
 		}
 	}
 
@@ -1075,9 +1135,14 @@ inline17 static constexpr auto pop = action(&Fsm::pop, "pop");
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
+inline17 static constexpr auto popped = guard(&Fsm::popped, "popped");
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
 inline17 static constexpr auto stop = action(&Fsm::stop, "stop");
 
-Fsm TransitionsBase::init() const
+Fsm TransitionsBase::spawn() const
 {
 	Fsm fsm;
 	fsm.init(*this);
