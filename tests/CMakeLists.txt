@@ -74,6 +74,7 @@ if(ZTH_USE_GTEST)
 	endfunction()
 
 	zth_add_test(test_poller test_poller.cpp)
+	zth_add_test(test_fsm14 test_fsm14.cpp)
 
 	zth_add_test_binary(test_fiber11 test_fiber11.cpp)
 	gtest_add_tests(TARGET test_fiber11

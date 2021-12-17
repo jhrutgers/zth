@@ -132,6 +132,8 @@ struct DefaultConfig {
 	static bool const DoPerfEvent = false;
 	static bool const PerfSyscall = true;
 
+	static bool const NamedFsm = Debug || (EnableDebugPrint && Print_fsm > 0);
+
 	static bool const UseZMQ =
 #	ifdef ZTH_HAVE_LIBZMQ
 		true;
