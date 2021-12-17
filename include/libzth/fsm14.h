@@ -886,12 +886,12 @@ public:
 		flags, // Not a flag, just a count of the other flags.
 	};
 
-	Fsm()
-		: UniqueID("FSM")
+	Fsm(cow_string const& name = "FSM")
+		: UniqueID{name}
 	{}
 
 	Fsm(Fsm&& f)
-		: Fsm()
+		: Fsm{}
 	{
 		*this = std::move(f);
 	}
@@ -904,13 +904,17 @@ public:
 		m_transition = f.m_transition;
 		m_state = f.m_state;
 		m_stack = std::move(f.m_stack);
-		f.reset();
+
+		f.m_fsm = nullptr;
+		f.m_state = 0;
+
+		UniqueID::operator=(std::move(f));
 		return *this;
 	}
 
 	virtual ~Fsm() = default;
 
-	bool valid() const
+	bool valid() const noexcept
 	{
 		return m_fsm;
 	}
@@ -920,11 +924,12 @@ public:
 		m_stack.reserve(size);
 	}
 
-	virtual void reset()
+	virtual void reset() noexcept
 	{
 		zth_dbg(fsm, "[%s] Reset", id_str());
 		m_prev = m_transition = m_state = 0;
 		m_flags.reset();
+		m_stack.clear();
 	}
 
 	State const& state() const

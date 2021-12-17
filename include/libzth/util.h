@@ -627,7 +627,30 @@ inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value)
  */
 template <typename T, bool ThreadSafe = Config::EnableThreads>
 class UniqueID : public UniqueIDBase {
+#if __cplusplus < 201103L
 	ZTH_CLASS_NOCOPY(UniqueID)
+#else
+public:
+	UniqueID(UniqueID const&) = delete;
+	UniqueID& operator=(UniqueID const&) = delete;
+
+	UniqueID(UniqueID&& u) noexcept
+		: m_id{}
+	{
+		*this = std::move(u);
+	}
+
+	UniqueID& operator=(UniqueID&& u) noexcept
+	{
+		m_id = u.m_id;
+		m_name = std::move(u.m_name);
+		m_id_str = std::move(u.m_id_str);
+
+		u.m_id = 0;
+
+		return *this;
+	}
+#endif
 public:
 	static uint64_t getID() noexcept
 	{
@@ -728,7 +751,7 @@ private:
 	virtual void changedName(string const& UNUSED_PAR(name)) {}
 
 private:
-	uint64_t const m_id;
+	uint64_t m_id;
 	string m_name;
 	string mutable m_id_str;
 	// If allocating once every ns, it takes more than 500 years until we run out of
