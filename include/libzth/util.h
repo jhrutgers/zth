@@ -244,14 +244,16 @@ zth_logv(char const* fmt, va_list arg);
 
 #	ifndef ZTH_CLASS_NOCOPY
 #		if __cplusplus >= 201103L
-#			define ZTH_CLASS_NOCOPY(Class)                                                                                   \
-			public:                                                                                                           \
-				Class(Class const&) = delete;                                                                             \
-				Class(Class&&) = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses)                     \
-							  */                                                                              \
-				Class& operator=(Class const&) noexcept = delete;                                                         \
-				Class& operator=(Class&&) noexcept = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
-									      */                                                          \
+#			define ZTH_CLASS_NOCOPY(Class)                                                      \
+			public:                                                                              \
+				Class(Class const&) = delete;                                                \
+				Class(Class&&) =                                                             \
+					delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
+						 */                                                          \
+				Class& operator=(Class const&) noexcept = delete;                            \
+				Class& operator=(Class&&) noexcept =                                         \
+					delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
+						 */                                                          \
 			private:
 #		else
 #			define ZTH_CLASS_NOCOPY(Class) \
@@ -627,9 +629,9 @@ inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value)
  */
 template <typename T, bool ThreadSafe = Config::EnableThreads>
 class UniqueID : public UniqueIDBase {
-#if __cplusplus < 201103L
+#	if __cplusplus < 201103L
 	ZTH_CLASS_NOCOPY(UniqueID)
-#else
+#	else
 public:
 	UniqueID(UniqueID const&) = delete;
 	UniqueID& operator=(UniqueID const&) = delete;
@@ -650,7 +652,7 @@ public:
 
 		return *this;
 	}
-#endif
+#	endif
 public:
 	static uint64_t getID() noexcept
 	{
@@ -831,8 +833,8 @@ protected:
 private:
 	pointer_type* m_p;
 };
-#	else  // _DEBUG
-	       // No checking, use use the pointer.
+#	else // _DEBUG
+	      // No checking, use use the pointer.
 template <typename T>
 class safe_ptr {
 public:
@@ -1325,6 +1327,29 @@ private:
 	 */
 	uint8_t m_size;
 };
+
+template <
+	uint64_t x,
+	size_t size = x >= 0x1'0000'0000ULL ? 8U : x >= 0x1'0000U ? 4U : x >= 0x100U ? 2U : 1U>
+struct smallest_uint {
+	using type = uint64_t;
+};
+
+template <size_t x>
+struct smallest_uint<x, 1> {
+	using type = uint8_t;
+};
+
+template <size_t x>
+struct smallest_uint<x, 2> {
+	using type = uint16_t;
+};
+
+template <size_t x>
+struct smallest_uint<x, 4> {
+	using type = uint32_t;
+};
+
 } // namespace zth
 
 #endif // __cplusplus

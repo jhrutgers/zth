@@ -40,7 +40,7 @@ TEST(Fsm14, Grammar)
 			+ always	/ nothing	>>= "h",
 			  always			>>= "i",
 			  always	/ nothing	>>= "j",
-					  nothing	>>= "a",
+					  nothing	>>= "k",
 		"f"_S					,
 		"g"					,
 		"h"	+ always			,
@@ -50,7 +50,26 @@ TEST(Fsm14, Grammar)
 			+ always	/ nothing	,
 			  always			,
 			  always	/ nothing	,
-					  nothing
+					  nothing	,
+		"k"	+ "x"_S				>>= "l",
+		"l"_S	+ "x"				>>= "m",
+		"m"	+ "x"		/ nothing	>>= "n",
+			+ "x"_S				>>= "o",
+			+ "x"_S		/ nothing	>>= "p",
+		"n"	+ "x"_S				,
+		"o"	+ "x"		/ nothing	,
+			+ "x"_S				,
+			+ "x"_S		/ nothing	,
+		"p"	+ input("x")			>>= "q",
+		"q"	+ input("x")	/ nothing	>>= "r",
+			+ input("x")			>>= "s",
+			+ input("x")	/ nothing	>>= "a",
+		"r"	+ input("x")			,
+		"s"	+ input("x")	/ nothing	,
+			+ input("x")			,
+			  input("x")			,
+			+ input("x")	/ nothing	,
+			  input("x")	/ nothing
 	);
 	// clang-format on
 
@@ -72,7 +91,7 @@ TEST(Fsm14, RuntimeGrammar)
 			+ always	/ nothing	>>= "h",
 			  always			>>= "i",
 			  always	/ nothing	>>= "j",
-					  nothing	>>= "a",
+					  nothing	>>= "k",
 		"f"_S					,
 		"g"					,
 		"h"	+ always			,
@@ -82,7 +101,26 @@ TEST(Fsm14, RuntimeGrammar)
 			+ always	/ nothing	,
 			  always			,
 			  always	/ nothing	,
-					  nothing
+					  nothing	,
+		"k"	+ "x"_S				>>= "l",
+		"l"_S	+ "x"				>>= "m",
+		"m"	+ "x"		/ nothing	>>= "n",
+			+ "x"_S				>>= "o",
+			+ "x"_S		/ nothing	>>= "p",
+		"n"	+ "x"_S				,
+		"o"	+ "x"		/ nothing	,
+			+ "x"_S				,
+			+ "x"_S		/ nothing	,
+		"p"	+ input("x")			>>= "q",
+		"q"	+ input("x")	/ nothing	>>= "r",
+			+ input("x")			>>= "s",
+			+ input("x")	/ nothing	>>= "a",
+		"r"	+ input("x")			,
+		"s"	+ input("x")	/ nothing	,
+			+ input("x")			,
+			  input("x")			,
+			+ input("x")	/ nothing	,
+			  input("x")	/ nothing
 	);
 	// clang-format on
 
@@ -374,4 +412,33 @@ TEST(Fsm14, Stack)
 
 	EXPECT_EQ(fsm.state(), "c"_S);
 	EXPECT_EQ(fsm.count, 4);
+}
+
+TEST(Fsm14, Input)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"	+ "x"		/ count_action	>>= "b",
+		"b"
+	);
+	// clang-format on
+
+	CountingFsm fsm;
+	transitions.init(fsm);
+	fsm.run();
+	EXPECT_EQ(fsm.count, 0);
+
+	fsm.input("y");
+	fsm.run();
+	EXPECT_EQ(fsm.count, 0);
+	EXPECT_EQ(fsm.state(), "a"_S);
+
+	fsm.input("x");
+	fsm.run();
+	EXPECT_EQ(fsm.count, 1);
+	EXPECT_EQ(fsm.state(), "b"_S);
+	EXPECT_FALSE(fsm.hasInput("x"));
+	EXPECT_TRUE(fsm.hasInput("y"));
 }

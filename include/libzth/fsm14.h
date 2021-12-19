@@ -108,6 +108,12 @@ struct function_traits<R (C::*)(A) const> : function_traits_detail<R, C, A> {};
 
 class Fsm;
 
+struct invalid_fsm : public std::logic_error {
+	invalid_fsm(char const* str)
+		: std::logic_error(str)
+	{}
+};
+
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
@@ -155,9 +161,14 @@ public:
 		return !(*this == std::forward<S>(s));
 	}
 
-	char const* str() const noexcept
+	constexpr char const* str() const noexcept
 	{
 		return m_symbol ? m_symbol : "-";
+	}
+
+	constexpr char const* symbol() const noexcept
+	{
+		return m_symbol;
 	}
 
 	operator char const *() const noexcept
@@ -366,6 +377,23 @@ public:
 	}
 };
 
+class InputGuard final : public Guard {
+public:
+	constexpr explicit InputGuard(Symbol&& input)
+		: m_input{std::move(input)}
+	{}
+
+	virtual bool enabled(Fsm& fsm) const final;
+
+	virtual cow_string name() const final
+	{
+		return m_input.str();
+	}
+
+private:
+	Symbol m_input;
+};
+
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
@@ -373,6 +401,14 @@ template <typename T>
 constexpr auto guard(T&& g, char const* name = nullptr)
 {
 	return TypedGuard<std::decay_t<T>>{std::forward<T>(g), name};
+}
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+constexpr inline auto guard(Symbol&& input)
+{
+	return InputGuard{std::move(input)};
 }
 
 inline bool always_guard()
@@ -491,8 +527,18 @@ public:
 		, m_action{action}
 	{}
 
+	constexpr GuardedAction(Symbol&& input, Action const& action)
+		: m_guard{never}
+		, m_input{std::move(input)}
+		, m_action{action}
+	{}
+
 	constexpr GuardedAction(Guard const& guard)
 		: GuardedAction{guard, nothing}
+	{}
+
+	constexpr GuardedAction(Symbol&& input)
+		: GuardedAction{std::move(input), nothing}
 	{}
 
 	constexpr GuardedAction(Action const& action)
@@ -503,13 +549,26 @@ public:
 		: GuardedAction{always, nothing}
 	{}
 
-	virtual bool enabled(Fsm& fsm) const final
+	constexpr bool isInput() const
 	{
-		return m_guard.enabled(fsm);
+		return m_input.valid();
 	}
+
+	constexpr bool hasGuard() const
+	{
+		return !isInput();
+	}
+
+	constexpr Symbol const& input() const
+	{
+		return m_input;
+	}
+
+	virtual bool enabled(Fsm& fsm) const final;
 
 	constexpr auto const& guard() const
 	{
+		zth_assert(hasGuard());
 		return m_guard;
 	}
 
@@ -525,17 +584,49 @@ public:
 
 	virtual cow_string name() const final
 	{
-		return format("%s / %s", guard().name().c_str(), action().name().c_str());
+		return isInput() ? format("input %s / %s", input().str(), action().name().c_str())
+				 : format(
+					 "guard %s / %s", guard().name().c_str(),
+					 action().name().c_str());
 	}
 
 private:
 	Guard const& m_guard;
+	Symbol m_input;
 	Action const& m_action;
 };
 
 constexpr inline auto operator/(Guard const& g, Action const& a)
 {
 	return GuardedAction{g, a};
+}
+
+constexpr inline auto operator+(Symbol&& input)
+{
+	return GuardedAction{std::move(input)};
+}
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+constexpr inline auto input(Symbol&& symbol)
+{
+	return GuardedAction{std::move(symbol)};
+}
+
+constexpr inline auto operator+(GuardedAction&& g)
+{
+	return std::move(g);
+}
+
+// + "a" / b is first compiled into GuardedAction{ "a" } / b.
+// This operator/ should fix that by using "a" as input guard for b.
+constexpr inline auto operator/(GuardedAction&& ga, Action const& a)
+{
+	if(!(ga.isInput() && &ga.action() == &nothing))
+		throw invalid_fsm("Ambiguous /");
+
+	return GuardedAction{Symbol{ga.input()}, a};
 }
 
 class Transition;
@@ -572,6 +663,21 @@ public:
 		return m_state;
 	}
 
+	constexpr bool isInput() const
+	{
+		return m_guardedAction.isInput();
+	}
+
+	constexpr bool hasGuard() const
+	{
+		return m_guardedAction.hasGuard();
+	}
+
+	constexpr Symbol const& input() const
+	{
+		return m_guardedAction.input();
+	}
+
 	constexpr auto const& guard() const
 	{
 		return m_guardedAction.guard();
@@ -584,7 +690,7 @@ public:
 
 	virtual bool enabled(Fsm& fsm) const final
 	{
-		return guard().enabled(fsm);
+		return m_guardedAction.enabled(fsm);
 	}
 
 	virtual bool tryRun(Fsm& fsm) const final
@@ -612,6 +718,21 @@ constexpr inline auto operator+(State&& state, Guard const& guard)
 	return TransitionStart{std::move(state), GuardedAction{guard, nothing}};
 }
 
+constexpr inline auto operator+(State&& state, Symbol&& input)
+{
+	return TransitionStart{std::move(state), GuardedAction{std::move(input)}};
+}
+
+constexpr inline auto operator+(char const* state, Symbol&& input)
+{
+	return TransitionStart{state, GuardedAction{std::move(input)}};
+}
+
+constexpr inline auto operator+(State&& state, char const* input)
+{
+	return TransitionStart{std::move(state), GuardedAction{input}};
+}
+
 constexpr inline auto const& operator+(Guard const& guard)
 {
 	return guard;
@@ -620,6 +741,16 @@ constexpr inline auto const& operator+(Guard const& guard)
 constexpr inline auto operator/(State&& state, Action const& action)
 {
 	return TransitionStart{std::move(state), GuardedAction{always, action}};
+}
+
+// "a" + "b" / c is first compiled into "a" + TransitionStart{ "b" + always / c }.
+// This operator+ should fix that by converting "b" from State to Input guard.
+constexpr inline auto operator+(State&& state, TransitionStart&& t)
+{
+	if(!(t.hasGuard() && &t.guard() == &always))
+		throw invalid_fsm{"Ambiguous +"};
+
+	return TransitionStart{std::move(state), GuardedAction{Symbol{t.state()}, t.action()}};
 }
 
 class Transition final : public GuardedActionBase {
@@ -649,6 +780,21 @@ public:
 	constexpr auto const& from() const
 	{
 		return m_from.state();
+	}
+
+	constexpr bool isInput() const
+	{
+		return m_from.isInput();
+	}
+
+	constexpr bool hasGuard() const
+	{
+		return m_from.hasGuard();
+	}
+
+	constexpr Symbol const& input() const
+	{
+		return m_from.input();
 	}
 
 	constexpr auto const& guard() const
@@ -711,7 +857,17 @@ public:
 	using index_type = size_t;
 
 	virtual size_t size() const = 0;
+
+	virtual bool hasGuard(index_type i) const = 0;
+
+	virtual bool hasInput(index_type i) const
+	{
+		return !hasGuard(i);
+	}
+
 	virtual Guard const& guard(index_type i) const = 0;
+	virtual bool enabled(index_type i, Fsm& fsm) const = 0;
+	virtual Symbol input(index_type i) const = 0;
 	virtual Action const& action(index_type i) const = 0;
 	virtual index_type to(index_type i) const = 0;
 	virtual State const& state(index_type i) const = 0;
@@ -729,22 +885,22 @@ public:
 	{
 		size_t size_ = size();
 		for(index_type i = 0; i < size_; i++) {
-			fprintf(f, "%3zu: %-8s + %-18s / %-18s >>= %3zu\n", i, state(i).str(),
-				guard(i).name().c_str(), action(i).name().c_str(), to(i));
+			fprintf(f, "%3zu: %-8s + %s %-18s / %-18s >>= %3zu\n", i, state(i).str(),
+				hasGuard(i) ? "guard" : "input",
+				hasGuard(i) ? guard(i).name().c_str() : input(i).str(),
+				action(i).name().c_str(), to(i));
 		}
 	}
-};
-
-struct invalid_fsm : public std::logic_error {
-	invalid_fsm(char const* str)
-		: std::logic_error(str)
-	{}
 };
 
 template <size_t Size>
 class Transitions final : public TransitionsBase {
 protected:
-	using Index = size_t;
+	using Index = typename smallest_uint<Size>::type;
+
+	enum class Flag : uint8_t {
+		input = 0x01,
+	};
 
 	struct CompiledTransition {
 		constexpr CompiledTransition()
@@ -752,12 +908,18 @@ protected:
 			, action{}
 			, from{}
 			, to{}
+			, flags{}
 		{}
 
-		Guard const* guard;
+		// This is either a Guard const* or char const*, depending on
+		// m_flags & Flag::input.  A union would be better, but you
+		// cannot change the active union field in a contexpr before
+		// C++20.
+		void const* guard;
 		Action const* action;
 		State from;
 		Index to;
+		uint8_t flags;
 	};
 
 	constexpr Transitions() = default;
@@ -788,10 +950,14 @@ public:
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)
-					throw invalid_fsm{
-						"State transitions are not contiguous"};
+					throw invalid_fsm{"State transitions are not contiguous"};
 			}
-			f.m_transitions[i].guard = &t.guard();
+			if(t.hasGuard()) {
+				f.m_transitions[i].guard = &t.guard();
+			} else {
+				f.m_transitions[i].guard = t.input().symbol();
+				f.m_transitions[i].flags = static_cast<uint8_t>(Flag::input);
+			}
 			f.m_transitions[i].action = &t.action();
 			f.m_transitions[i].to = static_cast<Index>(find(t.to(), l));
 			i++;
@@ -805,11 +971,31 @@ public:
 		return Size + 1u;
 	}
 
+	virtual bool isInput(index_type i) const final
+	{
+		return (m_transitions[i].flags & static_cast<uint8_t>(Flag::input)) != 0;
+	}
+
+	virtual bool hasGuard(index_type i) const final
+	{
+		return !isInput(i);
+	}
+
 	virtual Guard const& guard(index_type i) const final
 	{
 		zth_assert(i < size());
-		return *m_transitions[i].guard;
+		zth_assert(hasGuard(i));
+		return *static_cast<Guard const*>(m_transitions[i].guard);
 	}
+
+	virtual Symbol input(index_type i) const final
+	{
+		zth_assert(i < size());
+		zth_assert(!hasGuard(i));
+		return static_cast<char const*>(m_transitions[i].guard);
+	}
+
+	virtual bool enabled(index_type i, Fsm& fsm) const final;
 
 	virtual Action const& action(index_type i) const final
 	{
@@ -855,7 +1041,7 @@ private:
 
 private:
 	static_assert(std::numeric_limits<Index>::max() > Size, "");
-	CompiledTransition m_transitions[Size + 1];
+	CompiledTransition m_transitions[Size + 1u];
 };
 
 /*!
@@ -904,6 +1090,7 @@ public:
 		m_transition = f.m_transition;
 		m_state = f.m_state;
 		m_stack = std::move(f.m_stack);
+		m_inputs = std::move(f.m_inputs);
 
 		f.m_fsm = nullptr;
 		f.m_state = 0;
@@ -919,9 +1106,12 @@ public:
 		return m_fsm;
 	}
 
-	void reserveStack(size_t size)
+	void reserveStack(size_t capacity)
 	{
-		m_stack.reserve(size);
+		if(m_stack.capacity() > capacity * 2U)
+			m_stack.shrink_to_fit();
+
+		m_stack.reserve(capacity);
 	}
 
 	virtual void reset() noexcept
@@ -946,7 +1136,7 @@ public:
 		auto size = m_fsm->size();
 
 		// Find next enabled guard.
-		while(!m_fsm->guard(i).enabled(*this)) {
+		while(!m_fsm->enabled(i, *this)) {
 			if(++i == size || m_fsm->state(i).valid()) {
 				// No enabled guards.
 				setFlag(Flag::blocked);
@@ -963,14 +1153,23 @@ public:
 
 		if(!to) {
 			// No transition, only do the action.
-			zth_dbg(fsm, "[%s] Guard %s enabled, no transition", id_str(),
-				m_fsm->guard(i).name().c_str());
+			if(m_fsm->hasInput(i))
+				zth_dbg(fsm, "[%s] Have input %s, no transition", id_str(),
+					m_fsm->input(i).str());
+			else
+				zth_dbg(fsm, "[%s] Guard %s enabled, no transition", id_str(),
+					m_fsm->guard(i).name().c_str());
 			clearFlag(Flag::transition);
 			enter();
 		} else {
-			zth_dbg(fsm, "[%s] Guard %s enabled, transition %s -> %s", id_str(),
-				m_fsm->guard(i).name().c_str(), m_fsm->state(m_state).str(),
-				m_fsm->state(to).str());
+			if(m_fsm->hasInput(i))
+				zth_dbg(fsm, "[%s] Have input %s, transition %s -> %s", id_str(),
+					m_fsm->input(i).str(), m_fsm->state(m_state).str(),
+					m_fsm->state(to).str());
+			else
+				zth_dbg(fsm, "[%s] Guard %s enabled, transition %s -> %s", id_str(),
+					m_fsm->guard(i).name().c_str(), m_fsm->state(m_state).str(),
+					m_fsm->state(to).str());
 
 			setFlag(Flag::selfloop, to == m_state);
 			setFlag(Flag::transition);
@@ -997,6 +1196,11 @@ public:
 
 		while(step() && !flag(Flag::stop))
 			;
+	}
+
+	void trigger()
+	{
+		// TODO
 	}
 
 	void stop()
@@ -1065,6 +1269,55 @@ public:
 		return true;
 	}
 
+	void input(Symbol i)
+	{
+		if(!i.valid())
+			return;
+
+		m_inputs.emplace_back(std::move(i));
+		trigger();
+	}
+
+	bool clearInput(Symbol i)
+	{
+		if(!i.valid())
+			return false;
+
+		for(size_t j = 0; j < m_inputs.size(); j++)
+			if(m_inputs[j] == i) {
+				m_inputs[j] = std::move(m_inputs.back());
+				m_inputs.pop_back();
+				return true;
+			}
+
+		return false;
+	}
+
+	void clearInputs()
+	{
+		m_inputs.clear();
+	}
+
+	void reserveInputs(size_t capacity)
+	{
+		if(m_inputs.capacity() > capacity * 2U)
+			m_inputs.shrink_to_fit();
+
+		m_inputs.reserve(capacity);
+	}
+
+	bool hasInput(Symbol i) const
+	{
+		if(!i.valid())
+			return false;
+
+		for(size_t j = 0; j < m_inputs.size(); j++)
+			if(m_inputs[j] == i)
+				return true;
+
+		return false;
+	}
+
 protected:
 	bool setFlag(Flag f, bool value = true)
 	{
@@ -1120,6 +1373,7 @@ private:
 	index_type m_transition{};
 	index_type m_state{};
 	vector_type<index_type>::type m_stack;
+	vector_type<Symbol>::type m_inputs;
 };
 
 /*!
@@ -1146,6 +1400,28 @@ inline17 static constexpr auto popped = guard(&Fsm::popped, "popped");
  * \ingroup zth_api_cpp_fsm14
  */
 inline17 static constexpr auto stop = action(&Fsm::stop, "stop");
+
+bool InputGuard::enabled(Fsm& fsm) const
+{
+	return fsm.clearInput(m_input);
+}
+
+bool GuardedAction::enabled(Fsm& fsm) const
+{
+	if(isInput())
+		return fsm.clearInput(input());
+	else
+		return m_guard.enabled(fsm);
+}
+
+template <size_t Size>
+bool Transitions<Size>::enabled(Transitions::index_type i, Fsm& fsm) const
+{
+	if(isInput(i))
+		return fsm.clearInput(input(i));
+	else
+		return guard(i).enabled(fsm);
+}
 
 Fsm TransitionsBase::spawn() const
 {
