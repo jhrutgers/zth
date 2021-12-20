@@ -176,6 +176,10 @@ zth_fiber(trafficDetect)
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	fsm::transitions.dump();
+	fflush(stdout);
+
+	fsm::transitions.uml(stderr);
+	fflush(stderr);
 
 	fsm::TrafficLight fsm;
 	fsm::transitions.init(fsm);

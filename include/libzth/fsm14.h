@@ -925,6 +925,53 @@ public:
 				action(i).name().c_str(), to(i));
 		}
 	}
+
+	void uml(FILE* f = stdout) const
+	{
+		fprintf(f, "@startuml\n");
+
+		size_t size_ = size();
+		index_type statei = 0;
+		size_t t = 0;
+		for(index_type i = 0; i < size_; i++) {
+			if(state(i).valid()) {
+				statei = i;
+				fprintf(f, "state \"%s\" as s%zu\n", state(statei).str(), statei);
+				t = 0;
+			}
+
+			string edge;
+
+			if(statei == 0)
+				edge += "[*]";
+			else
+				edge += format("s%zu", statei);
+
+			if(to(i))
+				edge += format(" --> s%zu", to(i));
+
+			edge += format(" : (%zu)", t);
+
+			if(hasGuard(i)) {
+				if(&guard(i) == &never)
+					continue;
+
+				if(&guard(i) != &always)
+					edge += format(" [%s]", guard(i).name().c_str());
+			} else {
+				edge += format(" %s", input(i).str());
+			}
+
+			if(&action(i) != &nothing) {
+				edge += format(" / %s", action(i).name().c_str());
+			}
+
+			fprintf(f, "%s\n", edge.c_str());
+			t++;
+		}
+
+		fprintf(f, "@enduml\n");
+	}
 };
 
 template <size_t Size>
