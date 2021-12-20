@@ -419,7 +419,7 @@ TEST(Fsm14, Input)
 
 	// clang-format off
 	static constexpr auto transitions = compile(
-		"a"	+ "x"			>>= "b",
+		"a"	+ "x"_S			>>= "b",
 		"b"	+ "x"	/ consume	>>= "c",
 		"c"
 	);
@@ -427,7 +427,7 @@ TEST(Fsm14, Input)
 
 	auto fsm = transitions.spawn();
 	fsm.run(true);
-	EXPECT_EQ(fsm.state(), "a"_S)
+	EXPECT_EQ(fsm.state(), "a"_S);
 
 	fsm.input("y");
 	fsm.run(true);
