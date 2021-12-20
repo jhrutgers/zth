@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <libzth/fsm14.h>
 #include <zth>
 
 #include <gtest/gtest.h>
