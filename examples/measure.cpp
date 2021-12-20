@@ -148,97 +148,95 @@ static zth::string preciseTime(double s)
 	return res;
 }
 
-typedef enum { stateInit, stateCalibrate, stateMeasure, stateDone } State;
+namespace fsm {
 
-namespace zth {
+using namespace zth::fsm;
 
-template <>
-inline cow_string str<State>(State value)
-{
-	return str((int)value);
-}
+class TestFsm : public Fsm {
+public:
+	TestFsm(zth::cow_string description, void (*test)(), double calibrationOffset = 0)
+		: m_description{std::move(description)}
+		, m_test{test}
+		, m_singleResult{calibrationOffset}
+	{}
 
-} // namespace zth
+	size_t iterations() const
+	{
+		return (size_t)1U << m_calibration;
+	}
 
-struct TestData {
-	char const* description;
-	void (*test)();
-	double singleResult;
-	size_t calibration;
-	zth::Timestamp start;
-	zth::TimeInterval duration;
+	bool maxIterations() const
+	{
+		return iterations() > std::numeric_limits<size_t>::max() / 4U;
+	}
+
+	void calibrate()
+	{
+		// This function is called in the sequence with iterations
+		// being 1<<0, 1<<1, 1<<2, 1<<3, 1<<4... So, the total number
+		// of executed tests will be the number of calls to
+		// calibration() * 2 - 1. Divide by 2U here, to let
+		// m_calibrations match the number of total executed
+		// iterations.
+		for(size_t i = iterations() / 2U; i > 0; i--)
+			m_test();
+
+		m_calibration++;
+	}
+
+	void measure()
+	{
+		for(size_t i = iterations(); i > 0; i--)
+			m_test();
+
+		m_duration = dt();
+	}
+
+	void done()
+	{
+		m_singleResult += m_duration.s() / (double)iterations();
+
+		printf("%-50s: %s    (2^%2u iterations, total %s)\n", m_description.c_str(),
+		       preciseTime(m_singleResult).c_str(), (unsigned)m_calibration,
+		       m_duration.str().c_str());
+
+		stop();
+	}
+
+	double result() const
+	{
+		return m_singleResult;
+	}
+
+private:
+	zth::cow_string m_description;
+	void (*m_test)();
+	double m_singleResult;
+
+	size_t m_calibration{};
+	zth::Timestamp m_start;
+	zth::TimeInterval m_duration;
 };
 
-typedef zth::FsmCallback<State, TestData*> Fsm_type;
-
-static zth::TimeInterval maxIterations(Fsm_type& fsm)
-{
-	return (size_t)1 << fsm.callbackArg()->calibration > std::numeric_limits<size_t>::max() / 2
-		       ? zth::TimeInterval()
-		       : zth::TimeInterval(0.1);
-}
-
-static zth::TimeInterval calibrationTimeout(Fsm_type& fsm)
-{
-	// Calibration should take at least 0.5 s; actual measurement is then twice as long.
-	return zth::TimeInterval(0.5) - (zth::Timestamp::now() - fsm.callbackArg()->start);
-}
+static constexpr auto maxIterations = guard(&TestFsm::maxIterations);
+static constexpr auto calibrate = action(&TestFsm::calibrate);
+static constexpr auto measure = action(&TestFsm::measure);
+static constexpr auto done = action(&TestFsm::done);
 
 // clang-format off
-Fsm_type::Description desc = {
-	stateInit,
-		zth::guards::always,		stateCalibrate,
-		zth::guards::end,
-	stateCalibrate,
-		calibrationTimeout,		stateMeasure,
-		maxIterations,			stateMeasure,
-		zth::guards::always,		stateCalibrate,
-		zth::guards::end,
-	stateMeasure,
-		zth::guards::always,		stateDone,
-		zth::guards::end,
-	stateDone,
-		zth::guards::end,
-};
+static constexpr auto transitions = compile(
+	// Calibration should take at least 0.5 s; actual measurement is then twice as long.
+	"calibrate"	+ timeout_ms<500>			>>= "measure",
+			+ maxIterations				>>= "measure",
+						  calibrate	,
+	"measure"				/ measure	>>= "done",
+	"done"					/ done
+);
 // clang-format on
 
-static void cb(Fsm_type& fsm, TestData* testData)
-{
-	if(!fsm.entry())
-		return;
+} // namespace fsm
 
-	zth_assert(testData);
-
-	switch(fsm.state()) {
-	case stateInit:
-		testData->calibration = 0;
-		testData->start = fsm.t();
-		break;
-	case stateCalibrate:
-		for(size_t i = (size_t)1 << testData->calibration; i > 0; i--)
-			testData->test();
-		testData->calibration++;
-		break;
-	case stateMeasure:
-		testData->calibration++;
-		for(size_t i = (size_t)1 << testData->calibration; i > 0; i--)
-			testData->test();
-		testData->duration = fsm.dt();
-		break;
-	case stateDone:
-		testData->singleResult +=
-			testData->duration.s() / (double)((size_t)1 << testData->calibration);
-		printf("%-50s: %s    (2^%2u iterations, total %s)\n", testData->description,
-		       preciseTime(testData->singleResult).c_str(), (unsigned)testData->calibration,
-		       testData->duration.str().c_str());
-		break;
-	}
-}
-
-static Fsm_type::Compiler compiler(desc);
-
-static double
-runTest(char const* set, char const* name, void (*test)(), bool calibrationRun = false)
+static void runTest(char const* set, char const* name, void (*test)(), bool calibrationRun = false)
 {
 	zth::yield();
 
@@ -246,14 +244,12 @@ runTest(char const* set, char const* name, void (*test)(), bool calibrationRun =
 	if(calibrationRun)
 		calibration = 0;
 
-	zth::cow_string testname = zth::format("[%-10s]  %s", set, name);
-	TestData testData = {testname.c_str(), test, calibration};
-	Fsm_type(compiler, &cb, &testData).run();
+	fsm::TestFsm fsm{zth::format("[%-10s]  %s", set, name), test, calibration};
+	fsm::transitions.init(fsm);
+	fsm.run();
 
 	if(calibrationRun)
-		calibration = -testData.singleResult;
-
-	return testData.singleResult - calibration;
+		calibration = -fsm.result();
 }
 
 static void run_testset(char const* testset)

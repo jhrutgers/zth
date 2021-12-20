@@ -29,8 +29,12 @@ add_example(6_stack 6_stack.cpp)
 add_example(9_c_api 9_c_api.c)
 add_example(socks socks.cpp)
 add_example(daemon_pattern daemon_pattern.cpp)
-add_example(measure measure.cpp)
 add_example(blinky blinky.cpp)
+
+if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+	add_example(measure measure.cpp)
+	set_property(TARGET measure PROPERTY CXX_STANDARD 14)
+endif()
 
 if(UNIX)
 	add_example(work work.cpp)
