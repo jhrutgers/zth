@@ -76,8 +76,10 @@ if(ZTH_USE_GTEST)
 	zth_add_test(test_poller test_poller.cpp)
 
 	zth_add_test(test_fsm14 test_fsm14.cpp)
-	zth_add_test(test_fsm17 test_fsm17.cpp)
-	set_property(TARGET test_fsm17 PROPERTY CXX_STANDARD 17)
+	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+		zth_add_test(test_fsm17 test_fsm17.cpp)
+		set_property(TARGET test_fsm17 PROPERTY CXX_STANDARD 17)
+	endif()
 
 	zth_add_test_binary(test_fiber11 test_fiber11.cpp)
 	gtest_add_tests(TARGET test_fiber11

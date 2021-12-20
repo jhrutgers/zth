@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.2.3)
+cmake_minimum_required(VERSION 3.3)
 project(examples)
+
+cmake_policy(SET CMP0057 NEW)
 
 function(add_example example)
 	add_executable(${example} ${ARGN})
@@ -32,7 +34,17 @@ add_example(blinky blinky.cpp)
 
 if(UNIX)
 	add_example(work work.cpp)
-	add_example(fsm fsm.cpp)
+
+	# deprecated
+#	add_example(fsm fsm.cpp)
+
+	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+		add_example(fsm14 fsm14.cpp)
+		set_property(TARGET fsm14 PROPERTY CXX_STANDARD 17)
+	elseif("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+		add_example(fsm14 fsm14.cpp)
+		set_property(TARGET fsm14 PROPERTY CXX_STANDARD 14)
+	endif()
 endif()
 
 if(ZTH_HAVE_LIBZMQ)

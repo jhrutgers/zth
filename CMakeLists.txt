@@ -14,8 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.2.3)
+cmake_minimum_required(VERSION 3.3)
 project(Zth)
+
+cmake_policy(SET CMP0057 NEW)
+
 include(CheckIncludeFileCXX)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -306,7 +309,7 @@ if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0" AND "cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 	if(CMAKE_CROSSCOMPILING)
 		if(UNIX AND ZTH_DIST_DIR AND EXISTS ${ZTH_DIST_DIR}/run.sh)
 			set(ZTH_TESTS_DEFAULT ${ZTH_DEV_OPTION})
