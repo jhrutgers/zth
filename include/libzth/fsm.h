@@ -20,6 +20,10 @@
 
 /*!
  * \defgroup zth_api_cpp_fsm fsm
+ *
+ * \deprecated This FSM is superseded by the zth::fsm::compile() and friends.
+ *
+ * \see fsm14.h
  * \ingroup zth_api_cpp
  */
 
@@ -31,6 +35,12 @@
 
 // Suppress missing braces, as this is what you do when you specify the FSM.
 #	pragma GCC diagnostic ignored "-Wmissing-braces"
+
+#	if __cplusplus >= 201402L
+#		define deprecated14(msg) [[deprecated(msg)]]
+#	else
+#		define deprecated14(msg)
+#	endif
 
 namespace zth {
 
@@ -608,7 +618,7 @@ public:
 		return wait;
 	}
 
-	void run()
+	deprecated14("Use zth::fsm::compile() instead") void run()
 	{
 		TimeInterval wait = eval();
 		if(!m_state->guard.valid()) {
@@ -786,7 +796,8 @@ template <typename State_, typename Input_, typename FsmImpl_>
 class FsmCallback<State_, void, Input_, FsmImpl_>
 	: public Fsm<
 		  State_, Input_,
-		  typename choose_type<FsmImpl_, FsmCallback<State_, void, Input_, void> /**/>::type> {
+		  typename choose_type<
+			  FsmImpl_, FsmCallback<State_, void, Input_, void> /**/>::type> {
 	ZTH_CLASS_NEW_DELETE(FsmCallback)
 public:
 	typedef typename choose_type<FsmImpl_, FsmCallback<State_, void, Input_, void> /**/>::type

@@ -2077,6 +2077,7 @@ EXPAND_AS_DEFINED      = is_default \
 			 LREF_QUALIFIED \
 			 constexpr14 \
 			 inline17 \
+			 deprecated14 \
 
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
