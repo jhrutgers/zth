@@ -1328,26 +1328,29 @@ private:
 	uint8_t m_size;
 };
 
+template <size_t size>
+struct smallest_uint_size {};
+
 template <
 	uint64_t x,
-	size_t size = x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U>
+	typename size = smallest_uint_size<x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U> /**/>
 struct smallest_uint {
-	using type = uint64_t;
+	typedef uint64_t type;
 };
 
-template <size_t x>
-struct smallest_uint<x, 1> {
-	using type = uint8_t;
+template <uint64_t x>
+struct smallest_uint<x, smallest_uint_size<1> /**/ > {
+	typedef uint8_t type;
 };
 
-template <size_t x>
-struct smallest_uint<x, 2> {
-	using type = uint16_t;
+template <uint64_t x>
+struct smallest_uint<x, smallest_uint_size<2> /**/ > {
+	typedef uint16_t type;
 };
 
-template <size_t x>
-struct smallest_uint<x, 4> {
-	using type = uint32_t;
+template <uint64_t x>
+struct smallest_uint<x, smallest_uint_size<4> /**/ > {
+	typedef uint32_t type;
 };
 
 } // namespace zth

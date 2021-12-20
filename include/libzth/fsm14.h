@@ -33,6 +33,7 @@
 #	include <bitset>
 #	include <functional>
 #	include <limits>
+#	include <stdexcept>
 #	include <type_traits>
 #	include <utility>
 
@@ -150,8 +151,8 @@ struct function_traits<R (C::*)(A) const noexcept> : function_traits_detail<R, C
 class Fsm;
 
 struct invalid_fsm : public std::logic_error {
-	invalid_fsm(char const* str)
-		: std::logic_error(str)
+	explicit invalid_fsm(char const* str)
+		: std::logic_error{str}
 	{}
 };
 
@@ -338,7 +339,7 @@ private:
 	template <
 		typename A,
 		std::enable_if_t<std::is_base_of<Fsm, std::remove_reference_t<A>>::value, int> = 0>
-	static void check(Fsm& fsm)
+	static void check(Fsm& UNUSED_PAR(fsm))
 	{
 #	ifdef __GXX_RTTI
 		zth_assert(dynamic_cast<std::remove_reference_t<A>*>(&fsm) != nullptr);
@@ -1085,7 +1086,7 @@ public:
 			i++;
 		}
 
-		return std::move(f);
+		return f;
 	}
 
 	virtual size_t size() const noexcept final
@@ -1680,7 +1681,7 @@ inline Fsm TransitionsBase::spawn() const
 {
 	Fsm fsm;
 	fsm.init(*this);
-	return std::move(fsm);
+	return fsm;
 }
 
 } // namespace fsm
