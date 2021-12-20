@@ -42,6 +42,6 @@ TEST(Fsm17, CallbackLambda)
 	EXPECT_TRUE(fsm.valid());
 	EXPECT_FALSE(flag);
 
-	fsm.run();
+	fsm.run(true);
 	EXPECT_TRUE(flag);
 }
