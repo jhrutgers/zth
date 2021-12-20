@@ -164,13 +164,13 @@ TEST(Fsm14, Empty)
 	constexpr auto transitions = compile();
 	auto fsm = transitions.spawn();
 	EXPECT_TRUE(fsm.valid());
-	fsm.run();
+	fsm.run(true);
 
 	Fsm fsm2;
 	EXPECT_FALSE(fsm2.valid());
 	transitions.init(fsm2);
 	EXPECT_TRUE(fsm2.valid());
-	fsm2.run();
+	fsm2.run(true);
 }
 
 static bool f_check_flag;
@@ -196,7 +196,7 @@ TEST(Fsm14, CallbackFunction)
 	EXPECT_TRUE(fsm.valid());
 	EXPECT_FALSE(f_check_flag);
 
-	fsm.run();
+	fsm.run(true);
 	EXPECT_TRUE(f_check_flag);
 }
 
@@ -233,7 +233,7 @@ TEST(Fsm14, CallbackMember)
 	EXPECT_TRUE(fsm.valid());
 	EXPECT_FALSE(fsm.flag);
 
-	fsm.run();
+	fsm.run(true);
 	EXPECT_TRUE(fsm.flag);
 }
 
@@ -256,7 +256,7 @@ TEST(Fsm14, CallbackConstMember)
 	EXPECT_TRUE(fsm.valid());
 	EXPECT_FALSE(fsm.flag);
 
-	fsm.run();
+	fsm.run(true);
 	EXPECT_TRUE(fsm.flag);
 }
 
@@ -299,7 +299,7 @@ TEST(Fsm14, Action)
 
 	CountingFsm fsm;
 	transitions.init(fsm);
-	fsm.run();
+	fsm.run(true);
 
 	EXPECT_EQ(fsm.count, 2);
 }
@@ -319,7 +319,7 @@ TEST(Fsm14, GuardFalse)
 
 	CountingFsm fsm;
 	transitions.init(fsm);
-	fsm.run();
+	fsm.run(true);
 
 	EXPECT_EQ(fsm.count, 3);
 }
@@ -339,7 +339,7 @@ TEST(Fsm14, GuardTrue)
 
 	CountingFsm fsm;
 	transitions.init(fsm);
-	fsm.run();
+	fsm.run(true);
 
 	EXPECT_EQ(fsm.count, 2);
 }
@@ -359,7 +359,7 @@ TEST(Fsm14, Entry)
 
 	CountingFsm fsm;
 	transitions.init(fsm);
-	fsm.run();
+	fsm.run(true);
 
 	EXPECT_EQ(fsm.count, 2);
 }
@@ -383,7 +383,7 @@ TEST(Fsm14, Stop)
 	EXPECT_TRUE(fsm.flag(Fsm::Flag::stop));
 	EXPECT_EQ(fsm.state(), "b"_S);
 
-	fsm.run();
+	fsm.run(true);
 	EXPECT_FALSE(fsm.flag(Fsm::Flag::stop));
 	EXPECT_EQ(fsm.state(), "c"_S);
 }
@@ -408,7 +408,7 @@ TEST(Fsm14, Stack)
 
 	CountingFsm fsm;
 	transitions.init(fsm);
-	fsm.run();
+	fsm.run(true);
 
 	EXPECT_EQ(fsm.state(), "c"_S);
 	EXPECT_EQ(fsm.count, 4);
@@ -420,25 +420,38 @@ TEST(Fsm14, Input)
 
 	// clang-format off
 	static constexpr auto transitions = compile(
-		"a"	+ "x"		/ count_action	>>= "b",
-		"b"
+		"a"	+ "x"			>>= "b",
+		"b"	+ "x"	/ consume	>>= "c",
+		"c"
 	);
 	// clang-format on
 
-	CountingFsm fsm;
-	transitions.init(fsm);
-	fsm.run();
-	EXPECT_EQ(fsm.count, 0);
+	auto fsm = transitions.spawn();
+	fsm.run(true);
+	EXPECT_EQ(fsm.state(), "a"_S)
 
 	fsm.input("y");
-	fsm.run();
-	EXPECT_EQ(fsm.count, 0);
+	fsm.run(true);
 	EXPECT_EQ(fsm.state(), "a"_S);
 
 	fsm.input("x");
-	fsm.run();
-	EXPECT_EQ(fsm.count, 1);
-	EXPECT_EQ(fsm.state(), "b"_S);
+	fsm.run(true);
+	EXPECT_EQ(fsm.state(), "c"_S);
 	EXPECT_FALSE(fsm.hasInput("x"));
 	EXPECT_TRUE(fsm.hasInput("y"));
+}
+
+TEST(Fsm14, DelayedGuard)
+{
+	using namespace zth::fsm;
+
+	// clang-format off
+	static constexpr auto transitions = compile(
+		"a"	+ timeout_ms<100>		>>= "b",
+		"b"				/ stop
+	);
+	// clang-format on
+
+	auto fsm = transitions.spawn();
+	fsm.run();
 }

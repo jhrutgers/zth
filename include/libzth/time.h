@@ -52,12 +52,18 @@ clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct ti
 
 namespace zth {
 
+class Timestamp;
+
 /*!
  * \brief Convenient wrapper around \c struct \c timespec that contains a time interval.
  * \ingroup zth_api_cpp_time
  */
 class TimeInterval {
 	ZTH_CLASS_NEW_DELETE(TimeInterval)
+private:
+	// Do not convert automatically.
+	TimeInterval(Timestamp const&);
+
 public:
 	static long const BILLION = 1000000000L;
 
@@ -80,7 +86,7 @@ public:
 	// cppcheck-suppress noExplicitConstructor
 	constexpr TimeInterval(time_t s, long ns = 0, bool negative = false) noexcept
 		: m_t{s, ns}
-		, m_negative(negative)
+		, m_negative{negative}
 	{}
 #	else
 	// cppcheck-suppress noExplicitConstructor
@@ -514,6 +520,13 @@ public:
 		m_t.tv_nsec = nsec;
 	}
 
+	// cppcheck-suppress noExplicitConstructor
+	Timestamp(TimeInterval const& ti)
+		: m_t()
+	{
+		*this = now() + ti;
+	}
+
 	static Timestamp now()
 	{
 		Timestamp t;
@@ -541,6 +554,11 @@ public:
 	constexpr bool isAfter(Timestamp const& t) const noexcept
 	{
 		return t.isBefore(*this);
+	}
+
+	bool hasPassed() const noexcept
+	{
+		return now().isBefore(*this);
 	}
 
 	constexpr bool operator==(Timestamp const& rhs) const noexcept

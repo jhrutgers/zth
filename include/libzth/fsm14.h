@@ -27,6 +27,7 @@
 
 #	include <libzth/macros.h>
 #	include <libzth/allocator.h>
+#	include <libzth/sync.h>
 #	include <libzth/util.h>
 
 #	include <bitset>
@@ -118,6 +119,7 @@ struct invalid_fsm : public std::logic_error {
  * \ingroup zth_api_cpp_fsm14
  */
 class Symbol {
+	ZTH_CLASS_NEW_DELETE(Symbol)
 public:
 	constexpr Symbol(char const* s = nullptr) noexcept
 		: m_symbol{s}
@@ -248,7 +250,7 @@ template <
 	bool isMember = !haveArg && function_traits<T>::is_member && !function_traits<T>::is_functor
 			&& std::is_base_of<Fsm, typename function_traits<T>::class_type>::value,
 	bool isOk =
-		std::is_same<typename function_traits<T>::return_type, R>::value
+		std::is_convertible<typename function_traits<T>::return_type, R>::value
 		&& (!haveArg
 		    || std::is_convertible<Fsm&, typename function_traits<T>::arg_type>::value
 		    || std::is_base_of<
@@ -258,6 +260,7 @@ class Callback {};
 
 template <typename T, typename R>
 class Callback<T, R, false, false, true> : public Named<> {
+	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
@@ -276,6 +279,7 @@ private:
 
 template <typename T, typename R>
 class Callback<T, R, true, false, true> : public Named<> {
+	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
@@ -313,6 +317,7 @@ private:
 
 template <typename T, typename R>
 class Callback<T, R, false, true, true> : public Named<> {
+	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
 	constexpr Callback(T_&& c, char const* name = nullptr)
@@ -333,6 +338,29 @@ private:
 	T m_callback;
 };
 
+class GuardPollInterval : public TimeInterval {
+	ZTH_CLASS_NEW_DELETE(GuardPollInterval)
+public:
+	constexpr GuardPollInterval(bool enabled = false)
+		: TimeInterval(enabled ? TimeInterval::null() : TimeInterval::infinity())
+	{}
+
+	constexpr GuardPollInterval(GuardPollInterval&&) noexcept = default;
+	GuardPollInterval& operator=(GuardPollInterval&&) noexcept = default;
+	constexpr GuardPollInterval(GuardPollInterval const&) noexcept = default;
+	GuardPollInterval& operator=(GuardPollInterval const&) noexcept = default;
+
+	template <typename... A>
+	constexpr GuardPollInterval(A&&... a)
+		: TimeInterval(std::forward<A>(a)...)
+	{}
+
+	constexpr operator bool() const
+	{
+		return hasPassed();
+	}
+};
+
 class Guard {
 protected:
 	constexpr Guard() = default;
@@ -345,10 +373,10 @@ public:
 	Guard(Guard const&) = delete;
 	void operator=(Guard const&) = delete;
 
-	virtual bool enabled(Fsm& fsm) const = 0;
+	virtual GuardPollInterval enabled(Fsm& fsm) const = 0;
 	virtual cow_string name() const = 0;
 
-	bool operator()(Fsm& fsm) const
+	auto operator()(Fsm& fsm) const
 	{
 		return enabled(fsm);
 	}
@@ -357,16 +385,17 @@ public:
 template <typename T>
 class TypedGuard final
 	: public Guard
-	, protected Callback<T, bool> {
+	, protected Callback<T, GuardPollInterval> {
+	ZTH_CLASS_NEW_DELETE(TypedGuard)
 public:
-	using Callback_type = Callback<T, bool>;
+	using Callback_type = Callback<T, GuardPollInterval>;
 
 	template <typename T_>
 	constexpr explicit TypedGuard(T_&& g, char const* name = nullptr)
 		: Callback_type{std::forward<T_>(g), name}
 	{}
 
-	virtual bool enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(Fsm& fsm) const final
 	{
 		return this->call(fsm);
 	}
@@ -378,12 +407,13 @@ public:
 };
 
 class InputGuard final : public Guard {
+	ZTH_CLASS_NEW_DELETE(InputGuard)
 public:
 	constexpr explicit InputGuard(Symbol&& input)
 		: m_input{std::move(input)}
 	{}
 
-	virtual bool enabled(Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(Fsm& fsm) const final;
 
 	virtual cow_string name() const final
 	{
@@ -463,6 +493,7 @@ template <typename T>
 class TypedAction final
 	: public Action
 	, protected Callback<T, void> {
+	ZTH_CLASS_NEW_DELETE(TypedAction)
 public:
 	using Callback_type = Callback<T, void>;
 
@@ -505,22 +536,23 @@ protected:
 	constexpr GuardedActionBase() = default;
 
 public:
-	virtual bool tryRun(Fsm& fsm) const
+	virtual GuardPollInterval tryRun(Fsm& fsm) const
 	{
-		if(!enabled(fsm))
-			return false;
+		if(auto e = !enabled(fsm))
+			return e;
 
 		run(fsm);
 		return true;
 	}
 
-	bool operator()(Fsm& fsm) const
+	GuardPollInterval operator()(Fsm& fsm) const
 	{
 		return tryRun(fsm);
 	}
 };
 
 class GuardedAction final : public GuardedActionBase {
+	ZTH_CLASS_NEW_DELETE(GuardedAction)
 public:
 	constexpr GuardedAction(Guard const& guard, Action const& action)
 		: m_guard{guard}
@@ -564,7 +596,7 @@ public:
 		return m_input;
 	}
 
-	virtual bool enabled(Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(Fsm& fsm) const final;
 
 	constexpr auto const& guard() const
 	{
@@ -632,6 +664,7 @@ constexpr inline auto operator/(GuardedAction&& ga, Action const& a)
 class Transition;
 
 class TransitionStart final : public GuardedActionBase {
+	ZTH_CLASS_NEW_DELETE(TransitionStart)
 public:
 	constexpr TransitionStart(State&& state)
 		: m_state{std::move(state)}
@@ -688,12 +721,12 @@ public:
 		return m_guardedAction.action();
 	}
 
-	virtual bool enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(Fsm& fsm) const final
 	{
 		return m_guardedAction.enabled(fsm);
 	}
 
-	virtual bool tryRun(Fsm& fsm) const final
+	virtual GuardPollInterval tryRun(Fsm& fsm) const final
 	{
 		return m_guardedAction.tryRun(fsm);
 	}
@@ -754,6 +787,7 @@ constexpr inline auto operator+(State&& state, TransitionStart&& t)
 }
 
 class Transition final : public GuardedActionBase {
+	ZTH_CLASS_NEW_DELETE(Transition)
 public:
 	template <typename F>
 	constexpr Transition(F&& from)
@@ -767,12 +801,12 @@ public:
 		, m_to{std::forward<T>(to)}
 	{}
 
-	virtual bool enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(Fsm& fsm) const final
 	{
 		return m_from.enabled(fsm);
 	}
 
-	virtual bool tryRun(Fsm& fsm) const final
+	virtual GuardPollInterval tryRun(Fsm& fsm) const final
 	{
 		return m_from.tryRun(fsm);
 	}
@@ -866,7 +900,7 @@ public:
 	}
 
 	virtual Guard const& guard(index_type i) const = 0;
-	virtual bool enabled(index_type i, Fsm& fsm) const = 0;
+	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const = 0;
 	virtual Symbol input(index_type i) const = 0;
 	virtual Action const& action(index_type i) const = 0;
 	virtual index_type to(index_type i) const = 0;
@@ -885,7 +919,7 @@ public:
 	{
 		size_t size_ = size();
 		for(index_type i = 0; i < size_; i++) {
-			fprintf(f, "%3zu: %-8s + %s %-18s / %-18s >>= %3zu\n", i, state(i).str(),
+			fprintf(f, "%3zu: %-16s + %s %-18s / %-18s >>= %3zu\n", i, state(i).str(),
 				hasGuard(i) ? "guard" : "input",
 				hasGuard(i) ? guard(i).name().c_str() : input(i).str(),
 				action(i).name().c_str(), to(i));
@@ -895,6 +929,7 @@ public:
 
 template <size_t Size>
 class Transitions final : public TransitionsBase {
+	ZTH_CLASS_NEW_DELETE(Transitions)
 protected:
 	using Index = typename smallest_uint<Size>::type;
 
@@ -995,7 +1030,7 @@ public:
 		return static_cast<char const*>(m_transitions[i].guard);
 	}
 
-	virtual bool enabled(index_type i, Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const final;
 
 	virtual Action const& action(index_type i) const final
 	{
@@ -1069,6 +1104,7 @@ public:
 		pushed,
 		popped,
 		stop,
+		input,
 		flags, // Not a flag, just a count of the other flags.
 	};
 
@@ -1120,6 +1156,7 @@ public:
 		m_prev = m_transition = m_state = 0;
 		m_flags.reset();
 		m_stack.clear();
+		m_t = Timestamp::now();
 	}
 
 	State const& state() const
@@ -1128,7 +1165,13 @@ public:
 		return m_fsm->state(m_state);
 	}
 
-	bool step()
+	State const& prev() const
+	{
+		zth_assert(valid());
+		return m_fsm->state(m_prev);
+	}
+
+	GuardPollInterval step()
 	{
 		zth_assert(valid());
 
@@ -1136,12 +1179,18 @@ public:
 		auto size = m_fsm->size();
 
 		// Find next enabled guard.
-		while(!m_fsm->enabled(i, *this)) {
+		GuardPollInterval again{false};
+		GuardPollInterval p;
+		while(!(p = m_fsm->enabled(i, *this))) {
+			// Save the shortest poll interval.
+			if(p < again)
+				again = p;
+
 			if(++i == size || m_fsm->state(i).valid()) {
 				// No enabled guards.
 				setFlag(Flag::blocked);
-				zth_dbg(fsm, "[%s] Blocked", id_str());
-				return false;
+				zth_dbg(fsm, "[%s] Blocked for %s", id_str(), again.str().c_str());
+				return again;
 			}
 		}
 
@@ -1160,6 +1209,7 @@ public:
 				zth_dbg(fsm, "[%s] Guard %s enabled, no transition", id_str(),
 					m_fsm->guard(i).name().c_str());
 			clearFlag(Flag::transition);
+			setFlag(Flag::input, m_fsm->hasInput(i));
 			enter();
 		} else {
 			if(m_fsm->hasInput(i))
@@ -1181,6 +1231,7 @@ public:
 
 			clearFlag(Flag::popped);
 			clearFlag(Flag::pushed);
+			setFlag(Flag::input, m_fsm->hasInput(i));
 			enter();
 
 			setFlag(Flag::entry);
@@ -1189,18 +1240,55 @@ public:
 		return true;
 	}
 
-	void run()
+	GuardPollInterval run(Timestamp const& until)
 	{
-		zth_dbg(fsm, "[%s] Run", id_str());
+		zth_dbg(fsm, "[%s] Run for %s", id_str(), (until - Timestamp::now()).str().c_str());
 		clearFlag(Flag::stop);
 
-		while(step() && !flag(Flag::stop))
-			;
+		while(true) {
+			GuardPollInterval p = step();
+
+			if(flag(Flag::stop))
+				// Return now, but we could continue anyway.
+				return p;
+
+			auto now = Timestamp::now();
+			if(now > until)
+				return p;
+
+			if(p)
+				continue;
+
+			auto p_end = now + p;
+			m_trigger.wait(std::min(p_end, until), now);
+		}
+	}
+
+	GuardPollInterval run(bool returnWhenBlocked = false)
+	{
+		zth_dbg(fsm, "[%s] Run%s", id_str(), returnWhenBlocked ? " until blocked" : "");
+		clearFlag(Flag::stop);
+
+		while(true) {
+			GuardPollInterval p = step();
+
+			if(flag(Flag::stop))
+				// Return now, but we could continue anyway.
+				return p;
+
+			if(p)
+				continue;
+
+			if(returnWhenBlocked)
+				return p;
+
+			m_trigger.wait(p);
+		}
 	}
 
 	void trigger()
 	{
-		// TODO
+		m_trigger.signal(false);
 	}
 
 	void stop()
@@ -1245,6 +1333,7 @@ public:
 
 		clearFlag(Flag::pushed);
 		setFlag(Flag::popped);
+		clearFlag(Flag::input);
 		enter();
 
 		setFlag(Flag::entry);
@@ -1269,6 +1358,17 @@ public:
 		return true;
 	}
 
+	Symbol input() const
+	{
+		if(!flag(Flag::input))
+			return Symbol{};
+
+		zth_assert(valid());
+		zth_assert(m_fsm->hasInput(m_transition));
+
+		return m_fsm->input(m_transition);
+	}
+
 	void input(Symbol i)
 	{
 		if(!i.valid())
@@ -1291,6 +1391,11 @@ public:
 			}
 
 		return false;
+	}
+
+	void clearInput()
+	{
+		clearInput(input());
 	}
 
 	void clearInputs()
@@ -1318,6 +1423,38 @@ public:
 		return false;
 	}
 
+	Timestamp const& t() const
+	{
+		return m_t;
+	}
+
+	TimeInterval dt() const
+	{
+		return Timestamp::now() - t();
+	}
+
+	template <time_t s>
+	static GuardPollInterval timeoutGuard_s(Fsm& fsm)
+	{
+		return TimeInterval{s} - fsm.dt();
+	}
+
+	template <uint64_t ms>
+	static GuardPollInterval timeoutGuard_ms(Fsm& fsm)
+	{
+		return TimeInterval{
+			       (time_t)(ms / 1'000ULL), (long)(ms * 1'000'000ULL) % 1'000'000'000L}
+		       - fsm.dt();
+	}
+
+	template <uint64_t us>
+	static GuardPollInterval timeoutGuard_us(Fsm& fsm)
+	{
+		return TimeInterval{
+			       (time_t)(us / 1'000'000ULL), (long)(us * 1'000ULL) % 1'000'000'000L}
+		       - fsm.dt();
+	}
+
 protected:
 	bool setFlag(Flag f, bool value = true)
 	{
@@ -1337,6 +1474,9 @@ protected:
 
 	virtual void enter()
 	{
+		if(flag(Flag::transition))
+			m_t = Timestamp::now();
+
 		if(m_transition) {
 			zth_dbg(fsm, "[%s] Enter %s%s; run action %s", id_str(), state().str(),
 				flag(Flag::selfloop) ? " (loop)" : "",
@@ -1374,6 +1514,8 @@ private:
 	index_type m_state{};
 	vector_type<index_type>::type m_stack;
 	vector_type<Symbol>::type m_inputs;
+	Signal m_trigger;
+	Timestamp m_t;
 };
 
 /*!
@@ -1401,24 +1543,47 @@ inline17 static constexpr auto popped = guard(&Fsm::popped, "popped");
  */
 inline17 static constexpr auto stop = action(&Fsm::stop, "stop");
 
-bool InputGuard::enabled(Fsm& fsm) const
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+inline17 static constexpr auto consume = action<void (Fsm::*)()>(&Fsm::clearInput, "consume");
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+template <time_t s>
+inline17 static constexpr auto timeout_s = guard(&Fsm::timeoutGuard_s<s>, "timeout");
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+template <time_t ms>
+inline17 static constexpr auto timeout_ms = guard(&Fsm::timeoutGuard_ms<ms>, "timeout");
+
+/*!
+ * \ingroup zth_api_cpp_fsm14
+ */
+template <time_t us>
+inline17 static constexpr auto timeout_us = guard(&Fsm::timeoutGuard_us<us>, "timeout");
+
+GuardPollInterval InputGuard::enabled(Fsm& fsm) const
 {
-	return fsm.clearInput(m_input);
+	return fsm.hasInput(m_input);
 }
 
-bool GuardedAction::enabled(Fsm& fsm) const
+GuardPollInterval GuardedAction::enabled(Fsm& fsm) const
 {
 	if(isInput())
-		return fsm.clearInput(input());
+		return fsm.hasInput(input());
 	else
 		return m_guard.enabled(fsm);
 }
 
 template <size_t Size>
-bool Transitions<Size>::enabled(Transitions::index_type i, Fsm& fsm) const
+GuardPollInterval Transitions<Size>::enabled(Transitions::index_type i, Fsm& fsm) const
 {
 	if(isInput(i))
-		return fsm.clearInput(input(i));
+		return fsm.hasInput(input(i));
 	else
 		return guard(i).enabled(fsm);
 }
