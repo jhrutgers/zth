@@ -72,33 +72,73 @@ struct function_traits : function_traits<decltype(&T::operator())> {
 template <typename R>
 struct function_traits<R (&)()> : function_traits_detail<R, void, void> {};
 
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R>
+struct function_traits<R (&)() noexcept> : function_traits_detail<R, void, void> {};
+#		endif
+
 // R(A) normal function
 template <typename R, typename A>
 struct function_traits<R (&)(A)> : function_traits_detail<R, void, A> {};
+
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename A>
+struct function_traits<R (&)(A) noexcept> : function_traits_detail<R, void, A> {};
+#		endif
 
 // R() normal function
 template <typename R>
 struct function_traits<R (*)()> : function_traits_detail<R, void, void> {};
 
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R>
+struct function_traits<R (*)() noexcept> : function_traits_detail<R, void, void> {};
+#		endif
+
 // R(A) normal function
 template <typename R, typename A>
 struct function_traits<R (*)(A)> : function_traits_detail<R, void, A> {};
+
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename A>
+struct function_traits<R (*)(A) noexcept> : function_traits_detail<R, void, A> {};
+#		endif
 
 // R(C::*)() class member
 template <typename R, typename C>
 struct function_traits<R (C::*)()> : function_traits_detail<R, C, void> {};
 
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename C>
+struct function_traits<R (C::*)() noexcept> : function_traits_detail<R, C, void> {};
+#		endif
+
 // R(C::*)(A) class member
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A)> : function_traits_detail<R, C, A> {};
+
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename C, typename A>
+struct function_traits<R (C::*)(A) noexcept> : function_traits_detail<R, C, A> {};
+#		endif
 
 // R(C::*)() const class member
 template <typename R, typename C>
 struct function_traits<R (C::*)() const> : function_traits_detail<R, C, void> {};
 
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename C>
+struct function_traits<R (C::*)() const noexcept> : function_traits_detail<R, C, void> {};
+#		endif
+
 // R(C::*)(A) const class member
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A) const> : function_traits_detail<R, C, A> {};
+
+#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+template <typename R, typename C, typename A>
+struct function_traits<R (C::*)(A) const noexcept> : function_traits_detail<R, C, A> {};
+#		endif
 
 #	endif // !DOXYGEN
 
@@ -351,11 +391,11 @@ public:
 	GuardPollInterval& operator=(GuardPollInterval const&) noexcept = default;
 
 	template <typename... A>
-	constexpr GuardPollInterval(A&&... a)
+	constexpr GuardPollInterval(A&&... a) noexcept
 		: TimeInterval(std::forward<A>(a)...)
 	{}
 
-	constexpr operator bool() const
+	constexpr operator bool() const noexcept
 	{
 		return hasPassed();
 	}
@@ -436,12 +476,12 @@ constexpr auto guard(T&& g, char const* name = nullptr)
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
-constexpr inline auto guard(Symbol&& input)
+constexpr inline auto guard(Symbol&& input) noexcept
 {
 	return InputGuard{std::move(input)};
 }
 
-inline bool always_guard()
+inline bool always_guard() noexcept
 {
 	return true;
 }
@@ -454,7 +494,7 @@ inline bool always_guard()
 // function instead.
 inline17 constexpr auto always = guard(always_guard, "always");
 
-inline bool never_guard()
+inline bool never_guard() noexcept
 {
 	return false;
 }
@@ -554,57 +594,57 @@ public:
 class GuardedAction final : public GuardedActionBase {
 	ZTH_CLASS_NEW_DELETE(GuardedAction)
 public:
-	constexpr GuardedAction(Guard const& guard, Action const& action)
+	constexpr GuardedAction(Guard const& guard, Action const& action) noexcept
 		: m_guard{guard}
 		, m_action{action}
 	{}
 
-	constexpr GuardedAction(Symbol&& input, Action const& action)
+	constexpr GuardedAction(Symbol&& input, Action const& action) noexcept
 		: m_guard{never}
 		, m_input{std::move(input)}
 		, m_action{action}
 	{}
 
-	constexpr GuardedAction(Guard const& guard)
+	constexpr GuardedAction(Guard const& guard) noexcept
 		: GuardedAction{guard, nothing}
 	{}
 
-	constexpr GuardedAction(Symbol&& input)
+	constexpr GuardedAction(Symbol&& input) noexcept
 		: GuardedAction{std::move(input), nothing}
 	{}
 
-	constexpr GuardedAction(Action const& action)
+	constexpr GuardedAction(Action const& action) noexcept
 		: GuardedAction{always, action}
 	{}
 
-	constexpr GuardedAction()
+	constexpr GuardedAction() noexcept
 		: GuardedAction{always, nothing}
 	{}
 
-	constexpr bool isInput() const
+	constexpr bool isInput() const noexcept
 	{
 		return m_input.valid();
 	}
 
-	constexpr bool hasGuard() const
+	constexpr bool hasGuard() const noexcept
 	{
 		return !isInput();
 	}
 
-	constexpr Symbol const& input() const
+	constexpr Symbol const& input() const noexcept
 	{
 		return m_input;
 	}
 
 	virtual GuardPollInterval enabled(Fsm& fsm) const final;
 
-	constexpr auto const& guard() const
+	constexpr auto const& guard() const noexcept
 	{
 		zth_assert(hasGuard());
 		return m_guard;
 	}
 
-	constexpr auto const& action() const
+	constexpr auto const& action() const noexcept
 	{
 		return m_action;
 	}
@@ -628,12 +668,12 @@ private:
 	Action const& m_action;
 };
 
-constexpr inline auto operator/(Guard const& g, Action const& a)
+constexpr inline auto operator/(Guard const& g, Action const& a) noexcept
 {
 	return GuardedAction{g, a};
 }
 
-constexpr inline auto operator+(Symbol&& input)
+constexpr inline auto operator+(Symbol&& input) noexcept
 {
 	return GuardedAction{std::move(input)};
 }
@@ -641,12 +681,12 @@ constexpr inline auto operator+(Symbol&& input)
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
-constexpr inline auto input(Symbol&& symbol)
+constexpr inline auto input(Symbol&& symbol) noexcept
 {
 	return GuardedAction{std::move(symbol)};
 }
 
-constexpr inline auto operator+(GuardedAction&& g)
+constexpr inline auto operator+(GuardedAction&& g) noexcept
 {
 	return std::move(g);
 }
@@ -666,57 +706,57 @@ class Transition;
 class TransitionStart final : public GuardedActionBase {
 	ZTH_CLASS_NEW_DELETE(TransitionStart)
 public:
-	constexpr TransitionStart(State&& state)
+	constexpr TransitionStart(State&& state) noexcept
 		: m_state{std::move(state)}
 		, m_guardedAction{never / nothing}
 	{}
 
-	constexpr TransitionStart(Guard const& guard)
+	constexpr TransitionStart(Guard const& guard) noexcept
 		: m_state{}
 		, m_guardedAction{guard / nothing}
 	{}
 
-	constexpr TransitionStart(Action const& action)
+	constexpr TransitionStart(Action const& action) noexcept
 		: m_state{}
 		, m_guardedAction{always / action}
 	{}
 
-	constexpr TransitionStart(GuardedAction&& ga)
+	constexpr TransitionStart(GuardedAction&& ga) noexcept
 		: m_state{}
 		, m_guardedAction{std::move(ga)}
 	{}
 
-	constexpr TransitionStart(State&& state, GuardedAction&& guardedAction)
+	constexpr TransitionStart(State&& state, GuardedAction&& guardedAction) noexcept
 		: m_state{std::move(state)}
 		, m_guardedAction{std::move(guardedAction)}
 	{}
 
-	constexpr auto const& state() const
+	constexpr auto const& state() const noexcept
 	{
 		return m_state;
 	}
 
-	constexpr bool isInput() const
+	constexpr bool isInput() const noexcept
 	{
 		return m_guardedAction.isInput();
 	}
 
-	constexpr bool hasGuard() const
+	constexpr bool hasGuard() const noexcept
 	{
 		return m_guardedAction.hasGuard();
 	}
 
-	constexpr Symbol const& input() const
+	constexpr Symbol const& input() const noexcept
 	{
 		return m_guardedAction.input();
 	}
 
-	constexpr auto const& guard() const
+	constexpr auto const& guard() const noexcept
 	{
 		return m_guardedAction.guard();
 	}
 
-	constexpr auto const& action() const
+	constexpr auto const& action() const noexcept
 	{
 		return m_guardedAction.action();
 	}
@@ -741,37 +781,37 @@ private:
 	GuardedAction m_guardedAction;
 };
 
-constexpr inline auto operator+(State&& state, GuardedAction&& action)
+constexpr inline auto operator+(State&& state, GuardedAction&& action) noexcept
 {
 	return TransitionStart{std::move(state), std::move(action)};
 }
 
-constexpr inline auto operator+(State&& state, Guard const& guard)
+constexpr inline auto operator+(State&& state, Guard const& guard) noexcept
 {
 	return TransitionStart{std::move(state), GuardedAction{guard, nothing}};
 }
 
-constexpr inline auto operator+(State&& state, Symbol&& input)
+constexpr inline auto operator+(State&& state, Symbol&& input) noexcept
 {
 	return TransitionStart{std::move(state), GuardedAction{std::move(input)}};
 }
 
-constexpr inline auto operator+(char const* state, Symbol&& input)
+constexpr inline auto operator+(char const* state, Symbol&& input) noexcept
 {
 	return TransitionStart{state, GuardedAction{std::move(input)}};
 }
 
-constexpr inline auto operator+(State&& state, char const* input)
+constexpr inline auto operator+(State&& state, char const* input) noexcept
 {
 	return TransitionStart{std::move(state), GuardedAction{input}};
 }
 
-constexpr inline auto const& operator+(Guard const& guard)
+constexpr inline auto const& operator+(Guard const& guard) noexcept
 {
 	return guard;
 }
 
-constexpr inline auto operator/(State&& state, Action const& action)
+constexpr inline auto operator/(State&& state, Action const& action) noexcept
 {
 	return TransitionStart{std::move(state), GuardedAction{always, action}};
 }
@@ -790,13 +830,13 @@ class Transition final : public GuardedActionBase {
 	ZTH_CLASS_NEW_DELETE(Transition)
 public:
 	template <typename F>
-	constexpr Transition(F&& from)
+	constexpr Transition(F&& from) noexcept
 		: m_from{std::forward<F>(from)}
 		, m_to{}
 	{}
 
 	template <typename F, typename T>
-	constexpr Transition(F&& from, T&& to)
+	constexpr Transition(F&& from, T&& to) noexcept
 		: m_from{std::forward<F>(from)}
 		, m_to{std::forward<T>(to)}
 	{}
@@ -811,37 +851,37 @@ public:
 		return m_from.tryRun(fsm);
 	}
 
-	constexpr auto const& from() const
+	constexpr auto const& from() const noexcept
 	{
 		return m_from.state();
 	}
 
-	constexpr bool isInput() const
+	constexpr bool isInput() const noexcept
 	{
 		return m_from.isInput();
 	}
 
-	constexpr bool hasGuard() const
+	constexpr bool hasGuard() const noexcept
 	{
 		return m_from.hasGuard();
 	}
 
-	constexpr Symbol const& input() const
+	constexpr Symbol const& input() const noexcept
 	{
 		return m_from.input();
 	}
 
-	constexpr auto const& guard() const
+	constexpr auto const& guard() const noexcept
 	{
 		return m_from.guard();
 	}
 
-	constexpr auto const& action() const
+	constexpr auto const& action() const noexcept
 	{
 		return m_from.action();
 	}
 
-	constexpr auto const& to() const
+	constexpr auto const& to() const noexcept
 	{
 		return m_to;
 	}
@@ -856,32 +896,32 @@ private:
 	State m_to;
 };
 
-constexpr inline Transition operator>>=(TransitionStart&& from, State&& to)
+constexpr inline Transition operator>>=(TransitionStart&& from, State&& to) noexcept
 {
 	return Transition{std::move(from), std::move(to)};
 }
 
-constexpr inline Transition operator>>=(State&& from, State&& to)
+constexpr inline Transition operator>>=(State&& from, State&& to) noexcept
 {
 	return Transition{std::move(from) + always, std::move(to)};
 }
 
-constexpr inline Transition operator>>=(char const* from, State&& to)
+constexpr inline Transition operator>>=(char const* from, State&& to) noexcept
 {
 	return Transition{State{from} + always, std::move(to)};
 }
 
-constexpr inline Transition operator>>=(Guard const& from, State&& to)
+constexpr inline Transition operator>>=(Guard const& from, State&& to) noexcept
 {
 	return Transition{State{} + from, std::move(to)};
 }
 
-constexpr inline Transition operator>>=(Action const& from, State&& to)
+constexpr inline Transition operator>>=(Action const& from, State&& to) noexcept
 {
 	return Transition{State{} / from, std::move(to)};
 }
 
-constexpr inline Transition operator>>=(GuardedAction&& from, State&& to)
+constexpr inline Transition operator>>=(GuardedAction&& from, State&& to) noexcept
 {
 	return Transition{State{} + std::move(from), std::move(to)};
 }
@@ -890,26 +930,26 @@ class TransitionsBase {
 public:
 	using index_type = size_t;
 
-	virtual size_t size() const = 0;
+	virtual size_t size() const noexcept = 0;
 
-	virtual bool hasGuard(index_type i) const = 0;
+	virtual bool hasGuard(index_type i) const noexcept = 0;
 
-	virtual bool hasInput(index_type i) const
+	virtual bool hasInput(index_type i) const noexcept
 	{
 		return !hasGuard(i);
 	}
 
-	virtual Guard const& guard(index_type i) const = 0;
+	virtual Guard const& guard(index_type i) const noexcept = 0;
 	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const = 0;
-	virtual Symbol input(index_type i) const = 0;
-	virtual Action const& action(index_type i) const = 0;
-	virtual index_type to(index_type i) const = 0;
-	virtual State const& state(index_type i) const = 0;
+	virtual Symbol input(index_type i) const noexcept = 0;
+	virtual Action const& action(index_type i) const noexcept = 0;
+	virtual index_type to(index_type i) const noexcept = 0;
+	virtual State const& state(index_type i) const noexcept = 0;
 
 	Fsm spawn() const;
 
 	template <typename F, std::enable_if_t<std::is_base_of<Fsm, F>::value, int> = 0>
-	F& init(F& fsm) const
+	F& init(F& fsm) const noexcept
 	{
 		fsm.init(*this);
 		return fsm;
@@ -985,7 +1025,7 @@ protected:
 	};
 
 	struct CompiledTransition {
-		constexpr CompiledTransition()
+		constexpr CompiledTransition() noexcept
 			: guard{}
 			, action{}
 			, from{}
@@ -1048,29 +1088,29 @@ public:
 		return std::move(f);
 	}
 
-	virtual size_t size() const final
+	virtual size_t size() const noexcept final
 	{
 		return Size + 1u;
 	}
 
-	virtual bool isInput(index_type i) const final
+	virtual bool isInput(index_type i) const noexcept final
 	{
 		return (m_transitions[i].flags & static_cast<uint8_t>(Flag::input)) != 0;
 	}
 
-	virtual bool hasGuard(index_type i) const final
+	virtual bool hasGuard(index_type i) const noexcept final
 	{
 		return !isInput(i);
 	}
 
-	virtual Guard const& guard(index_type i) const final
+	virtual Guard const& guard(index_type i) const noexcept final
 	{
 		zth_assert(i < size());
 		zth_assert(hasGuard(i));
 		return *static_cast<Guard const*>(m_transitions[i].guard);
 	}
 
-	virtual Symbol input(index_type i) const final
+	virtual Symbol input(index_type i) const noexcept final
 	{
 		zth_assert(i < size());
 		zth_assert(!hasGuard(i));
@@ -1079,19 +1119,19 @@ public:
 
 	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const final;
 
-	virtual Action const& action(index_type i) const final
+	virtual Action const& action(index_type i) const noexcept final
 	{
 		zth_assert(i < size());
 		return *m_transitions[i].action;
 	}
 
-	virtual index_type to(index_type i) const final
+	virtual index_type to(index_type i) const noexcept final
 	{
 		zth_assert(i < size());
 		return static_cast<index_type>(m_transitions[i].to);
 	}
 
-	virtual State const& state(index_type i) const final
+	virtual State const& state(index_type i) const noexcept final
 	{
 		zth_assert(i < size());
 		return m_transitions[i].from;
@@ -1206,13 +1246,13 @@ public:
 		m_t = Timestamp::now();
 	}
 
-	State const& state() const
+	State const& state() const noexcept
 	{
 		zth_assert(valid());
 		return m_fsm->state(m_state);
 	}
 
-	State const& prev() const
+	State const& prev() const noexcept
 	{
 		zth_assert(valid());
 		return m_fsm->state(m_prev);
@@ -1333,12 +1373,12 @@ public:
 		}
 	}
 
-	void trigger()
+	void trigger() noexcept
 	{
 		m_trigger.signal(false);
 	}
 
-	void stop()
+	void stop() noexcept
 	{
 		zth_dbg(fsm, "[%s] Stop requested", id_str());
 		setFlag(Flag::stop);
@@ -1386,17 +1426,17 @@ public:
 		setFlag(Flag::entry);
 	}
 
-	bool popped() const
+	bool popped() const noexcept
 	{
 		return flag(Flag::popped);
 	}
 
-	bool flag(Flag f) const
+	bool flag(Flag f) const noexcept
 	{
 		return m_flags.test(flagIndex(f));
 	}
 
-	bool entryGuard()
+	bool entryGuard() noexcept
 	{
 		if(!flag(Flag::entry))
 			return false;
@@ -1405,7 +1445,7 @@ public:
 		return true;
 	}
 
-	Symbol input() const
+	Symbol input() const noexcept
 	{
 		if(!flag(Flag::input))
 			return Symbol{};
@@ -1425,7 +1465,7 @@ public:
 		trigger();
 	}
 
-	bool clearInput(Symbol i)
+	bool clearInput(Symbol i) noexcept
 	{
 		if(!i.valid())
 			return false;
@@ -1440,12 +1480,12 @@ public:
 		return false;
 	}
 
-	void clearInput()
+	void clearInput() noexcept
 	{
 		clearInput(input());
 	}
 
-	void clearInputs()
+	void clearInputs() noexcept
 	{
 		m_inputs.clear();
 	}
@@ -1458,7 +1498,7 @@ public:
 		m_inputs.reserve(capacity);
 	}
 
-	bool hasInput(Symbol i) const
+	bool hasInput(Symbol i) const noexcept
 	{
 		if(!i.valid())
 			return false;
@@ -1470,7 +1510,7 @@ public:
 		return false;
 	}
 
-	Timestamp const& t() const
+	Timestamp const& t() const noexcept
 	{
 		return m_t;
 	}
@@ -1503,13 +1543,13 @@ public:
 	}
 
 protected:
-	bool setFlag(Flag f, bool value = true)
+	bool setFlag(Flag f, bool value = true) noexcept
 	{
 		m_flags.set(flagIndex(f), value);
 		return value;
 	}
 
-	void clearFlag(Flag f)
+	void clearFlag(Flag f) noexcept
 	{
 		setFlag(f, false);
 	}
@@ -1536,12 +1576,12 @@ protected:
 	}
 
 private:
-	static constexpr size_t flagIndex(Flag f)
+	static constexpr size_t flagIndex(Flag f) noexcept
 	{
 		return static_cast<size_t>(f);
 	}
 
-	void init(TransitionsBase const& c)
+	void init(TransitionsBase const& c) noexcept
 	{
 		if(c.size() == 0)
 			// Invalid.
@@ -1593,7 +1633,8 @@ inline17 static constexpr auto stop = action(&Fsm::stop, "stop");
 /*!
  * \ingroup zth_api_cpp_fsm14
  */
-inline17 static constexpr auto consume = action<void (Fsm::*)()>(&Fsm::clearInput, "consume");
+inline17 static constexpr auto consume =
+	action<void (Fsm::*)() noexcept>(&Fsm::clearInput, "consume");
 
 /*!
  * \ingroup zth_api_cpp_fsm14
@@ -1613,12 +1654,12 @@ inline17 static constexpr auto timeout_ms = guard(&Fsm::timeoutGuard_ms<ms>, "ti
 template <time_t us>
 inline17 static constexpr auto timeout_us = guard(&Fsm::timeoutGuard_us<us>, "timeout");
 
-GuardPollInterval InputGuard::enabled(Fsm& fsm) const
+inline GuardPollInterval InputGuard::enabled(Fsm& fsm) const
 {
 	return fsm.hasInput(m_input);
 }
 
-GuardPollInterval GuardedAction::enabled(Fsm& fsm) const
+inline GuardPollInterval GuardedAction::enabled(Fsm& fsm) const
 {
 	if(isInput())
 		return fsm.hasInput(input());
@@ -1635,7 +1676,7 @@ GuardPollInterval Transitions<Size>::enabled(Transitions::index_type i, Fsm& fsm
 		return guard(i).enabled(fsm);
 }
 
-Fsm TransitionsBase::spawn() const
+inline Fsm TransitionsBase::spawn() const
 {
 	Fsm fsm;
 	fsm.init(*this);
