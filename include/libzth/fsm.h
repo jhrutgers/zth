@@ -176,8 +176,7 @@ ZTH_EXPORT TimeInterval step(Fsm& fsm)
  * as argument and should return a #zth::TimeInterval. When the interval has
  * passed (zero or negative duration), the guard is assumed to be taken. A
  * positive duration indicates how much time it will probably take for the
- * guard to become valid, which can be used to suspend the fiber. \see \ref
- * fsm.cpp for an example
+ * guard to become valid, which can be used to suspend the fiber.
  *
  * \ingroup zth_api_cpp_fsm
  */
@@ -214,7 +213,6 @@ private:
  * \brief The description of a Fsm.
  * \details Don't try to understand this definition, just follow the example.
  * \see zth::Fsm
- * \see \ref fsm.cpp for an example
  * \ingroup zth_api_cpp_fsm
  */
 template <typename Fsm>
@@ -229,7 +227,6 @@ struct FsmDescription {
 /*!
  * \brief A compiler to turn an #zth::FsmDescription into something that can be used by #zth::Fsm.
  * \see zth::Fsm
- * \see \ref fsm.cpp for an example
  * \ingroup zth_api_cpp_fsm
  */
 template <typename Fsm>
@@ -310,7 +307,6 @@ private:
  *	FsmImpl_, such that every guard gets your actual \c Fsm type reference.
  *	When \c void, assume that there is no subclass, and just use the \c Fsm
  *	reference instead.
- * \see \ref fsm.cpp for an example
  * \ingroup zth_api_cpp_fsm
  */
 template <typename State_, typename Input_ = int, typename FsmImpl_ = void>

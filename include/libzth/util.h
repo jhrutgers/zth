@@ -1330,7 +1330,7 @@ private:
 
 template <
 	uint64_t x,
-	size_t size = x >= 0x1'0000'0000ULL ? 8U : x >= 0x1'0000U ? 4U : x >= 0x100U ? 2U : 1U>
+	size_t size = x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U>
 struct smallest_uint {
 	using type = uint64_t;
 };
