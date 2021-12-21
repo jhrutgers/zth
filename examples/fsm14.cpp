@@ -3,7 +3,7 @@
 // implementation, which allows you to define the transitions with guards and
 // actions. This example explores this functionality.
 //
-// The FSM requires C++14.
+// The FSM requires C++14 or later.
 //
 // This example does not work on Windows, as Windows does not support poll()ing
 // stdin. And the ANSI console might be troubling. This is unrelated to the FSM
@@ -231,7 +231,7 @@ constexpr auto tooLongGreen = guard(&TrafficLight::tooLongGreen, "tooLongGreen")
 //   possible. The entry guard is usually (but not required to be) the first
 //   transition mentioned in the list of transitions for a state.
 // - zth::fsm::timeout_s<X>: this guard is enabled after the specified amount
-//   of time.
+//   of time. There is also a timeout_ms and timeout_us guard.
 // - zth::fsm::input(X): this guard is enabled when the FSM has received the
 //   mentioned input symbol by calling Fsm::input(X). When the transition is
 //   taken, the input symbol is not cleared automatically. Use the 'consume'

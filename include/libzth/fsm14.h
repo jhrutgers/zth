@@ -20,6 +20,8 @@
 
 /*!
  * \defgroup zth_api_cpp_fsm14 fsm (C++14)
+ * \brief A fiber-aware FSM implementation, with concise eDSL and constexpr compatible.
+ * \see \ref fsm14.cpp
  * \ingroup zth_api_cpp
  */
 
@@ -170,10 +172,17 @@ struct invalid_fsm : public std::logic_error {
 class Symbol {
 	ZTH_CLASS_NEW_DELETE(Symbol)
 public:
+	/*!
+	 * \brief Ctor.
+	 * \param s the string, or \c nullptr to create a default (invalid) Symbol.
+	 */
 	constexpr Symbol(char const* s = nullptr) noexcept
 		: m_symbol{s}
 	{}
 
+	/*!
+	 * \brief Like == operator, but constexpr.
+	 */
 	constexpr bool constexpr_eq(Symbol const& s) const noexcept
 	{
 		char const* a = m_symbol;
@@ -212,32 +221,49 @@ public:
 		return !(*this == std::forward<S>(s));
 	}
 
-	constexpr char const* str() const noexcept
+	/*!
+	 * \brief Return a string representation of this symbol.
+	 */
+	__attribute__((returns_nonnull)) constexpr char const* str() const noexcept
 	{
 		return m_symbol ? m_symbol : "-";
 	}
 
+	/*!
+	 * \brief Return the symbol string.
+	 * \return \c nullptr in case of the default (invalid) Symbol
+	 */
 	constexpr char const* symbol() const noexcept
 	{
 		return m_symbol;
 	}
 
-	operator char const *() const noexcept
+	/*!
+	 * \copydoc str()
+	 */
+	__attribute__((returns_nonnull)) operator char const *() const noexcept
 	{
 		return str();
 	}
 
+	/*!
+	 * \brief Check if the symbol is valid.
+	 */
 	constexpr bool valid() const noexcept
 	{
 		return m_symbol;
 	}
 
+	/*!
+	 * \copydoc valid()
+	 */
 	operator bool() const noexcept
 	{
 		return valid();
 	}
 
 private:
+	/*! \brief The symbol string. */
 	char const* m_symbol{};
 };
 
@@ -1265,28 +1291,41 @@ class Fsm : public UniqueID<Fsm> {
 public:
 	using index_type = TransitionsBase::index_type;
 
+	/*!
+	 * \brief Flags that indicate properties of the current state.
+	 * \see #flag()
+	 */
 	enum class Flag : size_t {
-		entry,
-		selfloop,
-		blocked,
-		transition,
-		pushed,
-		popped,
-		stop,
-		input,
-		flags, // Not a flag, just a count of the other flags.
+		entry,	    //!< \brief Just entered the current state.
+		selfloop,   //!< \brief Took transition to the same state.
+		blocked,    //!< \brief The FSM is blocked, as no guards are enabled.
+		transition, //!< \brief A transition is taken.
+		pushed,	    //!< \brief The current state was entered using push().
+		popped,	    //!< \brief The current state was entered using pop().
+		stop,	    //!< \brief stop() was requested. run() will terminate.
+		input,	    //!< \brief The current state was entered via an input symbol.
+		flags,	    //!< \brief Not a flag, just a count of the other flags.
 	};
 
+	/*!
+	 * \brief Ctor.
+	 */
 	Fsm(cow_string const& name = "FSM")
 		: UniqueID{name}
 	{}
 
+	/*!
+	 * \brief Move ctor.
+	 */
 	Fsm(Fsm&& f)
 		: Fsm{}
 	{
 		*this = std::move(f);
 	}
 
+	/*!
+	 * \brief Move assignment.
+	 */
 	Fsm& operator=(Fsm&& f) noexcept
 	{
 		m_fsm = f.m_fsm;
@@ -1304,13 +1343,25 @@ public:
 		return *this;
 	}
 
+	/*!
+	 * \brief Dtor.
+	 */
 	virtual ~Fsm() = default;
 
+	/*!
+	 * \brief Checks if the FSM was initialized.
+	 *
+	 * When valid, #run() can be called.
+	 */
 	bool valid() const noexcept
 	{
 		return m_fsm;
 	}
 
+	/*!
+	 * \brief Reserve memory to #push() a amount of states.
+	 * \exception std::bad_alloc when allocation fails
+	 */
 	void reserveStack(size_t capacity)
 	{
 		if(m_stack.capacity() > capacity * 2U)
@@ -1319,6 +1370,9 @@ public:
 		m_stack.reserve(capacity);
 	}
 
+	/*!
+	 * \brief Reset the state machine.
+	 */
 	virtual void reset() noexcept
 	{
 		zth_dbg(fsm, "[%s] Reset", id_str());
@@ -1328,18 +1382,37 @@ public:
 		m_t = Timestamp::now();
 	}
 
+	/*!
+	 * \brief Return the current state.
+	 */
 	State const& state() const noexcept
 	{
 		zth_assert(valid());
 		return m_fsm->state(m_state);
 	}
 
+	/*!
+	 * \brief Return the previous state.
+	 */
 	State const& prev() const noexcept
 	{
 		zth_assert(valid());
 		return m_fsm->state(m_prev);
 	}
 
+	/*!
+	 * \brief Try to take one step in the state machine.
+	 *
+	 * This basically does:
+	 *
+	 * - Find the first enabled guard of the current state.
+	 * - If there is none, return the shortest returned time interval until
+	 *   the guard must be checked again.
+	 * - Otherwise:
+	 *   - If a target state is specified, call leave(), set the new state,
+	 *     and call enter().
+	 *   - If no target state is specified, call enter() for the same state.
+	 */
 	GuardPollInterval step()
 	{
 		zth_assert(valid());
@@ -1409,6 +1482,13 @@ public:
 		return true;
 	}
 
+	/*!
+	 * \brief Run the state machine until the given time stamp.
+	 *
+	 * When the time stamp is hit, or when stop() is called, the FSM stops
+	 * execution.  The amount of time waiting for the next enabled guard is
+	 * returned.
+	 */
 	GuardPollInterval run(Timestamp const& until)
 	{
 		zth_dbg(fsm, "[%s] Run for %s", id_str(), (until - Timestamp::now()).str().c_str());
@@ -1433,6 +1513,13 @@ public:
 		}
 	}
 
+	/*!
+	 * \brief Run the state machine.
+	 *
+	 * When \p returnWhenBlocked is \c true, and there are no enabled
+	 * guards, the function returns with the time until the next enabled
+	 * guard.  Otherwise, the FSM keeps running until #stop() is called.
+	 */
 	GuardPollInterval run(bool returnWhenBlocked = false)
 	{
 		zth_dbg(fsm, "[%s] Run%s", id_str(), returnWhenBlocked ? " until blocked" : "");
@@ -1455,17 +1542,39 @@ public:
 		}
 	}
 
+	/*!
+	 * \brief Trigger a currently running FSM to reevaluate the guards
+	 *	immediately.
+	 *
+	 * This may be used when any of the guard function may have become
+	 * enabled, by some event outside of the state machine.
+	 */
 	void trigger() noexcept
 	{
 		m_trigger.signal(false);
 	}
 
+	/*!
+	 * \brief Interrupt a running FSM.
+	 *
+	 * This is the callback function for the #zth::fsm::stop action.  When
+	 * the FSM is not running (by #run()), calling #stop() does nothing.
+	 */
 	void stop() noexcept
 	{
 		zth_dbg(fsm, "[%s] Stop requested", id_str());
 		setFlag(Flag::stop);
 	}
 
+	/*!
+	 * \brief Push the current state onto the state stack.
+	 *
+	 * This is the callback function for the #zth::fsm::push() action.
+	 *
+	 * The FSM must be #valid().
+	 *
+	 * \see #pop()
+	 */
 	void push()
 	{
 		zth_assert(valid());
@@ -1475,6 +1584,18 @@ public:
 		zth_dbg(fsm, "[%s] Push %s", id_str(), m_fsm->state(m_state).str());
 	}
 
+	/*!
+	 * \brief Pop the previous state from the state stack.
+	 *
+	 * #leave() and #enter() are called when appropriate.
+	 *
+	 * This is the callback function for the #zth::fsm::pop() action.
+	 * #push() and pop() must come in pairs.
+	 *
+	 * The FSM must be #valid().
+	 *
+	 * \see #push()
+	 */
 	virtual void pop()
 	{
 		zth_assert(valid());
@@ -1508,17 +1629,30 @@ public:
 		setFlag(Flag::entry);
 	}
 
+	/*!
+	 * \brief Check if the current state was reached via #pop().
+	 *
+	 * This is the callback function for the #zth::fsm::popped() guard.
+	 */
 	bool popped() const noexcept
 	{
 		return flag(Flag::popped);
 	}
 
+	/*!
+	 * \brief Check if the given flag is set.
+	 */
 	bool flag(Flag f) const noexcept
 	{
 		return m_flags.test(flagIndex(f));
 	}
 
-	bool entryGuard() noexcept
+	/*!
+	 * \brief Check if the state was just entered.
+	 *
+	 * This is the callback function for the #zth::fsm::entry() guard.
+	 */
+	bool entry() noexcept
 	{
 		if(!flag(Flag::entry))
 			return false;
@@ -1527,6 +1661,12 @@ public:
 		return true;
 	}
 
+	/*!
+	 * \brief Return the input symbol that triggered the transition to the
+	 *	current state.
+	 *
+	 * Returns the invalid Symbol when that was not the case.
+	 */
 	Symbol input() const noexcept
 	{
 		if(!flag(Flag::input))
@@ -1538,6 +1678,12 @@ public:
 		return m_fsm->input(m_transition);
 	}
 
+	/*!
+	 * \brief %Register the given input symbol.
+	 *
+	 * #trigger() is called to trigger immediate reevaluation of the
+	 * guards.
+	 */
 	void input(Symbol i)
 	{
 		if(!i.valid())
@@ -1547,6 +1693,11 @@ public:
 		trigger();
 	}
 
+	/*!
+	 * \brief Remove the given input symbol.
+	 * \return \c false if the given symbol was not registered
+	 * \see #input(Symbol)
+	 */
 	bool clearInput(Symbol i) noexcept
 	{
 		if(!i.valid())
@@ -1562,16 +1713,31 @@ public:
 		return false;
 	}
 
+	/*!
+	 * \brief Clear the input symbol that triggered the current state.
+	 *
+	 * This is the callback function for the #zth::fsm::consume action.
+	 *
+	 * \see #input()
+	 */
 	void clearInput() noexcept
 	{
 		clearInput(input());
 	}
 
+	/*!
+	 * \brief Clear all inputs.
+	 */
 	void clearInputs() noexcept
 	{
 		m_inputs.clear();
 	}
 
+	/*!
+	 * \brief Reserve memory for the given amount of input symbols.
+	 * \see #input(Symbol)
+	 * \exception std::bad_alloc when allocation fails
+	 */
 	void reserveInputs(size_t capacity)
 	{
 		if(m_inputs.capacity() > capacity * 2U)
@@ -1580,6 +1746,10 @@ public:
 		m_inputs.reserve(capacity);
 	}
 
+	/*!
+	 * \brief Checks if the given input symbol was registered before.
+	 * \see #input(Symbol)
+	 */
 	bool hasInput(Symbol i) const noexcept
 	{
 		if(!i.valid())
@@ -1592,22 +1762,38 @@ public:
 		return false;
 	}
 
+	/*!
+	 * \brief Returns the time stamp when the current state was entered.
+	 *
+	 * This is the time of the last transition. This includes self-loops,
+	 * but not transitions without a target state.
+	 */
 	Timestamp const& t() const noexcept
 	{
 		return m_t;
 	}
 
+	/*!
+	 * \brief Returns the time since the current state was entered.
+	 * \see #t()
+	 */
 	TimeInterval dt() const
 	{
 		return Timestamp::now() - t();
 	}
 
+	/*!
+	 * \brief Callback function for the #zth::fsm::timeout_s guard.
+	 */
 	template <time_t s>
 	static GuardPollInterval timeoutGuard_s(Fsm& fsm)
 	{
 		return TimeInterval{s} - fsm.dt();
 	}
 
+	/*!
+	 * \brief Callback function for the #zth::fsm::timeout_ms guard.
+	 */
 	template <uint64_t ms>
 	static GuardPollInterval timeoutGuard_ms(Fsm& fsm)
 	{
@@ -1616,6 +1802,9 @@ public:
 		       - fsm.dt();
 	}
 
+	/*!
+	 * \brief Callback function for the #zth::fsm::timeout_us guard.
+	 */
 	template <uint64_t us>
 	static GuardPollInterval timeoutGuard_us(Fsm& fsm)
 	{
@@ -1625,22 +1814,40 @@ public:
 	}
 
 protected:
+	/*!
+	 * \brief Set or clear the given flag.
+	 */
 	bool setFlag(Flag f, bool value = true) noexcept
 	{
 		m_flags.set(flagIndex(f), value);
 		return value;
 	}
 
+	/*!
+	 * \brief Set the given flag.
+	 *
+	 * Equivalent to \c setFlag(f, false).
+	 */
 	void clearFlag(Flag f) noexcept
 	{
 		setFlag(f, false);
 	}
 
+	/*!
+	 * \brief Called when the current state is about to be left.
+	 */
 	virtual void leave()
 	{
 		zth_dbg(fsm, "[%s] Leave %s", id_str(), state().str());
 	}
 
+	/*!
+	 * \brief Called when the current state was just entered.
+	 *
+	 * This function calls the action.  When overriding this function in a
+	 * subclass, usually call this function first before adding custom
+	 * logic.
+	 */
 	virtual void enter()
 	{
 		if(flag(Flag::transition))
@@ -1658,11 +1865,17 @@ protected:
 	}
 
 private:
+	/*!
+	 * \brief Return the bit index of the given flag in the set of flags.
+	 */
 	static constexpr size_t flagIndex(Flag f) noexcept
 	{
 		return static_cast<size_t>(f);
 	}
 
+	/*!
+	 * \brief Initialize the FSM with the given transitions.
+	 */
 	void init(TransitionsBase const& c) noexcept
 	{
 		if(c.size() == 0)
@@ -1676,14 +1889,23 @@ private:
 	friend TransitionsBase;
 
 private:
+	/*! \brief The transitions. */
 	TransitionsBase const* m_fsm{};
+	/*! \brief The flags. */
 	std::bitset<static_cast<size_t>(Flag::flags)> m_flags;
+	/*! \brief The previous state. */
 	index_type m_prev{};
+	/*! \brief The last taken transition. */
 	index_type m_transition{};
+	/*! \brief The current state. */
 	index_type m_state{};
+	/*! \brief The state push/pop stack. */
 	vector_type<index_type>::type m_stack;
+	/*! \brief The input symbol list. */
 	vector_type<Symbol>::type m_inputs;
+	/*! \brief The trigger for #run() and #trigger(). */
 	Signal m_trigger;
+	/*! \brief The time when entered the current state. */
 	Timestamp m_t;
 };
 
@@ -1692,7 +1914,7 @@ private:
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto entry = guard(&Fsm::entryGuard, "entry");
+inline17 constexpr auto entry = guard(&Fsm::entry, "entry");
 
 /*!
  * \brief Action to push the new state onto the stack.
@@ -1734,8 +1956,7 @@ inline17 constexpr auto stop = action(&Fsm::stop, "stop");
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto consume =
-	action<void (Fsm::*)() noexcept>(&Fsm::clearInput, "consume");
+inline17 constexpr auto consume = action<void (Fsm::*)() noexcept>(&Fsm::clearInput, "consume");
 
 /*!
  * \brief A guard that is enabled after a \p s seconds after entering the
