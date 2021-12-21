@@ -90,11 +90,12 @@ $(document).ready(function(){initNavTree('async_8h.html',''); initResizable(); }
 <div class="title">async.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;<a class="el" href="config_8h_source.html">libzth/config.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="allocator_8h_source.html">libzth/allocator.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="config_8h_source.html">libzth/config.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="fiber_8h_source.html">libzth/fiber.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="sync_8h_source.html">libzth/sync.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="worker_8h_source.html">libzth/worker.h</a>&gt;</code><br />
 <code>#include &lt;tuple&gt;</code><br />
 </div>
@@ -164,9 +165,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aafea64122556ec2e7a3e9940e8dce06e"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
-<tr class="memitem:aafea64122556ec2e7a3e9940e8dce06e"><td class="memTemplItemLeft" align="right" valign="top">TypedFiber&lt; R, F &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aafea64122556ec2e7a3e9940e8dce06e">zth::operator&lt;&lt;</a> (TypedFiber&lt; R, F &gt; *f, FiberManipulator const &amp;m)</td></tr>
-<tr class="separator:aafea64122556ec2e7a3e9940e8dce06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
+<tr class="memitem:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memTemplItemLeft" align="right" valign="top">TypedFiber&lt; R, F &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acfaa577dee7f5b12f4f58baa2c1e33dd">zth::operator&lt;&lt;</a> (TypedFiber&lt; R, F &gt; *f, FiberManipulator const &amp;m)</td></tr>
+<tr class="separator:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">zth_fiber_create</a> (void(*f)(void *), void *arg=nullptr, size_t stack=0, char const *name=nullptr) noexcept</td></tr>
 <tr class="memdesc:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a function as a new fiber.  <a href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">More...</a><br /></td></tr>
 <tr class="separator:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -187,11 +188,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> { <span class="keyword">namespace </span>fibered { \</div>
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {                                          \</div>
+<div class="line">        namespace fibered {                                      \</div>
 <div class="line">        extern ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt; <span class="keyword">const</span> f; \</div>
-<div class="line">    } }</div>
+<div class="line">        }                                                        \</div>
+<div class="line">        }</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00514">514</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00672">672</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -220,13 +223,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> { <span class="keyword">namespace </span>fibered { \</div>
-<div class="line">        storage ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt; const \</div>
-<div class="line">            f(&amp;::f, ::<a class="code" href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a">zth::Config::EnableDebugPrint</a> || ::<a class="code" href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">zth::Config::EnablePerfEvent</a> ? <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(f) <span class="stringliteral">&quot;()&quot;</span> : <span class="keyword">nullptr</span>); <span class="comment">/* NOLINT */</span> \</div>
-<div class="line">    } } \</div>
-<div class="line">    typedef ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt;::AutoFuture_type f##_future;</div>
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {                                                                   \</div>
+<div class="line">        namespace fibered {                                                               \</div>
+<div class="line">        storage ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt; const                            \</div>
+<div class="line">            f(&amp;::f, ::<a class="code" href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a">zth::Config::EnableDebugPrint</a> || ::<a class="code" href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">zth::Config::EnablePerfEvent</a> \</div>
+<div class="line">                    ? <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(f) <span class="stringliteral">&quot;()&quot;</span>                                   \</div>
+<div class="line">                    : <span class="keyword">nullptr</span>); <span class="comment">/* NOLINT */</span>                                  \</div>
+<div class="line">        }                                                                                 \</div>
+<div class="line">        }                                                                                 \</div>
+<div class="line">        typedef ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt;::AutoFuture_type f##_future;</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00526">526</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00686">686</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -246,7 +253,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00532">532</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00696">696</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -266,7 +273,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00533">533</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00697">697</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -282,7 +289,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00041">41</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00043">43</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -290,8 +297,8 @@ Functions</h2></td></tr>
 </div><!-- doc-content -->
 <div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00041">util.h:41</a></div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00032">allocator.h:32</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_html_a759666689ddda485a56318e798969b8a"><div class="ttname"><a href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a">zth::DefaultConfig::EnableDebugPrint</a></div><div class="ttdeci">static const bool EnableDebugPrint</div><div class="ttdoc">Actually do print the debug output.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00087">config.h:87</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_html_aee23b84088ee74aacbf4252c010ad9c4"><div class="ttname"><a href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">zth::DefaultConfig::EnablePerfEvent</a></div><div class="ttdeci">static const bool EnablePerfEvent</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00122">config.h:122</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_a759666689ddda485a56318e798969b8a"><div class="ttname"><a href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a">zth::DefaultConfig::EnableDebugPrint</a></div><div class="ttdeci">static const bool EnableDebugPrint</div><div class="ttdoc">Actually do print the debug output.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00092">config.h:92</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_aee23b84088ee74aacbf4252c010ad9c4"><div class="ttname"><a href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">zth::DefaultConfig::EnablePerfEvent</a></div><div class="ttdeci">static const bool EnablePerfEvent</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00131">config.h:131</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -8,7 +8,7 @@ var examples =
     [ "6_stack.cpp", "6_stack_8cpp-example.html", null ],
     [ "9_c_api.c", "9_c_api_8c-example.html", null ],
     [ "daemon_pattern.cpp", "daemon_pattern_8cpp-example.html", null ],
-    [ "fsm.cpp", "fsm_8cpp-example.html", null ],
+    [ "fsm14.cpp", "fsm14_8cpp-example.html", null ],
     [ "measure.cpp", "measure_8cpp-example.html", null ],
     [ "socks.cpp", "socks_8cpp-example.html", null ],
     [ "zmq.cpp", "zmq_8cpp-example.html", null ]

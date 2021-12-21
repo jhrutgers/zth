@@ -85,7 +85,8 @@ $(document).ready(function(){initNavTree('functions_t.html',''); initResizable()
 
 <h3><a id="index_t"></a>- t -</h3><ul>
 <li>t()
-: <a class="el" href="classzth_1_1_fsm.html#a0433afb4c186141789bf6f853f6b8af8">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
+: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a240aac8c08bfc7441f6b27c9912ed85d">zth::fsm::Fsm</a>
+, <a class="el" href="classzth_1_1_fsm.html#a0433afb4c186141789bf6f853f6b8af8">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 , <a class="el" href="structzth_1_1_perf_event.html#a9b1f624aa250a43da7369f6a37269682">zth::PerfEvent&lt; Enable &gt;</a>
 , <a class="el" href="structzth_1_1_perf_event_3_01false_01_4.html#ad30db86acd781f94779412ad6b27f88a">zth::PerfEvent&lt; false &gt;</a>
 , <a class="el" href="classzth_1_1_periodic_wake_up.html#ac12a0fdfd29fd961c71ac7b5b4fdaf3a">zth::PeriodicWakeUp</a>
@@ -106,10 +107,19 @@ $(document).ready(function(){initNavTree('functions_t.html',''); initResizable()
 : <a class="el" href="classzth_1_1_timed_waitable.html#a7b164c72042091cf7240f5bae96e1244">zth::TimedWaitable</a>
 </li>
 <li>TimeInterval()
-: <a class="el" href="classzth_1_1_time_interval.html#aaa40db0f18249097d43d6b90553ce854">zth::TimeInterval</a>
+: <a class="el" href="classzth_1_1_time_interval.html#a05dbaaf99c9b1cce3ca9d1a1e8f7baec">zth::TimeInterval</a>
 </li>
 <li>timeout()
 : <a class="el" href="classzth_1_1_timed_waitable.html#a4b32289351a7badb70ee9b8d8bcaa6cd">zth::TimedWaitable</a>
+</li>
+<li>timeoutGuard_ms()
+: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#aba371fc09b085e487972f1432049c9a9">zth::fsm::Fsm</a>
+</li>
+<li>timeoutGuard_s()
+: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#ade02a518b7d9b0eb011a322239900172">zth::fsm::Fsm</a>
+</li>
+<li>timeoutGuard_us()
+: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a6c0acbb2b67cd4c7d290c3fe70b8f92d">zth::fsm::Fsm</a>
 </li>
 <li>TimesliceOverrunFactorReportThreshold
 : <a class="el" href="structzth_1_1_default_config.html#a6a9d26cba1fd5bed072e4dee3a8775cf">zth::DefaultConfig</a>
@@ -118,19 +128,40 @@ $(document).ready(function(){initNavTree('functions_t.html',''); initResizable()
 : <a class="el" href="classzth_1_1_timestamp.html#a9e96a229ad728adeddca8aa82fa4314f">zth::Timestamp</a>
 </li>
 <li>timeTo()
-: <a class="el" href="classzth_1_1_timestamp.html#a3745b54e9240eb57242af9abab867d81">zth::Timestamp</a>
+: <a class="el" href="classzth_1_1_timestamp.html#aa6668315bcc35653f83e279121a7b899">zth::Timestamp</a>
+</li>
+<li>to()
+: <a class="el" href="classzth_1_1fsm_1_1_transition.html#a81a80c8288b4970bd51cc59b99d192b5">zth::fsm::Transition</a>
+, <a class="el" href="structzth_1_1fsm_1_1_transitions_1_1_compiled_transition.html#a47afaf55b2a5710b1a1ab8b94a498276">zth::fsm::Transitions&lt; Size &gt;::CompiledTransition</a>
+, <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a0e70e13a0587120afd36d14386209b89">zth::fsm::Transitions&lt; Size &gt;</a>
+, <a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#ac977f0312e4240930d745fa83e2e10d0">zth::fsm::TransitionsBase</a>
 </li>
 <li>totalTime()
 : <a class="el" href="classzth_1_1_fiber.html#a6eebbbd3f486ef6b26184abd20cfda32">zth::Fiber</a>
 </li>
+<li>Transition()
+: <a class="el" href="classzth_1_1fsm_1_1_transition.html#aedcbf4f494dd08370e305b2b96521acc">zth::fsm::Transition</a>
+</li>
+<li>Transitions()
+: <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a4b5239c67618a2bd357286bf136383a8">zth::fsm::Transitions&lt; Size &gt;</a>
+</li>
+<li>TransitionStart()
+: <a class="el" href="classzth_1_1fsm_1_1_transition_start.html#ac55e26d92ab4bb77be8cf743f7a17108">zth::fsm::TransitionStart</a>
+</li>
 <li>trigger()
-: <a class="el" href="classzth_1_1_fsm.html#a70fea78b07c4a33e7cdffd21a5640ff3">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
+: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#aa6ae216240a1ff2adbc755cb898dff0e">zth::fsm::Fsm</a>
+, <a class="el" href="classzth_1_1_fsm.html#a70fea78b07c4a33e7cdffd21a5640ff3">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 </li>
 <li>truncated()
 : <a class="el" href="classzth_1_1_backtrace.html#a5a9caa807246e0837faa7c109d6f2d7b">zth::Backtrace</a>
 </li>
 <li>trylock()
 : <a class="el" href="classzth_1_1_mutex.html#ae2ed28b8dc2efd18a4a65dbe1d4099e8">zth::Mutex</a>
+</li>
+<li>tryRun()
+: <a class="el" href="classzth_1_1fsm_1_1_guarded_action_base.html#a7fd47060637ec6a83e99a40865751005">zth::fsm::GuardedActionBase</a>
+, <a class="el" href="classzth_1_1fsm_1_1_transition.html#accef661d8f4ad3ca6ba023d039705415">zth::fsm::Transition</a>
+, <a class="el" href="classzth_1_1fsm_1_1_transition_start.html#a18994b0c847f87bc11908b2efa0e5cc3">zth::fsm::TransitionStart</a>
 </li>
 <li>ts()
 : <a class="el" href="classzth_1_1_time_interval.html#a71b1b0463bea81a26fb5d39bffbe4b05">zth::TimeInterval</a>
@@ -152,22 +183,28 @@ $(document).ready(function(){initNavTree('functions_t.html',''); initResizable()
 , <a class="el" href="classzth_1_1_listable.html#a3c78f6330e3c8d72846ef54aa703aea6">zth::Listable&lt; ChildClass &gt;</a>
 , <a class="el" href="classzth_1_1_load.html#af6fbdade52bb88f06af78dc5261a2962">zth::Load&lt; T &gt;</a>
 , <a class="el" href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">zth::map_type&lt; Key, T, Compare &gt;</a>
+, <a class="el" href="structzth_1_1_perf_event.html#a4e4b5dcd641b646118e240728a0d303f">zth::PerfEvent&lt; Enable &gt;</a>
 </li>
 <li>Type
 : <a class="el" href="structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6">zth::PerfEvent&lt; Enable &gt;</a>
 </li>
 <li>type
-: <a class="el" href="structzth_1_1_perf_event.html#a4e4b5dcd641b646118e240728a0d303f">zth::PerfEvent&lt; Enable &gt;</a>
+: <a class="el" href="structzth_1_1_perf_event_3_01false_01_4.html#a0f439143611a7f18b59520f006262542">zth::PerfEvent&lt; false &gt;</a>
 </li>
 <li>Type
 : <a class="el" href="structzth_1_1_perf_event_3_01false_01_4.html#aa7a385666d3a51491ee4b8ab21f69350">zth::PerfEvent&lt; false &gt;</a>
 </li>
 <li>type
-: <a class="el" href="structzth_1_1_perf_event_3_01false_01_4.html#a0f439143611a7f18b59520f006262542">zth::PerfEvent&lt; false &gt;</a>
-, <a class="el" href="structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404">zth::Register&lt; T, Addr, Fields &gt;</a>
+: <a class="el" href="structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404">zth::Register&lt; T, Addr, Fields &gt;</a>
 , <a class="el" href="classzth_1_1safe__ptr.html#a1fa0fc479fce03573220f740e89383ef">zth::safe_ptr&lt; T &gt;</a>
+, <a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html#a09b7f1eb20a07b4cc082b02594153510">zth::smallest_uint&lt; x, smallest_uint_size&lt; 1 &gt; &gt;</a>
+, <a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4.html#a25c0b1845a321136c7f566b03f34dcf6">zth::smallest_uint&lt; x, smallest_uint_size&lt; 2 &gt; &gt;</a>
+, <a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4.html#a0c277e1f88ea4daabbcaf8800483e53b">zth::smallest_uint&lt; x, smallest_uint_size&lt; 4 &gt; &gt;</a>
 , <a class="el" href="classzth_1_1_sorted_list.html#a87557a0a9b0f8a1cb0c07977052fa7c2">zth::SortedList&lt; T, Compare &gt;</a>
 , <a class="el" href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">zth::vector_type&lt; T &gt;</a>
+</li>
+<li>TypedAction()
+: <a class="el" href="classzth_1_1fsm_1_1_typed_action.html#a241739f01f06fd5009aa6abd5a9c6557">zth::fsm::TypedAction&lt; T &gt;</a>
 </li>
 <li>TypedFiber()
 : <a class="el" href="classzth_1_1_typed_fiber.html#a2b5731b1944c95a45524d39583eb7a7e">zth::TypedFiber&lt; R, F &gt;</a>
@@ -181,6 +218,9 @@ $(document).ready(function(){initNavTree('functions_t.html',''); initResizable()
 <li>TypedFiberN()
 : <a class="el" href="classzth_1_1_typed_fiber_n.html#a743601035bf9f362c64d544836de6c37">zth::TypedFiberN&lt; R, Args &gt;</a>
 , <a class="el" href="classzth_1_1_typed_fiber_n_3_01void_00_01_args_8_8_8_01_4.html#a098b3b88ad26653497197bd9ecdb49f2">zth::TypedFiberN&lt; void, Args... &gt;</a>
+</li>
+<li>TypedGuard()
+: <a class="el" href="classzth_1_1fsm_1_1_typed_guard.html#ab83e9c5298e66a8609cc62427bcd7816">zth::fsm::TypedGuard&lt; T &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->

@@ -142,7 +142,7 @@ Macros</h2></td></tr>
 <p>Call the function <code>f</code> using the new stack pointer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">stack</td><td>the new stack area. If <code>NULL</code>, the Worker's stack is used. If <code>size</code> is 0, this is the stack pointer, otherwise the stack pointer is calculated according to the ABI (growing up/down) within <code>stack</code> + <code>size</code>. </td></tr>
+    <tr><td class="paramname">stack</td><td>the new stack area. If <code>nullptr</code>, the Worker's stack is used. If <code>size</code> is 0, this is the stack pointer, otherwise the stack pointer is calculated according to the ABI (growing up/down) within <code>stack</code> + <code>size</code>. </td></tr>
     <tr><td class="paramname">size</td><td>the new stack size. This is not required to make the jump, but if 0, there will not be any stack overflow guard used. </td></tr>
     <tr><td class="paramname">f</td><td>the function with prototype <code>void*</code>(void*) to be called. When <code>f</code> returns, the previous stack is restored. </td></tr>
     <tr><td class="paramname">arg</td><td>the argument to pass to <code>f</code>. </td></tr>

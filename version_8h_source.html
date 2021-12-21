@@ -85,8 +85,8 @@ $(document).ready(function(){initNavTree('version_8h_source.html',''); initResiz
 <div class="title">version.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="version_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef __ZTH_VERSION_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define __ZTH_VERSION_H</span></div>
+<a href="version_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef ZTH_VERSION_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define ZTH_VERSION_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Zth (libzth), a cooperative userspace multitasking library.</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Copyright (C) 2019-2021  Jochem Rutgers</span></div>
@@ -107,33 +107,41 @@ $(document).ready(function(){initNavTree('version_8h_source.html',''); initResiz
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="version_8h.html#a5d7e7374885e201362c15a28066c5591">   23</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_MAJOR   1</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="version_8h.html#a318d2e7b9ebb2f25eda87dec55b7cc5c">   24</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_MINOR   0</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="version_8h.html#a2892912ba885d1255ce529e0f14eee2d">   25</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_PATCH   0</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="version_8h.html#ad38e14c5d8ad64a9586e99952293c17b">   26</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_SUFFIX  &quot;-rc&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">   28</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION ZTH_STRINGIFY(ZTH_VERSION_MAJOR) &quot;.&quot; ZTH_STRINGIFY(ZTH_VERSION_MINOR) &quot;.&quot; ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">// clang-format off</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="version_8h.html#a5d7e7374885e201362c15a28066c5591">   24</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_MAJOR   1</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="version_8h.html#a318d2e7b9ebb2f25eda87dec55b7cc5c">   25</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_MINOR   0</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="version_8h.html#a2892912ba885d1255ce529e0f14eee2d">   26</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_PATCH   0</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="version_8h.html#ad38e14c5d8ad64a9586e99952293c17b">   27</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION_SUFFIX &quot;-rc&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// clang-format on</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">   36</a></span>&#160;    ZTH_EXPORT constexpr <span class="keyword">inline</span> <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">version</a>() {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">ZTH_VERSION</a>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;}</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4">   46</a></span>&#160;EXTERN_C ZTH_EXPORT <a class="code" href="macros_8h.html#acfc3fd1dcd2b69aa2a262b9722a6b408">ZTH_INLINE</a> <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4">zth_version</a>() { <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">zth::version</a>(); }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#else // !__cplusplus</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;ZTH_EXPORT <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4">zth_version</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif // _ZTH_VERSION_H</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">   30</a></span>&#160;<span class="preprocessor">#define ZTH_VERSION                      \</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">    ZTH_STRINGIFY(ZTH_VERSION_MAJOR) \</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">    &quot;.&quot; ZTH_STRINGIFY(ZTH_VERSION_MINOR) &quot;.&quot; ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">   40</a></span>&#160;ZTH_EXPORT constexpr <span class="keyword">inline</span> <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">version</a>() noexcept</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">ZTH_VERSION</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;} <span class="comment">// namespace zth</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#ga569a1312976a3427bc766b16d773cc7d">   51</a></span>&#160;EXTERN_C ZTH_EXPORT <a class="code" href="macros_8h.html#acfc3fd1dcd2b69aa2a262b9722a6b408">ZTH_INLINE</a> <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__c__util.html#ga569a1312976a3427bc766b16d773cc7d">zth_version</a>() noexcept</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">zth::version</a>();</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#else  // !__cplusplus</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;ZTH_EXPORT <span class="keywordtype">char</span> <span class="keyword">const</span>* <a class="code" href="group__zth__api__c__util.html#ga569a1312976a3427bc766b16d773cc7d">zth_version</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif // ZTH_VERSION_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga47e7f0ee2498e20da08813db8cdec9f5"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5">zth::version</a></div><div class="ttdeci">constexpr char const  * version()</div><div class="ttdoc">Returns the version of Zth.</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00036">version.h:36</a></div></div>
-<div class="ttc" id="agroup__zth__api__c__util_html_ga6a65cbe30944afbbfff89c211c192fe4"><div class="ttname"><a href="group__zth__api__c__util.html#ga6a65cbe30944afbbfff89c211c192fe4">zth_version</a></div><div class="ttdeci">char const  * zth_version()</div><div class="ttdoc">Returns the version of Zth.</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00046">version.h:46</a></div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00032">allocator.h:32</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_gaddd4a979293a0402bd22d2417728b43c"><div class="ttname"><a href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">zth::version</a></div><div class="ttdeci">constexpr char const  * version() noexcept</div><div class="ttdoc">Returns the version of Zth.</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00040">version.h:40</a></div></div>
 <div class="ttc" id="amacros_8h_html_acfc3fd1dcd2b69aa2a262b9722a6b408"><div class="ttname"><a href="macros_8h.html#acfc3fd1dcd2b69aa2a262b9722a6b408">ZTH_INLINE</a></div><div class="ttdeci">#define ZTH_INLINE</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00139">macros.h:139</a></div></div>
-<div class="ttc" id="aversion_8h_html_a66d1e18225cbde2a5eb652a80f84b297"><div class="ttname"><a href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">ZTH_VERSION</a></div><div class="ttdeci">#define ZTH_VERSION</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00028">version.h:28</a></div></div>
+<div class="ttc" id="aversion_8h_html_a66d1e18225cbde2a5eb652a80f84b297"><div class="ttname"><a href="version_8h.html#a66d1e18225cbde2a5eb652a80f84b297">ZTH_VERSION</a></div><div class="ttdeci">#define ZTH_VERSION</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00030">version.h:30</a></div></div>
+<div class="ttc" id="agroup__zth__api__c__util_html_ga569a1312976a3427bc766b16d773cc7d"><div class="ttname"><a href="group__zth__api__c__util.html#ga569a1312976a3427bc766b16d773cc7d">zth_version</a></div><div class="ttdeci">char const  * zth_version() noexcept</div><div class="ttdoc">Returns the version of Zth.</div><div class="ttdef"><b>Definition:</b> <a href="version_8h_source.html#l00051">version.h:51</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

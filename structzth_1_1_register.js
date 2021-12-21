@@ -1,7 +1,7 @@
 var structzth_1_1_register =
 [
     [ "type", "structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404", null ],
-    [ "Register", "structzth_1_1_register.html#aa11237fb3150806808a4e3d9c37787a2", null ],
+    [ "Register", "structzth_1_1_register.html#ac61e82f57d5a07284e4f5b3708bf5286", null ],
     [ "Register", "structzth_1_1_register.html#a7ac1d5407bb6d1fe57699d1f30ffaccb", null ],
     [ "operator type", "structzth_1_1_register.html#a439768b4a13668df1a59f88e5f6121af", null ],
     [ "read", "structzth_1_1_register.html#abd85296ff7795a288f4764e437011dc2", null ],

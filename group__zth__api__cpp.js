@@ -4,6 +4,7 @@ var group__zth__api__cpp =
     [ "stack", "group__zth__api__cpp__stack.html", "group__zth__api__cpp__stack" ],
     [ "fiber", "group__zth__api__cpp__fiber.html", "group__zth__api__cpp__fiber" ],
     [ "fsm", "group__zth__api__cpp__fsm.html", "group__zth__api__cpp__fsm" ],
+    [ "fsm (C++14)", "group__zth__api__cpp__fsm14.html", "group__zth__api__cpp__fsm14" ],
     [ "io", "group__zth__api__cpp__io.html", "group__zth__api__cpp__io" ],
     [ "perf", "group__zth__api__cpp__perf.html", "group__zth__api__cpp__perf" ],
     [ "poller", "group__zth__api__cpp__poller.html", "group__zth__api__cpp__poller" ],

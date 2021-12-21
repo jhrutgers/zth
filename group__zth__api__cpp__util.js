@@ -12,6 +12,8 @@ var group__zth__api__cpp__util =
       [ "run", "classzth_1_1_runnable.html#a271c8712b982474d559dd49ec9634c1f", null ]
     ] ],
     [ "UniqueID", "classzth_1_1_unique_i_d.html", [
+      [ "UniqueID", "classzth_1_1_unique_i_d.html#a7ac4a67f5359177f9ced68b5c457aef3", null ],
+      [ "UniqueID", "classzth_1_1_unique_i_d.html#aa5ca638fb2387e1b37340913e522eba2", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#ab203870f801f21b7f274abddbffe6adb", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#a7a744622e2676daa0fb8bd48526876c8", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#ab27aec11817ca38c22fe6136c8a64c29", null ],
@@ -20,13 +22,15 @@ var group__zth__api__cpp__util =
       [ "id_str", "classzth_1_1_unique_i_d.html#a1947ab84e9beba3d47b41a71c326e925", null ],
       [ "name", "classzth_1_1_unique_i_d.html#a30c804f7161c85e8ce7bf002dcce9d85", null ],
       [ "normptr", "classzth_1_1_unique_i_d.html#ad247d316a66505a3ae23f3006325ee46", null ],
+      [ "operator=", "classzth_1_1_unique_i_d.html#a794254be56b22818b14eae5d0e969f6f", null ],
+      [ "operator=", "classzth_1_1_unique_i_d.html#aa5b824438a6f3b4be93919e93d5a8e68", null ],
       [ "setName", "classzth_1_1_unique_i_d.html#ae5aca08fcf3fbc33f00fbf163c30f58d", null ],
       [ "setName", "classzth_1_1_unique_i_d.html#ad9b0a8b7bbbe9a19586125c2e3089a5b", null ],
       [ "setName", "classzth_1_1_unique_i_d.html#a97a42d84ff0129fae786157e4be4821b", null ]
     ] ],
     [ "Singleton", "classzth_1_1_singleton.html", [
       [ "singleton_type", "classzth_1_1_singleton.html#a0159315c3abb2c943fd6fc9571b59fa9", null ],
-      [ "Singleton", "classzth_1_1_singleton.html#a734be6628ccc51c209cf506ea86b9f54", null ],
+      [ "Singleton", "classzth_1_1_singleton.html#aa07266c60e864eb05722dc85d0dec46d", null ],
       [ "~Singleton", "classzth_1_1_singleton.html#a4bc61cd5df57f8e32ec6b3876f0fb11f", null ]
     ] ],
     [ "ThreadLocalSingleton", "classzth_1_1_thread_local_singleton.html", [
@@ -43,6 +47,6 @@ var group__zth__api__cpp__util =
     [ "log_color", "group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a", null ],
     [ "log_colorv", "group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40", null ],
     [ "logv", "group__zth__api__cpp__util.html#gac71cc5442292ba8e2746dcaea59feeef", null ],
-    [ "version", "group__zth__api__cpp__util.html#ga47e7f0ee2498e20da08813db8cdec9f5", null ],
+    [ "version", "group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c", null ],
     [ "ZTH_TLS_DEFINE", "group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb", null ]
 ];

@@ -114,53 +114,53 @@ $(document).ready(function(){initNavTree('main_8cpp_source.html',''); initResiza
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(<a class="code" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber</a>);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">   37</a></span>&#160;__attribute__((weak)) <span class="keywordtype">void</span> <a class="code" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a>() {}</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">   49</a></span>&#160;__attribute__((weak)) <span class="keywordtype">int</span> <a class="code" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a>()</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#ifndef ZTH_OS_WINDOWS</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;__attribute__((weak))</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">   57</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a>();</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(thread, <span class="stringliteral">&quot;main()&quot;</span>);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="classzth_1_1_worker.html">zth::Worker</a> w;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        main_fiber_future f = <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> <a class="code" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber</a>(argc, argv);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        w.<a class="code" href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">run</a>();</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">if</span>(f-&gt;valid())</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            res = f-&gt;value();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(thread, <span class="stringliteral">&quot;main() returns %d&quot;</span>, res);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">int</span> res_post = <a class="code" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a>();</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">// cppcheck-suppress knownConditionTrueFalse</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">if</span>(res_post)</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        res = res_post;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">   38</a></span>&#160;__attribute__((weak)) <span class="keywordtype">void</span> <a class="code" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a>() {}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">   50</a></span>&#160;__attribute__((weak)) <span class="keywordtype">int</span> <a class="code" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a>()</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#ifndef ZTH_OS_WINDOWS</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;__attribute__((weak))</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">   58</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(thread, <span class="stringliteral">&quot;main()&quot;</span>);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">int</span> res = 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="classzth_1_1_worker.html">zth::Worker</a> w;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        main_fiber_future f = <a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> <a class="code" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber</a>(argc, argv);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        w.<a class="code" href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">run</a>();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">if</span>(f-&gt;valid())</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            res = f-&gt;value();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <a class="code" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(thread, <span class="stringliteral">&quot;main() returns %d&quot;</span>, res);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">int</span> res_post = <a class="code" href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a>();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">// cppcheck-suppress knownConditionTrueFalse</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">if</span>(res_post)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        res = res_post;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="amain_8cpp_html_a8013fabbded8b4efe38ede84c104bb1e"><div class="ttname"><a href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber</a></div><div class="ttdeci">int main_fiber(int UNUSED_PAR(argc), char **UNUSED_PAR(argv))</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00022">main.cpp:22</a></div></div>
 <div class="ttc" id="aasync_8h_html"><div class="ttname"><a href="async_8h.html">async.h</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga15bf32dde0718b1eafdcdbc9057d36f7"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a></div><div class="ttdeci">#define zth_dbg(group, fmt, a...)</div><div class="ttdoc">Debug printf()-like function.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00176">util.h:176</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00568">async.h:568</a></div></div>
-<div class="ttc" id="amain_8cpp_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00057">main.cpp:57</a></div></div>
-<div class="ttc" id="aclasszth_1_1_worker_html_a527aca959b9c74845883a294fd1a0256"><div class="ttname"><a href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">zth::Worker::run</a></div><div class="ttdeci">void run(TimeInterval const &amp;duration=TimeInterval())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00312">worker.h:312</a></div></div>
-<div class="ttc" id="amain_8cpp_html_aa42004de097b0282398bd2ca61ea41bc"><div class="ttname"><a href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a></div><div class="ttdeci">void zth_preinit()</div><div class="ttdoc">Initialization function to be called by the default-supplied main(), before doing anything else.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00037">main.cpp:37</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga15bf32dde0718b1eafdcdbc9057d36f7"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a></div><div class="ttdeci">#define zth_dbg(group, fmt, a...)</div><div class="ttdoc">Debug printf()-like function.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00219">util.h:219</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00732">async.h:732</a></div></div>
+<div class="ttc" id="amain_8cpp_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00058">main.cpp:58</a></div></div>
+<div class="ttc" id="aclasszth_1_1_worker_html_a527aca959b9c74845883a294fd1a0256"><div class="ttname"><a href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">zth::Worker::run</a></div><div class="ttdeci">void run(TimeInterval const &amp;duration=TimeInterval())</div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00314">worker.h:314</a></div></div>
+<div class="ttc" id="amain_8cpp_html_aa42004de097b0282398bd2ca61ea41bc"><div class="ttname"><a href="main_8cpp.html#aa42004de097b0282398bd2ca61ea41bc">zth_preinit</a></div><div class="ttdeci">void zth_preinit()</div><div class="ttdoc">Initialization function to be called by the default-supplied main(), before doing anything else.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00038">main.cpp:38</a></div></div>
 <div class="ttc" id="aworker_8h_html"><div class="ttname"><a href="worker_8h.html">worker.h</a></div></div>
 <div class="ttc" id="aclasszth_1_1_worker_html"><div class="ttname"><a href="classzth_1_1_worker.html">zth::Worker</a></div><div class="ttdef"><b>Definition:</b> <a href="worker_8h_source.html#l00044">worker.h:44</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00547">async.h:547</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00711">async.h:711</a></div></div>
 <div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00088">macros.h:88</a></div></div>
-<div class="ttc" id="amain_8cpp_html_a7d24fc446f50e96c30741c5428f94a2a"><div class="ttname"><a href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a></div><div class="ttdeci">int zth_postdeinit()</div><div class="ttdoc">Initialization function to be called by the default-supplied main(), just before shutting down.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00049">main.cpp:49</a></div></div>
+<div class="ttc" id="amain_8cpp_html_a7d24fc446f50e96c30741c5428f94a2a"><div class="ttname"><a href="main_8cpp.html#a7d24fc446f50e96c30741c5428f94a2a">zth_postdeinit</a></div><div class="ttdeci">int zth_postdeinit()</div><div class="ttdoc">Initialization function to be called by the default-supplied main(), just before shutting down.</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00050">main.cpp:50</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

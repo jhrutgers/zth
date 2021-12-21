@@ -18,6 +18,6 @@ var async_8h =
     [ "zth_fiber_define_extern_1", "async_8h.html#a82c868d46d7f90e06b018a8d10287a94", null ],
     [ "zth_fiber_define_static_1", "async_8h.html#a75bb21d40fcb77e3190087d93513ab9a", null ],
     [ "ZTH_TYPEDFIBER98", "async_8h.html#a43337f1be31a98e81e1888320847e6d8", null ],
-    [ "operator<<", "async_8h.html#aafea64122556ec2e7a3e9940e8dce06e", null ],
+    [ "operator<<", "async_8h.html#acfaa577dee7f5b12f4f58baa2c1e33dd", null ],
     [ "zth_fiber_create", "group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3", null ]
 ];

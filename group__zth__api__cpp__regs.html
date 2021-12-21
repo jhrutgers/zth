@@ -146,10 +146,10 @@ Macros</h2></td></tr>
 <div class="line">        struct name : <span class="keyword">public</span> <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> { \</div>
 <div class="line">            typedef <a class="code" href="structzth_1_1_register.html">zth::Register&lt;T, addr, name##__type&gt;</a> base;  \</div>
 <div class="line">            using <span class="keyword">typename</span> base::type;                          \</div>
-<div class="line">            name()                                              \</div>
+<div class="line">            name() noexcept                                     \</div>
 <div class="line">                : base()                                    \</div>
 <div class="line">            {}                                                  \</div>
-<div class="line">            explicit name(type v)                               \</div>
+<div class="line">            constexpr <span class="keyword">explicit</span> name(type v) noexcept            \</div>
 <div class="line">                : base(v)                                   \</div>
 <div class="line">            {}                                                  \</div>
 <div class="line">        };</div>

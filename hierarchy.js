@@ -1,5 +1,11 @@
 var hierarchy =
 [
+    [ "zth::fsm::Callback< T, GuardPollInterval >", "classzth_1_1fsm_1_1_callback.html", [
+      [ "zth::fsm::TypedGuard< T >", "classzth_1_1fsm_1_1_typed_guard.html", null ]
+    ] ],
+    [ "zth::fsm::Callback< T, void >", "classzth_1_1fsm_1_1_callback.html", [
+      [ "zth::fsm::TypedAction< T >", "classzth_1_1fsm_1_1_typed_action.html", null ]
+    ] ],
     [ "zth::impl::ContextBase< Context >", "classzth_1_1impl_1_1_context_base.html", [
       [ "zth::impl::ContextArch< Context >", "classzth_1_1impl_1_1_context_arch.html", [
         [ "zth::Context", "classzth_1_1_context.html", null ]
@@ -33,17 +39,29 @@ var hierarchy =
       ] ]
     ] ],
     [ "zth::map_type< uint64_t, string >", "structzth_1_1map__type.html", null ],
+    [ "zth::fsm::Named<>", "classzth_1_1fsm_1_1_named.html", [
+      [ "zth::fsm::Callback< T, R, false, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01false_00_01true_01_4.html", null ],
+      [ "zth::fsm::Callback< T, R, false, true, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01true_00_01true_01_4.html", null ],
+      [ "zth::fsm::Callback< T, R, true, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01true_00_01false_00_01true_01_4.html", null ]
+    ] ],
     [ "zth::impl::Packed< R >", "structzth_1_1impl_1_1_packed.html", null ],
     [ "zth::SharedPointer< Future< T > >", "classzth_1_1_shared_pointer.html", [
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
     ] ],
     [ "zth::SharedPointer< zth::Future >", "classzth_1_1_shared_pointer.html", null ],
     [ "zth::SortedList< zth::TimedWaitable >", "classzth_1_1_sorted_list.html", null ],
+    [ "std::exception", null, [
+      [ "std::logic_error", null, [
+        [ "zth::fsm::invalid_fsm", "structzth_1_1fsm_1_1invalid__fsm.html", null ]
+      ] ]
+    ] ],
     [ "zth::ThreadLocalSingleton< Worker >", "classzth_1_1_thread_local_singleton.html", [
       [ "zth::Worker", "classzth_1_1_worker.html", null ]
     ] ],
+    [ "zth::vector_type< index_type >", "structzth_1_1vector__type.html", null ],
     [ "zth::vector_type< Input >", "structzth_1_1vector__type.html", null ],
     [ "zth::vector_type< void * >", "structzth_1_1vector__type.html", null ],
+    [ "zth::vector_type< zth::fsm::Symbol >", "structzth_1_1vector__type.html", null ],
     [ "zth::Backtrace", "classzth_1_1_backtrace.html", null ],
     [ "zth::choose_type< T, WhenTIsVoid >", "structzth_1_1choose__type.html", null ],
     [ "zth::choose_type< void, WhenTIsVoid >", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html", null ],
@@ -58,6 +76,30 @@ var hierarchy =
       [ "zth::passOnExit", "classzth_1_1pass_on_exit.html", null ],
       [ "zth::setName", "classzth_1_1set_name.html", null ],
       [ "zth::setStackSize", "classzth_1_1set_stack_size.html", null ]
+    ] ],
+    [ "zth::fsm::Action", "classzth_1_1fsm_1_1_action.html", [
+      [ "zth::fsm::GuardedActionBase", "classzth_1_1fsm_1_1_guarded_action_base.html", [
+        [ "zth::fsm::GuardedAction", "classzth_1_1fsm_1_1_guarded_action.html", null ],
+        [ "zth::fsm::Transition", "classzth_1_1fsm_1_1_transition.html", null ],
+        [ "zth::fsm::TransitionStart", "classzth_1_1fsm_1_1_transition_start.html", null ]
+      ] ],
+      [ "zth::fsm::TypedAction< T >", "classzth_1_1fsm_1_1_typed_action.html", null ]
+    ] ],
+    [ "zth::fsm::Callback< T, R, haveArg, isMember, isOk >", "classzth_1_1fsm_1_1_callback.html", null ],
+    [ "zth::fsm::function_traits< T >", "structzth_1_1fsm_1_1function__traits.html", null ],
+    [ "zth::fsm::Guard", "classzth_1_1fsm_1_1_guard.html", [
+      [ "zth::fsm::GuardedActionBase", "classzth_1_1fsm_1_1_guarded_action_base.html", null ],
+      [ "zth::fsm::InputGuard", "classzth_1_1fsm_1_1_input_guard.html", null ],
+      [ "zth::fsm::TypedGuard< T >", "classzth_1_1fsm_1_1_typed_guard.html", null ]
+    ] ],
+    [ "zth::fsm::Named< enable >", "classzth_1_1fsm_1_1_named.html", null ],
+    [ "zth::fsm::Named< false >", "classzth_1_1fsm_1_1_named_3_01false_01_4.html", [
+      [ "zth::fsm::Named< true >", "classzth_1_1fsm_1_1_named_3_01true_01_4.html", null ]
+    ] ],
+    [ "zth::fsm::Symbol", "classzth_1_1fsm_1_1_symbol.html", null ],
+    [ "zth::fsm::Transitions< Size >::CompiledTransition", "structzth_1_1fsm_1_1_transitions_1_1_compiled_transition.html", null ],
+    [ "zth::fsm::TransitionsBase", "classzth_1_1fsm_1_1_transitions_base.html", [
+      [ "zth::fsm::Transitions< Size >", "classzth_1_1fsm_1_1_transitions.html", null ]
     ] ],
     [ "zth::FsmCompiler< Fsm >", "classzth_1_1_fsm_compiler.html", null ],
     [ "zth::FsmDescription< Fsm >", "structzth_1_1_fsm_description.html", null ],
@@ -103,9 +145,15 @@ var hierarchy =
     [ "zth::Sequence<... >", "structzth_1_1_sequence.html", null ],
     [ "zth::SharedPointer< T >", "classzth_1_1_shared_pointer.html", null ],
     [ "zth::Singleton< T >", "classzth_1_1_singleton.html", null ],
+    [ "zth::smallest_uint< x, smallest_uint_size< 1 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html", null ],
+    [ "zth::smallest_uint< x, smallest_uint_size< 2 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4.html", null ],
+    [ "zth::smallest_uint< x, smallest_uint_size< 4 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4.html", null ],
+    [ "zth::smallest_uint_size< size >", "structzth_1_1smallest__uint__size.html", null ],
     [ "zth::SortedList< T, Compare >", "classzth_1_1_sorted_list.html", null ],
     [ "zth::ThreadLocalSingleton< T >", "classzth_1_1_thread_local_singleton.html", null ],
-    [ "zth::TimeInterval", "classzth_1_1_time_interval.html", null ],
+    [ "zth::TimeInterval", "classzth_1_1_time_interval.html", [
+      [ "zth::fsm::GuardPollInterval", "classzth_1_1fsm_1_1_guard_poll_interval.html", null ]
+    ] ],
     [ "zth::Timestamp", "classzth_1_1_timestamp.html", null ],
     [ "zth::TypedFiberFactory< F >", "classzth_1_1_typed_fiber_factory.html", null ],
     [ "zth::TypedFiberType< F >", "structzth_1_1_typed_fiber_type.html", null ],
@@ -114,6 +162,9 @@ var hierarchy =
     [ "zth::UniqueIDBase", "classzth_1_1_unique_i_d_base.html", [
       [ "zth::UniqueID< Fiber >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fiber", "classzth_1_1_fiber.html", null ]
+      ] ],
+      [ "zth::UniqueID< Fsm >", "classzth_1_1_unique_i_d.html", [
+        [ "zth::fsm::Fsm", "classzth_1_1fsm_1_1_fsm.html", null ]
       ] ],
       [ "zth::UniqueID< Fsm< void, void, void > >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [
