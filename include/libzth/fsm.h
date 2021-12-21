@@ -746,8 +746,8 @@ public:
 	typedef CallbackArg_ CallbackArg;
 	typedef void (*Callback)(FsmCallback&, CallbackArg);
 
-	// cppcheck-suppress constParameter
 	FsmCallback(
+		// cppcheck-suppress constParameter
 		typename base::Compiler const& compiler, Callback callback, CallbackArg callbackArg,
 		char const* name = "FSM")
 		: base(compiler, name)
@@ -755,9 +755,9 @@ public:
 		, m_callbackArg(callbackArg)
 	{}
 
-	// cppcheck-suppress passedByValue
-	// cppcheck-suppress constParameter
 	FsmCallback(
+		// cppcheck-suppress passedByValue
+		// cppcheck-suppress constParameter
 		typename base::Description description, Callback callback, CallbackArg callbackArg,
 		char const* name = "FSM")
 		: base(description, name)
@@ -808,8 +808,8 @@ public:
 		, m_callback(callback)
 	{}
 
-	// cppcheck-suppress passedByValue
 	explicit FsmCallback(
+		// cppcheck-suppress passedByValue
 		typename base::Description description, Callback callback = nullptr,
 		char const* name = "FSM")
 		: base(description, name)

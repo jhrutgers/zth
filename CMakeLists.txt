@@ -371,6 +371,8 @@ if(CPPCHECK_CMD)
 			src
 			examples
 			tests
+			-i tests/test_fsm14.cpp
+			-i tests/test_fsm17.cpp
 #			--check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
