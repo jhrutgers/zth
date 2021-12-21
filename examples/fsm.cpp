@@ -1,3 +1,6 @@
+// This example uses the old and deprecated FSM implementation.  See fsm14.cpp
+// for the improved one.
+
 // This example does not work on Windows, as Windows does not support poll()ing
 // stdin. And the ANSI console might be troubling.
 
