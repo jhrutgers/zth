@@ -27,9 +27,46 @@
 #define ZTH_VERSION_SUFFIX "@ZTH_VERSION_SUFFIX@"
 // clang-format on
 
+/*!
+ * \def ZTH_VERSION_MAJOR
+ * \brief Zth major version as int
+ * \ingroup zth_api_cpp_util
+ */
+/*!
+ * \def ZTH_VERSION_MINOR
+ * \brief Zth minor version as int
+ * \ingroup zth_api_cpp_util
+ */
+/*!
+ * \def ZTH_VERSION_PATCH
+ * \brief Zth patch version as int
+ * \ingroup zth_api_cpp_util
+ */
+/*!
+ * \def ZTH_VERSION_SUFFIX
+ * \brief Zth version suffix as string literal
+ * \ingroup zth_api_cpp_util
+ */
+
+/*!
+ * \brief Zth version as string literal
+ * \ingroup zth_api_cpp_util
+ * \hideinitializer
+ */
 #define ZTH_VERSION                      \
 	ZTH_STRINGIFY(ZTH_VERSION_MAJOR) \
 	"." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
+
+/*!
+ * \brief Zth version as number.
+ *
+ * The format is the decimal value \c MMmmpp, where \c MM is the major version, \c mm
+ * the minor, and \c pp the patch version.  The suffix is not included.
+ *
+ * \ingroup zth_api_cpp_util
+ * \hideinitializer
+ */
+#define ZTH_VERSION_NUM ZTH_VERSION_MAJOR * 10000 + ZTH_VERSION_MINOR * 100 + ZTH_VERSION_PATH
 
 #ifdef __cplusplus
 namespace zth {
