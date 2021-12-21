@@ -833,8 +833,9 @@ protected:
 private:
 	pointer_type* m_p;
 };
-#	else // _DEBUG
-	      // No checking, use use the pointer.
+#	else  // _DEBUG
+
+// No checking, use use the pointer.
 template <typename T>
 class safe_ptr {
 public:
@@ -1333,23 +1334,24 @@ struct smallest_uint_size {};
 
 template <
 	uint64_t x,
-	typename size = smallest_uint_size<x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U> /**/>
+	typename size = smallest_uint_size<
+		x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U> /**/>
 struct smallest_uint {
 	typedef uint64_t type;
 };
 
 template <uint64_t x>
-struct smallest_uint<x, smallest_uint_size<1> /**/ > {
+struct smallest_uint<x, smallest_uint_size<1> /**/> {
 	typedef uint8_t type;
 };
 
 template <uint64_t x>
-struct smallest_uint<x, smallest_uint_size<2> /**/ > {
+struct smallest_uint<x, smallest_uint_size<2> /**/> {
 	typedef uint16_t type;
 };
 
 template <uint64_t x>
-struct smallest_uint<x, smallest_uint_size<4> /**/ > {
+struct smallest_uint<x, smallest_uint_size<4> /**/> {
 	typedef uint32_t type;
 };
 
