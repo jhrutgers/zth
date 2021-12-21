@@ -317,8 +317,19 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void log(char c
 	va_end(args);
 }
 
+/*!
+ * \brief std::string type using Config::Allocator::type.
+ * \ingroup zth_api_cpp_util
+ */
 typedef std::basic_string<char, std::char_traits<char>, Config::Allocator<char>::type> string;
 
+/*!
+ * \brief Copy-on-write string.
+ *
+ * It holds either a pointer to the a \c const \c char array, or a string
+ * instance.  So, it is cheap for string literals, avoids duplicating these
+ * into std::string, but still allows to do so when required.
+ */
 class cow_string {
 public:
 	cow_string()
@@ -487,7 +498,7 @@ __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline string format(char const* 
 }
 
 /*!
- * \brief Returns an \c zth::string() representation of the given value.
+ * \brief Returns an \c zth::string representation of the given value.
  * \details Specialize for your own types.
  */
 template <typename T>

@@ -343,6 +343,7 @@ private:
 };
 
 /*!
+ * \brief Fiber-aware mutex.
  * \ingroup zth_api_cpp_sync
  */
 class Mutex : public Synchronizer {
@@ -392,6 +393,7 @@ private:
 };
 
 /*!
+ * \brief Fiber-aware semaphore.
  * \ingroup zth_api_cpp_sync
  */
 class Semaphore : public Synchronizer {
@@ -457,6 +459,7 @@ private:
 };
 
 /*!
+ * \brief Fiber-aware signal.
  * \ingroup zth_api_cpp_sync
  */
 class Signal : public Synchronizer {
@@ -541,6 +544,7 @@ private:
 };
 
 /*!
+ * \brief Fiber-aware future.
  * \ingroup zth_api_cpp_sync
  */
 template <typename T = void>
@@ -755,6 +759,10 @@ private:
 	bool m_valid;
 };
 
+/*!
+ * \brief Fiber-aware barrier/gate.
+ * \ingroup zth_api_cpp_sync
+ */
 class Gate : public Synchronizer {
 	ZTH_CLASS_NEW_DELETE(Gate)
 public:

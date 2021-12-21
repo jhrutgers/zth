@@ -195,6 +195,9 @@ public:
 
 class PollerServerBase;
 
+/*!
+ * \brief A single fiber per Worker that manages sleeping and blocked fibers.
+ */
 class Waiter : public Runnable {
 	ZTH_CLASS_NEW_DELETE(Waiter)
 public:
@@ -230,11 +233,13 @@ private:
 };
 
 /*!
+ * \brief Wait until the given Waitable has passed.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT void waitUntil(TimedWaitable& w);
 
 /*!
+ * \brief Wait until the given function \p f returns \c true.
  * \ingroup zth_api_cpp_fiber
  */
 template <typename F>
@@ -245,6 +250,7 @@ void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
 }
 
 /*!
+ * \brief Wait until the given member function \p f returns \c true.
  * \ingroup zth_api_cpp_fiber
  */
 template <typename C>
@@ -259,6 +265,7 @@ void unscheduleTask(TimedWaitable& w);
 void wakeup(TimedWaitable& w);
 
 /*!
+ * \brief Sleep until the given time stamp.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void nap(Timestamp const& sleepUntil)
@@ -268,6 +275,7 @@ ZTH_EXPORT inline void nap(Timestamp const& sleepUntil)
 }
 
 /*!
+ * \brief Sleep for the given time interval.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void nap(TimeInterval const& sleepFor)
@@ -277,6 +285,7 @@ ZTH_EXPORT inline void nap(TimeInterval const& sleepFor)
 }
 
 /*!
+ * \brief Sleep for the given amount of milliseconds.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void mnap(long sleepFor_ms)
@@ -285,6 +294,7 @@ ZTH_EXPORT inline void mnap(long sleepFor_ms)
 }
 
 /*!
+ * \brief Sleep for the given amount of microseconds.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void unap(long sleepFor_us)

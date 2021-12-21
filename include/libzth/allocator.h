@@ -46,7 +46,7 @@ __attribute__((warn_unused_result, returns_nonnull)) static inline T* allocate(s
  * \brief Wrapper for Config::Allocator::type::allocate().
  *
  * Does not throw \c std::bad_alloc upon allocation failure.
- * Instead, it returns null.
+ * Instead, it returns \c nullptr.
  *
  * \ingroup zth_api_cpp_util
  */
@@ -134,17 +134,29 @@ static inline void delete_alloc(T* p) noexcept
                                                                     \
 	private:
 
+/*!
+ * \brief \c std::vector type using Config::Allocator::type.
+ * \ingroup zth_api_cpp_util
+ */
 template <typename T>
 struct vector_type {
 	typedef std::vector<T, typename Config::Allocator<T>::type> type;
 };
 
+/*!
+ * \brief \c std::map type using Config::Allocator::type.
+ * \ingroup zth_api_cpp_util
+ */
 template <typename Key, typename T, typename Compare = std::less<Key> /**/>
 struct map_type {
 	typedef std::map<Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
 		type;
 };
 
+/*!
+ * \brief \c std::list type using Config::Allocator::type.
+ * \ingroup zth_api_cpp_util
+ */
 template <typename T>
 struct list_type {
 	typedef std::list<T, typename Config::Allocator<T>::type> type;

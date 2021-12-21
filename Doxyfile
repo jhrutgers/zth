@@ -226,7 +226,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # uses this value to replace tabs by spaces in code fragments.
 # Minimum value: 1, maximum value: 16, default value: 4.
 
-TAB_SIZE               = 4
+TAB_SIZE               = 8
 
 # This tag can be used to specify a number of aliases that act as commands in
 # the documentation. An alias has the form:
@@ -598,7 +598,7 @@ SORT_MEMBERS_CTORS_1ST = NO
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -796,7 +796,9 @@ INPUT                  = include \
                          src \
 			 examples/examples.doxygen \
 			 dist/qemu-arm-a15/README-ARM.md \
-			 README.md
+			 README.md \
+			 CHANGELOG.md \
+
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -2064,6 +2066,7 @@ PREDEFINED             = DOXYGEN \
 			 EXTERN_C= \
 			 ZTH_HAVE_POLL \
 			 ZTH_HAVE_LIBZMQ \
+			 inline17=inline \
 
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
@@ -2078,6 +2081,12 @@ EXPAND_AS_DEFINED      = is_default \
 			 constexpr14 \
 			 inline17 \
 			 deprecated14 \
+			 UNUSED_PAR \
+			 ZTH_TLS_DECLARE \
+			 ZTH_TLS_DEFINE \
+			 ZTH_TLS_STATIC \
+			 ZTH_TLS_MEMBER \
+			 ZTH_ATTR_PRINTF \
 
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will

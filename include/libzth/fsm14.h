@@ -150,6 +150,10 @@ struct function_traits<R (C::*)(A) const noexcept> : function_traits_detail<R, C
 
 class Fsm;
 
+/*!
+ * \brief Exception thrown when the FSM description is incorrect.
+ * \ingroup zth_api_cpp_fsm14
+ */
 struct invalid_fsm : public std::logic_error {
 	explicit invalid_fsm(char const* str)
 		: std::logic_error{str}
@@ -157,6 +161,10 @@ struct invalid_fsm : public std::logic_error {
 };
 
 /*!
+ * \brief A input/state symbol.
+ *
+ * This is wrapper for a string literal.
+ *
  * \ingroup zth_api_cpp_fsm14
  */
 class Symbol {
@@ -234,6 +242,7 @@ private:
 };
 
 /*!
+ * \brief Literal suffix to convert a string literal to #zth::fsm::Symbol.
  * \ingroup zth_api_cpp_fsm14
  */
 constexpr Symbol operator""_S(char const* s, size_t UNUSED_PAR(len)) noexcept
@@ -242,6 +251,7 @@ constexpr Symbol operator""_S(char const* s, size_t UNUSED_PAR(len)) noexcept
 }
 
 /*!
+ * \brief A state within the FSM.
  * \ingroup zth_api_cpp_fsm14
  */
 using State = Symbol;
@@ -466,6 +476,32 @@ private:
 };
 
 /*!
+ * \brief Create a guard from a function.
+ *
+ * The supported types are:
+ *
+ * - function pointer: <tt>R (*)(A)</tt>
+ * - member function pointer: <tt>R (C::*)()</tt>
+ * - const member function pointer <tt>R (C::*)() const</tt>
+ * - lambda (C++17 when used in a \c constexpr): <tt>[...](A) -> R {...}</tt>
+ *
+ * The return type R must be \c bool or zth::TimeInterval.  The TimeInterval
+ * indicates the time until the guard may become enabled and should be checked
+ * again.  When the interval is 0 or negative, the guard is supposed to be
+ * enabled.
+ *
+ * In case the return type is \c bool, \c false is equivalent to a time
+ * interval of 0.  \c true is equivalent to an infinite time interval.
+ *
+ * The argument A may be omitted. If provided, it must be zth::fsm::Fsm&, or a
+ * reference to the actual subclass type of zth::fsm::Fsm.
+ *
+ * The class type C must be zth::fsm::Fsm, or the type of the subclass of
+ * zth::fsm::Fsm. The member function does not have to be static.
+ *
+ * For C++17 and higher, these function can also be \c noexcept.
+ *
+ * \return a Guard object, to be used in the FSM transitions description.
  * \ingroup zth_api_cpp_fsm14
  */
 template <typename T>
@@ -475,6 +511,14 @@ constexpr auto guard(T&& g, char const* name = nullptr)
 }
 
 /*!
+ * \brief Create a guard from a input symbol.
+ *
+ * Using \c input("symbol") is usually better than \c guard("symbol").
+ * However, you can create a \c constexpr guard using this function, while
+ * input() only returns a temporary object.
+ *
+ * \return a Guard object, to be used in the FSM transitions description.
+ * \see input(Symbol&&)
  * \ingroup zth_api_cpp_fsm14
  */
 constexpr inline auto guard(Symbol&& input) noexcept
@@ -488,7 +532,9 @@ inline bool always_guard() noexcept
 }
 
 /*!
+ * \brief Trivial guard that is always enabled.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
 // This could be solved simply by using [](){ return true; } as function, but
 // using lambda in constexpr is only allowed since C++17. So, use the separate
@@ -501,7 +547,9 @@ inline bool never_guard() noexcept
 }
 
 /*!
+ * \brief Trivial guard that is never enabled.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
 inline17 constexpr auto never = guard(never_guard, "never");
 
@@ -555,6 +603,24 @@ public:
 };
 
 /*!
+ * \brief Create an action from a function.
+ *
+ * The supported types are:
+ *
+ * - function pointer: <tt>void (*)(A)</tt>
+ * - member function pointer: <tt>void (C::*)()</tt>
+ * - const member function pointer <tt>void (C::*)() const</tt>
+ * - lambda (C++17 when used in a \c constexpr): <tt>[...](A) {...}</tt>
+ *
+ * The argument A may be omitted. If provided, it must be zth::fsm::Fsm&, or a
+ * reference to the actual subclass type of zth::fsm::Fsm.
+ *
+ * The class type C must be zth::fsm::Fsm, or the type of the subclass of
+ * zth::fsm::Fsm. The member function does not have to be static.
+ *
+ * For C++17 and higher, these function can also be \c noexcept.
+ *
+ * \return an Action object, to be used in the FSM transitions description.
  * \ingroup zth_api_cpp_fsm14
  */
 template <typename T>
@@ -566,7 +632,9 @@ constexpr auto action(T&& a, char const* name = nullptr)
 inline void nothing_action() {}
 
 /*!
+ * \brief Trivial action that does nothing.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
 inline17 constexpr auto nothing = action(nothing_action, "nothing");
 
@@ -680,6 +748,12 @@ constexpr inline auto operator+(Symbol&& input) noexcept
 }
 
 /*!
+ * \brief Create a guard from an input symbol.
+ *
+ * This function returns a temporary, while \c guard("symbol") returns an
+ * object that can be \c constexpr.
+ *
+ * \see guard(Symbol&&)
  * \ingroup zth_api_cpp_fsm14
  */
 constexpr inline auto input(Symbol&& symbol) noexcept
@@ -1168,6 +1242,8 @@ private:
 };
 
 /*!
+ * \brief Compile a transition description.
+ *
  * \ingroup zth_api_cpp_fsm14
  */
 template <typename... T>
@@ -1177,6 +1253,11 @@ constexpr auto compile(T&&... t)
 }
 
 /*!
+ * \brief FSM base class.
+ *
+ * If you want to hold some state in the FSM, inherit this class.  A reference
+ * to your inherited class can be passed to the guard and action functions.
+ *
  * \ingroup zth_api_cpp_fsm14
  */
 class Fsm : public UniqueID<Fsm> {
@@ -1607,53 +1688,81 @@ private:
 };
 
 /*!
+ * \brief Guard that is only enabled upon entry of a state.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto entry = guard(&Fsm::entryGuard, "entry");
+inline17 constexpr auto entry = guard(&Fsm::entryGuard, "entry");
 
 /*!
+ * \brief Action to push the new state onto the stack.
+ * \see pop
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto push = action(&Fsm::push, "push");
+inline17 constexpr auto push = action(&Fsm::push, "push");
 
 /*!
+ * \brief Action to pop the current state from the stack.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto pop = action(&Fsm::pop, "pop");
+inline17 constexpr auto pop = action(&Fsm::pop, "pop");
 
 /*!
+ * \brief Guard to indicate that the current state was reached via \c pop.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto popped = guard(&Fsm::popped, "popped");
+inline17 constexpr auto popped = guard(&Fsm::popped, "popped");
 
 /*!
+ * \brief Action to return from Fsm::run().
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto stop = action(&Fsm::stop, "stop");
+inline17 constexpr auto stop = action(&Fsm::stop, "stop");
 
 /*!
+ * \brief Action consume the current input symbol.
+ *
+ * Usually, combined with the \c input guard. When a transition is taken
+ * because of an input symbol, remove that symbol from the list of inputs
+ * symbol.  If \c consume is not used, the symbol guard will be enabled again
+ * the next evaluation of the guards.
+ *
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-inline17 static constexpr auto consume =
+inline17 constexpr auto consume =
 	action<void (Fsm::*)() noexcept>(&Fsm::clearInput, "consume");
 
 /*!
+ * \brief A guard that is enabled after a \p s seconds after entering the
+ *	current state.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
 template <time_t s>
-inline17 static constexpr auto timeout_s = guard(&Fsm::timeoutGuard_s<s>, "timeout");
+inline17 constexpr auto timeout_s = guard(&Fsm::timeoutGuard_s<s>, "timeout");
 
 /*!
+ * \brief A guard that is enabled after a \p ms milliseconds after entering the
+ *	current state.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-template <time_t ms>
-inline17 static constexpr auto timeout_ms = guard(&Fsm::timeoutGuard_ms<ms>, "timeout");
+template <uint64_t ms>
+inline17 constexpr auto timeout_ms = guard(&Fsm::timeoutGuard_ms<ms>, "timeout");
 
 /*!
+ * \brief A guard that is enabled after a \p us microseconds after entering the
+ *	current state.
  * \ingroup zth_api_cpp_fsm14
+ * \hideinitializer
  */
-template <time_t us>
-inline17 static constexpr auto timeout_us = guard(&Fsm::timeoutGuard_us<us>, "timeout");
+template <uint64_t us>
+inline17 constexpr auto timeout_us = guard(&Fsm::timeoutGuard_us<us>, "timeout");
 
 inline GuardPollInterval InputGuard::enabled(Fsm& fsm) const
 {

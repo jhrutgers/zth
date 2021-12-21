@@ -41,6 +41,7 @@
  *	returns, the previous stack is restored.
  * \param arg the argument to pass to \p f.
  * \ingroup zth_api_c_stack
+ * \hideinitializer
  */
 #ifdef ZTH_STACK_SWITCH
 EXTERN_C ZTH_EXPORT void*

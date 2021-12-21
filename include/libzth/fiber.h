@@ -535,8 +535,8 @@ private:
 
 __attribute__((pure)) Fiber& currentFiber() noexcept;
 
-// fiber-local storage
 /*!
+ * \brief Return the fiber-local storage, as set by setFls().
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void* fls() noexcept
@@ -545,6 +545,10 @@ ZTH_EXPORT inline void* fls() noexcept
 }
 
 /*!
+ * \brief Set the fiber-local storage.
+ *
+ * This is just like thread-local storage, but per fiber.
+ *
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void setFls(void* data = nullptr) noexcept

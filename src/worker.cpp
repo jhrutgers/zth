@@ -68,6 +68,7 @@ static void* worker_main(void* fiber)
 #endif
 
 /*!
+ * \brief Start a new thread, create a Worker, with one fiber, which executes \p f.
  * \ingroup zth_api_cpp_fiber
  */
 int startWorkerThread(
@@ -98,30 +99,37 @@ int startWorkerThread(
 }
 
 /*!
+ * \brief Start an external program.
  * \ingroup zth_api_cpp_fiber
  */
 int execlp(char const* file, char const* arg, ... /*, nullptr */)
 {
-	std::vector<char*> argv;
+	small_vector<char*,8> argv;
 	int res = 0;
 
-	va_list args;
-	va_start(args, arg);
-	while(true) {
-		char const* a = va_arg(args, char const*);
-		if(!a) {
-			argv.push_back(nullptr);
-			break;
-		} else {
-			char* argcopy = strdup(a);
-			if(!argcopy) {
-				res = ENOMEM;
+	try {
+		va_list args;
+		va_start(args, arg);
+		while(true) {
+			char const* a = va_arg(args, char const*);
+			if(!a) {
+				argv.push_back(nullptr);
 				break;
+			} else {
+				char* argcopy = strdup(a);
+				if(!argcopy) {
+					res = ENOMEM;
+					break;
+				}
+				argv.push_back(argcopy);
 			}
-			argv.push_back(argcopy);
 		}
+		va_end(args);
+	} catch(std::bad_alloc const&) {
+		res = ENOMEM;
+	} catch(...) {
+		res = EAGAIN;
 	}
-	va_end(args);
 
 	if(!res)
 		res = execvp(file, &argv[0]);
@@ -150,6 +158,7 @@ __attribute__((unused)) static cow_string thread_id_str() noexcept
 }
 
 /*!
+ * \brief Start an external program.
  * \ingroup zth_api_cpp_fiber
  */
 int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
@@ -166,6 +175,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 		execve(file, arg, environ);
 		// If we get here, we could not create the process.
 		_exit(127);
+		// Unreachable.
 		return EAGAIN;
 	} else if(pid == -1) {
 		int res = errno;
