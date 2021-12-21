@@ -55,6 +55,7 @@ var namespacezth =
     [ "SharedPointer", "classzth_1_1_shared_pointer.html", "classzth_1_1_shared_pointer" ],
     [ "Signal", "classzth_1_1_signal.html", "classzth_1_1_signal" ],
     [ "Singleton", "classzth_1_1_singleton.html", "classzth_1_1_singleton" ],
+    [ "small_vector", "classzth_1_1small__vector.html", "classzth_1_1small__vector" ],
     [ "smallest_uint< x, smallest_uint_size< 1 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4" ],
     [ "smallest_uint< x, smallest_uint_size< 2 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4.html", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4" ],
     [ "smallest_uint< x, smallest_uint_size< 4 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4.html", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4" ],

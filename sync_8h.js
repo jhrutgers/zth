@@ -5,7 +5,6 @@ var sync_8h =
     [ "Synchronizer", "classzth_1_1_synchronizer.html", "classzth_1_1_synchronizer" ],
     [ "AlarmClock", "classzth_1_1_synchronizer_1_1_alarm_clock.html", "classzth_1_1_synchronizer_1_1_alarm_clock" ],
     [ "Future< void >", "classzth_1_1_future_3_01void_01_4.html", "classzth_1_1_future_3_01void_01_4" ],
-    [ "Gate", "classzth_1_1_gate.html", "classzth_1_1_gate" ],
     [ "zth_mutex_t", "structzth__mutex__t.html", "structzth__mutex__t" ],
     [ "zth_sem_t", "structzth__sem__t.html", "structzth__sem__t" ],
     [ "zth_cond_t", "structzth__cond__t.html", "structzth__cond__t" ],

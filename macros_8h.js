@@ -7,7 +7,6 @@ var macros_8h =
     [ "catch", "macros_8h.html#a1a4911274ef84e9a3efa3471b7d9d0e7", null ],
     [ "constexpr14", "macros_8h.html#a0a172b0db40332b6081c93580d08e926", null ],
     [ "GCC_VERSION", "macros_8h.html#adbba0f726fc66d7100916c683b7568ae", null ],
-    [ "inline17", "macros_8h.html#a06c5c1ce03bb124de677e60f3b5ea6bd", null ],
     [ "is_default", "macros_8h.html#a5e97f6533b7a0a1e8b49c4cea10f75fc", null ],
     [ "LREF_QUALIFIED", "macros_8h.html#aa6a85894eeb4da52b3246f67465d9897", null ],
     [ "try", "macros_8h.html#a28599e8ac99ea9faff60a2258a914aee", null ],

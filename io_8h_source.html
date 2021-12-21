@@ -111,8 +111,8 @@ $(document).ready(function(){initNavTree('io_8h_source.html',''); initResizable(
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#if defined(ZTH_HAVE_POLLER)</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#   if !defined(ZTH_OS_WINDOWS)</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#       if defined(__cplusplus)</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#       if !defined(ZTH_OS_WINDOWS)</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#               if defined(__cplusplus)</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespacezth_1_1io.html">   39</a></span>&#160;<span class="keyword">namespace </span>io {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
@@ -124,20 +124,20 @@ $(document).ready(function(){initNavTree('io_8h_source.html',''); initResizable(
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f">   52</a></span>&#160;EXTERN_C ZTH_EXPORT <a class="code" href="macros_8h.html#acfc3fd1dcd2b69aa2a262b9722a6b408">ZTH_INLINE</a> ssize_t <a class="code" href="group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f">zth_read</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span>* buf, <span class="keywordtype">size_t</span> count)</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;{</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(fd, buf, count);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(fd, buf, count);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="group__zth__api__c__io.html#ga712a40cb189624bba1a78231f40c7706">   62</a></span>&#160;EXTERN_C ZTH_EXPORT <a class="code" href="macros_8h.html#acfc3fd1dcd2b69aa2a262b9722a6b408">ZTH_INLINE</a> ssize_t <a class="code" href="group__zth__api__c__io.html#ga712a40cb189624bba1a78231f40c7706">zth_write</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span> <span class="keyword">const</span>* buf, <span class="keywordtype">size_t</span> count)</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a>(fd, buf, count);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__io.html#gab8f38dcb165392992ecd0b64b33511a1">zth::io::write</a>(fd, buf, count);</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#       else  // !__cplusplus</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#               else  // !__cplusplus</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;ZTH_EXPORT ssize_t <a class="code" href="group__zth__api__c__io.html#ga6492b86f0888871a4cd4c642de61418f">zth_read</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span>* buf, <span class="keywordtype">size_t</span> count);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;ZTH_EXPORT ssize_t <a class="code" href="group__zth__api__c__io.html#ga712a40cb189624bba1a78231f40c7706">zth_write</a>(<span class="keywordtype">int</span> fd, <span class="keywordtype">void</span> <span class="keyword">const</span>* buf, <span class="keywordtype">size_t</span> count);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#       endif // __cplusplus</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#   endif          // !ZTH_OS_WINDOWS</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif             // ZTH_HAVE_POLLER</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#               endif // __cplusplus</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#       endif          // !ZTH_OS_WINDOWS</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif                 // ZTH_HAVE_POLLER</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif // ZTH_IO_H</span></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -94,28 +94,40 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a function as a new fiber.  <a href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">More...</a><br /></td></tr>
 <tr class="separator:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b578f30f3ceec104610c0c897ec1816"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga5b578f30f3ceec104610c0c897ec1816">zth_fls</a> () noexcept</td></tr>
+<tr class="memdesc:ga5b578f30f3ceec104610c0c897ec1816"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>.  <a href="group__zth__api__c__fiber.html#ga5b578f30f3ceec104610c0c897ec1816">More...</a><br /></td></tr>
 <tr class="separator:ga5b578f30f3ceec104610c0c897ec1816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga68fd0b4dcefb34729245ce76495d86e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga68fd0b4dcefb34729245ce76495d86e8">zth_setFls</a> (void *data=nullptr) noexcept</td></tr>
+<tr class="memdesc:ga68fd0b4dcefb34729245ce76495d86e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the fiber-local storage.  <a href="group__zth__api__c__fiber.html#ga68fd0b4dcefb34729245ce76495d86e8">More...</a><br /></td></tr>
 <tr class="separator:ga68fd0b4dcefb34729245ce76495d86e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee470e41130a5f578d7ca93fa0941a3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e">zth_nap</a> (struct timespec const *ts)</td></tr>
+<tr class="memdesc:gaee470e41130a5f578d7ca93fa0941a3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given time interval.  <a href="group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e">More...</a><br /></td></tr>
 <tr class="separator:gaee470e41130a5f578d7ca93fa0941a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62acef9238b55fb880a8ee3123df21a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5">zth_mnap</a> (long sleepFor_ms)</td></tr>
+<tr class="memdesc:ga62acef9238b55fb880a8ee3123df21a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of milliseconds.  <a href="group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5">More...</a><br /></td></tr>
 <tr class="separator:ga62acef9238b55fb880a8ee3123df21a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2">zth_unap</a> (long sleepFor_us)</td></tr>
+<tr class="memdesc:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of microseconds.  <a href="group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2">More...</a><br /></td></tr>
 <tr class="separator:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacfff3a2efab90861d66fff515a8f126c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gacfff3a2efab90861d66fff515a8f126c">zth_yield</a> () noexcept</td></tr>
+<tr class="memdesc:gacfff3a2efab90861d66fff515a8f126c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow a context switch.  <a href="group__zth__api__c__fiber.html#gacfff3a2efab90861d66fff515a8f126c">More...</a><br /></td></tr>
 <tr class="separator:gacfff3a2efab90861d66fff515a8f126c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2749b94d2c18d73e39af1ca929413011"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga2749b94d2c18d73e39af1ca929413011">zth_outOfWork</a> () noexcept</td></tr>
+<tr class="memdesc:ga2749b94d2c18d73e39af1ca929413011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Force a context switch.  <a href="group__zth__api__c__fiber.html#ga2749b94d2c18d73e39af1ca929413011">More...</a><br /></td></tr>
 <tr class="separator:ga2749b94d2c18d73e39af1ca929413011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4ed18f333dde96ac1285ee029cb2f509"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509">zth_worker_create</a> () noexcept</td></tr>
+<tr class="memdesc:ga4ed18f333dde96ac1285ee029cb2f509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Worker.  <a href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509">More...</a><br /></td></tr>
 <tr class="separator:ga4ed18f333dde96ac1285ee029cb2f509"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab9e56f45832989b04507917fe520ca23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gab9e56f45832989b04507917fe520ca23">zth_worker_run</a> (struct timespec const *ts=nullptr) noexcept</td></tr>
+<tr class="memdesc:gab9e56f45832989b04507917fe520ca23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the worker for the given amount of time.  <a href="group__zth__api__c__fiber.html#gab9e56f45832989b04507917fe520ca23">More...</a><br /></td></tr>
 <tr class="separator:gab9e56f45832989b04507917fe520ca23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3c39836dab4730f8cd13e6714deba783"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga3c39836dab4730f8cd13e6714deba783">zth_worker_destroy</a> () noexcept</td></tr>
+<tr class="memdesc:ga3c39836dab4730f8cd13e6714deba783"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanup the worker.  <a href="group__zth__api__c__fiber.html#ga3c39836dab4730f8cd13e6714deba783">More...</a><br /></td></tr>
 <tr class="separator:ga3c39836dab4730f8cd13e6714deba783"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5d642b95d4322b753639b1d3382af1be"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga5d642b95d4322b753639b1d3382af1be">zth_startWorkerThread</a> (void(*f)(), size_t stack=0, char const *name=nullptr) noexcept</td></tr>
+<tr class="memdesc:ga5d642b95d4322b753639b1d3382af1be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start a new thread, create a Worker, with one fiber, which executes <code>f</code>.  <a href="group__zth__api__c__fiber.html#ga5d642b95d4322b753639b1d3382af1be">More...</a><br /></td></tr>
 <tr class="separator:ga5d642b95d4322b753639b1d3382af1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga55027710aee632bb2d78893ba6c37afa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga55027710aee632bb2d78893ba6c37afa">zth_execvp</a> (char const *file, char *const arg[]) noexcept</td></tr>
+<tr class="memdesc:ga55027710aee632bb2d78893ba6c37afa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start an external program.  <a href="group__zth__api__c__fiber.html#ga55027710aee632bb2d78893ba6c37afa">More...</a><br /></td></tr>
 <tr class="separator:ga55027710aee632bb2d78893ba6c37afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -154,10 +166,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="namespacezth.html#a969db1279d63d0e4ee66a1e2e56e6917">zth::execvp()</a>. </p>
+<p>Start an external program. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gace10a072a53ecfc4db384c7301c5e7aa" title="Start an external program.">zth::execvp()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00552">552</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00576">576</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -238,10 +250,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891">zth::fls()</a>. </p>
+<p>Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891" title="Return the fiber-local storage, as set by setFls().">zth::fls()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00562">562</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00566">566</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -261,10 +273,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap()</a>. </p>
+<p>Sleep for the given amount of milliseconds. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152" title="Sleep for the given amount of milliseconds.">zth::mnap()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00409">409</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00419">419</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -284,10 +296,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665">zth::nap(zth::TimeInterval const&amp;)</a>. </p>
+<p>Sleep for the given time interval. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665" title="Sleep for the given time interval.">zth::nap(zth::TimeInterval const&amp;)</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00398">398</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00408">408</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -314,10 +326,11 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869">zth::outOfWork()</a>. </p>
+<p>Force a context switch. </p>
+<p>Normally, <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">yield()</a> does not yield when the time slice did not end. This prevents excessive context switching, without actually doing much work in between. However, if there is no work, this function forces a context switch anyway.</p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869" title="Force a context switch.">zth::outOfWork()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00490">490</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00506">506</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -345,10 +358,11 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052">zth::setFls()</a>. </p>
+<p>Set the fiber-local storage. </p>
+<p>This is just like thread-local storage, but per fiber.</p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">zth::setFls()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00572">572</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00576">576</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -392,10 +406,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="namespacezth.html#a969db1279d63d0e4ee66a1e2e56e6917">zth::execvp()</a>. </p>
+<p>Start a new thread, create a Worker, with one fiber, which executes <code>f</code>. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga17f92480e82203077853ee3e3c59d3d5" title="Start a new thread, create a Worker, with one fiber, which executes f.">zth::startWorkerThread()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00542">542</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00566">566</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -415,10 +429,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278">zth::unap()</a>. </p>
+<p>Sleep for the given amount of microseconds. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278" title="Sleep for the given amount of microseconds.">zth::unap()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00419">419</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00429">429</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -445,7 +459,13 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00498">498</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p>Create a Worker. </p>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, otherwise an errno </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__c__fiber.html#gab9e56f45832989b04507917fe520ca23" title="Run the worker for the given amount of time.">zth_worker_run()</a> </dd>
+<dd>
+<a class="el" href="group__zth__api__c__fiber.html#ga3c39836dab4730f8cd13e6714deba783" title="Cleanup the worker.">zth_worker_destroy()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00518">518</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +492,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00528">528</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p>Cleanup the worker. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509" title="Create a Worker.">zth_worker_create()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00552">552</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -500,7 +523,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00516">516</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p>Run the worker for the given amount of time. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509" title="Create a Worker.">zth_worker_create()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00538">538</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -527,10 +553,10 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield()</a>. </p>
+<p>Allow a context switch. </p>
+<p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">zth::yield()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00480">480</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00496">496</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>

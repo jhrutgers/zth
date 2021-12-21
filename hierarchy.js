@@ -49,6 +49,9 @@ var hierarchy =
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
     ] ],
     [ "zth::SharedPointer< zth::Future >", "classzth_1_1_shared_pointer.html", null ],
+    [ "zth::small_vector< MetaItem, PollItemList::prealloc >", "classzth_1_1small__vector.html", null ],
+    [ "zth::small_vector< Pollable * >", "classzth_1_1small__vector.html", null ],
+    [ "zth::small_vector< PollItem, 4 >", "classzth_1_1small__vector.html", null ],
     [ "zth::SortedList< zth::TimedWaitable >", "classzth_1_1_sorted_list.html", null ],
     [ "std::exception", null, [
       [ "std::logic_error", null, [
@@ -145,6 +148,7 @@ var hierarchy =
     [ "zth::Sequence<... >", "structzth_1_1_sequence.html", null ],
     [ "zth::SharedPointer< T >", "classzth_1_1_shared_pointer.html", null ],
     [ "zth::Singleton< T >", "classzth_1_1_singleton.html", null ],
+    [ "zth::small_vector< T, Prealloc, Allocator >", "classzth_1_1small__vector.html", null ],
     [ "zth::smallest_uint< x, smallest_uint_size< 1 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html", null ],
     [ "zth::smallest_uint< x, smallest_uint_size< 2 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4.html", null ],
     [ "zth::smallest_uint< x, smallest_uint_size< 4 > >", "structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4.html", null ],

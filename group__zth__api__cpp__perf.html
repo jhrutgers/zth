@@ -89,29 +89,42 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__perf.html',''); 
 <div class="title">perf<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>This module allows generating a VCD file (in the current working directory), which tracks scheduling behavior of the application.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_backtrace.html">zth::Backtrace</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save a backtrace.  <a href="classzth_1_1_backtrace.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_perf_event.html">zth::PerfEvent&lt; Enable &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An event to be processed by <a class="el" href="namespacezth.html#aa0a9cb2d2794cd2768a0b5fde149f179">perf_event()</a>.  <a href="structzth_1_1_perf_event.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_load.html">zth::Load&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure the load of some activity.  <a href="classzth_1_1_load.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ga6bc9fae666913eb0855d1402f45bf302"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302">zth_perf_event</a>(...)</td></tr>
+<tr class="memdesc:ga6bc9fae666913eb0855d1402f45bf302"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="structzth_1_1_perf_event.html" title="An event to be processed by perf_event().">zth::PerfEvent</a> with provided parameters, and forward it to the perf buffer for later processing.  <a href="group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302">More...</a><br /></td></tr>
 <tr class="separator:ga6bc9fae666913eb0855d1402f45bf302"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a> (char const *marker)</td></tr>
+<tr class="memdesc:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a string marker into the perf output.  <a href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">More...</a><br /></td></tr>
 <tr class="separator:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga37750cc0aa9a7e2dde894e68c125292e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">zth::perf_log</a> (char const *fmt,...)</td></tr>
+<tr class="memdesc:ga37750cc0aa9a7e2dde894e68c125292e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <a href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">More...</a><br /></td></tr>
 <tr class="separator:ga37750cc0aa9a7e2dde894e68c125292e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga782d1fce6ab5169e3e80376e5c00c1d4">zth::perf_logv</a> (char const *fmt, va_list args)</td></tr>
+<tr class="memdesc:ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <a href="group__zth__api__cpp__perf.html#ga782d1fce6ab5169e3e80376e5c00c1d4">More...</a><br /></td></tr>
 <tr class="separator:ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>This module allows generating a VCD file (in the current working directory), which tracks scheduling behavior of the application. </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga6bc9fae666913eb0855d1402f45bf302"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga6bc9fae666913eb0855d1402f45bf302">&#9670;&nbsp;</a></span>zth_perf_event</h2>
@@ -128,9 +141,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Construct a PerfEvent with provided parameters, and forward it to the perf buffer for later processing. </p>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00291">291</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p>Construct a <a class="el" href="structzth_1_1_perf_event.html" title="An event to be processed by perf_event().">zth::PerfEvent</a> with provided parameters, and forward it to the perf buffer for later processing. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00301">301</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
 
 </div>
 </div>
@@ -168,10 +182,12 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Put a formatted log string into the perf output. </p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a9">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00331">331</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00343">343</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
 
 </div>
 </div>
@@ -209,7 +225,9 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00346">346</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p>Put a formatted log string into the perf output. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00359">359</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
 
 </div>
 </div>
@@ -236,10 +254,12 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Put a string marker into the perf output. </p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a4">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00322">322</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00333">333</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
 
 </div>
 </div>

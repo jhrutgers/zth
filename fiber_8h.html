@@ -121,14 +121,19 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga7aad33249b0dcad742743123a1a391ee"><td class="memItemLeft" align="right" valign="top">Fiber &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga7aad33249b0dcad742743123a1a391ee">zth::currentFiber</a> () noexcept</td></tr>
+<tr class="memdesc:ga7aad33249b0dcad742743123a1a391ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the currently executing fiber.  <a href="group__zth__api__cpp__fiber.html#ga7aad33249b0dcad742743123a1a391ee">More...</a><br /></td></tr>
 <tr class="separator:ga7aad33249b0dcad742743123a1a391ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab262d7281fe5cca126238db6633d0891"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891">zth::fls</a> () noexcept</td></tr>
+<tr class="memdesc:gab262d7281fe5cca126238db6633d0891"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>.  <a href="group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891">More...</a><br /></td></tr>
 <tr class="separator:gab262d7281fe5cca126238db6633d0891"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga46bce65a59fee2aed2a82ba644fa7052"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052">zth::setFls</a> (void *data=nullptr) noexcept</td></tr>
+<tr class="memdesc:ga46bce65a59fee2aed2a82ba644fa7052"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the fiber-local storage.  <a href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052">More...</a><br /></td></tr>
 <tr class="separator:ga46bce65a59fee2aed2a82ba644fa7052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b578f30f3ceec104610c0c897ec1816"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga5b578f30f3ceec104610c0c897ec1816">zth_fls</a> () noexcept</td></tr>
+<tr class="memdesc:ga5b578f30f3ceec104610c0c897ec1816"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>.  <a href="group__zth__api__c__fiber.html#ga5b578f30f3ceec104610c0c897ec1816">More...</a><br /></td></tr>
 <tr class="separator:ga5b578f30f3ceec104610c0c897ec1816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga68fd0b4dcefb34729245ce76495d86e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga68fd0b4dcefb34729245ce76495d86e8">zth_setFls</a> (void *data=nullptr) noexcept</td></tr>
+<tr class="memdesc:ga68fd0b4dcefb34729245ce76495d86e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the fiber-local storage.  <a href="group__zth__api__c__fiber.html#ga68fd0b4dcefb34729245ce76495d86e8">More...</a><br /></td></tr>
 <tr class="separator:ga68fd0b4dcefb34729245ce76495d86e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8d3574f284314abb573cdb5762eaf94"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a> (int argc, char **argv)</td></tr>
 <tr class="separator:ac8d3574f284314abb573cdb5762eaf94"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,8 +164,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a2">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a3">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a4">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a6">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a13">5_perf.cpp</a>, <a class="el" href="6_stack_8cpp-example.html#a3">6_stack.cpp</a>, <a class="el" href="9_c_api_8c-example.html#a1">9_c_api.c</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a9">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a11">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a24">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a9">zmq.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a2">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a3">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a4">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a6">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a13">5_perf.cpp</a>, <a class="el" href="6_stack_8cpp-example.html#a3">6_stack.cpp</a>, <a class="el" href="9_c_api_8c-example.html#a1">9_c_api.c</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a9">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a13">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a25">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a10">zmq.cpp</a>.</dd>
 </dl>
+
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00022">22</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>

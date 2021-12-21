@@ -75,5 +75,21 @@ var group__zth__api__cpp__poller =
       [ "base", "classzth_1_1_zmq_poller.html#abcd5230f241c292054e7f4c1c387079c", null ],
       [ "ZmqPoller", "classzth_1_1_zmq_poller.html#a1677d87a92ee146ba9214838643d93d0", null ],
       [ "~ZmqPoller", "classzth_1_1_zmq_poller.html#ae080ff97e6ba953adb7c72f77f62ee3a", null ]
-    ] ]
+    ] ],
+    [ "PollerClient", "classzth_1_1_poller_client.html", [
+      [ "base", "classzth_1_1_poller_client.html#a5b500bf7847c78c974d9768d19be197d", null ],
+      [ "Result", "classzth_1_1_poller_client.html#aeaa2e5123ce30dec5bcf0891cca96a73", null ],
+      [ "PollerClient", "classzth_1_1_poller_client.html#a3273fbf5291d81bead3d07076d4e5eaf", null ],
+      [ "PollerClient", "classzth_1_1_poller_client.html#aee01e82ddf610689edf794b89293fc20", null ],
+      [ "~PollerClient", "classzth_1_1_poller_client.html#a143050782fa3f05eedb88380ebe6f315", null ],
+      [ "add", "classzth_1_1_poller_client.html#a7fc1508f5d43c39be3f6e677ad8bc7b5", null ],
+      [ "empty", "classzth_1_1_poller_client.html#a78d24220e0ebd3b781e72bdf9491a225", null ],
+      [ "event", "classzth_1_1_poller_client.html#af6e4ce9675752885f91a9e8d7938fe5b", null ],
+      [ "poll", "classzth_1_1_poller_client.html#a7b04f07108d61d982682af64cdff764c", null ],
+      [ "remove", "classzth_1_1_poller_client.html#a75859dd1ed48fc194ac8ca6b8932fd40", null ],
+      [ "reserve", "classzth_1_1_poller_client.html#a0cb248f0b81bc7f81b442763a7f89cff", null ]
+    ] ],
+    [ "DefaultPollerServer", "group__zth__api__cpp__poller.html#ga1a121ae0660aeafe0b7304e9f637bb9d", null ],
+    [ "Poller", "group__zth__api__cpp__poller.html#ga4ffb35d55c8f9a0c611332507a04b5bf", null ],
+    [ "poll", "group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d", null ]
 ];

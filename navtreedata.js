@@ -24,6 +24,7 @@ var NAVTREE =
 [
   [ "Zth (libzth)", "index.html", [
     [ "Using Zth on Bare-Metal ARM", "md_dist_qemu-arm-a15__r_e_a_d_m_e-_a_r_m.html", null ],
+    [ "CHANGELOG", "md__c_h_a_n_g_e_l_o_g.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Namespaces", "namespaces.html", [
@@ -71,10 +72,10 @@ var NAVTREEINDEX =
 "classzth_1_1_list.html#af9cc69fa797d8aa19bf4af7541630c7f",
 "classzth_1_1_time_interval.html#a9e9a2fed835627252cad22d2c8a4df59",
 "classzth_1_1fsm_1_1_guard_poll_interval.html#a53746be2bf63c3c5a0a11f425d59ee81",
-"fsm14_8h.html#a7687a0904dbd3991c96c1b5e086ef203",
-"group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3",
-"structzth_1_1_perf_event_3_01false_01_4.html#a72c309b88f5341d7a59e52fea1bdd33a",
-"waiter_8h.html#ga786a7557ff189b1f1e7552a37f772665"
+"deprecated.html",
+"group__zth__api__c__zmq.html#ga3b295c9af3111c07899931ec6b7c8266",
+"regs_8h.html",
+"util_8h.html#a9b053b06d7a7ff0dd48abcd29a54b216"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

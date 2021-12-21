@@ -86,8 +86,7 @@ $(document).ready(function(){initNavTree('util_8h.html',''); initResizable(); })
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">util.h File Reference</div>  </div>
 </div><!--header-->
@@ -114,6 +113,7 @@ $(document).ready(function(){initNavTree('util_8h.html',''); initResizable(); })
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1cow__string.html">zth::cow_string</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy-on-write string.  <a href="classzth_1_1cow__string.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html">zth::UniqueIDBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,6 +134,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1smallest__uint__size.html">zth::smallest_uint_size&lt; size &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -270,8 +273,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a7a210137c60a4a060f81aeb19a9394c0"><td class="memItemLeft" align="right" valign="top">typedef std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td></tr>
-<tr class="separator:a7a210137c60a4a060f81aeb19a9394c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a210137c60a4a060f81aeb19a9394c0"><td class="memItemLeft" align="right" valign="top">typedef std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td></tr>
+<tr class="memdesc:ga7a210137c60a4a060f81aeb19a9394c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::string type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>.  <a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">More...</a><br /></td></tr>
+<tr class="separator:ga7a210137c60a4a060f81aeb19a9394c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -303,14 +307,14 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">More...</a><br /></td></tr>
 <tr class="separator:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa519e50e41b8f4c2c98d4f680535ac90"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aa519e50e41b8f4c2c98d4f680535ac90">zth::formatv</a> (char const  *fmt, va_list args)</td></tr>
-<tr class="memdesc:aa519e50e41b8f4c2c98d4f680535ac90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>vsprintf()</code>, but save the result in an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#aa519e50e41b8f4c2c98d4f680535ac90">More...</a><br /></td></tr>
+<tr class="memdesc:aa519e50e41b8f4c2c98d4f680535ac90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>vsprintf()</code>, but save the result in an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>.  <a href="namespacezth.html#aa519e50e41b8f4c2c98d4f680535ac90">More...</a><br /></td></tr>
 <tr class="separator:aa519e50e41b8f4c2c98d4f680535ac90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebc0ef1729604ae4282d5eabf3830c95"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a> (char const *fmt,...)</td></tr>
-<tr class="memdesc:aebc0ef1729604ae4282d5eabf3830c95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>sprintf()</code>, but save the result in an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">More...</a><br /></td></tr>
+<tr class="memdesc:aebc0ef1729604ae4282d5eabf3830c95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format like <code>sprintf()</code>, but save the result in an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>.  <a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">More...</a><br /></td></tr>
 <tr class="separator:aebc0ef1729604ae4282d5eabf3830c95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a> (T value)</td></tr>
-<tr class="memdesc:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string()</a></code> representation of the given value.  <a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">More...</a><br /></td></tr>
+<tr class="memdesc:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code> representation of the given value.  <a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">More...</a><br /></td></tr>
 <tr class="separator:a3d3d928f0db6f76bfd4d414d5ed2e2e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a417b45d5a57e323dd4c79eb44f8d95"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a2a417b45d5a57e323dd4c79eb44f8d95"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a2a417b45d5a57e323dd4c79eb44f8d95">zth::str&lt; char &gt;</a> (char value)</td></tr>
@@ -358,15 +362,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a088d2963f75280681ab7a239c7219fcc"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a088d2963f75280681ab7a239c7219fcc">zth::str&lt; string &amp;&amp; &gt;</a> (string &amp;&amp;value)</td></tr>
 <tr class="separator:a088d2963f75280681ab7a239c7219fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab92821411679b2d011e31c974cc60a5b"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">zth::err</a> (int e)</td></tr>
-<tr class="memdesc:ab92821411679b2d011e31c974cc60a5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string like <code>strerror()</code> does, but as a <code><a class="el" href="namespacezth.html#a7a210137c60a4a060f81aeb19a9394c0">zth::string</a></code>.  <a href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">More...</a><br /></td></tr>
+<tr class="memdesc:ab92821411679b2d011e31c974cc60a5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string like <code>strerror()</code> does, but as a <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>.  <a href="namespacezth.html#ab92821411679b2d011e31c974cc60a5b">More...</a><br /></td></tr>
 <tr class="separator:ab92821411679b2d011e31c974cc60a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top">cow_string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">zth::str&lt; UniqueIDBase const &amp; &gt;</a> (UniqueIDBase const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">zth::ZTH_TLS_DEFINE</a> (typename ThreadLocalSingleton&lt; T &gt;::singleton_type *, ThreadLocalSingleton&lt; T &gt;::m_instance, nullptr) template&lt; typename T</td></tr>
-<tr class="memdesc:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">More...</a><br /></td></tr>
-<tr class="separator:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">zth_banner</a> ()</td></tr>
 <tr class="memdesc:ga4be59428e2559bcc589cdf4bbb4de588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.  <a href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">More...</a><br /></td></tr>
 <tr class="separator:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -379,13 +379,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d">zth_log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d">More...</a><br /></td></tr>
 <tr class="separator:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a181ba5f221925415543bb489406d852a"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a181ba5f221925415543bb489406d852a">zth::Prealloc</a> = 1</td></tr>
-<tr class="separator:a181ba5f221925415543bb489406d852a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74ba2f5b5ab3684baa1416813485d338"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a74ba2f5b5ab3684baa1416813485d338">zth::Allocator</a></td></tr>
-<tr class="separator:a74ba2f5b5ab3684baa1416813485d338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="af066968dd1ddf024e9ebe92ca95fc633"></a>
@@ -413,12 +406,12 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <a class="code" href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a>(                                                          \</div>
-<div class="line">            0, ##__VA_ARGS__, <a class="code" href="util_8h.html#a6ac24d89b40147de3e5d4c312cc7f411">FOREACH_16</a>, <a class="code" href="util_8h.html#abd001366704e15ab2d462c43527a7393">FOREACH_15</a>, <a class="code" href="util_8h.html#ad607c1eb76315331a61aced32366077f">FOREACH_14</a>, <a class="code" href="util_8h.html#a4e6ce18df88b909c2bf77aa3c3f11d19">FOREACH_13</a>,    \</div>
-<div class="line">            <a class="code" href="util_8h.html#a714d3eb5888af96afa40174831d37524">FOREACH_12</a>, <a class="code" href="util_8h.html#a1cfe1c5c66161f432fee5dcff4af9eab">FOREACH_11</a>, <a class="code" href="util_8h.html#acd454458e1180f7691ecfcc50c3044bd">FOREACH_10</a>, <a class="code" href="util_8h.html#a233527786130148eace0194c0276ec56">FOREACH_9</a>, <a class="code" href="util_8h.html#a638786967575f9c41cc899200622570d">FOREACH_8</a>, <a class="code" href="util_8h.html#aaf661ffeac65aa603f68c81b07dca208">FOREACH_7</a>, \</div>
-<div class="line">            <a class="code" href="util_8h.html#a9b053b06d7a7ff0dd48abcd29a54b216">FOREACH_6</a>, <a class="code" href="util_8h.html#a5ed97321fc0e6199fdad15e11f50ef3b">FOREACH_5</a>, <a class="code" href="util_8h.html#a302079aa04f7ec79804f68d30f8aa41b">FOREACH_4</a>, <a class="code" href="util_8h.html#a1cf375881d5b9ecc8dd4f82dd8b39233">FOREACH_3</a>, <a class="code" href="util_8h.html#aae8730bfb5d8c8c5c78bae6b9034e056">FOREACH_2</a>, <a class="code" href="util_8h.html#ad662212bce1463fc00ab1fcc89451332">FOREACH_1</a>,    \</div>
-<div class="line">            <a class="code" href="util_8h.html#a8337f44cec23ee734f085a4ea20ea094">FOREACH_0</a>)                                                           \</div>
-<div class="line">        (<a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>, ##__VA_ARGS__)</div>
+<b>Value:</b><div class="fragment"><div class="line">                <a class="code" href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a>(                                                          \</div>
+<div class="line">                        0, ##__VA_ARGS__, <a class="code" href="util_8h.html#a6ac24d89b40147de3e5d4c312cc7f411">FOREACH_16</a>, <a class="code" href="util_8h.html#abd001366704e15ab2d462c43527a7393">FOREACH_15</a>, <a class="code" href="util_8h.html#ad607c1eb76315331a61aced32366077f">FOREACH_14</a>, <a class="code" href="util_8h.html#a4e6ce18df88b909c2bf77aa3c3f11d19">FOREACH_13</a>,    \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a714d3eb5888af96afa40174831d37524">FOREACH_12</a>, <a class="code" href="util_8h.html#a1cfe1c5c66161f432fee5dcff4af9eab">FOREACH_11</a>, <a class="code" href="util_8h.html#acd454458e1180f7691ecfcc50c3044bd">FOREACH_10</a>, <a class="code" href="util_8h.html#a233527786130148eace0194c0276ec56">FOREACH_9</a>, <a class="code" href="util_8h.html#a638786967575f9c41cc899200622570d">FOREACH_8</a>, <a class="code" href="util_8h.html#aaf661ffeac65aa603f68c81b07dca208">FOREACH_7</a>, \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a9b053b06d7a7ff0dd48abcd29a54b216">FOREACH_6</a>, <a class="code" href="util_8h.html#a5ed97321fc0e6199fdad15e11f50ef3b">FOREACH_5</a>, <a class="code" href="util_8h.html#a302079aa04f7ec79804f68d30f8aa41b">FOREACH_4</a>, <a class="code" href="util_8h.html#a1cf375881d5b9ecc8dd4f82dd8b39233">FOREACH_3</a>, <a class="code" href="util_8h.html#aae8730bfb5d8c8c5c78bae6b9034e056">FOREACH_2</a>, <a class="code" href="util_8h.html#ad662212bce1463fc00ab1fcc89451332">FOREACH_1</a>,    \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a8337f44cec23ee734f085a4ea20ea094">FOREACH_0</a>)                                                           \</div>
+<div class="line">                (<a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>, ##__VA_ARGS__)</div>
 </div><!-- fragment -->
 <p>Evaluates to <code>action(x)</code> for every argument. </p>
 
@@ -1088,12 +1081,12 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <a class="code" href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a>(                                                          \</div>
-<div class="line">            0, ##__VA_ARGS__, <a class="code" href="util_8h.html#a0171b1fd33d8d5921305f304ee155b58">REVERSE_16</a>, <a class="code" href="util_8h.html#a939867d274cd1110632b1f332f83ca96">REVERSE_15</a>, <a class="code" href="util_8h.html#ad38cb9f497df0509879d200dc968c2da">REVERSE_14</a>, <a class="code" href="util_8h.html#aea7157ff0c7d5b3894ab6aae9ac9d924">REVERSE_13</a>,    \</div>
-<div class="line">            <a class="code" href="util_8h.html#a320be4d4bf62d454c448acf5b08d7941">REVERSE_12</a>, <a class="code" href="util_8h.html#a502e8594cf6a9ac7bf421c997c2e5fde">REVERSE_11</a>, <a class="code" href="util_8h.html#ae1787b6a1cb5b4ac2ef4be21d658c41b">REVERSE_10</a>, <a class="code" href="util_8h.html#a8821eb9be4c015186eb7e9e8d014502b">REVERSE_9</a>, <a class="code" href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a>, <a class="code" href="util_8h.html#a40b844674404f4f594752b87b6c0b383">REVERSE_7</a>, \</div>
-<div class="line">            <a class="code" href="util_8h.html#a236f830fcbf52da66f52c87780250eae">REVERSE_6</a>, <a class="code" href="util_8h.html#ae30fd203b59990eee95b79aaa325f925">REVERSE_5</a>, <a class="code" href="util_8h.html#a05b7ad058c27be9a3d855f98ef278cae">REVERSE_4</a>, <a class="code" href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a>, <a class="code" href="util_8h.html#ad40bc9ddba053bdcdd95c33b91a71457">REVERSE_2</a>, <a class="code" href="util_8h.html#a7cc43b0c7a61f9d950275b918846d27b">REVERSE_1</a>,    \</div>
-<div class="line">            <a class="code" href="util_8h.html#a81a9fd73b1b81332b14a8b32ad34a9d1">REVERSE_0</a>)                                                           \</div>
-<div class="line">        (__VA_ARGS__)</div>
+<b>Value:</b><div class="fragment"><div class="line">                <a class="code" href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a>(                                                          \</div>
+<div class="line">                        0, ##__VA_ARGS__, <a class="code" href="util_8h.html#a0171b1fd33d8d5921305f304ee155b58">REVERSE_16</a>, <a class="code" href="util_8h.html#a939867d274cd1110632b1f332f83ca96">REVERSE_15</a>, <a class="code" href="util_8h.html#ad38cb9f497df0509879d200dc968c2da">REVERSE_14</a>, <a class="code" href="util_8h.html#aea7157ff0c7d5b3894ab6aae9ac9d924">REVERSE_13</a>,    \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a320be4d4bf62d454c448acf5b08d7941">REVERSE_12</a>, <a class="code" href="util_8h.html#a502e8594cf6a9ac7bf421c997c2e5fde">REVERSE_11</a>, <a class="code" href="util_8h.html#ae1787b6a1cb5b4ac2ef4be21d658c41b">REVERSE_10</a>, <a class="code" href="util_8h.html#a8821eb9be4c015186eb7e9e8d014502b">REVERSE_9</a>, <a class="code" href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a>, <a class="code" href="util_8h.html#a40b844674404f4f594752b87b6c0b383">REVERSE_7</a>, \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a236f830fcbf52da66f52c87780250eae">REVERSE_6</a>, <a class="code" href="util_8h.html#ae30fd203b59990eee95b79aaa325f925">REVERSE_5</a>, <a class="code" href="util_8h.html#a05b7ad058c27be9a3d855f98ef278cae">REVERSE_4</a>, <a class="code" href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a>, <a class="code" href="util_8h.html#ad40bc9ddba053bdcdd95c33b91a71457">REVERSE_2</a>, <a class="code" href="util_8h.html#a7cc43b0c7a61f9d950275b918846d27b">REVERSE_1</a>,    \</div>
+<div class="line">                        <a class="code" href="util_8h.html#a81a9fd73b1b81332b14a8b32ad34a9d1">REVERSE_0</a>)                                                           \</div>
+<div class="line">                (__VA_ARGS__)</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00162">162</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
@@ -1626,16 +1619,16 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                <span class="keywordflow">do</span> {                                                                 \</div>
-<div class="line">                    if(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(::<a class="code" href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::Config::EnableAssert</a> &amp;&amp; !(expr)))         <a class="code" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">\</a></div>
+<b>Value:</b><div class="fragment"><div class="line">                                <span class="keywordflow">do</span> {                                                                 \</div>
+<div class="line">                                        if(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(::<a class="code" href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::Config::EnableAssert</a> &amp;&amp; !(expr)))         <a class="code" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">\</a></div>
 <div class="line"><a class="code" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">						::zth::abort</a>(                                        \</div>
-<div class="line">                            <span class="stringliteral">&quot;assertion failed at &quot;</span> __FILE__              \</div>
-<div class="line">                            <span class="stringliteral">&quot;:&quot;</span> <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(                           \</div>
-<div class="line">                                __LINE__) <span class="stringliteral">&quot;: &quot;</span> <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(expr)); \</div>
-<div class="line">                } <span class="keywordflow">while</span>(<span class="keyword">false</span>)</div>
+<div class="line">                                                        <span class="stringliteral">&quot;assertion failed at &quot;</span> __FILE__              \</div>
+<div class="line">                                                        <span class="stringliteral">&quot;:&quot;</span> <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(                           \</div>
+<div class="line">                                                                __LINE__) <span class="stringliteral">&quot;: &quot;</span> <a class="code" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(expr)); \</div>
+<div class="line">                                } <span class="keywordflow">while</span>(<span class="keyword">false</span>)</div>
 </div><!-- fragment -->
 <p><code>assert()</code>, but better integrated in Zth. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="zmq_8cpp-example.html#a2">zmq.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="zmq_8cpp-example.html#a3">zmq.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00245">245</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
@@ -1657,16 +1650,16 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">            <span class="keyword">public</span>:                                                                              \</div>
-<div class="line">                Class(Class <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;                                                \</div>
-<div class="line">                Class(Class&amp;&amp;) =                                                             \</div>
-<div class="line">                    delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \</span></div>
-<div class="line"><span class="comment">                         */</span>                                                          \</div>
-<div class="line">                Class&amp; operator=(Class <span class="keyword">const</span>&amp;) noexcept = <span class="keyword">delete</span>;                            \</div>
-<div class="line">                Class&amp; operator=(Class&amp;&amp;) noexcept =                                         \</div>
-<div class="line">                    delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \</span></div>
-<div class="line"><span class="comment">                         */</span>                                                          \</div>
-<div class="line">            private:</div>
+<b>Value:</b><div class="fragment"><div class="line">                        <span class="keyword">public</span>:                                                                              \</div>
+<div class="line">                                Class(Class <span class="keyword">const</span>&amp;) = <span class="keyword">delete</span>;                                                \</div>
+<div class="line">                                Class(Class&amp;&amp;) =                                                             \</div>
+<div class="line">                                        delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \</span></div>
+<div class="line"><span class="comment">                                                 */</span>                                                          \</div>
+<div class="line">                                Class&amp; operator=(Class <span class="keyword">const</span>&amp;) noexcept = <span class="keyword">delete</span>;                            \</div>
+<div class="line">                                Class&amp; operator=(Class&amp;&amp;) noexcept =                                         \</div>
+<div class="line">                                        delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \</span></div>
+<div class="line"><span class="comment">                                                 */</span>                                                          \</div>
+<div class="line">                        private:</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00262">262</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
@@ -1887,7 +1880,7 @@ Variables</h2></td></tr>
 <div class="ttc" id="autil_8h_html_ab7bd7c951ee1a671de36e92d4a4c8499"><div class="ttname"><a href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a></div><div class="ttdeci">#define REVERSE_8(a,...)</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00153">util.h:153</a></div></div>
 <div class="ttc" id="autil_8h_html_a8337f44cec23ee734f085a4ea20ea094"><div class="ttname"><a href="util_8h.html#a8337f44cec23ee734f085a4ea20ea094">FOREACH_0</a></div><div class="ttdeci">#define FOREACH_0(WHAT)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00083">util.h:83</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_html_a228f4b3e903829a92bf0e5808be43bae"><div class="ttname"><a href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static const bool EnableAssert</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00065">config.h:65</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_a228f4b3e903829a92bf0e5808be43bae"><div class="ttname"><a href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static const bool EnableAssert</div><div class="ttdoc">When true, enable zth_assert().</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00067">config.h:67</a></div></div>
 <div class="ttc" id="autil_8h_html_a4e6ce18df88b909c2bf77aa3c3f11d19"><div class="ttname"><a href="util_8h.html#a4e6ce18df88b909c2bf77aa3c3f11d19">FOREACH_13</a></div><div class="ttdeci">#define FOREACH_13(WHAT, X,...)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00118">util.h:118</a></div></div>
 <div class="ttc" id="autil_8h_html_ad38cb9f497df0509879d200dc968c2da"><div class="ttname"><a href="util_8h.html#ad38cb9f497df0509879d200dc968c2da">REVERSE_14</a></div><div class="ttdeci">#define REVERSE_14(a,...)</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00159">util.h:159</a></div></div>
 <div class="ttc" id="autil_8h_html_abd001366704e15ab2d462c43527a7393"><div class="ttname"><a href="util_8h.html#abd001366704e15ab2d462c43527a7393">FOREACH_15</a></div><div class="ttdeci">#define FOREACH_15(WHAT, X,...)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00124">util.h:124</a></div></div>
@@ -1896,7 +1889,7 @@ Variables</h2></td></tr>
 <div class="ttc" id="autil_8h_html_a0171b1fd33d8d5921305f304ee155b58"><div class="ttname"><a href="util_8h.html#a0171b1fd33d8d5921305f304ee155b58">REVERSE_16</a></div><div class="ttdeci">#define REVERSE_16(a,...)</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00161">util.h:161</a></div></div>
 <div class="ttc" id="autil_8h_html_ae45ab3b0fcd80ab31bcae9bd5db8959d"><div class="ttname"><a href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a></div><div class="ttdeci">#define REVERSE_3(a,...)</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00148">util.h:148</a></div></div>
 <div class="ttc" id="autil_8h_html_a6ac24d89b40147de3e5d4c312cc7f411"><div class="ttname"><a href="util_8h.html#a6ac24d89b40147de3e5d4c312cc7f411">FOREACH_16</a></div><div class="ttdeci">#define FOREACH_16(WHAT, X,...)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00127">util.h:127</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga729639cd9f74a958d820bcce463fa8ae"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">zth::fsm::action</a></div><div class="ttdeci">constexpr auto action(T &amp;&amp;a, char const *name=nullptr)</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00561">fsm14.h:561</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga729639cd9f74a958d820bcce463fa8ae"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">zth::fsm::action</a></div><div class="ttdeci">constexpr auto action(T &amp;&amp;a, char const *name=nullptr)</div><div class="ttdoc">Create an action from a function.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00653">fsm14.h:653</a></div></div>
 <div class="ttc" id="autil_8h_html_a1cf375881d5b9ecc8dd4f82dd8b39233"><div class="ttname"><a href="util_8h.html#a1cf375881d5b9ecc8dd4f82dd8b39233">FOREACH_3</a></div><div class="ttdeci">#define FOREACH_3(WHAT, X,...)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00088">util.h:88</a></div></div>
 <div class="ttc" id="autil_8h_html_aaf661ffeac65aa603f68c81b07dca208"><div class="ttname"><a href="util_8h.html#aaf661ffeac65aa603f68c81b07dca208">FOREACH_7</a></div><div class="ttdeci">#define FOREACH_7(WHAT, X,...)</div><div class="ttdoc">Helper for FOREACH.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00100">util.h:100</a></div></div>
 <div class="ttc" id="autil_8h_html_a320be4d4bf62d454c448acf5b08d7941"><div class="ttname"><a href="util_8h.html#a320be4d4bf62d454c448acf5b08d7941">REVERSE_12</a></div><div class="ttdeci">#define REVERSE_12(a,...)</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00157">util.h:157</a></div></div>

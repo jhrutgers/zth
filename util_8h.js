@@ -55,7 +55,7 @@ var util_8h =
     [ "ZTH_GET_MACRO_ARGN", "util_8h.html#a1755477f935397460b8bd17b87717245", null ],
     [ "ZTH_STRINGIFY", "util_8h.html#ab22030f7762239d7744a7bf3e0c523df", null ],
     [ "ZTH_STRINGIFY_", "util_8h.html#a5d72e34c0b817647899416eef607e387", null ],
-    [ "string", "util_8h.html#a7a210137c60a4a060f81aeb19a9394c0", null ],
+    [ "string", "util_8h.html#ga7a210137c60a4a060f81aeb19a9394c0", null ],
     [ "abort", "util_8h.html#ga4889d34edbac39ba98e63d58173f3b88", null ],
     [ "abortv", "util_8h.html#gadbc3a543d826740574ed356738ae3da8", null ],
     [ "banner", "util_8h.html#ga80ce8ae8dab3a0f48abcbf9e977b60d9", null ],
@@ -88,8 +88,5 @@ var util_8h =
     [ "zth_banner", "group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588", null ],
     [ "zth_log", "group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d", null ],
     [ "zth_log_color", "group__zth__api__c__util.html#ga9f263744ecb1252cd9a814ab3aed45a2", null ],
-    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ],
-    [ "ZTH_TLS_DEFINE", "util_8h.html#ga02bedd1baea68e40bc3a3472d8d997fb", null ],
-    [ "Allocator", "util_8h.html#a74ba2f5b5ab3684baa1416813485d338", null ],
-    [ "Prealloc", "util_8h.html#a181ba5f221925415543bb489406d852a", null ]
+    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ]
 ];

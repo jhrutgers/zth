@@ -177,10 +177,14 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="structzth_1_1impl_1_1_arguments.html#ab4de7159c9581a7407b3d939994801a3">zth::impl::Arguments&lt; A &gt;</a>
 , <a class="el" href="structzth_1_1impl_1_1_context_base_1_1_stack.html#a7c48d93e356599e41485225b6dd241b2">zth::impl::ContextBase&lt; Impl &gt;::Stack</a>
 , <a class="el" href="classzth_1_1_list.html#a41938fd013d177691b97a6c14de70b86">zth::List&lt; T &gt;</a>
+, <a class="el" href="classzth_1_1small__vector.html#a6099135fd809f539fe5811c803176aa6">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a>
 , <a class="el" href="classzth_1_1_sorted_list.html#a70c00c3d92235c84c74382a47f3a573c">zth::SortedList&lt; T, Compare &gt;</a>
 </li>
 <li>skew()
 : <a class="el" href="classzth_1_1_sorted_list.html#ace5e5a51e6fb81eeef4975589aef53c1">zth::SortedList&lt; T, Compare &gt;</a>
+</li>
+<li>small_vector()
+: <a class="el" href="classzth_1_1small__vector.html#ac16e18ae5e02a3dc6c10f09da88f2651">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a>
 </li>
 <li>socket
 : <a class="el" href="structzth_1_1_pollable_fd.html#a937b741cbfacfca114d62d63986550c0">zth::PollableFd</a>
@@ -209,7 +213,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classzth_1_1impl_1_1_context_base.html#a0548da4bfc32d5b855e458282de66f82">zth::impl::ContextBase&lt; Impl &gt;</a>
 </li>
 <li>stack_switch()
-: <a class="el" href="classzth_1_1impl_1_1_context_base.html#ad59ac30a9201d7e79ebc4bfd8caca800">zth::impl::ContextBase&lt; Impl &gt;</a>
+: <a class="el" href="classzth_1_1impl_1_1_context_base.html#a3fc92c52a200241ad6ed7c296da077f0">zth::impl::ContextBase&lt; Impl &gt;</a>
 </li>
 <li>stackAlign()
 : <a class="el" href="classzth_1_1impl_1_1_context_arch.html#a5a998bc4576edff6669949bd428cac0f">zth::impl::ContextArch&lt; Impl &gt;</a>
@@ -251,13 +255,13 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>state()
 : <a class="el" href="classzth_1_1_fiber.html#a07628bdb022b17dea66f0fcef7da192c">zth::Fiber</a>
 , <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a75af7ac9852981f9cbad3d643e12dfbe">zth::fsm::Fsm</a>
+, <a class="el" href="classzth_1_1_fsm.html#af45d5bdb4c9d7d418bb039310a09045e">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 </li>
 <li>State
 : <a class="el" href="classzth_1_1_fsm.html#a76e80bd1aa2ca103f4ef562be8a0638d">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
 </li>
 <li>state()
-: <a class="el" href="classzth_1_1_fsm.html#af45d5bdb4c9d7d418bb039310a09045e">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
-, <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a8495b51967e0d9aa3b7a7ecf950da011">zth::fsm::Transitions&lt; Size &gt;</a>
+: <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a8495b51967e0d9aa3b7a7ecf950da011">zth::fsm::Transitions&lt; Size &gt;</a>
 , <a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a379c52d2583a78e91b8e81a4e44e759b">zth::fsm::TransitionsBase</a>
 , <a class="el" href="classzth_1_1fsm_1_1_transition_start.html#a7995b579a845a4b22bfd6635ed8b6335">zth::fsm::TransitionStart</a>
 , <a class="el" href="structzth_1_1_fsm_description.html#ae75c4a421ccf7cac4076b22226ed5436">zth::FsmDescription&lt; Fsm &gt;</a>
@@ -280,7 +284,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 , <a class="el" href="classzth_1_1_load.html#a40c7f9ec2b6d5356fbb2e22bc0d11576">zth::Load&lt; T &gt;</a>
 </li>
 <li>str()
-: <a class="el" href="classzth_1_1cow__string.html#ad1f198668c9b9b7acab9ee4b4e477919">zth::cow_string</a>
+: <a class="el" href="classzth_1_1cow__string.html#a025a9c99a7c702b2bc7e40adeb196509">zth::cow_string</a>
 , <a class="el" href="classzth_1_1_fiber.html#a894f64eea29ab8f124b6bd36209d7c9a">zth::Fiber</a>
 , <a class="el" href="classzth_1_1fsm_1_1_symbol.html#aa72d25264d89a94ed38ea9d0bd05c3f2">zth::fsm::Symbol</a>
 , <a class="el" href="structzth_1_1_perf_event.html#a31ecabe5dacfe32e9bea2aa6bce6dbba">zth::PerfEvent&lt; Enable &gt;</a>
@@ -313,7 +317,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 : <a class="el" href="classzth_1_1fsm_1_1_symbol.html#af6e1d5c0f44c5767785d7c85ba689127">zth::fsm::Symbol</a>
 </li>
 <li>Synchronizer()
-: <a class="el" href="classzth_1_1_synchronizer.html#ac1b21db5a55f8a2a64db173d6e67742b">zth::Synchronizer</a>
+: <a class="el" href="classzth_1_1_synchronizer.html#a504fe4ff7b7765082a506e621c72cf3f">zth::Synchronizer</a>
 </li>
 </ul>
 </div><!-- contents -->

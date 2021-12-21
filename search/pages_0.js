@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['deprecated_20list_2020',['Deprecated List',['../deprecated.html',1,'']]]
+  ['changelog_2053',['CHANGELOG',['../md__c_h_a_n_g_e_l_o_g.html',1,'']]]
 ];

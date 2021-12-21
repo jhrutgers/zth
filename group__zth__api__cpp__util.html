@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__util.html',''); 
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">util<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a></div></div>  </div>
@@ -92,6 +93,15 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__util.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1vector__type.html">zth::vector_type&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>std::vector</code> type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>.  <a href="structzth_1_1vector__type.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1map__type.html">zth::map_type&lt; Key, T, Compare &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>std::map</code> type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>.  <a href="structzth_1_1map__type.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1list__type.html">zth::list_type&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>std::list</code> type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>.  <a href="structzth_1_1list__type.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html">zth::Runnable</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An abstract class, that can be started as a fiber.  <a href="classzth_1_1_runnable.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,6 +114,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">zth::ThreadLocalSingleton&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1small__vector.html">zth::small_vector&lt; T, Prealloc, Allocator &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="classzth_1_1small__vector.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -113,6 +126,30 @@ Macros</h2></td></tr>
 <tr class="memitem:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(group,  fmt,  a...)</td></tr>
 <tr class="memdesc:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug printf()-like function.  <a href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">More...</a><br /></td></tr>
 <tr class="separator:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5d7e7374885e201362c15a28066c5591"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga5d7e7374885e201362c15a28066c5591">ZTH_VERSION_MAJOR</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:ga5d7e7374885e201362c15a28066c5591"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth major version as int.  <a href="group__zth__api__cpp__util.html#ga5d7e7374885e201362c15a28066c5591">More...</a><br /></td></tr>
+<tr class="separator:ga5d7e7374885e201362c15a28066c5591"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga318d2e7b9ebb2f25eda87dec55b7cc5c">ZTH_VERSION_MINOR</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth minor version as int.  <a href="group__zth__api__cpp__util.html#ga318d2e7b9ebb2f25eda87dec55b7cc5c">More...</a><br /></td></tr>
+<tr class="separator:ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2892912ba885d1255ce529e0f14eee2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga2892912ba885d1255ce529e0f14eee2d">ZTH_VERSION_PATCH</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ga2892912ba885d1255ce529e0f14eee2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth patch version as int.  <a href="group__zth__api__cpp__util.html#ga2892912ba885d1255ce529e0f14eee2d">More...</a><br /></td></tr>
+<tr class="separator:ga2892912ba885d1255ce529e0f14eee2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad38e14c5d8ad64a9586e99952293c17b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gad38e14c5d8ad64a9586e99952293c17b">ZTH_VERSION_SUFFIX</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="memdesc:gad38e14c5d8ad64a9586e99952293c17b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth version suffix as string literal.  <a href="group__zth__api__cpp__util.html#gad38e14c5d8ad64a9586e99952293c17b">More...</a><br /></td></tr>
+<tr class="separator:gad38e14c5d8ad64a9586e99952293c17b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga66d1e18225cbde2a5eb652a80f84b297"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga66d1e18225cbde2a5eb652a80f84b297">ZTH_VERSION</a></td></tr>
+<tr class="memdesc:ga66d1e18225cbde2a5eb652a80f84b297"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth version as string literal.  <a href="group__zth__api__cpp__util.html#ga66d1e18225cbde2a5eb652a80f84b297">More...</a><br /></td></tr>
+<tr class="separator:ga66d1e18225cbde2a5eb652a80f84b297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3e497c5f6a1e3d083a526307494c66bd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga3e497c5f6a1e3d083a526307494c66bd">ZTH_VERSION_NUM</a></td></tr>
+<tr class="memdesc:ga3e497c5f6a1e3d083a526307494c66bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth version as number.  <a href="group__zth__api__cpp__util.html#ga3e497c5f6a1e3d083a526307494c66bd">More...</a><br /></td></tr>
+<tr class="separator:ga3e497c5f6a1e3d083a526307494c66bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga7a210137c60a4a060f81aeb19a9394c0"><td class="memItemLeft" align="right" valign="top">typedef std::basic_string&lt; char, std::char_traits&lt; char &gt;, <a class="el" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator</a>&lt; char &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td></tr>
+<tr class="memdesc:ga7a210137c60a4a060f81aeb19a9394c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::string type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>.  <a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">More...</a><br /></td></tr>
+<tr class="separator:ga7a210137c60a4a060f81aeb19a9394c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -125,10 +162,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">zth::log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.  <a href="group__zth__api__cpp__util.html#ga94e8d014d5e2cda9cb70e4a46f0b2d51">More...</a><br /></td></tr>
 <tr class="separator:ga94e8d014d5e2cda9cb70e4a46f0b2d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">zth::ZTH_TLS_DEFINE</a> (typename <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::singleton_type *, <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::m_instance, nullptr) template&lt; typename T</td></tr>
-<tr class="memdesc:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A simple std::vector, which can contain <code>Prealloc</code> without heap allocation.  <a href="group__zth__api__cpp__util.html#ga02bedd1baea68e40bc3a3472d8d997fb">More...</a><br /></td></tr>
-<tr class="separator:ga02bedd1baea68e40bc3a3472d8d997fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaddd4a979293a0402bd22d2417728b43c"><td class="memItemLeft" align="right" valign="top">constexpr char const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">zth::version</a> () noexcept</td></tr>
 <tr class="memdesc:gaddd4a979293a0402bd22d2417728b43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version of Zth.  <a href="group__zth__api__cpp__util.html#gaddd4a979293a0402bd22d2417728b43c">More...</a><br /></td></tr>
 <tr class="separator:gaddd4a979293a0402bd22d2417728b43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,18 +195,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">public</span>:                                                     \</div>
-<div class="line">        void* <span class="keyword">operator</span> <span class="keyword">new</span>(std::size_t <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(n))       \</div>
-<div class="line">        {                                                   \</div>
-<div class="line">            zth_assert(n == <span class="keyword">sizeof</span>(T));                 \</div>
-<div class="line">            return ::zth::allocate&lt;T&gt;();                \</div>
-<div class="line">        }                                                   \</div>
-<div class="line">        void <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>* ptr)                     \</div>
-<div class="line">        {                                                   \</div>
-<div class="line">            ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr)); \</div>
-<div class="line">        }                                                   \</div>
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keyword">public</span>:                                                     \</div>
+<div class="line">                void* <span class="keyword">operator</span> <span class="keyword">new</span>(std::size_t <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(n))       \</div>
+<div class="line">                {                                                   \</div>
+<div class="line">                        zth_assert(n == <span class="keyword">sizeof</span>(T));                 \</div>
+<div class="line">                        return ::zth::allocate&lt;T&gt;();                \</div>
+<div class="line">                }                                                   \</div>
+<div class="line">                void <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>* ptr)                     \</div>
+<div class="line">                {                                                   \</div>
+<div class="line">                        ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr)); \</div>
+<div class="line">                }                                                   \</div>
 <div class="line">                                                                    \</div>
-<div class="line">    private:</div>
+<div class="line">        private:</div>
 </div><!-- fragment -->
 <p>Define new/delete operators for a class, which are allocator-aware. </p>
 <p>Put a call to this macro in the private section of your class definition. Additionally, make sure to have a virtual destructor to deallocate subclasses properly.</p>
@@ -231,6 +264,126 @@ Functions</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00219">219</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="ga66d1e18225cbde2a5eb652a80f84b297"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga66d1e18225cbde2a5eb652a80f84b297">&#9670;&nbsp;</a></span>ZTH_VERSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth version as string literal. </p>
+
+<p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00056">56</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
+
+</div>
+</div>
+<a id="ga5d7e7374885e201362c15a28066c5591"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5d7e7374885e201362c15a28066c5591">&#9670;&nbsp;</a></span>ZTH_VERSION_MAJOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION_MAJOR&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth major version as int. </p>
+
+</div>
+</div>
+<a id="ga318d2e7b9ebb2f25eda87dec55b7cc5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga318d2e7b9ebb2f25eda87dec55b7cc5c">&#9670;&nbsp;</a></span>ZTH_VERSION_MINOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION_MINOR&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth minor version as int. </p>
+
+</div>
+</div>
+<a id="ga3e497c5f6a1e3d083a526307494c66bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3e497c5f6a1e3d083a526307494c66bd">&#9670;&nbsp;</a></span>ZTH_VERSION_NUM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION_NUM</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth version as number. </p>
+<p>The format is the decimal value <code>MMmmpp</code>, where <code>MM</code> is the major version, <code>mm</code> the minor, and <code>pp</code> the patch version. The suffix is not included. </p>
+
+<p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00069">69</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2892912ba885d1255ce529e0f14eee2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2892912ba885d1255ce529e0f14eee2d">&#9670;&nbsp;</a></span>ZTH_VERSION_PATCH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION_PATCH&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth patch version as int. </p>
+
+</div>
+</div>
+<a id="gad38e14c5d8ad64a9586e99952293c17b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad38e14c5d8ad64a9586e99952293c17b">&#9670;&nbsp;</a></span>ZTH_VERSION_SUFFIX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_VERSION_SUFFIX&#160;&#160;&#160;&quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zth version suffix as string literal. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ga7a210137c60a4a060f81aeb19a9394c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7a210137c60a4a060f81aeb19a9394c0">&#9670;&nbsp;</a></span>string</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::basic_string&lt;char, std::char_traits&lt;char&gt;, <a class="el" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator</a>&lt;char&gt;::type&gt; <a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>std::string type using <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">Config::Allocator::type</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00337">337</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -341,7 +494,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Prints a banner line with version and configuration information. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a25">measure.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a26">measure.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00043">43</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
@@ -543,55 +696,7 @@ Functions</h2></td></tr>
 
 <p>Returns the version of Zth. </p>
 
-<p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00040">40</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
-
-</div>
-</div>
-<a id="ga02bedd1baea68e40bc3a3472d8d997fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga02bedd1baea68e40bc3a3472d8d997fb">&#9670;&nbsp;</a></span>ZTH_TLS_DEFINE()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">zth::ZTH_TLS_DEFINE </td>
-          <td>(</td>
-          <td class="paramtype">typename <a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::singleton_type *&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a>&lt; T &gt;::m_instance&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">nullptr&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>A simple std::vector, which can contain <code>Prealloc</code> without heap allocation. </p>
-<p>When the internal buffer is exhausted, the vector grows automatically into an std::vector, using heap memory after all.</p>
-<p>In all cases, the elements are stored in contiguous memory, like guaranteed by std::vector. Upon a <code>push_back()</code>, underlying memory may be reallocated to accommodate the new element, which renders previous pointers invalid.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type of elements to contain </td></tr>
-    <tr><td class="paramname">Prealloc</td><td>the minimum number of elements to contain without using heap </td></tr>
-    <tr><td class="paramname">Allocator</td><td>the allocator to use for std::vector </td></tr>
-  </table>
-  </dd>
-</dl>
+<p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00077">77</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
 
 </div>
 </div>

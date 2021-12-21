@@ -111,15 +111,19 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad39ad0512ba7c3ee61da3037894d30b3"><td class="memItemLeft" align="right" valign="top">constexpr static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#ad39ad0512ba7c3ee61da3037894d30b3">MinTimeslice_s</a> ()</td></tr>
+<tr class="memdesc:ad39ad0512ba7c3ee61da3037894d30b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time slice before <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">zth::yield()</a> actually yields.  <a href="structzth_1_1_default_config.html#ad39ad0512ba7c3ee61da3037894d30b3">More...</a><br /></td></tr>
 <tr class="separator:ad39ad0512ba7c3ee61da3037894d30b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:aeeb406bec45f04902190d8229ae8177f"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></td></tr>
+<tr class="memdesc:aeeb406bec45f04902190d8229ae8177f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a debug build when set to <code>true</code>.  <a href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">More...</a><br /></td></tr>
 <tr class="separator:aeeb406bec45f04902190d8229ae8177f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a228f4b3e903829a92bf0e5808be43bae"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">EnableAssert</a></td></tr>
+<tr class="memdesc:a228f4b3e903829a92bf0e5808be43bae"><td class="mdescLeft">&#160;</td><td class="mdescRight">When <code>true</code>, enable <a class="el" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2" title="assert(), but better integrated in Zth.">zth_assert()</a>.  <a href="structzth_1_1_default_config.html#a228f4b3e903829a92bf0e5808be43bae">More...</a><br /></td></tr>
 <tr class="separator:a228f4b3e903829a92bf0e5808be43bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae35e23d19b266f2c32b059aa952c6f01"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#ae35e23d19b266f2c32b059aa952c6f01">EnableThreads</a></td></tr>
+<tr class="memdesc:ae35e23d19b266f2c32b059aa952c6f01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add (<a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a>) thread support when <code>true</code>.  <a href="structzth_1_1_default_config.html#ae35e23d19b266f2c32b059aa952c6f01">More...</a><br /></td></tr>
 <tr class="separator:ae35e23d19b266f2c32b059aa952c6f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ab7a0d24fee9b05646034525014b3ca"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a6ab7a0d24fee9b05646034525014b3ca">SupportDebugPrint</a> = <a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></td></tr>
 <tr class="memdesc:a6ab7a0d24fee9b05646034525014b3ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add support to enable debug output prints.  <a href="structzth_1_1_default_config.html#a6ab7a0d24fee9b05646034525014b3ca">More...</a><br /></td></tr>
@@ -131,6 +135,7 @@ Static Public Attributes</h2></td></tr>
 <tr class="memdesc:a18a5bec9c89bbbdfb7040aef3bf7b03c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable colored output.  <a href="structzth_1_1_default_config.html#a18a5bec9c89bbbdfb7040aef3bf7b03c">More...</a><br /></td></tr>
 <tr class="separator:a18a5bec9c89bbbdfb7040aef3bf7b03c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af270f540105d5f10f8a3dbfca1a8602f"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#af270f540105d5f10f8a3dbfca1a8602f">Print_banner</a> = 12</td></tr>
+<tr class="memdesc:af270f540105d5f10f8a3dbfca1a8602f"><td class="mdescLeft">&#160;</td><td class="mdescRight">ANSI color used by <a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7" title="Debug printf()-like function.">zth_dbg()</a>. Printing this category is disabled when set to 0.  <a href="structzth_1_1_default_config.html#af270f540105d5f10f8a3dbfca1a8602f">More...</a><br /></td></tr>
 <tr class="separator:af270f540105d5f10f8a3dbfca1a8602f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4829b850dc626187d1a6331b3311a699"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a4829b850dc626187d1a6331b3311a699">Print_worker</a> = 5</td></tr>
 <tr class="separator:a4829b850dc626187d1a6331b3311a699"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,34 +160,49 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:ab1eda8427dcdaf14dce010ee1edb6261"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#ab1eda8427dcdaf14dce010ee1edb6261">Print_thread</a> = 3</td></tr>
 <tr class="separator:ab1eda8427dcdaf14dce010ee1edb6261"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adef8df9e23375fa867c8d4de08b8aea7"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#adef8df9e23375fa867c8d4de08b8aea7">DefaultFiberStackSize</a> = 0x20000</td></tr>
+<tr class="memdesc:adef8df9e23375fa867c8d4de08b8aea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default fiber stack size in bytes.  <a href="structzth_1_1_default_config.html#adef8df9e23375fa867c8d4de08b8aea7">More...</a><br /></td></tr>
 <tr class="separator:adef8df9e23375fa867c8d4de08b8aea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08f99b64a6a5655eed4f64bbe28d7dbc"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a08f99b64a6a5655eed4f64bbe28d7dbc">EnableStackGuard</a> = <a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></td></tr>
+<tr class="memdesc:a08f99b64a6a5655eed4f64bbe28d7dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">When <code>true</code>, enable stack guards.  <a href="structzth_1_1_default_config.html#a08f99b64a6a5655eed4f64bbe28d7dbc">More...</a><br /></td></tr>
 <tr class="separator:a08f99b64a6a5655eed4f64bbe28d7dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c5f275e5dc496881f0e7c089c4b20f9"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a3c5f275e5dc496881f0e7c089c4b20f9">EnableStackWaterMark</a> = <a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></td></tr>
+<tr class="memdesc:a3c5f275e5dc496881f0e7c089c4b20f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">When <code>true</code>, enable stack watermark to detect maximum stack usage.  <a href="structzth_1_1_default_config.html#a3c5f275e5dc496881f0e7c089c4b20f9">More...</a><br /></td></tr>
 <tr class="separator:a3c5f275e5dc496881f0e7c089c4b20f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f1b1bd890096fa383a3dec971002683"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">ContextSignals</a> = false</td></tr>
+<tr class="memdesc:a9f1b1bd890096fa383a3dec971002683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take POSIX signal into account when doing a context switch.  <a href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">More...</a><br /></td></tr>
 <tr class="separator:a9f1b1bd890096fa383a3dec971002683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a9d26cba1fd5bed072e4dee3a8775cf"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a6a9d26cba1fd5bed072e4dee3a8775cf">TimesliceOverrunFactorReportThreshold</a> = 4</td></tr>
+<tr class="memdesc:a6a9d26cba1fd5bed072e4dee3a8775cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print an overrun reported when <a class="el" href="structzth_1_1_default_config.html#ad39ad0512ba7c3ee61da3037894d30b3" title="Minimum time slice before zth::yield() actually yields.">MinTimeslice_s()</a> is exceeded by this factor.  <a href="structzth_1_1_default_config.html#a6a9d26cba1fd5bed072e4dee3a8775cf">More...</a><br /></td></tr>
 <tr class="separator:a6a9d26cba1fd5bed072e4dee3a8775cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05e8bf8bdc4e8d5ec2627f055c4b5cc8"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a05e8bf8bdc4e8d5ec2627f055c4b5cc8">CheckTimesliceOverrun</a> = <a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></td></tr>
+<tr class="memdesc:a05e8bf8bdc4e8d5ec2627f055c4b5cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check time slice overrun at every context switch.  <a href="structzth_1_1_default_config.html#a05e8bf8bdc4e8d5ec2627f055c4b5cc8">More...</a><br /></td></tr>
 <tr class="separator:a05e8bf8bdc4e8d5ec2627f055c4b5cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5ad1bcc69ef76b61f976e0b9058f1a1"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#ac5ad1bcc69ef76b61f976e0b9058f1a1">NamedSynchronizer</a> = <a class="el" href="structzth_1_1_default_config.html#a6ab7a0d24fee9b05646034525014b3ca">SupportDebugPrint</a> &amp;&amp; <a class="el" href="structzth_1_1_default_config.html#ae003f94836e35d3884110578a94be6d6">Print_sync</a> &gt; 0</td></tr>
+<tr class="memdesc:ac5ad1bcc69ef76b61f976e0b9058f1a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save names for all <a class="el" href="classzth_1_1_synchronizer.html">zth::Synchronizer</a> instances.  <a href="structzth_1_1_default_config.html#ac5ad1bcc69ef76b61f976e0b9058f1a1">More...</a><br /></td></tr>
 <tr class="separator:ac5ad1bcc69ef76b61f976e0b9058f1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fefb11b817a0b3f5d2b8000ae093915"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a8fefb11b817a0b3f5d2b8000ae093915">PerfEventBufferSize</a> = 128</td></tr>
+<tr class="memdesc:a8fefb11b817a0b3f5d2b8000ae093915"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer size for perf events.  <a href="structzth_1_1_default_config.html#a8fefb11b817a0b3f5d2b8000ae093915">More...</a><br /></td></tr>
 <tr class="separator:a8fefb11b817a0b3f5d2b8000ae093915"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6783ca68e753899af2cfde208e95320b"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a6783ca68e753899af2cfde208e95320b">PerfEventBufferThresholdToTriggerVCDWrite</a> = <a class="el" href="structzth_1_1_default_config.html#a8fefb11b817a0b3f5d2b8000ae093915">PerfEventBufferSize</a> / 2</td></tr>
+<tr class="memdesc:a6783ca68e753899af2cfde208e95320b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Threshold when to force writing out VCD buffer.  <a href="structzth_1_1_default_config.html#a6783ca68e753899af2cfde208e95320b">More...</a><br /></td></tr>
 <tr class="separator:a6783ca68e753899af2cfde208e95320b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a458efa83c4b15630c4ae9fd947f5b8"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a7a458efa83c4b15630c4ae9fd947f5b8">PerfVCDFileBuffer</a> = 0x1000</td></tr>
+<tr class="memdesc:a7a458efa83c4b15630c4ae9fd947f5b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">VCD file buffer in bytes.  <a href="structzth_1_1_default_config.html#a7a458efa83c4b15630c4ae9fd947f5b8">More...</a><br /></td></tr>
 <tr class="separator:a7a458efa83c4b15630c4ae9fd947f5b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee23b84088ee74aacbf4252c010ad9c4"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">EnablePerfEvent</a> = true</td></tr>
+<tr class="memdesc:aee23b84088ee74aacbf4252c010ad9c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (but not necessarily record) perf.  <a href="structzth_1_1_default_config.html#aee23b84088ee74aacbf4252c010ad9c4">More...</a><br /></td></tr>
 <tr class="separator:aee23b84088ee74aacbf4252c010ad9c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3942231b9c4165188e1b8dd0b4b1cf75"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a3942231b9c4165188e1b8dd0b4b1cf75">DoPerfEvent</a> = false</td></tr>
+<tr class="memdesc:a3942231b9c4165188e1b8dd0b4b1cf75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record and output perf events.  <a href="structzth_1_1_default_config.html#a3942231b9c4165188e1b8dd0b4b1cf75">More...</a><br /></td></tr>
 <tr class="separator:a3942231b9c4165188e1b8dd0b4b1cf75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4765d12e2b3dc295f81640827d954c90"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a4765d12e2b3dc295f81640827d954c90">PerfSyscall</a> = true</td></tr>
+<tr class="memdesc:a4765d12e2b3dc295f81640827d954c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Also record syscalls by perf.  <a href="structzth_1_1_default_config.html#a4765d12e2b3dc295f81640827d954c90">More...</a><br /></td></tr>
 <tr class="separator:a4765d12e2b3dc295f81640827d954c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dbfde235a9691dcfe562292b9f524fa"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a1dbfde235a9691dcfe562292b9f524fa">NamedFsm</a> = <a class="el" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a> || (<a class="el" href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a">EnableDebugPrint</a> &amp;&amp; <a class="el" href="structzth_1_1_default_config.html#a9b9a108b98323f380ce7f874716be8e6">Print_fsm</a> &gt; 0)</td></tr>
+<tr class="memdesc:a1dbfde235a9691dcfe562292b9f524fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use named FSM guards/actions.  <a href="structzth_1_1_default_config.html#a1dbfde235a9691dcfe562292b9f524fa">More...</a><br /></td></tr>
 <tr class="separator:a1dbfde235a9691dcfe562292b9f524fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2555b19f03aa8e741667a9b5eed0879b"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config.html#a2555b19f03aa8e741667a9b5eed0879b">UseZMQ</a></td></tr>
+<tr class="memdesc:a2555b19f03aa8e741667a9b5eed0879b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable ZeroMQ support.  <a href="structzth_1_1_default_config.html#a2555b19f03aa8e741667a9b5eed0879b">More...</a><br /></td></tr>
 <tr class="separator:a2555b19f03aa8e741667a9b5eed0879b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -212,7 +232,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00119">119</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Minimum time slice before <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">zth::yield()</a> actually yields. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00131">131</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -237,7 +259,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00124">124</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Check time slice overrun at every context switch. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00139">139</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -261,7 +285,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00118">118</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Take POSIX signal into account when doing a context switch. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00129">129</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -286,9 +312,11 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">true</span></div>
+<div class="line">                <span class="keyword">true</span></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00058">58</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>This is a debug build when set to <code>true</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00059">59</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -312,7 +340,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00115">115</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Default fiber stack size in bytes. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00123">123</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +366,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00132">132</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Record and output perf events. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00153">153</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -361,9 +393,11 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line"> </div>
-<div class="line">        <a class="code" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></div>
+<div class="line">                <a class="code" href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">Debug</a></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00065">65</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>When <code>true</code>, enable <a class="el" href="util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2" title="assert(), but better integrated in Zth.">zth_assert()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00067">67</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -389,7 +423,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Enable colored output. </p>
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00100">100</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00103">103</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -416,12 +450,12 @@ Static Public Attributes</h2></td></tr>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">false</span></div>
+<div class="line">                <span class="keyword">false</span></div>
 </div><!-- fragment -->
 <p>Actually do print the debug output. </p>
 <p>Needs <a class="el" href="structzth_1_1_default_config.html#a6ab7a0d24fee9b05646034525014b3ca" title="Add support to enable debug output prints.">SupportDebugPrint</a> to be <code>true</code>. Can be overridden by <code>ZTH_CONFIG_ENABLE_DEBUG_PRINT</code> environment variable. </p>
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00092">92</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00095">95</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -445,7 +479,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00131">131</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Enable (but not necessarily record) perf. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00151">151</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -469,7 +505,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00116">116</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>When <code>true</code>, enable stack guards. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00125">125</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -493,7 +531,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00117">117</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>When <code>true</code>, enable stack watermark to detect maximum stack usage. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00127">127</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -518,9 +558,11 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">true</span></div>
+<div class="line">                <span class="keyword">true</span></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00072">72</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Add (<a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a>) thread support when <code>true</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00075">75</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +586,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00135">135</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Use named FSM guards/actions. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00158">158</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -568,7 +612,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00125">125</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Save names for all <a class="el" href="classzth_1_1_synchronizer.html">zth::Synchronizer</a> instances. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00141">141</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +638,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00127">127</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Buffer size for perf events. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00144">144</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +664,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00128">128</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Threshold when to force writing out VCD buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00146">146</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +690,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00133">133</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Also record syscalls by perf. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00155">155</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +716,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00129">129</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>VCD file buffer in bytes. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00148">148</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -688,7 +742,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00102">102</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>ANSI color used by <a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7" title="Debug printf()-like function.">zth_dbg()</a>. Printing this category is disabled when set to 0. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00109">109</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -712,7 +768,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00108">108</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00115">115</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -736,7 +792,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00107">107</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00114">114</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -760,7 +816,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00112">112</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00119">119</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -784,7 +840,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00105">105</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00112">112</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +864,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00110">110</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00117">117</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -832,7 +888,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00106">106</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00113">113</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -856,7 +912,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00109">109</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00116">116</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -880,7 +936,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00113">113</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00120">120</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -904,7 +960,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00104">104</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00111">111</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -928,7 +984,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00103">103</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00110">110</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -952,7 +1008,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00111">111</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00118">118</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -979,7 +1035,7 @@ Static Public Attributes</h2></td></tr>
 <p>Add support to enable debug output prints. </p>
 <p>The output is only actually printed when <a class="el" href="structzth_1_1_default_config.html#a759666689ddda485a56318e798969b8a" title="Actually do print the debug output.">EnableDebugPrint</a> is <code>true</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00084">84</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00087">87</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -1003,7 +1059,9 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00123">123</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Print an overrun reported when <a class="el" href="structzth_1_1_default_config.html#ad39ad0512ba7c3ee61da3037894d30b3" title="Minimum time slice before zth::yield() actually yields.">MinTimeslice_s()</a> is exceeded by this factor. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00137">137</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -1028,9 +1086,11 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">true</span></div>
+<div class="line">                <span class="keyword">true</span></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00137">137</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p>Enable ZeroMQ support. </p>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00161">161</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>
@@ -1039,7 +1099,7 @@ Static Public Attributes</h2></td></tr>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructzth_1_1_default_config_html_aeeb406bec45f04902190d8229ae8177f"><div class="ttname"><a href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">zth::DefaultConfig::Debug</a></div><div class="ttdeci">static const bool Debug</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00058">config.h:58</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_aeeb406bec45f04902190d8229ae8177f"><div class="ttname"><a href="structzth_1_1_default_config.html#aeeb406bec45f04902190d8229ae8177f">zth::DefaultConfig::Debug</a></div><div class="ttdeci">static const bool Debug</div><div class="ttdoc">This is a debug build when set to true.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00059">config.h:59</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

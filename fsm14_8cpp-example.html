@@ -86,215 +86,355 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 </div><!--header-->
 <div class="contents">
 <p>Finite-state machine example</p>
-<div class="fragment"><div class="line"><span class="comment">// This example does not work on Windows, as Windows does not support poll()ing</span></div>
-<div class="line"><span class="comment">// stdin. And the ANSI console might be troubling.</span></div>
+<div class="fragment"><div class="line"><span class="comment">// In an embedded system, you often see that the application basically runs a</span></div>
+<div class="line"><span class="comment">// state machine, with timed tasks around it. Zth provides a FSM</span></div>
+<div class="line"><span class="comment">// implementation, which allows you to define the transitions with guards and</span></div>
+<div class="line"><span class="comment">// actions. This example explores this functionality.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// The FSM requires C++14 or later.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// This example does not work on Windows, as Windows does not support poll()ing</span></div>
+<div class="line"><span class="comment">// stdin. And the ANSI console might be troubling. This is unrelated to the FSM</span></div>
+<div class="line"><span class="comment">// itself.</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// Always handy if you want to specify zth::TimeInterval in seconds.</span></div>
 <div class="line"><span class="keyword">using</span> zth::operator<span class="stringliteral">&quot;&quot;</span>_s;</div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// Create a namespace, with all functions related to it.  It is not required,</span></div>
+<div class="line"><span class="comment">// but it prevents polluting the global namespace.</span></div>
 <div class="line"><span class="keyword">namespace </span>fsm {</div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// We are heavily depending on the functions within zth::fsm. Importing it</span></div>
+<div class="line"><span class="comment">// makes the syntax cleaner. And, as we are in our own fsm namespace, that</span></div>
+<div class="line"><span class="comment">// won&#39;t conflict with the rest of the application.</span></div>
 <div class="line"><span class="keyword">using namespace </span><a class="code" href="namespacezth_1_1fsm.html">zth::fsm</a>;</div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// Let&#39;s define several functions.</span></div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> init_()</div>
 <div class="line">{</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\x1b[0m ________ \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\nPress enter to generate traffic.\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a name="a0"></a><a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\x1b[17A\x1b[s&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\x1b[0m ________ \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;    ||    \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\nPress enter to generate traffic.\n&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a name="a0"></a><a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\x1b[17A\x1b[s&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> off_()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> red_()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[31;1m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[31;1m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[31;1m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[31;1m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> amber_()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[33m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[33m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[33m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[33m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> green_()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[32;1m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;|   \x1b[32;1m00\x1b[0m   |\n&quot;</span>);</div>
-<div class="line">    printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
-<div class="line">        printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[u&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot; ________ \n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;/        \\\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   ..   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|        |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[32;1m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;|   \x1b[32;1m00\x1b[0m   |\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;\\________/\n&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">if</span>(!<a class="code" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
+<div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> init = <a name="a1"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(init_, <span class="stringliteral">&quot;init&quot;</span>);</div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> off = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(off_, <span class="stringliteral">&quot;off&quot;</span>);</div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> red = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(red_, <span class="stringliteral">&quot;red&quot;</span>);</div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> amber = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(amber_, <span class="stringliteral">&quot;amber&quot;</span>);</div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> green = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(green_, <span class="stringliteral">&quot;green&quot;</span>);</div>
+<div class="line"><span class="comment">// The functions above are actions to be executed when a transition is taken.</span></div>
+<div class="line"><span class="comment">// We need an Action object to be used later on in the FSM description.  For</span></div>
+<div class="line"><span class="comment">// this, use the zth::fsm::action() function to create it. It is constexpr</span></div>
+<div class="line"><span class="comment">// compatible.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// The provided names are optional, but make debugging easier. Additionally,</span></div>
+<div class="line"><span class="comment">// these names are used when generating the UML description.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// Action takes function pointers, member function pointers, and lambda&#39;s</span></div>
+<div class="line"><span class="comment">// (C++17 and later). The function pointers and lambda&#39;s may have one argument,</span></div>
+<div class="line"><span class="comment">// which is zth::fsm::Fsm&amp;, or a reference to the Fsm subclass (such as</span></div>
+<div class="line"><span class="comment">// TrafficLight below). If this argument is present, the Fsm instance is passed</span></div>
+<div class="line"><span class="comment">// to the action. The return value of an action is ignored.</span></div>
+<div class="line">constexpr <span class="keyword">auto</span> init = <a name="a1"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(init_, <span class="stringliteral">&quot;init&quot;</span>);</div>
+<div class="line">constexpr <span class="keyword">auto</span> off = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(off_, <span class="stringliteral">&quot;off&quot;</span>);</div>
+<div class="line">constexpr <span class="keyword">auto</span> red = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(red_, <span class="stringliteral">&quot;red&quot;</span>);</div>
+<div class="line">constexpr <span class="keyword">auto</span> amber = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(amber_, <span class="stringliteral">&quot;amber&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#if __cplusplus &lt; 201703L</span></div>
+<div class="line">constexpr <span class="keyword">auto</span> green = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(green_, <span class="stringliteral">&quot;green&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#else</span></div>
+<div class="line"><span class="comment">// Just an example that lambda&#39;s do work.</span></div>
+<div class="line">constexpr <span class="keyword">auto</span> green = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>([]() { green_(); }, <span class="stringliteral">&quot;green&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// When you want to add more state to the FSM, you may want to group it in your</span></div>
+<div class="line"><span class="comment">// own FSM class.  Inherit zth::fsm::Fsm for that. There are some virtual</span></div>
+<div class="line"><span class="comment">// functions, like enter() and leave(), which may be handy to override.  In</span></div>
+<div class="line"><span class="comment">// this example, we just want to save m_green across states.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// You could also add the actions above to this class. That would probably be</span></div>
+<div class="line"><span class="comment">// cleaner, but we leave it as is for demonstration purposes.</span></div>
 <div class="line"><span class="keyword">class </span>TrafficLight : <span class="keyword">public</span> <a name="_a2"></a><a class="code" href="classzth_1_1fsm_1_1_fsm.html">Fsm</a> {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keywordtype">void</span> justGotGreen()</div>
-<div class="line">    {</div>
-<div class="line">        m_green = t();</div>
-<div class="line">    }</div>
+<div class="line">        <span class="comment">// This will be an action, called when the traffic light becomes green.</span></div>
+<div class="line">        <span class="keywordtype">void</span> justGotGreen()</div>
+<div class="line">        {</div>
+<div class="line">                m_green = t();</div>
+<div class="line">        }</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> tooLongGreen()<span class="keyword"> const</span></div>
-<div class="line"><span class="keyword">    </span>{</div>
-<div class="line">        <span class="keywordflow">return</span> 10_s - (<a name="a3"></a><a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>() - m_green);</div>
-<div class="line">    }</div>
+<div class="line">        <span class="comment">// This will be a guard, which is enabled when we are longer green than</span></div>
+<div class="line">        <span class="comment">// 10 s.  Guards are polled again after the returned amount of time has</span></div>
+<div class="line">        <span class="comment">// passed.  If you return 0 or a negative value, the guard becomes</span></div>
+<div class="line">        <span class="comment">// enabled.</span></div>
+<div class="line">        <span class="keyword">auto</span> tooLongGreen()<span class="keyword"> const</span></div>
+<div class="line"><span class="keyword">        </span>{</div>
+<div class="line">                <span class="keywordflow">return</span> 10_s - (<a name="a3"></a><a class="code" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a>() - m_green);</div>
+<div class="line">        }</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">private</span>:</div>
-<div class="line">    <a name="_a4"></a><a class="code" href="classzth_1_1_timestamp.html">zth::Timestamp</a> m_green;</div>
+<div class="line">        <a name="_a4"></a><a class="code" href="classzth_1_1_timestamp.html">zth::Timestamp</a> m_green;</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> justGotGreen = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(&amp;TrafficLight::justGotGreen, <span class="stringliteral">&quot;justGotGreen&quot;</span>);</div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> tooLongGreen = <a name="a5"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(&amp;TrafficLight::tooLongGreen, <span class="stringliteral">&quot;tooLongGreen&quot;</span>);</div>
+<div class="line"><span class="comment">// Again, we need guard objects. Wrap the member functions using</span></div>
+<div class="line"><span class="comment">// zth::fsm::action() and zth::fsm::guard().</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// Like for action(), guard() accepts function pointers, member function</span></div>
+<div class="line"><span class="comment">// pointers, and lambdas (C++17).  The optional Fsm&amp; (subclass) argument is</span></div>
+<div class="line"><span class="comment">// also supported. The return type of the guard must be either a bool, or a</span></div>
+<div class="line"><span class="comment">// zth::TimeInterval. In case a bool is returned, true indicates that the guard</span></div>
+<div class="line"><span class="comment">// will be enabled.  If a TimeInterval is specified, it is the time till the</span></div>
+<div class="line"><span class="comment">// guard function must be invoked again to check if it is enabled.</span></div>
+<div class="line">constexpr <span class="keyword">auto</span> justGotGreen = <a class="code" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(&amp;TrafficLight::justGotGreen, <span class="stringliteral">&quot;justGotGreen&quot;</span>);</div>
+<div class="line">constexpr <span class="keyword">auto</span> tooLongGreen = <a name="a5"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(&amp;TrafficLight::tooLongGreen, <span class="stringliteral">&quot;tooLongGreen&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Here is the state machine description. zth::fsm::compile() produces some</span></div>
+<div class="line"><span class="comment">// binary format, which is suitable to start the FSM later on. compile() takes</span></div>
+<div class="line"><span class="comment">// an arbitrary number of arguments, which all define a state transition.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// Every line (=argument) has the following format:</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">//      state + guard / action &gt;&gt;= target_state,</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// Every element is optional:</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// - If the state is omitted, the state is taken from the previous line.</span></div>
+<div class="line"><span class="comment">// - If the guard is omitted, the &#39;always&#39; guard is used.</span></div>
+<div class="line"><span class="comment">// - If the action is omitted, the &#39;nothing&#39; action is used.</span></div>
+<div class="line"><span class="comment">// - If the target_state is omitted, no transition is taken when the guard is</span></div>
+<div class="line"><span class="comment">//   enabled.  This is especially useful for the &#39;entry&#39; guard, which is only</span></div>
+<div class="line"><span class="comment">//   enabled upon entry of the state.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// The state is a zth::fsm::State, but it has an implicit conversion from a</span></div>
+<div class="line"><span class="comment">// string literal.  In some circumstances, it is required to force the type.</span></div>
+<div class="line"><span class="comment">// For example, the transition `&quot;from&quot; &gt;&gt;= &quot;to&quot;` does not compile, as the &gt;&gt;=</span></div>
+<div class="line"><span class="comment">// operator cannot be applied to two char const*. In this case, force one of</span></div>
+<div class="line"><span class="comment">// the states to a State using the _S suffix.  So: `&quot;from&quot;_S &gt;&gt;= &quot;to&quot;` works</span></div>
+<div class="line"><span class="comment">// fine.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// The FSM always starts in the first state mentioned. From there, it iterates</span></div>
+<div class="line"><span class="comment">// over all guards from this state, and takes the first transition that has an</span></div>
+<div class="line"><span class="comment">// enabled guard.  While taking this transition, the action is executed.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// There are several standard guards:</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// - zth::fsm::always: this guard is always enabled.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::never: this guard is never enabled. Not sure if that is useful.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::entry: this guard is enabled upon entering a state. If you use</span></div>
+<div class="line"><span class="comment">//   this guard, you typically don&#39;t specify a target_state, although it is</span></div>
+<div class="line"><span class="comment">//   possible. The entry guard is usually (but not required to be) the first</span></div>
+<div class="line"><span class="comment">//   transition mentioned in the list of transitions for a state.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::timeout_s&lt;X&gt;: this guard is enabled after the specified amount</span></div>
+<div class="line"><span class="comment">//   of time. There is also a timeout_ms and timeout_us guard.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::input(X): this guard is enabled when the FSM has received the</span></div>
+<div class="line"><span class="comment">//   mentioned input symbol by calling Fsm::input(X). When the transition is</span></div>
+<div class="line"><span class="comment">//   taken, the input symbol is not cleared automatically. Use the &#39;consume&#39;</span></div>
+<div class="line"><span class="comment">//   action for that.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::popped: this guard is enabled after returning to this state via</span></div>
+<div class="line"><span class="comment">//   the &#39;pop&#39; action (see below).</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// There are several standard actions:</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// - zth::fsm::nothing: this action does nothing.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::push: push the target_state onto a stack. The FSM continues with</span></div>
+<div class="line"><span class="comment">//   the target_state, but returns to the previous state when the &#39;pop&#39; action</span></div>
+<div class="line"><span class="comment">//   is executed. The stack is of infinite depth, in principle.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::pop: pop the state from the stack, and return to the state where</span></div>
+<div class="line"><span class="comment">//   the last &#39;push&#39; action was executed.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::consume: remove the input symbol mentioned in the &#39;input&#39; guard</span></div>
+<div class="line"><span class="comment">//   of the same transition from the Fsm.  If you do a &#39;input&#39; guard without</span></div>
+<div class="line"><span class="comment">//   &#39;consume&#39;, you can peek if some input symbol is available, without</span></div>
+<div class="line"><span class="comment">//   removing it.</span></div>
+<div class="line"><span class="comment">// - zth::fsm::stop: this action requests the run() function to return</span></div>
+<div class="line"><span class="comment">//   immediately.  You can use this to interrupt the Fsm execution. If</span></div>
+<div class="line"><span class="comment">//   Fsm::run() is called afterwards, execution is resumed at the point where</span></div>
+<div class="line"><span class="comment">//   &#39;stop&#39; was invoked.</span></div>
+<div class="line"><span class="comment">//</span></div>
+<div class="line"><span class="comment">// Note that compile() is a constexpr function. The returned transitions is a</span></div>
+<div class="line"><span class="comment">// compiled table with transitions, which can be used later on to initialize a</span></div>
+<div class="line"><span class="comment">// zth::fsm::Fsm instance with it.</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// clang-format off</span></div>
-<div class="line">constexpr <span class="keyword">static</span> <span class="keyword">auto</span> transitions = <a name="a6"></a><a class="code" href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">compile</a>(</div>
-<div class="line">    <span class="stringliteral">&quot;init&quot;</span>                  / init      &gt;&gt;= <span class="stringliteral">&quot;blink on&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;blink on&quot;</span>  + entry         / amber     ,</div>
-<div class="line">            + timeout_s&lt;1&gt;              &gt;&gt;= <span class="stringliteral">&quot;blink off&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;blink off&quot;</span> + entry         / off       ,</div>
-<div class="line">            + timeout_s&lt;1&gt;              &gt;&gt;= <span class="stringliteral">&quot;peek&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;peek&quot;</span>      + <a name="a7"></a><a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)          &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
-<div class="line">            + <a name="a8"></a><a class="code" href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">always</a>                &gt;&gt;= <span class="stringliteral">&quot;blink on&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;red (wait)&quot;</span>    + entry         / red       ,</div>
-<div class="line">            + timeout_s&lt;2&gt;              &gt;&gt;= <span class="stringliteral">&quot;red&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;red&quot;</span>       + <a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)  / consume   &gt;&gt;= <span class="stringliteral">&quot;green (first)&quot;</span>,</div>
-<div class="line">            + timeout_s&lt;10&gt;             &gt;&gt;= <span class="stringliteral">&quot;blink off&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;green (first)&quot;</span>             / justGotGreen  &gt;&gt;= <span class="stringliteral">&quot;green&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;green&quot;</span>     + entry         / green     ,</div>
-<div class="line">            + tooLongGreen              &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
-<div class="line">            + <a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)  / consume   &gt;&gt;= <span class="stringliteral">&quot;green&quot;</span>,</div>
-<div class="line">            + timeout_s&lt;3&gt;              &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;amber&quot;</span>     + entry         / amber     ,</div>
-<div class="line">            + timeout_s&lt;2&gt;              &gt;&gt;= <span class="stringliteral">&quot;red (wait)&quot;</span></div>
+<div class="line">constexpr <span class="keyword">auto</span> transitions = <a name="a6"></a><a class="code" href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">compile</a>(</div>
+<div class="line">        <span class="stringliteral">&quot;init&quot;</span>                                  / init          &gt;&gt;= <span class="stringliteral">&quot;blink on&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;blink on&quot;</span>      + <a name="a7"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">entry</a>                 / amber         ,</div>
+<div class="line">                        + timeout_s&lt;1&gt;                          &gt;&gt;= <span class="stringliteral">&quot;blink off&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;blink off&quot;</span>     + <a class="code" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">entry</a>                 / off           ,</div>
+<div class="line">                        + timeout_s&lt;1&gt;                          &gt;&gt;= <span class="stringliteral">&quot;peek&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;peek&quot;</span>          + <a name="a8"></a><a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)                      &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
+<div class="line">                        + <a name="a9"></a><a class="code" href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">always</a>                                &gt;&gt;= <span class="stringliteral">&quot;blink on&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;red (wait)&quot;</span>    + <a class="code" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">entry</a>                 / red           ,</div>
+<div class="line">                        + timeout_s&lt;2&gt;                          &gt;&gt;= <span class="stringliteral">&quot;red&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;red&quot;</span>           + <a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)      / <a name="a10"></a><a class="code" href="group__zth__api__cpp__fsm14.html#ga06adbbba39c9e03826787d700ee21b21">consume</a>       &gt;&gt;= <span class="stringliteral">&quot;green (first)&quot;</span>,</div>
+<div class="line">                        + timeout_s&lt;10&gt;                         &gt;&gt;= <span class="stringliteral">&quot;blink off&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;green (first)&quot;</span>                         / justGotGreen  &gt;&gt;= <span class="stringliteral">&quot;green&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;green&quot;</span>         + <a class="code" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">entry</a>                 / green         ,</div>
+<div class="line">                        + tooLongGreen                          &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
+<div class="line">                        + <a class="code" href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">input</a>(<span class="stringliteral">&quot;traffic&quot;</span>)      / <a class="code" href="group__zth__api__cpp__fsm14.html#ga06adbbba39c9e03826787d700ee21b21">consume</a>       &gt;&gt;= <span class="stringliteral">&quot;green&quot;</span>,</div>
+<div class="line">                        + timeout_s&lt;3&gt;                          &gt;&gt;= <span class="stringliteral">&quot;amber&quot;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;amber&quot;</span>         + <a class="code" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">entry</a>                 / amber         ,</div>
+<div class="line">                        + timeout_s&lt;2&gt;                          &gt;&gt;= <span class="stringliteral">&quot;red (wait)&quot;</span></div>
 <div class="line">);</div>
 <div class="line"><span class="comment">// clang-format on</span></div>
 <div class="line"> </div>
 <div class="line">} <span class="comment">// namespace fsm</span></div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// This fiber blocks on stdin. When something is read, the &quot;traffic&quot; input</span></div>
+<div class="line"><span class="comment">// symbol is passed to the fsm. As a result, the input(&quot;traffic&quot;) guard will</span></div>
+<div class="line"><span class="comment">// become enabled.</span></div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> trafficDetect(fsm::TrafficLight&amp; fsm)</div>
 <div class="line">{</div>
-<div class="line">    <span class="keywordtype">char</span> buf = 0;</div>
-<div class="line">    <span class="keywordflow">while</span>(<a name="a9"></a><a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(0, &amp;buf, 1) &gt; 0)</div>
-<div class="line">        fsm.input(<span class="stringliteral">&quot;traffic&quot;</span>);</div>
+<div class="line">        <span class="keywordtype">char</span> buf = 0;</div>
+<div class="line">        <span class="keywordflow">while</span>(<a name="a11"></a><a class="code" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(0, &amp;buf, 1) &gt; 0)</div>
+<div class="line">                fsm.input(<span class="stringliteral">&quot;traffic&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a name="a10"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trafficDetect)</div>
+<div class="line"><a name="a12"></a><a class="code" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trafficDetect)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a name="a11"></a><a class="code" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
+<div class="line"><span class="keywordtype">int</span> <a name="a13"></a><a class="code" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
 <div class="line">{</div>
-<div class="line">    fsm::transitions.dump();</div>
-<div class="line">    fflush(stdout);</div>
+<div class="line">        <span class="comment">// Print the compiled transitions to stdout.</span></div>
+<div class="line">        fsm::transitions.dump();</div>
+<div class="line">        fflush(stdout);</div>
 <div class="line"> </div>
-<div class="line">    fsm::transitions.uml(stderr);</div>
-<div class="line">    fflush(stderr);</div>
+<div class="line">        <span class="comment">// Print the FSM in plantuml format to stderr. You may pass it through</span></div>
+<div class="line">        <span class="comment">// `plantuml -p fsm.png` to render it.</span></div>
+<div class="line">        fsm::transitions.uml(stderr);</div>
+<div class="line">        fflush(stderr);</div>
 <div class="line"> </div>
-<div class="line">    fsm::TrafficLight fsm;</div>
-<div class="line">    fsm::transitions.init(fsm);</div>
+<div class="line">        <span class="comment">// Construct the Fsm. It is not a valid FSM, until...</span></div>
+<div class="line">        fsm::TrafficLight fsm;</div>
+<div class="line">        <span class="comment">// ...init() is called. This will register the transitions to the FSM</span></div>
+<div class="line">        <span class="comment">// and reset it.</span></div>
+<div class="line">        fsm::transitions.init(fsm);</div>
 <div class="line"> </div>
-<div class="line">    <a name="a12"></a><a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> trafficDetect(fsm);</div>
+<div class="line">        <span class="comment">// If you don&#39;t have your own Fsm subclass, you may also do:</span></div>
+<div class="line">        <span class="comment">//</span></div>
+<div class="line">        <span class="comment">// auto fsm  = fsm::transitions.spawn();</span></div>
+<div class="line">        <span class="comment">//</span></div>
+<div class="line">        <span class="comment">// This will create an zth::fsm::Fsm instance, initialize it, and</span></div>
+<div class="line">        <span class="comment">// return it.</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// Run the Fsm, until it hits a final state (but there is none in this example).</span></div>
-<div class="line">    fsm.run();</div>
+<div class="line">        <a name="a14"></a><a class="code" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> trafficDetect(fsm);</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">        <span class="comment">// Run the Fsm, until it hits the &#39;stop&#39; action (but there is none in</span></div>
+<div class="line">        <span class="comment">// this example). You could pass a zth::Timestamp or zth::TimeInterval</span></div>
+<div class="line">        <span class="comment">// to run() to return after a while.</span></div>
+<div class="line">        fsm.run();</div>
+<div class="line"> </div>
+<div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__zth__api__cpp__config_html_ga05849634b61cc2af248e038ee2cbea39"><div class="ttname"><a href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a></div><div class="ttdeci">#define zth_config(name)</div><div class="ttdoc">Checks if the given zth::Config field is enabled.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00055">config.h:55</a></div></div>
-<div class="ttc" id="anamespacezth_1_1fsm_html"><div class="ttname"><a href="namespacezth_1_1fsm.html">zth::fsm</a></div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00041">fsm14.h:41</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga27f593732fb2e524425f5bca2a39c41c"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">zth::fsm::entry</a></div><div class="ttdeci">constexpr auto entry</div><div class="ttdoc">Guard that is only enabled upon entry of a state.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01917">fsm14.h:1917</a></div></div>
+<div class="ttc" id="anamespacezth_1_1fsm_html"><div class="ttname"><a href="namespacezth_1_1fsm.html">zth::fsm</a></div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00043">fsm14.h:43</a></div></div>
 <div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00530">time.h:530</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__io_html_ga1eee4d1bd134d3b8477197f8aa08d5de"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a></div><div class="ttdeci">ssize_t read(int fd, void *buf, size_t count)</div><div class="ttdoc">Like normal read(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition:</b> <a href="io_8cpp_source.html#l00036">io.cpp:36</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00732">async.h:732</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga18c3bd709a49b06ee1e9f828a93c730d"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">zth::fsm::guard</a></div><div class="ttdeci">constexpr auto guard(T &amp;&amp;g, char const *name=nullptr)</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00472">fsm14.h:472</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_gadc91aaa5255e1049b332566eef095aba"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">zth::fsm::compile</a></div><div class="ttdeci">constexpr auto compile(T &amp;&amp;... t)</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01174">fsm14.h:1174</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga18c3bd709a49b06ee1e9f828a93c730d"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">zth::fsm::guard</a></div><div class="ttdeci">constexpr auto guard(T &amp;&amp;g, char const *name=nullptr)</div><div class="ttdoc">Create a guard from a function.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00534">fsm14.h:534</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_gadc91aaa5255e1049b332566eef095aba"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">zth::fsm::compile</a></div><div class="ttdeci">constexpr auto compile(T &amp;&amp;... t)</div><div class="ttdoc">Compile a transition description.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01276">fsm14.h:1276</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00711">async.h:711</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga729639cd9f74a958d820bcce463fa8ae"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">zth::fsm::action</a></div><div class="ttdeci">constexpr auto action(T &amp;&amp;a, char const *name=nullptr)</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00561">fsm14.h:561</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga06adbbba39c9e03826787d700ee21b21"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga06adbbba39c9e03826787d700ee21b21">zth::fsm::consume</a></div><div class="ttdeci">constexpr auto consume</div><div class="ttdoc">Action consume the current input symbol.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01959">fsm14.h:1959</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_ga729639cd9f74a958d820bcce463fa8ae"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">zth::fsm::action</a></div><div class="ttdeci">constexpr auto action(T &amp;&amp;a, char const *name=nullptr)</div><div class="ttdoc">Create an action from a function.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00653">fsm14.h:653</a></div></div>
 <div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition:</b> <a href="time_8h_source.html#l00503">time.h:503</a></div></div>
-<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00022">main.cpp:22</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fsm_html_gad6e3368e3ed1c8bcb396fb768aede973"><div class="ttname"><a href="group__zth__api__cpp__fsm.html#gad6e3368e3ed1c8bcb396fb768aede973">zth::guards::input</a></div><div class="ttdeci">TimeInterval input(Fsm &amp;fsm)</div><div class="ttdoc">A guard that is true when the given input has been set.</div><div class="ttdef"><b>Definition:</b> <a href="fsm_8h_source.html#l00075">fsm.h:75</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_gad866c5d6190e624a8071de79375792ad"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">zth::fsm::always</a></div><div class="ttdeci">constexpr auto always</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00496">fsm14.h:496</a></div></div>
-<div class="ttc" id="aclasszth_1_1fsm_1_1_fsm_html"><div class="ttname"><a href="classzth_1_1fsm_1_1_fsm.html">zth::fsm::Fsm</a></div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01182">fsm14.h:1182</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fsm14_html_gad866c5d6190e624a8071de79375792ad"><div class="ttname"><a href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">zth::fsm::always</a></div><div class="ttdeci">constexpr auto always</div><div class="ttdoc">Trivial guard that is always enabled.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l00568">fsm14.h:568</a></div></div>
+<div class="ttc" id="aclasszth_1_1fsm_1_1_fsm_html"><div class="ttname"><a href="classzth_1_1fsm_1_1_fsm.html">zth::fsm::Fsm</a></div><div class="ttdoc">FSM base class.</div><div class="ttdef"><b>Definition:</b> <a href="fsm14_8h_source.html#l01289">fsm14.h:1289</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -47,5 +47,14 @@ var group__zth__api__cpp__sync =
       [ "value", "classzth_1_1_future.html#a2a7eee219b503a5be77ecceb61a44ed7", null ],
       [ "value", "classzth_1_1_future.html#a935ba7103969731f1855c3bf2ba528be", null ],
       [ "wait", "classzth_1_1_future.html#afec6fc5919a4a799bae108d945e40d02", null ]
+    ] ],
+    [ "Gate", "classzth_1_1_gate.html", [
+      [ "Gate", "classzth_1_1_gate.html#aa540abf1462f82ce6baad7e11a2549fe", null ],
+      [ "Gate", "classzth_1_1_gate.html#a048fc220cc92944302dae55460b3cbd6", null ],
+      [ "~Gate", "classzth_1_1_gate.html#a2728075229cccf6cb88770b9a5a9b7e8", null ],
+      [ "count", "classzth_1_1_gate.html#a305f196785bf7b37bca16d37403b6dab", null ],
+      [ "current", "classzth_1_1_gate.html#a04fab68fcafa19909c108bef89d40db4", null ],
+      [ "pass", "classzth_1_1_gate.html#ac954d5ff3d598dbf039b606047153227", null ],
+      [ "wait", "classzth_1_1_gate.html#a811f63fc2e40c04df084dcc15ac7c7cc", null ]
     ] ]
 ];

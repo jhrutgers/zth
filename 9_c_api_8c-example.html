@@ -96,20 +96,20 @@ $(document).ready(function(){initNavTree('9_c_api_8c-example.html',''); initResi
 <div class="line"><span class="comment">// the fiber.</span></div>
 <div class="line"><span class="keywordtype">void</span> fiber(<span class="keywordtype">void</span>* <a name="a0"></a><a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(arg))</div>
 <div class="line">{</div>
-<div class="line">    printf(<span class="stringliteral">&quot;fiber()\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;fiber()\n&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> <a name="a1"></a><a class="code" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argc), <span class="keywordtype">char</span>** <a class="code" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(argv))</div>
 <div class="line">{</div>
-<div class="line">    printf(<span class="stringliteral">&quot;main_fiber()\n&quot;</span>);</div>
-<div class="line">    <span class="comment">// Start a new fiber, with arg=NULL, default stack, and no name.</span></div>
-<div class="line">    <a name="a2"></a><a class="code" href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">zth_fiber_create</a>(fiber, NULL, 0, NULL);</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">        printf(<span class="stringliteral">&quot;main_fiber()\n&quot;</span>);</div>
+<div class="line">        <span class="comment">// Start a new fiber, with arg=NULL, default stack, and no name.</span></div>
+<div class="line">        <a name="a2"></a><a class="code" href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">zth_fiber_create</a>(fiber, NULL, 0, NULL);</div>
+<div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__zth__api__c__fiber_html_ga4a5d0ea88bcf26193d4201ac28946cd3"><div class="ttname"><a href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">zth_fiber_create</a></div><div class="ttdeci">int zth_fiber_create(void(*f)(void *), void *arg=nullptr, size_t stack=0, char const *name=nullptr) noexcept</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00738">async.h:738</a></div></div>
-<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00022">main.cpp:22</a></div></div>
 <div class="ttc" id="azth_8h_html"><div class="ttname"><a href="zth_8h.html">zth.h</a></div></div>
 <div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8h_source.html#l00088">macros.h:88</a></div></div>
 <!-- start footer part -->

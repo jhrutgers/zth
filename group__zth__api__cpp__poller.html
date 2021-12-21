@@ -82,7 +82,9 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__poller.html','')
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">poller<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a></div></div>  </div>
 </div><!--header-->
@@ -109,16 +111,107 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class of a Poller server.  <a href="classzth_1_1_poller_server_base.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_poller_server.html">zth::PollerServer&lt; PollItem_ &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Poller to be executed by the <a class="el" href="classzth_1_1_waiter.html">Waiter</a>.  <a href="classzth_1_1_poller_server.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Poller to be executed by the <a class="el" href="classzth_1_1_waiter.html" title="A single fiber per Worker that manages sleeping and blocked fibers.">Waiter</a>.  <a href="classzth_1_1_poller_server.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_zmq_poller.html">zth::ZmqPoller</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="classzth_1_1_poller_server.html" title="Poller to be executed by the Waiter.">PollerServer</a> that uses <code>zmq_poll()</code>.  <a href="classzth_1_1_zmq_poller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_poller_client.html">zth::PollerClient</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The poller to be used by a fiber.  <a href="classzth_1_1_poller_client.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga4ffb35d55c8f9a0c611332507a04b5bf"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classzth_1_1_poller_client.html">PollerClient</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__poller.html#ga4ffb35d55c8f9a0c611332507a04b5bf">zth::Poller</a></td></tr>
+<tr class="memdesc:ga4ffb35d55c8f9a0c611332507a04b5bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default Poller to use.  <a href="group__zth__api__cpp__poller.html#ga4ffb35d55c8f9a0c611332507a04b5bf">More...</a><br /></td></tr>
+<tr class="separator:ga4ffb35d55c8f9a0c611332507a04b5bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a121ae0660aeafe0b7304e9f637bb9d"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classzth_1_1_zmq_poller.html">ZmqPoller</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__poller.html#ga1a121ae0660aeafe0b7304e9f637bb9d">zth::DefaultPollerServer</a></td></tr>
+<tr class="memdesc:ga1a121ae0660aeafe0b7304e9f637bb9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The poller server, by default instantiated by the <a class="el" href="classzth_1_1_waiter.html" title="A single fiber per Worker that manages sleeping and blocked fibers.">zth::Waiter</a>.  <a href="group__zth__api__cpp__poller.html#ga1a121ae0660aeafe0b7304e9f637bb9d">More...</a><br /></td></tr>
+<tr class="separator:ga1a121ae0660aeafe0b7304e9f637bb9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga043bfb5a7c98cdceb7c9386837ca466d"><td class="memTemplParams" colspan="2">template&lt;typename P &gt; </td></tr>
+<tr class="memitem:ga043bfb5a7c98cdceb7c9386837ca466d"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d">zth::poll</a> (P pollable, int timeout_ms=-1)</td></tr>
+<tr class="memdesc:ga043bfb5a7c98cdceb7c9386837ca466d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware <code>poll</code>() for a single pollable thing.  <a href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d">More...</a><br /></td></tr>
+<tr class="separator:ga043bfb5a7c98cdceb7c9386837ca466d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Fiber-aware poller. </p>
-<p>In order to wait for multiple file descriptors, one could use <code><a class="el" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">poll()</a></code>. However, when <code><a class="el" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">poll()</a></code> suspends, it suspends not only the current fiber, but the whole application.</p>
-<p>Zth's poller implementation is a fiber-aware, extendable poller implementation, that uses either <code>zmq_poll()</code> or the OS's <code><a class="el" href="namespacezth.html#a043bfb5a7c98cdceb7c9386837ca466d">poll()</a></code>. However, it has the following limitation: in Windows, only WSA2 or ZeroMQ sockets can be polled; the provided file descriptor must be one of those. Other fds, like a normal file or stdin, are not supported. For POSIX-like systems, any fd can be used. </p>
+<p>In order to wait for multiple file descriptors, one could use <code><a class="el" href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d" title="Fiber-aware poll() for a single pollable thing.">poll()</a></code>. However, when <code><a class="el" href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d" title="Fiber-aware poll() for a single pollable thing.">poll()</a></code> suspends, it suspends not only the current fiber, but the whole application.</p>
+<p>Zth's poller implementation is a fiber-aware, extendable poller implementation, that uses either <code>zmq_poll()</code> or the OS's <code><a class="el" href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d" title="Fiber-aware poll() for a single pollable thing.">poll()</a></code>. However, it has the following limitation: in Windows, only WSA2 or ZeroMQ sockets can be polled; the provided file descriptor must be one of those. Other fds, like a normal file or stdin, are not supported. For POSIX-like systems, any fd can be used. </p>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ga1a121ae0660aeafe0b7304e9f637bb9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1a121ae0660aeafe0b7304e9f637bb9d">&#9670;&nbsp;</a></span>DefaultPollerServer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__zth__api__cpp__poller.html#ga1a121ae0660aeafe0b7304e9f637bb9d">zth::DefaultPollerServer</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The poller server, by default instantiated by the <a class="el" href="classzth_1_1_waiter.html" title="A single fiber per Worker that manages sleeping and blocked fibers.">zth::Waiter</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00672">672</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga4ffb35d55c8f9a0c611332507a04b5bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4ffb35d55c8f9a0c611332507a04b5bf">&#9670;&nbsp;</a></span>Poller</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classzth_1_1_poller_client.html">PollerClient</a> <a class="el" href="group__zth__api__cpp__poller.html#ga4ffb35d55c8f9a0c611332507a04b5bf">zth::Poller</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The default Poller to use. </p>
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00782">782</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga043bfb5a7c98cdceb7c9386837ca466d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga043bfb5a7c98cdceb7c9386837ca466d">&#9670;&nbsp;</a></span>poll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename P &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth::poll </td>
+          <td>(</td>
+          <td class="paramtype">P&#160;</td>
+          <td class="paramname"><em>pollable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>timeout_ms</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fiber-aware <code>poll</code>() for a single pollable thing. </p>
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00789">789</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

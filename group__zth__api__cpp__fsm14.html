@@ -90,47 +90,97 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__fsm14.html','');
 <div class="title">fsm (C++14)<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>A fiber-aware FSM implementation, with concise eDSL and constexpr compatible.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fsm_1_1invalid__fsm.html">zth::fsm::invalid_fsm</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception thrown when the FSM description is incorrect.  <a href="structzth_1_1fsm_1_1invalid__fsm.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_symbol.html">zth::fsm::Symbol</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A input/state symbol.  <a href="classzth_1_1fsm_1_1_symbol.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_fsm.html">zth::fsm::Fsm</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">FSM base class.  <a href="classzth_1_1fsm_1_1_fsm.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga2796b4c87af42f47292d489231430698"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga2796b4c87af42f47292d489231430698">zth::fsm::State</a> = <a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a></td></tr>
+<tr class="memdesc:ga2796b4c87af42f47292d489231430698"><td class="mdescLeft">&#160;</td><td class="mdescRight">A state within the FSM.  <a href="group__zth__api__cpp__fsm14.html#ga2796b4c87af42f47292d489231430698">More...</a><br /></td></tr>
 <tr class="separator:ga2796b4c87af42f47292d489231430698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gab0a612f8f7f9ea4a18c31214597444f4"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gab0a612f8f7f9ea4a18c31214597444f4">zth::fsm::operator&quot;&quot;_S</a> (char const *s, size_t <a class="el" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(len)) noexcept</td></tr>
-<tr class="separator:gab0a612f8f7f9ea4a18c31214597444f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafb0388a461f94a63bf79be0eb5801772"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gafb0388a461f94a63bf79be0eb5801772">zth::fsm::operator&quot;&quot;_S</a> (char const *s, size_t len) noexcept</td></tr>
+<tr class="memdesc:gafb0388a461f94a63bf79be0eb5801772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Literal suffix to convert a string literal to <a class="el" href="classzth_1_1fsm_1_1_symbol.html" title="A input/state symbol.">zth::fsm::Symbol</a>.  <a href="group__zth__api__cpp__fsm14.html#gafb0388a461f94a63bf79be0eb5801772">More...</a><br /></td></tr>
+<tr class="separator:gafb0388a461f94a63bf79be0eb5801772"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga18c3bd709a49b06ee1e9f828a93c730d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga18c3bd709a49b06ee1e9f828a93c730d"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">zth::fsm::guard</a> (T &amp;&amp;g, char const *name=nullptr)</td></tr>
+<tr class="memdesc:ga18c3bd709a49b06ee1e9f828a93c730d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a guard from a function.  <a href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">More...</a><br /></td></tr>
 <tr class="separator:ga18c3bd709a49b06ee1e9f828a93c730d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga249c91ebe25c401a18b304293112324d"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga249c91ebe25c401a18b304293112324d">zth::fsm::guard</a> (<a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a> &amp;&amp;<a class="el" href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9">input</a>) noexcept</td></tr>
+<tr class="memdesc:ga249c91ebe25c401a18b304293112324d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a guard from a input symbol.  <a href="group__zth__api__cpp__fsm14.html#ga249c91ebe25c401a18b304293112324d">More...</a><br /></td></tr>
 <tr class="separator:ga249c91ebe25c401a18b304293112324d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga729639cd9f74a958d820bcce463fa8ae"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga729639cd9f74a958d820bcce463fa8ae"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">zth::fsm::action</a> (T &amp;&amp;a, char const *name=nullptr)</td></tr>
+<tr class="memdesc:ga729639cd9f74a958d820bcce463fa8ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an action from a function.  <a href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">More...</a><br /></td></tr>
 <tr class="separator:ga729639cd9f74a958d820bcce463fa8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaacb251e82a622b92a397e26c53909ad9"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9">zth::fsm::input</a> (<a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a> &amp;&amp;symbol) noexcept</td></tr>
+<tr class="memdesc:gaacb251e82a622b92a397e26c53909ad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a guard from an input symbol.  <a href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9">More...</a><br /></td></tr>
 <tr class="separator:gaacb251e82a622b92a397e26c53909ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadc91aaa5255e1049b332566eef095aba"><td class="memTemplParams" colspan="2">template&lt;typename... T&gt; </td></tr>
 <tr class="memitem:gadc91aaa5255e1049b332566eef095aba"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">zth::fsm::compile</a> (T &amp;&amp;... t)</td></tr>
+<tr class="memdesc:gadc91aaa5255e1049b332566eef095aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile a transition description.  <a href="group__zth__api__cpp__fsm14.html#gadc91aaa5255e1049b332566eef095aba">More...</a><br /></td></tr>
 <tr class="separator:gadc91aaa5255e1049b332566eef095aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:gad866c5d6190e624a8071de79375792ad"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">zth::fsm::always</a> = <a class="el" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(<a class="el" href="namespacezth_1_1fsm.html#aeb6fbb69abf74914e0780d5fce5e0267">always_guard</a>, &quot;always&quot;)</td></tr>
+<tr class="memitem:gad866c5d6190e624a8071de79375792ad"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">zth::fsm::always</a></td></tr>
+<tr class="memdesc:gad866c5d6190e624a8071de79375792ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trivial guard that is always enabled.  <a href="group__zth__api__cpp__fsm14.html#gad866c5d6190e624a8071de79375792ad">More...</a><br /></td></tr>
 <tr class="separator:gad866c5d6190e624a8071de79375792ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga13b4cbed7f0e301984c9200c149db30a"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga13b4cbed7f0e301984c9200c149db30a">zth::fsm::never</a> = <a class="el" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(<a class="el" href="namespacezth_1_1fsm.html#ac9b13a28844d6ad16a345e3e18cb8d4d">never_guard</a>, &quot;never&quot;)</td></tr>
+<tr class="memitem:ga13b4cbed7f0e301984c9200c149db30a"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga13b4cbed7f0e301984c9200c149db30a">zth::fsm::never</a></td></tr>
+<tr class="memdesc:ga13b4cbed7f0e301984c9200c149db30a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trivial guard that is never enabled.  <a href="group__zth__api__cpp__fsm14.html#ga13b4cbed7f0e301984c9200c149db30a">More...</a><br /></td></tr>
 <tr class="separator:ga13b4cbed7f0e301984c9200c149db30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4e5b7abed8a0ca65ad999b3a41f405cc"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga4e5b7abed8a0ca65ad999b3a41f405cc">zth::fsm::nothing</a> = <a class="el" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(<a class="el" href="namespacezth_1_1fsm.html#a57f08934a18a00fc7eb5edbd72ca73ab">nothing_action</a>, &quot;nothing&quot;)</td></tr>
+<tr class="memitem:ga4e5b7abed8a0ca65ad999b3a41f405cc"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga4e5b7abed8a0ca65ad999b3a41f405cc">zth::fsm::nothing</a></td></tr>
+<tr class="memdesc:ga4e5b7abed8a0ca65ad999b3a41f405cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trivial action that does nothing.  <a href="group__zth__api__cpp__fsm14.html#ga4e5b7abed8a0ca65ad999b3a41f405cc">More...</a><br /></td></tr>
 <tr class="separator:ga4e5b7abed8a0ca65ad999b3a41f405cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga27f593732fb2e524425f5bca2a39c41c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">zth::fsm::entry</a></td></tr>
+<tr class="memdesc:ga27f593732fb2e524425f5bca2a39c41c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> that is only enabled upon entry of a state.  <a href="group__zth__api__cpp__fsm14.html#ga27f593732fb2e524425f5bca2a39c41c">More...</a><br /></td></tr>
+<tr class="separator:ga27f593732fb2e524425f5bca2a39c41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa5a21d93f645b7358fa7c428fc676a4c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gaa5a21d93f645b7358fa7c428fc676a4c">zth::fsm::push</a></td></tr>
+<tr class="memdesc:gaa5a21d93f645b7358fa7c428fc676a4c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to push the new state onto the stack.  <a href="group__zth__api__cpp__fsm14.html#gaa5a21d93f645b7358fa7c428fc676a4c">More...</a><br /></td></tr>
+<tr class="separator:gaa5a21d93f645b7358fa7c428fc676a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9bc05820b092def5dc147f4110b9bd38"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga9bc05820b092def5dc147f4110b9bd38">zth::fsm::pop</a></td></tr>
+<tr class="memdesc:ga9bc05820b092def5dc147f4110b9bd38"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to pop the current state from the stack.  <a href="group__zth__api__cpp__fsm14.html#ga9bc05820b092def5dc147f4110b9bd38">More...</a><br /></td></tr>
+<tr class="separator:ga9bc05820b092def5dc147f4110b9bd38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac100eb4307591051f018714ad08e349e"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gac100eb4307591051f018714ad08e349e">zth::fsm::popped</a></td></tr>
+<tr class="memdesc:gac100eb4307591051f018714ad08e349e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> to indicate that the current state was reached via <code>pop</code>.  <a href="group__zth__api__cpp__fsm14.html#gac100eb4307591051f018714ad08e349e">More...</a><br /></td></tr>
+<tr class="separator:gac100eb4307591051f018714ad08e349e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaaa6d0c6c4e845321291b41121b39876"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gaaaa6d0c6c4e845321291b41121b39876">zth::fsm::stop</a></td></tr>
+<tr class="memdesc:gaaaa6d0c6c4e845321291b41121b39876"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to return from <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a5db3f849f527be9298873308ad2fe925" title="Run the state machine until the given time stamp.">Fsm::run()</a>.  <a href="group__zth__api__cpp__fsm14.html#gaaaa6d0c6c4e845321291b41121b39876">More...</a><br /></td></tr>
+<tr class="separator:gaaaa6d0c6c4e845321291b41121b39876"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06adbbba39c9e03826787d700ee21b21"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga06adbbba39c9e03826787d700ee21b21">zth::fsm::consume</a></td></tr>
+<tr class="memdesc:ga06adbbba39c9e03826787d700ee21b21"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> consume the current input symbol.  <a href="group__zth__api__cpp__fsm14.html#ga06adbbba39c9e03826787d700ee21b21">More...</a><br /></td></tr>
+<tr class="separator:ga06adbbba39c9e03826787d700ee21b21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga88bea42e660f076ddf00f1146c7c7bcb"><td class="memTemplParams" colspan="2">template&lt;time_t s&gt; </td></tr>
+<tr class="memitem:ga88bea42e660f076ddf00f1146c7c7bcb"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga88bea42e660f076ddf00f1146c7c7bcb">zth::fsm::timeout_s</a></td></tr>
+<tr class="memdesc:ga88bea42e660f076ddf00f1146c7c7bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard that is enabled after a <code>s</code> seconds after entering the current state.  <a href="group__zth__api__cpp__fsm14.html#ga88bea42e660f076ddf00f1146c7c7bcb">More...</a><br /></td></tr>
+<tr class="separator:ga88bea42e660f076ddf00f1146c7c7bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacc2cc80a6a3c340c1ea06c1240a388a4"><td class="memTemplParams" colspan="2">template&lt;uint64_t ms&gt; </td></tr>
+<tr class="memitem:gacc2cc80a6a3c340c1ea06c1240a388a4"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#gacc2cc80a6a3c340c1ea06c1240a388a4">zth::fsm::timeout_ms</a></td></tr>
+<tr class="memdesc:gacc2cc80a6a3c340c1ea06c1240a388a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard that is enabled after a <code>ms</code> milliseconds after entering the current state.  <a href="group__zth__api__cpp__fsm14.html#gacc2cc80a6a3c340c1ea06c1240a388a4">More...</a><br /></td></tr>
+<tr class="separator:gacc2cc80a6a3c340c1ea06c1240a388a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ea7faec6ce2bc23acf884c4351a05b5"><td class="memTemplParams" colspan="2">template&lt;uint64_t us&gt; </td></tr>
+<tr class="memitem:ga3ea7faec6ce2bc23acf884c4351a05b5"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fsm14.html#ga3ea7faec6ce2bc23acf884c4351a05b5">zth::fsm::timeout_us</a></td></tr>
+<tr class="memdesc:ga3ea7faec6ce2bc23acf884c4351a05b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard that is enabled after a <code>us</code> microseconds after entering the current state.  <a href="group__zth__api__cpp__fsm14.html#ga3ea7faec6ce2bc23acf884c4351a05b5">More...</a><br /></td></tr>
+<tr class="separator:ga3ea7faec6ce2bc23acf884c4351a05b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>A fiber-aware FSM implementation, with concise eDSL and constexpr compatible. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="fsm14_8cpp-example.html">fsm14.cpp</a> </dd></dl>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ga2796b4c87af42f47292d489231430698"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga2796b4c87af42f47292d489231430698">&#9670;&nbsp;</a></span>State</h2>
@@ -144,7 +194,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00247">247</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>A state within the FSM. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00283">283</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -184,10 +236,23 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a1">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a22">measure.cpp</a>.</dd>
+
+<p>Create an action from a function. </p>
+<p>The supported types are:</p>
+<ul>
+<li>function pointer: <code>void (*)(A)</code></li>
+<li>member function pointer: <code>void (C::*)()</code></li>
+<li>const member function pointer <code>void (C::*)() const</code></li>
+<li>lambda (C++17 when used in a <code>constexpr</code>): <code>[...](A) {...}</code></li>
+</ul>
+<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>.</p>
+<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>. The member function does not have to be static.</p>
+<p>For C++17 and higher, these function can also be <code>noexcept</code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>an <a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> object, to be used in the FSM transitions description. </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a1">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a23">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00561">561</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00653">653</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -216,10 +281,12 @@ template&lt;typename... T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a6">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a23">measure.cpp</a>.</dd>
+
+<p>Compile a transition description. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a6">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a24">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01174">1174</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01276">1276</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -247,7 +314,12 @@ template&lt;typename... T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00480">480</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>Create a guard from a input symbol. </p>
+<p>Using <code>input</code>("symbol") is usually better than <code>guard</code>("symbol"). However, you can create a <code>constexpr</code> guard using this function, while <a class="el" href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9" title="Create a guard from an input symbol.">input()</a> only returns a temporary object.</p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> object, to be used in the FSM transitions description. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9" title="Create a guard from an input symbol.">input(Symbol&amp;&amp;)</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00550">550</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -286,10 +358,25 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a5">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a21">measure.cpp</a>.</dd>
+
+<p>Create a guard from a function. </p>
+<p>The supported types are:</p>
+<ul>
+<li>function pointer: <code>R (*)(A)</code></li>
+<li>member function pointer: <code>R (C::*)()</code></li>
+<li>const member function pointer <code>R (C::*)() const</code></li>
+<li>lambda (C++17 when used in a <code>constexpr</code>): <code>[...](A) -&gt; R {...}</code></li>
+</ul>
+<p>The return type R must be <code>bool</code> or <a class="el" href="classzth_1_1_time_interval.html" title="Convenient wrapper around struct timespec that contains a time interval.">zth::TimeInterval</a>. The <a class="el" href="classzth_1_1_time_interval.html" title="Convenient wrapper around struct timespec that contains a time interval.">TimeInterval</a> indicates the time until the guard may become enabled and should be checked again. When the interval is 0 or negative, the guard is supposed to be enabled.</p>
+<p>In case the return type is <code>bool</code>, <code>false</code> is equivalent to a time interval of 0. <code>true</code> is equivalent to an infinite time interval.</p>
+<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>.</p>
+<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>. The member function does not have to be static.</p>
+<p>For C++17 and higher, these function can also be <code>noexcept</code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> object, to be used in the FSM transitions description. </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a5">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a22">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00472">472</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00534">534</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -317,12 +404,16 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00685">685</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>Create a guard from an input symbol. </p>
+<p>This function returns a temporary, while <code>guard</code>("symbol") returns an object that can be <code>constexpr</code>.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#ga249c91ebe25c401a18b304293112324d" title="Create a guard from a input symbol.">guard(Symbol&amp;&amp;)</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00785">785</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
-<a id="gab0a612f8f7f9ea4a18c31214597444f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab0a612f8f7f9ea4a18c31214597444f4">&#9670;&nbsp;</a></span>operator&quot;&quot;_S()</h2>
+<a id="gafb0388a461f94a63bf79be0eb5801772"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafb0388a461f94a63bf79be0eb5801772">&#9670;&nbsp;</a></span>operator&quot;&quot;_S()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,8 +430,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t &#160;</td>
-          <td class="paramname"><em>UNUSED_PAR</em>len&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -355,7 +446,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00239">239</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>Literal suffix to convert a string literal to <a class="el" href="classzth_1_1fsm_1_1_symbol.html" title="A input/state symbol.">zth::fsm::Symbol</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00274">274</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -370,7 +463,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto zth::fsm::always = <a class="el" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(<a class="el" href="namespacezth_1_1fsm.html#aeb6fbb69abf74914e0780d5fce5e0267">always_guard</a>, &quot;always&quot;)</td>
+          <td class="memname">constexpr auto zth::fsm::always</td>
         </tr>
       </table>
   </td>
@@ -379,10 +472,69 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a8">fsm14.cpp</a>.</dd>
+
+<p>Trivial guard that is always enabled. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a9">fsm14.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00496">496</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00568">568</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="ga06adbbba39c9e03826787d700ee21b21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga06adbbba39c9e03826787d700ee21b21">&#9670;&nbsp;</a></span>consume</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::consume</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> consume the current input symbol. </p>
+<p>Usually, combined with the <code>input</code> guard. When a transition is taken because of an input symbol, remove that symbol from the list of inputs symbol. If <code>consume</code> is not used, the symbol guard will be enabled again the next evaluation of the guards. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a10">fsm14.cpp</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01959">1959</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="ga27f593732fb2e524425f5bca2a39c41c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga27f593732fb2e524425f5bca2a39c41c">&#9670;&nbsp;</a></span>entry</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::entry</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> that is only enabled upon entry of a state. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a7">fsm14.cpp</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01917">1917</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +548,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto zth::fsm::never = <a class="el" href="group__zth__api__cpp__fsm14.html#ga18c3bd709a49b06ee1e9f828a93c730d">guard</a>(<a class="el" href="namespacezth_1_1fsm.html#ac9b13a28844d6ad16a345e3e18cb8d4d">never_guard</a>, &quot;never&quot;)</td>
+          <td class="memname">constexpr auto zth::fsm::never</td>
         </tr>
       </table>
   </td>
@@ -406,7 +558,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00506">506</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>Trivial guard that is never enabled. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00580">580</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +574,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr auto zth::fsm::nothing = <a class="el" href="group__zth__api__cpp__fsm14.html#ga729639cd9f74a958d820bcce463fa8ae">action</a>(<a class="el" href="namespacezth_1_1fsm.html#a57f08934a18a00fc7eb5edbd72ca73ab">nothing_action</a>, &quot;nothing&quot;)</td>
+          <td class="memname">constexpr auto zth::fsm::nothing</td>
         </tr>
       </table>
   </td>
@@ -430,7 +584,200 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00571">571</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p>Trivial action that does nothing. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00665">665</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="ga9bc05820b092def5dc147f4110b9bd38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9bc05820b092def5dc147f4110b9bd38">&#9670;&nbsp;</a></span>pop</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::pop</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to pop the current state from the stack. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01932">1932</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="gac100eb4307591051f018714ad08e349e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac100eb4307591051f018714ad08e349e">&#9670;&nbsp;</a></span>popped</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::popped</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> to indicate that the current state was reached via <code>pop</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01939">1939</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="gaa5a21d93f645b7358fa7c428fc676a4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa5a21d93f645b7358fa7c428fc676a4c">&#9670;&nbsp;</a></span>push</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::push</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to push the new state onto the stack. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#ga9bc05820b092def5dc147f4110b9bd38" title="Action to pop the current state from the stack.">pop</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01925">1925</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="gaaaa6d0c6c4e845321291b41121b39876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaaa6d0c6c4e845321291b41121b39876">&#9670;&nbsp;</a></span>stop</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::stop</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to return from <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a5db3f849f527be9298873308ad2fe925" title="Run the state machine until the given time stamp.">Fsm::run()</a>. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a19">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a0">zmq.cpp</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01946">1946</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="gacc2cc80a6a3c340c1ea06c1240a388a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacc2cc80a6a3c340c1ea06c1240a388a4">&#9670;&nbsp;</a></span>timeout_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;uint64_t ms&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::timeout_ms</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A guard that is enabled after a <code>ms</code> milliseconds after entering the current state. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01977">1977</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="ga88bea42e660f076ddf00f1146c7c7bcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga88bea42e660f076ddf00f1146c7c7bcb">&#9670;&nbsp;</a></span>timeout_s</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;time_t s&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::timeout_s</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A guard that is enabled after a <code>s</code> seconds after entering the current state. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01968">1968</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+
+</div>
+</div>
+<a id="ga3ea7faec6ce2bc23acf884c4351a05b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3ea7faec6ce2bc23acf884c4351a05b5">&#9670;&nbsp;</a></span>timeout_us</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;uint64_t us&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto zth::fsm::timeout_us</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A guard that is enabled after a <code>us</code> microseconds after entering the current state. </p>
+
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01986">1986</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>

@@ -87,56 +87,72 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="contents">
 <div class="textblock"><p><a href="https://github.com/jhrutgers/zth/actions?query=workflow%3ACI"><object type="image/svg+xml" data="https://github.com/jhrutgers/zth/workflows/CI/badge.svg" style="pointer-events: none;">CI</object></a></p>
 <h1>Zth (libzth) - Zeta threads</h1>
-<p>This library provides user-space cooperative multitasking, also known as fibers. One can see fibers as threads, but with the exception that you explicitly have to indicate when the fiber is allowed to switch to another fiber. As a result, locking, synchronization, using shared data structures between fibers is way more easier than when using threads. See also <a href="https://en.wikipedia.org/wiki/Fiber_(computer_science)">https://en.wikipedia.org/wiki/Fiber_(computer_science)</a>.</p>
-<p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using the <code>async</code> keyword: </p><pre class="fragment">#include &lt;zth&gt;
-#include &lt;cstdio&gt;
+<p>This library provides user-space cooperative multitasking, also known as fibers. One can see fibers as threads, but with the exception that you explicitly have to indicate when the fiber is allowed to switch to another fiber. As a result, locking, synchronization, using shared data structures between fibers is way easier than when using threads. See also <a href="https://en.wikipedia.org/wiki/Fiber_(computer_science)">https://en.wikipedia.org/wiki/Fiber_(computer_science)</a>.</p>
+<p>The main benefits of Zth are:</p>
+<ul>
+<li>Cross-platform (Linux/Windows/macOS/bare metal) library for cross-platform application development.</li>
+<li>No dependencies, other than a C library (usually <a href="https://sourceware.org/newlib/">newlib</a> for embedded targets), and <code>clock_gettime()</code>. When available, <a href="https://zeromq.org/">ZeroMQ</a> is supported and made fiber-aware, which can be used for inter-thread or inter-process communication.</li>
+<li>The configuration can be tailored towards your target, such as fiber stack size, time slices, debug/VCD output.</li>
+<li>Usage of dynamic memory is minimized (only during fiber creation and cleanup), and it allocator-aware.</li>
+<li>Support for <a href="https://github.com/google/sanitizers">ASan, LSan, UBSan</a>, and <a href="https://valgrind.org/">Valgrind</a>.</li>
+</ul>
+<p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using the <code>async</code> keyword: </p><pre class="fragment">    #include &lt;zth&gt;
+    #include &lt;cstdio&gt;
 
-void world()
-{
-    printf("World!!1\n");
-}
-zth_fiber(world)
+    void world()
+    {
+            printf("World!!1\n");
+    }
+    zth_fiber(world)
 
-void hello()
-{
-    async world();
-    printf("Hello\n");
-}
-zth_fiber(hello)
+    void hello()
+    {
+            async world();
+            printf("Hello\n");
+    }
+    zth_fiber(hello)
 
-int main_fiber(int argc, char** argv)
-{
-    async hello();
-    return 0;
-}
-</pre><p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> for more details, including the full explanation of this example.</p>
-<p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
-<p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
+    int main_fiber(int argc, char** argv)
+    {
+            async hello();
+            return 0;
+    }
+</pre><p>Notable other features include:</p>
+<ul>
+<li>Finite State Machine implementation, which allows defining state transitions in an eDSL, and easily transfers a fiber into a fiber-aware FSM, properly handling polling timed guards.</li>
+<li>Extensible Poller framework, which allows <code><a class="el" href="group__zth__api__cpp__poller.html#ga043bfb5a7c98cdceb7c9386837ca466d" title="Fiber-aware poll() for a single pollable thing.">poll()</a></code>-like calls by fibers to be forwarded to a single poller server, which can be user-defined for custom pollable types.</li>
+<li>Inter-fiber signaling, such as a mutex, semaphore, signal, and future.</li>
+</ul>
+<p>Check out the <a href="https://jhrutgers.github.io/zth/examples.html">examples</a> for more details, including the full explanation of the example above.</p>
 <p>Supported platforms are:</p>
 <ul>
 <li>Ubuntu/macOS/Windows 32/64-bit</li>
 <li>bare-metal 32-bit ARM (with newlib)</li>
 <li>gcc 4 or newer</li>
-<li>C++98 or newer, C99 or newer</li>
+<li>C++98 or newer, C99 or newer. However, compiling for later C++ standards adds features and improves performance.</li>
 </ul>
+<p>Check out the <code>dist</code> directory for example targets.</p>
 <h2>How to build</h2>
-<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. This does effectively: </p><pre class="fragment">mkdir build
-cd build
-cmake ..
-cmake --build .
+<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. This does effectively: </p><pre class="fragment">    mkdir build
+    cd build
+    cmake ../../..
+    cmake --build .
+</pre><p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>, or do something like: </p><pre class="fragment">    cmake ../../.. -D CMAKE_BUILD_TYPE=Debug
 </pre><p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
-<p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>, or do something like: </p><pre class="fragment">cmake .. -D CMAKE_BUILD_TYPE=Debug
-</pre><h3>How to integrate in your project</h3>
-<p>Include the Zth top-level <code>CMakeLists.txt</code> in your project, and link to <code>libzth</code>. Configure Zth options as required, like this: </p><pre class="fragment">set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
-set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
-set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
-set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
-add_subdirectory(zth)
-# Override search path to your own zth_config.h.
-target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
-</pre><p>This also works for cross-compiling. Refer to <code>examples/arm/README-ARM.md</code> for some hints when compiling for bare-metal ARM.</p>
+<h3>How to integrate in your project</h3>
+<p>Include the Zth top-level <code>CMakeLists.txt</code> in your project, and link to <code>libzth</code>. Configure Zth options as required, like this: </p><pre class="fragment">    set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
+    set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
+    set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
+    set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
+
+    add_subdirectory(zth)
+
+    # Override search path to your own zth_config.h.
+    target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+</pre><p>This also works for cross-compiling. Refer to <code><a class="el" href="_r_e_a_d_m_e-_a_r_m_8md.html">dist/qemu-arm-a15/README-ARM.md</a></code> for some hints when compiling for bare-metal ARM.</p>
+<p>Note that <code><a class="el" href="zth__config_8h.html">zth_config.h</a></code> can be provided by the user to optimize the configuration for a specific target. However, its include path must be available while compiling libzth itself. After installing the library, the configuration cannot be changed.</p>
 <h2>How to run</h2>
-<p>libzth checks for environment variables, which are listed below. The environment is (usually) only checked once, so dynamically changing the variables after startup has no effect to libzth's behavior.</p>
+<p>Zth checks for environment variables, which are listed below. The environment is (usually) only checked once, so dynamically changing the variables after startup has no effect to Zth's behavior.</p>
 <ul>
 <li><code>ZTH_CONFIG_ENABLE_DEBUG_PRINT</code> <br  />
  When set to 1, debug prints are enabled. Disabled by default. For non-debug builds, all debug prints are removed from the binary, so they cannot be enabled in that case.</li>
@@ -146,6 +162,9 @@ target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
  When set to 1, the perf VCD logs will contain all calls to Zth's special functions. Enabled by default.</li>
 <li><code>ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN</code> When set to 1, check at every context switch if the timeslice was overrun significantly. Only the longest overrun is reported. Enabled by default in the debug build, not available in release builds.</li>
 </ul>
+<h2>Related</h2>
+<p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
+<p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>
 <h2>License</h2>
 <p>The project license is specified in COPYING and COPYING.LESSER.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>

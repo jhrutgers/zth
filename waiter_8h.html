@@ -110,6 +110,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_polled_member_waiting.html">zth::PolledMemberWaiting&lt; C &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html">zth::Waiter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single fiber per <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a> that manages sleeping and blocked fibers.  <a href="classzth_1_1_waiter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_periodic_wake_up.html">zth::PeriodicWakeUp</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Periodic wakeup after fixed interval.  <a href="classzth_1_1_periodic_wake_up.html#details">More...</a><br /></td></tr>
@@ -123,12 +124,15 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gabd067566b5f56fb4aa9186880f568d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">zth::waitUntil</a> (TimedWaitable &amp;w)</td></tr>
+<tr class="memdesc:gabd067566b5f56fb4aa9186880f568d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given <a class="el" href="classzth_1_1_waitable.html">Waitable</a> has passed.  <a href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">More...</a><br /></td></tr>
 <tr class="separator:gabd067566b5f56fb4aa9186880f568d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
 <tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">zth::waitUntil</a> (F f, TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
+<tr class="memdesc:ga8de540dbd2d282a44c5083295bf37234"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">More...</a><br /></td></tr>
 <tr class="separator:ga8de540dbd2d282a44c5083295bf37234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
+<tr class="memdesc:ga355b0425f58035f985050fbd0435d254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given member function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">More...</a><br /></td></tr>
 <tr class="separator:ga355b0425f58035f985050fbd0435d254"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a692cd6a88a74b1b98d863277624cb93f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a692cd6a88a74b1b98d863277624cb93f">zth::scheduleTask</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="separator:a692cd6a88a74b1b98d863277624cb93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,18 +141,25 @@ Functions</h2></td></tr>
 <tr class="memitem:af655354b46fe80f1bf4fccf968e2fb4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#af655354b46fe80f1bf4fccf968e2fb4c">zth::wakeup</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="separator:af655354b46fe80f1bf4fccf968e2fb4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0c69f207354e0928b738da3388bdd913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a> (Timestamp const &amp;sleepUntil)</td></tr>
+<tr class="memdesc:ga0c69f207354e0928b738da3388bdd913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep until the given time stamp.  <a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">More...</a><br /></td></tr>
 <tr class="separator:ga0c69f207354e0928b738da3388bdd913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga786a7557ff189b1f1e7552a37f772665"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665">zth::nap</a> (TimeInterval const &amp;sleepFor)</td></tr>
+<tr class="memdesc:ga786a7557ff189b1f1e7552a37f772665"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given time interval.  <a href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665">More...</a><br /></td></tr>
 <tr class="separator:ga786a7557ff189b1f1e7552a37f772665"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabb282193c9fb32207257bb6474436152"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap</a> (long sleepFor_ms)</td></tr>
+<tr class="memdesc:gabb282193c9fb32207257bb6474436152"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of milliseconds.  <a href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">More...</a><br /></td></tr>
 <tr class="separator:gabb282193c9fb32207257bb6474436152"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad8abbae956466d84c1e1366eba469278"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278">zth::unap</a> (long sleepFor_us)</td></tr>
+<tr class="memdesc:gad8abbae956466d84c1e1366eba469278"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of microseconds.  <a href="group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278">More...</a><br /></td></tr>
 <tr class="separator:gad8abbae956466d84c1e1366eba469278"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee470e41130a5f578d7ca93fa0941a3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e">zth_nap</a> (struct timespec const *ts)</td></tr>
+<tr class="memdesc:gaee470e41130a5f578d7ca93fa0941a3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given time interval.  <a href="group__zth__api__c__fiber.html#gaee470e41130a5f578d7ca93fa0941a3e">More...</a><br /></td></tr>
 <tr class="separator:gaee470e41130a5f578d7ca93fa0941a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62acef9238b55fb880a8ee3123df21a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5">zth_mnap</a> (long sleepFor_ms)</td></tr>
+<tr class="memdesc:ga62acef9238b55fb880a8ee3123df21a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of milliseconds.  <a href="group__zth__api__c__fiber.html#ga62acef9238b55fb880a8ee3123df21a5">More...</a><br /></td></tr>
 <tr class="separator:ga62acef9238b55fb880a8ee3123df21a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2">zth_unap</a> (long sleepFor_us)</td></tr>
+<tr class="memdesc:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep for the given amount of microseconds.  <a href="group__zth__api__c__fiber.html#gaceccc658b750f2c5144ef61a6d2f80f2">More...</a><br /></td></tr>
 <tr class="separator:gaceccc658b750f2c5144ef61a6d2f80f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

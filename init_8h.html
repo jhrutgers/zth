@@ -146,8 +146,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, atexit(f);) \</div>
-<div class="line">                <span class="keyword">static</span> f##__deinit f##__deinit_;</div>
+<b>Value:</b><div class="fragment"><div class="line">                                <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, atexit(f);) \</div>
+<div class="line">                                <span class="keyword">static</span> f##__deinit f##__deinit_;</div>
 </div><!-- fragment -->
 <p>Mark the given function <code>f</code> to be invoked at exit. </p>
 
@@ -170,8 +170,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">            <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, f();) \</div>
-<div class="line">            <span class="keyword">static</span> f##__init <span class="keyword">const</span> f##__init_;</div>
+<b>Value:</b><div class="fragment"><div class="line">                        <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, f();) \</div>
+<div class="line">                        <span class="keyword">static</span> f##__init <span class="keyword">const</span> f##__init_;</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00060">60</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
 
@@ -202,18 +202,18 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">            <span class="keyword">struct </span>f##__init : <span class="keyword">public</span> <a class="code" href="structzth__init__entry.html">zth_init_entry</a> {          \</div>
-<div class="line">                f##__init()                                 \</div>
-<div class="line">                    : <a class="code" href="structzth__init__entry.html#ac8a4c581621d7ceed306ec2e5ab60566">zth_init_entry</a>(&amp;exec, <span class="keyword">nullptr</span>)    \</div>
-<div class="line">                {                                           \</div>
-<div class="line">                    if(<a class="code" href="init_8h.html#a39fa1dfee15fba6b9dfc4901ad2ffa97">zth_init_tail</a>)                   \</div>
-<div class="line">                        zth_init_tail-&gt;next = <span class="keyword">this</span>; \</div>
-<div class="line">                    zth_init_tail = <span class="keyword">this</span>;               \</div>
-<div class="line">                    if(!<a class="code" href="init_8h.html#a798e83ea50eb570c6fb14c97384f56b6">zth_init_head</a>)                  \</div>
-<div class="line">                        zth_init_head = <span class="keyword">this</span>;       \</div>
-<div class="line">                }                                           \</div>
-<div class="line">                static <span class="keywordtype">void</span> exec(){__VA_ARGS__};            \</div>
-<div class="line">            };</div>
+<b>Value:</b><div class="fragment"><div class="line">                        <span class="keyword">struct </span>f##__init : <span class="keyword">public</span> <a class="code" href="structzth__init__entry.html">zth_init_entry</a> {          \</div>
+<div class="line">                                f##__init()                                 \</div>
+<div class="line">                                        : <a class="code" href="structzth__init__entry.html#ac8a4c581621d7ceed306ec2e5ab60566">zth_init_entry</a>(&amp;exec, <span class="keyword">nullptr</span>)    \</div>
+<div class="line">                                {                                           \</div>
+<div class="line">                                        if(<a class="code" href="init_8h.html#a39fa1dfee15fba6b9dfc4901ad2ffa97">zth_init_tail</a>)                   \</div>
+<div class="line">                                                zth_init_tail-&gt;next = <span class="keyword">this</span>; \</div>
+<div class="line">                                        zth_init_tail = <span class="keyword">this</span>;               \</div>
+<div class="line">                                        if(!<a class="code" href="init_8h.html#a798e83ea50eb570c6fb14c97384f56b6">zth_init_head</a>)                  \</div>
+<div class="line">                                                zth_init_head = <span class="keyword">this</span>;       \</div>
+<div class="line">                                }                                           \</div>
+<div class="line">                                static <span class="keywordtype">void</span> exec(){__VA_ARGS__};            \</div>
+<div class="line">                        };</div>
 </div><!-- fragment -->
 <p>Mark the given function <code>f</code> to be invoked during static initialization. </p>
 
@@ -262,7 +262,7 @@ Variables</h2></td></tr>
 
 <p>Initialization function to be called by the default-supplied <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code>, just before shutting down. </p>
 <p>This function can be used to run machine/board-specific cleanup in <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code> before returning. The default (weak) implementation does nothing.</p>
-<dl class="section return"><dt>Returns</dt><dd>the exit code of the application, which overrides the returned value from <code><a class="el" href="main_8cpp.html#a8013fabbded8b4efe38ede84c104bb1e">main_fiber()</a></code> when non-zero </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the exit code of the application, which overrides the returned value from <code><a class="el" href="main_8cpp.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber()</a></code> when non-zero </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00050">50</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
