@@ -318,7 +318,7 @@ size_t stack_watermark_remaining(void* stack) noexcept
 } // namespace zth
 
 #ifdef ZTH_STACK_SWITCH
-void* zth_stack_switch(void* stack, size_t size, void*(*f)(void*) noexcept, void* arg) noexcept
+void* zth_stack_switch(void* stack, size_t size, void* (*f)(void*) noexcept, void* arg) noexcept
 {
 	zth::Worker* worker = zth::Worker::instance();
 

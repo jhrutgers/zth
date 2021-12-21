@@ -1,5 +1,5 @@
-#ifndef __ZTH_VERSION_H
-#define __ZTH_VERSION_H
+#ifndef ZTH_VERSION_H
+#define ZTH_VERSION_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
  * Copyright (C) 2019-2021  Jochem Rutgers
@@ -20,32 +20,40 @@
 
 #include <libzth/util.h>
 
-#define ZTH_VERSION_MAJOR	@ZTH_VERSION_MAJOR@
-#define ZTH_VERSION_MINOR	@ZTH_VERSION_MINOR@
-#define ZTH_VERSION_PATCH	@ZTH_VERSION_PATCH@
-#define ZTH_VERSION_SUFFIX	"@ZTH_VERSION_SUFFIX@"
+// clang-format off
+#define ZTH_VERSION_MAJOR   @ZTH_VERSION_MAJOR@
+#define ZTH_VERSION_MINOR   @ZTH_VERSION_MINOR@
+#define ZTH_VERSION_PATCH   @ZTH_VERSION_PATCH@
+#define ZTH_VERSION_SUFFIX "@ZTH_VERSION_SUFFIX@"
+// clang-format on
 
-#define ZTH_VERSION ZTH_STRINGIFY(ZTH_VERSION_MAJOR) "." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
+#define ZTH_VERSION                      \
+	ZTH_STRINGIFY(ZTH_VERSION_MAJOR) \
+	"." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
 
 #ifdef __cplusplus
 namespace zth {
-	/*!
-	 * \brief Returns the version of Zth.
-	 * \ingroup zth_api_cpp_util
-	 */
-	ZTH_EXPORT constexpr inline char const* version() {
-		return ZTH_VERSION;
-	}
+/*!
+ * \brief Returns the version of Zth.
+ * \ingroup zth_api_cpp_util
+ */
+ZTH_EXPORT constexpr inline char const* version() noexcept
+{
+	return ZTH_VERSION;
 }
+} // namespace zth
 
 /*!
  * \copydoc zth::version()
  * \details This is a C-wrapper for zth::version().
  * \ingroup zth_api_c_util
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE char const* zth_version() { return zth::version(); }
-#else // !__cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE char const* zth_version() noexcept
+{
+	return zth::version();
+}
+#else  // !__cplusplus
 ZTH_EXPORT char const* zth_version();
 #endif // __cplusplus
 
-#endif // _ZTH_VERSION_H
+#endif // ZTH_VERSION_H

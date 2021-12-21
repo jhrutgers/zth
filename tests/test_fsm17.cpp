@@ -16,27 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Default zth configuration. Copy this file, and override defaults in the
-// Config class below.  Make sure it is in your include path, and zth will use
-// your config file.  For CMake, so something like this:
-//
-//   target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+#include <zth>
 
-#ifndef ZTH_CONFIG_H
-#	error Do not include this file directly, include <zth> instead.
+#include <gtest/gtest.h>
+
+#if __cplusplus < 201703L
+#	error Compile as C++17 or newer.
 #endif
 
-#ifdef __cplusplus
-namespace zth {
+TEST(Fsm17, CallbackLambda)
+{
+	using namespace zth::fsm;
 
-/*!
- * \brief The configuration of Zth.
- * \ingroup zth_api_cpp_config
- */
-struct Config : public DefaultConfig {
-	// Override defaults from DefaultConfig here for your local setup.
-	// static size_t const DefaultFiberStackSize = 0x2000;
-};
+	static bool flag = false;
 
-} // namespace zth
-#endif // __cplusplus
+	static constexpr auto check = action([&]() { flag = true; });
+
+	// clang-format off
+	constexpr auto transitions = compile(
+		"a" + entry / check
+	);
+	// clang-format on
+
+	auto fsm = transitions.spawn();
+	EXPECT_TRUE(fsm.valid());
+	EXPECT_FALSE(flag);
+
+	fsm.run(true);
+	EXPECT_TRUE(flag);
+}

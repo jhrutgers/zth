@@ -21,11 +21,11 @@ void fiber_vv();
 // Then, use zth_fiber_declare() instead of zth_fiber() to generate everything
 // that is required such that other compilation units can do `async
 // fiber_vv()'.
-zth_fiber_declare(fiber_vv);
+zth_fiber_declare(fiber_vv)
 
 // In one .cpp file, zth_fiber_define() is required to implement the actual
 // fiber creation code.
-zth_fiber_define(fiber_vv);
+zth_fiber_define(fiber_vv)
 
 // And, of course, you need to implement the function itself in the .cpp file.
 void fiber_vv()
@@ -53,7 +53,7 @@ void fiber_vii(int x, int y)
 // zth_fiber_declare(), zth_fiber_define() and zth_fiber() allow a list of
 // functions. This is identical to calling zth_fiber...() on every function
 // separately.
-zth_fiber(fiber_vi, fiber_vii);
+zth_fiber(fiber_vi, fiber_vii)
 
 // Fibers can return data, like normal functions.
 double fiber_ddd(double a, double b)
@@ -62,7 +62,7 @@ double fiber_ddd(double a, double b)
 	printf("fiber_ddd(%g, %g) = %g\n", a, b, res);
 	return res;
 }
-zth_fiber(fiber_ddd);
+zth_fiber(fiber_ddd)
 
 #if __cplusplus >= 201103L
 // The current implementation for pre-C++11 only support up to three arguments.
@@ -73,7 +73,7 @@ double fiber_ddddi(double a, double b, double c, int d)
 	printf("fiber_ddddi(%g, %g, %g, %d) = %g\n", a, b, c, d, res);
 	return res;
 }
-zth_fiber(fiber_ddddi);
+zth_fiber(fiber_ddddi)
 #endif
 
 int main_fiber(int /*argc*/, char** /*argv*/)

@@ -24,13 +24,14 @@
 #include <libzth/zmq.h>
 
 #if defined(ZTH_HAVE_POLLER) && !defined(ZTH_OS_WINDOWS)
-#  include <fcntl.h>
+#	include <fcntl.h>
 
-namespace zth { namespace io {
+namespace zth {
+namespace io {
 
 /*!
- * \brief Like normal \c %read(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
- * \ingroup zth_api_cpp_io
+ * \brief Like normal \c %read(), but forwards the \c %poll() to the #zth::Waiter in case it would
+ * block. \ingroup zth_api_cpp_io
  */
 ssize_t read(int fd, void* buf, size_t count)
 {
@@ -56,8 +57,8 @@ ssize_t read(int fd, void* buf, size_t count)
 }
 
 /*!
- * \brief Like normal \c %write(), but forwards the \c %poll() to the #zth::Waiter in case it would block.
- * \ingroup zth_api_cpp_io
+ * \brief Like normal \c %write(), but forwards the \c %poll() to the #zth::Waiter in case it would
+ * block. \ingroup zth_api_cpp_io
  */
 ssize_t write(int fd, void const* buf, size_t count)
 {
@@ -82,7 +83,8 @@ ssize_t write(int fd, void const* buf, size_t count)
 	return ::write(fd, buf, count);
 }
 
-} } // namespace
+} // namespace io
+} // namespace zth
 #else
 static int no_io __attribute__((unused));
 #endif // ZTH_HAVE_POLLER

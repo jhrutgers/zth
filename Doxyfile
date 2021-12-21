@@ -2054,7 +2054,7 @@ INCLUDE_FILE_PATTERNS  =
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 PREDEFINED             = DOXYGEN \
-                         __cplusplus=201103L \
+                         __cplusplus=201703L \
                          __linux__ \
                          __GNUC__ \
 			 __x86_64__ \
@@ -2075,6 +2075,9 @@ PREDEFINED             = DOXYGEN \
 
 EXPAND_AS_DEFINED      = is_default \
 			 LREF_QUALIFIED \
+			 constexpr14 \
+			 inline17 \
+			 deprecated14 \
 
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will

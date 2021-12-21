@@ -42,7 +42,7 @@ void scheduling()
 	// the relation between fibers in the VCD.
 	zth::mnap(10);
 }
-zth_fiber(scheduling);
+zth_fiber(scheduling)
 
 void measure()
 {
@@ -82,7 +82,7 @@ void measure()
 	// length between the perf_mark()s in the VCD log string and compare it
 	// with the measured time interval.
 }
-zth_fiber(measure);
+zth_fiber(measure)
 
 void stack()
 {
@@ -95,7 +95,7 @@ void stack()
 	zth::Backtrace bt2;
 	bt2.printDelta(bt);
 }
-zth_fiber(stack);
+zth_fiber(stack)
 
 
 

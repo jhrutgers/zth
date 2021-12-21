@@ -28,23 +28,24 @@ zth_fiber(main_fiber);
 #endif
 
 /*!
- * \brief Initialization function to be called by the default-supplied \c main(), before doing
- * anything else.
+ * \brief Initialization function to be called by the default-supplied \c
+ *	main(), before doing anything else.
  *
- * This function can be used to run machine/board-specific initialization in \c main() even before
- * #zth_init() is invoked. The default (weak) implementation does nothing.
+ * This function can be used to run machine/board-specific initialization in \c
+ * main() even before #zth_init() is invoked. The default (weak) implementation
+ * does nothing.
  */
 __attribute__((weak)) void zth_preinit() {}
 
 /*!
- * \brief Initialization function to be called by the default-supplied \c main(), just before
- * shutting down.
+ * \brief Initialization function to be called by the default-supplied \c
+ *	main(), just before shutting down.
  *
- * This function can be used to run machine/board-specific cleanup in \c main() before returning.
- * The default (weak) implementation does nothing.
+ * This function can be used to run machine/board-specific cleanup in \c main()
+ * before returning.  The default (weak) implementation does nothing.
  *
- * \return the exit code of the application, which overrides the returned value from \c main_fiber()
- * when non-zero
+ * \return the exit code of the application, which overrides the returned value
+ *	from \c main_fiber() when non-zero
  */
 __attribute__((weak)) int zth_postdeinit()
 {

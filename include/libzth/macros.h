@@ -199,6 +199,9 @@ ZTH_EXPORT void foo();
 #	ifndef LREF_QUALIFIED
 #		define LREF_QUALIFIED
 #	endif
+#	ifndef inline17
+#		define inline17
+#	endif
 #else
 #	ifndef constexpr14
 #		if __cplusplus < 201402L
@@ -212,6 +215,13 @@ ZTH_EXPORT void foo();
 #	endif
 #	ifndef LREF_QUALIFIED
 #		define LREF_QUALIFIED &
+#	endif
+#	ifndef inline17
+#		if __cplusplus < 201703L
+#			define inline17
+#		else
+#			define inline17 inline
+#		endif
 #	endif
 #endif
 
@@ -294,9 +304,7 @@ ZTH_EXPORT void foo();
 #	else
 #		error Unsupported Apple platform.
 #	endif
-//#  define ZTH_HAVE_VALGRIND
 #	define ZTH_HAVE_PTHREAD
-//#  define ZTH_HAVE_LIBUNWIND
 #	define ZTH_HAVE_POLL
 #	define ZTH_HAVE_MMAN
 #	include <Availability.h>

@@ -157,7 +157,7 @@ Other fiber
 */
 
 /*!
-\example fsm.cpp
+\example fsm14.cpp
 \brief Finite-state machine example
 */
 

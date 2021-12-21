@@ -30,7 +30,7 @@ void fiber(int id)
 		zth::outOfWork();
 	}
 }
-zth_fiber(fiber);
+zth_fiber(fiber)
 
 static bool stopOther = false;
 
@@ -41,7 +41,7 @@ void otherFiber()
 		zth::outOfWork();
 	}
 }
-zth_fiber(otherFiber);
+zth_fiber(otherFiber)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {

@@ -17,18 +17,18 @@
  */
 
 #include <libzth/macros.h>
+#include <libzth/init.h>
 #include <libzth/time.h>
 #include <libzth/util.h>
-#include <libzth/init.h>
 #include <cerrno>
 
 #ifdef ZTH_OS_MAC
-#  include <mach/mach_time.h>
+#	include <mach/mach_time.h>
 #endif
 
 #ifdef ZTH_OS_MAC
 
-#  ifdef ZTH_CUSTOM_CLOCK_GETTIME
+#	ifdef ZTH_CUSTOM_CLOCK_GETTIME
 static mach_timebase_info_data_t clock_info;
 static uint64_t mach_clock_start;
 
@@ -47,14 +47,17 @@ int clock_gettime(int clk_id, struct timespec* res)
 	zth_assert(clk_id == CLOCK_MONOTONIC);
 	uint64_t c = (mach_absolute_time() - mach_clock_start);
 	uint64_t ns;
-	if(unlikely(clock_info.numer != clock_info.denom)) // For all recent Mac OSX versions, mach_absolute_time() is in ns.
+	if(unlikely(clock_info.numer != clock_info.denom)) // For all recent Mac OSX versions,
+							   // mach_absolute_time() is in ns.
 	{
-		uint64_t chigh = (c >> 32) * clock_info.numer;
+		uint64_t chigh = (c >> 32u) * clock_info.numer;
 		uint64_t chighrem = ((chigh % clock_info.denom) << 32u) / clock_info.denom;
 		chigh /= clock_info.denom;
-		uint64_t clow = (c & (((uint64_t)1 << 32u) - 1)) * clock_info.numer / clock_info.denom;
+		uint64_t clow =
+			(c & (((uint64_t)1 << 32u) - 1)) * clock_info.numer / clock_info.denom;
 		clow += chighrem;
-		ns = (chigh << 32u) + clow; // 64-bit ns gives us more than 500 y before wrap-around.
+		ns = (chigh << 32u)
+		     + clow; // 64-bit ns gives us more than 500 y before wrap-around.
 	} else {
 		ns = c;
 	}
@@ -64,7 +67,7 @@ int clock_gettime(int clk_id, struct timespec* res)
 	res->tv_sec = (time_t)(ns / zth::TimeInterval::BILLION);
 	return 0;
 }
-#  endif // ZTH_CUSTOM_CLOCK_GETTIME
+#	endif // ZTH_CUSTOM_CLOCK_GETTIME
 
 int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain)
 {
@@ -115,8 +118,10 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 #endif
 
 #ifdef ZTH_OS_WINDOWS
-// When using gcc and MinGW, clock_nanosleep() only accepts CLOCK_REALTIME, but we use CLOCK_MONOTONIC.
-int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *request, struct timespec *remain)
+// When using gcc and MinGW, clock_nanosleep() only accepts CLOCK_REALTIME, but we use
+// CLOCK_MONOTONIC.
+int clock_nanosleep(
+	clockid_t clock_id, int flags, const struct timespec* request, struct timespec* remain)
 {
 	if(unlikely(!request))
 		return EFAULT;
@@ -147,8 +152,10 @@ int clock_nanosleep(clockid_t clock_id, int flags, const struct timespec *reques
 #ifdef ZTH_OS_BAREMETAL
 // Clock functions are typically not provided by the std library.
 
-// As there is no OS, just do polling for the clock. Please provide a more accurate one, when appropriate.
-__attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* UNUSED_PAR(remain))
+// As there is no OS, just do polling for the clock. Please provide a more accurate one, when
+// appropriate.
+__attribute__((weak)) int clock_nanosleep(
+	int clk_id, int flags, struct timespec const* request, struct timespec* UNUSED_PAR(remain))
 {
 	if(unlikely(!request))
 		return EFAULT;
@@ -170,14 +177,16 @@ __attribute__((weak)) int clock_nanosleep(int clk_id, int flags, struct timespec
 #endif
 
 #ifdef ZTH_OS_MAC
-namespace zth { zth::Timestamp startTime; }
+namespace zth {
+zth::Timestamp startTime;
+}
 
 static void startTimeInit()
 {
 	zth::startTime = zth::Timestamp::now();
 }
 ZTH_INIT_CALL(startTimeInit)
-#else // !ZTH_OS_MAC
+#else  // !ZTH_OS_MAC
 zth::Timestamp startTime_;
 
 static void startTimeInit()
@@ -187,5 +196,7 @@ static void startTimeInit()
 ZTH_INIT_CALL(startTimeInit)
 
 // Let the const zth::startTime alias to the non-const startTime_.
-namespace zth { extern Timestamp const __attribute__((alias("startTime_"))) startTime; }
+namespace zth {
+extern Timestamp const __attribute__((alias("startTime_"))) startTime;
+}
 #endif // ZTH_OS_MAC

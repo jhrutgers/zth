@@ -39,9 +39,9 @@
 #		endif
 #	else
 #		define pthread_sigmask(...) sigprocmask(__VA_ARGS__)
-#		define pthread_kill(...) kill(__VA_ARGS__)
-#		define pthread_self() getpid()
-#		define pthread_yield_np() sched_yield()
+#		define pthread_kill(...)    kill(__VA_ARGS__)
+#		define pthread_self()	     getpid()
+#		define pthread_yield_np()   sched_yield()
 #	endif
 
 namespace zth {

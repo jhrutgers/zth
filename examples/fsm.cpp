@@ -243,7 +243,7 @@ static void cb(Fsm_type& fsm, zth::Timestamp& green)
 		if(!zth_config(EnableDebugPrint))
 			printf("\n\x1b[11A");
 	}
-	fflush(NULL);
+	fflush(nullptr);
 }
 
 // Something to be passed to the callback function.
@@ -271,7 +271,7 @@ static void trafficDetect()
 	while(zth::io::read(0, &buf, 1) > 0)
 		fsm.input(traffic);
 }
-zth_fiber(trafficDetect);
+zth_fiber(trafficDetect)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
