@@ -55,6 +55,7 @@ bool config(int env /* one of Env::* */, bool whenUnset);
 #	define zth_config(name) (::zth::config(::zth::Env::name, ::zth::Config::name))
 
 struct DefaultConfig {
+	/*! \brief This is a debug build when set to \c true. */
 	static bool const Debug =
 #	ifndef NDEBUG
 		true;
@@ -62,6 +63,7 @@ struct DefaultConfig {
 		false;
 #	endif
 
+	/*! \brief When \c true, enable #zth_assert(). */
 	static bool const EnableAssert =
 #	ifndef NDEBUG
 		Debug;
@@ -69,6 +71,7 @@ struct DefaultConfig {
 		false;
 #	endif
 
+	/*! \brief Add (Worker) thread support when \c true. */
 	static bool const EnableThreads =
 #	if ZTH_THREADS
 		true;
@@ -99,6 +102,10 @@ struct DefaultConfig {
 	/*! \brief Enable colored output. */
 	static bool const EnableColorLog = true;
 
+	/*!
+	 * \brief ANSI color used by #zth_dbg().
+	 * Printing this category is disabled when set to 0.
+	 */
 	static int const Print_banner = 12; // bright blue
 	static int const Print_worker = 5;  // magenta
 	static int const Print_waiter = 1;  // red
@@ -112,28 +119,45 @@ struct DefaultConfig {
 	static int const Print_fsm = 14;    // bright cyan
 	static int const Print_thread = 3;  // yellow
 
+	/*! \brief Default fiber stack size in bytes. */
 	static size_t const DefaultFiberStackSize = 0x20000;
+	/*! \brief When \c true, enable stack guards. */
 	static bool const EnableStackGuard = Debug;
+	/*! \brief When \c true, enable stack watermark to detect maximum stack usage. */
 	static bool const EnableStackWaterMark = Debug;
+	/*! \brief Take POSIX signal into account when doing a context switch. */
 	static bool const ContextSignals = false;
+	/*! \brief Minimum time slice before zth::yield() actually yields. */
 	constexpr static double MinTimeslice_s()
 	{
 		return 1e-4;
 	}
+
+	/*! \brief Print an overrun reported when MinTimeslice_s() is exceeded by this factor. */
 	static int const TimesliceOverrunFactorReportThreshold = 4;
+	/*! \brief Check time slice overrun at every context switch. */
 	static bool const CheckTimesliceOverrun = Debug;
+	/*! \brief Save names for all #zth::Synchronizer instances. */
 	static bool const NamedSynchronizer = SupportDebugPrint && Print_sync > 0;
 
+	/*! \brief Buffer size for perf events. */
 	static size_t const PerfEventBufferSize = 128;
+	/*! \brief Threshold when to force writing out VCD buffer. */
 	static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
+	/*! \brief VCD file buffer in bytes. */
 	static size_t const PerfVCDFileBuffer = 0x1000;
 
+	/*! \brief Enable (but not necessarily record) perf. */
 	static bool const EnablePerfEvent = true;
+	/*! \brief Record and output perf events. */
 	static bool const DoPerfEvent = false;
+	/*! \brief Also record syscalls by perf. */
 	static bool const PerfSyscall = true;
 
+	/*! \brief Use named FSM guards/actions. */
 	static bool const NamedFsm = Debug || (EnableDebugPrint && Print_fsm > 0);
 
+	/*! \brief Enable ZeroMQ support. */
 	static bool const UseZMQ =
 #	ifdef ZTH_HAVE_LIBZMQ
 		true;

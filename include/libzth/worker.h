@@ -39,6 +39,7 @@ void sigchld_check();
 class Worker;
 
 /*!
+ * \brief The class that manages the fibers within this thread.
  * \ingroup zth_api_cpp_fiber
  */
 class Worker
@@ -390,6 +391,7 @@ private:
 };
 
 /*!
+ * \brief Return the (thread-local) singleton Worker instance.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() noexcept
@@ -399,6 +401,7 @@ ZTH_EXPORT __attribute__((pure)) inline Worker& currentWorker() noexcept
 }
 
 /*!
+ * \brief Return the currently executing fiber.
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept
@@ -428,6 +431,12 @@ inline void getContext(Worker** worker, Fiber** fiber) noexcept
 }
 
 /*!
+ * \brief Allow a context switch.
+ * \param preferFiber context switch to this fiber. Do normal scheduling when
+ *	\c nullptr.
+ * \param alwaysYield always perform a context switch, even if we are within
+ *	Config::MinTimeslice_s().
+ * \param now the current time stamp
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void
@@ -444,6 +453,13 @@ yield(Fiber* preferFiber = nullptr, bool alwaysYield = false,
 }
 
 /*!
+ * \brief Force a context switch.
+ *
+ * Normally, yield() does not yield when the time slice did not end.  This
+ * prevents excessive context switching, without actually doing much work in
+ * between.  However, if there is no work, this function forces a context
+ * switch anyway.
+ *
  * \ingroup zth_api_cpp_fiber
  */
 ZTH_EXPORT inline void outOfWork()
@@ -473,7 +489,7 @@ int execvp(char const* file, char* const arg[]);
 } // namespace zth
 
 /*!
- * \copydoc zth::yield()
+ * \brief \copybrief zth::yield()
  * \details This is a C-wrapper for zth::yield().
  * \ingroup zth_api_c_fiber
  */
@@ -493,6 +509,10 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_outOfWork() noexcept
 }
 
 /*!
+ * \brief Create a Worker.
+ * \return 0 on success, otherwise an errno
+ * \see #zth_worker_run()
+ * \see #zth_worker_destroy()
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() noexcept
@@ -511,6 +531,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() noexcept
 }
 
 /*!
+ * \brief Run the worker for the given amount of time.
+ * \see #zth_worker_create()
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = nullptr) noexcept
@@ -523,6 +545,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_run(struct timespec const* ts = n
 }
 
 /*!
+ * \brief Cleanup the worker.
+ * \see #zth_worker_create()
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() noexcept
@@ -534,8 +558,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_worker_destroy() noexcept
 }
 
 /*!
- * \copydoc zth::execvp()
- * \details This is a C-wrapper for zth::execvp().
+ * \copydoc zth::startWorkerThread()
+ * \details This is a C-wrapper for zth::startWorkerThread().
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int

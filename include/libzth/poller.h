@@ -717,6 +717,11 @@ protected:
 typedef NoPoller DefaultPollerServer;
 #	endif // No poller
 
+/*!
+ * \typedef DefaultPollerServer
+ * \brief The poller server, by default instantiated by the #zth::Waiter.
+ * \ingroup zth_api_cpp_poller
+ */
 
 
 //////////////////////////////////////////////
@@ -727,7 +732,9 @@ typedef NoPoller DefaultPollerServer;
  * \brief The poller to be used by a fiber.
  *
  * All poll requests are forwarded to the PollerServer, as managed by the
- * current Worker's Waiter.
+ * current Worker's #zth::Waiter.
+ *
+ * \ingroup zth_api_cpp_poller
  */
 class PollerClient : public PollerClientBase {
 	ZTH_CLASS_NEW_DELETE(PollerClient)
@@ -768,9 +775,16 @@ private:
 	Result m_result;
 };
 
-// The default Poller to use.
+/*!
+ * \brief The default Poller to use.
+ * \ingroup zth_api_cpp_poller
+ */
 typedef PollerClient Poller;
 
+/*!
+ * \brief Fiber-aware \c %poll() for a single pollable thing.
+ * \ingroup zth_api_cpp_poller
+ */
 template <typename P>
 int poll(P pollable, int timeout_ms = -1)
 {

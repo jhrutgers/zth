@@ -200,7 +200,7 @@ ZTH_EXPORT void foo();
 #		define LREF_QUALIFIED
 #	endif
 #	ifndef inline17
-#		define inline17
+#		define inline17 static
 #	endif
 #else
 #	ifndef constexpr14
@@ -218,7 +218,7 @@ ZTH_EXPORT void foo();
 #	endif
 #	ifndef inline17
 #		if __cplusplus < 201703L
-#			define inline17
+#			define inline17 static
 #		else
 #			define inline17 inline
 #		endif

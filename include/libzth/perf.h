@@ -20,10 +20,15 @@
 
 /*!
  * \defgroup zth_api_cpp_perf perf
+ *
+ * This module allows generating a VCD file (in the current working directory),
+ * which tracks scheduling behavior of the application.
+ *
  * \ingroup zth_api_cpp
  */
 /*!
  * \defgroup zth_api_c_perf perf
+ * \copydetails zth_api_cpp_perf
  * \ingroup zth_api_c
  */
 
@@ -49,6 +54,10 @@ class Fiber;
 
 UniqueID<Fiber> const& currentFiberID() noexcept;
 
+/*!
+ * \brief Save a backtrace.
+ * \ingroup zth_api_cpp_perf
+ */
 class Backtrace {
 	ZTH_CLASS_NEW_DELETE(Backtrace)
 public:
@@ -99,6 +108,7 @@ private:
 };
 
 /*!
+ * \brief An event to be processed by perf_event().
  * \ingroup zth_api_cpp_perf
  */
 template <bool Enable = Config::EnablePerfEvent>
@@ -259,8 +269,8 @@ void perf_flushEventBuffer() noexcept;
 /*!
  * \def zth_perf_event
  *
- * Construct a PerfEvent with provided parameters, and forward it to
- * the perf buffer for later processing.
+ * \brief Construct a #zth::PerfEvent with provided parameters, and forward it to
+ *	the perf buffer for later processing.
  *
  * \hideinitializer
  * \ingroup zth_api_cpp_perf
@@ -317,6 +327,7 @@ inline void perf_event(PerfEvent<> const& event) noexcept
 #	endif
 
 /*!
+ * \brief Put a string marker into the perf output.
  * \ingroup zth_api_cpp_perf
  */
 ZTH_EXPORT inline void perf_mark(char const* marker)
@@ -326,6 +337,7 @@ ZTH_EXPORT inline void perf_mark(char const* marker)
 }
 
 /*!
+ * \brief Put a formatted log string into the perf output.
  * \ingroup zth_api_cpp_perf
  */
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void perf_log(char const* fmt, ...)
@@ -340,6 +352,7 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) inline void perf_log(c
 }
 
 /*!
+ * \brief Put a formatted log string into the perf output.
  * \ingroup zth_api_cpp_perf
  */
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) inline void
@@ -349,6 +362,9 @@ perf_logv(char const* fmt, va_list args)
 		zth_perf_event(currentFiberID(), Timestamp::now(), fmt, args);
 }
 
+/*!
+ * \brief Put a syscall into the perf output.
+ */
 inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp())
 {
 	if(Config::EnablePerfEvent && zth_config(PerfSyscall))
@@ -356,6 +372,13 @@ inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp())
 }
 
 /*!
+ * \brief Measure the load of some activity.
+ *
+ * This is a first-order low-pass filter.  The RC-time is to be provided to the
+ * constructor.
+ *
+ * The activity is measured by means of calls to idle() and active().
+ *
  * \ingroup zth_api_cpp_perf
  */
 template <typename T = float>

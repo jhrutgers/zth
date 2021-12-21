@@ -31,6 +31,10 @@ namespace zth {
 
 /*!
  * \brief The configuration of Zth.
+ *
+ * To override the default values, make sure your \c zth_config.h file is in
+ * the include directory list before the default paths.
+ *
  * \ingroup zth_api_cpp_config
  */
 struct Config : public DefaultConfig {
