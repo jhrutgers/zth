@@ -71,6 +71,20 @@ public:
 		return m_future;
 	}
 
+	SharedPointer<Future_type> withFuture()
+	{
+		if(!m_future.get()) {
+			registerFuture(
+				!Config::NamedSynchronizer
+					? new Future_type()
+					: new Future_type(
+						format("Future of %s", this->name().c_str())
+							.c_str()));
+		}
+
+		return m_future;
+	}
+
 protected:
 	static void entry(void* that)
 	{
@@ -110,14 +124,13 @@ protected:
 	virtual void apply(Fiber& fiber) const = 0;
 
 	template <typename R, typename F>
-	friend TypedFiber<R, F>* operator<<(TypedFiber<R, F>* f, FiberManipulator const& m);
+	friend TypedFiber<R, F>& operator<<(TypedFiber<R, F>& f, FiberManipulator const& m);
 };
 
 template <typename R, typename F>
-TypedFiber<R, F>* operator<<(TypedFiber<R, F>* f, FiberManipulator const& m)
+TypedFiber<R, F>& operator<<(TypedFiber<R, F>& f, FiberManipulator const& m)
 {
-	if(likely(f))
-		m.apply(*f);
+	m.apply(f);
 	return f;
 }
 
@@ -260,21 +273,15 @@ public:
 
 	template <typename F>
 	// cppcheck-suppress noExplicitConstructor
-	AutoFuture(TypedFiber<T, F>* fiber)
+	AutoFuture(TypedFiber<T, F>& fiber)
 	{
 		*this = fiber;
 	}
 
 	template <typename F>
-	AutoFuture& operator=(TypedFiber<T, F>* fiber)
+	AutoFuture& operator=(TypedFiber<T, F>& fiber)
 	{
-		if(fiber) {
-			this->reset(new Future_type(
-				format("Future of %s", fiber->name().c_str()).c_str()));
-			fiber->registerFuture(this->get());
-		} else {
-			this->reset();
-		}
+		this->reset(fiber.withFuture().get());
 		return *this;
 	}
 
@@ -621,22 +628,22 @@ public:
 	{}
 
 #	if ZTH_TYPEDFIBER98
-	TypedFiber_type* operator()() const
+	TypedFiber_type& operator()() const
 	{
 		return polish(*new TypedFiber_type(m_function));
 	}
 
-	TypedFiber_type* operator()(A1 a1) const
+	TypedFiber_type& operator()(A1 a1) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1));
 	}
 
-	TypedFiber_type* operator()(A1 a1, A2 a2) const
+	TypedFiber_type& operator()(A1 a1, A2 a2) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2));
 	}
 
-	TypedFiber_type* operator()(A1 a1, A2 a2, A3 a3) const
+	TypedFiber_type& operator()(A1 a1, A2 a2, A3 a3) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 	}
@@ -644,26 +651,62 @@ public:
 
 #	if __cplusplus >= 201103L
 	template <typename... Args>
-	TypedFiber_type* operator()(Args&&... args) const
+	TypedFiber_type& operator()(Args&&... args) const
 	{
 		return polish(*new TypedFiber_type(m_function, std::forward<Args>(args)...));
 	}
 #	endif // C++11
 
 protected:
-	TypedFiber_type* polish(TypedFiber_type& fiber) const
+	TypedFiber_type& polish(TypedFiber_type& fiber) const
 	{
 		if(unlikely(m_name))
 			fiber.setName(m_name);
 
 		currentWorker().add(&fiber);
-		return &fiber;
+		return fiber;
 	}
 
 private:
 	Function m_function;
 	char const* m_name;
 };
+
+template <typename F>
+struct fiber_type_impl {
+	typedef TypedFiberFactory<F> factory;
+	typedef typename factory::TypedFiber_type& fiber;
+	typedef typename factory::AutoFuture_type future;
+};
+
+template <typename F>
+struct fiber_type {};
+
+#	if ZTH_TYPEDFIBER98
+template <typename R>
+struct fiber_type<R (*)()> : public fiber_type_impl<R (*)()> {};
+
+template <typename R, typename A1>
+struct fiber_type<R (*)(A1)> : public fiber_type_impl<R (*)(A1)> {};
+
+template <typename R, typename A1, typename A2>
+struct fiber_type<R (*)(A1, A2)> : public fiber_type_impl<R (*)(A1, A2)> {};
+
+template <typename R, typename A1, typename A2, typename A3>
+struct fiber_type<R (*)(A1, A2, A3)> : public fiber_type_impl<R (*)(A1, A2, A3)> {};
+#	endif
+
+#	if __cplusplus >= 201103L
+template <typename R, typename... Args>
+struct fiber_type<R (*)(Args...)> : public fiber_type_impl<R (*)(Args...)> {};
+#	endif
+
+template <typename F>
+typename fiber_type<F>::factory fiber(F f, char const* name = nullptr)
+{
+	return typename fiber_type<F>::factory(
+		f, Config::EnableDebugPrint || Config::EnablePerfEvent ? name : nullptr);
+}
 
 namespace fibered {}
 

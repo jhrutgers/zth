@@ -30,9 +30,7 @@ TEST(FiberTest, Dummy)
 	SUCCEED();
 }
 
-static void fiber_v()
-{
-}
+static void fiber_v() {}
 zth_fiber(fiber_v)
 
 TEST(FiberTest, v)
@@ -206,4 +204,52 @@ TEST(FiberTest, diRdfPl)
 	EXPECT_DOUBLE_EQ(d, 3.4);
 
 	async fiber_diRdfPl(i, d, f, &l);
+}
+
+TEST(FiberTest, direct_v)
+{
+	using fiber_type = zth::fiber_type<decltype(&fiber_v)>;
+
+	fiber_type::factory factory = zth::fiber(fiber_v);
+	fiber_type::fiber fiber = factory();
+	fiber_type::future future = fiber;
+	future->wait();
+}
+
+TEST(FiberTest, direct_ii)
+{
+	auto factory = zth::fiber(fiber_ii, "fiber_ii()");
+	auto future = factory(5).withFuture();
+	EXPECT_EQ(future->value(), 6);
+}
+
+TEST(FiberTest, direct_iPi)
+{
+	int i = 4;
+	auto f = zth::fiber(fiber_iPi)(&i).withFuture();
+	EXPECT_EQ(f->value(), 5);
+}
+
+TEST(FiberTest, direct_viRdf)
+{
+	int i = 8;
+	double d = 0.1;
+	float f = 2.0f;
+
+	auto future = (zth::fiber(fiber_viRdf)(i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
+	future->wait();
+	EXPECT_DOUBLE_EQ(d, 1.6);
+
+	async fiber_viRdf(i, d, f);
+}
+
+TEST(FiberTest, direct_diRdfPl)
+{
+	int i = 12;
+	double d = 0.1;
+	float f = 2.0f;
+	long l = 1;
+	auto r = zth::fiber(fiber_diRdfPl, "fiber_diRdfPl")(i, d, f, &l).withFuture();
+	EXPECT_DOUBLE_EQ(r->value(), 3.4);
+	EXPECT_DOUBLE_EQ(d, 3.4);
 }

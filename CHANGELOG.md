@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/jhrutgers/zth/compare/v1.0.0...HEAD)
 
+## [1.1.0] - xxxx-xx-xx
+
+### Added
+
+- `zth::fiber()` as alternative to `zth_fiber()` and friends with `async`.
+
+[1.1.0]: https://github.com/jhrutgers/zth/releases/tag/v1.1.0
+
 ## [1.0.0] - 2021-12-21
 
 Initial version.
