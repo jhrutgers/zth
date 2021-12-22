@@ -271,6 +271,11 @@ public:
 		: base(af)
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
+	constexpr14 AutoFuture(base const& p) noexcept
+		: base(p)
+	{}
+
 	template <typename F>
 	// cppcheck-suppress noExplicitConstructor
 	AutoFuture(TypedFiber<T, F>& fiber)
@@ -701,6 +706,14 @@ template <typename R, typename... Args>
 struct fiber_type<R (*)(Args...)> : public fiber_type_impl<R (*)(Args...)> {};
 #	endif
 
+/*!
+ * \brief Create a new fiber.
+ *
+ * Actually, it returns a factory, that allows passing the fiber arguments
+ * afterwards.
+ *
+ * \ingroup zth_api_cpp_fiber
+ */
 template <typename F>
 typename fiber_type<F>::factory fiber(F f, char const* name = nullptr)
 {
