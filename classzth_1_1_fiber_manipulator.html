@@ -109,18 +109,18 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a7234b3972fbb6b7b80d37b0ae67521d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad06091e8bc6f9329188c75e5ca696407"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html#ad06091e8bc6f9329188c75e5ca696407">~FiberManipulator</a> ()=default</td></tr>
 <tr class="separator:ad06091e8bc6f9329188c75e5ca696407"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab89e7d9dd4d8ce3e62e048e23a9a3f58"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html#ab89e7d9dd4d8ce3e62e048e23a9a3f58">apply</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;fiber) const =0</td></tr>
+<tr class="memitem:ab89e7d9dd4d8ce3e62e048e23a9a3f58"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html#ab89e7d9dd4d8ce3e62e048e23a9a3f58">apply</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="group__zth__api__cpp__fiber.html#ga7fa94d5dfb2edaa9e79a6e9b64ad8c25">fiber</a>) const =0</td></tr>
 <tr class="separator:ab89e7d9dd4d8ce3e62e048e23a9a3f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a8c1aee9204e2fb4233e558397aac0ad6"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
-<tr class="memitem:a8c1aee9204e2fb4233e558397aac0ad6"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html#a8c1aee9204e2fb4233e558397aac0ad6">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; *f, <a class="el" href="classzth_1_1_fiber_manipulator.html">FiberManipulator</a> const &amp;m)</td></tr>
-<tr class="separator:a8c1aee9204e2fb4233e558397aac0ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade1fe037f3a2498fee12ae92ccc5893d"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
+<tr class="memitem:ade1fe037f3a2498fee12ae92ccc5893d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html#ade1fe037f3a2498fee12ae92ccc5893d">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;f, <a class="el" href="classzth_1_1_fiber_manipulator.html">FiberManipulator</a> const &amp;m)</td></tr>
+<tr class="separator:ade1fe037f3a2498fee12ae92ccc5893d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00106">106</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00120">120</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7234b3972fbb6b7b80d37b0ae67521d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7234b3972fbb6b7b80d37b0ae67521d9">&#9670;&nbsp;</a></span>FiberManipulator()</h2>
@@ -202,8 +202,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="a8c1aee9204e2fb4233e558397aac0ad6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c1aee9204e2fb4233e558397aac0ad6">&#9670;&nbsp;</a></span>operator&lt;&lt;</h2>
+<a id="ade1fe037f3a2498fee12ae92ccc5893d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade1fe037f3a2498fee12ae92ccc5893d">&#9670;&nbsp;</a></span>operator&lt;&lt;</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -214,9 +214,9 @@ template&lt;typename R , typename F &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt;R, F&gt;* operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt;R, F&gt;&amp; operator&lt;&lt; </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
@@ -238,7 +238,7 @@ template&lt;typename R , typename F &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00117">117</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00131">131</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>

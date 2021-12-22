@@ -59,6 +59,7 @@ var group__zth__api__cpp__fiber =
     [ "currentWorker", "group__zth__api__cpp__fiber.html#ga5fcfd63873716813f381a787e1cc218c", null ],
     [ "execlp", "group__zth__api__cpp__fiber.html#ga2253ebdcaef7df7487bb2ff9aa991b8f", null ],
     [ "execvp", "group__zth__api__cpp__fiber.html#gace10a072a53ecfc4db384c7301c5e7aa", null ],
+    [ "fiber", "group__zth__api__cpp__fiber.html#ga7fa94d5dfb2edaa9e79a6e9b64ad8c25", null ],
     [ "fls", "group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891", null ],
     [ "mnap", "group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152", null ],
     [ "nap", "group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665", null ],

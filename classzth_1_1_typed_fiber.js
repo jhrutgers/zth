@@ -10,5 +10,6 @@ var classzth_1_1_typed_fiber =
     [ "future", "classzth_1_1_typed_fiber.html#aff4b81975143598e3bb980653f382b13", null ],
     [ "registerFuture", "classzth_1_1_typed_fiber.html#ac45ce5da6f2a5212f7879518ece20963", null ],
     [ "setFuture", "classzth_1_1_typed_fiber.html#af598d6086b3a6954b50262a82d6648ea", null ],
-    [ "setFuture", "classzth_1_1_typed_fiber.html#a5571c100d17b50dd383c5d5e8403d9d3", null ]
+    [ "setFuture", "classzth_1_1_typed_fiber.html#a5571c100d17b50dd383c5d5e8403d9d3", null ],
+    [ "withFuture", "classzth_1_1_typed_fiber.html#ad18c124eded1641cdaa13331a0628c18", null ]
 ];

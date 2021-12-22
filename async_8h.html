@@ -130,6 +130,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber_factory.html">zth::TypedFiberFactory&lt; F &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type__impl.html">zth::fiber_type_impl&lt; F &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type.html">zth::fiber_type&lt; F &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html">zth::fiber_type&lt; R(*)(Args...)&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -159,20 +165,42 @@ Macros</h2></td></tr>
 <tr class="memitem:ga2cc783da6d70609272495ea174b0def2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(...)</td></tr>
 <tr class="memdesc:ga2cc783da6d70609272495ea174b0def2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepare every given function to become a fiber by <a class="el" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3" title="Run a function as a new fiber.">async</a>.  <a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">More...</a><br /></td></tr>
 <tr class="separator:ga2cc783da6d70609272495ea174b0def2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a121a5e39c7e4138aa09c2ce6ea7e213d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async_8h.html#a121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a>&#160;&#160;&#160;::zth::fibered::</td></tr>
+<tr class="separator:a121a5e39c7e4138aa09c2ce6ea7e213d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gada84521eeb4bb9ac422d21429806aff3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></td></tr>
 <tr class="memdesc:gada84521eeb4bb9ac422d21429806aff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a function as a new fiber.  <a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">More...</a><br /></td></tr>
 <tr class="separator:gada84521eeb4bb9ac422d21429806aff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
-<tr class="memitem:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memTemplItemLeft" align="right" valign="top">TypedFiber&lt; R, F &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acfaa577dee7f5b12f4f58baa2c1e33dd">zth::operator&lt;&lt;</a> (TypedFiber&lt; R, F &gt; *f, FiberManipulator const &amp;m)</td></tr>
-<tr class="separator:acfaa577dee7f5b12f4f58baa2c1e33dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7679b799f905e662a3b4fc323fb2a790"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
+<tr class="memitem:a7679b799f905e662a3b4fc323fb2a790"><td class="memTemplItemLeft" align="right" valign="top">TypedFiber&lt; R, F &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a7679b799f905e662a3b4fc323fb2a790">zth::operator&lt;&lt;</a> (TypedFiber&lt; R, F &gt; &amp;f, FiberManipulator const &amp;m)</td></tr>
+<tr class="separator:a7679b799f905e662a3b4fc323fb2a790"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7fa94d5dfb2edaa9e79a6e9b64ad8c25"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:ga7fa94d5dfb2edaa9e79a6e9b64ad8c25"><td class="memTemplItemLeft" align="right" valign="top">fiber_type&lt; F &gt;::factory&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga7fa94d5dfb2edaa9e79a6e9b64ad8c25">zth::fiber</a> (F f, char const *name=nullptr)</td></tr>
+<tr class="memdesc:ga7fa94d5dfb2edaa9e79a6e9b64ad8c25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new fiber.  <a href="group__zth__api__cpp__fiber.html#ga7fa94d5dfb2edaa9e79a6e9b64ad8c25">More...</a><br /></td></tr>
+<tr class="separator:ga7fa94d5dfb2edaa9e79a6e9b64ad8c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">zth_fiber_create</a> (void(*f)(void *), void *arg=nullptr, size_t stack=0, char const *name=nullptr) noexcept</td></tr>
 <tr class="memdesc:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a function as a new fiber.  <a href="group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3">More...</a><br /></td></tr>
 <tr class="separator:ga4a5d0ea88bcf26193d4201ac28946cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a121a5e39c7e4138aa09c2ce6ea7e213d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a121a5e39c7e4138aa09c2ce6ea7e213d">&#9670;&nbsp;</a></span>zth_async</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define zth_async&#160;&#160;&#160;::zth::fibered::</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00789">789</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
 <a id="a5d878b97be208a1626a31a91ee8fc183"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d878b97be208a1626a31a91ee8fc183">&#9670;&nbsp;</a></span>zth_fiber_declare_1</h2>
 
@@ -194,7 +222,7 @@ Functions</h2></td></tr>
 <div class="line">                }                                                        \</div>
 <div class="line">                }</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00672">672</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00728">728</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -233,7 +261,7 @@ Functions</h2></td></tr>
 <div class="line">                }                                                                                 \</div>
 <div class="line">                typedef ::zth::TypedFiberFactory&lt;decltype(&amp;::f)&gt;::AutoFuture_type f##_future;</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00686">686</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00742">742</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -253,7 +281,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00696">696</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00752">752</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -273,7 +301,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00697">697</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00753">753</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>

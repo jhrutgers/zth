@@ -11,6 +11,9 @@ var hierarchy =
         [ "zth::Context", "classzth_1_1_context.html", null ]
       ] ]
     ] ],
+    [ "zth::fiber_type_impl< R(*)(Args...)>", "structzth_1_1fiber__type__impl.html", [
+      [ "zth::fiber_type< R(*)(Args...)>", "structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ]
+    ] ],
     [ "zth::FsmDescription< FsmImpl >", "structzth_1_1_fsm_description.html", null ],
     [ "zth::FsmDescription< zth::Fsm >", "structzth_1_1_fsm_description.html", null ],
     [ "zth::FsmGuard< zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
@@ -75,6 +78,8 @@ var hierarchy =
     ] ],
     [ "zth::DefaultConfig::Allocator< T >", "structzth_1_1_default_config_1_1_allocator.html", null ],
     [ "zth::Env", "structzth_1_1_env.html", null ],
+    [ "zth::fiber_type< F >", "structzth_1_1fiber__type.html", null ],
+    [ "zth::fiber_type_impl< F >", "structzth_1_1fiber__type__impl.html", null ],
     [ "zth::FiberManipulator", "classzth_1_1_fiber_manipulator.html", [
       [ "zth::passOnExit", "classzth_1_1pass_on_exit.html", null ],
       [ "zth::setName", "classzth_1_1set_name.html", null ],
