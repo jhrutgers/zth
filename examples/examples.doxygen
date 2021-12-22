@@ -137,6 +137,11 @@ Other fiber
 */
 
 /*!
+\example 7_no_async.cpp
+\brief \c async alternative syntax.
+*/
+
+/*!
 \example 9_c_api.c
 \brief C-API example.
 */
