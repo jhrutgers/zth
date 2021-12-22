@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `zth::fiber()` as alternative to `zth_fiber()` and friends with `async`.
+- Defining `async` can be prevented by defining `ZTH_NO_ASYNC_KEYWORD` before
+  including `<zth>`.  `zth_async` is always defined, with the original behavior
+  of `async`.
 
 [1.1.0]: https://github.com/jhrutgers/zth/releases/tag/v1.1.0
 

@@ -767,6 +767,7 @@ namespace fibered {}
 #	define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
 
 /*!
+ * \def async
  * \brief Run a function as a new fiber.
  *
  * The function must have passed through #zth_fiber() (or friends) first.
@@ -785,7 +786,10 @@ namespace fibered {}
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
-#	define async ::zth::fibered::
+#	define zth_async ::zth::fibered::
+#	ifndef ZTH_NO_ASYNC_KEYWORD
+#		define async zth_async
+#	endif
 
 /*!
  * \brief Run a function as a new fiber.
