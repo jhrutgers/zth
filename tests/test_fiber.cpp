@@ -213,7 +213,9 @@ TEST(FiberTest, direct_v)
 	fiber_type::factory factory = zth::fiber(fiber_v);
 	fiber_type::fiber fiber = factory();
 	fiber_type::future future = fiber;
+	fiber_type::future future2 = fiber.withFuture();
 	future->wait();
+	EXPECT_TRUE(future2->valid());
 }
 
 TEST(FiberTest, direct_ii)
