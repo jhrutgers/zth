@@ -28,27 +28,29 @@ The main benefits of Zth are:
 Working with fibers is very easy. The `examples/1_helloworld` example starts
 two fibers by using the `async` keyword:
 
-	#include <zth>
-	#include <cstdio>
+```cpp
+#include <zth>
+#include <cstdio>
 
-	void world()
-	{
-		printf("World!!1\n");
-	}
-	zth_fiber(world)
+void world()
+{
+	printf("World!!1\n");
+}
+zth_fiber(world)
 
-	void hello()
-	{
-		async world();
-		printf("Hello\n");
-	}
-	zth_fiber(hello)
+void hello()
+{
+	async world();
+	printf("Hello\n");
+}
+zth_fiber(hello)
 
-	int main_fiber(int argc, char** argv)
-	{
-		async hello();
-		return 0;
-	}
+int main_fiber(int argc, char** argv)
+{
+	async hello();
+	return 0;
+}
+```
 
 Notable other features include:
 
@@ -79,15 +81,19 @@ To install all build dependencies, run `dist/<platform>/bootstrap` (as
 Administrator under Windows).  Next, run `dist/<platform>/build` to build the
 library and all examples. This does effectively:
 
-	mkdir build
-	cd build
-	cmake ../../..
-	cmake --build .
+```bash
+mkdir build
+cd build
+cmake ../../..
+cmake --build .
+```
 
 By default, release builds are generated. To do debug builds, pass `Debug` as
 command line argument to `dist/<platform>/build`, or do something like:
 
-	cmake ../../.. -D CMAKE_BUILD_TYPE=Debug
+```bash
+cmake ../../.. -D CMAKE_BUILD_TYPE=Debug
+```
 
 After building, check out the `doxygen/html` directory for
 [documentation](https://jhrutgers.github.io/zth).
@@ -97,15 +103,17 @@ After building, check out the `doxygen/html` directory for
 Include the Zth top-level `CMakeLists.txt` in your project, and link to
 `libzth`.  Configure Zth options as required, like this:
 
-	set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
-	set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
-	set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
-	set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
+```cmake
+set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
+set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
+set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
+set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
 
-	add_subdirectory(zth)
+add_subdirectory(zth)
 
-	# Override search path to your own zth_config.h.
-	target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+# Override search path to your own zth_config.h.
+target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
+```
 
 This also works for cross-compiling.  Refer to
 `dist/qemu-arm-a15/README-ARM.md` for some hints when compiling for bare-metal
