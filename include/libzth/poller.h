@@ -92,16 +92,17 @@ struct Pollable {
 		PollPriIndex,
 		PollHupIndex,
 		FlagCount,
-
-		PollIn = 1U << PollInIndex,
-		PollOut = 1U << PollOutIndex,
-		PollErr = 1U << PollErrIndex,
-		PollPri = 1U << PollPriIndex,
-		PollHup = 1U << PollHupIndex,
 	};
 
 	/*! \brief Type of #events and #revents. */
 	typedef std::bitset<FlagCount> Events;
+
+	// unsigned long can be converted implicitly to bitset.
+	static const unsigned long PollIn = 1UL << PollInIndex;
+	static const unsigned long PollOut = 1UL << PollOutIndex;
+	static const unsigned long PollErr = 1UL << PollErrIndex;
+	static const unsigned long PollPri = 1UL << PollPriIndex;
+	static const unsigned long PollHup = 1UL << PollHupIndex;
 
 	/*!
 	 * \brief Ctor.
