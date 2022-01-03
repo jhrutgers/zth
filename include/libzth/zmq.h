@@ -130,9 +130,9 @@ zth_zmq_send_const(void* socket, void* buf, size_t len, int flags)
 ZTH_EXPORT void* zth_zmq_socket(int type);
 ZTH_EXPORT int zth_zmq_msg_send(zmq_msg_t* msg, void* socket, int flags);
 ZTH_EXPORT int zth_zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags);
-ZTH_EXPORT int zth_zmq_send(void* socket, void* buf, size_t len, int flags);
+ZTH_EXPORT int zth_zmq_send(void* socket, void const* buf, size_t len, int flags);
 ZTH_EXPORT int zth_zmq_recv(void* socket, void* buf, size_t len, int flags);
-ZTH_EXPORT int zth_zmq_send_const(void* socket, void* buf, size_t len, int flags);
+ZTH_EXPORT int zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags);
 #		endif // __cplusplus
 
 #		define zmq_ctx_new zth_zmq_context

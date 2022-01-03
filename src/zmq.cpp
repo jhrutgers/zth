@@ -121,7 +121,7 @@ int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send(void* socket, void* buf, size_t len, int flags)
+int zmq_send(void* socket, void const* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send()");
 
@@ -163,7 +163,7 @@ int zmq_recv(void* socket, void* buf, size_t len, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send_const().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send_const(void* socket, void* buf, size_t len, int flags)
+int zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send_const()");
 
