@@ -21,9 +21,9 @@
 #include <libzth/util.h>
 
 // clang-format off
-#define ZTH_VERSION_MAJOR   @ZTH_VERSION_MAJOR@
-#define ZTH_VERSION_MINOR   @ZTH_VERSION_MINOR@
-#define ZTH_VERSION_PATCH   @ZTH_VERSION_PATCH@
+#define ZTH_VERSION_MAJOR   @ZTH_VERSION_MAJOR@L
+#define ZTH_VERSION_MINOR   @ZTH_VERSION_MINOR@L
+#define ZTH_VERSION_PATCH   @ZTH_VERSION_PATCH@L
 #define ZTH_VERSION_SUFFIX "@ZTH_VERSION_SUFFIX@"
 // clang-format on
 
@@ -66,7 +66,7 @@
  * \ingroup zth_api_cpp_util
  * \hideinitializer
  */
-#define ZTH_VERSION_NUM ZTH_VERSION_MAJOR * 10000 + ZTH_VERSION_MINOR * 100 + ZTH_VERSION_PATH
+#define ZTH_VERSION_NUM (ZTH_VERSION_MAJOR * 10000L + ZTH_VERSION_MINOR * 100L + ZTH_VERSION_PATCH)
 
 #ifdef __cplusplus
 namespace zth {
