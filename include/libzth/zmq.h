@@ -44,9 +44,9 @@ void* zmq_context();
 void* zmq_socket(int type);
 int zmq_msg_send(zmq_msg_t* msg, void* socket, int flags);
 int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags);
-int zmq_send(void* socket, void* buf, size_t len, int flags);
+int zmq_send(void* socket, void const* buf, size_t len, int flags);
 int zmq_recv(void* socket, void* buf, size_t len, int flags);
-int zmq_send_const(void* socket, void* buf, size_t len, int flags);
+int zmq_send_const(void* socket, void const* buf, size_t len, int flags);
 
 } // namespace zmq
 } // namespace zth
@@ -100,7 +100,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_msg_recv(zmq_msg_t* msg, void* socket
  * \details This is a C-wrapper for zth::zmq::zmq_send().
  * \ingroup zth_api_c_zmq
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_send(void* socket, void* buf, size_t len, int flags)
+EXTERN_C ZTH_EXPORT ZTH_INLINE int
+zth_zmq_send(void* socket, void const* buf, size_t len, int flags)
 {
 	return zth::zmq::zmq_send(socket, buf, len, flags);
 }
@@ -121,7 +122,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_recv(void* socket, void* buf, size_t 
  * \ingroup zth_api_c_zmq
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int
-zth_zmq_send_const(void* socket, void* buf, size_t len, int flags)
+zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 {
 	return zth::zmq::zmq_send_const(socket, buf, len, flags);
 }
