@@ -1,0 +1,6 @@
+if(WIN32)
+	include(${CMAKE_CURRENT_LIST_DIR}/../../CMake/ZeroMQTargets.cmake OPTIONAL)
+else()
+	include(${CMAKE_CURRENT_LIST_DIR}/../ZeroMQ/ZeroMQTargets.cmake OPTIONAL)
+endif()
+include(${CMAKE_CURRENT_LIST_DIR}/../../libzth/cmake/libzth.cmake)

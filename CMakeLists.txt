@@ -20,6 +20,7 @@ project(Zth)
 cmake_policy(SET CMP0057 NEW)
 
 include(CheckIncludeFileCXX)
+include(GNUInstallDirs)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -181,7 +182,35 @@ add_library(libzth
 	src/zmq.cpp
 	src/zth_logv.cpp
 )
-set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
+
+set(ZTH_HEADERS
+	include/libzth/allocator.h
+	include/libzth/async.h
+	include/libzth/config.h
+	include/libzth/context.h
+	include/libzth/fiber.h
+	include/libzth/fsm.h
+	include/libzth/fsm14.h
+	include/libzth/init.h
+	include/libzth/io.h
+	include/libzth/list.h
+	include/libzth/macros.h
+	include/libzth/perf.h
+	include/libzth/poller.h
+	include/libzth/regs.h
+	include/libzth/sync.h
+	include/libzth/time.h
+	include/libzth/util.h
+	include/libzth/version.h
+	include/libzth/waiter.h
+	include/libzth/worker.h
+	include/libzth/zmq.h
+)
+
+set_target_properties(libzth PROPERTIES
+	OUTPUT_NAME "zth"
+	PUBLIC_HEADER "${ZTH_HEADERS}"
+)
 
 if(ZTH_DRAFT_API)
 	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)
@@ -212,15 +241,21 @@ if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
 endif()
 
 install(TARGETS libzth EXPORT libzth
-	ARCHIVE DESTINATION lib
-	PUBLIC_HEADER DESTINATION include
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
 )
 
-configure_file(cmake/libzth.cmake.in ${CMAKE_BINARY_DIR}/libzth.cmake)
-install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
-install(FILES include/zth DESTINATION include)
-install(EXPORT libzth DESTINATION share/libzth/cmake)
-install(FILES ${CMAKE_BINARY_DIR}/libzth.cmake DESTINATION share/cmake/libzth)
+install(FILES include/zth include/zth.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+set(ZTH_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/zth_config.h)
+foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
+	if(EXISTS ${d}/zth_config.h)
+		set(ZTH_CONFIG_FILE ${d}/zth_config.h)
+		break()
+	endif()
+endforeach()
+install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
+install(FILES cmake/ZthConfig.cmake DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth)
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
@@ -253,8 +288,12 @@ if(UNIX OR MINGW)
 	if(MINGW)
 		set(THREADS_HAVE_PTHREAD_ARG 1)
 	endif()
+
 	find_package(Threads REQUIRED)
-	target_link_libraries(libzth PUBLIC Threads::Threads)
+
+	if(CMAKE_THREAD_LIBS_INIT)
+		target_link_libraries(libzth PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+	endif()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
