@@ -21,6 +21,7 @@ cmake_policy(SET CMP0057 NEW)
 
 include(CheckIncludeFileCXX)
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -254,8 +255,16 @@ foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
 	endif()
 endforeach()
 install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
 install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
-install(FILES cmake/ZthConfig.cmake DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth)
+
+configure_package_config_file(
+	cmake/ZthConfig.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
+	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth)
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
