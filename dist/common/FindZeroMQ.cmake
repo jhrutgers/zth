@@ -46,6 +46,15 @@ if(NOT TARGET libzmq AND NOT CMAKE_CROSSCOMPILING)
 endif()
 
 if(NOT TARGET libzmq)
+	# Try previously built and installed
+	unset(ZeroMQ_FOUND CACHE)
+	find_package(ZeroMQ CONFIG)
+	if(ZeroMQ_FOUND)
+		message(STATUS "Found ZeroMQ using cmake")
+	endif()
+endif()
+
+if(NOT TARGET libzmq)
 	# Build from source
 	message(STATUS "Building ZeroMQ from source")
 	set(ZeroMQ_FOUND 1)
@@ -80,7 +89,7 @@ if(NOT TARGET libzmq)
 	ExternalProject_Add(
 		libzmq-extern
 		GIT_REPOSITORY https://github.com/zeromq/libzmq.git
-		GIT_TAG v4.3.1
+		GIT_TAG v4.3.4
 		CMAKE_ARGS ${libzmq_flags}
 		INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
 		BUILD_BYPRODUCTS ${_libzmq_loc} ${_libzmq_implib}
@@ -99,7 +108,12 @@ if(NOT TARGET libzmq)
 		set_property(TARGET libzmq PROPERTY IMPORTED_IMPLIB ${_libzmq_implib})
 	endif()
 
+	if(WIN32)
+		target_link_libraries(libzmq INTERFACE ws2_32 rpcrt4 iphlpapi)
+	else()
+		target_link_libraries(libzmq INTERFACE pthread rt)
+	endif()
+
 	set_property(TARGET libzmq PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/include)
 	add_dependencies(libzmq libzmq-extern)
 endif()
-
