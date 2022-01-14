@@ -54,12 +54,13 @@ if(NOT TARGET libzmq)
 	endif()
 endif()
 
-if(NOT TARGET libzmq)
+if(NOT TARGET libzmq AND ZeroMQ_FIND_REQUIRED)
 	# Build from source
 	message(STATUS "Building ZeroMQ from source")
 	set(ZeroMQ_FOUND 1)
 
-	set(libzmq_flags -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+	set(libzmq_flags -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+		-DCMAKE_GENERATOR=${CMAKE_GENERATOR}
 		-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
 		-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 		-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
@@ -69,6 +70,17 @@ if(NOT TARGET libzmq)
 	if(MINGW)
 		# See https://github.com/zeromq/libzmq/issues/3859
 		set(libzmq_flags ${libzmq_flags} -DZMQ_CV_IMPL=win32api)
+	endif()
+
+	if(CMAKE_CROSSCOMPILING)
+		# It seems that in case of crosscompiling, the host headers are
+		# found anyway. Force using builtins instead.
+		if(NOT WITH_LIBBSD)
+			set(libzmq_flags ${libzmq_flags} -DWITH_LIBBSD=OFF)
+		endif()
+		if(NOT WITH_LIBSODIUM)
+			set(libzmq_flags ${libzmq_flags} -DWITH_LIBSODIUM=OFF)
+		endif()
 	endif()
 
 	set(libzmq_flags ${libzmq_flags} -DBUILD_TESTS=OFF -DBUILD_STATIC=OFF)
