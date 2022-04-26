@@ -7,11 +7,13 @@ if(NOT TARGET libzmq)
 		include(${CMAKE_CURRENT_LIST_DIR}/../ZeroMQ/ZeroMQTargets.cmake OPTIONAL)
 	endif()
 
-	if(_zmq STREQUAL "NOTFOUND" AND NOT CMAKE_CROSSCOMPILING)
-		# Win32 always builds from source. In case the include file was not found, we are on Linux or macOS,
-		# which may have it installed on the system. This scan be found using pkg_config. Try that.
+	if(("${_zmq}" STREQUAL "" OR _zmq STREQUAL "NOTFOUND") AND NOT CMAKE_CROSSCOMPILING)
+		# Win32 always builds from source. In case the include file was
+		# not found, we are on Linux or macOS, which may have it
+		# installed on the system. This can be found using pkg_config.
+		# Try that.
 		set(_zmq "@ZeroMQ_LINK_LIBRARIES@")
-		if(_zmq)
+		if(EXISTS "${_zmq}")
 			add_library(libzmq SHARED IMPORTED GLOBAL)
 			set_property(TARGET libzmq PROPERTY IMPORTED_LOCATION @ZeroMQ_LINK_LIBRARIES@)
 			set_property(TARGET libzmq PROPERTY INTERFACE_INCLUDE_DIRECTORIES @ZeroMQ_INCLUDE_DIRS@)
