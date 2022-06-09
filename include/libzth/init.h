@@ -72,7 +72,7 @@ EXTERN_C ZTH_EXPORT int zth_postdeinit();
  */
 #			define ZTH_DEINIT_CALL(f)            \
 				ZTH_INIT_CALL_(f, atexit(f);) \
-				static f##__deinit f##__deinit_;
+				static f##__init f##__deinit_;
 #		endif
 #	endif
 
