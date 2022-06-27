@@ -23,7 +23,7 @@
  * \details This is a weak symbol. Override when required.
  * \ingroup zth_api_c_util
  */
-void zth_logv(char const* fmt, va_list arg)
+__attribute__((weak)) void zth_logv(char const* fmt, va_list arg)
 {
 	// NOLINTNEXTLINE
 	vprintf(fmt, arg);
