@@ -217,7 +217,7 @@ bool log_supports_ansi_colors() noexcept
 nosupport:
 	support = -1;
 	return false;
-#else // !ZTH_OS_WINDOWS
+#else  // !ZTH_OS_WINDOWS
 	return true;
 #endif // !ZTH_OS_WINDOWS
 }
@@ -293,3 +293,27 @@ void zth_abort(char const* fmt, ...)
 	zth::abortv(fmt, va);
 	va_end(va);
 }
+
+#ifdef ZTH_OS_BAREMETAL
+__attribute__((weak)) int asprintf(char** strp, const char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	int res = vasprintf(strp, fmt, args);
+	va_end(args);
+	return res;
+}
+
+__attribute__((weak)) int vasprintf(char** strp, const char* fmt, va_list ap)
+{
+	va_list ap_dup;
+	va_copy(ap_dup, ap);
+	int len = vsnprintf(nullptr, 0, fmt, ap_dup);
+	va_end(ap_dup);
+
+	if(strp || (*strp = (char*)malloc(len + 1)))
+		vsnprintf(*strp, len + 1, fmt, ap);
+
+	return len;
+}
+#endif

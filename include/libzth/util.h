@@ -1429,4 +1429,11 @@ zth_log(char const* fmt, ...)
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...);
 #endif
 
+#ifdef ZTH_OS_BAREMETAL
+// newlib probably doesn't have these. Provide some default implementation for
+// them.
+EXTERN_C __attribute__((format(gnu_printf,2,0))) int asprintf(char** strp, const char* fmt, ...);
+EXTERN_C __attribute__((format(gnu_printf,2,0))) int vasprintf(char** strp, const char* fmt, va_list ap);
+#endif
+
 #endif // ZTH_UTIL_H
