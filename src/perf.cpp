@@ -187,7 +187,7 @@ protected:
 
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent<> const& e = eb[i];
-			TimeInterval t = e.t - startTime;
+			TimeInterval t = Timestamp(e.t) - startTime;
 			char const* s = nullptr;
 
 			switch(e.type) {
