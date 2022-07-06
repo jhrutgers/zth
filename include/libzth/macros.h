@@ -228,6 +228,9 @@ ZTH_EXPORT void foo();
 #if defined(__cplusplus) && !defined(__cpp_exceptions)
 #	define try if(true)
 #	define catch(...) if(false)
+#	define zth_throw(e) std::abort()
+#else
+#	define zth_throw(e) throw e
 #endif
 
 #if defined(__SANITIZE_ADDRESS__) && !defined(ZTH_ENABLE_ASAN)

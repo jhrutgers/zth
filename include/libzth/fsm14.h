@@ -797,7 +797,7 @@ constexpr inline auto operator+(GuardedAction&& g) noexcept
 constexpr inline auto operator/(GuardedAction&& ga, Action const& a)
 {
 	if(!(ga.isInput() && &ga.action() == &nothing))
-		throw invalid_fsm("Ambiguous /");
+		zth_throw(invalid_fsm("Ambiguous /"));
 
 	return GuardedAction{Symbol{ga.input()}, a};
 }
@@ -922,7 +922,7 @@ constexpr inline auto operator/(State&& state, Action const& action) noexcept
 constexpr inline auto operator+(State&& state, TransitionStart&& t)
 {
 	if(!(t.hasGuard() && &t.guard() == &always))
-		throw invalid_fsm{"Ambiguous +"};
+		zth_throw(invalid_fsm{"Ambiguous +"});
 
 	return TransitionStart{std::move(state), GuardedAction{Symbol{t.state()}, t.action()}};
 }
@@ -1163,7 +1163,7 @@ public:
 			f.m_transitions[0].to = 1;
 
 			if(!l.begin()->from().valid())
-				throw invalid_fsm{"First state must be valid"};
+				zth_throw(invalid_fsm{"First state must be valid"});
 		}
 
 		index_type i = 1;
@@ -1173,7 +1173,7 @@ public:
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)
-					throw invalid_fsm{"State transitions are not contiguous"};
+					zth_throw(invalid_fsm{"State transitions are not contiguous"});
 			}
 			if(t.hasGuard()) {
 				f.m_transitions[i].guard = &t.guard();
@@ -1256,7 +1256,7 @@ private:
 		// but triggers https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67371 otherwise.
 		if(i >= l.size())
 #	endif
-			throw invalid_fsm{"Target state not found"};
+			zth_throw(invalid_fsm{"Target state not found"});
 
 		// Unreachable.
 		return Size + 1u;
