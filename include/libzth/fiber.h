@@ -435,7 +435,9 @@ protected:
 		try {
 			m_entry(m_entryArg);
 		} catch(std::exception const& e) {
+#ifdef __cpp_exceptions
 			zth_dbg(fiber, "[%s] Uncaught exception; %s", id_str(), e.what());
+#endif
 		} catch(...) {
 			zth_dbg(fiber, "[%s] Uncaught exception", id_str());
 		}
