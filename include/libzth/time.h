@@ -151,6 +151,45 @@ public:
 		init_int<T>(dt);
 	}
 
+	template <typename T>
+	static constexpr14 TimeInterval from_s(T s)
+	{
+		if(s > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval(s);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_ms(T ms)
+	{
+		T s = ms / (T)1000;
+		if(s > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s, ((long)ms % 1000L) * 1000000L);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_us(T us)
+	{
+		T s = us / (T)1000000;
+		if(s > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s, ((long)us % 1000000L) * 1000L);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_ns(T ns)
+	{
+		T s = ns / (T)1000000000L;
+		if(s > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s, (long)ns % 1000000000L);
+	}
+
 private:
 	template <typename T>
 	void init_float(T dt)
@@ -462,10 +501,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int 
  */
 ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) noexcept
 {
-	return TimeInterval(
-		(time_t)std::min<unsigned long long int>(
-			x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max()),
-		((long)x % 1000L) * 1000000L);
+	return TimeInterval::from_ms(x);
 }
 
 /*!
@@ -477,10 +513,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int
  */
 ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) noexcept
 {
-	return TimeInterval(
-		(time_t)std::min<unsigned long long int>(
-			x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max()),
-		((long)x % 1000000L) * 1000L);
+	return TimeInterval::from_us(x);
 }
 
 /*!
