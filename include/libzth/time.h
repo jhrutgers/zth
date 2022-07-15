@@ -164,7 +164,7 @@ public:
 	static constexpr14 TimeInterval from_ms(T ms)
 	{
 		T s = ms / (T)1000;
-		if(s > std::numeric_limits<time_t>::max())
+		if((unsigned long long)s > (unsigned long long)std::numeric_limits<time_t>::max())
 			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
 
 		return TimeInterval((time_t)s, ((long)ms % 1000L) * 1000000L);
@@ -174,7 +174,7 @@ public:
 	static constexpr14 TimeInterval from_us(T us)
 	{
 		T s = us / (T)1000000;
-		if(s > std::numeric_limits<time_t>::max())
+		if((unsigned long long)s > (unsigned long long)std::numeric_limits<time_t>::max())
 			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
 
 		return TimeInterval((time_t)s, ((long)us % 1000000L) * 1000L);
