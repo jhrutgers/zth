@@ -153,13 +153,21 @@ size_t context_stack_usage(Context* context) noexcept
 	if(!Config::EnableStackWaterMark || !context)
 		return 0;
 
-	// Guards may be in place on the current stack. Do not iterate it, as
-	// you may trigger that guard.
-	zth_assert(
-		!currentWorker().currentFiber()
-		|| currentWorker().currentFiber()->context() != context);
+	Fiber* f = currentWorker().currentFiber();
+	void* guard = nullptr;
 
-	return stack_watermark_maxused(context->stackUsable().p);
+	if(f && f->context() == context) {
+		// Guards may be in place on the current stack. Disable it
+		// while iterating it.
+		guard = context->stackGuard(nullptr);
+	}
+
+	size_t res = stack_watermark_maxused(context->stackUsable().p);
+
+	if(guard)
+		context->stackGuard(guard);
+
+	return res;
 }
 
 } // namespace zth

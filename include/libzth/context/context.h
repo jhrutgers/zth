@@ -455,6 +455,15 @@ public:
 	void stackGuard(Stack const& UNUSED_PAR(stack)) noexcept {}
 
 	/*!
+	 * \brief Configure the guard for the address.
+	 * \return the previous guard
+	 */
+	void* stackGuard(void* UNUSED_PAR(p)) noexcept
+	{
+		return nullptr;
+	}
+
+	/*!
 	 * \brief Perform a context switch.
 	 */
 	void context_switch(Context& to) noexcept;

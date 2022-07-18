@@ -220,7 +220,7 @@ private:
 		return region;
 	}
 
-	static void stackGuard(void* guard) noexcept
+	static void stackGuardImpl(void* guard) noexcept
 	{
 		if(!Config::EnableStackGuard || Config::EnableThreads)
 			return;
@@ -261,13 +261,31 @@ public:
 	void stackGuard() noexcept
 	{
 		// The guard is outside of the usable stack area.
-		stackGuard(m_guard);
+		stackGuardImpl(m_guard);
 	}
 
 	void stackGuard(Stack const& stack) noexcept
 	{
 		// The guard is at the end of the usable stack area.
-		stackGuard(stack.p);
+		stackGuardImpl(stack.p);
+	}
+
+	void* stackGuard(void* p) noexcept
+	{
+		void* prev = setGuard(p);
+		stackGuard();
+
+		if(!Config::Debug && !p) {
+			// The guard is disabled. For non-debug builds, the
+			// barriers are not in place by stackGuardImpl(). In
+			// that case, do it here, to make sure that you can
+			// rely on that the guard is really disabled when this
+			// function returns.
+			__dsb();
+			__isb();
+		}
+
+		return prev;
 	}
 
 #		pragma GCC diagnostic pop
