@@ -718,7 +718,10 @@ template <typename F>
 typename fiber_type<F>::factory fiber(F f, char const* name = nullptr)
 {
 	return typename fiber_type<F>::factory(
-		f, Config::EnableDebugPrint || Config::EnablePerfEvent ? name : nullptr);
+		f,
+		Config::EnableDebugPrint || Config::EnablePerfEvent || Config::EnableStackWaterMark
+			? name
+			: nullptr);
 }
 
 namespace fibered {}

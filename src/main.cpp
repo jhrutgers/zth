@@ -17,6 +17,7 @@
  */
 
 #include <libzth/async.h>
+#include <libzth/config.h>
 #include <libzth/worker.h>
 
 __attribute__((weak)) int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
@@ -63,7 +64,13 @@ int main(int argc, char** argv)
 	int res = 0;
 	{
 		zth::Worker w;
-		main_fiber_future f = async main_fiber(argc, argv);
+		main_fiber_future f =
+			async main_fiber(argc, argv) << zth::setName(
+				zth::Config::EnableDebugPrint || zth::Config::EnablePerfEvent
+						|| zth::Config::EnableStackWaterMark
+					? "main_fiber"
+					: nullptr);
+
 		w.run();
 		if(f->valid())
 			res = f->value();
