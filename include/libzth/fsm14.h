@@ -32,6 +32,7 @@
 #	include <libzth/sync.h>
 #	include <libzth/util.h>
 
+#	include <atomic>
 #	include <bitset>
 #	include <functional>
 #	include <limits>
@@ -150,6 +151,7 @@ struct function_traits<R (C::*)(A) const noexcept> : function_traits_detail<R, C
 // Symbol
 //
 
+class BasicFsm;
 class Fsm;
 
 /*!
@@ -324,14 +326,15 @@ private:
 template <
 	typename T, typename R,
 	bool haveArg = !std::is_same<typename function_traits<T>::arg_type, void>::value,
-	bool isMember = !haveArg && function_traits<T>::is_member && !function_traits<T>::is_functor
-			&& std::is_base_of<Fsm, typename function_traits<T>::class_type>::value,
+	bool isMember =
+		!haveArg && function_traits<T>::is_member && !function_traits<T>::is_functor
+		&& std::is_base_of<BasicFsm, typename function_traits<T>::class_type>::value,
 	bool isOk =
 		std::is_convertible<typename function_traits<T>::return_type, R>::value
 		&& (!haveArg
-		    || std::is_convertible<Fsm&, typename function_traits<T>::arg_type>::value
+		    || std::is_convertible<BasicFsm&, typename function_traits<T>::arg_type>::value
 		    || std::is_base_of<
-			    Fsm,
+			    BasicFsm,
 			    std::remove_reference_t<typename function_traits<T>::arg_type>>::value)>
 class Callback {};
 
@@ -345,7 +348,7 @@ public:
 		, m_callback{std::forward<T_>(c)}
 	{}
 
-	R call(Fsm& UNUSED_PAR(fsm)) const
+	R call(BasicFsm& UNUSED_PAR(fsm)) const
 	{
 		return m_callback();
 	}
@@ -364,7 +367,7 @@ public:
 		, m_callback{std::forward<T_>(c)}
 	{}
 
-	R call(Fsm& fsm) const
+	R call(BasicFsm& fsm) const
 	{
 		using A = typename function_traits<T>::arg_type;
 		check<A>(fsm);
@@ -374,8 +377,9 @@ public:
 private:
 	template <
 		typename A,
-		std::enable_if_t<std::is_base_of<Fsm, std::remove_reference_t<A>>::value, int> = 0>
-	static void check(Fsm& UNUSED_PAR(fsm))
+		std::enable_if_t<
+			std::is_base_of<BasicFsm, std::remove_reference_t<A>>::value, int> = 0>
+	static void check(BasicFsm& UNUSED_PAR(fsm))
 	{
 #	ifdef __GXX_RTTI
 		zth_assert(dynamic_cast<std::remove_reference_t<A>*>(&fsm) != nullptr);
@@ -384,8 +388,9 @@ private:
 
 	template <
 		typename A,
-		std::enable_if_t<!std::is_base_of<Fsm, std::remove_reference_t<A>>::value, int> = 0>
-	static void check(Fsm& fsm)
+		std::enable_if_t<
+			!std::is_base_of<BasicFsm, std::remove_reference_t<A>>::value, int> = 0>
+	static void check(BasicFsm& fsm)
 	{}
 
 private:
@@ -402,7 +407,7 @@ public:
 		, m_callback{std::forward<T_>(c)}
 	{}
 
-	R call(Fsm& fsm) const
+	R call(BasicFsm& fsm) const
 	{
 		using C = typename function_traits<T>::class_type;
 #	ifdef __GXX_RTTI
@@ -450,10 +455,10 @@ public:
 	Guard(Guard const&) = delete;
 	void operator=(Guard const&) = delete;
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const = 0;
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const = 0;
 	virtual cow_string name() const = 0;
 
-	auto operator()(Fsm& fsm) const
+	auto operator()(BasicFsm& fsm) const
 	{
 		return enabled(fsm);
 	}
@@ -472,7 +477,7 @@ public:
 		: Callback_type{std::forward<T_>(g), name}
 	{}
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const final
 	{
 		return this->call(fsm);
 	}
@@ -490,7 +495,7 @@ public:
 		: m_input{std::move(input)}
 	{}
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const final;
 
 	virtual cow_string name() const final
 	{
@@ -519,11 +524,11 @@ private:
  * In case the return type is \c bool, \c false is equivalent to a time
  * interval of 0.  \c true is equivalent to an infinite time interval.
  *
- * The argument A may be omitted. If provided, it must be zth::fsm::Fsm&, or a
- * reference to the actual subclass type of zth::fsm::Fsm.
+ * The argument A may be omitted. If provided, it must be zth::fsm::BasicFsm&,
+ * or a reference to the actual subclass type of zth::fsm::BasicFsm.
  *
- * The class type C must be zth::fsm::Fsm, or the type of the subclass of
- * zth::fsm::Fsm. The member function does not have to be static.
+ * The class type C must be zth::fsm::BasicFsm, or the type of the subclass of
+ * zth::fsm::BasicFsm. The member function does not have to be static.
  *
  * For C++17 and higher, these function can also be \c noexcept.
  *
@@ -591,14 +596,14 @@ public:
 	Action(Action const&) = delete;
 	void operator=(Action const&) = delete;
 
-	virtual void run(Fsm& UNUSED_PAR(fsm)) const {}
+	virtual void run(BasicFsm& UNUSED_PAR(fsm)) const {}
 
 	virtual cow_string name() const
 	{
 		return format("%p\n", this);
 	}
 
-	void operator()(Fsm& fsm) const
+	void operator()(BasicFsm& fsm) const
 	{
 		run(fsm);
 	}
@@ -617,7 +622,7 @@ public:
 		: Callback_type{std::forward<T_>(a), name}
 	{}
 
-	virtual void run(Fsm& fsm) const final
+	virtual void run(BasicFsm& fsm) const final
 	{
 		this->call(fsm);
 	}
@@ -638,11 +643,11 @@ public:
  * - const member function pointer <tt>void (C::*)() const</tt>
  * - lambda (C++17 when used in a \c constexpr): <tt>[...](A) {...}</tt>
  *
- * The argument A may be omitted. If provided, it must be zth::fsm::Fsm&, or a
- * reference to the actual subclass type of zth::fsm::Fsm.
+ * The argument A may be omitted. If provided, it must be zth::fsm::BasicFsm&,
+ * or a reference to the actual subclass type of zth::fsm::BasicFsm.
  *
- * The class type C must be zth::fsm::Fsm, or the type of the subclass of
- * zth::fsm::Fsm. The member function does not have to be static.
+ * The class type C must be zth::fsm::BasicFsm, or the type of the subclass of
+ * zth::fsm::BasicFsm. The member function does not have to be static.
  *
  * For C++17 and higher, these function can also be \c noexcept.
  *
@@ -671,7 +676,7 @@ protected:
 	constexpr GuardedActionBase() = default;
 
 public:
-	virtual GuardPollInterval tryRun(Fsm& fsm) const
+	virtual GuardPollInterval tryRun(BasicFsm& fsm) const
 	{
 		if(auto e = !enabled(fsm))
 			return e;
@@ -680,7 +685,7 @@ public:
 		return true;
 	}
 
-	GuardPollInterval operator()(Fsm& fsm) const
+	GuardPollInterval operator()(BasicFsm& fsm) const
 	{
 		return tryRun(fsm);
 	}
@@ -731,7 +736,7 @@ public:
 		return m_input;
 	}
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const final;
 
 	constexpr auto const& guard() const noexcept
 	{
@@ -744,7 +749,7 @@ public:
 		return m_action;
 	}
 
-	virtual void run(Fsm& fsm) const final
+	virtual void run(BasicFsm& fsm) const final
 	{
 		m_action(fsm);
 	}
@@ -862,12 +867,12 @@ public:
 		return m_guardedAction.action();
 	}
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const final
 	{
 		return m_guardedAction.enabled(fsm);
 	}
 
-	virtual GuardPollInterval tryRun(Fsm& fsm) const final
+	virtual GuardPollInterval tryRun(BasicFsm& fsm) const final
 	{
 		return m_guardedAction.tryRun(fsm);
 	}
@@ -942,12 +947,12 @@ public:
 		, m_to{std::forward<T>(to)}
 	{}
 
-	virtual GuardPollInterval enabled(Fsm& fsm) const final
+	virtual GuardPollInterval enabled(BasicFsm& fsm) const final
 	{
 		return m_from.enabled(fsm);
 	}
 
-	virtual GuardPollInterval tryRun(Fsm& fsm) const final
+	virtual GuardPollInterval tryRun(BasicFsm& fsm) const final
 	{
 		return m_from.tryRun(fsm);
 	}
@@ -1041,7 +1046,7 @@ public:
 	}
 
 	virtual Guard const& guard(index_type i) const noexcept = 0;
-	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const = 0;
+	virtual GuardPollInterval enabled(index_type i, BasicFsm& fsm) const = 0;
 	virtual Symbol input(index_type i) const noexcept = 0;
 	virtual Action const& action(index_type i) const noexcept = 0;
 	virtual index_type to(index_type i) const noexcept = 0;
@@ -1049,7 +1054,7 @@ public:
 
 	Fsm spawn() const;
 
-	template <typename F, std::enable_if_t<std::is_base_of<Fsm, F>::value, int> = 0>
+	template <typename F, std::enable_if_t<std::is_base_of<BasicFsm, F>::value, int> = 0>
 	F& init(F& fsm) const noexcept
 	{
 		fsm.init(*this);
@@ -1173,7 +1178,8 @@ public:
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)
-					zth_throw(invalid_fsm{"State transitions are not contiguous"});
+					zth_throw(invalid_fsm{
+						"State transitions are not contiguous"});
 			}
 			if(t.hasGuard()) {
 				f.m_transitions[i].guard = &t.guard();
@@ -1218,7 +1224,7 @@ public:
 		return static_cast<char const*>(m_transitions[i].guard);
 	}
 
-	virtual GuardPollInterval enabled(index_type i, Fsm& fsm) const final;
+	virtual GuardPollInterval enabled(index_type i, BasicFsm& fsm) const final;
 
 	virtual Action const& action(index_type i) const noexcept final
 	{
@@ -1279,15 +1285,14 @@ constexpr auto compile(T&&... t)
 }
 
 /*!
- * \brief FSM base class.
+ * \brief Basic FSM base class.
  *
- * If you want to hold some state in the FSM, inherit this class.  A reference
- * to your inherited class can be passed to the guard and action functions.
- *
- * \ingroup zth_api_cpp_fsm14
+ * This basic class only executes the FSM, without references to Timestamp and
+ * fibers.  It is suitable to be executed from an interrupt context, where the
+ * current time is not available. Just call #step() regularly to run the FSM.
  */
-class Fsm : public UniqueID<Fsm> {
-	ZTH_CLASS_NEW_DELETE(Fsm)
+class BasicFsm : public UniqueID<BasicFsm> {
+	ZTH_CLASS_NEW_DELETE(BasicFsm)
 public:
 	using index_type = TransitionsBase::index_type;
 
@@ -1310,15 +1315,17 @@ public:
 	/*!
 	 * \brief Ctor.
 	 */
-	Fsm(cow_string const& name = "FSM")
+	BasicFsm(cow_string const& name = "FSM")
 		: UniqueID{name}
-	{}
+	{
+		zth_assert(std::atomic_is_lock_free(&m_state));
+	}
 
 	/*!
 	 * \brief Move ctor.
 	 */
-	Fsm(Fsm&& f)
-		: Fsm{}
+	BasicFsm(BasicFsm&& f)
+		: BasicFsm{}
 	{
 		*this = std::move(f);
 	}
@@ -1326,18 +1333,18 @@ public:
 	/*!
 	 * \brief Move assignment.
 	 */
-	Fsm& operator=(Fsm&& f) noexcept
+	BasicFsm& operator=(BasicFsm&& f) noexcept
 	{
 		m_fsm = f.m_fsm;
 		m_flags = f.m_flags;
 		m_prev = f.m_prev;
 		m_transition = f.m_transition;
-		m_state = f.m_state;
+		state_(f.state_());
 		m_stack = std::move(f.m_stack);
 		m_inputs = std::move(f.m_inputs);
 
 		f.m_fsm = nullptr;
-		f.m_state = 0;
+		f.state_(0);
 
 		UniqueID::operator=(std::move(f));
 		return *this;
@@ -1346,12 +1353,21 @@ public:
 	/*!
 	 * \brief Dtor.
 	 */
-	virtual ~Fsm() = default;
+	virtual ~BasicFsm() = default;
+
+	/*!
+	 * \brief Return the current state.
+	 *
+	 * Calling this function is always thread-safe.
+	 */
+	State const& state() const noexcept
+	{
+		zth_assert(valid());
+		return m_fsm->state(state_());
+	}
 
 	/*!
 	 * \brief Checks if the FSM was initialized.
-	 *
-	 * When valid, #run() can be called.
 	 */
 	bool valid() const noexcept
 	{
@@ -1376,19 +1392,10 @@ public:
 	virtual void reset() noexcept
 	{
 		zth_dbg(fsm, "[%s] Reset", id_str());
-		m_prev = m_transition = m_state = 0;
+		state_(0);
+		m_prev = m_transition = 0;
 		m_flags.reset();
 		m_stack.clear();
-		m_t = Timestamp::now();
-	}
-
-	/*!
-	 * \brief Return the current state.
-	 */
-	State const& state() const noexcept
-	{
-		zth_assert(valid());
-		return m_fsm->state(m_state);
 	}
 
 	/*!
@@ -1417,7 +1424,7 @@ public:
 	{
 		zth_assert(valid());
 
-		auto i = m_state;
+		auto i = state_();
 		auto size = m_fsm->size();
 
 		// Find next enabled guard.
@@ -1456,20 +1463,20 @@ public:
 		} else {
 			if(m_fsm->hasInput(i))
 				zth_dbg(fsm, "[%s] Have input %s, transition %s -> %s", id_str(),
-					m_fsm->input(i).str(), m_fsm->state(m_state).str(),
+					m_fsm->input(i).str(), m_fsm->state(state_()).str(),
 					m_fsm->state(to).str());
 			else
 				zth_dbg(fsm, "[%s] Guard %s enabled, transition %s -> %s", id_str(),
-					m_fsm->guard(i).name().c_str(), m_fsm->state(m_state).str(),
-					m_fsm->state(to).str());
+					m_fsm->guard(i).name().c_str(),
+					m_fsm->state(state_()).str(), m_fsm->state(to).str());
 
-			setFlag(Flag::selfloop, to == m_state);
+			setFlag(Flag::selfloop, to == state_());
 			setFlag(Flag::transition);
-			if(m_state)
+			if(state_())
 				leave();
 
-			m_prev = m_state;
-			m_state = to;
+			m_prev = state_();
+			state_(to);
 
 			clearFlag(Flag::popped);
 			clearFlag(Flag::pushed);
@@ -1480,6 +1487,352 @@ public:
 		}
 
 		return true;
+	}
+
+	/*!
+	 * \brief Push the current state onto the state stack.
+	 *
+	 * This is the callback function for the #zth::fsm::push() action.
+	 *
+	 * The FSM must be #valid().
+	 *
+	 * \see #pop()
+	 */
+	void push()
+	{
+		zth_assert(valid());
+
+		m_stack.push_back(m_prev);
+		setFlag(Flag::pushed);
+		zth_dbg(fsm, "[%s] Push %s", id_str(), m_fsm->state(state_()).str());
+	}
+
+	/*!
+	 * \brief Pop the previous state from the state stack.
+	 *
+	 * #leave() and #enter() are called when appropriate.
+	 *
+	 * This is the callback function for the #zth::fsm::pop() action.
+	 * #push() and pop() must come in pairs.
+	 *
+	 * The FSM must be #valid().
+	 *
+	 * \see #push()
+	 */
+	virtual void pop()
+	{
+		zth_assert(valid());
+		zth_assert(!m_stack.empty());
+
+		index_type to = m_stack.back();
+		zth_assert(to != 0);
+
+		zth_dbg(fsm, "[%s] Pop %s -> %s", id_str(), m_fsm->state(state_()).str(),
+			m_fsm->state(to).str());
+
+		clearFlag(Flag::blocked);
+		setFlag(Flag::selfloop, state_() == to);
+
+		if(!flag(Flag::transition)) {
+			// leave() was not called by step().
+			setFlag(Flag::transition);
+			leave();
+		}
+
+		m_prev = state_();
+		state_(to);
+		m_stack.pop_back();
+		m_transition = 0;
+
+		clearFlag(Flag::pushed);
+		setFlag(Flag::popped);
+		clearFlag(Flag::input);
+		enter();
+
+		setFlag(Flag::entry);
+	}
+
+	/*!
+	 * \brief Check if the current state was reached via #pop().
+	 *
+	 * This is the callback function for the #zth::fsm::popped() guard.
+	 */
+	bool popped() const noexcept
+	{
+		return flag(Flag::popped);
+	}
+
+	/*!
+	 * \brief Check if the given flag is set.
+	 */
+	bool flag(Flag f) const noexcept
+	{
+		return m_flags.test(flagIndex(f));
+	}
+
+	/*!
+	 * \brief Check if the state was just entered.
+	 *
+	 * This is the callback function for the #zth::fsm::entry() guard.
+	 */
+	bool entry() noexcept
+	{
+		if(!flag(Flag::entry))
+			return false;
+
+		clearFlag(Flag::entry);
+		return true;
+	}
+
+	/*!
+	 * \brief Return the input symbol that triggered the transition to the
+	 *	current state.
+	 *
+	 * Returns the invalid Symbol when that was not the case.
+	 */
+	Symbol input() const noexcept
+	{
+		if(!flag(Flag::input))
+			return Symbol{};
+
+		zth_assert(valid());
+		zth_assert(m_fsm->hasInput(m_transition));
+
+		return m_fsm->input(m_transition);
+	}
+
+	/*!
+	 * \brief %Register the given input symbol.
+	 */
+	virtual void input(Symbol i)
+	{
+		if(!i.valid())
+			return;
+
+		m_inputs.emplace_back(std::move(i));
+	}
+
+	/*!
+	 * \brief Remove the given input symbol.
+	 * \return \c false if the given symbol was not registered
+	 * \see #input(Symbol)
+	 */
+	bool clearInput(Symbol i) noexcept
+	{
+		if(!i.valid())
+			return false;
+
+		for(size_t j = 0; j < m_inputs.size(); j++)
+			if(m_inputs[j] == i) {
+				m_inputs[j] = std::move(m_inputs.back());
+				m_inputs.pop_back();
+				return true;
+			}
+
+		return false;
+	}
+
+	/*!
+	 * \brief Clear the input symbol that triggered the current state.
+	 *
+	 * This is the callback function for the #zth::fsm::consume action.
+	 *
+	 * \see #input()
+	 */
+	void clearInput() noexcept
+	{
+		clearInput(input());
+	}
+
+	/*!
+	 * \brief Clear all inputs.
+	 */
+	void clearInputs() noexcept
+	{
+		m_inputs.clear();
+	}
+
+	/*!
+	 * \brief Reserve memory for the given amount of input symbols.
+	 * \see #input(Symbol)
+	 * \exception std::bad_alloc when allocation fails
+	 */
+	void reserveInputs(size_t capacity)
+	{
+		if(m_inputs.capacity() > capacity * 2U)
+			m_inputs.shrink_to_fit();
+
+		m_inputs.reserve(capacity);
+	}
+
+	/*!
+	 * \brief Checks if the given input symbol was registered before.
+	 * \see #input(Symbol)
+	 */
+	bool hasInput(Symbol i) const noexcept
+	{
+		if(!i.valid())
+			return false;
+
+		for(size_t j = 0; j < m_inputs.size(); j++)
+			if(m_inputs[j] == i)
+				return true;
+
+		return false;
+	}
+
+protected:
+	/*!
+	 * \brief Set or clear the given flag.
+	 */
+	bool setFlag(Flag f, bool value = true) noexcept
+	{
+		m_flags.set(flagIndex(f), value);
+		return value;
+	}
+
+	/*!
+	 * \brief Set the given flag.
+	 *
+	 * Equivalent to \c setFlag(f, false).
+	 */
+	void clearFlag(Flag f) noexcept
+	{
+		setFlag(f, false);
+	}
+
+	/*!
+	 * \brief Called when the current state is about to be left.
+	 */
+	virtual void leave()
+	{
+		zth_dbg(fsm, "[%s] Leave %s", id_str(), state().str());
+	}
+
+	/*!
+	 * \brief Called when the current state was just entered.
+	 *
+	 * This function calls the action.  When overriding this function in a
+	 * subclass, usually call this function first before adding custom
+	 * logic.
+	 */
+	virtual void enter()
+	{
+		if(m_transition) {
+			zth_dbg(fsm, "[%s] Enter %s%s; run action %s", id_str(), state().str(),
+				flag(Flag::selfloop) ? " (loop)" : "",
+				m_fsm->action(m_transition).name().c_str());
+
+			m_fsm->action(m_transition).run(*this);
+		} else {
+			zth_dbg(fsm, "[%s] Enter %s (dummy transition)", id_str(), state().str());
+		}
+	}
+
+private:
+	/*!
+	 * \brief Return the bit index of the given flag in the set of flags.
+	 */
+	static constexpr size_t flagIndex(Flag f) noexcept
+	{
+		return static_cast<size_t>(f);
+	}
+
+	/*!
+	 * \brief Initialize the FSM with the given transitions.
+	 */
+	void init(TransitionsBase const& c) noexcept
+	{
+		if(c.size() == 0)
+			// Invalid.
+			return;
+
+		m_fsm = &c;
+		reset();
+	}
+
+	friend TransitionsBase;
+
+	/*!
+	 * \brief Helper to get the state variable atomically.
+	 */
+	index_type state_() const noexcept
+	{
+		return m_state.load(std::memory_order_relaxed);
+	}
+
+	/*!
+	 * \brief Helper to set the state variable atomically.
+	 */
+	void state_(index_type s) noexcept
+	{
+		return m_state.store(s, std::memory_order_relaxed);
+	}
+
+private:
+	/*! \brief The transitions. */
+	TransitionsBase const* m_fsm{};
+	/*! \brief The flags. */
+	std::bitset<static_cast<size_t>(Flag::flags)> m_flags;
+	/*! \brief The previous state. */
+	index_type m_prev{};
+	/*! \brief The last taken transition. */
+	index_type m_transition{};
+	/*! \brief The current state. */
+	std::atomic<index_type> m_state{};
+	/*! \brief The state push/pop stack. */
+	vector_type<index_type>::type m_stack;
+	/*! \brief The input symbol list. */
+	vector_type<Symbol>::type m_inputs;
+};
+
+/*!
+ * \brief FSM base class.
+ *
+ * If you want to hold some state in the FSM, inherit this class.  A reference
+ * to your inherited class can be passed to the guard and action functions.
+ *
+ * \ingroup zth_api_cpp_fsm14
+ */
+class Fsm : public BasicFsm {
+	ZTH_CLASS_NEW_DELETE(Fsm)
+public:
+	using base = BasicFsm;
+
+	/*!
+	 * \brief Ctor.
+	 */
+	Fsm(cow_string const& name = "FSM")
+		: base{name}
+	{}
+
+	/*!
+	 * \brief Move ctor.
+	 */
+	Fsm(Fsm&& f)
+		: Fsm{}
+	{
+		*this = std::move(f);
+	}
+
+	/*!
+	 * \brief Move assignment.
+	 */
+	Fsm& operator=(Fsm&& f) noexcept
+	{
+		base::operator=(std::move(f));
+		return *this;
+	}
+
+	/*!
+	 * \brief Dtor.
+	 */
+	virtual ~Fsm() override = default;
+
+	virtual void reset() noexcept override
+	{
+		base::reset();
+		m_t = Timestamp::now();
 	}
 
 	/*!
@@ -1567,199 +1920,18 @@ public:
 	}
 
 	/*!
-	 * \brief Push the current state onto the state stack.
-	 *
-	 * This is the callback function for the #zth::fsm::push() action.
-	 *
-	 * The FSM must be #valid().
-	 *
-	 * \see #pop()
-	 */
-	void push()
-	{
-		zth_assert(valid());
-
-		m_stack.push_back(m_prev);
-		setFlag(Flag::pushed);
-		zth_dbg(fsm, "[%s] Push %s", id_str(), m_fsm->state(m_state).str());
-	}
-
-	/*!
-	 * \brief Pop the previous state from the state stack.
-	 *
-	 * #leave() and #enter() are called when appropriate.
-	 *
-	 * This is the callback function for the #zth::fsm::pop() action.
-	 * #push() and pop() must come in pairs.
-	 *
-	 * The FSM must be #valid().
-	 *
-	 * \see #push()
-	 */
-	virtual void pop()
-	{
-		zth_assert(valid());
-		zth_assert(!m_stack.empty());
-
-		index_type to = m_stack.back();
-		zth_assert(to != 0);
-
-		zth_dbg(fsm, "[%s] Pop %s -> %s", id_str(), m_fsm->state(m_state).str(),
-			m_fsm->state(to).str());
-
-		clearFlag(Flag::blocked);
-		setFlag(Flag::selfloop, m_state == to);
-
-		if(!flag(Flag::transition)) {
-			// leave() was not called by step().
-			setFlag(Flag::transition);
-			leave();
-		}
-
-		m_prev = m_state;
-		m_state = to;
-		m_stack.pop_back();
-		m_transition = 0;
-
-		clearFlag(Flag::pushed);
-		setFlag(Flag::popped);
-		clearFlag(Flag::input);
-		enter();
-
-		setFlag(Flag::entry);
-	}
-
-	/*!
-	 * \brief Check if the current state was reached via #pop().
-	 *
-	 * This is the callback function for the #zth::fsm::popped() guard.
-	 */
-	bool popped() const noexcept
-	{
-		return flag(Flag::popped);
-	}
-
-	/*!
-	 * \brief Check if the given flag is set.
-	 */
-	bool flag(Flag f) const noexcept
-	{
-		return m_flags.test(flagIndex(f));
-	}
-
-	/*!
-	 * \brief Check if the state was just entered.
-	 *
-	 * This is the callback function for the #zth::fsm::entry() guard.
-	 */
-	bool entry() noexcept
-	{
-		if(!flag(Flag::entry))
-			return false;
-
-		clearFlag(Flag::entry);
-		return true;
-	}
-
-	/*!
-	 * \brief Return the input symbol that triggered the transition to the
-	 *	current state.
-	 *
-	 * Returns the invalid Symbol when that was not the case.
-	 */
-	Symbol input() const noexcept
-	{
-		if(!flag(Flag::input))
-			return Symbol{};
-
-		zth_assert(valid());
-		zth_assert(m_fsm->hasInput(m_transition));
-
-		return m_fsm->input(m_transition);
-	}
-
-	/*!
-	 * \brief %Register the given input symbol.
+	 * \copybrief zth::fsm::BasicFsm::input(zth::fsm::Symbol)
 	 *
 	 * #trigger() is called to trigger immediate reevaluation of the
 	 * guards.
 	 */
-	void input(Symbol i)
+	virtual void input(Symbol i) override
 	{
 		if(!i.valid())
 			return;
 
-		m_inputs.emplace_back(std::move(i));
+		base::input(i);
 		trigger();
-	}
-
-	/*!
-	 * \brief Remove the given input symbol.
-	 * \return \c false if the given symbol was not registered
-	 * \see #input(Symbol)
-	 */
-	bool clearInput(Symbol i) noexcept
-	{
-		if(!i.valid())
-			return false;
-
-		for(size_t j = 0; j < m_inputs.size(); j++)
-			if(m_inputs[j] == i) {
-				m_inputs[j] = std::move(m_inputs.back());
-				m_inputs.pop_back();
-				return true;
-			}
-
-		return false;
-	}
-
-	/*!
-	 * \brief Clear the input symbol that triggered the current state.
-	 *
-	 * This is the callback function for the #zth::fsm::consume action.
-	 *
-	 * \see #input()
-	 */
-	void clearInput() noexcept
-	{
-		clearInput(input());
-	}
-
-	/*!
-	 * \brief Clear all inputs.
-	 */
-	void clearInputs() noexcept
-	{
-		m_inputs.clear();
-	}
-
-	/*!
-	 * \brief Reserve memory for the given amount of input symbols.
-	 * \see #input(Symbol)
-	 * \exception std::bad_alloc when allocation fails
-	 */
-	void reserveInputs(size_t capacity)
-	{
-		if(m_inputs.capacity() > capacity * 2U)
-			m_inputs.shrink_to_fit();
-
-		m_inputs.reserve(capacity);
-	}
-
-	/*!
-	 * \brief Checks if the given input symbol was registered before.
-	 * \see #input(Symbol)
-	 */
-	bool hasInput(Symbol i) const noexcept
-	{
-		if(!i.valid())
-			return false;
-
-		for(size_t j = 0; j < m_inputs.size(); j++)
-			if(m_inputs[j] == i)
-				return true;
-
-		return false;
 	}
 
 	/*!
@@ -1815,94 +1987,21 @@ public:
 
 protected:
 	/*!
-	 * \brief Set or clear the given flag.
-	 */
-	bool setFlag(Flag f, bool value = true) noexcept
-	{
-		m_flags.set(flagIndex(f), value);
-		return value;
-	}
-
-	/*!
-	 * \brief Set the given flag.
-	 *
-	 * Equivalent to \c setFlag(f, false).
-	 */
-	void clearFlag(Flag f) noexcept
-	{
-		setFlag(f, false);
-	}
-
-	/*!
-	 * \brief Called when the current state is about to be left.
-	 */
-	virtual void leave()
-	{
-		zth_dbg(fsm, "[%s] Leave %s", id_str(), state().str());
-	}
-
-	/*!
 	 * \brief Called when the current state was just entered.
 	 *
 	 * This function calls the action.  When overriding this function in a
 	 * subclass, usually call this function first before adding custom
 	 * logic.
 	 */
-	virtual void enter()
+	virtual void enter() override
 	{
 		if(flag(Flag::transition))
 			m_t = Timestamp::now();
 
-		if(m_transition) {
-			zth_dbg(fsm, "[%s] Enter %s%s; run action %s", id_str(), state().str(),
-				flag(Flag::selfloop) ? " (loop)" : "",
-				m_fsm->action(m_transition).name().c_str());
-
-			m_fsm->action(m_transition).run(*this);
-		} else {
-			zth_dbg(fsm, "[%s] Enter %s (dummy transition)", id_str(), state().str());
-		}
+		base::enter();
 	}
 
 private:
-	/*!
-	 * \brief Return the bit index of the given flag in the set of flags.
-	 */
-	static constexpr size_t flagIndex(Flag f) noexcept
-	{
-		return static_cast<size_t>(f);
-	}
-
-	/*!
-	 * \brief Initialize the FSM with the given transitions.
-	 */
-	void init(TransitionsBase const& c) noexcept
-	{
-		if(c.size() == 0)
-			// Invalid.
-			return;
-
-		m_fsm = &c;
-		reset();
-	}
-
-	friend TransitionsBase;
-
-private:
-	/*! \brief The transitions. */
-	TransitionsBase const* m_fsm{};
-	/*! \brief The flags. */
-	std::bitset<static_cast<size_t>(Flag::flags)> m_flags;
-	/*! \brief The previous state. */
-	index_type m_prev{};
-	/*! \brief The last taken transition. */
-	index_type m_transition{};
-	/*! \brief The current state. */
-	index_type m_state{};
-	/*! \brief The state push/pop stack. */
-	vector_type<index_type>::type m_stack;
-	/*! \brief The input symbol list. */
-	vector_type<Symbol>::type m_inputs;
 	/*! \brief The trigger for #run() and #trigger(). */
 	Signal m_trigger;
 	/*! \brief The time when entered the current state. */
@@ -1914,7 +2013,7 @@ private:
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto entry = guard(&Fsm::entry, "entry");
+inline17 constexpr auto entry = guard(&BasicFsm::entry, "entry");
 
 /*!
  * \brief Action to push the new state onto the stack.
@@ -1922,21 +2021,21 @@ inline17 constexpr auto entry = guard(&Fsm::entry, "entry");
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto push = action(&Fsm::push, "push");
+inline17 constexpr auto push = action(&BasicFsm::push, "push");
 
 /*!
  * \brief Action to pop the current state from the stack.
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto pop = action(&Fsm::pop, "pop");
+inline17 constexpr auto pop = action(&BasicFsm::pop, "pop");
 
 /*!
  * \brief Guard to indicate that the current state was reached via \c pop.
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto popped = guard(&Fsm::popped, "popped");
+inline17 constexpr auto popped = guard(&BasicFsm::popped, "popped");
 
 /*!
  * \brief Action to return from Fsm::run().
@@ -1956,7 +2055,8 @@ inline17 constexpr auto stop = action(&Fsm::stop, "stop");
  * \ingroup zth_api_cpp_fsm14
  * \hideinitializer
  */
-inline17 constexpr auto consume = action<void (Fsm::*)() noexcept>(&Fsm::clearInput, "consume");
+inline17 constexpr auto consume =
+	action<void (Fsm::*)() noexcept>(&BasicFsm::clearInput, "consume");
 
 /*!
  * \brief A guard that is enabled after a \p s seconds after entering the
@@ -1985,12 +2085,12 @@ inline17 constexpr auto timeout_ms = guard(&Fsm::timeoutGuard_ms<ms>, "timeout")
 template <uint64_t us>
 inline17 constexpr auto timeout_us = guard(&Fsm::timeoutGuard_us<us>, "timeout");
 
-inline GuardPollInterval InputGuard::enabled(Fsm& fsm) const
+inline GuardPollInterval InputGuard::enabled(BasicFsm& fsm) const
 {
 	return fsm.hasInput(m_input);
 }
 
-inline GuardPollInterval GuardedAction::enabled(Fsm& fsm) const
+inline GuardPollInterval GuardedAction::enabled(BasicFsm& fsm) const
 {
 	if(isInput())
 		return fsm.hasInput(input());
@@ -1999,7 +2099,7 @@ inline GuardPollInterval GuardedAction::enabled(Fsm& fsm) const
 }
 
 template <size_t Size>
-GuardPollInterval Transitions<Size>::enabled(Transitions::index_type i, Fsm& fsm) const
+GuardPollInterval Transitions<Size>::enabled(Transitions::index_type i, BasicFsm& fsm) const
 {
 	if(isInput(i))
 		return fsm.hasInput(input(i));
