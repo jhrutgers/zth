@@ -521,8 +521,8 @@ private:
  * again.  When the interval is 0 or negative, the guard is supposed to be
  * enabled.
  *
- * In case the return type is \c bool, \c false is equivalent to a time
- * interval of 0.  \c true is equivalent to an infinite time interval.
+ * In case the return type is \c bool, \c true is equivalent to a time
+ * interval of 0.  \c false is equivalent to an infinite time interval.
  *
  * The argument A may be omitted. If provided, it must be zth::fsm::BasicFsm&,
  * or a reference to the actual subclass type of zth::fsm::BasicFsm.
