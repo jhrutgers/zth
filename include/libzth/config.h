@@ -92,13 +92,6 @@ struct DefaultConfig {
 #	endif
 
 	/*!
-	 * \brief Add support to enable debug output prints.
-	 *
-	 * The output is only actually printed when #EnableDebugPrint is \c true.
-	 */
-	static bool const SupportDebugPrint = Debug;
-
-	/*!
 	 * \brief Actually do print the debug output.
 	 *
 	 * Needs #SupportDebugPrint to be \c true.  Can be overridden by
@@ -109,6 +102,20 @@ struct DefaultConfig {
 		ZTH_CONFIG_ENABLE_DEBUG_PRINT;
 #	else
 		false;
+#	endif
+
+	/*!
+	 * \brief Add support to enable debug output prints.
+	 *
+	 * The output is only actually printed when #EnableDebugPrint is \c true.
+	 */
+	static bool const SupportDebugPrint =
+#	ifdef ZTH_OS_BAREMETAL
+		// Without OS, there is no environment to enable debugging when
+		// it is not enabled right away.
+		Debug && EnableDebugPrint;
+#	else
+		Debug;
 #	endif
 
 	/*! \brief Enable colored output. */
