@@ -164,6 +164,14 @@ void abortv(char const* fmt, va_list args) noexcept
 	::abort();
 }
 
+__attribute__((weak)) void assert_handler(char const* file, int line, char const* expr)
+{
+	if(Config::EnableFullAssert)
+		abort("assertion failed at %s:%d: %s", file ? file : "?", line, expr ? expr : "?");
+	else
+		abort("assertion failed at %s:%d", file ? file : "?", line);
+}
+
 #ifndef ZTH_OS_BAREMETAL
 static void log_init()
 {

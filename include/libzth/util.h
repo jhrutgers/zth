@@ -227,13 +227,14 @@ zth_logv(char const* fmt, va_list arg);
  * \brief \c assert(), but better integrated in Zth.
  */
 #		ifndef NDEBUG
-#			define zth_assert(expr)                                                     \
-				do {                                                                 \
-					if(unlikely(::zth::Config::EnableAssert && !(expr)))         \
-						::zth::abort(                                        \
-							"assertion failed at " __FILE__              \
-							":" ZTH_STRINGIFY(                           \
-								__LINE__) ": " ZTH_STRINGIFY(expr)); \
+#			define zth_assert(expr)                                             \
+				do {                                                         \
+					if(unlikely(::zth::Config::EnableAssert && !(expr))) \
+						::zth::assert_handler(                       \
+							__FILE__, __LINE__,                  \
+							::zth::Config::EnableFullAssert      \
+								? ZTH_STRINGIFY(expr)        \
+								: nullptr);                  \
 				} while(false)
 #		else
 #			define zth_assert(...) \
@@ -268,12 +269,18 @@ zth_logv(char const* fmt, va_list arg);
 namespace zth {
 
 ZTH_EXPORT char const* banner() noexcept;
+
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void
 abort(char const* fmt, ...) noexcept;
+
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void
 abortv(char const* fmt, va_list args) noexcept;
 
+ZTH_EXPORT __attribute__((noreturn)) void
+assert_handler(char const* file, int line, char const* expr);
+
 ZTH_EXPORT bool log_supports_ansi_colors() noexcept;
+
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void
 log_colorv(int color, char const* fmt, va_list args);
 
@@ -1432,8 +1439,9 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char cons
 #ifdef ZTH_OS_BAREMETAL
 // newlib probably doesn't have these. Provide some default implementation for
 // them.
-EXTERN_C __attribute__((format(gnu_printf,2,0))) int asprintf(char** strp, const char* fmt, ...);
-EXTERN_C __attribute__((format(gnu_printf,2,0))) int vasprintf(char** strp, const char* fmt, va_list ap);
+EXTERN_C __attribute__((format(gnu_printf, 2, 0))) int asprintf(char** strp, const char* fmt, ...);
+EXTERN_C __attribute__((format(gnu_printf, 2, 0))) int
+vasprintf(char** strp, const char* fmt, va_list ap);
 #endif
 
 #endif // ZTH_UTIL_H

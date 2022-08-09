@@ -71,6 +71,18 @@ struct DefaultConfig {
 		false;
 #	endif
 
+	/*!
+	 * \brief Show failing expression in case of a failed assert.
+	 * \details Disable to reduce binary size.
+	 */
+	static bool const EnableFullAssert =
+#	ifdef ZTH_OS_BAREMETAL
+		// Assume we are a bit short on memory.
+		false;
+#	else
+		EnableAssert;
+#	endif
+
 	/*! \brief Add (Worker) thread support when \c true. */
 	static bool const EnableThreads =
 #	if ZTH_THREADS
