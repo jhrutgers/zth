@@ -166,10 +166,16 @@ struct DefaultConfig {
 	/*! \brief VCD file buffer in bytes. */
 	static size_t const PerfVCDFileBuffer = 0x1000;
 
-	/*! \brief Enable (but not necessarily record) perf. */
-	static bool const EnablePerfEvent = true;
 	/*! \brief Record and output perf events. */
 	static bool const DoPerfEvent = false;
+	/*! \brief Enable (but not necessarily record) perf. */
+	static bool const EnablePerfEvent =
+#	ifdef ZTH_OS_BAREMETAL
+		// No environment, so only enable when we are actually saving it.
+		DoPerfEvent;
+#	else
+		true;
+#	endif
 	/*! \brief Also record syscalls by perf. */
 	static bool const PerfSyscall = true;
 

@@ -626,6 +626,23 @@ public:
 		       - TimeInterval(ts().tv_sec, ts().tv_nsec);
 	}
 
+	TimeInterval passed() const
+	{
+		// Assume we are in the past. If so, interval calculations are
+		// simpler than in the general timeTo() case.
+		Timestamp t = now();
+		zth_assert(!isAfter(t));
+
+		t.m_t.tv_sec -= m_t.tv_sec;
+		t.m_t.tv_nsec -= m_t.tv_nsec;
+		if(t.m_t.tv_nsec < 0) {
+			t.m_t.tv_sec--;
+			t.m_t.tv_nsec += TimeInterval::BILLION;
+		}
+
+		return TimeInterval(t.m_t.tv_sec, t.m_t.tv_nsec);
+	}
+
 	constexpr14 void add(TimeInterval const& dt) noexcept
 	{
 		TimeInterval t(m_t.tv_sec, m_t.tv_nsec);

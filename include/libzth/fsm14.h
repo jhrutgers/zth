@@ -1951,7 +1951,7 @@ public:
 	 */
 	TimeInterval dt() const
 	{
-		return Timestamp::now() - t();
+		return t().passed();
 	}
 
 	/*!

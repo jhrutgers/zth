@@ -473,7 +473,7 @@ ZTH_TLS_STATIC(PerfFiber*, perfFiber, nullptr);
 
 int perf_init()
 {
-	if(!zth_config(DoPerfEvent))
+	if(!Config::EnablePerfEvent || !zth_config(DoPerfEvent))
 		return 0;
 
 	perf_eventBuffer = new_alloc<perf_eventBuffer_type>();
@@ -487,6 +487,11 @@ int perf_init()
 
 void perf_deinit()
 {
+	if(!Config::EnablePerfEvent) {
+		zth_assert(!perfFiber);
+		return;
+	}
+
 	if(perfFiber) {
 		delete perfFiber;
 		perfFiber = nullptr;
@@ -495,6 +500,9 @@ void perf_deinit()
 
 void perf_flushEventBuffer() noexcept
 {
+	if(!Config::EnablePerfEvent)
+		return;
+
 	try {
 		if(likely(perfFiber))
 			perfFiber->flushEventBuffer();
