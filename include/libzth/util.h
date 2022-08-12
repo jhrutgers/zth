@@ -611,7 +611,10 @@ inline cow_string str<string&&>(string&& value)
  */
 inline string err(int e)
 {
-#	ifdef ZTH_HAVE_LIBZMQ
+#	ifdef ZTH_OS_BAREMETAL
+	// You are probably low on memory. Don't include all strerror strings in the binary.
+	return format("error %d", e);
+#	elif defined(ZTH_HAVE_LIBZMQ)
 	return format("%s (error %d)", zmq_strerror(e), e);
 #	elif ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
 	char buf[128];

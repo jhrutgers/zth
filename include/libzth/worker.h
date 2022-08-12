@@ -81,7 +81,7 @@ public:
 		return;
 
 error:
-		zth_abort("Cannot create Worker; %s (error %d)", strerror(res), res);
+		zth_abort("Cannot create Worker; %s", err(res).c_str());
 	}
 
 	virtual ~Worker() override
