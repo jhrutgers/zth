@@ -26,6 +26,10 @@
 #	include <libzth/time.h>
 #	include <libzth/util.h>
 
+#	if __cplusplus >= 201103L
+#		include <type_traits>
+#	endif
+
 namespace zth {
 class Worker;
 
@@ -242,12 +246,22 @@ ZTH_EXPORT void waitUntil(TimedWaitable& w);
  * \brief Wait until the given function \p f returns \c true.
  * \ingroup zth_api_cpp_fiber
  */
-template <typename F>
+#	if __cplusplus >= 201103L
+template <
+	typename F,
+	typename std::enable_if<!std::is_base_of<TimedWaitable, F>::value, int>::type = 0>
 void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
 {
 	PolledWaiting<F> w(f, pollInterval);
 	waitUntil(w);
 }
+#	else
+void waitUntil(bool (*f)(), TimeInterval const& pollInterval = TimeInterval())
+{
+	PolledWaiting<bool (*)()> w(f, pollInterval);
+	waitUntil(w);
+}
+#	endif
 
 /*!
  * \brief Wait until the given member function \p f returns \c true.
