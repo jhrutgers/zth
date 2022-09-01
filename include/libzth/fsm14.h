@@ -1833,6 +1833,7 @@ public:
 	{
 		base::reset();
 		m_t = Timestamp::now();
+		trigger();
 	}
 
 	/*!
