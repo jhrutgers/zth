@@ -154,31 +154,31 @@ public:
 	template <typename T>
 	static constexpr14 TimeInterval from_ms(T ms)
 	{
-		T s = ms / (T)1000;
-		if((unsigned long long)s > (unsigned long long)std::numeric_limits<time_t>::max())
+		T s_ = ms / (T)1000;
+		if((unsigned long long)s_ > (unsigned long long)std::numeric_limits<time_t>::max())
 			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
 
-		return TimeInterval((time_t)s, ((long)ms % 1000L) * 1000000L);
+		return TimeInterval((time_t)s_, ((long)ms % 1000L) * 1000000L);
 	}
 
 	template <typename T>
 	static constexpr14 TimeInterval from_us(T us)
 	{
-		T s = us / (T)1000000;
-		if((unsigned long long)s > (unsigned long long)std::numeric_limits<time_t>::max())
+		T s_ = us / (T)1000000;
+		if((unsigned long long)s_ > (unsigned long long)std::numeric_limits<time_t>::max())
 			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
 
-		return TimeInterval((time_t)s, ((long)us % 1000000L) * 1000L);
+		return TimeInterval((time_t)s_, ((long)us % 1000000L) * 1000L);
 	}
 
 	template <typename T>
 	static constexpr14 TimeInterval from_ns(T ns)
 	{
-		T s = ns / (T)1000000000L;
-		if(s > std::numeric_limits<time_t>::max())
+		T s_ = ns / (T)1000000000L;
+		if(s_ > std::numeric_limits<time_t>::max())
 			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
 
-		return TimeInterval((time_t)s, (long)ns % 1000000000L);
+		return TimeInterval((time_t)s_, (long)ns % 1000000000L);
 	}
 
 private:
