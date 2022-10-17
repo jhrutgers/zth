@@ -9,16 +9,17 @@
 
 #include <libzth/util.h>
 
-/*!
- * \brief Prints the given printf()-like formatted string to stdout.
- * \details This is a weak symbol. Override when required.
- * \ingroup zth_api_c_util
- */
+namespace zth {
+
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
 #endif
-void zth_logv(char const* fmt, va_list arg)
+void assert_handler(char const* file, int line, char const* expr)
 {
-	// NOLINTNEXTLINE
-	vprintf(fmt, arg);
+	if(Config::EnableFullAssert)
+		abort("assertion failed at %s:%d: %s", file ? file : "?", line, expr ? expr : "?");
+	else
+		abort("assertion failed at %s:%d", file ? file : "?", line);
 }
+
+} // namespace zth

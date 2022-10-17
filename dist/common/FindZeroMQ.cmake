@@ -59,6 +59,8 @@ if(NOT TARGET libzmq AND ZeroMQ_FIND_REQUIRED)
 	)
 
 	if(MINGW)
+		set(libzmq_flags ${libzmq_flags} -DZMQ_WIN32_WINNT_DEFAULT=0x0A00)
+
 		# See https://github.com/zeromq/libzmq/issues/3859
 		set(libzmq_flags ${libzmq_flags} -DZMQ_CV_IMPL=win32api)
 	endif()

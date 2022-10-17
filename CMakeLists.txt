@@ -158,6 +158,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 endif()
 
 add_library(libzth
+	src/assert.cpp
 	src/config.cpp
 	src/context.cpp
 	src/fiber.cpp
