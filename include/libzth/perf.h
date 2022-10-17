@@ -501,7 +501,7 @@ public:
 		, m_bins()
 		, m_current()
 	{
-		static_assert(std::numeric_limits<decltype(m_current)>::max() >= Bins);
+		static_assert(std::numeric_limits<decltype(m_current)>::max() >= Bins, "");
 	}
 
 	void event(Timestamp const& now = Timestamp::now()) noexcept
@@ -545,7 +545,7 @@ public:
 
 		// Sum all intermediate bins.
 		type sum = first_bin + last_bin;
-		for(decltype(m_current) i = 2; i < Bins; i++)
+		for(decltype(m_current + 0) i = 2; i < Bins; i++)
 			sum += (type)m_bins[(m_current + i) % Bins];
 
 		// As the first and last one are both partial, divide by Bins - 1.
