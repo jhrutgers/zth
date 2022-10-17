@@ -247,7 +247,7 @@ void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
 	waitUntil(w);
 }
 #	else
-void waitUntil(bool (*f)(), TimeInterval const& pollInterval = TimeInterval())
+ZTH_EXPORT inline void waitUntil(bool (*f)(), TimeInterval const& pollInterval = TimeInterval())
 {
 	PolledWaiting<bool (*)()> w(f, pollInterval);
 	waitUntil(w);
