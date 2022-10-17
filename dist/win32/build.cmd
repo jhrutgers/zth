@@ -24,7 +24,7 @@ set build_type=%~1
 pushd build
 set "repo=%here%\..\.."
 set "repo=%repo:\=/%"
-for /f "tokens=1*" %%x in ("%*") do cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% "-GMinGW Makefiles" %%y ..\..\..
+for /f "tokens=1*" %%x in ("%*") do cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% "-GMinGW Makefiles" -DZTH_DIST_DIR="%here%\." %%y ..\..\..
 if errorlevel 1 goto error_popd
 cmake --build . -- -j%NUMBER_OF_PROCESSORS%
 if errorlevel 1 goto error_popd
