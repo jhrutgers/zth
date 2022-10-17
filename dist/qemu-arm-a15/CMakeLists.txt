@@ -1,3 +1,10 @@
+# Zth (libzth), a cooperative userspace multitasking library.
+# Copyright (C) 2019-2022  Jochem Rutgers
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 set_property(SOURCE src/startup.S PROPERTY LANGUAGE C)
 add_library(arm-bsp src/crt0.c src/startup.S)
 set_source_files_properties(src/startup.S PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/arm.ld)
