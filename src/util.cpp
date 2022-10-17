@@ -305,6 +305,7 @@ __attribute__((weak)) int vasprintf(char** strp, const char* fmt, va_list ap)
 	if(strp && (*strp = (char*)malloc(len + 1)))
 		vsnprintf(*strp, len + 1, fmt, ap);
 
+	// cppcheck-suppress memleak
 	return len;
 }
 #endif
