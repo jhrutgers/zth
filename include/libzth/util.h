@@ -390,6 +390,7 @@ public:
 
 	string str() &&
 	{
+		// cppcheck-suppress returnStdMoveLocal
 		return std::move(local());
 	}
 #	endif
@@ -832,6 +833,7 @@ public:
 
 	constexpr14 pointer_type& operator*() const noexcept
 	{
+		// cppcheck-suppress nullPointerRedundantCheck
 		zth_assert(ptr());
 		return *ptr();
 	}

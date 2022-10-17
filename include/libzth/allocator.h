@@ -47,8 +47,8 @@ __attribute__((warn_unused_result)) static inline T* allocate_noexcept(size_t n 
 	try {
 		return allocate<T>(n);
 	} catch(...) {
-		return nullptr;
 	}
+	return nullptr;
 }
 
 template <typename T>
@@ -140,7 +140,8 @@ struct vector_type {
  */
 template <typename Key, typename T, typename Compare = std::less<Key> /**/>
 struct map_type {
-	typedef std::map<Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
+	typedef std::map<
+		Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
 		type;
 };
 

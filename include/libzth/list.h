@@ -610,6 +610,7 @@ protected:
 
 	static void decrease_level(elem_type* t) noexcept
 	{
+#ifndef CPPCHECK // Internal error, somehow.
 		decltype(t->level) ll = t->left ? t->left->level : 0;
 		decltype(t->level) lr = t->right ? t->right->level : 0;
 		decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
@@ -618,6 +619,7 @@ protected:
 			if(t->right && should_be < t->right->level)
 				t->right->level = should_be;
 		}
+#endif
 	}
 
 	void check() const noexcept
