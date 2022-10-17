@@ -34,7 +34,7 @@ jobs:
       CXX: g++-${{matrix.gcc}}
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: |
           dist/ubuntu/bootstrap.sh
@@ -53,7 +53,7 @@ jobs:
         zmq: [ON, OFF]
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist\win32\bootstrap.cmd
       - name: build Debug
@@ -73,7 +73,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/macos/bootstrap.sh
       - name: build Debug
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/qemu-arm-a15/bootstrap.sh
       - name: build Debug
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/qemu-arm-m3/bootstrap.sh
       - name: build Debug
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/mingw/bootstrap.sh
       - name: build Debug
@@ -131,7 +131,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/ubuntu/bootstrap.sh
       - name: build
