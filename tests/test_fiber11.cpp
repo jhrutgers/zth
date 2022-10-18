@@ -10,4 +10,5 @@
 #define ZTH_TYPEDFIBER98 0
 #define FiberTest CXX11FiberTest
 
+// NOLINTNEXTLINE(bugprone-suspicious-include)
 #include "test_fiber.cpp"
