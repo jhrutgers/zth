@@ -833,8 +833,8 @@ public:
 
 	constexpr14 pointer_type& operator*() const noexcept
 	{
-		// cppcheck-suppress nullPointerRedundantCheck
 		zth_assert(ptr());
+		// cppcheck-suppress nullPointerRedundantCheck
 		return *ptr();
 	}
 

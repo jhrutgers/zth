@@ -166,8 +166,8 @@ struct PolledMemberWaitingHelper {
 
 	bool operator()() const
 	{
-		// cppcheck-suppress nullPointerRedundantCheck
 		zth_assert(f != nullptr);
+		// cppcheck-suppress nullPointerRedundantCheck
 		return (that.*f)();
 	}
 

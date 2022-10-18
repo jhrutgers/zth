@@ -399,8 +399,8 @@ ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept
 {
 	Worker const& w = currentWorker();
 	Fiber* f = w.currentFiber();
-	// cppcheck-suppress nullPointerRedundantCheck
 	zth_assert(f);
+	// cppcheck-suppress nullPointerRedundantCheck
 	return *f;
 }
 
