@@ -10,4 +10,5 @@
 #define ZTH_STACK_SWITCH98 0
 #define StackTest	   CXX11StackTest
 
+// NOLINTNEXTLINE(bugprone-suspicious-include)
 #include "test_stack.cpp"
