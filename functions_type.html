@@ -115,6 +115,7 @@ $(document).ready(function(){initNavTree('functions_type.html',''); initResizabl
 <li>base
 : <a class="el" href="classzth_1_1_auto_future.html#a7e135f2fa94a6d7ca79713c30f8902bf">zth::AutoFuture&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">zth::Context</a>
+, <a class="el" href="classzth_1_1fsm_1_1_fsm.html#a9342c66fecff0c0dfdc9421208f83ce2">zth::fsm::Fsm</a>
 , <a class="el" href="classzth_1_1_fsm_callback.html#ad43fec9e1a903125c81e9355bf316847">zth::FsmCallback&lt; State_, CallbackArg_, Input_, FsmImpl_ &gt;</a>
 , <a class="el" href="classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html#aad7d16158449b2ff9ecdfbd63fced180">zth::FsmCallback&lt; State_, void, Input_, FsmImpl_ &gt;</a>
 , <a class="el" href="classzth_1_1impl_1_1_context_arch.html#af6cfed1e0a869df0dda40f171488ab36">zth::impl::ContextArch&lt; Impl &gt;</a>
@@ -149,6 +150,9 @@ $(document).ready(function(){initNavTree('functions_type.html',''); initResizabl
 </li>
 <li>Compiler
 : <a class="el" href="classzth_1_1_fsm.html#ad56b90c8921f940f95ca706adf95803f">zth::Fsm&lt; State_, Input_, FsmImpl_ &gt;</a>
+</li>
+<li>count_type
+: <a class="el" href="classzth_1_1_event_rate.html#a0f1305f3b7a330981fab456efc34b792">zth::EventRate&lt; T, Bins, Count &gt;</a>
 </li>
 </ul>
 
@@ -220,7 +224,7 @@ $(document).ready(function(){initNavTree('functions_type.html',''); initResizabl
 : <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a87ddf12f0a180e45f40e7cd0f783296c">zth::fsm::Transitions&lt; Size &gt;</a>
 </li>
 <li>index_type
-: <a class="el" href="classzth_1_1fsm_1_1_fsm.html#ac5e68c83d39e274c133b8977c439ad6d">zth::fsm::Fsm</a>
+: <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html#a0686f3e80d4ecf21c36ad21f0addf278">zth::fsm::BasicFsm</a>
 , <a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">zth::fsm::TransitionsBase</a>
 </li>
 <li>Input
@@ -285,6 +289,7 @@ $(document).ready(function(){initNavTree('functions_type.html',''); initResizabl
 : <a class="el" href="structzth_1_1choose__type.html#aa958e864a264687d0524ac527d97a25d">zth::choose_type&lt; T, WhenTIsVoid &gt;</a>
 , <a class="el" href="structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html#a6511e829b34746fc00a3c0962ca52b8c">zth::choose_type&lt; void, WhenTIsVoid &gt;</a>
 , <a class="el" href="structzth_1_1_default_config_1_1_allocator.html#a428c74ea87014580314c23d1a5de1cc9">zth::DefaultConfig::Allocator&lt; T &gt;</a>
+, <a class="el" href="classzth_1_1_event_rate.html#a5d1d43000e71a8a7246da48b3afce752">zth::EventRate&lt; T, Bins, Count &gt;</a>
 , <a class="el" href="classzth_1_1_future.html#a4a0b915edb53a85c256637c2359f669b">zth::Future&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_future_3_01void_01_4.html#a9c748b02aa3847f42d3dd362b280db9c">zth::Future&lt; void &gt;</a>
 , <a class="el" href="structzth_1_1impl_1_1_packed.html#af78d6596faf7efab23ed13482c9dd3ff">zth::impl::Packed&lt; T &gt;</a>
@@ -293,7 +298,7 @@ $(document).ready(function(){initNavTree('functions_type.html',''); initResizabl
 , <a class="el" href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">zth::list_type&lt; T &gt;</a>
 , <a class="el" href="classzth_1_1_listable.html#a3c78f6330e3c8d72846ef54aa703aea6">zth::Listable&lt; ChildClass &gt;</a>
 , <a class="el" href="classzth_1_1_load.html#af6fbdade52bb88f06af78dc5261a2962">zth::Load&lt; T &gt;</a>
-, <a class="el" href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">zth::map_type&lt; Key, T, Compare &gt;</a>
+, <a class="el" href="structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0">zth::map_type&lt; Key, T, Compare &gt;</a>
 , <a class="el" href="structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404">zth::Register&lt; T, Addr, Fields &gt;</a>
 , <a class="el" href="classzth_1_1safe__ptr.html#a1fa0fc479fce03573220f740e89383ef">zth::safe_ptr&lt; T &gt;</a>
 , <a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html#a09b7f1eb20a07b4cc082b02594153510">zth::smallest_uint&lt; x, smallest_uint_size&lt; 1 &gt; &gt;</a>

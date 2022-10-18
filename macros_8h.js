@@ -22,6 +22,7 @@ var macros_8h =
     [ "ZTH_OS_LINUX", "macros_8h.html#a30be6fa748b0a086cc4a8281fd76ef6e", null ],
     [ "ZTH_OS_POSIX", "macros_8h.html#ab0f5e9086681cdf76fc18145ee82271f", null ],
     [ "ZTH_THREADS", "macros_8h.html#a86c44da27f5515067e4d69ca7025c113", null ],
+    [ "zth_throw", "macros_8h.html#aa2f9181066984c5fdda60ae26a9f1a31", null ],
     [ "ZTH_TLS_DECLARE", "macros_8h.html#aac513f38ad0c10c15ecd7d81ba1b0482", null ],
     [ "ZTH_TLS_DEFINE", "macros_8h.html#a32e057237ba99ff5370d00cee1590144", null ],
     [ "ZTH_TLS_GET", "macros_8h.html#a55b877a804738fba99a01f296adf2222", null ],

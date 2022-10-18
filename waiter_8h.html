@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('waiter_8h.html',''); initResizable(); 
 <code>#include &lt;<a class="el" href="list_8h_source.html">libzth/list.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="time_8h_source.html">libzth/time.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="util_8h_source.html">libzth/util.h</a>&gt;</code><br />
+<code>#include &lt;type_traits&gt;</code><br />
 </div>
 <p><a href="waiter_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -126,10 +127,10 @@ Functions</h2></td></tr>
 <tr class="memitem:gabd067566b5f56fb4aa9186880f568d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">zth::waitUntil</a> (TimedWaitable &amp;w)</td></tr>
 <tr class="memdesc:gabd067566b5f56fb4aa9186880f568d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given <a class="el" href="classzth_1_1_waitable.html">Waitable</a> has passed.  <a href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">More...</a><br /></td></tr>
 <tr class="separator:gabd067566b5f56fb4aa9186880f568d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
-<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">zth::waitUntil</a> (F f, TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
-<tr class="memdesc:ga8de540dbd2d282a44c5083295bf37234"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">More...</a><br /></td></tr>
-<tr class="separator:ga8de540dbd2d282a44c5083295bf37234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa0e4f789b961302899befebadd416c26"><td class="memTemplParams" colspan="2">template&lt;typename F , typename std::enable_if&lt;!std::is_base_of&lt; TimedWaitable, F &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:gaa0e4f789b961302899befebadd416c26"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gaa0e4f789b961302899befebadd416c26">zth::waitUntil</a> (F f, TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
+<tr class="memdesc:gaa0e4f789b961302899befebadd416c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#gaa0e4f789b961302899befebadd416c26">More...</a><br /></td></tr>
+<tr class="separator:gaa0e4f789b961302899befebadd416c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), TimeInterval const &amp;pollInterval=TimeInterval())</td></tr>
 <tr class="memdesc:ga355b0425f58035f985050fbd0435d254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given member function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">More...</a><br /></td></tr>

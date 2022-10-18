@@ -30,12 +30,14 @@ var searchData=
   ['arg_32',['arg',['../structzth_1_1_context_attr.html#a9ee34a12252c21cd6a0bec20c2a25fe8',1,'zth::ContextAttr']]],
   ['arguments_33',['Arguments',['../structzth_1_1impl_1_1_arguments.html',1,'zth::impl']]],
   ['array_34',['array',['../classzth_1_1small__vector.html#a17aad54964ba4d66d56705f49c22c7b7',1,'zth::small_vector::array() noexcept'],['../classzth_1_1small__vector.html#a34974e808eed3b762b48ab65f8f844fa',1,'zth::small_vector::array() const noexcept']]],
-  ['async_35',['async',['../group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3',1,'async.h']]],
-  ['async_2eh_36',['async.h',['../async_8h.html',1,'']]],
-  ['at_37',['at',['../classzth_1_1cow__string.html#af06544552b4ee56677db50f8eb5882dd',1,'zth::cow_string']]],
-  ['atbegin_38',['atBegin',['../classzth_1_1_list_1_1iterator.html#a8284ea5d6288610c79bfe01b5ea6e15b',1,'zth::List::iterator']]],
-  ['atend_39',['atEnd',['../classzth_1_1_list_1_1iterator.html#a16c31d907cc1f90eed5a553299f0fc62',1,'zth::List::iterator']]],
-  ['attr_40',['attr',['../classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245',1,'zth::impl::ContextBase::attr() noexcept'],['../classzth_1_1impl_1_1_context_base.html#a741c05905e515dc5d3cce8ae66b3ea2d',1,'zth::impl::ContextBase::attr() const noexcept']]],
-  ['autofuture_41',['AutoFuture',['../classzth_1_1_auto_future.html',1,'zth::AutoFuture&lt; T &gt;'],['../classzth_1_1_auto_future.html#a9f64f164fb51a8cf2b477386f36c2959',1,'zth::AutoFuture::AutoFuture() noexcept'],['../classzth_1_1_auto_future.html#a4c71c8c0b94f6c22d9b04ecc5be00544',1,'zth::AutoFuture::AutoFuture(AutoFuture const &amp;af) noexcept'],['../classzth_1_1_auto_future.html#a691ce9e2c70a4703b68479002c3c9278',1,'zth::AutoFuture::AutoFuture(base const &amp;p) noexcept'],['../classzth_1_1_auto_future.html#adda47b127cc21941ac0dc4d31b7ff0bd',1,'zth::AutoFuture::AutoFuture(TypedFiber&lt; T, F &gt; &amp;fiber)']]],
-  ['autofuture_5ftype_42',['AutoFuture_type',['../classzth_1_1_typed_fiber_factory.html#ac3cdb2353757637db59bc3d162129f41',1,'zth::TypedFiberFactory']]]
+  ['assert_2ecpp_35',['assert.cpp',['../assert_8cpp.html',1,'']]],
+  ['assert_5fhandler_36',['assert_handler',['../namespacezth.html#abb44b1de600c6dafa1919211ff3dca55',1,'zth']]],
+  ['async_37',['async',['../group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3',1,'async.h']]],
+  ['async_2eh_38',['async.h',['../async_8h.html',1,'']]],
+  ['at_39',['at',['../classzth_1_1cow__string.html#af06544552b4ee56677db50f8eb5882dd',1,'zth::cow_string']]],
+  ['atbegin_40',['atBegin',['../classzth_1_1_list_1_1iterator.html#a8284ea5d6288610c79bfe01b5ea6e15b',1,'zth::List::iterator']]],
+  ['atend_41',['atEnd',['../classzth_1_1_list_1_1iterator.html#a16c31d907cc1f90eed5a553299f0fc62',1,'zth::List::iterator']]],
+  ['attr_42',['attr',['../classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245',1,'zth::impl::ContextBase::attr() noexcept'],['../classzth_1_1impl_1_1_context_base.html#a741c05905e515dc5d3cce8ae66b3ea2d',1,'zth::impl::ContextBase::attr() const noexcept']]],
+  ['autofuture_43',['AutoFuture',['../classzth_1_1_auto_future.html',1,'zth::AutoFuture&lt; T &gt;'],['../classzth_1_1_auto_future.html#a9f64f164fb51a8cf2b477386f36c2959',1,'zth::AutoFuture::AutoFuture() noexcept'],['../classzth_1_1_auto_future.html#a4c71c8c0b94f6c22d9b04ecc5be00544',1,'zth::AutoFuture::AutoFuture(AutoFuture const &amp;af) noexcept'],['../classzth_1_1_auto_future.html#a691ce9e2c70a4703b68479002c3c9278',1,'zth::AutoFuture::AutoFuture(base const &amp;p) noexcept'],['../classzth_1_1_auto_future.html#adda47b127cc21941ac0dc4d31b7ff0bd',1,'zth::AutoFuture::AutoFuture(TypedFiber&lt; T, F &gt; &amp;fiber)']]],
+  ['autofuture_5ftype_44',['AutoFuture_type',['../classzth_1_1_typed_fiber_factory.html#ac3cdb2353757637db59bc3d162129f41',1,'zth::TypedFiberFactory']]]
 ];

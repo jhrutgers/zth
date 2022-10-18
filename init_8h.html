@@ -147,11 +147,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">                                <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, atexit(f);) \</div>
-<div class="line">                                <span class="keyword">static</span> f##__deinit f##__deinit_;</div>
+<div class="line">                                <span class="keyword">static</span> f##__init f##__deinit_;</div>
 </div><!-- fragment -->
 <p>Mark the given function <code>f</code> to be invoked at exit. </p>
 
-<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00073">73</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00064">64</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
 
 </div>
 </div>
@@ -173,7 +173,7 @@ Variables</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">                        <a class="code" href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a>(f, f();) \</div>
 <div class="line">                        <span class="keyword">static</span> f##__init <span class="keyword">const</span> f##__init_;</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00060">60</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00051">51</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +217,7 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 <p>Mark the given function <code>f</code> to be invoked during static initialization. </p>
 
-<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00047">47</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8h_source.html#l00038">38</a> of file <a class="el" href="init_8h_source.html">init.h</a>.</p>
 
 </div>
 </div>
@@ -241,7 +241,7 @@ Variables</h2></td></tr>
 <p>Initialization is only done once. It is safe to call it multiple times.</p>
 <p>The initialization sequence is initialized by <a class="el" href="init_8h.html#a68623548df4d1790f4c5764165907fb0">ZTH_INIT_CALL()</a> and processed in the same order as normal static initializers are executed. </p>
 
-<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00034">34</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00025">25</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
 
 </div>
 </div>
@@ -264,7 +264,7 @@ Variables</h2></td></tr>
 <p>This function can be used to run machine/board-specific cleanup in <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code> before returning. The default (weak) implementation does nothing.</p>
 <dl class="section return"><dt>Returns</dt><dd>the exit code of the application, which overrides the returned value from <code><a class="el" href="main_8cpp.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber()</a></code> when non-zero </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00050">50</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00042">42</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
@@ -286,7 +286,7 @@ Variables</h2></td></tr>
 <p>Initialization function to be called by the default-supplied <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code>, before doing anything else. </p>
 <p>This function can be used to run machine/board-specific initialization in <code><a class="el" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main()</a></code> even before <a class="el" href="init_8h.html#a5365d3450ca6f2a88551ea2192b4f0c7" title="Perform one-time global initialization of the Zth library.">zth_init()</a> is invoked. The default (weak) implementation does nothing. </p>
 
-<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00038">38</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8cpp_source.html#l00030">30</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
@@ -303,7 +303,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00023">23</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00014">14</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
 
 </div>
 </div>
@@ -319,17 +319,17 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00024">24</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init_8cpp_source.html#l00015">15</a> of file <a class="el" href="init_8cpp_source.html">init.cpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="ainit_8h_html_a39fa1dfee15fba6b9dfc4901ad2ffa97"><div class="ttname"><a href="init_8h.html#a39fa1dfee15fba6b9dfc4901ad2ffa97">zth_init_tail</a></div><div class="ttdeci">struct zth_init_entry * zth_init_tail</div><div class="ttdef"><b>Definition:</b> <a href="init_8cpp_source.html#l00024">init.cpp:24</a></div></div>
-<div class="ttc" id="ainit_8h_html_ae9f77f34f19a8e6efe123433aedc08e6"><div class="ttname"><a href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a></div><div class="ttdeci">#define ZTH_INIT_CALL_(f,...)</div><div class="ttdoc">Mark the given function f to be invoked during static initialization.</div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00047">init.h:47</a></div></div>
-<div class="ttc" id="ainit_8h_html_a798e83ea50eb570c6fb14c97384f56b6"><div class="ttname"><a href="init_8h.html#a798e83ea50eb570c6fb14c97384f56b6">zth_init_head</a></div><div class="ttdeci">struct zth_init_entry const  * zth_init_head</div><div class="ttdef"><b>Definition:</b> <a href="init_8cpp_source.html#l00023">init.cpp:23</a></div></div>
-<div class="ttc" id="astructzth__init__entry_html_ac8a4c581621d7ceed306ec2e5ab60566"><div class="ttname"><a href="structzth__init__entry.html#ac8a4c581621d7ceed306ec2e5ab60566">zth_init_entry::zth_init_entry</a></div><div class="ttdeci">zth_init_entry(void(*f)(void), zth_init_entry const *next)</div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00027">init.h:27</a></div></div>
-<div class="ttc" id="astructzth__init__entry_html"><div class="ttname"><a href="structzth__init__entry.html">zth_init_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00025">init.h:25</a></div></div>
+<div class="ttc" id="ainit_8h_html_a39fa1dfee15fba6b9dfc4901ad2ffa97"><div class="ttname"><a href="init_8h.html#a39fa1dfee15fba6b9dfc4901ad2ffa97">zth_init_tail</a></div><div class="ttdeci">struct zth_init_entry * zth_init_tail</div><div class="ttdef"><b>Definition:</b> <a href="init_8cpp_source.html#l00015">init.cpp:15</a></div></div>
+<div class="ttc" id="ainit_8h_html_ae9f77f34f19a8e6efe123433aedc08e6"><div class="ttname"><a href="init_8h.html#ae9f77f34f19a8e6efe123433aedc08e6">ZTH_INIT_CALL_</a></div><div class="ttdeci">#define ZTH_INIT_CALL_(f,...)</div><div class="ttdoc">Mark the given function f to be invoked during static initialization.</div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00038">init.h:38</a></div></div>
+<div class="ttc" id="ainit_8h_html_a798e83ea50eb570c6fb14c97384f56b6"><div class="ttname"><a href="init_8h.html#a798e83ea50eb570c6fb14c97384f56b6">zth_init_head</a></div><div class="ttdeci">struct zth_init_entry const  * zth_init_head</div><div class="ttdef"><b>Definition:</b> <a href="init_8cpp_source.html#l00014">init.cpp:14</a></div></div>
+<div class="ttc" id="astructzth__init__entry_html_ac8a4c581621d7ceed306ec2e5ab60566"><div class="ttname"><a href="structzth__init__entry.html#ac8a4c581621d7ceed306ec2e5ab60566">zth_init_entry::zth_init_entry</a></div><div class="ttdeci">zth_init_entry(void(*f)(void), zth_init_entry const *next)</div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00018">init.h:18</a></div></div>
+<div class="ttc" id="astructzth__init__entry_html"><div class="ttname"><a href="structzth__init__entry.html">zth_init_entry</a></div><div class="ttdef"><b>Definition:</b> <a href="init_8h_source.html#l00016">init.h:16</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

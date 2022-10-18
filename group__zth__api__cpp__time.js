@@ -62,6 +62,7 @@ var group__zth__api__cpp__time =
       [ "operator==", "classzth_1_1_timestamp.html#a12ded5c40e8dc2b7955cffa359f6dec5", null ],
       [ "operator>", "classzth_1_1_timestamp.html#a914cd9e6283e9ce20f446f7f8bcab7e1", null ],
       [ "operator>=", "classzth_1_1_timestamp.html#a4f79802fa12791e397539d4224602f7a", null ],
+      [ "passed", "classzth_1_1_timestamp.html#ac51186b29ff02e28ff424650f78a10ba", null ],
       [ "timeTo", "classzth_1_1_timestamp.html#aa6668315bcc35653f83e279121a7b899", null ],
       [ "ts", "classzth_1_1_timestamp.html#a33913e5ccf0833106d6aba7951d5220f", null ]
     ] ],

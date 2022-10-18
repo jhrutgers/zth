@@ -169,7 +169,7 @@ Functions</h2></td></tr>
 <p>Start an external program. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gace10a072a53ecfc4db384c7301c5e7aa" title="Start an external program.">zth::execvp()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00576">576</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00568">568</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -223,7 +223,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="9_c_api_8c-example.html#a3">9_c_api.c</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00798">798</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00792">792</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -253,7 +253,7 @@ Functions</h2></td></tr>
 <p>Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gab262d7281fe5cca126238db6633d0891" title="Return the fiber-local storage, as set by setFls().">zth::fls()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00566">566</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00560">560</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -276,7 +276,7 @@ Functions</h2></td></tr>
 <p>Sleep for the given amount of milliseconds. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152" title="Sleep for the given amount of milliseconds.">zth::mnap()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00419">419</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00425">425</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +299,7 @@ Functions</h2></td></tr>
 <p>Sleep for the given time interval. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga786a7557ff189b1f1e7552a37f772665" title="Sleep for the given time interval.">zth::nap(zth::TimeInterval const&amp;)</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00408">408</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00414">414</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -330,7 +330,7 @@ Functions</h2></td></tr>
 <p>Normally, <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">yield()</a> does not yield when the time slice did not end. This prevents excessive context switching, without actually doing much work in between. However, if there is no work, this function forces a context switch anyway.</p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga13b50598dd515c2310163b3e15cf7869" title="Force a context switch.">zth::outOfWork()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00506">506</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00498">498</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -362,7 +362,7 @@ Functions</h2></td></tr>
 <p>This is just like thread-local storage, but per fiber.</p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">zth::setFls()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00576">576</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00570">570</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -409,7 +409,7 @@ Functions</h2></td></tr>
 <p>Start a new thread, create a Worker, with one fiber, which executes <code>f</code>. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga17f92480e82203077853ee3e3c59d3d5" title="Start a new thread, create a Worker, with one fiber, which executes f.">zth::startWorkerThread()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00566">566</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00558">558</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -432,7 +432,7 @@ Functions</h2></td></tr>
 <p>Sleep for the given amount of microseconds. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278" title="Sleep for the given amount of microseconds.">zth::unap()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00429">429</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00435">435</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -465,7 +465,7 @@ Functions</h2></td></tr>
 <dd>
 <a class="el" href="group__zth__api__c__fiber.html#ga3c39836dab4730f8cd13e6714deba783" title="Cleanup the worker.">zth_worker_destroy()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00518">518</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00510">510</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -495,7 +495,7 @@ Functions</h2></td></tr>
 <p>Cleanup the worker. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509" title="Create a Worker.">zth_worker_create()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00552">552</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00544">544</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -526,7 +526,7 @@ Functions</h2></td></tr>
 <p>Run the worker for the given amount of time. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__c__fiber.html#ga4ed18f333dde96ac1285ee029cb2f509" title="Create a Worker.">zth_worker_create()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00538">538</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00530">530</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -556,7 +556,7 @@ Functions</h2></td></tr>
 <p>Allow a context switch. </p>
 <p>This is a C-wrapper for <a class="el" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc" title="Allow a context switch.">zth::yield()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00496">496</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00488">488</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>

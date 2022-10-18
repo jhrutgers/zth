@@ -138,10 +138,10 @@ Functions</h2></td></tr>
 <tr class="memitem:gabd067566b5f56fb4aa9186880f568d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">zth::waitUntil</a> (<a class="el" href="classzth_1_1_timed_waitable.html">TimedWaitable</a> &amp;w)</td></tr>
 <tr class="memdesc:gabd067566b5f56fb4aa9186880f568d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given <a class="el" href="classzth_1_1_waitable.html">Waitable</a> has passed.  <a href="group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f">More...</a><br /></td></tr>
 <tr class="separator:gabd067566b5f56fb4aa9186880f568d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
-<tr class="memitem:ga8de540dbd2d282a44c5083295bf37234"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">zth::waitUntil</a> (F f, <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval=<a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>())</td></tr>
-<tr class="memdesc:ga8de540dbd2d282a44c5083295bf37234"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234">More...</a><br /></td></tr>
-<tr class="separator:ga8de540dbd2d282a44c5083295bf37234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa0e4f789b961302899befebadd416c26"><td class="memTemplParams" colspan="2">template&lt;typename F , typename std::enable_if&lt;!std::is_base_of&lt; TimedWaitable, F &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:gaa0e4f789b961302899befebadd416c26"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gaa0e4f789b961302899befebadd416c26">zth::waitUntil</a> (F f, <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval=<a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>())</td></tr>
+<tr class="memdesc:gaa0e4f789b961302899befebadd416c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#gaa0e4f789b961302899befebadd416c26">More...</a><br /></td></tr>
+<tr class="separator:gaa0e4f789b961302899befebadd416c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplParams" colspan="2">template&lt;typename C &gt; </td></tr>
 <tr class="memitem:ga355b0425f58035f985050fbd0435d254"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">zth::waitUntil</a> (C &amp;that, bool(C::*f)(), <a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a> const &amp;pollInterval=<a class="el" href="classzth_1_1_time_interval.html">TimeInterval</a>())</td></tr>
 <tr class="memdesc:ga355b0425f58035f985050fbd0435d254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the given member function <code>f</code> returns <code>true</code>.  <a href="group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254">More...</a><br /></td></tr>
@@ -206,7 +206,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a1">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a4">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a2">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a8">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a14">5_perf.cpp</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a8">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a14">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a13">measure.cpp</a>, <a class="el" href="socks_8cpp-example.html#a4">socks.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a11">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00791">791</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00785">785</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +230,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a0">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a2">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a1">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a6">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a1">5_perf.cpp</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a7">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a12">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a12">measure.cpp</a>, <a class="el" href="socks_8cpp-example.html#a3">socks.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a7">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00767">767</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00761">761</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -254,7 +254,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="2_fibers_8cpp-example.html#a0">2_fibers.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00740">740</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00734">734</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -278,7 +278,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="2_fibers_8cpp-example.html#a1">2_fibers.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00760">760</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00754">754</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -310,7 +310,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a3">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00407">407</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00398">398</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +339,7 @@ Functions</h2></td></tr>
 
 <p>Return the (thread-local) singleton <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a> instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00397">397</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00388">388</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -377,7 +377,7 @@ Functions</h2></td></tr>
 
 <p>Start an external program. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00105">105</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00096">96</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -409,7 +409,7 @@ Functions</h2></td></tr>
 
 <p>Start an external program. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00164">164</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00155">155</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -446,7 +446,7 @@ template&lt;typename F &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="4_sync_8cpp-example.html#a1">4_sync.cpp</a>, <a class="el" href="7_no_async_8cpp-example.html#a2">7_no_async.cpp</a>, and <a class="el" href="9_c_api_8c-example.html#a0">9_c_api.c</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00718">718</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00709">709</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -475,7 +475,7 @@ template&lt;typename F &gt; </div>
 
 <p>Return the fiber-local storage, as set by <a class="el" href="group__zth__api__cpp__fiber.html#ga46bce65a59fee2aed2a82ba644fa7052" title="Set the fiber-local storage.">setFls()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00542">542</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00536">536</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -507,7 +507,7 @@ template&lt;typename F &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a0">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00291">291</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00297">297</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -537,7 +537,7 @@ template&lt;typename F &gt; </div>
 
 <p>Sleep for the given time interval. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00281">281</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00287">287</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -569,7 +569,7 @@ template&lt;typename F &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="daemon_pattern_8cpp-example.html#a5">daemon_pattern.cpp</a>, <a class="el" href="measure_8cpp-example.html#a15">measure.cpp</a>, <a class="el" href="socks_8cpp-example.html#a5">socks.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a6">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00271">271</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00277">277</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -601,7 +601,7 @@ template&lt;typename F &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="3_coop_8cpp-example.html#a3">3_coop.cpp</a>, and <a class="el" href="4_sync_8cpp-example.html#a4">4_sync.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00465">465</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00457">457</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -632,7 +632,7 @@ template&lt;typename F &gt; </div>
 <p>Set the fiber-local storage. </p>
 <p>This is just like thread-local storage, but per fiber. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00554">554</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00548">548</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +670,7 @@ template&lt;typename F &gt; </div>
 
 <p>Start a new thread, create a <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a>, with one fiber, which executes <code>f</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00074">74</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00065">65</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +700,7 @@ template&lt;typename F &gt; </div>
 
 <p>Sleep for the given amount of microseconds. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00300">300</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00306">306</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -740,17 +740,17 @@ template&lt;typename C &gt; </div>
 
 <p>Wait until the given member function <code>f</code> returns <code>true</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00257">257</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00263">263</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
-<a id="ga8de540dbd2d282a44c5083295bf37234"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga8de540dbd2d282a44c5083295bf37234">&#9670;&nbsp;</a></span>waitUntil() <span class="overload">[2/3]</span></h2>
+<a id="gaa0e4f789b961302899befebadd416c26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa0e4f789b961302899befebadd416c26">&#9670;&nbsp;</a></span>waitUntil() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename F &gt; </div>
+template&lt;typename F , typename std::enable_if&lt;!std::is_base_of&lt; TimedWaitable, F &gt;::value, int &gt;::type  = 0&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void zth::waitUntil </td>
@@ -774,7 +774,7 @@ template&lt;typename F &gt; </div>
 
 <p>Wait until the given function <code>f</code> returns <code>true</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00246">246</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00245">245</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 
 </div>
 </div>
@@ -796,7 +796,7 @@ template&lt;typename F &gt; </div>
 
 <p>Wait until the given <a class="el" href="classzth_1_1_waitable.html">Waitable</a> has passed. </p>
 
-<p class="definition">Definition at line <a class="el" href="waiter_8cpp_source.html#l00037">37</a> of file <a class="el" href="waiter_8cpp_source.html">waiter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="waiter_8cpp_source.html#l00028">28</a> of file <a class="el" href="waiter_8cpp_source.html">waiter.cpp</a>.</p>
 
 </div>
 </div>
@@ -852,15 +852,15 @@ template&lt;typename F &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="3_coop_8cpp-example.html#a0">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a3">4_sync.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a10">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00443">443</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00435">435</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00791">async.h:791</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00767">async.h:767</a></div></div>
-<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00022">main.cpp:22</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00785">async.h:785</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00761">async.h:761</a></div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> <a href="main_8cpp_source.html#l00014">main.cpp:14</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

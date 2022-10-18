@@ -89,159 +89,150 @@ $(document).ready(function(){initNavTree('ucontext_8h_source.html',''); initResi
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define ZTH_CONTEXT_UCONTEXT_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Zth (libzth), a cooperative userspace multitasking library.</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Copyright (C) 2019-2021  Jochem Rutgers</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Copyright (C) 2019-2022  Jochem Rutgers</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * This program is free software: you can redistribute it and/or modify</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * it under the terms of the GNU Lesser General Public License as published by</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> * (at your option) any later version.</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * This program is distributed in the hope that it will be useful,</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * GNU Lesser General Public License for more details.</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * You should have received a copy of the GNU Lesser General Public License</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef ZTH_CONTEXT_CONTEXT_H</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#       error This file must be included by libzth/context/context.h.</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#       ifdef ZTH_OS_MAC</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// For ucontext_t</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#               ifndef _XOPEN_SOURCE</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#                       error Please define _XOPEN_SOURCE before including headers.</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#               endif</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#               include &lt;sched.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#       endif</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#       include &lt;csetjmp&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#       include &lt;csignal&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="ucontext_8h.html">ucontext.h</a>&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * This Source Code Form is subject to the terms of the Mozilla Public</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * License, v. 2.0. If a copy of the MPL was not distributed with this</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * file, You can obtain one at https://mozilla.org/MPL/2.0/.</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifndef ZTH_CONTEXT_CONTEXT_H</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#       error This file must be included by libzth/context/context.h.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#       ifdef ZTH_OS_MAC</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">// For ucontext_t</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#               ifndef _XOPEN_SOURCE</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#                       error Please define _XOPEN_SOURCE before including headers.</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#               endif</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#               include &lt;sched.h&gt;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#       endif</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#       include &lt;csetjmp&gt;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#       include &lt;csignal&gt;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="ucontext_8h.html">ucontext.h</a>&gt;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic push</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic ignored &quot;-Wdeprecated-declarations&quot; // I know...</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">class </span>Context : <span class="keyword">public</span> impl::ContextArch&lt;Context&gt; {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a>(<a class="code" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">Context</a>)</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">   37</a></span>&#160;        <span class="keyword">typedef</span> <a class="code" href="classzth_1_1impl_1_1_context_arch.html">impl::ContextArch&lt;Context&gt;</a> <a class="code" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">base</a>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic push</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic ignored &quot;-Wdeprecated-declarations&quot; // I know...</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">class </span>Context : <span class="keyword">public</span> impl::ContextArch&lt;Context&gt; {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a>(<a class="code" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">Context</a>)</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">   46</a></span>&#160;        <span class="keyword">typedef</span> <a class="code" href="classzth_1_1impl_1_1_context_arch.html">impl::ContextArch&lt;Context&gt;</a> <a class="code" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">base</a>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">   48</a></span>&#160;        constexpr <span class="keyword">explicit</span> <a class="code" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">Context</a>(<a class="code" href="structzth_1_1_context_attr.html">ContextAttr</a> <span class="keyword">const</span>&amp; <a class="code" href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">attr</a>) noexcept</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                : <a class="code" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">base</a>(<a class="code" href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">attr</a>)</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                , <a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>()</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        {}</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> context_trampoline(<a class="code" href="classzth_1_1_context.html">Context</a>* context, sigjmp_buf origin)</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <span class="comment">// We got here via setcontext().</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">   39</a></span>&#160;        constexpr <span class="keyword">explicit</span> <a class="code" href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">Context</a>(<a class="code" href="structzth_1_1_context_attr.html">ContextAttr</a> <span class="keyword">const</span>&amp; <a class="code" href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">attr</a>) noexcept</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                : <a class="code" href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">base</a>(<a class="code" href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">attr</a>)</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                , <a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>()</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        {}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> context_trampoline(<a class="code" href="classzth_1_1_context.html">Context</a>* context, sigjmp_buf origin)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="comment">// We got here via setcontext().</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordtype">void</span> <span class="keyword">const</span>* oldstack = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keywordtype">size_t</span> oldsize = 0;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                __sanitizer_finish_switch_fiber(<span class="keyword">nullptr</span>, &amp;oldstack, &amp;oldsize);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="comment">// We are jumping back.</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                __sanitizer_start_switch_fiber(<span class="keyword">nullptr</span>, oldstack, oldsize);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#       endif</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordtype">void</span> <span class="keyword">const</span>* oldstack = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keywordtype">size_t</span> oldsize = 0;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                __sanitizer_finish_switch_fiber(<span class="keyword">nullptr</span>, &amp;oldstack, &amp;oldsize);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="comment">// We are jumping back.</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                __sanitizer_start_switch_fiber(<span class="keyword">nullptr</span>, oldstack, oldsize);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#       endif</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <span class="comment">// Save the current context, and return to create().</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(context-&gt;m_env, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        siglongjmp(origin, 1);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <span class="comment">// Note that context_entry has the __sanitizer_finish_switch_fiber().</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                <a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>(context);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">   76</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">create</a>() noexcept</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordtype">int</span> res = <a class="code" href="classzth_1_1impl_1_1_context_base.html#a7a64a9ccfa7a1db5347467f61cdc030c">base::create</a>();</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(res))</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="comment">// Save the current context, and return to create().</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(context-&gt;m_env, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        siglongjmp(origin, 1);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="comment">// Note that context_entry has the __sanitizer_finish_switch_fiber().</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <a class="code" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">context_entry</a>(context);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">   67</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">create</a>() noexcept</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keywordtype">int</span> res = <a class="code" href="classzth_1_1impl_1_1_context_base.html#a7a64a9ccfa7a1db5347467f61cdc030c">base::create</a>();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(res))</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!<a class="code" href="classzth_1_1impl_1_1_context_base.html#a160b614d9b3284c879c8396ed1e15d56">stack</a>()))</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        <span class="comment">// Stackless fiber only saves current context; nothing to do.</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="comment">// Get current context, to inherit signals/masks.</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                ucontext_t uc;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keywordflow">if</span>(getcontext(&amp;uc))</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <span class="keywordflow">return</span> EINVAL;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!<a class="code" href="classzth_1_1impl_1_1_context_base.html#a160b614d9b3284c879c8396ed1e15d56">stack</a>()))</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                        <span class="comment">// Stackless fiber only saves current context; nothing to do.</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="comment">// Get current context, to inherit signals/masks.</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                ucontext_t uc;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keywordflow">if</span>(getcontext(&amp;uc))</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        <span class="keywordflow">return</span> EINVAL;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                <span class="comment">// Modify the stack of the new context.</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                uc.uc_link = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                Stack <span class="keyword">const</span>&amp; stack_ = <a class="code" href="classzth_1_1impl_1_1_context_base.html#acc47e975726ccf6705af068e7bcfa6eb">stackUsable</a>();</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                uc.uc_stack.ss_sp = stack_.p;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                uc.uc_stack.ss_size = stack_.size;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <span class="comment">// Modify the function to call from this new context.</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                sigjmp_buf origin;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                makecontext(</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                        &amp;uc, <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">void</span> (*)(<span class="keywordtype">void</span>)<span class="keyword">&gt;</span>(&amp;context_trampoline), 2, <span class="keyword">this</span>,</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                        origin);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                <span class="keywordtype">void</span>* fake_stack = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                __sanitizer_start_switch_fiber(&amp;fake_stack, stack_.p, stack_.size);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">#       endif</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                <span class="comment">// switchcontext() is slow, we want to use sigsetjmp/siglongjmp instead.</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                <span class="comment">// So, we initialize the sigjmp_buf from the just created context.</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="comment">// After this initial setup, context_switch() is good to go.</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(origin, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                        <span class="comment">// Here we go into the context for the first time.</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        setcontext(&amp;uc);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                }</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                <span class="comment">// Got back from context_trampoline(). The context is ready now.</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                __sanitizer_finish_switch_fiber(fake_stack, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#       endif</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">  124</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">context_switch</a>(<a class="code" href="classzth_1_1_context.html">Context</a>&amp; to) noexcept</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <span class="comment">// switchcontext() restores signal masks, which is slow...</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(<a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0)</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                        siglongjmp(to.m_env, 1);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        }</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        sigjmp_buf <a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;};</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic pop</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;} <span class="comment">// namespace zth</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_UCONTEXT_H</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <span class="comment">// Modify the stack of the new context.</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                uc.uc_link = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                Stack <span class="keyword">const</span>&amp; stack_ = <a class="code" href="classzth_1_1impl_1_1_context_base.html#acc47e975726ccf6705af068e7bcfa6eb">stackUsable</a>();</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                uc.uc_stack.ss_sp = stack_.p;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                uc.uc_stack.ss_size = stack_.size;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="comment">// Modify the function to call from this new context.</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                sigjmp_buf origin;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                makecontext(</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        &amp;uc, <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">void</span> (*)(<span class="keywordtype">void</span>)<span class="keyword">&gt;</span>(&amp;context_trampoline), 2, <span class="keyword">this</span>,</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                        origin);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                <span class="keywordtype">void</span>* fake_stack = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                __sanitizer_start_switch_fiber(&amp;fake_stack, stack_.p, stack_.size);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#       endif</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="comment">// switchcontext() is slow, we want to use sigsetjmp/siglongjmp instead.</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                <span class="comment">// So, we initialize the sigjmp_buf from the just created context.</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                <span class="comment">// After this initial setup, context_switch() is good to go.</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(origin, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0) {</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                        <span class="comment">// Here we go into the context for the first time.</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                        setcontext(&amp;uc);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                }</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                <span class="comment">// Got back from context_trampoline(). The context is ready now.</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">#       ifdef ZTH_ENABLE_ASAN</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                __sanitizer_finish_switch_fiber(fake_stack, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#       endif</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">  115</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">context_switch</a>(<a class="code" href="classzth_1_1_context.html">Context</a>&amp; to) noexcept</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="comment">// switchcontext() restores signal masks, which is slow...</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                <span class="keywordflow">if</span>(sigsetjmp(<a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>, <a class="code" href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">Config::ContextSignals</a>) == 0)</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        siglongjmp(to.m_env, 1);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        sigjmp_buf <a class="code" href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">m_env</a>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#       pragma GCC diagnostic pop</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;} <span class="comment">// namespace zth</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">#endif // ZTH_CONTEXT_UCONTEXT_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aclasszth_1_1_context_html_aefdc84b8b3d685eb5e68a80323257359"><div class="ttname"><a href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">zth::Context::Context</a></div><div class="ttdeci">constexpr Context(ContextAttr const &amp;attr) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00074">sigaltstack.h:74</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html_aefdc84b8b3d685eb5e68a80323257359"><div class="ttname"><a href="classzth_1_1_context.html#aefdc84b8b3d685eb5e68a80323257359">zth::Context::Context</a></div><div class="ttdeci">constexpr Context(ContextAttr const &amp;attr) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00065">sigaltstack.h:65</a></div></div>
 <div class="ttc" id="aucontext_8h_html"><div class="ttname"><a href="ucontext_8h.html">ucontext.h</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html_abb44c788fb3b05f0173272895d6efb38"><div class="ttname"><a href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">zth::Context::context_switch</a></div><div class="ttdeci">void context_switch(Context &amp;to) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00124">ucontext.h:124</a></div></div>
-<div class="ttc" id="astructzth_1_1_context_attr_html"><div class="ttname"><a href="structzth_1_1_context_attr.html">zth::ContextAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00079">context.h:79</a></div></div>
-<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00032">allocator.h:32</a></div></div>
-<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html"><div class="ttname"><a href="classzth_1_1_context.html">zth::Context</a></div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00069">sigaltstack.h:69</a></div></div>
-<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_acc47e975726ccf6705af068e7bcfa6eb"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#acc47e975726ccf6705af068e7bcfa6eb">zth::impl::ContextBase&lt; Context &gt;::stackUsable</a></div><div class="ttdeci">Stack const &amp; stackUsable() const noexcept</div><div class="ttdoc">Return the start of the actual usable stack.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00269">context.h:269</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_html_a9f1b1bd890096fa383a3dec971002683"><div class="ttname"><a href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">zth::DefaultConfig::ContextSignals</a></div><div class="ttdeci">static const bool ContextSignals</div><div class="ttdoc">Take POSIX signal into account when doing a context switch.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00129">config.h:129</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_gaa75b5ec35bbb8ea9d385ef9707dd80b4"><div class="ttname"><a href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a></div><div class="ttdeci">#define ZTH_CLASS_NEW_DELETE(T)</div><div class="ttdoc">Define new/delete operators for a class, which are allocator-aware.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00123">allocator.h:123</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html_abb44c788fb3b05f0173272895d6efb38"><div class="ttname"><a href="classzth_1_1_context.html#abb44c788fb3b05f0173272895d6efb38">zth::Context::context_switch</a></div><div class="ttdeci">void context_switch(Context &amp;to) noexcept</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00115">ucontext.h:115</a></div></div>
+<div class="ttc" id="astructzth_1_1_context_attr_html"><div class="ttname"><a href="structzth_1_1_context_attr.html">zth::ContextAttr</a></div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00070">context.h:70</a></div></div>
+<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00023">allocator.h:23</a></div></div>
+<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00056">util.h:56</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html"><div class="ttname"><a href="classzth_1_1_context.html">zth::Context</a></div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00060">sigaltstack.h:60</a></div></div>
+<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_acc47e975726ccf6705af068e7bcfa6eb"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#acc47e975726ccf6705af068e7bcfa6eb">zth::impl::ContextBase&lt; Context &gt;::stackUsable</a></div><div class="ttdeci">Stack const &amp; stackUsable() const noexcept</div><div class="ttdoc">Return the start of the actual usable stack.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00260">context.h:260</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_a9f1b1bd890096fa383a3dec971002683"><div class="ttname"><a href="structzth_1_1_default_config.html#a9f1b1bd890096fa383a3dec971002683">zth::DefaultConfig::ContextSignals</a></div><div class="ttdeci">static const bool ContextSignals</div><div class="ttdoc">Take POSIX signal into account when doing a context switch.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00139">config.h:139</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_gaa75b5ec35bbb8ea9d385ef9707dd80b4"><div class="ttname"><a href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a></div><div class="ttdeci">#define ZTH_CLASS_NEW_DELETE(T)</div><div class="ttdoc">Define new/delete operators for a class, which are allocator-aware.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00114">allocator.h:114</a></div></div>
 <div class="ttc" id="anamespacezth_html_a11d3236714aa5890b5217c28f9ade701"><div class="ttname"><a href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">zth::context_entry</a></div><div class="ttdeci">void context_entry(Context *context)</div><div class="ttdoc">Entry point of the fiber.</div><div class="ttdef"><b>Definition:</b> <a href="context_8cpp_source.html#l00178">context.cpp:178</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html_aa714688aa344bb2dace52999d2fdd56b"><div class="ttname"><a href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">zth::Context::base</a></div><div class="ttdeci">impl::ContextArch&lt; Context &gt; base</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00046">ucontext.h:46</a></div></div>
-<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_ac80a391cfd75c12980818a710ae86245"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">zth::impl::ContextBase&lt; Context &gt;::attr</a></div><div class="ttdeci">ContextAttr &amp; attr() noexcept</div><div class="ttdoc">Return the context attributes, requested by the user.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00155">context.h:155</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html_ae6aa1c201e51025ca6ecae492c0940c7"><div class="ttname"><a href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">zth::Context::m_env</a></div><div class="ttdeci">sigjmp_buf m_env</div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00311">sigaltstack.h:311</a></div></div>
-<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_a7a64a9ccfa7a1db5347467f61cdc030c"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#a7a64a9ccfa7a1db5347467f61cdc030c">zth::impl::ContextBase&lt; Context &gt;::create</a></div><div class="ttdeci">int create() noexcept</div><div class="ttdoc">Create context.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00171">context.h:171</a></div></div>
-<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_a160b614d9b3284c879c8396ed1e15d56"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#a160b614d9b3284c879c8396ed1e15d56">zth::impl::ContextBase&lt; Context &gt;::stack</a></div><div class="ttdeci">Stack const &amp; stack() const noexcept</div><div class="ttdoc">Return the stack address.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00261">context.h:261</a></div></div>
-<div class="ttc" id="aclasszth_1_1_context_html_a5ca77858853b1cf85bca0352136384d3"><div class="ttname"><a href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">zth::Context::create</a></div><div class="ttdeci">int create() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00076">ucontext.h:76</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html_aa714688aa344bb2dace52999d2fdd56b"><div class="ttname"><a href="classzth_1_1_context.html#aa714688aa344bb2dace52999d2fdd56b">zth::Context::base</a></div><div class="ttdeci">impl::ContextArch&lt; Context &gt; base</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00037">ucontext.h:37</a></div></div>
+<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_ac80a391cfd75c12980818a710ae86245"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#ac80a391cfd75c12980818a710ae86245">zth::impl::ContextBase&lt; Context &gt;::attr</a></div><div class="ttdeci">ContextAttr &amp; attr() noexcept</div><div class="ttdoc">Return the context attributes, requested by the user.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00146">context.h:146</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html_ae6aa1c201e51025ca6ecae492c0940c7"><div class="ttname"><a href="classzth_1_1_context.html#ae6aa1c201e51025ca6ecae492c0940c7">zth::Context::m_env</a></div><div class="ttdeci">sigjmp_buf m_env</div><div class="ttdef"><b>Definition:</b> <a href="sigaltstack_8h_source.html#l00302">sigaltstack.h:302</a></div></div>
+<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_a7a64a9ccfa7a1db5347467f61cdc030c"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#a7a64a9ccfa7a1db5347467f61cdc030c">zth::impl::ContextBase&lt; Context &gt;::create</a></div><div class="ttdeci">int create() noexcept</div><div class="ttdoc">Create context.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00162">context.h:162</a></div></div>
+<div class="ttc" id="aclasszth_1_1impl_1_1_context_base_html_a160b614d9b3284c879c8396ed1e15d56"><div class="ttname"><a href="classzth_1_1impl_1_1_context_base.html#a160b614d9b3284c879c8396ed1e15d56">zth::impl::ContextBase&lt; Context &gt;::stack</a></div><div class="ttdeci">Stack const &amp; stack() const noexcept</div><div class="ttdoc">Return the stack address.</div><div class="ttdef"><b>Definition:</b> <a href="context_2context_8h_source.html#l00252">context.h:252</a></div></div>
+<div class="ttc" id="aclasszth_1_1_context_html_a5ca77858853b1cf85bca0352136384d3"><div class="ttname"><a href="classzth_1_1_context.html#a5ca77858853b1cf85bca0352136384d3">zth::Context::create</a></div><div class="ttdeci">int create() noexcept</div><div class="ttdef"><b>Definition:</b> <a href="ucontext_8h_source.html#l00067">ucontext.h:67</a></div></div>
 <div class="ttc" id="aclasszth_1_1impl_1_1_context_arch_html"><div class="ttname"><a href="classzth_1_1impl_1_1_context_arch.html">zth::impl::ContextArch&lt; Context &gt;</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

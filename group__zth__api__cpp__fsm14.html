@@ -196,7 +196,7 @@ Variables</h2></td></tr>
 
 <p>A state within the FSM. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00283">283</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00276">276</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -245,14 +245,14 @@ template&lt;typename T &gt; </div>
 <li>const member function pointer <code>void (C::*)() const</code></li>
 <li>lambda (C++17 when used in a <code>constexpr</code>): <code>[...](A) {...}</code></li>
 </ul>
-<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>.</p>
-<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>. The member function does not have to be static.</p>
+<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>.</p>
+<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>. The member function does not have to be static.</p>
 <p>For C++17 and higher, these function can also be <code>noexcept</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>an <a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> object, to be used in the FSM transitions description. </dd></dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a1">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a23">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00653">653</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00649">649</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +286,7 @@ template&lt;typename... T&gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a6">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a24">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01276">1276</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01273">1273</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -319,7 +319,7 @@ template&lt;typename... T&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> object, to be used in the FSM transitions description. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#gaacb251e82a622b92a397e26c53909ad9" title="Create a guard from an input symbol.">input(Symbol&amp;&amp;)</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00550">550</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00546">546</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -368,15 +368,15 @@ template&lt;typename T &gt; </div>
 <li>lambda (C++17 when used in a <code>constexpr</code>): <code>[...](A) -&gt; R {...}</code></li>
 </ul>
 <p>The return type R must be <code>bool</code> or <a class="el" href="classzth_1_1_time_interval.html" title="Convenient wrapper around struct timespec that contains a time interval.">zth::TimeInterval</a>. The <a class="el" href="classzth_1_1_time_interval.html" title="Convenient wrapper around struct timespec that contains a time interval.">TimeInterval</a> indicates the time until the guard may become enabled and should be checked again. When the interval is 0 or negative, the guard is supposed to be enabled.</p>
-<p>In case the return type is <code>bool</code>, <code>false</code> is equivalent to a time interval of 0. <code>true</code> is equivalent to an infinite time interval.</p>
-<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>.</p>
-<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a>. The member function does not have to be static.</p>
+<p>In case the return type is <code>bool</code>, <code>true</code> is equivalent to a time interval of 0. <code>false</code> is equivalent to an infinite time interval.</p>
+<p>The argument A may be omitted. If provided, it must be <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>&amp;, or a reference to the actual subclass type of <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>.</p>
+<p>The class type C must be <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>, or the type of the subclass of <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html" title="Basic FSM base class.">zth::fsm::BasicFsm</a>. The member function does not have to be static.</p>
 <p>For C++17 and higher, these function can also be <code>noexcept</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> object, to be used in the FSM transitions description. </dd></dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a5">fsm14.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a22">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00534">534</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00530">530</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -408,7 +408,7 @@ template&lt;typename T &gt; </div>
 <p>This function returns a temporary, while <code>guard</code>("symbol") returns an object that can be <code>constexpr</code>.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#ga249c91ebe25c401a18b304293112324d" title="Create a guard from a input symbol.">guard(Symbol&amp;&amp;)</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00785">785</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00781">781</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -448,7 +448,7 @@ template&lt;typename T &gt; </div>
 
 <p>Literal suffix to convert a string literal to <a class="el" href="classzth_1_1fsm_1_1_symbol.html" title="A input/state symbol.">zth::fsm::Symbol</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00274">274</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00267">267</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -477,7 +477,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a9">fsm14.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00568">568</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00564">564</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -506,7 +506,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a10">fsm14.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01959">1959</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02050">2050</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -534,7 +534,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fsm14_8cpp-example.html#a7">fsm14.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01917">1917</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02008">2008</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -560,7 +560,7 @@ template&lt;typename T &gt; </div>
 
 <p>Trivial guard that is never enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00580">580</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00576">576</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -586,7 +586,7 @@ template&lt;typename T &gt; </div>
 
 <p>Trivial action that does nothing. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00665">665</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l00661">661</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -612,7 +612,7 @@ template&lt;typename T &gt; </div>
 
 <p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to pop the current state from the stack. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01932">1932</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02023">2023</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -638,7 +638,7 @@ template&lt;typename T &gt; </div>
 
 <p><a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> to indicate that the current state was reached via <code>pop</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01939">1939</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02030">2030</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -665,7 +665,7 @@ template&lt;typename T &gt; </div>
 <p><a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> to push the new state onto the stack. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__fsm14.html#ga9bc05820b092def5dc147f4110b9bd38" title="Action to pop the current state from the stack.">pop</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01925">1925</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02016">2016</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -693,7 +693,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a19">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a0">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01946">1946</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02037">2037</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -721,7 +721,7 @@ template&lt;uint64_t ms&gt; </div>
 
 <p>A guard that is enabled after a <code>ms</code> milliseconds after entering the current state. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01977">1977</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02069">2069</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -749,7 +749,7 @@ template&lt;time_t s&gt; </div>
 
 <p>A guard that is enabled after a <code>s</code> seconds after entering the current state. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01968">1968</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02060">2060</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -777,7 +777,7 @@ template&lt;uint64_t us&gt; </div>
 
 <p>A guard that is enabled after a <code>us</code> microseconds after entering the current state. </p>
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01986">1986</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02078">2078</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>

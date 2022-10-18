@@ -58,6 +58,7 @@ var util_8h =
     [ "string", "util_8h.html#ga7a210137c60a4a060f81aeb19a9394c0", null ],
     [ "abort", "util_8h.html#ga4889d34edbac39ba98e63d58173f3b88", null ],
     [ "abortv", "util_8h.html#gadbc3a543d826740574ed356738ae3da8", null ],
+    [ "assert_handler", "util_8h.html#abb44b1de600c6dafa1919211ff3dca55", null ],
     [ "banner", "util_8h.html#ga80ce8ae8dab3a0f48abcbf9e977b60d9", null ],
     [ "err", "util_8h.html#ab92821411679b2d011e31c974cc60a5b", null ],
     [ "format", "util_8h.html#aebc0ef1729604ae4282d5eabf3830c95", null ],

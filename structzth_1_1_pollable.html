@@ -85,6 +85,7 @@ $(document).ready(function(){initNavTree('structzth_1_1_pollable.html',''); init
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structzth_1_1_pollable-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">zth::Pollable Struct Reference<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a> &raquo; <a class="el" href="group__zth__api__cpp__poller.html">poller</a></div></div>  </div>
@@ -114,13 +115,7 @@ Public Types</h2></td></tr>
 <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a72b8ba68f1555ed8d54cfbd3e5662dff">PollPriIndex</a>, 
 <br />
 &#160;&#160;<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ae302730f8f1eb397bfc128fc7da06334">PollHupIndex</a>, 
-<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a85fa2e6853464dc8f2841365c8cfa150">FlagCount</a>, 
-<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a16b68757eb11d0ad72508e0f4c96b87c">PollIn</a> = 1U &lt;&lt; PollInIndex, 
-<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ad7db9ac1a24e8e0f683c0a547f003627">PollOut</a> = 1U &lt;&lt; PollOutIndex, 
-<br />
-&#160;&#160;<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698affdcccadc12d917ede9266e17da3fb78">PollErr</a> = 1U &lt;&lt; PollErrIndex, 
-<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698af7dfeee8f6af06b89fc26f572ed1423b">PollPri</a> = 1U &lt;&lt; PollPriIndex, 
-<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698affd7285648ee5f9c09042a2ec70af1ac">PollHup</a> = 1U &lt;&lt; PollHupIndex
+<a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a85fa2e6853464dc8f2841365c8cfa150">FlagCount</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ab1118549d5ef78fea50fa9a64bfd0698"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags to be used with <a class="el" href="structzth_1_1_pollable.html#a51dc42ff43dd5da1959f091d28d5b353" title="Events to poll.">events</a> and <a class="el" href="structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242" title="Returned events by a poll.">revents</a>.  <a href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698">More...</a><br /></td></tr>
@@ -146,13 +141,26 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad9d9ae350b7bacb476447e943b6b0242"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structzth_1_1_pollable.html#addbe7243c6513da6a93be7d057dbed07">Events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242">revents</a></td></tr>
 <tr class="memdesc:ad9d9ae350b7bacb476447e943b6b0242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returned events by a poll.  <a href="structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242">More...</a><br /></td></tr>
 <tr class="separator:ad9d9ae350b7bacb476447e943b6b0242"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a1c93023975643dd00a24b3a96683dd7d"><td class="memItemLeft" align="right" valign="top">static const unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#a1c93023975643dd00a24b3a96683dd7d">PollIn</a> = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aab8c6a641091f94d53c3d2f98ec5d8fe">PollInIndex</a></td></tr>
+<tr class="separator:a1c93023975643dd00a24b3a96683dd7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39db15ab16c5b9acdabeef45204dc2a2"><td class="memItemLeft" align="right" valign="top">static const unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#a39db15ab16c5b9acdabeef45204dc2a2">PollOut</a> = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a12aa4123fc8f2aef316c670aa12991e3">PollOutIndex</a></td></tr>
+<tr class="separator:a39db15ab16c5b9acdabeef45204dc2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f24ea1ee32e1c79ed59a7221feac14f"><td class="memItemLeft" align="right" valign="top">static const unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#a5f24ea1ee32e1c79ed59a7221feac14f">PollErr</a> = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aa5efa00e518f15fb0b82159f3f54a4da">PollErrIndex</a></td></tr>
+<tr class="separator:a5f24ea1ee32e1c79ed59a7221feac14f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a606ac2f056f9dbbddebae26832f944fe"><td class="memItemLeft" align="right" valign="top">static const unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#a606ac2f056f9dbbddebae26832f944fe">PollPri</a> = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a72b8ba68f1555ed8d54cfbd3e5662dff">PollPriIndex</a></td></tr>
+<tr class="separator:a606ac2f056f9dbbddebae26832f944fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae147e5965b9ef97161658fec00451a5a"><td class="memItemLeft" align="right" valign="top">static const unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_pollable.html#ae147e5965b9ef97161658fec00451a5a">PollHup</a> = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ae302730f8f1eb397bfc128fc7da06334">PollHupIndex</a></td></tr>
+<tr class="separator:ae147e5965b9ef97161658fec00451a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A pollable thing. </p>
 <p>Only file descriptors (or even only sockets in Windows) are supported by Zth. Use <a class="el" href="structzth_1_1_pollable_fd.html" title="A pollable file descriptor.">zth::PollableFd</a> instead. The generic <a class="el" href="structzth_1_1_pollable.html" title="A pollable thing.">Pollable</a> class exists for extending by your application.</p>
 <p>If you implement more Pollables, you must provide and register your own <a class="el" href="classzth_1_1_poller_server.html" title="Poller to be executed by the Waiter.">PollerServer</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00084">84</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00075">75</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="addbe7243c6513da6a93be7d057dbed07"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#addbe7243c6513da6a93be7d057dbed07">&#9670;&nbsp;</a></span>Events</h2>
@@ -168,7 +176,7 @@ Public Attributes</h2></td></tr>
 
 <p>Type of <a class="el" href="structzth_1_1_pollable.html#a51dc42ff43dd5da1959f091d28d5b353" title="Events to poll.">events</a> and <a class="el" href="structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242" title="Returned events by a poll.">revents</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00104">104</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00089">89</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>
@@ -193,14 +201,9 @@ Public Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698a72b8ba68f1555ed8d54cfbd3e5662dff"></a>PollPriIndex&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698ae302730f8f1eb397bfc128fc7da06334"></a>PollHupIndex&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698a85fa2e6853464dc8f2841365c8cfa150"></a>FlagCount&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698a16b68757eb11d0ad72508e0f4c96b87c"></a>PollIn&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698ad7db9ac1a24e8e0f683c0a547f003627"></a>PollOut&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698affdcccadc12d917ede9266e17da3fb78"></a>PollErr&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698af7dfeee8f6af06b89fc26f572ed1423b"></a>PollPri&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab1118549d5ef78fea50fa9a64bfd0698affd7285648ee5f9c09042a2ec70af1ac"></a>PollHup&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00088">88</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00079">79</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>
@@ -241,7 +244,7 @@ Public Attributes</h2></td></tr>
 
 <p>Ctor. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00109">109</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00101">101</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>
@@ -262,7 +265,127 @@ Public Attributes</h2></td></tr>
 <p>Do not change these events after adding the <a class="el" href="structzth_1_1_pollable.html" title="A pollable thing.">Pollable</a> to a Poller.</p>
 <p>Not every <a class="el" href="classzth_1_1_poller_server.html" title="Poller to be executed by the Waiter.">PollerServer</a> may support all flags. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00129">129</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00121">121</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="a5f24ea1ee32e1c79ed59a7221feac14f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f24ea1ee32e1c79ed59a7221feac14f">&#9670;&nbsp;</a></span>PollErr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned long zth::Pollable::PollErr = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aa5efa00e518f15fb0b82159f3f54a4da">PollErrIndex</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00094">94</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="ae147e5965b9ef97161658fec00451a5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae147e5965b9ef97161658fec00451a5a">&#9670;&nbsp;</a></span>PollHup</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned long zth::Pollable::PollHup = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ae302730f8f1eb397bfc128fc7da06334">PollHupIndex</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00096">96</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="a1c93023975643dd00a24b3a96683dd7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c93023975643dd00a24b3a96683dd7d">&#9670;&nbsp;</a></span>PollIn</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned long zth::Pollable::PollIn = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aab8c6a641091f94d53c3d2f98ec5d8fe">PollInIndex</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00092">92</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="a39db15ab16c5b9acdabeef45204dc2a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39db15ab16c5b9acdabeef45204dc2a2">&#9670;&nbsp;</a></span>PollOut</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned long zth::Pollable::PollOut = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a12aa4123fc8f2aef316c670aa12991e3">PollOutIndex</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00093">93</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+
+</div>
+</div>
+<a id="a606ac2f056f9dbbddebae26832f944fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a606ac2f056f9dbbddebae26832f944fe">&#9670;&nbsp;</a></span>PollPri</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned long zth::Pollable::PollPri = 1UL &lt;&lt; <a class="el" href="structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a72b8ba68f1555ed8d54cfbd3e5662dff">PollPriIndex</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00095">95</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +404,7 @@ Public Attributes</h2></td></tr>
 <p>Returned events by a poll. </p>
 <p>Do not set manually, let the Poller do that. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00136">136</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00128">128</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>
@@ -300,7 +423,7 @@ Public Attributes</h2></td></tr>
 <p>User data. </p>
 <p>This can be changed, even after adding a <a class="el" href="structzth_1_1_pollable.html" title="A pollable thing.">Pollable</a> to a Poller. </p>
 
-<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00120">120</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="poller_8h_source.html#l00112">112</a> of file <a class="el" href="poller_8h_source.html">poller.h</a>.</p>
 
 </div>
 </div>

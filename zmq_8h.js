@@ -12,14 +12,14 @@ var zmq_8h =
     [ "zmq_msg_recv", "zmq_8h.html#ga54ef6c6bf5700562b46c2f04b4fecfd4", null ],
     [ "zmq_msg_send", "zmq_8h.html#ga110407a39d3fc50a54e7d8b31007c3b9", null ],
     [ "zmq_recv", "zmq_8h.html#ga26bb4770ceb83d4e06898ff114545ebb", null ],
-    [ "zmq_send", "zmq_8h.html#ga322b6825dea36fd90cac37166989a1cb", null ],
-    [ "zmq_send_const", "zmq_8h.html#ga5d238fb5dab6b80a373464bf245f7190", null ],
+    [ "zmq_send", "zmq_8h.html#ga392ae90d297e650253e6a3bdefcfbd06", null ],
+    [ "zmq_send_const", "zmq_8h.html#gab816f3c09bf1765f63f17f26d16d6b6f", null ],
     [ "zmq_socket", "zmq_8h.html#ga384a68bc94b1314f6feaf962bb9c2bde", null ],
     [ "zth_zmq_context", "group__zth__api__c__zmq.html#gaeed8a3e85c1979ddffdad3a2c4744957", null ],
     [ "zth_zmq_msg_recv", "group__zth__api__c__zmq.html#ga94d540e9af4385859f98af9be89c51c5", null ],
     [ "zth_zmq_msg_send", "group__zth__api__c__zmq.html#gaee487259e27c7dcc8c0827e2b9ab5c42", null ],
     [ "zth_zmq_recv", "group__zth__api__c__zmq.html#ga655cafe00361f58cad22ecc16cf57b19", null ],
-    [ "zth_zmq_send", "group__zth__api__c__zmq.html#gab62862ea98e0e083a597e7bbfabb1c73", null ],
-    [ "zth_zmq_send_const", "group__zth__api__c__zmq.html#ga3b295c9af3111c07899931ec6b7c8266", null ],
+    [ "zth_zmq_send", "group__zth__api__c__zmq.html#gae856abfcb408c631b741013cc8acfee0", null ],
+    [ "zth_zmq_send_const", "group__zth__api__c__zmq.html#gaafc9e6474a6f8f6812f1d162acf070a9", null ],
     [ "zth_zmq_socket", "group__zth__api__c__zmq.html#ga10e4decc817c09889792c7a89db1586b", null ]
 ];

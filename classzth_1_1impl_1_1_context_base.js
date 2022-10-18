@@ -25,6 +25,7 @@ var classzth_1_1impl_1_1_context_base =
     [ "stackAlign", "classzth_1_1impl_1_1_context_base.html#acfba0333a6088e17d56f6bb8e16d00fe", null ],
     [ "stackGuard", "classzth_1_1impl_1_1_context_base.html#a58f3c81e2ca1c3f0ee2ab63158721702", null ],
     [ "stackGuard", "classzth_1_1impl_1_1_context_base.html#aca325c8885aac79787ceec09c209185a", null ],
+    [ "stackGuard", "classzth_1_1impl_1_1_context_base.html#aa67405c8ac60af5c0648e1b2508745b3", null ],
     [ "stackGuardDeinit", "classzth_1_1impl_1_1_context_base.html#a0b9fa6de3a84359447db8a1c4563e174", null ],
     [ "stackGuardInit", "classzth_1_1impl_1_1_context_base.html#a42a19f54350e1acc567558aa3870e106", null ],
     [ "stackUsable", "classzth_1_1impl_1_1_context_base.html#acc47e975726ccf6705af068e7bcfa6eb", null ],

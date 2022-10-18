@@ -78,6 +78,7 @@ var hierarchy =
     ] ],
     [ "zth::DefaultConfig::Allocator< T >", "structzth_1_1_default_config_1_1_allocator.html", null ],
     [ "zth::Env", "structzth_1_1_env.html", null ],
+    [ "zth::EventRate< T, Bins, Count >", "classzth_1_1_event_rate.html", null ],
     [ "zth::fiber_type< F >", "structzth_1_1fiber__type.html", null ],
     [ "zth::fiber_type_impl< F >", "structzth_1_1fiber__type__impl.html", null ],
     [ "zth::FiberManipulator", "classzth_1_1_fiber_manipulator.html", [
@@ -169,11 +170,13 @@ var hierarchy =
     [ "zth::TypedFiberType< R(*)(Args...)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ],
     [ "zth::TypedFiberType< R(*)(Args...)>::NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4_1_1_no_arg.html", null ],
     [ "zth::UniqueIDBase", "classzth_1_1_unique_i_d_base.html", [
+      [ "zth::UniqueID< BasicFsm >", "classzth_1_1_unique_i_d.html", [
+        [ "zth::fsm::BasicFsm", "classzth_1_1fsm_1_1_basic_fsm.html", [
+          [ "zth::fsm::Fsm", "classzth_1_1fsm_1_1_fsm.html", null ]
+        ] ]
+      ] ],
       [ "zth::UniqueID< Fiber >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fiber", "classzth_1_1_fiber.html", null ]
-      ] ],
-      [ "zth::UniqueID< Fsm >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::fsm::Fsm", "classzth_1_1fsm_1_1_fsm.html", null ]
       ] ],
       [ "zth::UniqueID< Fsm< void, void, void > >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [

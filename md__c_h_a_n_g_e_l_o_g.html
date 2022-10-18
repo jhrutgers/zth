@@ -87,12 +87,15 @@ $(document).ready(function(){initNavTree('md__c_h_a_n_g_e_l_o_g.html',''); initR
 <div class="contents">
 <div class="textblock"><p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h1><a href="https://github.com/jhrutgers/zth/compare/v1.0.0...HEAD">Unreleased</a></h1>
-<h1><a href="https://github.com/jhrutgers/zth/releases/tag/v1.1.0">1.1.0</a> - xxxx-xx-xx</h1>
+<h1><a href="https://github.com/jhrutgers/zth/compare/v1.1.0...HEAD">Unreleased</a></h1>
+<h1><a href="https://github.com/jhrutgers/zth/releases/tag/v1.1.0">1.1.0</a> - 2022-10-18</h1>
 <h2>Added</h2>
 <ul>
 <li><code><a class="el" href="group__zth__api__cpp__fiber.html#ga7fa94d5dfb2edaa9e79a6e9b64ad8c25" title="Create a new fiber.">zth::fiber()</a></code> as alternative to <code><a class="el" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2" title="Prepare every given function to become a fiber by async.">zth_fiber()</a></code> and friends with <code>async</code>.</li>
 <li>Defining <code>async</code> can be prevented by defining <code>ZTH_NO_ASYNC_KEYWORD</code> before including <code>&lt;zth&gt;</code>. <code>zth_async</code> is always defined, with the original behavior of <code>async</code>.</li>
+<li>Make split <code><a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a></code> into a <code>BasicFsm</code> and <code>Fsm</code>, of which the former does not need fiber and timestamps to run. As a result, the <code>BasicFsm</code> can be executed in an interrupt routine.</li>
+<li>Fix support for builds without exceptions and environmental variables to reduce library size.</li>
+<li>Change license to MPLv2.</li>
 </ul>
 <h1><a href="https://github.com/jhrutgers/zth/releases/tag/v1.0.0">1.0.0</a> - 2021-12-21</h1>
 <p>Initial version.</p>

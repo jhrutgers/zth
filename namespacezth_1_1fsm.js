@@ -1,6 +1,7 @@
 var namespacezth_1_1fsm =
 [
     [ "Action", "classzth_1_1fsm_1_1_action.html", "classzth_1_1fsm_1_1_action" ],
+    [ "BasicFsm", "classzth_1_1fsm_1_1_basic_fsm.html", "classzth_1_1fsm_1_1_basic_fsm" ],
     [ "Callback", "classzth_1_1fsm_1_1_callback.html", null ],
     [ "Callback< T, R, false, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01false_00_01true_01_4.html", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01false_00_01true_01_4" ],
     [ "Callback< T, R, false, true, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01true_00_01true_01_4.html", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01true_00_01true_01_4" ],

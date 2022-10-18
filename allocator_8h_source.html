@@ -89,159 +89,151 @@ $(document).ready(function(){initNavTree('allocator_8h_source.html',''); initRes
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define ZTH_ALLOCATOR_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Zth (libzth), a cooperative userspace multitasking library.</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Copyright (C) 2019-2021  Jochem Rutgers</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Copyright (C) 2019-2022  Jochem Rutgers</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * This program is free software: you can redistribute it and/or modify</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * it under the terms of the GNU Lesser General Public License as published by</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> * (at your option) any later version.</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * This program is distributed in the hope that it will be useful,</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * GNU Lesser General Public License for more details.</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * You should have received a copy of the GNU Lesser General Public License</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * This Source Code Form is subject to the terms of the Mozilla Public</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * License, v. 2.0. If a copy of the MPL was not distributed with this</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * file, You can obtain one at https://mozilla.org/MPL/2.0/.</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="macros_8h.html">libzth/macros.h</a>&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="config_8h.html">libzth/config.h</a>&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#       include &lt;list&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#       include &lt;map&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#       include &lt;string&gt;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#       include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="macros_8h.html">libzth/macros.h</a>&gt;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="config_8h.html">libzth/config.h</a>&gt;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#       include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#       include &lt;list&gt;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#       include &lt;map&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#       include &lt;string&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#       include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="namespacezth.html">   32</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;__attribute__((warn_unused_result, returns_nonnull)) <span class="keyword">static</span> <span class="keyword">inline</span> T* allocate(<span class="keywordtype">size_t</span> n = 1)</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">typename</span> <a class="code" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator&lt;T&gt;::type</a> allocator;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">return</span> allocator.allocate(n);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* allocate_noexcept(<span class="keywordtype">size_t</span> n = 1) noexcept</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                <span class="keywordflow">return</span> allocate&lt;T&gt;(n);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        } <span class="keywordflow">catch</span>(...) {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc()</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        T* o = allocate&lt;T&gt;(1);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">new</span>(o) T;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">return</span> o;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Arg&gt;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc(Arg <span class="keyword">const</span>&amp; arg)</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacezth.html">   23</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacezth.html">zth</a> {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;__attribute__((warn_unused_result, returns_nonnull)) <span class="keyword">static</span> <span class="keyword">inline</span> T* allocate(<span class="keywordtype">size_t</span> n = 1)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">typename</span> <a class="code" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator&lt;T&gt;::type</a> allocator;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> allocator.allocate(n);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* allocate_noexcept(<span class="keywordtype">size_t</span> n = 1) noexcept</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                <span class="keywordflow">return</span> allocate&lt;T&gt;(n);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        } <span class="keywordflow">catch</span>(...) {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc()</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        T* o = allocate&lt;T&gt;(1);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">new</span>(o) T;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">return</span> o;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Arg&gt;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc(Arg <span class="keyword">const</span>&amp; arg)</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        T* o = allocate&lt;T&gt;(1);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">new</span>(o) T(arg);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordflow">return</span> o;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#       if __cplusplus &gt;= 201103L</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Arg&gt;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc(Arg&amp;&amp;... arg)</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;{</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        T* o = allocate&lt;T&gt;(1);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">new</span>(o) T(arg);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">new</span>(o) T(std::forward&lt;Arg&gt;(arg)...);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> o;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#       if __cplusplus &gt;= 201103L</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Arg&gt;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;__attribute__((warn_unused_result)) <span class="keyword">static</span> <span class="keyword">inline</span> T* new_alloc(Arg&amp;&amp;... arg)</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;{</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        T* o = allocate&lt;T&gt;(1);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">new</span>(o) T(std::forward&lt;Arg&gt;(arg)...);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">return</span> o;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#       endif</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> deallocate(T* p, <span class="keywordtype">size_t</span> n = 1) noexcept</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">if</span>(!p)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keyword">typename</span> <a class="code" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator&lt;T&gt;::type</a> allocator;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        allocator.deallocate(p, n);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> delete_alloc(T* p) noexcept</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;{</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!p))</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        p-&gt;~T();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        deallocate(p, 1);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">  123</a></span>&#160;<span class="preprocessor">#       define ZTH_CLASS_NEW_DELETE(T)                             \</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">        public:                                                     \</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">                void* operator new(std::size_t UNUSED_PAR(n))       \</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">                {                                                   \</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">                        zth_assert(n == sizeof(T));                 \</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">                        return ::zth::allocate&lt;T&gt;();                \</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">                }                                                   \</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">                void operator delete(void* ptr)                     \</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">                {                                                   \</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">                        ::zth::deallocate&lt;T&gt;(static_cast&lt;T*&gt;(ptr)); \</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">                }                                                   \</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">                                                                    \</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">        private:</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#       endif</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> deallocate(T* p, <span class="keywordtype">size_t</span> n = 1) noexcept</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;{</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keywordflow">if</span>(!p)</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">typename</span> <a class="code" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator&lt;T&gt;::type</a> allocator;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        allocator.deallocate(p, n);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> delete_alloc(T* p) noexcept</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;{</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a>(!p))</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        p-&gt;~T();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        deallocate(p, 1);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">  114</a></span>&#160;<span class="preprocessor">#       define ZTH_CLASS_NEW_DELETE(T)                             \</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">        public:                                                     \</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">                void* operator new(std::size_t UNUSED_PAR(n))       \</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">                {                                                   \</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">                        zth_assert(n == sizeof(T));                 \</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">                        return ::zth::allocate&lt;T&gt;();                \</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">                }                                                   \</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">                void operator delete(void* ptr)                     \</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">                {                                                   \</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">                        ::zth::deallocate&lt;T&gt;(static_cast&lt;T*&gt;(ptr)); \</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">                }                                                   \</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">                                                                    \</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">        private:</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="structzth_1_1vector__type.html">  133</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1vector__type.html">vector_type</a> {</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">  134</a></span>&#160;        <span class="keyword">typedef</span> std::vector&lt;T, typename Config::Allocator&lt;T&gt;::type&gt; <a class="code" href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">type</a>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;};</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="structzth_1_1vector__type.html">  142</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1vector__type.html">vector_type</a> {</div>
-<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">  143</a></span>&#160;        <span class="keyword">typedef</span> std::vector&lt;T, typename Config::Allocator&lt;T&gt;::type&gt; <a class="code" href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">type</a>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;};</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> T, <span class="keyword">typename</span> Compare = std::less&lt;Key&gt; &gt;</div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="structzth_1_1map__type.html">  151</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1map__type.html">map_type</a> {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keyword">typedef</span> std::map&lt;Key, T, Compare, typename Config::Allocator&lt;std::pair&lt;const Key, T&gt; &gt;<a class="code" href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">::type</a>&gt;</div>
-<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">  153</a></span>&#160;                <a class="code" href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">type</a>;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;};</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="structzth_1_1list__type.html">  161</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1list__type.html">list_type</a> {</div>
-<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">  162</a></span>&#160;        <span class="keyword">typedef</span> std::list&lt;T, typename Config::Allocator&lt;T&gt;::type&gt; <a class="code" href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">type</a>;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;};</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Traits, <span class="keyword">typename</span> Allocator&gt;</div>
-<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">  166</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">to_zth_string</a>(std::basic_string&lt;char, Traits, Allocator&gt; <span class="keyword">const</span>&amp; s)</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;{</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a>(s.data(), s.size());</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">  171</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">std::string</a> <a class="code" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">to_std_string</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; s)</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;{</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">std::string</a>(s.data(), s.size());</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;} <span class="comment">// namespace zth</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#endif // ZTH_ALLOCATOR_H</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">typename</span> T, <span class="keyword">typename</span> Compare = std::less&lt;Key&gt; &gt;</div>
+<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="structzth_1_1map__type.html">  142</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1map__type.html">map_type</a> {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keyword">typedef</span> std::map&lt;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                Key, T, Compare, <span class="keyword">typename</span> <a class="code" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator&lt;std::pair&lt;const Key, T&gt;</a> &gt;<a class="code" href="structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0">::type</a>&gt;</div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0">  145</a></span>&#160;                <a class="code" href="structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0">type</a>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;};</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="structzth_1_1list__type.html">  153</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structzth_1_1list__type.html">list_type</a> {</div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">  154</a></span>&#160;        <span class="keyword">typedef</span> std::list&lt;T, typename Config::Allocator&lt;T&gt;::type&gt; <a class="code" href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">type</a>;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;};</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> Traits, <span class="keyword">typename</span> Allocator&gt;</div>
+<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">  158</a></span>&#160;<span class="keywordtype">string</span> <a class="code" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">to_zth_string</a>(std::basic_string&lt;char, Traits, Allocator&gt; <span class="keyword">const</span>&amp; s)</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;{</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a>(s.data(), s.size());</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;}</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">  163</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">std::string</a> <a class="code" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">to_std_string</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; s)</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;{</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">std::string</a>(s.data(), s.size());</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;}</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;} <span class="comment">// namespace zth</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#endif // __cplusplus</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="preprocessor">#endif // ZTH_ALLOCATOR_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructzth_1_1vector__type_html"><div class="ttname"><a href="structzth_1_1vector__type.html">zth::vector_type</a></div><div class="ttdoc">std::vector type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00142">allocator.h:142</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdoc">std::string type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00337">util.h:337</a></div></div>
-<div class="ttc" id="astructzth_1_1map__type_html"><div class="ttname"><a href="structzth_1_1map__type.html">zth::map_type</a></div><div class="ttdoc">std::map type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00151">allocator.h:151</a></div></div>
+<div class="ttc" id="astructzth_1_1vector__type_html"><div class="ttname"><a href="structzth_1_1vector__type.html">zth::vector_type</a></div><div class="ttdoc">std::vector type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00133">allocator.h:133</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdoc">std::string type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00335">util.h:335</a></div></div>
+<div class="ttc" id="astructzth_1_1map__type_html"><div class="ttname"><a href="structzth_1_1map__type.html">zth::map_type</a></div><div class="ttdoc">std::map type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00142">allocator.h:142</a></div></div>
+<div class="ttc" id="astructzth_1_1map__type_html_afb853e35468042b333c9377d4b2465e0"><div class="ttname"><a href="structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0">zth::map_type::type</a></div><div class="ttdeci">std::map&lt; Key, T, Compare, typename Config::Allocator&lt; std::pair&lt; const Key, T &gt; &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00145">allocator.h:145</a></div></div>
 <div class="ttc" id="amacros_8h_html"><div class="ttname"><a href="macros_8h.html">macros.h</a></div></div>
-<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00032">allocator.h:32</a></div></div>
-<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="astructzth_1_1list__type_html"><div class="ttname"><a href="structzth_1_1list__type.html">zth::list_type</a></div><div class="ttdoc">std::list type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00161">allocator.h:161</a></div></div>
-<div class="ttc" id="anamespacezth_html_a05bc469384dce6f6cc410c77dabefbe6"><div class="ttname"><a href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">zth::to_std_string</a></div><div class="ttdeci">std::string to_std_string(string const &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00171">allocator.h:171</a></div></div>
-<div class="ttc" id="astructzth_1_1list__type_html_a47601022f1d128dfb32a05db356dcf39"><div class="ttname"><a href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">zth::list_type::type</a></div><div class="ttdeci">std::list&lt; T, typename Config::Allocator&lt; T &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00162">allocator.h:162</a></div></div>
-<div class="ttc" id="anamespacezth_html_a86294f954615a81fd2d04244eabc0e04"><div class="ttname"><a href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">zth::to_zth_string</a></div><div class="ttdeci">string to_zth_string(std::basic_string&lt; char, Traits, Allocator &gt; const &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00166">allocator.h:166</a></div></div>
-<div class="ttc" id="astructzth_1_1map__type_html_acaceba356341c220e84396e11d8dcb8d"><div class="ttname"><a href="structzth_1_1map__type.html#acaceba356341c220e84396e11d8dcb8d">zth::map_type::type</a></div><div class="ttdeci">std::map&lt; Key, T, Compare, typename Config::Allocator&lt; std::pair&lt; const Key, T &gt; &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00153">allocator.h:153</a></div></div>
+<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00023">allocator.h:23</a></div></div>
+<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00056">util.h:56</a></div></div>
+<div class="ttc" id="astructzth_1_1list__type_html"><div class="ttname"><a href="structzth_1_1list__type.html">zth::list_type</a></div><div class="ttdoc">std::list type using Config::Allocator::type.</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00153">allocator.h:153</a></div></div>
+<div class="ttc" id="anamespacezth_html_a05bc469384dce6f6cc410c77dabefbe6"><div class="ttname"><a href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">zth::to_std_string</a></div><div class="ttdeci">std::string to_std_string(string const &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00163">allocator.h:163</a></div></div>
+<div class="ttc" id="astructzth_1_1list__type_html_a47601022f1d128dfb32a05db356dcf39"><div class="ttname"><a href="structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39">zth::list_type::type</a></div><div class="ttdeci">std::list&lt; T, typename Config::Allocator&lt; T &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00154">allocator.h:154</a></div></div>
+<div class="ttc" id="anamespacezth_html_a86294f954615a81fd2d04244eabc0e04"><div class="ttname"><a href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">zth::to_zth_string</a></div><div class="ttdeci">string to_zth_string(std::basic_string&lt; char, Traits, Allocator &gt; const &amp;s)</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00158">allocator.h:158</a></div></div>
 <div class="ttc" id="aconfig_8h_html"><div class="ttname"><a href="config_8h.html">config.h</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_1_1_allocator_html"><div class="ttname"><a href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator</a></div><div class="ttdoc">Allocator type.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00176">config.h:176</a></div></div>
-<div class="ttc" id="astructzth_1_1vector__type_html_a17e40bab4ef2d191b9a5999c98f478fb"><div class="ttname"><a href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">zth::vector_type::type</a></div><div class="ttdeci">std::vector&lt; T, typename Config::Allocator&lt; T &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00143">allocator.h:143</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_1_1_allocator_html"><div class="ttname"><a href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator</a></div><div class="ttdoc">Allocator type.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00192">config.h:192</a></div></div>
+<div class="ttc" id="astructzth_1_1vector__type_html_a17e40bab4ef2d191b9a5999c98f478fb"><div class="ttname"><a href="structzth_1_1vector__type.html#a17e40bab4ef2d191b9a5999c98f478fb">zth::vector_type::type</a></div><div class="ttdeci">std::vector&lt; T, typename Config::Allocator&lt; T &gt;::type &gt; type</div><div class="ttdef"><b>Definition:</b> <a href="allocator_8h_source.html#l00134">allocator.h:134</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

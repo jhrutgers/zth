@@ -116,8 +116,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3f1d1f3687ae587bcc08ed3014580970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bbfb04d40cbf99091fc04ddaa939da8"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classzth_1_1fsm_1_1_guard.html">Guard</a> const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a4bbfb04d40cbf99091fc04ddaa939da8">guard</a> (<a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">index_type</a> i) const noexcept=0</td></tr>
 <tr class="separator:a4bbfb04d40cbf99091fc04ddaa939da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa59b0fa1394789bade122471752d7330"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classzth_1_1fsm_1_1_guard_poll_interval.html">GuardPollInterval</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#aa59b0fa1394789bade122471752d7330">enabled</a> (<a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">index_type</a> i, <a class="el" href="classzth_1_1fsm_1_1_fsm.html">Fsm</a> &amp;fsm) const =0</td></tr>
-<tr class="separator:aa59b0fa1394789bade122471752d7330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54d0949862b52803c3eac6df4b89bbc1"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classzth_1_1fsm_1_1_guard_poll_interval.html">GuardPollInterval</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a54d0949862b52803c3eac6df4b89bbc1">enabled</a> (<a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">index_type</a> i, <a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html">BasicFsm</a> &amp;fsm) const =0</td></tr>
+<tr class="separator:a54d0949862b52803c3eac6df4b89bbc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae086a48b30a06d556e439d88f3ab6d02"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classzth_1_1fsm_1_1_symbol.html">Symbol</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#ae086a48b30a06d556e439d88f3ab6d02">input</a> (<a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">index_type</a> i) const noexcept=0</td></tr>
 <tr class="separator:ae086a48b30a06d556e439d88f3ab6d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b714d73533e31228ed5a7ed6b87a7ff"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classzth_1_1fsm_1_1_action.html">Action</a> const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a8b714d73533e31228ed5a7ed6b87a7ff">action</a> (<a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#abca7a97d21d1e8cbaf07305827d0a9ab">index_type</a> i) const noexcept=0</td></tr>
@@ -128,7 +128,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a379c52d2583a78e91b8e81a4e44e759b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63db5eef6218a3d86e551421e2c900fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1fsm_1_1_fsm.html">Fsm</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a63db5eef6218a3d86e551421e2c900fb">spawn</a> () const</td></tr>
 <tr class="separator:a63db5eef6218a3d86e551421e2c900fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a779192942f61bb1aba85cfa1f091f159"><td class="memTemplParams" colspan="2">template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; Fsm, F &gt;::value, int &gt;  = 0&gt; </td></tr>
+<tr class="memitem:a779192942f61bb1aba85cfa1f091f159"><td class="memTemplParams" colspan="2">template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; BasicFsm, F &gt;::value, int &gt;  = 0&gt; </td></tr>
 <tr class="memitem:a779192942f61bb1aba85cfa1f091f159"><td class="memTemplItemLeft" align="right" valign="top">F &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#a779192942f61bb1aba85cfa1f091f159">init</a> (F &amp;fsm) const noexcept</td></tr>
 <tr class="separator:a779192942f61bb1aba85cfa1f091f159"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66b63f9206dcb494e13691cb91c8cef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1fsm_1_1_transitions_base.html#ae66b63f9206dcb494e13691cb91c8cef">dump</a> (FILE *f=stdout) const</td></tr>
@@ -138,7 +138,7 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01030">1030</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01026">1026</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abca7a97d21d1e8cbaf07305827d0a9ab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abca7a97d21d1e8cbaf07305827d0a9ab">&#9670;&nbsp;</a></span>index_type</h2>
@@ -152,7 +152,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01032">1032</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01028">1028</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -209,12 +209,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01059">1059</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01055">1055</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
-<a id="aa59b0fa1394789bade122471752d7330"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa59b0fa1394789bade122471752d7330">&#9670;&nbsp;</a></span>enabled()</h2>
+<a id="a54d0949862b52803c3eac6df4b89bbc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54d0949862b52803c3eac6df4b89bbc1">&#9670;&nbsp;</a></span>enabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +231,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classzth_1_1fsm_1_1_fsm.html">Fsm</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1fsm_1_1_basic_fsm.html">BasicFsm</a> &amp;&#160;</td>
           <td class="paramname"><em>fsm</em>&#160;</td>
         </tr>
         <tr>
@@ -247,7 +247,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1fsm_1_1_transitions.html#aa962d4117d01e218f5e7d2b696a1573d">zth::fsm::Transitions&lt; Size &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classzth_1_1fsm_1_1_transitions.html#a9c59c96d3d6463899b3ab11f3bf83962">zth::fsm::Transitions&lt; Size &gt;</a>.</p>
 
 </div>
 </div>
@@ -331,7 +331,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01038">1038</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01034">1034</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -341,7 +341,7 @@ Public Member Functions</h2></td></tr>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; Fsm, F &gt;::value, int &gt;  = 0&gt; </div>
+template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; BasicFsm, F &gt;::value, int &gt;  = 0&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -361,7 +361,7 @@ template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; Fsm, F &gt;::v
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01053">1053</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01049">1049</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -443,7 +443,7 @@ template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; Fsm, F &gt;::v
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02010">2010</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l02102">2102</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>
@@ -527,7 +527,7 @@ template&lt;typename F , std::enable_if_t&lt; std::is_base_of&lt; Fsm, F &gt;::v
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01070">1070</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fsm14_8h_source.html#l01066">1066</a> of file <a class="el" href="fsm14_8h_source.html">fsm14.h</a>.</p>
 
 </div>
 </div>

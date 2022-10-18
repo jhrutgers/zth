@@ -12,6 +12,7 @@ var namespacezth =
     [ "cow_string", "classzth_1_1cow__string.html", "classzth_1_1cow__string" ],
     [ "DefaultConfig", "structzth_1_1_default_config.html", "structzth_1_1_default_config" ],
     [ "Env", "structzth_1_1_env.html", "structzth_1_1_env" ],
+    [ "EventRate", "classzth_1_1_event_rate.html", "classzth_1_1_event_rate" ],
     [ "Fiber", "classzth_1_1_fiber.html", "classzth_1_1_fiber" ],
     [ "fiber_type", "structzth_1_1fiber__type.html", null ],
     [ "fiber_type< R(*)(Args...)>", "structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ],

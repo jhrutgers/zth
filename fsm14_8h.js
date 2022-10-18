@@ -21,6 +21,7 @@ var fsm14_8h =
     [ "TransitionsBase", "classzth_1_1fsm_1_1_transitions_base.html", "classzth_1_1fsm_1_1_transitions_base" ],
     [ "Transitions", "classzth_1_1fsm_1_1_transitions.html", "classzth_1_1fsm_1_1_transitions" ],
     [ "CompiledTransition", "structzth_1_1fsm_1_1_transitions_1_1_compiled_transition.html", "structzth_1_1fsm_1_1_transitions_1_1_compiled_transition" ],
+    [ "BasicFsm", "classzth_1_1fsm_1_1_basic_fsm.html", "classzth_1_1fsm_1_1_basic_fsm" ],
     [ "State", "fsm14_8h.html#ga2796b4c87af42f47292d489231430698", null ],
     [ "action", "fsm14_8h.html#ga729639cd9f74a958d820bcce463fa8ae", null ],
     [ "always_guard", "fsm14_8h.html#aeb6fbb69abf74914e0780d5fce5e0267", null ],

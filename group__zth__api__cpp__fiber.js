@@ -69,7 +69,7 @@ var group__zth__api__cpp__fiber =
     [ "startWorkerThread", "group__zth__api__cpp__fiber.html#ga17f92480e82203077853ee3e3c59d3d5", null ],
     [ "unap", "group__zth__api__cpp__fiber.html#gad8abbae956466d84c1e1366eba469278", null ],
     [ "waitUntil", "group__zth__api__cpp__fiber.html#ga355b0425f58035f985050fbd0435d254", null ],
-    [ "waitUntil", "group__zth__api__cpp__fiber.html#ga8de540dbd2d282a44c5083295bf37234", null ],
+    [ "waitUntil", "group__zth__api__cpp__fiber.html#gaa0e4f789b961302899befebadd416c26", null ],
     [ "waitUntil", "group__zth__api__cpp__fiber.html#gabd067566b5f56fb4aa9186880f568d0f", null ],
     [ "yield", "group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc", null ]
 ];
