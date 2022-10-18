@@ -2,20 +2,11 @@
 #define ZTH_POLLER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -92,16 +83,17 @@ struct Pollable {
 		PollPriIndex,
 		PollHupIndex,
 		FlagCount,
-
-		PollIn = 1U << PollInIndex,
-		PollOut = 1U << PollOutIndex,
-		PollErr = 1U << PollErrIndex,
-		PollPri = 1U << PollPriIndex,
-		PollHup = 1U << PollHupIndex,
 	};
 
 	/*! \brief Type of #events and #revents. */
 	typedef std::bitset<FlagCount> Events;
+
+	// unsigned long can be converted implicitly to bitset.
+	static const unsigned long PollIn = 1UL << PollInIndex;
+	static const unsigned long PollOut = 1UL << PollOutIndex;
+	static const unsigned long PollErr = 1UL << PollErrIndex;
+	static const unsigned long PollPri = 1UL << PollPriIndex;
+	static const unsigned long PollHup = 1UL << PollHupIndex;
 
 	/*!
 	 * \brief Ctor.
@@ -444,6 +436,7 @@ public:
 		return add(p, nullptr);
 	}
 
+	// cppcheck-suppress constParameter
 	int remove(Pollable& p, Client* client) noexcept final
 	{
 		size_t count = m_metaItems.size();
@@ -560,6 +553,7 @@ protected:
 	 * This function should be called by \c doPoll().
 	 * Events are forwarded to the client registered with the Pollable.
 	 */
+	// cppcheck-suppress passedByValue
 	void event(Pollable::Events revents, size_t index) noexcept
 	{
 		zth_assert(index < m_metaItems.size());
@@ -818,8 +812,8 @@ int poll(P pollable, int timeout_ms = -1)
 			return EIO;
 		}
 	} catch(...) {
-		return ENOMEM;
 	}
+	return ENOMEM;
 }
 
 } // namespace zth

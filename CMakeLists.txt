@@ -1,18 +1,9 @@
 # Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2021  Jochem Rutgers
+# Copyright (C) 2019-2022  Jochem Rutgers
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.3)
 project(Zth)
@@ -20,6 +11,8 @@ project(Zth)
 cmake_policy(SET CMP0057 NEW)
 
 include(CheckIncludeFileCXX)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
@@ -98,6 +91,8 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 
 			string(CONCAT CLANG_TIDY_CHECKS "-checks="
 				"bugprone-*,"
+				"-bugprone-easily-swappable-parameters,"
+
 				"clang-analyzer-*,"
 				"concurrency-*,"
 
@@ -139,6 +134,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 				"-readability-convert-member-functions-to-static,"
 				"-readability-else-after-return,"
 				"-readability-function-cognitive-complexity,"
+				"-readability-identifier-length,"
 				"-readability-implicit-bool-conversion,"
 				"-readability-magic-numbers,"
 				"-readability-make-member-function-const,"
@@ -165,6 +161,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 endif()
 
 add_library(libzth
+	src/assert.cpp
 	src/config.cpp
 	src/context.cpp
 	src/fiber.cpp
@@ -181,7 +178,35 @@ add_library(libzth
 	src/zmq.cpp
 	src/zth_logv.cpp
 )
-set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth")
+
+set(ZTH_HEADERS
+	include/libzth/allocator.h
+	include/libzth/async.h
+	include/libzth/config.h
+	include/libzth/context.h
+	include/libzth/fiber.h
+	include/libzth/fsm.h
+	include/libzth/fsm14.h
+	include/libzth/init.h
+	include/libzth/io.h
+	include/libzth/list.h
+	include/libzth/macros.h
+	include/libzth/perf.h
+	include/libzth/poller.h
+	include/libzth/regs.h
+	include/libzth/sync.h
+	include/libzth/time.h
+	include/libzth/util.h
+	include/libzth/version.h
+	include/libzth/waiter.h
+	include/libzth/worker.h
+	include/libzth/zmq.h
+)
+
+set_target_properties(libzth PROPERTIES
+	OUTPUT_NAME "zth"
+	PUBLIC_HEADER "${ZTH_HEADERS}"
+)
 
 if(ZTH_DRAFT_API)
 	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)
@@ -212,15 +237,29 @@ if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
 endif()
 
 install(TARGETS libzth EXPORT libzth
-	ARCHIVE DESTINATION lib
-	PUBLIC_HEADER DESTINATION include
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
 )
 
-configure_file(cmake/libzth.cmake.in ${CMAKE_BINARY_DIR}/libzth.cmake)
-install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
-install(FILES include/zth DESTINATION include)
-install(EXPORT libzth DESTINATION share/libzth/cmake)
-install(FILES ${CMAKE_BINARY_DIR}/libzth.cmake DESTINATION share/cmake/libzth)
+install(FILES include/zth include/zth.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+set(ZTH_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/zth_config.h)
+foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
+	if(EXISTS ${d}/zth_config.h)
+		set(ZTH_CONFIG_FILE ${d}/zth_config.h)
+		break()
+	endif()
+endforeach()
+install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
+
+configure_package_config_file(
+	cmake/ZthConfig.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
+	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth)
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
@@ -230,7 +269,7 @@ endif()
 if(NOT APPLE)
 	CHECK_INCLUDE_FILE_CXX("libunwind.h" ZTH_HAVE_LIBUNWIND)
 	if(ZTH_HAVE_LIBUNWIND)
-		target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBUNWIND)
+		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBUNWIND)
 		target_link_libraries(libzth INTERFACE unwind)
 	endif()
 endif()
@@ -253,8 +292,12 @@ if(UNIX OR MINGW)
 	if(MINGW)
 		set(THREADS_HAVE_PTHREAD_ARG 1)
 	endif()
+
 	find_package(Threads REQUIRED)
-	target_link_libraries(libzth PUBLIC Threads::Threads)
+
+	if(CMAKE_THREAD_LIBS_INIT)
+		target_link_libraries(libzth PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+	endif()
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

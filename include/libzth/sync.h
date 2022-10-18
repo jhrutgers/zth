@@ -2,20 +2,11 @@
 #define ZTH_SYNC_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -836,8 +827,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) noexcept
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!
@@ -919,8 +910,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) no
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!
@@ -1030,8 +1021,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) noexcept
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!
@@ -1116,8 +1107,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) noexcep
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!
@@ -1222,8 +1213,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count)
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!

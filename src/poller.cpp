@@ -1,19 +1,10 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #include <libzth/poller.h>
@@ -92,7 +83,7 @@ int ZmqPoller::init(Pollable const& p, zmq_pollitem_t& item) noexcept
 int ZmqPoller::doPoll(int timeout_ms, typename base::PollItemList& items) noexcept
 {
 	zth_assert(items.size() <= (size_t)std::numeric_limits<int>::max());
-	int res = zmq_poll(&items[0], (int)items.size(), timeout_ms);
+	int res = zmq_poll(items.data(), (int)items.size(), timeout_ms);
 	if(res < 0)
 		return zmq_errno();
 	if(res == 0)
@@ -158,7 +149,7 @@ int PollPoller::init(Pollable const& p, struct pollfd& item) noexcept
 
 int PollPoller::doPoll(int timeout_ms, base::PollItemList& items) noexcept
 {
-	int res = ::poll(&items[0], items.size(), timeout_ms);
+	int res = ::poll(items.data(), items.size(), timeout_ms);
 	if(res < 0)
 		return errno;
 	if(res == 0)

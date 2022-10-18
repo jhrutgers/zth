@@ -2,20 +2,11 @@
 #define ZTH_TIME_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -149,6 +140,45 @@ public:
 		, m_negative()
 	{
 		init_int<T>(dt);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_s(T s)
+	{
+		if(s > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval(s);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_ms(T ms)
+	{
+		T s_ = ms / (T)1000;
+		if((unsigned long long)s_ > (unsigned long long)std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s_, ((long)ms % 1000L) * 1000000L);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_us(T us)
+	{
+		T s_ = us / (T)1000000;
+		if((unsigned long long)s_ > (unsigned long long)std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s_, ((long)us % 1000000L) * 1000L);
+	}
+
+	template <typename T>
+	static constexpr14 TimeInterval from_ns(T ns)
+	{
+		T s_ = ns / (T)1000000000L;
+		if(s_ > std::numeric_limits<time_t>::max())
+			return TimeInterval(std::numeric_limits<time_t>::max(), 999999999L);
+
+		return TimeInterval((time_t)s_, (long)ns % 1000000000L);
 	}
 
 private:
@@ -462,10 +492,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int 
  */
 ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) noexcept
 {
-	return TimeInterval(
-		(time_t)std::min<unsigned long long int>(
-			x / 1000ULL, (unsigned long long int)std::numeric_limits<time_t>::max()),
-		((long)x % 1000L) * 1000000L);
+	return TimeInterval::from_ms(x);
 }
 
 /*!
@@ -477,10 +504,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int
  */
 ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) noexcept
 {
-	return TimeInterval(
-		(time_t)std::min<unsigned long long int>(
-			x / 1000000ULL, (unsigned long long int)std::numeric_limits<time_t>::max()),
-		((long)x % 1000000L) * 1000L);
+	return TimeInterval::from_us(x);
 }
 
 /*!
@@ -591,6 +615,23 @@ public:
 	{
 		return TimeInterval(t.ts().tv_sec, t.ts().tv_nsec)
 		       - TimeInterval(ts().tv_sec, ts().tv_nsec);
+	}
+
+	TimeInterval passed() const
+	{
+		// Assume we are in the past. If so, interval calculations are
+		// simpler than in the general timeTo() case.
+		Timestamp t = now();
+		zth_assert(!isAfter(t));
+
+		t.m_t.tv_sec -= m_t.tv_sec;
+		t.m_t.tv_nsec -= m_t.tv_nsec;
+		if(t.m_t.tv_nsec < 0) {
+			t.m_t.tv_sec--;
+			t.m_t.tv_nsec += TimeInterval::BILLION;
+		}
+
+		return TimeInterval(t.m_t.tv_sec, t.m_t.tv_nsec);
 	}
 
 	constexpr14 void add(TimeInterval const& dt) noexcept

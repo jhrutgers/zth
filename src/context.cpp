@@ -1,19 +1,10 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #include <libzth/macros.h>
@@ -134,6 +125,7 @@ void context_switch(Context* from, Context* to) noexcept
 		from->alive() ? &fake_stack : nullptr, to->stackUsable().p, to->stackUsable().size);
 #endif
 
+	// cppcheck-suppress nullPointerRedundantCheck
 	from->context_switch(*to);
 
 #ifdef ZTH_ENABLE_ASAN
@@ -153,13 +145,21 @@ size_t context_stack_usage(Context* context) noexcept
 	if(!Config::EnableStackWaterMark || !context)
 		return 0;
 
-	// Guards may be in place on the current stack. Do not iterate it, as
-	// you may trigger that guard.
-	zth_assert(
-		!currentWorker().currentFiber()
-		|| currentWorker().currentFiber()->context() != context);
+	Fiber* f = currentWorker().currentFiber();
+	void* guard = nullptr;
 
-	return stack_watermark_maxused(context->stackUsable().p);
+	if(f && f->context() == context) {
+		// Guards may be in place on the current stack. Disable it
+		// while iterating it.
+		guard = context->stackGuard(nullptr);
+	}
+
+	size_t res = stack_watermark_maxused(context->stackUsable().p);
+
+	if(guard)
+		context->stackGuard(guard);
+
+	return res;
 }
 
 } // namespace zth
@@ -184,9 +184,11 @@ void context_entry(zth::Context* context) noexcept
 	zth_assert(context);
 
 	// Go execute the fiber.
+	// cppcheck-suppress nullPointerRedundantCheck
 	context->stackGuard();
 
 	try {
+		// cppcheck-suppress nullPointerRedundantCheck
 		context->attr().entry(context->attr().arg);
 	} catch(...) {
 	}

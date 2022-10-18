@@ -73,7 +73,7 @@ static void employer()
 		zth_assert(len < sizeof(buf));
 
 		// Make sure the string is terminated.
-		buf[len] = 0;
+		buf[len] = 0; // cppcheck-suppress arrayIndexOutOfBoundsCond
 
 		// Go parse the buffer.
 		size_t totalScanned = 0;

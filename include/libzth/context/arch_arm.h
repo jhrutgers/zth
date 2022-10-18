@@ -2,20 +2,11 @@
 #define ZTH_CONTEXT_ARCH_ARM_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
@@ -220,7 +211,7 @@ private:
 		return region;
 	}
 
-	static void stackGuard(void* guard) noexcept
+	static void stackGuardImpl(void* guard) noexcept
 	{
 		if(!Config::EnableStackGuard || Config::EnableThreads)
 			return;
@@ -261,13 +252,31 @@ public:
 	void stackGuard() noexcept
 	{
 		// The guard is outside of the usable stack area.
-		stackGuard(m_guard);
+		stackGuardImpl(m_guard);
 	}
 
 	void stackGuard(Stack const& stack) noexcept
 	{
 		// The guard is at the end of the usable stack area.
-		stackGuard(stack.p);
+		stackGuardImpl(stack.p);
+	}
+
+	void* stackGuard(void* p) noexcept
+	{
+		void* prev = setGuard(p);
+		stackGuard();
+
+		if(!Config::Debug && !p) {
+			// The guard is disabled. For non-debug builds, the
+			// barriers are not in place by stackGuardImpl(). In
+			// that case, do it here, to make sure that you can
+			// rely on that the guard is really disabled when this
+			// function returns.
+			__dsb();
+			__isb();
+		}
+
+		return prev;
 	}
 
 #		pragma GCC diagnostic pop
@@ -346,7 +355,8 @@ public:
 			"mov lr, #0\n"
 			"push {" REG_FP ", lr}\n"
 			"mov " REG_FP ", sp\n"
-			"bl context_entry\n");
+			"bl context_entry\n"
+		);
 		// clang-format on
 	}
 

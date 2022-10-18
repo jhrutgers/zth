@@ -2,20 +2,11 @@
 #define ZTH_PERF_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -481,6 +472,97 @@ private:
 	bool m_active;
 	Timestamp m_current;
 	type m_load;
+};
+
+/*!
+ * \brief Measure the rate of some event in Hz.
+ *
+ * It counts events in bins, all with a contructor-provided (window) duration.
+ * When the count reaches about one per bin, there is significat jitter on the
+ * rate measurement.  When the count is higher, the jitter is +/- 1 for a
+ * stable event rate.
+ *
+ * The measurement is done regardless of the precision of clock_gettime(). It
+ * is fine to have events with 0 time in between.
+ *
+ * \ingroup zth_api_cpp_perf
+ */
+template <typename T = float, size_t Bins = 2, typename Count = uint_fast32_t>
+class EventRate {
+	ZTH_CLASS_NEW_DELETE(EventRate)
+public:
+	typedef T type;
+	typedef Count count_type;
+
+	explicit EventRate(type window = 1) noexcept
+		: m_window_s(window)
+		, m_window(window)
+		, m_binStart()
+		, m_bins()
+		, m_current()
+	{
+		static_assert(std::numeric_limits<decltype(m_current)>::max() >= Bins, "");
+	}
+
+	void event(Timestamp const& now = Timestamp::now()) noexcept
+	{
+		size_t b = 0;
+		for(; m_binStart + m_window < now && b < Bins; b++) {
+			// Proceed to next bin.
+			m_current = (m_current + 1U) % Bins;
+			m_bins[m_current] = 0;
+			m_binStart += m_window;
+		}
+
+		if(unlikely(b == Bins)) {
+			// Cleared all bins. Apparently, m_binStart was a long time ago.
+			m_binStart = now;
+		}
+
+		m_bins[m_current]++;
+	}
+
+	void operator()(Timestamp const& now = Timestamp::now()) noexcept
+	{
+		event(now);
+	}
+
+	type rate(Timestamp const& now = Timestamp::now()) const noexcept
+	{
+		type w = (type)(now - m_binStart).s() / m_window_s;
+
+		if(unlikely(w > 1)) {
+			if(w > 2)
+				return 0; // We are really late.
+
+			w = 1;
+		}
+
+		// Scale the first bin, such that it is gradually removed from the average.
+		type first_bin = ((type)1 - w) * (type)m_bins[(m_current + 1U) % Bins];
+		// Last bin only holds events from [m_binStart,now[, no scaling required.
+		type last_bin = (type)m_bins[m_current];
+
+		// Sum all intermediate bins.
+		type sum = first_bin + last_bin;
+		for(decltype(m_current + 0) i = 2; i < Bins; i++)
+			sum += (type)m_bins[(m_current + i) % Bins];
+
+		// As the first and last one are both partial, divide by Bins - 1.
+		return sum * ((type)1 / (type)(Bins - 1)) / m_window_s;
+	}
+
+	operator type() const noexcept
+	{
+		return rate();
+	}
+
+private:
+	type m_window_s;
+	TimeInterval m_window;
+	Timestamp m_binStart;
+	count_type m_bins[Bins];
+	uint8_t m_current;
 };
 
 } // namespace zth

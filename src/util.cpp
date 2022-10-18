@@ -1,19 +1,10 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #include <libzth/macros.h>
@@ -217,7 +208,7 @@ bool log_supports_ansi_colors() noexcept
 nosupport:
 	support = -1;
 	return false;
-#else // !ZTH_OS_WINDOWS
+#else  // !ZTH_OS_WINDOWS
 	return true;
 #endif // !ZTH_OS_WINDOWS
 }
@@ -293,3 +284,28 @@ void zth_abort(char const* fmt, ...)
 	zth::abortv(fmt, va);
 	va_end(va);
 }
+
+#ifdef ZTH_OS_BAREMETAL
+__attribute__((weak)) int asprintf(char** strp, const char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	int res = vasprintf(strp, fmt, args);
+	va_end(args);
+	return res;
+}
+
+__attribute__((weak)) int vasprintf(char** strp, const char* fmt, va_list ap)
+{
+	va_list ap_dup;
+	va_copy(ap_dup, ap);
+	int len = vsnprintf(nullptr, 0, fmt, ap_dup);
+	va_end(ap_dup);
+
+	if(strp && (*strp = (char*)malloc(len + 1)))
+		vsnprintf(*strp, len + 1, fmt, ap);
+
+	// cppcheck-suppress memleak
+	return len;
+}
+#endif

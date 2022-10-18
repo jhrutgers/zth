@@ -1,19 +1,10 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #define ZTH_REDIRECT_ZMQ 0
@@ -121,7 +112,7 @@ int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send(void* socket, void* buf, size_t len, int flags)
+int zmq_send(void* socket, void const* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send()");
 
@@ -163,7 +154,7 @@ int zmq_recv(void* socket, void* buf, size_t len, int flags)
  * \brief Fiber-aware wrapper for 0MQ's \c zmq_send_const().
  * \ingroup zth_api_cpp_zmq
  */
-int zmq_send_const(void* socket, void* buf, size_t len, int flags)
+int zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 {
 	perf_syscall("zmq_send_const()");
 

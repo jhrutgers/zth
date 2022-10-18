@@ -2,20 +2,11 @@
 #define ZTH_LIST_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #ifdef __cplusplus
@@ -293,6 +284,7 @@ public:
 		{
 			elem_type* elem = get();
 			zth_assert(elem);
+			// cppcheck-suppress nullPointerRedundantCheck
 			return *static_cast<type*>(elem);
 		}
 
@@ -619,6 +611,7 @@ protected:
 
 	static void decrease_level(elem_type* t) noexcept
 	{
+#ifndef CPPCHECK // Internal error, somehow.
 		decltype(t->level) ll = t->left ? t->left->level : 0;
 		decltype(t->level) lr = t->right ? t->right->level : 0;
 		decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
@@ -627,6 +620,7 @@ protected:
 			if(t->right && should_be < t->right->level)
 				t->right->level = should_be;
 		}
+#endif
 	}
 
 	void check() const noexcept

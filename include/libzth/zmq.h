@@ -2,20 +2,11 @@
 #define ZTH_ZMQ_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -44,9 +35,9 @@ void* zmq_context();
 void* zmq_socket(int type);
 int zmq_msg_send(zmq_msg_t* msg, void* socket, int flags);
 int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags);
-int zmq_send(void* socket, void* buf, size_t len, int flags);
+int zmq_send(void* socket, void const* buf, size_t len, int flags);
 int zmq_recv(void* socket, void* buf, size_t len, int flags);
-int zmq_send_const(void* socket, void* buf, size_t len, int flags);
+int zmq_send_const(void* socket, void const* buf, size_t len, int flags);
 
 } // namespace zmq
 } // namespace zth
@@ -100,7 +91,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_msg_recv(zmq_msg_t* msg, void* socket
  * \details This is a C-wrapper for zth::zmq::zmq_send().
  * \ingroup zth_api_c_zmq
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_send(void* socket, void* buf, size_t len, int flags)
+EXTERN_C ZTH_EXPORT ZTH_INLINE int
+zth_zmq_send(void* socket, void const* buf, size_t len, int flags)
 {
 	return zth::zmq::zmq_send(socket, buf, len, flags);
 }
@@ -121,7 +113,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_zmq_recv(void* socket, void* buf, size_t 
  * \ingroup zth_api_c_zmq
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int
-zth_zmq_send_const(void* socket, void* buf, size_t len, int flags)
+zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 {
 	return zth::zmq::zmq_send_const(socket, buf, len, flags);
 }
@@ -130,9 +122,9 @@ zth_zmq_send_const(void* socket, void* buf, size_t len, int flags)
 ZTH_EXPORT void* zth_zmq_socket(int type);
 ZTH_EXPORT int zth_zmq_msg_send(zmq_msg_t* msg, void* socket, int flags);
 ZTH_EXPORT int zth_zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags);
-ZTH_EXPORT int zth_zmq_send(void* socket, void* buf, size_t len, int flags);
+ZTH_EXPORT int zth_zmq_send(void* socket, void const* buf, size_t len, int flags);
 ZTH_EXPORT int zth_zmq_recv(void* socket, void* buf, size_t len, int flags);
-ZTH_EXPORT int zth_zmq_send_const(void* socket, void* buf, size_t len, int flags);
+ZTH_EXPORT int zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags);
 #		endif // __cplusplus
 
 #		define zmq_ctx_new zth_zmq_context

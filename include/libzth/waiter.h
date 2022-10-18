@@ -2,20 +2,11 @@
 #define ZTH_WAITER_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #ifdef __cplusplus
@@ -25,6 +16,10 @@
 #	include <libzth/list.h>
 #	include <libzth/time.h>
 #	include <libzth/util.h>
+
+#	if __cplusplus >= 201103L
+#		include <type_traits>
+#	endif
 
 namespace zth {
 class Worker;
@@ -172,6 +167,7 @@ struct PolledMemberWaitingHelper {
 	bool operator()() const
 	{
 		zth_assert(f != nullptr);
+		// cppcheck-suppress nullPointerRedundantCheck
 		return (that.*f)();
 	}
 
@@ -242,12 +238,22 @@ ZTH_EXPORT void waitUntil(TimedWaitable& w);
  * \brief Wait until the given function \p f returns \c true.
  * \ingroup zth_api_cpp_fiber
  */
-template <typename F>
+#	if __cplusplus >= 201103L
+template <
+	typename F,
+	typename std::enable_if<!std::is_base_of<TimedWaitable, F>::value, int>::type = 0>
 void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
 {
 	PolledWaiting<F> w(f, pollInterval);
 	waitUntil(w);
 }
+#	else
+ZTH_EXPORT inline void waitUntil(bool (*f)(), TimeInterval const& pollInterval = TimeInterval())
+{
+	PolledWaiting<bool (*)()> w(f, pollInterval);
+	waitUntil(w);
+}
+#	endif
 
 /*!
  * \brief Wait until the given member function \p f returns \c true.

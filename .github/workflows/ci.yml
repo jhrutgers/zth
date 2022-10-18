@@ -13,22 +13,20 @@ jobs:
   build-ubuntu:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-18.04]
-        gcc: [7, 9, 10]
+        os: [ubuntu-22.04, ubuntu-20.04]
+        gcc: [9, 10, 11]
         cxx: [C++03, C++11, C++14, C++17]
         zmq: [zmq, nozmq]
         exclude:
-          - os: ubuntu-latest
-            gcc: 7
-          - gcc: 7
-            cxx: C++17
+          - os: ubuntu-20.04
+            gcc: 11
     runs-on: ${{matrix.os}}
     env:
       CC: gcc-${{matrix.gcc}}
       CXX: g++-${{matrix.gcc}}
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: |
           dist/ubuntu/bootstrap.sh
@@ -47,7 +45,7 @@ jobs:
         zmq: [ON, OFF]
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist\win32\bootstrap.cmd
       - name: build Debug
@@ -67,7 +65,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/macos/bootstrap.sh
       - name: build Debug
@@ -81,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/qemu-arm-a15/bootstrap.sh
       - name: build Debug
@@ -95,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/qemu-arm-m3/bootstrap.sh
       - name: build Debug
@@ -109,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/mingw/bootstrap.sh
       - name: build Debug
@@ -125,7 +123,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: bootstrap
         run: dist/ubuntu/bootstrap.sh
       - name: build
@@ -135,3 +133,22 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./doxygen/html
+
+  test-documentation:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: bootstrap
+        run: dist/ubuntu/bootstrap.sh
+      - name: build
+        run: dist/ubuntu/build.sh -DZTH_DOCUMENTATION=ON
+
+  merge-status-check:
+    if: github.ref != 'refs/heads/master'
+    needs: [build-ubuntu, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw, test-documentation]
+    runs-on: ubuntu-latest
+    steps:
+      - name: accept
+        run: echo OK

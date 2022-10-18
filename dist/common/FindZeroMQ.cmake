@@ -1,18 +1,9 @@
 # Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2021  Jochem Rutgers
+# Copyright (C) 2019-2022  Jochem Rutgers
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 include(ExternalProject)
 
@@ -46,11 +37,21 @@ if(NOT TARGET libzmq AND NOT CMAKE_CROSSCOMPILING)
 endif()
 
 if(NOT TARGET libzmq)
+	# Try previously built and installed
+	unset(ZeroMQ_FOUND CACHE)
+	find_package(ZeroMQ CONFIG)
+	if(ZeroMQ_FOUND)
+		message(STATUS "Found ZeroMQ using cmake")
+	endif()
+endif()
+
+if(NOT TARGET libzmq AND ZeroMQ_FIND_REQUIRED)
 	# Build from source
 	message(STATUS "Building ZeroMQ from source")
 	set(ZeroMQ_FOUND 1)
 
-	set(libzmq_flags -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+	set(libzmq_flags -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+		-DCMAKE_GENERATOR=${CMAKE_GENERATOR}
 		-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
 		-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 		-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
@@ -58,8 +59,21 @@ if(NOT TARGET libzmq)
 	)
 
 	if(MINGW)
+		set(libzmq_flags ${libzmq_flags} -DZMQ_WIN32_WINNT_DEFAULT=0x0A00)
+
 		# See https://github.com/zeromq/libzmq/issues/3859
 		set(libzmq_flags ${libzmq_flags} -DZMQ_CV_IMPL=win32api)
+	endif()
+
+	if(CMAKE_CROSSCOMPILING)
+		# It seems that in case of crosscompiling, the host headers are
+		# found anyway. Force using builtins instead.
+		if(NOT WITH_LIBBSD)
+			set(libzmq_flags ${libzmq_flags} -DWITH_LIBBSD=OFF)
+		endif()
+		if(NOT WITH_LIBSODIUM)
+			set(libzmq_flags ${libzmq_flags} -DWITH_LIBSODIUM=OFF)
+		endif()
 	endif()
 
 	set(libzmq_flags ${libzmq_flags} -DBUILD_TESTS=OFF -DBUILD_STATIC=OFF)
@@ -80,7 +94,7 @@ if(NOT TARGET libzmq)
 	ExternalProject_Add(
 		libzmq-extern
 		GIT_REPOSITORY https://github.com/zeromq/libzmq.git
-		GIT_TAG v4.3.1
+		GIT_TAG v4.3.4
 		CMAKE_ARGS ${libzmq_flags}
 		INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
 		BUILD_BYPRODUCTS ${_libzmq_loc} ${_libzmq_implib}
@@ -99,7 +113,12 @@ if(NOT TARGET libzmq)
 		set_property(TARGET libzmq PROPERTY IMPORTED_IMPLIB ${_libzmq_implib})
 	endif()
 
+	if(WIN32)
+		target_link_libraries(libzmq INTERFACE ws2_32 rpcrt4 iphlpapi)
+	else()
+		target_link_libraries(libzmq INTERFACE pthread rt)
+	endif()
+
 	set_property(TARGET libzmq PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_INSTALL_PREFIX}/include)
 	add_dependencies(libzmq libzmq-extern)
 endif()
-

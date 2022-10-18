@@ -1,19 +1,10 @@
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #define UNW_LOCAL_ONLY
@@ -187,7 +178,7 @@ protected:
 
 		for(size_t i = 0; i < eb_size; i++) {
 			PerfEvent<> const& e = eb[i];
-			TimeInterval t = e.t - startTime;
+			TimeInterval t = Timestamp(e.t) - startTime;
 			char const* s = nullptr;
 
 			switch(e.type) {
@@ -473,7 +464,7 @@ ZTH_TLS_STATIC(PerfFiber*, perfFiber, nullptr);
 
 int perf_init()
 {
-	if(!zth_config(DoPerfEvent))
+	if(!Config::EnablePerfEvent || !zth_config(DoPerfEvent))
 		return 0;
 
 	perf_eventBuffer = new_alloc<perf_eventBuffer_type>();
@@ -487,6 +478,11 @@ int perf_init()
 
 void perf_deinit()
 {
+	if(!Config::EnablePerfEvent) {
+		zth_assert(!perfFiber);
+		return;
+	}
+
 	if(perfFiber) {
 		delete perfFiber;
 		perfFiber = nullptr;
@@ -495,6 +491,9 @@ void perf_deinit()
 
 void perf_flushEventBuffer() noexcept
 {
+	if(!Config::EnablePerfEvent)
+		return;
+
 	try {
 		if(likely(perfFiber))
 			perfFiber->flushEventBuffer();
@@ -506,13 +505,17 @@ void perf_flushEventBuffer() noexcept
 
 extern "C" void context_entry(Context* context);
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	: m_t0(Timestamp::now())
+	, m_fiber()
+	, m_fiberId()
+	, m_truncated(true)
 {
 	Worker* worker = Worker::instance();
 	m_fiber = worker ? worker->currentFiber() : nullptr;
+	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
-	m_truncated = true;
 
 #ifdef ZTH_HAVE_LIBUNWIND
 	unw_context_t uc;
@@ -548,7 +551,8 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	m_truncated = depth == maxDepth;
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
-	m_bt.resize((size_t)backtrace(&m_bt[0], (int)maxDepth));
+	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
+	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_truncated = m_bt.size() == maxDepth;
 #endif
 

@@ -2,20 +2,11 @@
 #define ZTH_CONFIG_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 /*!
@@ -71,6 +62,18 @@ struct DefaultConfig {
 		false;
 #	endif
 
+	/*!
+	 * \brief Show failing expression in case of a failed assert.
+	 * \details Disable to reduce binary size.
+	 */
+	static bool const EnableFullAssert =
+#	ifdef ZTH_OS_BAREMETAL
+		// Assume we are a bit short on memory.
+		false;
+#	else
+		EnableAssert;
+#	endif
+
 	/*! \brief Add (Worker) thread support when \c true. */
 	static bool const EnableThreads =
 #	if ZTH_THREADS
@@ -78,13 +81,6 @@ struct DefaultConfig {
 #	else
 		false;
 #	endif
-
-	/*!
-	 * \brief Add support to enable debug output prints.
-	 *
-	 * The output is only actually printed when #EnableDebugPrint is \c true.
-	 */
-	static bool const SupportDebugPrint = Debug;
 
 	/*!
 	 * \brief Actually do print the debug output.
@@ -97,6 +93,20 @@ struct DefaultConfig {
 		ZTH_CONFIG_ENABLE_DEBUG_PRINT;
 #	else
 		false;
+#	endif
+
+	/*!
+	 * \brief Add support to enable debug output prints.
+	 *
+	 * The output is only actually printed when #EnableDebugPrint is \c true.
+	 */
+	static bool const SupportDebugPrint =
+#	ifdef ZTH_OS_BAREMETAL
+		// Without OS, there is no environment to enable debugging when
+		// it is not enabled right away.
+		Debug && EnableDebugPrint;
+#	else
+		Debug;
 #	endif
 
 	/*! \brief Enable colored output. */
@@ -147,10 +157,16 @@ struct DefaultConfig {
 	/*! \brief VCD file buffer in bytes. */
 	static size_t const PerfVCDFileBuffer = 0x1000;
 
-	/*! \brief Enable (but not necessarily record) perf. */
-	static bool const EnablePerfEvent = true;
 	/*! \brief Record and output perf events. */
 	static bool const DoPerfEvent = false;
+	/*! \brief Enable (but not necessarily record) perf. */
+	static bool const EnablePerfEvent =
+#	ifdef ZTH_OS_BAREMETAL
+		// No environment, so only enable when we are actually saving it.
+		DoPerfEvent;
+#	else
+		true;
+#	endif
 	/*! \brief Also record syscalls by perf. */
 	static bool const PerfSyscall = true;
 

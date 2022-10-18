@@ -2,20 +2,11 @@
 #define ZTH_ALLOCATOR_H
 /*
  * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2021  Jochem Rutgers
+ * Copyright (C) 2019-2022  Jochem Rutgers
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
 #ifdef __cplusplus
@@ -56,8 +47,8 @@ __attribute__((warn_unused_result)) static inline T* allocate_noexcept(size_t n 
 	try {
 		return allocate<T>(n);
 	} catch(...) {
-		return nullptr;
 	}
+	return nullptr;
 }
 
 template <typename T>
@@ -149,7 +140,8 @@ struct vector_type {
  */
 template <typename Key, typename T, typename Compare = std::less<Key> /**/>
 struct map_type {
-	typedef std::map<Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
+	typedef std::map<
+		Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
 		type;
 };
 
