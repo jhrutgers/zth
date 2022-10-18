@@ -13,21 +13,13 @@ jobs:
   build-ubuntu:
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
-        gcc: [7, 9, 10, 11]
+        os: [ubuntu-22.04, ubuntu-20.04]
+        gcc: [9, 10, 11]
         cxx: [C++03, C++11, C++14, C++17]
         zmq: [zmq, nozmq]
         exclude:
           - os: ubuntu-20.04
             gcc: 11
-          - os: ubuntu-18.04
-            gcc: 11
-          - os: ubuntu-22.04
-            gcc: 7
-          - os: ubuntu-20.04
-            gcc: 7
-          - gcc: 7
-            cxx: C++17
     runs-on: ${{matrix.os}}
     env:
       CC: gcc-${{matrix.gcc}}
