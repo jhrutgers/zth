@@ -415,6 +415,7 @@ protected:
 
 	static void fiberEntry(void* that) noexcept
 	{
+		// cppcheck-suppress nullPointerRedundantCheck
 		zth_assert(that);
 		static_cast<Fiber*>(that)->fiberEntry_();
 	}

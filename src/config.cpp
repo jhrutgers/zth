@@ -20,6 +20,7 @@ namespace zth {
  */
 static bool config(char const* name, bool whenUnset)
 {
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	char const* e = getenv(name);
 
 	if(!e || !*e)

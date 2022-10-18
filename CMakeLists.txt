@@ -132,6 +132,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 				"-readability-convert-member-functions-to-static,"
 				"-readability-else-after-return,"
 				"-readability-function-cognitive-complexity,"
+				"-readability-identifier-length,"
 				"-readability-implicit-bool-conversion,"
 				"-readability-magic-numbers,"
 				"-readability-make-member-function-const,"

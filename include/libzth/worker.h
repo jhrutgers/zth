@@ -399,6 +399,7 @@ ZTH_EXPORT __attribute__((pure)) inline Fiber& currentFiber() noexcept
 {
 	Worker const& w = currentWorker();
 	Fiber* f = w.currentFiber();
+	// cppcheck-suppress nullPointerRedundantCheck
 	zth_assert(f);
 	return *f;
 }
@@ -517,8 +518,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_worker_create() noexcept
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
-		return EAGAIN;
 	}
+	return EAGAIN;
 }
 
 /*!

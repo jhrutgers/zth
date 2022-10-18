@@ -60,6 +60,7 @@ TEST(FiberTest, ii)
 	EXPECT_EQ(f->value(), 4);
 }
 
+// cppcheck-suppress constParameter
 static int fiber_iPi(int* i)
 {
 	return *i + 1;

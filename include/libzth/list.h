@@ -283,6 +283,7 @@ public:
 		type& operator*() const noexcept
 		{
 			elem_type* elem = get();
+			// cppcheck-suppress nullPointerRedundantCheck
 			zth_assert(elem);
 			return *static_cast<type*>(elem);
 		}

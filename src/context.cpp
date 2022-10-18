@@ -125,6 +125,7 @@ void context_switch(Context* from, Context* to) noexcept
 		from->alive() ? &fake_stack : nullptr, to->stackUsable().p, to->stackUsable().size);
 #endif
 
+	// cppcheck-suppress nullPointerRedundantCheck
 	from->context_switch(*to);
 
 #ifdef ZTH_ENABLE_ASAN
@@ -183,9 +184,11 @@ void context_entry(zth::Context* context) noexcept
 	zth_assert(context);
 
 	// Go execute the fiber.
+	// cppcheck-suppress nullPointerRedundantCheck
 	context->stackGuard();
 
 	try {
+		// cppcheck-suppress nullPointerRedundantCheck
 		context->attr().entry(context->attr().arg);
 	} catch(...) {
 	}

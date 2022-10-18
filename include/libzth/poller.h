@@ -436,6 +436,7 @@ public:
 		return add(p, nullptr);
 	}
 
+	// cppcheck-suppress constParameter
 	int remove(Pollable& p, Client* client) noexcept final
 	{
 		size_t count = m_metaItems.size();
@@ -552,6 +553,7 @@ protected:
 	 * This function should be called by \c doPoll().
 	 * Events are forwarded to the client registered with the Pollable.
 	 */
+	// cppcheck-suppress passedByValue
 	void event(Pollable::Events revents, size_t index) noexcept
 	{
 		zth_assert(index < m_metaItems.size());
@@ -810,8 +812,8 @@ int poll(P pollable, int timeout_ms = -1)
 			return EIO;
 		}
 	} catch(...) {
-		return ENOMEM;
 	}
+	return ENOMEM;
 }
 
 } // namespace zth
