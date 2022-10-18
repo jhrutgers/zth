@@ -505,13 +505,16 @@ void perf_flushEventBuffer() noexcept
 
 extern "C" void context_entry(Context* context);
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	: m_t0(Timestamp::now())
+	, m_fiber()
+	, m_fiberId()
+	, m_truncated(true)
 {
 	Worker* worker = Worker::instance();
 	m_fiber = worker ? worker->currentFiber() : nullptr;
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
-	m_truncated = true;
 
 #ifdef ZTH_HAVE_LIBUNWIND
 	unw_context_t uc;
@@ -547,7 +550,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	m_truncated = depth == maxDepth;
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
-	m_bt.resize((size_t)backtrace(&m_bt[0], (int)maxDepth));
+	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
 	m_truncated = m_bt.size() == maxDepth;
 #endif
 
