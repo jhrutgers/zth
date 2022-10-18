@@ -514,6 +514,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 {
 	Worker* worker = Worker::instance();
 	m_fiber = worker ? worker->currentFiber() : nullptr;
+	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
 
 #ifdef ZTH_HAVE_LIBUNWIND
@@ -551,6 +552,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
 	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
+	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_truncated = m_bt.size() == maxDepth;
 #endif
 
