@@ -95,7 +95,7 @@ int startWorkerThread(
  */
 int execlp(char const* file, char const* arg, ... /*, nullptr */)
 {
-	small_vector<char*,8> argv;
+	small_vector<char*, 8> argv;
 	int res = 0;
 
 	try {
@@ -123,7 +123,7 @@ int execlp(char const* file, char const* arg, ... /*, nullptr */)
 	}
 
 	if(!res)
-		res = execvp(file, &argv[0]);
+		res = execvp(file, argv.data());
 
 	for(size_t i = 0; i < argv.size(); i++)
 		if(argv[i])

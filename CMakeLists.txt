@@ -91,6 +91,8 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 
 			string(CONCAT CLANG_TIDY_CHECKS "-checks="
 				"bugprone-*,"
+				"-bugprone-easily-swappable-parameters,"
+
 				"clang-analyzer-*,"
 				"concurrency-*,"
 
