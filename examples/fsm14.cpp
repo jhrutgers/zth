@@ -12,6 +12,7 @@
 #include <zth>
 
 // Always handy if you want to specify zth::TimeInterval in seconds.
+// NOLINTNEXTLINE(misc-unused-using-decls)
 using zth::operator""_s;
 
 // Create a namespace, with all functions related to it.  It is not required,
