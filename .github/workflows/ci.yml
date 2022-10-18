@@ -133,3 +133,22 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./doxygen/html
+
+  test-documentation:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: bootstrap
+        run: dist/ubuntu/bootstrap.sh
+      - name: build
+        run: dist/ubuntu/build.sh -DZTH_DOCUMENTATION=ON
+
+  merge-status-check:
+    if: github.ref != 'refs/heads/master'
+    needs: [build-ubuntu, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw, test-documentation]
+    runs-on: ubuntu-latest
+    steps:
+      - name: accept
+        run: echo OK
