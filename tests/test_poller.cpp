@@ -12,6 +12,7 @@
 #include <gtest/gtest.h>
 #include <unistd.h>
 
+// NOLINTNEXTLINE(misc-unused-using-decls)
 using zth::operator""_ms;
 
 TEST(Poller, Dummy)
