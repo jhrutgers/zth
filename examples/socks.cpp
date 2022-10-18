@@ -72,6 +72,7 @@ void takeSocks(int count)
 
 Socks* wearSocks(Socks& socks)
 {
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	zth::nap(drand48());
 	printf("Wear %s\n", socks.str.c_str());
 
@@ -83,18 +84,22 @@ Socks* wearSocks(Socks& socks)
 	socks.left.done.wait();
 
 	printf("Fold %s\n", socks.str.c_str());
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	zth::nap(drand48());
 	return &socks;
 }
 
 void washSock(Sock& sock)
 {
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	zth::nap(drand48());
 
 	printf("Wash %s\n", sock.str.c_str());
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	zth::nap(drand48());
 
 	printf("Iron %s\n", sock.str.c_str());
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	zth::nap(drand48());
 
 	sock.done.set();
@@ -102,6 +107,7 @@ void washSock(Sock& sock)
 
 int main()
 {
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	srand48((long)time(nullptr));
 	zth::Worker w;
 	async takeSocks(10);
