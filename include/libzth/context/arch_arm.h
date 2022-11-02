@@ -349,6 +349,9 @@ public:
 
 		// clang-format off
 		asm volatile(
+#ifndef __cpp_exceptions
+			".fnstart\n"
+#endif
 			"ldr r0, [sp]\n"
 			// Terminate stack frame list here, only for debugging purposes.
 			"mov " REG_FP ", #0\n"
@@ -356,6 +359,9 @@ public:
 			"push {" REG_FP ", lr}\n"
 			"mov " REG_FP ", sp\n"
 			"bl context_entry\n"
+#ifndef __cpp_exceptions
+			".fnend\n"
+#endif
 		);
 		// clang-format on
 	}
@@ -416,6 +422,9 @@ private:
 	{
 		// clang-format off
 		asm volatile(
+#ifndef __cpp_exceptions
+			".fnstart\n"
+#endif
 			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 			".save {r4, " REG_FP ", lr}\n"
 			"add " REG_FP ", sp, #0\n"
@@ -442,6 +451,9 @@ private:
 			// We are back on the previous stack.
 
 			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+#ifndef __cpp_exceptions
+			".fnend\n"
+#endif
 		);
 		// clang-format on
 	}
@@ -452,6 +464,9 @@ private:
 	{
 		// clang-format off
 		asm volatile(
+#ifndef __cpp_exceptions
+			".fnstart\n"
+#endif
 			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
 			".save {r4, " REG_FP ", lr}\n"
 			"add " REG_FP ", sp, #0\n"
@@ -466,6 +481,9 @@ private:
 
 			"mov sp, r4\n"			// Restore previous stack
 			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
+#ifndef __cpp_exceptions
+			".fnend\n"
+#endif
 		);
 		// clang-format on
 	}
