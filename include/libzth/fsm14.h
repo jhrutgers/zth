@@ -2048,7 +2048,7 @@ inline17 constexpr auto stop = action(&Fsm::stop, "stop");
  * \hideinitializer
  */
 inline17 constexpr auto consume =
-	action<void (Fsm::*)() noexcept>(&BasicFsm::clearInput, "consume");
+	action<void (BasicFsm::*)() noexcept>(&BasicFsm::clearInput, "consume");
 
 /*!
  * \brief A guard that is enabled after a \p s seconds after entering the
