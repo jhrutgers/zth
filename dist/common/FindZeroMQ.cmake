@@ -63,6 +63,9 @@ if(NOT TARGET libzmq AND ZeroMQ_FIND_REQUIRED)
 
 		# See https://github.com/zeromq/libzmq/issues/3859
 		set(libzmq_flags ${libzmq_flags} -DZMQ_CV_IMPL=win32api)
+
+		# IPC uses a POSIX API that is not supported by the used MinGW compiler
+		set(libzmq_flags ${libzmq_flags} -DZMQ_HAVE_IPC=OFF)
 	endif()
 
 	if(CMAKE_CROSSCOMPILING)
