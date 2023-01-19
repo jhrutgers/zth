@@ -73,6 +73,8 @@ jobs:
       - name: build Release
         run: |
           rm -rf dist/macos/build
+          # Workaround for linker bug in XCode 14.0
+          sudo xcode-select --switch /Library/Developer/CommandLineTools
           dist/macos/build.sh Release test
 
   build-arm-a15:
