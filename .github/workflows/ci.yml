@@ -67,14 +67,15 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: bootstrap
-        run: dist/macos/bootstrap.sh
+        run: |
+          # Workaround for linker bug in XCode 14.0
+          sudo xcode-select --switch /Library/Developer/CommandLineTools
+          dist/macos/bootstrap.sh
       - name: build Debug
         run: dist/macos/build.sh Debug test
       - name: build Release
         run: |
           rm -rf dist/macos/build
-          # Workaround for linker bug in XCode 14.0
-          sudo xcode-select --switch /Library/Developer/CommandLineTools
           dist/macos/build.sh Release test
 
   build-arm-a15:
