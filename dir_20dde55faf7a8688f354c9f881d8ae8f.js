@@ -11,8 +11,6 @@ var dir_20dde55faf7a8688f354c9f881d8ae8f =
     [ "init.h", "init_8h.html", "init_8h" ],
     [ "io.h", "io_8h.html", "io_8h" ],
     [ "list.h", "list_8h.html", [
-      [ "List", "classzth_1_1_list.html", "classzth_1_1_list" ],
-      [ "SortedList", "classzth_1_1_sorted_list.html", "classzth_1_1_sorted_list" ],
       [ "Listable", "classzth_1_1_listable.html", "classzth_1_1_listable" ],
       [ "List", "classzth_1_1_list.html", "classzth_1_1_list" ],
       [ "iterator", "classzth_1_1_list_1_1iterator.html", "classzth_1_1_list_1_1iterator" ],

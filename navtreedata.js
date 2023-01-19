@@ -1,29 +1,31 @@
 /*
-@licstart  The following is the entire license notice for the
-JavaScript code in this file.
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
 
-Copyright (C) 1997-2019 by Dimitri van Heesch
+ The MIT License (MIT)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of version 2 of the GNU General Public License as published by
-the Free Software Foundation
+ Copyright (C) 1997-2020 by Dimitri van Heesch
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
 
-@licend  The above is the entire license notice
-for the JavaScript code in this file
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var NAVTREE =
 [
   [ "Zth (libzth)", "index.html", [
-    [ "Using Zth on Bare-Metal ARM", "md_dist_qemu-arm-a15__r_e_a_d_m_e-_a_r_m.html", null ],
+    [ "Using Zth on Bare-Metal ARM", "md_dist_qemu_arm_a15__r_e_a_d_m_e__a_r_m.html", null ],
     [ "CHANGELOG", "md__c_h_a_n_g_e_l_o_g.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Modules", "modules.html", "modules" ],
@@ -55,7 +57,7 @@ var NAVTREE =
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ],
       [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
+        [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", null ],
         [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ],
@@ -73,9 +75,10 @@ var NAVTREEINDEX =
 "classzth_1_1_time_interval.html#a4a8405d4866a5749929d34ed6ed4eff5",
 "classzth_1_1fsm_1_1_fsm.html",
 "context_8cpp.html#a69e1432351e06094fc1d3043ca923d61",
-"group__zth__api__c__sync.html#gaccc97e0f264c664fd88abcfa42c132e3",
-"perf_8cpp.html",
-"util_8h.html#a1755477f935397460b8bd17b87717245"
+"group__zth__api__c__sync.html#ga7f92cb84bb44a22dbb221e03247f8a12",
+"group__zth__api__cpp__zmq.html#ga392ae90d297e650253e6a3bdefcfbd06",
+"structzth_1_1_perf_event_3_01false_01_4.html#a08e1875ded2db012b4291222f0d4ba6d",
+"waiter_8h.html#ga786a7557ff189b1f1e7552a37f772665"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

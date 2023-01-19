@@ -6,19 +6,12 @@ var hierarchy =
     [ "zth::fsm::Callback< T, void >", "classzth_1_1fsm_1_1_callback.html", [
       [ "zth::fsm::TypedAction< T >", "classzth_1_1fsm_1_1_typed_action.html", null ]
     ] ],
-    [ "zth::impl::ContextBase< Context >", "classzth_1_1impl_1_1_context_base.html", [
-      [ "zth::impl::ContextArch< Context >", "classzth_1_1impl_1_1_context_arch.html", [
-        [ "zth::Context", "classzth_1_1_context.html", null ]
-      ] ]
-    ] ],
     [ "zth::fiber_type_impl< R(*)(Args...)>", "structzth_1_1fiber__type__impl.html", [
       [ "zth::fiber_type< R(*)(Args...)>", "structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ]
     ] ],
     [ "zth::FsmDescription< FsmImpl >", "structzth_1_1_fsm_description.html", null ],
     [ "zth::FsmDescription< zth::Fsm >", "structzth_1_1_fsm_description.html", null ],
     [ "zth::FsmGuard< zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
-    [ "zth::FsmGuard< zth::FsmImpl >", "classzth_1_1_fsm_guard.html", null ],
-    [ "zth::FsmGuard< zth::zth::Fsm >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::List< zth::Fiber >", "classzth_1_1_list.html", null ],
     [ "zth::list_type< std::pair< void(*)(zth::Fiber &, void *), void * > >", "structzth_1_1list__type.html", null ],
     [ "zth::Listable< Fiber >", "classzth_1_1_listable.html", [
@@ -42,11 +35,6 @@ var hierarchy =
       ] ]
     ] ],
     [ "zth::map_type< uint64_t, string >", "structzth_1_1map__type.html", null ],
-    [ "zth::fsm::Named<>", "classzth_1_1fsm_1_1_named.html", [
-      [ "zth::fsm::Callback< T, R, false, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01false_00_01true_01_4.html", null ],
-      [ "zth::fsm::Callback< T, R, false, true, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01true_00_01true_01_4.html", null ],
-      [ "zth::fsm::Callback< T, R, true, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01true_00_01false_00_01true_01_4.html", null ]
-    ] ],
     [ "zth::impl::Packed< R >", "structzth_1_1impl_1_1_packed.html", null ],
     [ "zth::SharedPointer< Future< T > >", "classzth_1_1_shared_pointer.html", [
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
@@ -101,7 +89,11 @@ var hierarchy =
       [ "zth::fsm::InputGuard", "classzth_1_1fsm_1_1_input_guard.html", null ],
       [ "zth::fsm::TypedGuard< T >", "classzth_1_1fsm_1_1_typed_guard.html", null ]
     ] ],
-    [ "zth::fsm::Named< enable >", "classzth_1_1fsm_1_1_named.html", null ],
+    [ "zth::fsm::Named< enable >", "classzth_1_1fsm_1_1_named.html", [
+      [ "zth::fsm::Callback< T, R, false, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01false_00_01true_01_4.html", null ],
+      [ "zth::fsm::Callback< T, R, false, true, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01false_00_01true_00_01true_01_4.html", null ],
+      [ "zth::fsm::Callback< T, R, true, false, true >", "classzth_1_1fsm_1_1_callback_3_01_t_00_01_r_00_01true_00_01false_00_01true_01_4.html", null ]
+    ] ],
     [ "zth::fsm::Named< false >", "classzth_1_1fsm_1_1_named_3_01false_01_4.html", [
       [ "zth::fsm::Named< true >", "classzth_1_1fsm_1_1_named_3_01true_01_4.html", null ]
     ] ],
@@ -115,6 +107,14 @@ var hierarchy =
     [ "zth::FsmGuard< Fsm >", "classzth_1_1_fsm_guard.html", null ],
     [ "zth::impl::Arguments< A >", "structzth_1_1impl_1_1_arguments.html", null ],
     [ "zth::impl::ContextBase< Impl >", "classzth_1_1impl_1_1_context_base.html", [
+      [ "zth::impl::ContextArch< Context >", "classzth_1_1impl_1_1_context_arch.html", [
+        [ "zth::Context", "classzth_1_1_context.html", null ],
+        [ "zth::Context", "classzth_1_1_context.html", null ],
+        [ "zth::Context", "classzth_1_1_context.html", null ],
+        [ "zth::Context", "classzth_1_1_context.html", null ]
+      ] ],
+      [ "zth::impl::ContextArch< Context >", "classzth_1_1impl_1_1_context_arch.html", null ],
+      [ "zth::impl::ContextArch< Impl >", "classzth_1_1impl_1_1_context_arch.html", null ],
       [ "zth::impl::ContextArch< Impl >", "classzth_1_1impl_1_1_context_arch.html", null ]
     ] ],
     [ "zth::impl::ContextBase< Impl >::Stack", "structzth_1_1impl_1_1_context_base_1_1_stack.html", null ],
@@ -178,12 +178,15 @@ var hierarchy =
       [ "zth::UniqueID< Fiber >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fiber", "classzth_1_1_fiber.html", null ]
       ] ],
+      [ "zth::UniqueID< Synchronizer >", "classzth_1_1_unique_i_d.html", [
+        [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", null ]
+      ] ],
       [ "zth::UniqueID< Fsm< void, void, void > >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [
-          [ "zth::FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", null ]
-        ] ],
         [ "zth::Fsm< State_, int, choose_type< void, FsmCallback< State_, void, int, void > >::type >", "classzth_1_1_fsm.html", [
           [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", null ]
+        ] ],
+        [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [
+          [ "zth::FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", null ]
         ] ],
         [ "zth::Fsm< State_, Input_, FsmImpl_ >", "classzth_1_1_fsm.html", null ]
       ] ],
@@ -199,9 +202,6 @@ var hierarchy =
             [ "zth::PollerServer< PollItem_ >", "classzth_1_1_poller_server.html", null ]
           ] ]
         ] ]
-      ] ],
-      [ "zth::UniqueID< Synchronizer >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", null ]
       ] ],
       [ "zth::UniqueID< Worker >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Worker", "classzth_1_1_worker.html", null ]

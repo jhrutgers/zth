@@ -1,6 +1,5 @@
 var fsm14_8h =
 [
-    [ "function_traits", "structzth_1_1fsm_1_1function__traits.html", null ],
     [ "Named", "classzth_1_1fsm_1_1_named.html", null ],
     [ "Named< false >", "classzth_1_1fsm_1_1_named_3_01false_01_4.html", "classzth_1_1fsm_1_1_named_3_01false_01_4" ],
     [ "Named< true >", "classzth_1_1fsm_1_1_named_3_01true_01_4.html", "classzth_1_1fsm_1_1_named_3_01true_01_4" ],

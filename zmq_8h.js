@@ -8,6 +8,7 @@ var zmq_8h =
     [ "zmq_send", "zmq_8h.html#a1d54f447d3ab2c3d0519d5168a5d5cd7", null ],
     [ "zmq_send_const", "zmq_8h.html#ac9d2203e2cd4058572dcc359a2335f33", null ],
     [ "zmq_socket", "zmq_8h.html#ad620e349858c14a83e5a5f2d52de4421", null ],
+    [ "ZTH_REDIRECT_ZMQ", "zmq_8h.html#a2f600d744961ea6faff5375bdbb9aa84", null ],
     [ "zmq_context", "zmq_8h.html#ga6d6eb763c0542920ffadcc7de332a779", null ],
     [ "zmq_msg_recv", "zmq_8h.html#ga54ef6c6bf5700562b46c2f04b4fecfd4", null ],
     [ "zmq_msg_send", "zmq_8h.html#ga110407a39d3fc50a54e7d8b31007c3b9", null ],
