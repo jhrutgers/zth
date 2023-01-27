@@ -166,11 +166,11 @@ private:
  */
 class setName : public FiberManipulator {
 public:
+#	if __cplusplus >= 201103L
 	explicit setName(char const* name)
-		: m_name(name)
+		: m_name(name ? std::string{name} : std::string{})
 	{}
 
-#	if __cplusplus >= 201103L
 	explicit setName(string const& name)
 		: m_name(name)
 	{}
@@ -178,6 +178,10 @@ public:
 		: m_name(std::move(name))
 	{}
 #	else
+	explicit setName(char const* name)
+		: m_name(name)
+	{}
+
 	explicit setName(string const& name)
 		: m_name(name.c_str())
 	{}
