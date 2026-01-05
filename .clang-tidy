@@ -1,0 +1,77 @@
+# vim:syntax=yaml
+# SPDX-FileCopyrightText: 2020-2025 Jochem Rutgers
+#
+# SPDX-License-Identifier: CC0-1.0
+
+Checks: >
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-macro-parentheses,
+  -bugprone-reserved-identifier, # Should be fixed.
+
+  cert-*,
+  -cert-dcl37-c,
+  -cert-dcl51-cpp,
+
+  clang-analyzer-*,
+  -clang-diagnostic-defaulted-function-deleted,
+  -clang-analyzer-optin.*,
+
+  concurrency-*,
+
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-goto,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-explicit-virtual-functions,
+  -cppcoreguidelines-macro-to-enum,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-union-access,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-use-default-member-init, # Pre C++11
+
+  hicpp-*,
+  -hicpp-avoid-c-arrays,
+  -hicpp-avoid-goto,
+  -hicpp-braces-around-statements,
+  -hicpp-member-init,
+  -hicpp-no-array-decay,
+  -hicpp-no-malloc,
+  -hicpp-signed-bitwise,
+  -hicpp-use-auto,
+  -hicpp-use-override,
+  -hicpp-vararg,
+
+  misc-*,
+  -misc-const-correctness,
+  -misc-header-include-cycle,
+  -misc-include-cleaner,
+  -misc-no-recursion,
+  -misc-non-private-member-variables-in-classes,
+  -misc-macro-parentheses,
+  -misc-use-anonymous-namespace,
+
+  readability-*,
+  -readability-braces-around-statements,
+  -readability-convert-member-functions-to-static,
+  -readability-else-after-return,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
+  -readability-implicit-bool-conversion,
+  -readability-magic-numbers,
+  -readability-make-member-function-const,
+  -readability-redundant-access-specifiers,
+
+  performance-*,
+  -performance-enum-size, # For pre-C++11 enums
+  -performance-no-int-to-ptr, # Especially on WIN32 HANDLEs.
+
+  portability-*,
+
+WarningsAsErrors: '*'
+FormatStyle: file
+ExtraArgs:
+  - -Wno-unknown-warning-option
+  - -Wno-error=unused-command-line-argument

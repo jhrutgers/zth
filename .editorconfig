@@ -8,6 +8,9 @@ indent_size = 8
 indent_style = tab
 trim_trailing_whitespace = true
 
+[CMakeLists.txt]
+max_line_length = 100
+
 [*.yml]
 indent_style = space
 indent_size = 2
@@ -23,3 +26,11 @@ end_of_line = unset
 [*.cmd]
 end_of_line = crlf
 
+[{extern/*/**,dist/*/build/**}]
+end_of_line = unset
+insert_final_newline = unset
+charset = unset
+indent_size = unset
+indent_style = unset
+trim_trailing_whitespace = unset
+max_line_length = unset

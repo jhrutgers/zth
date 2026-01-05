@@ -1,5 +1,5 @@
 ---
-# clang-format-10
+# clang-format-15
 Language:        Cpp
 AccessModifierOffset: -8
 AlignAfterOpenBracket: AlwaysBreak
@@ -44,7 +44,7 @@ BraceWrapping:
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
 BreakBeforeInheritanceComma: false
-BreakInheritanceList: BeforeComma
+BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
 BreakConstructorInitializers: BeforeComma
@@ -64,8 +64,9 @@ ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: true
 ForEachMacros:
   - foreach
-  - Q_FOREACH
   - BOOST_FOREACH
+IfMacros:
+  - if_constexpr
 IncludeBlocks:   Preserve
 IncludeCategories:
   - Regex:           '^["<]libzth/macros.h[">]$'
@@ -73,6 +74,9 @@ IncludeCategories:
     SortPriority:    0
   - Regex:           '^["<]libzth/'
     Priority:        1
+    SortPriority:    0
+  - Regex:           '^<(cassert|assert\.h)>$'
+    Priority:        3
     SortPriority:    0
   - Regex:           '.*'
     Priority:        2
@@ -104,6 +108,7 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
 PointerAlignment: Left
+PPIndentWidth: 2
 ReflowComments:  true
 SortIncludes:    true
 SortUsingDeclarations: true
@@ -128,8 +133,6 @@ SpacesInSquareBrackets: false
 SpaceBeforeSquareBrackets: false
 Standard:        c++17
 StatementMacros:
-  - Q_UNUSED
-  - QT_REQUIRE_VERSION
   - is_default
   - zth_fiber
   - zth_fiber_define

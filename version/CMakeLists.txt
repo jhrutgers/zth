@@ -15,9 +15,10 @@ list(GET ZTH_VERSION_LIST 0 ZTH_VERSION_MAJOR)
 list(GET ZTH_VERSION_LIST 1 ZTH_VERSION_MINOR)
 list(GET ZTH_VERSION_LIST 2 ZTH_VERSION_PATCH)
 
-if(	ZTH_VERSION_MAJOR GREATER "99" OR
-	ZTH_VERSION_MINOR GREATER "99" OR
-	ZTH_VERSION_PATCH GREATER "99")
+if(ZTH_VERSION_MAJOR GREATER "99"
+   OR ZTH_VERSION_MINOR GREATER "99"
+   OR ZTH_VERSION_PATCH GREATER "99"
+)
 	message(FATAL_ERROR "Please update version.h.in's ZTH_VERSION_NUM")
 endif()
 
@@ -28,6 +29,5 @@ configure_file(version.txt version.txt COPYONLY)
 
 configure_file(
 	${PROJECT_SOURCE_DIR}/include/libzth/version.h.in
-	${PROJECT_SOURCE_DIR}/include/libzth/version.h
-	@ONLY ESCAPE_QUOTES)
-
+	${PROJECT_SOURCE_DIR}/include/libzth/version.h @ONLY ESCAPE_QUOTES
+)
