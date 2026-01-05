@@ -11,6 +11,9 @@
 		"zth"
 	],
 	"cSpell.diagnosticLevel": "Hint",
+	"python.analysis.extraPaths": [
+		"${workspaceFolder}/python"
+	],
 	"[cpp]": {
 		"editor.defaultFormatter": "xaver.clang-format"
 	},
@@ -23,6 +26,14 @@
 		"**/dist/venv/**": true
 	},
 	"clang-format.executable": "clang-format-15",
+	"cmakeFormat.env": {
+		"PYTHONPATH": "${workspaceFolder}/dist/venv"
+	},
+	"python.analysis.typeCheckingMode": "standard",
+	"python.defaultInterpreterPath": "${workspaceFolder}/dist/venv/bin/python3",
 	"vim.textwidth": 100,
-	"vim.tabstop": 8
+	"vim.tabstop": 8,
+	"[python]": {
+		"editor.defaultFormatter": "ms-python.black-formatter",
+	}
 }

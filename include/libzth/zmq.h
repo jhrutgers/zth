@@ -1,12 +1,9 @@
 #ifndef ZTH_ZMQ_H
 #define ZTH_ZMQ_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -21,13 +18,13 @@
 #include <libzth/macros.h>
 
 #ifdef ZTH_HAVE_LIBZMQ
-#	include <zmq.h>
+#  include <zmq.h>
 
-#	ifndef ZTH_REDIRECT_ZMQ
-#		define ZTH_REDIRECT_ZMQ 1
-#	endif
+#  ifndef ZTH_REDIRECT_ZMQ
+#    define ZTH_REDIRECT_ZMQ 1
+#  endif
 
-#	ifdef __cplusplus
+#  ifdef __cplusplus
 namespace zth {
 namespace zmq {
 
@@ -42,10 +39,10 @@ int zmq_send_const(void* socket, void const* buf, size_t len, int flags);
 } // namespace zmq
 } // namespace zth
 
-#	endif // __cplusplus
+#  endif // __cplusplus
 
-#	if ZTH_REDIRECT_ZMQ
-#		ifdef __cplusplus
+#  if ZTH_REDIRECT_ZMQ
+#    ifdef __cplusplus
 /*!
  * \copydoc zth::zmq::zmq_context()
  * \details This is a C-wrapper for zth::zmq::zmq_context().
@@ -118,24 +115,24 @@ zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 	return zth::zmq::zmq_send_const(socket, buf, len, flags);
 }
 
-#		else  // !__cplusplus
+#    else  // !__cplusplus
 ZTH_EXPORT void* zth_zmq_socket(int type);
 ZTH_EXPORT int zth_zmq_msg_send(zmq_msg_t* msg, void* socket, int flags);
 ZTH_EXPORT int zth_zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags);
 ZTH_EXPORT int zth_zmq_send(void* socket, void const* buf, size_t len, int flags);
 ZTH_EXPORT int zth_zmq_recv(void* socket, void* buf, size_t len, int flags);
 ZTH_EXPORT int zth_zmq_send_const(void* socket, void const* buf, size_t len, int flags);
-#		endif // __cplusplus
+#    endif // __cplusplus
 
-#		define zmq_ctx_new zth_zmq_context
-#		define zmq_ctx_term(c)
-#		define zmq_socket(c, t) zth_zmq_socket(t)
-#		define zmq_msg_send	 zth_zmq_msg_send
-#		define zmq_msg_recv	 zth_zmq_msg_recv
-#		define zmq_send	 zth_zmq_send
-#		define zmq_recv	 zth_zmq_recv
-#		define zmq_send_const	 zth_zmq_send_const
-#	endif // ZTH_REDIRECT_ZMQ
+#    define zmq_ctx_new zth_zmq_context
+#    define zmq_ctx_term(c)
+#    define zmq_socket(c, t) zth_zmq_socket(t)
+#    define zmq_msg_send     zth_zmq_msg_send
+#    define zmq_msg_recv     zth_zmq_msg_recv
+#    define zmq_send	     zth_zmq_send
+#    define zmq_recv	     zth_zmq_recv
+#    define zmq_send_const   zth_zmq_send_const
+#  endif // ZTH_REDIRECT_ZMQ
 
 #endif // ZTH_HAVE_LIBZMQ
 #endif // ZTH_ZMQ_H

@@ -1,12 +1,9 @@
 #ifndef ZTH_POLLER_H
 #define ZTH_POLLER_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -30,29 +27,29 @@
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/waiter.h>
-#	include <libzth/worker.h>
+#  include <libzth/allocator.h>
+#  include <libzth/waiter.h>
+#  include <libzth/worker.h>
 
-#	include <bitset>
-#	include <memory>
-#	include <stdexcept>
-#	include <vector>
+#  include <bitset>
+#  include <memory>
+#  include <stdexcept>
+#  include <vector>
 
-#	if __cplusplus >= 201103L
-#		include <functional>
-#		include <initializer_list>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <functional>
+#    include <initializer_list>
+#  endif
 
-#	if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
-#		define ZTH_HAVE_POLLER
-#	endif
+#  if defined(ZTH_HAVE_POLL) || defined(ZTH_HAVE_LIBZMQ)
+#    define ZTH_HAVE_POLLER
+#  endif
 
-#	if defined(ZTH_HAVE_LIBZMQ)
-#		include <zmq.h>
-#	elif defined(ZTH_HAVE_POLL)
-#		include <poll.h>
-#	endif
+#  if defined(ZTH_HAVE_LIBZMQ)
+#    include <zmq.h>
+#  elif defined(ZTH_HAVE_POLL)
+#    include <poll.h>
+#  endif
 
 namespace zth {
 
@@ -144,13 +141,13 @@ struct PollableFd : public Pollable {
 	 */
 	constexpr PollableFd(int fd, Events const& e, void* user = nullptr) noexcept
 		: Pollable(e, user)
-#	ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 		, socket()
-#	endif
+#  endif
 		, fd(fd)
 	{}
 
-#	ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 	/*!
 	 * \brief Ctor for a ZeroMQ socket.
 	 */
@@ -167,7 +164,7 @@ struct PollableFd : public Pollable {
 	 * Do not change the value after adding the Pollable to a Poller.
 	 */
 	void* socket;
-#	endif // ZTH_HAVE_LIBZMQ
+#  endif // ZTH_HAVE_LIBZMQ
 
 	/*!
 	 * \brief The file descriptor.
@@ -205,9 +202,9 @@ public:
 	 */
 	virtual int add(Pollable& p) noexcept = 0;
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	int add(std::initializer_list<std::reference_wrapper<Pollable>> l) noexcept;
-#	endif
+#  endif
 
 	/*!
 	 * \brief Remove a pollable object.
@@ -344,18 +341,18 @@ public:
 	 */
 	PollerServer() is_default
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	PollerServer(PollerServer const&) = delete;
 	void operator=(PollerServer const&) = delete;
 	PollerServer(PollerServer&& p) = delete;
 	void operator=(PollerServer&& p) = delete;
-#	else
+#  else
 private:
 	PollerServer(PollerServer const&);
 	PollerServer& operator=(PollerServer const&);
 
 public:
-#	endif
+#  endif
 
 	virtual ~PollerServer() override
 	{
@@ -458,20 +455,20 @@ public:
 			if(i < m_pollItems.size()) {
 				deinit(*m_metaItems[i].pollable, m_pollItems[i]);
 				if(i < m_pollItems.size() - 1u) {
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 					m_pollItems[i] = std::move(m_pollItems.back());
-#	else
+#  else
 					m_pollItems[i] = m_pollItems.back();
-#	endif
+#  endif
 				}
 				m_pollItems.pop_back();
 			}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 			m_metaItems[i] = std::move(m_metaItems.back());
-#	else
+#  else
 			m_metaItems[i] = m_metaItems.back();
-#	endif
+#  endif
 			m_metaItems.pop_back();
 		} else {
 			// Drop the last element.
@@ -642,7 +639,7 @@ private:
 };
 
 
-#	ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 // By default, use zmq_poll(). It allows polling everything poll() can do,
 // including all ZeroMQ sockets.
 
@@ -665,7 +662,7 @@ private:
 
 typedef ZmqPoller DefaultPollerServer;
 
-#	elif defined(ZTH_HAVE_POLL)
+#  elif defined(ZTH_HAVE_POLL)
 // If we don't have ZeroMQ, use the OS's poll() instead.
 
 /*!
@@ -687,7 +684,7 @@ private:
 
 typedef PollPoller DefaultPollerServer;
 
-#	else
+#  else
 // No poller available.
 // Do provide a PollerServer, but it can only return an error upon a poll.
 
@@ -709,7 +706,7 @@ protected:
 };
 
 typedef NoPoller DefaultPollerServer;
-#	endif // No poller
+#  endif // No poller
 
 /*!
  * \typedef DefaultPollerServer
@@ -741,10 +738,10 @@ public:
 
 	PollerClient();
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	// cppcheck-suppress noExplicitConstructor
 	PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l);
-#	endif
+#  endif
 
 	virtual ~PollerClient() override;
 

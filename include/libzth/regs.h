@@ -1,17 +1,14 @@
 #ifndef ZTH_REGS_H
 #define ZTH_REGS_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifdef __cplusplus
-#	include <libzth/macros.h>
-#	include <libzth/util.h>
+#  include <libzth/macros.h>
+#  include <libzth/util.h>
 
 /*!
  * \defgroup zth_api_cpp_regs regs
@@ -84,13 +81,13 @@ struct Register {
 	}
 };
 
-#	if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#  if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 // In case of little-endian, gcc puts the last field at the highest bits.
 // This is counter intuitive for registers. Reverse them.
-#		define ZTH_REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
-#	else
-#		define ZTH_REG_BITFIELDS(...) __VA_ARGS__
-#	endif
+#    define ZTH_REG_BITFIELDS(...) REVERSE(__VA_ARGS__)
+#  else
+#    define ZTH_REG_BITFIELDS(...) __VA_ARGS__
+#  endif
 
 /*!
  * \brief Define a hardware reference helper class, with bitfields.
@@ -115,20 +112,20 @@ struct Register {
  * \see zth::Register
  * \ingroup zth_api_cpp_regs
  */
-#	define ZTH_REG_DEFINE(T, name, addr, fields...)                    \
-		struct name##__type {                                       \
-			T ZTH_REG_BITFIELDS(fields);                        \
-		} __attribute__((packed));                                  \
-		struct name : public zth::Register<T, addr, name##__type> { \
-			typedef zth::Register<T, addr, name##__type> base;  \
-			using typename base::type;                          \
-			name() noexcept                                     \
-				: base()                                    \
-			{}                                                  \
-			constexpr explicit name(type v) noexcept            \
-				: base(v)                                   \
-			{}                                                  \
-		};
+#  define ZTH_REG_DEFINE(T, name, addr, fields...)              \
+    struct name##__type {                                       \
+      T ZTH_REG_BITFIELDS(fields);                              \
+    } __attribute__((packed));                                  \
+    struct name : public zth::Register<T, addr, name##__type> { \
+      typedef zth::Register<T, addr, name##__type> base;        \
+      using typename base::type;                                \
+      name() noexcept                                           \
+	      : base()                                          \
+      {}                                                        \
+      constexpr explicit name(type v) noexcept                  \
+	      : base(v)                                         \
+      {}                                                        \
+    };
 
 } // namespace zth
 #endif // __cplusplus

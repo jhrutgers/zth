@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2022  Jochem Rutgers
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
 
 set -euo pipefail
 
@@ -16,9 +13,7 @@ function gotErr {
 
 trap gotErr ERR
 
-sudo apt install -y build-essential
+sudo apt install -y build-essential cmake doxygen git-core python3 python3-pip python3-venv
+
 [[ ! -z ${CXX:-} ]] || which g++ > /dev/null || sudo apt install -y g++-multilib gdb-multiarch
 [[ ! -z ${CC:-} ]] || which gcc > /dev/null || sudo apt install -y gcc-multilib gdb-multiarch
-which cmake > /dev/null || sudo apt install -y cmake
-which doxygen > /dev/null || sudo apt install -y doxygen
-which git > /dev/null || sudo apt install -y git-core

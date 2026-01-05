@@ -1,9 +1,6 @@
-# Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2022  Jochem Rutgers
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
 
 if(MINGW AND CMAKE_CROSSCOMPILING)
 	execute_process(

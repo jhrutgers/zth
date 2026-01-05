@@ -1,20 +1,8 @@
-CMakeLists.txt.user
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps
-example
-*.dSYM
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+#
+# SPDX-License-Identifier: CC0-1.0
+
 callgrind.out.*
-/*.exe
 zth.vcd
 zth.*.vcd
 /zth.vcdd
-libzth.*
-socks

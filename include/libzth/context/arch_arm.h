@@ -1,38 +1,35 @@
 #ifndef ZTH_CONTEXT_ARCH_ARM_H
 #define ZTH_CONTEXT_ARCH_ARM_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#	error This file must be included by libzth/context/context.h.
+#  error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#	include "libzth/regs.h"
-#	include "libzth/worker.h"
+#  include "libzth/regs.h"
+#  include "libzth/worker.h"
 
-#	if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
-#		define ZTH_ARM_DO_STACK_GUARD
-#	endif
+#  if defined(ZTH_ARM_HAVE_MPU) && defined(ZTH_OS_BAREMETAL) && !defined(ZTH_HAVE_MMAN)
+#    define ZTH_ARM_DO_STACK_GUARD
+#  endif
 
-#	ifdef ZTH_ARM_DO_STACK_GUARD
-#		define ZTH_ARM_STACK_GUARD_BITS 5
-#		define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
-#	endif
+#  ifdef ZTH_ARM_DO_STACK_GUARD
+#    define ZTH_ARM_STACK_GUARD_BITS 5
+#    define ZTH_ARM_STACK_GUARD_SIZE (1 << ZTH_ARM_STACK_GUARD_BITS)
+#  endif
 
 // Using the fp reg alias does not seem to work well...
-#	ifdef __thumb__
-#		define REG_FP "r7"
-#	else
-#		define REG_FP "r11"
-#	endif
+#  ifdef __thumb__
+#    define REG_FP "r7"
+#  else
+#    define REG_FP "r11"
+#  endif
 
 namespace zth {
 namespace impl {
@@ -47,36 +44,36 @@ public:
 protected:
 	constexpr explicit ContextArch(ContextAttr const& attr) noexcept
 		: base(attr)
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+#  ifdef ZTH_ARM_DO_STACK_GUARD
 		, m_guard()
-#	endif
+#  endif
 	{}
 
 public:
 	static size_t pageSize() noexcept
 	{
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+#  ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard)
 			return (size_t)ZTH_ARM_STACK_GUARD_SIZE;
-#	endif
+#  endif
 		return std::max(sizeof(void*) * 2u, base::pageSize());
 	}
 
 	size_t calcStackSize(size_t size) noexcept
 	{
-#	ifndef ZTH_ARM_USE_PSP
+#  ifndef ZTH_ARM_USE_PSP
 		// If using PSP switch, signals and interrupts are not
 		// executed on the fiber stack, but on the MSP.
 		size += MINSIGSTKSZ;
-#	endif
+#  endif
 		if(Config::EnableStackGuard) {
-#	if defined(ZTH_HAVE_MMAN)
+#  if defined(ZTH_HAVE_MMAN)
 			// Both ends of the stack are guarded using mprotect().
 			size += impl().pageSize() * 2u;
-#	elif defined(ZTH_ARM_DO_STACK_GUARD)
+#  elif defined(ZTH_ARM_DO_STACK_GUARD)
 			// Only the end of the stack is protected using MPU.
 			size += impl().pageSize();
-#	endif
+#  endif
 		}
 
 		return size;
@@ -88,7 +85,7 @@ public:
 		if(!stack.p || !stack.size)
 			return;
 
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+#  ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard) {
 			// Stack grows down, exclude the page at the end (lowest address).
 			int dummy __attribute__((unused)) = 0;
@@ -100,7 +97,7 @@ public:
 			stack.p += ps;
 			stack.size -= ps;
 		}
-#	endif
+#  endif
 
 		// Stack must be double-word aligned.  This should already be
 		// guaranteed by page alignment, but check anyway.
@@ -120,7 +117,7 @@ public:
 		return sp_reg;
 	}
 
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+#  ifdef ZTH_ARM_DO_STACK_GUARD
 	int stackGuardInit() noexcept
 	{
 		// Don't do anything upon init, enable guards after context
@@ -143,11 +140,10 @@ public:
 	}
 
 private:
-#		define REG_MPU_RBAR_ADDR_UNUSED \
-			((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
+#    define REG_MPU_RBAR_ADDR_UNUSED ((unsigned)(((unsigned)-ZTH_ARM_STACK_GUARD_SIZE) >> 5))
 
-#		pragma GCC diagnostic push
-#		pragma GCC diagnostic ignored "-Wconversion"
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wconversion"
 
 	static int stackGuardRegion() noexcept
 	{
@@ -279,15 +275,15 @@ public:
 		return prev;
 	}
 
-#		pragma GCC diagnostic pop
-#	endif // ZTH_ARM_DO_STACK_GUARD
+#    pragma GCC diagnostic pop
+#  endif // ZTH_ARM_DO_STACK_GUARD
 
 
 
 	////////////////////////////////////////////////////////////
 	// jmp_buf fiddling for sjlj
 
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 private:
 	static size_t get_lr_offset(jmp_buf const& env) noexcept
 	{
@@ -366,9 +362,9 @@ public:
 		// clang-format on
 	}
 
-#		if defined(ZTH_CONTEXT_SJLJ)
-#			if defined(__ARM_FP) && !defined(__SOFTFP__)
-#				define ZTH_CONTEXT_FPU
+#    if defined(ZTH_CONTEXT_SJLJ)
+#      if defined(__ARM_FP) && !defined(__SOFTFP__)
+#	define ZTH_CONTEXT_FPU
 	inline __attribute__((always_inline)) void context_push_regs() noexcept
 	{
 		// newlib does not do saving/restoring of FPU registers.
@@ -380,9 +376,9 @@ public:
 	{
 		asm volatile("vldm %0, {d8-d15}" : : "r"(m_fpu_env));
 	}
-#			endif
+#      endif
 
-#			ifdef ZTH_ARM_USE_PSP
+#      ifdef ZTH_ARM_USE_PSP
 	inline __attribute__((always_inline)) void
 	context_prepare_jmp(Impl& to, jmp_buf& env) noexcept
 	{
@@ -411,11 +407,11 @@ public:
 				: "r0", "r1", "memory");
 		}
 	}
-#			endif
-#		endif // ZTH_CONTEXT_SJLJ
-#	endif	       // ZTH_OS_BAREMETAL
+#      endif
+#    endif // ZTH_CONTEXT_SJLJ
+#  endif   // ZTH_OS_BAREMETAL
 
-#	ifdef ZTH_STACK_SWITCH
+#  ifdef ZTH_STACK_SWITCH
 private:
 	__attribute__((naked, noinline)) static void*
 	stack_switch_msp(void* UNUSED_PAR(arg), UNUSED_PAR(void* (*f)(void*) noexcept)) noexcept
@@ -505,7 +501,7 @@ public:
 			return res;
 		} else {
 			void* sp = (void*)(((uintptr_t)stack + size) & ~(uintptr_t)7);
-#		ifdef ZTH_ARM_HAVE_MPU
+#    ifdef ZTH_ARM_HAVE_MPU
 			void* prevGuard = nullptr;
 
 			if(zth::Config::EnableStackGuard && size >= ZTH_ARM_STACK_GUARD_SIZE * 2) {
@@ -516,23 +512,23 @@ public:
 				prevGuard = setGuard(guard);
 				stackGuard();
 			}
-#		endif
+#    endif
 
 			void* res = stack_switch_psp(arg, f, sp);
 
-#		ifdef ZTH_ARM_HAVE_MPU
+#    ifdef ZTH_ARM_HAVE_MPU
 			if(prevGuard) {
 				setGuard(prevGuard);
 				stackGuard();
 			}
-#		endif
+#    endif
 			return res;
 		}
 	}
-#	endif // ZTH_STACK_SWITCH
+#  endif // ZTH_STACK_SWITCH
 
 private:
-#	ifdef ZTH_ARM_HAVE_MPU
+#  ifdef ZTH_ARM_HAVE_MPU
 	// clang-format off
 	ZTH_REG_DEFINE(uint32_t, reg_mpu_type, 0xE000ED90,
 		reserved1 : 8,
@@ -571,15 +567,15 @@ private:
 		size : 5,
 		enable : 1)
 	// clang-format on
-#	endif // ZTH_ARM_HAVE_MPU
+#  endif // ZTH_ARM_HAVE_MPU
 
 private:
-#	ifdef ZTH_ARM_DO_STACK_GUARD
+#  ifdef ZTH_ARM_DO_STACK_GUARD
 	void* m_guard;
-#	endif
-#	ifdef ZTH_CONTEXT_FPU
+#  endif
+#  ifdef ZTH_CONTEXT_FPU
 	double m_fpu_env[8];
-#	endif
+#  endif
 };
 
 } // namespace impl

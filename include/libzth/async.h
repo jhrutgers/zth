@@ -1,38 +1,35 @@
 #ifndef ZTH_ASYNC_H
 #define ZTH_ASYNC_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/fiber.h>
-#	include <libzth/sync.h>
-#	include <libzth/util.h>
-#	include <libzth/worker.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/fiber.h>
+#  include <libzth/sync.h>
+#  include <libzth/util.h>
+#  include <libzth/worker.h>
 
-#	if __cplusplus >= 201103L
-#		include <tuple>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <tuple>
+#  endif
 
-#	if __cplusplus < 201103L
-#		undef ZTH_TYPEDFIBER98
+#  if __cplusplus < 201103L
+#    undef ZTH_TYPEDFIBER98
 // Always use C++98-compatible TypedFiber implementation.
-#		define ZTH_TYPEDFIBER98 1
-#	elif !defined(ZTH_TYPEDFIBER98)
+#    define ZTH_TYPEDFIBER98 1
+#  elif !defined(ZTH_TYPEDFIBER98)
 // By default only use C++11 TypedFiber implementation, but this can be
 // overridden for testing purposes.
-#		define ZTH_TYPEDFIBER98 0
-#	endif
+#    define ZTH_TYPEDFIBER98 0
+#  endif
 
 namespace zth {
 
@@ -166,7 +163,7 @@ private:
  */
 class setName : public FiberManipulator {
 public:
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit setName(char const* name)
 		: m_name(name ? std::string{name} : std::string{})
 	{}
@@ -177,7 +174,7 @@ public:
 	explicit setName(string&& name)
 		: m_name(std::move(name))
 	{}
-#	else
+#  else
 	explicit setName(char const* name)
 		: m_name(name)
 	{}
@@ -185,25 +182,25 @@ public:
 	explicit setName(string const& name)
 		: m_name(name.c_str())
 	{}
-#	endif
+#  endif
 
 	virtual ~setName() override is_default
 protected:
 	virtual void apply(Fiber& fiber) const override
 	{
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 		fiber.setName(std::move(m_name));
-#	else
+#  else
 		fiber.setName(m_name);
-#	endif
+#  endif
 	}
 
 private:
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	string m_name;
-#	else
+#  else
 	char const* m_name;
-#	endif
+#  endif
 };
 
 /*!
@@ -292,7 +289,7 @@ public:
 	}
 };
 
-#	if ZTH_TYPEDFIBER98
+#  if ZTH_TYPEDFIBER98
 template <typename R>
 class TypedFiber0 final : public TypedFiber<R, R (*)()> {
 	ZTH_CLASS_NEW_DELETE(TypedFiber0)
@@ -484,9 +481,9 @@ private:
 	A2 m_a2;
 	A3 m_a3;
 };
-#	endif // ZTH_TYPEDFIBER98
+#  endif // ZTH_TYPEDFIBER98
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <typename R, typename... Args>
 class TypedFiberN final : public TypedFiber<R, R (*)(Args...)> {
 	ZTH_CLASS_NEW_DELETE(TypedFiberN)
@@ -551,12 +548,12 @@ private:
 private:
 	std::tuple<Args...> m_args;
 };
-#	endif // C++11
+#  endif // C++11
 
 template <typename F>
 struct TypedFiberType {};
 
-#	if ZTH_TYPEDFIBER98
+#  if ZTH_TYPEDFIBER98
 template <typename R>
 struct TypedFiberType<R (*)()> {
 	struct NoArg {};
@@ -596,9 +593,9 @@ struct TypedFiberType<R (*)(A1, A2, A3)> {
 	typedef A2 a2Type;
 	typedef A3 a3Type;
 };
-#	endif // ZTH_TYPEDFIBER98
+#  endif // ZTH_TYPEDFIBER98
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <typename R, typename... Args>
 struct TypedFiberType<R (*)(Args...)> {
 	struct NoArg {};
@@ -609,7 +606,7 @@ struct TypedFiberType<R (*)(Args...)> {
 	typedef NoArg a2Type;
 	typedef NoArg a3Type;
 };
-#	endif // C++11
+#  endif // C++11
 
 template <typename F>
 class TypedFiberFactory {
@@ -627,7 +624,7 @@ public:
 		, m_name(name)
 	{}
 
-#	if ZTH_TYPEDFIBER98
+#  if ZTH_TYPEDFIBER98
 	TypedFiber_type& operator()() const
 	{
 		return polish(*new TypedFiber_type(m_function));
@@ -647,15 +644,15 @@ public:
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 	}
-#	endif // ZTH_TYPEDFIBER98
+#  endif // ZTH_TYPEDFIBER98
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	template <typename... Args>
 	TypedFiber_type& operator()(Args&&... args) const
 	{
 		return polish(*new TypedFiber_type(m_function, std::forward<Args>(args)...));
 	}
-#	endif // C++11
+#  endif // C++11
 
 protected:
 	TypedFiber_type& polish(TypedFiber_type& fiber) const
@@ -682,7 +679,7 @@ struct fiber_type_impl {
 template <typename F>
 struct fiber_type {};
 
-#	if ZTH_TYPEDFIBER98
+#  if ZTH_TYPEDFIBER98
 template <typename R>
 struct fiber_type<R (*)()> : public fiber_type_impl<R (*)()> {};
 
@@ -694,12 +691,12 @@ struct fiber_type<R (*)(A1, A2)> : public fiber_type_impl<R (*)(A1, A2)> {};
 
 template <typename R, typename A1, typename A2, typename A3>
 struct fiber_type<R (*)(A1, A2, A3)> : public fiber_type_impl<R (*)(A1, A2, A3)> {};
-#	endif
+#  endif
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <typename R, typename... Args>
 struct fiber_type<R (*)(Args...)> : public fiber_type_impl<R (*)(Args...)> {};
-#	endif
+#  endif
 
 /*!
  * \brief Create a new fiber.
@@ -723,46 +720,46 @@ namespace fibered {}
 
 } // namespace zth
 
-#	define zth_fiber_declare_1(f)                                   \
-		namespace zth {                                          \
-		namespace fibered {                                      \
-		extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
-		}                                                        \
-		}
+#  define zth_fiber_declare_1(f)                             \
+    namespace zth {                                          \
+    namespace fibered {                                      \
+    extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
+    }                                                        \
+    }
 
 /*!
  * \brief Do the declaration part of #zth_fiber() (to be used in an .h file).
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
-#	define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
+#  define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
 
-#	define zth_fiber_define_1(storage, f)                                                    \
-		namespace zth {                                                                   \
-		namespace fibered {                                                               \
-		storage ::zth::TypedFiberFactory<decltype(&::f)> const                            \
-			f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
-					? ZTH_STRINGIFY(f) "()"                                   \
-					: nullptr); /* NOLINT */                                  \
-		}                                                                                 \
-		}                                                                                 \
-		typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
-#	define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
-#	define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)
+#  define zth_fiber_define_1(storage, f)                                              \
+    namespace zth {                                                                   \
+    namespace fibered {                                                               \
+    storage ::zth::TypedFiberFactory<decltype(&::f)> const                            \
+	    f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
+			    ? ZTH_STRINGIFY(f) "()"                                   \
+			    : nullptr); /* NOLINT */                                  \
+    }                                                                                 \
+    }                                                                                 \
+    typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
+#  define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
+#  define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)
 
 /*!
  * \brief Do the definition part of #zth_fiber() (to be used in a .cpp file).
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
-#	define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
+#  define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
 
 /*!
  * \brief Prepare every given function to become a fiber by #async.
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
-#	define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
+#  define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
 
 /*!
  * \def async
@@ -784,10 +781,10 @@ namespace fibered {}
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
-#	define zth_async ::zth::fibered::
-#	ifndef ZTH_NO_ASYNC_KEYWORD
-#		define async zth_async
-#	endif
+#  define zth_async ::zth::fibered::
+#  ifndef ZTH_NO_ASYNC_KEYWORD
+#    define async zth_async
+#  endif
 
 /*!
  * \brief Run a function as a new fiber.
@@ -822,7 +819,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 }
 #else // !__cplusplus
 
-#	include <stddef.h>
+#  include <stddef.h>
 
 ZTH_EXPORT int zth_fiber_create(void (*f)(void*), void* arg, size_t stack, char const* name);
 

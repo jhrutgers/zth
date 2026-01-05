@@ -1,12 +1,9 @@
 #ifndef ZTH_IO_H
 #define ZTH_IO_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -24,8 +21,8 @@
 #include <unistd.h>
 
 #if defined(ZTH_HAVE_POLLER)
-#	if !defined(ZTH_OS_WINDOWS)
-#		if defined(__cplusplus)
+#  if !defined(ZTH_OS_WINDOWS)
+#    if defined(__cplusplus)
 namespace zth {
 namespace io {
 
@@ -55,11 +52,11 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE ssize_t zth_write(int fd, void const* buf, size_t
 	return zth::io::write(fd, buf, count);
 }
 
-#		else  // !__cplusplus
+#    else  // !__cplusplus
 ZTH_EXPORT ssize_t zth_read(int fd, void* buf, size_t count);
 ZTH_EXPORT ssize_t zth_write(int fd, void const* buf, size_t count);
-#		endif // __cplusplus
-#	endif	       // !ZTH_OS_WINDOWS
-#endif		       // ZTH_HAVE_POLLER
+#    endif // __cplusplus
+#  endif   // !ZTH_OS_WINDOWS
+#endif	   // ZTH_HAVE_POLLER
 
 #endif // ZTH_IO_H

@@ -1,11 +1,8 @@
-# Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2022  Jochem Rutgers
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
 
-file(STRINGS "version.txt" ZTH_VERSION LIMIT_COUNT 1)
+file(STRINGS "${ZTH_SOURCE_DIR}/version/version.txt" ZTH_VERSION LIMIT_COUNT 1)
 
 message(STATUS "Zth version ${ZTH_VERSION}")
 
@@ -25,9 +22,9 @@ endif()
 string(REGEX REPLACE "^[0-9.]+(.*)$" "\\1" ZTH_VERSION_SUFFIX ${ZTH_VERSION})
 
 # Force reconfigure when version.txt is changed.
-configure_file(version.txt version.txt COPYONLY)
+configure_file(${ZTH_SOURCE_DIR}/version/version.txt zth_version.txt COPYONLY)
 
 configure_file(
-	${PROJECT_SOURCE_DIR}/include/libzth/version.h.in
-	${PROJECT_SOURCE_DIR}/include/libzth/version.h @ONLY ESCAPE_QUOTES
+	${ZTH_SOURCE_DIR}/include/libzth/version.h.in ${ZTH_SOURCE_DIR}/include/libzth/version.h
+	@ONLY ESCAPE_QUOTES
 )

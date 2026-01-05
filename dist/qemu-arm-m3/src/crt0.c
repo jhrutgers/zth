@@ -1,10 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 
-enum { UART1_ADDR = 0x40011000,
+enum {
+	UART1_ADDR = 0x40011000,
 };
 
 #define UART_DR(baseaddr) (*(((unsigned int volatile*)(baseaddr)) + 1))
@@ -104,7 +111,7 @@ int _write(int file, char* ptr, int len)
 }
 
 #ifndef CLOCK_MONOTONIC
-#	define CLOCK_MONOTONIC 1
+#  define CLOCK_MONOTONIC 1
 #endif
 
 int clock_gettime(int clk_id, struct timespec* res)

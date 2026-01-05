@@ -1,12 +1,9 @@
 #ifndef ZTH_FSM14_H
 #define ZTH_FSM14_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -18,18 +15,18 @@
 
 #if defined(__cplusplus) && __cplusplus >= 201402L
 
-#	include <libzth/macros.h>
-#	include <libzth/allocator.h>
-#	include <libzth/sync.h>
-#	include <libzth/util.h>
+#  include <libzth/macros.h>
+#  include <libzth/allocator.h>
+#  include <libzth/sync.h>
+#  include <libzth/util.h>
 
-#	include <atomic>
-#	include <bitset>
-#	include <functional>
-#	include <limits>
-#	include <stdexcept>
-#	include <type_traits>
-#	include <utility>
+#  include <atomic>
+#  include <bitset>
+#  include <functional>
+#  include <limits>
+#  include <stdexcept>
+#  include <type_traits>
+#  include <utility>
 
 namespace zth {
 namespace fsm {
@@ -40,12 +37,12 @@ namespace fsm {
 // Misc utilities
 //
 
-#	ifdef DOXYGEN
+#  ifdef DOXYGEN
 
 template <typename T>
 struct function_traits;
 
-#	else // !DOXYGEN
+#  else // !DOXYGEN
 
 template <typename R, typename C, typename A>
 struct function_traits_detail {
@@ -67,75 +64,75 @@ struct function_traits : function_traits<decltype(&T::operator())> {
 template <typename R>
 struct function_traits<R (&)()> : function_traits_detail<R, void, void> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R>
 struct function_traits<R (&)() noexcept> : function_traits_detail<R, void, void> {};
-#		endif
+#    endif
 
 // R(A) normal function
 template <typename R, typename A>
 struct function_traits<R (&)(A)> : function_traits_detail<R, void, A> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename A>
 struct function_traits<R (&)(A) noexcept> : function_traits_detail<R, void, A> {};
-#		endif
+#    endif
 
 // R() normal function
 template <typename R>
 struct function_traits<R (*)()> : function_traits_detail<R, void, void> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R>
 struct function_traits<R (*)() noexcept> : function_traits_detail<R, void, void> {};
-#		endif
+#    endif
 
 // R(A) normal function
 template <typename R, typename A>
 struct function_traits<R (*)(A)> : function_traits_detail<R, void, A> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename A>
 struct function_traits<R (*)(A) noexcept> : function_traits_detail<R, void, A> {};
-#		endif
+#    endif
 
 // R(C::*)() class member
 template <typename R, typename C>
 struct function_traits<R (C::*)()> : function_traits_detail<R, C, void> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename C>
 struct function_traits<R (C::*)() noexcept> : function_traits_detail<R, C, void> {};
-#		endif
+#    endif
 
 // R(C::*)(A) class member
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A)> : function_traits_detail<R, C, A> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A) noexcept> : function_traits_detail<R, C, A> {};
-#		endif
+#    endif
 
 // R(C::*)() const class member
 template <typename R, typename C>
 struct function_traits<R (C::*)() const> : function_traits_detail<R, C, void> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename C>
 struct function_traits<R (C::*)() const noexcept> : function_traits_detail<R, C, void> {};
-#		endif
+#    endif
 
 // R(C::*)(A) const class member
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A) const> : function_traits_detail<R, C, A> {};
 
-#		if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
 template <typename R, typename C, typename A>
 struct function_traits<R (C::*)(A) const noexcept> : function_traits_detail<R, C, A> {};
-#		endif
+#    endif
 
-#	endif // !DOXYGEN
+#  endif // !DOXYGEN
 
 
 ///////////////////////////////////////////
@@ -234,7 +231,7 @@ public:
 	/*!
 	 * \copydoc str()
 	 */
-	__attribute__((returns_nonnull)) operator char const *() const noexcept
+	__attribute__((returns_nonnull)) operator char const*() const noexcept
 	{
 		return str();
 	}
@@ -372,9 +369,9 @@ private:
 			std::is_base_of<BasicFsm, std::remove_reference_t<A>>::value, int> = 0>
 	static void check(BasicFsm& UNUSED_PAR(fsm))
 	{
-#	ifdef __GXX_RTTI
+#  ifdef __GXX_RTTI
 		zth_assert(dynamic_cast<std::remove_reference_t<A>*>(&fsm) != nullptr);
-#	endif
+#  endif
 	}
 
 	template <
@@ -401,9 +398,9 @@ public:
 	R call(BasicFsm& fsm) const
 	{
 		using C = typename function_traits<T>::class_type;
-#	ifdef __GXX_RTTI
+#  ifdef __GXX_RTTI
 		zth_assert(dynamic_cast<C*>(&fsm) != nullptr);
-#	endif
+#  endif
 		return ((static_cast<C&>(fsm)).*m_callback)();
 	}
 
@@ -456,9 +453,7 @@ public:
 };
 
 template <typename T>
-class TypedGuard final
-	: public Guard
-	, protected Callback<T, GuardPollInterval> {
+class TypedGuard final : public Guard, protected Callback<T, GuardPollInterval> {
 	ZTH_CLASS_NEW_DELETE(TypedGuard)
 public:
 	using Callback_type = Callback<T, GuardPollInterval>;
@@ -601,9 +596,7 @@ public:
 };
 
 template <typename T>
-class TypedAction final
-	: public Action
-	, protected Callback<T, void> {
+class TypedAction final : public Action, protected Callback<T, void> {
 	ZTH_CLASS_NEW_DELETE(TypedAction)
 public:
 	using Callback_type = Callback<T, void>;
@@ -660,9 +653,7 @@ inline void nothing_action() {}
  */
 inline17 constexpr auto nothing = action(nothing_action, "nothing");
 
-class GuardedActionBase
-	: public Guard
-	, protected Action {
+class GuardedActionBase : public Guard, protected Action {
 protected:
 	constexpr GuardedActionBase() = default;
 
@@ -1248,11 +1239,11 @@ private:
 			i++;
 		}
 
-#	if GCC_VERSION < 90000
+#  if GCC_VERSION < 90000
 		// This following if-statement is not required,
 		// but triggers https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67371 otherwise.
 		if(i >= l.size())
-#	endif
+#  endif
 			zth_throw(invalid_fsm{"Target state not found"});
 
 		// Unreachable.

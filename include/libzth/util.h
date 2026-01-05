@@ -1,12 +1,9 @@
 #ifndef ZTH_UTIL_H
 #define ZTH_UTIL_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -38,11 +35,11 @@
  * \returns the evaluated \c expr
  */
 #ifndef likely
-#	ifdef __GNUC__
-#		define likely(expr) __builtin_expect(!!(expr), 1)
-#	else
-#		define likely(expr) (expr)
-#	endif
+#  ifdef __GNUC__
+#    define likely(expr) __builtin_expect(!!(expr), 1)
+#  else
+#    define likely(expr) (expr)
+#  endif
 #endif
 
 /*!
@@ -52,135 +49,133 @@
  * \returns the evaluated \c expr
  */
 #ifndef unlikely
-#	ifdef __GNUC__
-#		define unlikely(expr) __builtin_expect(!!(expr), 0)
-#	else
-#		define unlikely(expr) (expr)
-#	endif
+#  ifdef __GNUC__
+#    define unlikely(expr) __builtin_expect(!!(expr), 0)
+#  else
+#    define unlikely(expr) (expr)
+#  endif
 #endif
 
 #include <assert.h>
 #if defined(__cplusplus) && __cplusplus < 201103L && !defined(static_assert)
-#	pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#	define static_assert(expr, msg) typedef int static_assert_[(expr) ? 1 : -1]
+#  pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#  define static_assert(expr, msg) typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
 /*! \brief Helper for #FOREACH and #REVERSE. \private */
 #define ZTH_GET_MACRO_ARGN(                                                                   \
 	_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, NAME, ...) \
-	NAME
+  NAME
 
 #ifndef FOREACH
-#	define FOREACH_0(WHAT)		   //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_1(WHAT, X) WHAT(X) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_2(WHAT, X, ...) \
-		WHAT(X) FOREACH_1(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_3(WHAT, X, ...) \
-		WHAT(X) FOREACH_2(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_4(WHAT, X, ...) \
-		WHAT(X) FOREACH_3(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_5(WHAT, X, ...) \
-		WHAT(X) FOREACH_4(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_6(WHAT, X, ...) \
-		WHAT(X) FOREACH_5(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_7(WHAT, X, ...) \
-		WHAT(X) FOREACH_6(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_8(WHAT, X, ...) \
-		WHAT(X) FOREACH_7(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_9(WHAT, X, ...) \
-		WHAT(X) FOREACH_8(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_10(WHAT, X, ...) \
-		WHAT(X) FOREACH_9(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_11(WHAT, X, ...) \
-		WHAT(X) FOREACH_10(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_12(WHAT, X, ...) \
-		WHAT(X) FOREACH_11(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_13(WHAT, X, ...) \
-		WHAT(X) FOREACH_12(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_14(WHAT, X, ...) \
-		WHAT(X) FOREACH_13(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_15(WHAT, X, ...) \
-		WHAT(X) FOREACH_14(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
-#	define FOREACH_16(WHAT, X, ...) \
-		WHAT(X) FOREACH_15(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_0(WHAT)	     //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_1(WHAT, X) WHAT(X) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_2(WHAT, X, ...) \
+    WHAT(X) FOREACH_1(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_3(WHAT, X, ...) \
+    WHAT(X) FOREACH_2(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_4(WHAT, X, ...) \
+    WHAT(X) FOREACH_3(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_5(WHAT, X, ...) \
+    WHAT(X) FOREACH_4(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_6(WHAT, X, ...) \
+    WHAT(X) FOREACH_5(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_7(WHAT, X, ...) \
+    WHAT(X) FOREACH_6(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_8(WHAT, X, ...) \
+    WHAT(X) FOREACH_7(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_9(WHAT, X, ...) \
+    WHAT(X) FOREACH_8(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_10(WHAT, X, ...) \
+    WHAT(X) FOREACH_9(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_11(WHAT, X, ...) \
+    WHAT(X) FOREACH_10(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_12(WHAT, X, ...) \
+    WHAT(X) FOREACH_11(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_13(WHAT, X, ...) \
+    WHAT(X) FOREACH_12(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_14(WHAT, X, ...) \
+    WHAT(X) FOREACH_13(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_15(WHAT, X, ...) \
+    WHAT(X) FOREACH_14(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+#  define FOREACH_16(WHAT, X, ...) \
+    WHAT(X) FOREACH_15(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 //... repeat as needed
 
 /*!
  * \brief Evaluates to \c action(x) for every argument.
  */
-#	define FOREACH(action, ...)                                                         \
-		ZTH_GET_MACRO_ARGN(                                                          \
-			0, ##__VA_ARGS__, FOREACH_16, FOREACH_15, FOREACH_14, FOREACH_13,    \
-			FOREACH_12, FOREACH_11, FOREACH_10, FOREACH_9, FOREACH_8, FOREACH_7, \
-			FOREACH_6, FOREACH_5, FOREACH_4, FOREACH_3, FOREACH_2, FOREACH_1,    \
-			FOREACH_0)                                                           \
-		(action, ##__VA_ARGS__)
+#  define FOREACH(action, ...)                                                             \
+    ZTH_GET_MACRO_ARGN(                                                                    \
+	    0, ##__VA_ARGS__, FOREACH_16, FOREACH_15, FOREACH_14, FOREACH_13, FOREACH_12,  \
+	    FOREACH_11, FOREACH_10, FOREACH_9, FOREACH_8, FOREACH_7, FOREACH_6, FOREACH_5, \
+	    FOREACH_4, FOREACH_3, FOREACH_2, FOREACH_1, FOREACH_0)                         \
+    (action, ##__VA_ARGS__)
 #endif
 
 #ifndef REVERSE
-#	define REVERSE_0()
-#	define REVERSE_1(a)	   a
-#	define REVERSE_2(a, ...)  REVERSE_1(__VA_ARGS__), a
-#	define REVERSE_3(a, ...)  REVERSE_2(__VA_ARGS__), a
-#	define REVERSE_4(a, ...)  REVERSE_3(__VA_ARGS__), a
-#	define REVERSE_5(a, ...)  REVERSE_4(__VA_ARGS__), a
-#	define REVERSE_6(a, ...)  REVERSE_5(__VA_ARGS__), a
-#	define REVERSE_7(a, ...)  REVERSE_6(__VA_ARGS__), a
-#	define REVERSE_8(a, ...)  REVERSE_7(__VA_ARGS__), a
-#	define REVERSE_9(a, ...)  REVERSE_8(__VA_ARGS__), a
-#	define REVERSE_10(a, ...) REVERSE_9(__VA_ARGS__), a
-#	define REVERSE_11(a, ...) REVERSE_10(__VA_ARGS__), a
-#	define REVERSE_12(a, ...) REVERSE_11(__VA_ARGS__), a
-#	define REVERSE_13(a, ...) REVERSE_12(__VA_ARGS__), a
-#	define REVERSE_14(a, ...) REVERSE_13(__VA_ARGS__), a
-#	define REVERSE_15(a, ...) REVERSE_14(__VA_ARGS__), a
-#	define REVERSE_16(a, ...) REVERSE_15(__VA_ARGS__), a
-#	define REVERSE(...)                                                                 \
-		ZTH_GET_MACRO_ARGN(                                                          \
-			0, ##__VA_ARGS__, REVERSE_16, REVERSE_15, REVERSE_14, REVERSE_13,    \
-			REVERSE_12, REVERSE_11, REVERSE_10, REVERSE_9, REVERSE_8, REVERSE_7, \
-			REVERSE_6, REVERSE_5, REVERSE_4, REVERSE_3, REVERSE_2, REVERSE_1,    \
-			REVERSE_0)                                                           \
-		(__VA_ARGS__)
+#  define REVERSE_0()
+#  define REVERSE_1(a)	     a
+#  define REVERSE_2(a, ...)  REVERSE_1(__VA_ARGS__), a
+#  define REVERSE_3(a, ...)  REVERSE_2(__VA_ARGS__), a
+#  define REVERSE_4(a, ...)  REVERSE_3(__VA_ARGS__), a
+#  define REVERSE_5(a, ...)  REVERSE_4(__VA_ARGS__), a
+#  define REVERSE_6(a, ...)  REVERSE_5(__VA_ARGS__), a
+#  define REVERSE_7(a, ...)  REVERSE_6(__VA_ARGS__), a
+#  define REVERSE_8(a, ...)  REVERSE_7(__VA_ARGS__), a
+#  define REVERSE_9(a, ...)  REVERSE_8(__VA_ARGS__), a
+#  define REVERSE_10(a, ...) REVERSE_9(__VA_ARGS__), a
+#  define REVERSE_11(a, ...) REVERSE_10(__VA_ARGS__), a
+#  define REVERSE_12(a, ...) REVERSE_11(__VA_ARGS__), a
+#  define REVERSE_13(a, ...) REVERSE_12(__VA_ARGS__), a
+#  define REVERSE_14(a, ...) REVERSE_13(__VA_ARGS__), a
+#  define REVERSE_15(a, ...) REVERSE_14(__VA_ARGS__), a
+#  define REVERSE_16(a, ...) REVERSE_15(__VA_ARGS__), a
+#  define REVERSE(...)                                                                     \
+    ZTH_GET_MACRO_ARGN(                                                                    \
+	    0, ##__VA_ARGS__, REVERSE_16, REVERSE_15, REVERSE_14, REVERSE_13, REVERSE_12,  \
+	    REVERSE_11, REVERSE_10, REVERSE_9, REVERSE_8, REVERSE_7, REVERSE_6, REVERSE_5, \
+	    REVERSE_4, REVERSE_3, REVERSE_2, REVERSE_1, REVERSE_0)                         \
+    (__VA_ARGS__)
 #endif
 
 #include <stdarg.h>
 
 #ifdef __cplusplus
-#	include <cstdio>
-#	include <cstdlib>
-#	include <cstring>
-#	include <limits>
-#	include <memory>
-#	include <string>
-#	include <vector>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
+#  include <limits>
+#  include <memory>
+#  include <string>
+#  include <vector>
 
-#	if __cplusplus >= 201103L
-#		include <cinttypes>
-#	else
-#		include <inttypes.h>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <cinttypes>
+#  else
+#    include <inttypes.h>
+#  endif
 
-#	ifdef ZTH_HAVE_PTHREAD
-#		include <pthread.h>
-#	endif
+#  ifdef ZTH_HAVE_PTHREAD
+#    include <pthread.h>
+#  endif
 
-#	ifdef ZTH_OS_WINDOWS
-#		include <process.h>
-#	else
-#		include <sys/types.h>
-#		include <unistd.h>
-#	endif
+#  ifdef ZTH_OS_WINDOWS
+#    include <process.h>
+#  else
+#    include <sys/types.h>
+#    include <unistd.h>
+#  endif
 
 EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void
 zth_logv(char const* fmt, va_list arg);
 
-#	ifdef __cplusplus
+#  ifdef __cplusplus
 /*!
  * \brief Prefix for every #zth_dbg() call.
  * \private
  */
-#		define ZTH_DBG_PREFIX " > "
+#    define ZTH_DBG_PREFIX " > "
 
 /*!
  * \brief Debug printf()-like function.
@@ -192,70 +187,59 @@ zth_logv(char const* fmt, va_list arg);
  * \ingroup zth_api_cpp_util
  * \hideinitializer
  */
-#		define zth_dbg(group, fmt, a...)                                             \
-			do {                                                                  \
-				if(::zth::Config::SupportDebugPrint                           \
-				   && ::zth::Config::Print_##group > 0                        \
-				   && zth_config(EnableDebugPrint)) {                         \
-					if(::zth::Config::EnableColorLog)                     \
-						::zth::log_color(                             \
-							::zth::Config::Print_##group,         \
-							ZTH_DBG_PREFIX                        \
-							"zth::" ZTH_STRINGIFY(group) ": " fmt \
-										     "\n",    \
-							##a);                                 \
-					else                                                  \
-						::zth::log(                                   \
-							ZTH_DBG_PREFIX                        \
-							"zth::" ZTH_STRINGIFY(group) ": " fmt \
-										     "\n",    \
-							##a);                                 \
-				}                                                             \
-			} while(0)
+#    define zth_dbg(group, fmt, a...)                                                   \
+      do {                                                                              \
+	if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0         \
+	   && zth_config(EnableDebugPrint)) {                                           \
+	  if(::zth::Config::EnableColorLog)                                             \
+	    ::zth::log_color(                                                           \
+		    ::zth::Config::Print_##group,                                       \
+		    ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a);    \
+	  else                                                                          \
+	    ::zth::log(ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a); \
+	}                                                                               \
+      } while(0)
 
 /*!
  * \def zth_assert(expr)
  * \brief \c assert(), but better integrated in Zth.
  */
-#		ifndef NDEBUG
-#			define zth_assert(expr)                                             \
-				do {                                                         \
-					if(unlikely(::zth::Config::EnableAssert && !(expr))) \
-						::zth::assert_handler(                       \
-							__FILE__, __LINE__,                  \
-							::zth::Config::EnableFullAssert      \
-								? ZTH_STRINGIFY(expr)        \
-								: nullptr);                  \
-				} while(false)
-#		else
-#			define zth_assert(...) \
-				do {            \
-				} while(0)
-#		endif
-#	endif
+#    ifndef NDEBUG
+#      define zth_assert(expr)                                                        \
+	do {                                                                          \
+	  if(unlikely(::zth::Config::EnableAssert && !(expr)))                        \
+	    ::zth::assert_handler(                                                    \
+		    __FILE__, __LINE__,                                               \
+		    ::zth::Config::EnableFullAssert ? ZTH_STRINGIFY(expr) : nullptr); \
+	} while(false)
+#    else
+#      define zth_assert(...) \
+	do {                  \
+	} while(0)
+#    endif
+#  endif
 
-#	ifndef ZTH_CLASS_NOCOPY
-#		if __cplusplus >= 201103L
-#			define ZTH_CLASS_NOCOPY(Class)                                                      \
-			public:                                                                              \
-				Class(Class const&) = delete;                                                \
-				Class(Class&&) =                                                             \
-					delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
-						 */                                                          \
-				Class& operator=(Class const&) noexcept = delete;                            \
-				Class& operator=(Class&&) noexcept =                                         \
-					delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
-						 */                                                          \
-			private:
-#		else
-#			define ZTH_CLASS_NOCOPY(Class) \
-			private:                        \
-				Class(Class const&);    \
-				Class& operator=(Class const&);
-#		endif
-#	endif
+#  ifndef ZTH_CLASS_NOCOPY
+#    if __cplusplus >= 201103L
+#      define ZTH_CLASS_NOCOPY(Class)                                                         \
+public:                                                                                       \
+	Class(Class const&) = delete;                                                         \
+	Class(Class&&) = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
+				  */                                                          \
+	Class& operator=(Class const&) noexcept = delete;                                     \
+	Class& operator=(Class&&) noexcept =                                                  \
+		delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses)          \
+			 */                                                                   \
+private:
+#    else
+#      define ZTH_CLASS_NOCOPY(Class) \
+private:                              \
+	Class(Class const&);          \
+	Class& operator=(Class const&);
+#    endif
+#  endif
 
-#	include <libzth/zmq.h>
+#  include <libzth/zmq.h>
 
 namespace zth {
 
@@ -371,7 +355,7 @@ public:
 		return *this;
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	cow_string(cow_string&& s) = default;
 	cow_string& operator=(cow_string&& s) = default;
 
@@ -393,7 +377,7 @@ public:
 		// cppcheck-suppress returnStdMoveLocal
 		return std::move(local());
 	}
-#	endif
+#  endif
 
 	string const& str() const LREF_QUALIFIED
 	{
@@ -405,7 +389,7 @@ public:
 		return m_cstr ? m_cstr : m_str.c_str();
 	}
 
-	operator string const &() const
+	operator string const&() const
 	{
 		return str();
 	}
@@ -590,37 +574,37 @@ inline cow_string str<long double>(long double value)
 	return format("%Lg", value);
 }
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <>
 inline cow_string str<string&&>(string&& value)
 {
 	return cow_string(std::move(value));
 }
-#	endif
+#  endif
 
 /*!
  * \brief Return a string like \c strerror() does, but as a \c zth::string.
  */
 inline string err(int e)
 {
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 	// You are probably low on memory. Don't include all strerror strings in the binary.
 	return format("error %d", e);
-#	elif defined(ZTH_HAVE_LIBZMQ)
+#  elif defined(ZTH_HAVE_LIBZMQ)
 	return format("%s (error %d)", zmq_strerror(e), e);
-#	elif ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
+#  elif ZTH_THREADS && !defined(ZTH_OS_WINDOWS)
 	char buf[128];
-#		if !defined(ZTH_OS_LINUX) || (_POSIX_C_SOURCE >= 200112L) && !defined(_GNU_SOURCE)
+#    if !defined(ZTH_OS_LINUX) || (_POSIX_C_SOURCE >= 200112L) && !defined(_GNU_SOURCE)
 	// XSI-compatible
 	return format("%s (error %d)", strerror_r(e, buf, sizeof(buf)) ? "Unknown error" : buf, e);
-#		else
+#    else
 	// GNU-specific
 	return format("%s (error %d)", strerror_r(e, buf, sizeof(buf)), e);
-#		endif
-#	else
+#    endif
+#  else
 	// Not thread-safe
 	return format("%s (error %d)", strerror(e), e);
-#	endif
+#  endif
 }
 
 class UniqueIDBase {
@@ -642,9 +626,9 @@ inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value)
  */
 template <typename T, bool ThreadSafe = Config::EnableThreads>
 class UniqueID : public UniqueIDBase {
-#	if __cplusplus < 201103L
+#  if __cplusplus < 201103L
 	ZTH_CLASS_NOCOPY(UniqueID)
-#	else
+#  else
 public:
 	UniqueID(UniqueID const&) = delete;
 	UniqueID& operator=(UniqueID const&) = delete;
@@ -665,16 +649,16 @@ public:
 
 		return *this;
 	}
-#	endif
+#  endif
 public:
 	static uint64_t getID() noexcept
 	{
 		return ThreadSafe ?
-#	if GCC_VERSION < 40802L
+#  if GCC_VERSION < 40802L
 				  __sync_add_and_fetch(&m_nextId, 1)
-#	else
+#  else
 				  __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
-#	endif
+#  endif
 				  : ++m_nextId;
 	}
 
@@ -683,12 +667,12 @@ public:
 		, m_name(name)
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit UniqueID(string&& name)
 		: m_id(getID())
 		, m_name(std::move(name))
 	{}
-#	endif
+#  endif
 
 	explicit UniqueID(char const* name = nullptr)
 		: m_id(getID())
@@ -726,34 +710,34 @@ public:
 		changedName(this->name());
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	void setName(string&& name)
 	{
 		m_name = std::move(name);
 		m_id_str.clear();
 		changedName(this->name());
 	}
-#	endif
+#  endif
 
 	virtual char const* id_str() const override
 	{
 		if(unlikely(m_id_str.empty())) {
 			m_id_str =
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 				// No OS, no pid. And if newlib is used, don't try to format 64-bit
 				// ints.
 				format("%s #%u", name().empty() ? "Object" : name().c_str(),
 				       (unsigned int)id());
-#	else
+#  else
 				format("%s #%u:%" PRIu64,
 				       name().empty() ? "Object" : name().c_str(),
-#		ifdef ZTH_OS_WINDOWS
+#    ifdef ZTH_OS_WINDOWS
 				       (unsigned int)_getpid(),
-#		else
+#    else
 				       (unsigned int)getpid(),
-#		endif
+#    endif
 				       id());
-#	endif
+#  endif
 			if(unlikely(m_id_str.empty()))
 				// Should not happen, but make sure the string is not empty.
 				m_id_str = "?";
@@ -787,10 +771,10 @@ struct choose_type<void, WhenTIsVoid> {
 	typedef WhenTIsVoid type;
 };
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <size_t...>
 struct Sequence {};
-#		ifndef DOXYGEN
+#    ifndef DOXYGEN
 template <size_t N, size_t... S>
 struct SequenceGenerator : SequenceGenerator<N - 1, N - 1, S...> {};
 
@@ -798,12 +782,12 @@ template <size_t... S>
 struct SequenceGenerator<0, S...> {
 	typedef Sequence<S...> type;
 };
-#		endif
-#	endif
+#    endif
+#  endif
 /*!
  * \brief Wrapper for a pointer, which checks validity of the pointer upon dereference.
  */
-#	ifdef _DEBUG
+#  ifdef _DEBUG
 template <typename T>
 class safe_ptr {
 public:
@@ -847,7 +831,7 @@ protected:
 private:
 	pointer_type* m_p;
 };
-#	else  // _DEBUG
+#  else	 // _DEBUG
 
 // No checking, use use the pointer.
 template <typename T>
@@ -855,7 +839,7 @@ class safe_ptr {
 public:
 	typedef T* type;
 };
-#	endif // !_DEBUG
+#  endif // !_DEBUG
 
 /*!
  * \brief Singleton pattern.
@@ -1011,12 +995,13 @@ public:
 	typedef Allocator allocator_type;
 	typedef std::vector<value_type, allocator_type> vector_type;
 
-	enum { prealloc_request = Prealloc > 0 ? Prealloc : 0,
-	       prealloc_request_size = prealloc_request * sizeof(value_type),
-	       vector_size = sizeof(vector_type),
-	       buffer_size =
-		       prealloc_request_size > vector_size ? prealloc_request_size : vector_size,
-	       prealloc = buffer_size / sizeof(value_type),
+	enum {
+		prealloc_request = Prealloc > 0 ? Prealloc : 0,
+		prealloc_request_size = prealloc_request * sizeof(value_type),
+		vector_size = sizeof(vector_type),
+		buffer_size =
+			prealloc_request_size > vector_size ? prealloc_request_size : vector_size,
+		prealloc = buffer_size / sizeof(value_type),
 	};
 
 	/*!
@@ -1198,7 +1183,7 @@ public:
 			vector().push_back(v);
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	/*!
 	 * \brief Append an element to the vector by construct in-place.
 	 * \exception std::bad_alloc when allocation fails
@@ -1214,7 +1199,7 @@ public:
 		} else
 			vector().emplace_back(std::forward<Args>(args)...);
 	}
-#	endif
+#  endif
 
 	/*!
 	 * \brief Remove the last element.
@@ -1313,11 +1298,11 @@ protected:
 		v.reserve(std::max(new_cap, (size_t)m_size));
 
 		for(size_t i = 0; i < m_size; i++) {
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 			v.emplace_back(std::move(array()[i]));
-#	else
+#  else
 			v.push_back(array()[i]);
-#	endif
+#  endif
 			array()[i].~value_type();
 		}
 
@@ -1347,9 +1332,11 @@ template <size_t size>
 struct smallest_uint_size {};
 
 template <
-	uint64_t x,
-	typename size = smallest_uint_size<
-		x >= 0x100000000ULL ? 8U : x >= 0x10000U ? 4U : x >= 0x100U ? 2U : 1U> /**/>
+	uint64_t x, typename size = smallest_uint_size<
+			    x >= 0x100000000ULL ? 8U
+			    : x >= 0x10000U	? 4U
+			    : x >= 0x100U	? 2U
+						: 1U> /**/>
 struct smallest_uint {
 	typedef uint64_t type;
 };

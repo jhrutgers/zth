@@ -1,4 +1,6 @@
-// vim:filetype=cpp
+// SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+//
+// SPDX-License-Identifier: MPL-2.0
 
 /*!
 \example 1_helloworld.cpp

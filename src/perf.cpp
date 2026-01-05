@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #define UNW_LOCAL_ONLY
@@ -13,9 +10,9 @@
 #include <libzth/allocator.h>
 
 #ifdef ZTH_OS_MAC
-#	ifndef _BSD_SOURCE
-#		define _BSD_SOURCE
-#	endif
+#  ifndef _BSD_SOURCE
+#    define _BSD_SOURCE
+#  endif
 #endif
 
 #include <libzth/perf.h>
@@ -29,13 +26,13 @@
 #include <unistd.h>
 
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#	include <cxxabi.h>
-#	include <dlfcn.h>
-#	include <execinfo.h>
+#  include <cxxabi.h>
+#  include <dlfcn.h>
+#  include <execinfo.h>
 #endif
 
 #ifdef ZTH_HAVE_LIBUNWIND
-#	include <libunwind.h>
+#  include <libunwind.h>
 #endif
 
 namespace zth {
@@ -573,7 +570,7 @@ void Backtrace::printPartial(
 	if(start > (size_t)end)
 		return;
 
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 	FILE* atosf = nullptr;
 	if(Config::Debug) {
 		char atos[256];
@@ -583,21 +580,21 @@ void Backtrace::printPartial(
 			atosf = popen(atos, "w");
 		}
 	}
-#	endif
+#  endif
 
 	char** syms =
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 		!atosf ? nullptr :
-#	endif
+#  endif
 		       backtrace_symbols(&bt()[start], (int)((size_t)end - start + 1));
 
 	for(size_t i = start; i <= (size_t)end; i++) {
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 		if(atosf) {
 			fprintf(atosf, "%p\n", bt()[i]);
 			continue;
 		}
-#	endif
+#  endif
 
 		Dl_info info;
 		if(dladdr(bt()[i], &info)) {
@@ -605,14 +602,14 @@ void Backtrace::printPartial(
 			char* demangled =
 				abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
 			if(status == 0 && demangled) {
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 				log_color(
 					color, "%s%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n",
 					color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2,
 					reinterpret_cast<uintptr_t>(bt()[i]), demangled,
 					reinterpret_cast<uintptr_t>(bt()[i])
 						- reinterpret_cast<uintptr_t>(info.dli_saddr));
-#	else
+#  else
 				log_color(
 					color, "%s%-3zd %s(%s+0x%" PRIxPTR ") [0x%" PRIxPTR "]\n",
 					color >= 0 ? ZTH_DBG_PREFIX : "", i, info.dli_fname,
@@ -620,7 +617,7 @@ void Backtrace::printPartial(
 					reinterpret_cast<uintptr_t>(bt()[i])
 						- reinterpret_cast<uintptr_t>(info.dli_saddr),
 					reinterpret_cast<uintptr_t>(bt()[i]));
-#	endif
+#  endif
 
 				free(demangled);
 				continue;
@@ -641,10 +638,10 @@ void Backtrace::printPartial(
 	if(syms)
 		free(syms);
 
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 	if(atosf)
 		pclose(atosf);
-#	endif
+#  endif
 #endif
 }
 

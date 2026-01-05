@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/poller.h>
@@ -222,7 +219,7 @@ PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable
 {
 	errno = add(l);
 
-#	ifdef __cpp_exceptions
+#  ifdef __cpp_exceptions
 	switch(errno) {
 	case 0:
 		break;
@@ -231,7 +228,7 @@ PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable
 	default:
 		throw std::runtime_error("");
 	}
-#	endif
+#  endif
 }
 #endif
 

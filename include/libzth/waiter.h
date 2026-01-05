@@ -1,25 +1,22 @@
 #ifndef ZTH_WAITER_H
 #define ZTH_WAITER_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/fiber.h>
-#	include <libzth/list.h>
-#	include <libzth/time.h>
-#	include <libzth/util.h>
+#  include <libzth/allocator.h>
+#  include <libzth/fiber.h>
+#  include <libzth/list.h>
+#  include <libzth/time.h>
+#  include <libzth/util.h>
 
-#	if __cplusplus >= 201103L
-#		include <type_traits>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <type_traits>
+#  endif
 
 namespace zth {
 class Worker;
@@ -65,9 +62,7 @@ private:
 	Fiber* m_fiber;
 };
 
-class TimedWaitable
-	: public Waitable
-	, public Listable<TimedWaitable> {
+class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
 	ZTH_CLASS_NEW_DELETE(TimedWaitable)
 public:
 	explicit TimedWaitable(Timestamp const& timeout = Timestamp()) noexcept
@@ -238,7 +233,7 @@ ZTH_EXPORT void waitUntil(TimedWaitable& w);
  * \brief Wait until the given function \p f returns \c true.
  * \ingroup zth_api_cpp_fiber
  */
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <
 	typename F,
 	typename std::enable_if<!std::is_base_of<TimedWaitable, F>::value, int>::type = 0>
@@ -247,13 +242,13 @@ void waitUntil(F f, TimeInterval const& pollInterval = TimeInterval())
 	PolledWaiting<F> w(f, pollInterval);
 	waitUntil(w);
 }
-#	else
+#  else
 ZTH_EXPORT inline void waitUntil(bool (*f)(), TimeInterval const& pollInterval = TimeInterval())
 {
 	PolledWaiting<bool (*)()> w(f, pollInterval);
 	waitUntil(w);
 }
-#	endif
+#  endif
 
 /*!
  * \brief Wait until the given member function \p f returns \c true.
@@ -439,9 +434,9 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_unap(long sleepFor_us)
 
 #else // !__cplusplus
 
-#	include <libzth/macros.h>
+#  include <libzth/macros.h>
 
-#	include <time.h>
+#  include <time.h>
 
 ZTH_EXPORT void zth_nap(struct timespec const* ts);
 ZTH_EXPORT void zth_mnap(long sleepFor_ms);

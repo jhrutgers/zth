@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+//
+// SPDX-License-Identifier: CC0-1.0
+
 // Default zth configuration. Copy this file, and override defaults in the
 // Config class below.  Make sure it is in your include path, and zth will use
 // your config file.  For CMake, so something like this:
@@ -5,7 +9,7 @@
 //   target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 #ifndef ZTH_CONFIG_H
-#	error Do not include this file directly, include <zth> instead.
+#  error Do not include this file directly, include <zth> instead.
 #endif
 
 #ifdef __cplusplus

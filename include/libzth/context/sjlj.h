@@ -1,22 +1,19 @@
 #ifndef ZTH_CONTEXT_SJLJ_H
 #define ZTH_CONTEXT_SJLJ_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#	error This file must be included by libzth/context/context.h.
+#  error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#	include <csetjmp>
-#	include <csignal>
+#  include <csetjmp>
+#  include <csignal>
 
 namespace zth {
 
@@ -31,16 +28,16 @@ public:
 	{}
 
 private:
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 	// As bare metal does not have signals, sigsetjmp and siglongjmp is not necessary.
 	typedef jmp_buf jmp_buf_type;
-#		define zth_sjlj_setjmp(env)	   ::setjmp(env)
-#		define zth_sjlj_longjmp(env, val) ::longjmp(env, val)
-#	else
+#    define zth_sjlj_setjmp(env)       ::setjmp(env)
+#    define zth_sjlj_longjmp(env, val) ::longjmp(env, val)
+#  else
 	typedef sigjmp_buf jmp_buf_type;
-#		define zth_sjlj_setjmp(env)	   ::sigsetjmp(env, Config::ContextSignals)
-#		define zth_sjlj_longjmp(env, val) ::siglongjmp(env, val)
-#	endif
+#    define zth_sjlj_setjmp(env)       ::sigsetjmp(env, Config::ContextSignals)
+#    define zth_sjlj_longjmp(env, val) ::siglongjmp(env, val)
+#  endif
 
 public:
 	int create() noexcept

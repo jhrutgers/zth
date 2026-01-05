@@ -1,24 +1,21 @@
 #ifndef ZTH_ALLOCATOR_H
 #define ZTH_ALLOCATOR_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifdef __cplusplus
 
-#	include <libzth/macros.h>
-#	include <libzth/config.h>
-#	include <libzth/util.h>
+#  include <libzth/macros.h>
+#  include <libzth/config.h>
+#  include <libzth/util.h>
 
-#	include <list>
-#	include <map>
-#	include <string>
-#	include <vector>
+#  include <list>
+#  include <map>
+#  include <string>
+#  include <vector>
 
 namespace zth {
 
@@ -67,7 +64,7 @@ __attribute__((warn_unused_result)) static inline T* new_alloc(Arg const& arg)
 	return o;
 }
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 template <typename T, typename... Arg>
 __attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg)
 {
@@ -75,7 +72,7 @@ __attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg)
 	new(o) T(std::forward<Arg>(arg)...);
 	return o;
 }
-#	endif
+#  endif
 
 /*!
  * \brief Wrapper for Config::Allocator::type::deallocate().
@@ -111,19 +108,19 @@ static inline void delete_alloc(T* p) noexcept
  * \param T the type of the class for which the operators are to be defined
  * \ingroup zth_api_cpp_util
  */
-#	define ZTH_CLASS_NEW_DELETE(T)                             \
-	public:                                                     \
-		void* operator new(std::size_t UNUSED_PAR(n))       \
-		{                                                   \
-			zth_assert(n == sizeof(T));                 \
-			return ::zth::allocate<T>();                \
-		}                                                   \
-		void operator delete(void* ptr)                     \
-		{                                                   \
-			::zth::deallocate<T>(static_cast<T*>(ptr)); \
-		}                                                   \
-                                                                    \
-	private:
+#  define ZTH_CLASS_NEW_DELETE(T)                 \
+    public:                                       \
+    void* operator new(std::size_t UNUSED_PAR(n)) \
+    {                                             \
+      zth_assert(n == sizeof(T));                 \
+      return ::zth::allocate<T>();                \
+    }                                             \
+    void operator delete(void* ptr)               \
+    {                                             \
+      ::zth::deallocate<T>(static_cast<T*>(ptr)); \
+    }                                             \
+                                                  \
+    private:
 
 /*!
  * \brief \c std::vector type using Config::Allocator::type.

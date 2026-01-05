@@ -1,12 +1,9 @@
 #ifndef ZTH_CONFIG_H
 #define ZTH_CONFIG_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -17,15 +14,15 @@
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
-#	include <cstddef>
+#  include <cstddef>
 
-#	if __cplusplus >= 201103L
-#		include <cstdint>
-#	else
-#		include <stdint.h>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <cstdint>
+#  else
+#    include <stdint.h>
+#  endif
 
-#	include <memory>
+#  include <memory>
 
 namespace zth {
 
@@ -43,44 +40,44 @@ bool config(int env /* one of Env::* */, bool whenUnset);
  * \ingroup zth_api_cpp_config
  * \hideinitializer
  */
-#	define zth_config(name) (::zth::config(::zth::Env::name, ::zth::Config::name))
+#  define zth_config(name) (::zth::config(::zth::Env::name, ::zth::Config::name))
 
 struct DefaultConfig {
 	/*! \brief This is a debug build when set to \c true. */
 	static bool const Debug =
-#	ifndef NDEBUG
+#  ifndef NDEBUG
 		true;
-#	else
+#  else
 		false;
-#	endif
+#  endif
 
 	/*! \brief When \c true, enable #zth_assert(). */
 	static bool const EnableAssert =
-#	ifndef NDEBUG
+#  ifndef NDEBUG
 		Debug;
-#	else
+#  else
 		false;
-#	endif
+#  endif
 
 	/*!
 	 * \brief Show failing expression in case of a failed assert.
 	 * \details Disable to reduce binary size.
 	 */
 	static bool const EnableFullAssert =
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 		// Assume we are a bit short on memory.
 		false;
-#	else
+#  else
 		EnableAssert;
-#	endif
+#  endif
 
 	/*! \brief Add (Worker) thread support when \c true. */
 	static bool const EnableThreads =
-#	if ZTH_THREADS
+#  if ZTH_THREADS
 		true;
-#	else
+#  else
 		false;
-#	endif
+#  endif
 
 	/*!
 	 * \brief Actually do print the debug output.
@@ -89,11 +86,11 @@ struct DefaultConfig {
 	 * \c ZTH_CONFIG_ENABLE_DEBUG_PRINT environment variable.
 	 */
 	static bool const EnableDebugPrint =
-#	ifdef ZTH_CONFIG_ENABLE_DEBUG_PRINT
+#  ifdef ZTH_CONFIG_ENABLE_DEBUG_PRINT
 		ZTH_CONFIG_ENABLE_DEBUG_PRINT;
-#	else
+#  else
 		false;
-#	endif
+#  endif
 
 	/*!
 	 * \brief Add support to enable debug output prints.
@@ -101,13 +98,13 @@ struct DefaultConfig {
 	 * The output is only actually printed when #EnableDebugPrint is \c true.
 	 */
 	static bool const SupportDebugPrint =
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 		// Without OS, there is no environment to enable debugging when
 		// it is not enabled right away.
 		Debug && EnableDebugPrint;
-#	else
+#  else
 		Debug;
-#	endif
+#  endif
 
 	/*! \brief Enable colored output. */
 	static bool const EnableColorLog = true;
@@ -161,12 +158,12 @@ struct DefaultConfig {
 	static bool const DoPerfEvent = false;
 	/*! \brief Enable (but not necessarily record) perf. */
 	static bool const EnablePerfEvent =
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 		// No environment, so only enable when we are actually saving it.
 		DoPerfEvent;
-#	else
+#  else
 		true;
-#	endif
+#  endif
 	/*! \brief Also record syscalls by perf. */
 	static bool const PerfSyscall = true;
 
@@ -175,11 +172,11 @@ struct DefaultConfig {
 
 	/*! \brief Enable ZeroMQ support. */
 	static bool const UseZMQ =
-#	ifdef ZTH_HAVE_LIBZMQ
+#  ifdef ZTH_HAVE_LIBZMQ
 		true;
-#	else
+#  else
 		false;
-#	endif
+#  endif
 
 	/*!
 	 * \brief Allocator type.

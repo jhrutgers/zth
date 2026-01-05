@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 // In an embedded system, you often see that the application basically runs a
 // state machine, with timed tasks around it. Zth provides a FSM
 // implementation, which allows you to define the transitions with guards and

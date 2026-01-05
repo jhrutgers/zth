@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
@@ -5,9 +11,10 @@
 #include <time.h>
 
 // qemu virt pl011 uart
-enum { UART_FR_RXFE = 0x10,
-       UART_FR_TXFF = 0x20,
-       UART0_ADDR = 0x09000000,
+enum {
+	UART_FR_RXFE = 0x10,
+	UART_FR_TXFF = 0x20,
+	UART0_ADDR = 0x09000000,
 };
 
 #define UART_DR(baseaddr) (*(unsigned int volatile*)(baseaddr))
@@ -121,7 +128,7 @@ int _write(int file, char* ptr, int len)
 }
 
 #ifndef CLOCK_MONOTONIC
-#	define CLOCK_MONOTONIC 1
+#  define CLOCK_MONOTONIC 1
 #endif
 static uint64_t volatile systicks_ns = 1;
 

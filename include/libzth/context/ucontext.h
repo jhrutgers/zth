@@ -1,36 +1,33 @@
 #ifndef ZTH_CONTEXT_UCONTEXT_H
 #define ZTH_CONTEXT_UCONTEXT_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#	error This file must be included by libzth/context/context.h.
+#  error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 // For ucontext_t
-#		ifndef _XOPEN_SOURCE
-#			error Please define _XOPEN_SOURCE before including headers.
-#		endif
-#		include <sched.h>
-#	endif
+#    ifndef _XOPEN_SOURCE
+#      error Please define _XOPEN_SOURCE before including headers.
+#    endif
+#    include <sched.h>
+#  endif
 
-#	include <csetjmp>
-#	include <csignal>
-#	include <ucontext.h>
+#  include <csetjmp>
+#  include <csignal>
+#  include <ucontext.h>
 
 namespace zth {
 
-#	pragma GCC diagnostic push
-#	pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
 class Context : public impl::ContextArch<Context> {
 	ZTH_CLASS_NEW_DELETE(Context)
 public:
@@ -46,14 +43,14 @@ private:
 	{
 		// We got here via setcontext().
 
-#	ifdef ZTH_ENABLE_ASAN
+#  ifdef ZTH_ENABLE_ASAN
 		void const* oldstack = nullptr;
 		size_t oldsize = 0;
 		__sanitizer_finish_switch_fiber(nullptr, &oldstack, &oldsize);
 
 		// We are jumping back.
 		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
-#	endif
+#  endif
 
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
@@ -91,10 +88,10 @@ public:
 			&uc, reinterpret_cast<void (*)(void)>(&context_trampoline), 2, this,
 			origin);
 
-#	ifdef ZTH_ENABLE_ASAN
+#  ifdef ZTH_ENABLE_ASAN
 		void* fake_stack = nullptr;
 		__sanitizer_start_switch_fiber(&fake_stack, stack_.p, stack_.size);
-#	endif
+#  endif
 
 		// switchcontext() is slow, we want to use sigsetjmp/siglongjmp instead.
 		// So, we initialize the sigjmp_buf from the just created context.
@@ -106,9 +103,9 @@ public:
 
 		// Got back from context_trampoline(). The context is ready now.
 
-#	ifdef ZTH_ENABLE_ASAN
+#  ifdef ZTH_ENABLE_ASAN
 		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
-#	endif
+#  endif
 		return 0;
 	}
 
@@ -122,7 +119,7 @@ public:
 private:
 	sigjmp_buf m_env;
 };
-#	pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 
 } // namespace zth
 #endif // __cplusplus

@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2022  Jochem Rutgers
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
 
 # This file is sourced from a dist/*/ directory. Do not call directly.
 
@@ -100,6 +97,14 @@ while [[ ! -z ${1:-} ]]; do
 	esac
 	shift
 done
+
+if [[ ${repo}/dist/common/requirements.txt -nt ${repo}/dist/venv/.timestamp ]]; then
+	[[ ! -e ${repo}/dist/venv ]] || rm -rf "${repo}/dist/venv"
+	python3 -m venv "${repo}/dist/venv"
+	"${repo}/dist/venv/bin/python3" -m pip install --upgrade pip setuptools wheel
+	"${repo}/dist/venv/bin/python3" -m pip install --upgrade -r "${repo}/dist/common/requirements.txt"
+	touch "${repo}/dist/venv/.timestamp"
+fi
 
 if [[ ${support_test} == 0 ]]; then
 	do_test=0
