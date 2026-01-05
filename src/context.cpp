@@ -65,9 +65,8 @@ int context_create(Context*& context, ContextAttr const& attr) noexcept
 		return EAGAIN;
 	}
 
-	int res = 0;
-
-	if((res = context->create())) {
+	int res = context->create();
+	if(res) {
 		delete context;
 		context = nullptr;
 		zth_dbg(context, "[%s] Cannot create context; %s", currentWorker().id_str(),
@@ -81,7 +80,7 @@ int context_create(Context*& context, ContextAttr const& attr) noexcept
 #else
 		Context::Stack const& stack = context->stackUsable();
 		zth_dbg(context, "[%s] New context %p with stack: %p-%p", currentWorker().id_str(),
-			context, stack.p, stack.p + stack.size - 1u);
+			context, stack.p, stack.p + stack.size - 1U);
 #endif
 	}
 
@@ -188,6 +187,7 @@ void context_entry(zth::Context* context) noexcept
 		// cppcheck-suppress nullPointerRedundantCheck
 		context->attr().entry(context->attr().arg);
 	} catch(...) {
+		zth_dbg(context, "[%s] Uncaught exception in fiber", zth::currentWorker().id_str());
 	}
 
 	// Fiber has quit. Switch to another one.
@@ -222,17 +222,17 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 	uintptr_t stack_ = reinterpret_cast<uintptr_t>(stack);
 
 	// Align to size_t
-	stack_ = ((uintptr_t)stack_ + sizeof(size_t) - 1) & ~(uintptr_t)(sizeof(size_t) - 1);
+	stack_ = (stack_ + sizeof(size_t) - 1U) & ~(uintptr_t)(sizeof(size_t) - 1U);
 	// The stack size is stored here.
-	sizeptr = reinterpret_cast<size_t*>(stack_);
+	sizeptr = (size_t*)(void*)stack_; // NOLINT
 
 	// Reduce stack to store the size.
 	stack_ += sizeof(size_t);
 	if(size)
 		// Reduce remaining stack size.
-		*size -= stack_ - reinterpret_cast<uintptr_t>(stack);
+		*size -= stack_ - (uintptr_t)stack; // NOLINT
 
-	stack = reinterpret_cast<void*>(stack_);
+	stack = (void*)stack_; // NOLINT
 }
 
 /*!

@@ -298,6 +298,8 @@ public:
 	 */
 	virtual int add(Pollable& p, Client* client) noexcept = 0;
 
+	using PollerInterface::add;
+
 	/*!
 	 * \brief Remove the given Pollable, belonging to the given client.
 	 *
@@ -306,6 +308,8 @@ public:
 	 * \return 0 on success, otherwise an errno
 	 */
 	virtual int remove(Pollable& p, Client* client) noexcept = 0;
+
+	using PollerInterface::remove;
 };
 
 

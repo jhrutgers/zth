@@ -15,6 +15,8 @@
  * \ingroup zth_api_c
  */
 
+#include <libzth/macros.h>
+
 #ifdef __cplusplus
 #  include <libzth/allocator.h>
 #  include <libzth/config.h>

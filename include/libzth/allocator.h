@@ -6,9 +6,10 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+#include <libzth/macros.h>
+
 #ifdef __cplusplus
 
-#  include <libzth/macros.h>
 #  include <libzth/config.h>
 #  include <libzth/util.h>
 

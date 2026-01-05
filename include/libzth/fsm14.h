@@ -13,6 +13,8 @@
  * \ingroup zth_api_cpp
  */
 
+#include <libzth/macros.h>
+
 #if defined(__cplusplus) && __cplusplus >= 201402L
 
 #  include <libzth/macros.h>
