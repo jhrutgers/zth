@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/worker.h>
@@ -15,14 +12,14 @@
 #include <vector>
 
 #ifndef ZTH_OS_WINDOWS
-#	include <sys/types.h>
-#	include <sys/wait.h>
-#	include <unistd.h>
+#  include <sys/types.h>
+#  include <sys/wait.h>
+#  include <unistd.h>
 #endif
 
 #ifdef ZTH_OS_MAC
-#	include <crt_externs.h>
-#	define environ (*_NSGetEnviron())
+#  include <crt_externs.h>
+#  define environ (*_NSGetEnviron())
 #endif
 
 namespace zth {
@@ -35,10 +32,10 @@ void worker_global_init()
 {
 	zth_dbg(banner, "%s", banner());
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 	// valgrind does not seem to like the sigaction below. Not sure why.
 	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
-#	endif
+#  endif
 	{
 		struct sigaction sa = {};
 		sa.sa_handler = &sigchld_handler;
@@ -190,10 +187,10 @@ static void sigchld_handler(int /*unused*/)
 void sigchld_check()
 {
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 	// The sigaction was disabled, so sigchld_cleanup will always be 0.
 	if(!RUNNING_ON_VALGRIND) // NOLINT(hicpp-no-assembler)
-#	endif
+#  endif
 		if(likely(sigchld_cleanup == 0))
 			return;
 

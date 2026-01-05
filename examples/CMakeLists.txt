@@ -1,7 +1,6 @@
-cmake_minimum_required(VERSION 3.3)
-project(examples)
-
-cmake_policy(SET CMP0057 NEW)
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+#
+# SPDX-License-Identifier: MPL-2.0
 
 function(add_example example)
 	add_executable(${example} ${ARGN})
@@ -53,8 +52,7 @@ endif()
 if(UNIX)
 	add_example(work work.cpp)
 
-	# deprecated
-	# add_example(fsm fsm.cpp)
+	# deprecated add_example(fsm fsm.cpp)
 
 	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 		add_example(fsm14 fsm14.cpp)

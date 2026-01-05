@@ -1,12 +1,9 @@
 #ifndef ZTH_FSM_H
 #define ZTH_FSM_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -19,19 +16,19 @@
  */
 
 #ifdef __cplusplus
-#	include <libzth/allocator.h>
-#	include <libzth/time.h>
-#	include <libzth/util.h>
-#	include <libzth/waiter.h>
+#  include <libzth/allocator.h>
+#  include <libzth/time.h>
+#  include <libzth/util.h>
+#  include <libzth/waiter.h>
 
 // Suppress missing braces, as this is what you do when you specify the FSM.
-#	pragma GCC diagnostic ignored "-Wmissing-braces"
+#  pragma GCC diagnostic ignored "-Wmissing-braces"
 
-#	if __cplusplus >= 201402L
-#		define deprecated14(msg) [[deprecated(msg)]]
-#	else
-#		define deprecated14(msg)
-#	endif
+#  if __cplusplus >= 201402L
+#    define deprecated14(msg) [[deprecated(msg)]]
+#  else
+#    define deprecated14(msg)
+#  endif
 
 namespace zth {
 
@@ -228,9 +225,9 @@ public:
 		, m_compiled()
 	{}
 
-#	if GCC_VERSION >= 49000L
+#  if GCC_VERSION >= 49000L
 	__attribute__((returns_nonnull))
-#	endif
+#  endif
 	__attribute__((warn_unused_result)) Fsm*
 	create() const
 	{
@@ -329,9 +326,9 @@ public:
 		, m_evalState(evalInit)
 		, m_lockstep(lockstepNormal)
 	{
-#	if __cplusplus >= 201103L && !defined(DOXYGEN)
+#  if __cplusplus >= 201103L && !defined(DOXYGEN)
 		static_assert(std::is_base_of<Fsm, FsmImpl>::value, "");
-#	endif
+#  endif
 	}
 
 	explicit Fsm(Description description, char const* name = "FSM")
@@ -542,12 +539,12 @@ public:
 
 	void setInputsCapacity(size_t capacity)
 	{
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 		if(m_inputs.capacity() > capacity * 2U) {
 			// Shrink when the current capacity is significantly more.
 			m_inputs.shrink_to_fit();
 		}
-#	endif
+#  endif
 
 		m_inputs.reserve(capacity);
 	}
@@ -769,7 +766,9 @@ protected:
 		if(m_callback) {
 			zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(),
 				str(this->state()).c_str(),
-				this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
+				this->entry()  ? " (entry)"
+				: this->exit() ? " (exit)"
+					       : "");
 			m_callback(*this, m_callbackArg);
 		}
 	}
@@ -815,7 +814,9 @@ protected:
 		if(m_callback) {
 			zth_dbg(fsm, "[%s] Callback for %s%s", this->id_str(),
 				str(this->state()).c_str(),
-				this->entry() ? " (entry)" : this->exit() ? " (exit)" : "");
+				this->entry()  ? " (entry)"
+				: this->exit() ? " (exit)"
+					       : "");
 			m_callback(*this);
 		}
 	}

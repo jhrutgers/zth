@@ -1,12 +1,9 @@
 #ifndef ZTH_FIBER_H
 #define ZTH_FIBER_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -19,22 +16,22 @@
  */
 
 #ifdef __cplusplus
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/context.h>
-#	include <libzth/init.h>
-#	include <libzth/list.h>
-#	include <libzth/perf.h>
-#	include <libzth/time.h>
-#	include <libzth/util.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/context.h>
+#  include <libzth/init.h>
+#  include <libzth/list.h>
+#  include <libzth/perf.h>
+#  include <libzth/time.h>
+#  include <libzth/util.h>
 
-#	include <errno.h>
-#	include <exception>
-#	include <utility>
+#  include <errno.h>
+#  include <exception>
+#  include <utility>
 
-#	if __cplusplus >= 201103L
-#		include <functional>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <functional>
+#  endif
 
 namespace zth {
 
@@ -47,9 +44,7 @@ namespace zth {
  * #zth::Fiber is owned by and part of a #zth::Worker's administration. For
  * example, a Fiber object is deleted by the Worker when it is dead.
  */
-class Fiber
-	: public Listable<Fiber>
-	, public UniqueID<Fiber> {
+class Fiber : public Listable<Fiber>, public UniqueID<Fiber> {
 	ZTH_CLASS_NEW_DELETE(Fiber)
 public:
 	typedef void(FiberHook)(Fiber&);
@@ -427,9 +422,9 @@ protected:
 		try {
 			m_entry(m_entryArg);
 		} catch(std::exception const& e) {
-#ifdef __cpp_exceptions
+#  ifdef __cpp_exceptions
 			zth_dbg(fiber, "[%s] Uncaught exception; %s", id_str(), e.what());
-#endif
+#  endif
 		} catch(...) {
 			zth_dbg(fiber, "[%s] Uncaught exception", id_str());
 		}

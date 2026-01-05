@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 // This file is included by test_fiber98.cpp and test_fiber11.cpp.  The test
@@ -230,7 +227,8 @@ TEST(FiberTest, direct_viRdf)
 	double d = 0.1;
 	float f = 2.0f;
 
-	auto future = (zth::fiber(fiber_viRdf)(i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
+	auto future =
+		(zth::fiber(fiber_viRdf)(i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
 	future->wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 

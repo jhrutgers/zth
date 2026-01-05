@@ -1,12 +1,9 @@
 #ifndef ZTH_SYNC_H
 #define ZTH_SYNC_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -20,17 +17,17 @@
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/fiber.h>
-#	include <libzth/list.h>
-#	include <libzth/util.h>
-#	include <libzth/worker.h>
+#  include <libzth/allocator.h>
+#  include <libzth/fiber.h>
+#  include <libzth/list.h>
+#  include <libzth/util.h>
+#  include <libzth/worker.h>
 
-#	include <new>
+#  include <new>
 
-#	ifdef ZTH_USE_VALGRIND
-#		include <valgrind/memcheck.h>
-#	endif
+#  ifdef ZTH_USE_VALGRIND
+#    include <valgrind/memcheck.h>
+#  endif
 
 namespace zth {
 
@@ -103,7 +100,7 @@ public:
 		return *this;
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	constexpr14 SharedPointer(SharedPointer&& p) noexcept
 		: m_object()
 	{
@@ -115,7 +112,7 @@ public:
 		m_object = p.release();
 		return *this;
 	}
-#	endif
+#  endif
 
 	constexpr T* get() const noexcept
 	{
@@ -150,9 +147,7 @@ private:
 	T* m_object;
 };
 
-class Synchronizer
-	: public RefCounted
-	, public UniqueID<Synchronizer> {
+class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
 	ZTH_CLASS_NEW_DELETE(Synchronizer)
 public:
 	explicit Synchronizer(cow_string const& name = "Synchronizer")
@@ -160,12 +155,12 @@ public:
 		, UniqueID(Config::NamedSynchronizer ? name.str() : string())
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit Synchronizer(cow_string&& name)
 		: RefCounted()
 		, UniqueID(Config::NamedSynchronizer ? std::move(name).str() : string())
 	{}
-#	endif
+#  endif
 
 	virtual ~Synchronizer() override
 	{
@@ -345,12 +340,12 @@ public:
 		, m_locked()
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit Mutex(cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_locked()
 	{}
-#	endif
+#  endif
 
 	virtual ~Mutex() override is_default
 
@@ -395,12 +390,12 @@ public:
 		, m_count(init)
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	Semaphore(size_t init, cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_count(init)
 	{}
-#	endif
+#  endif
 
 	virtual ~Semaphore() override is_default
 
@@ -461,12 +456,12 @@ public:
 		, m_signalled()
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit Signal(cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_signalled()
 	{}
-#	endif
+#  endif
 
 	virtual ~Signal() override is_default
 
@@ -549,30 +544,30 @@ public:
 		: Synchronizer(name)
 		, m_valid()
 	{
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
-#	endif
+#  endif
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	// cppcheck-suppress uninitMemberVar
 	explicit Future(cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_valid()
 	{
-#		ifdef ZTH_USE_VALGRIND
+#    ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
-#		endif
+#    endif
 	}
-#	endif
+#  endif
 
 	virtual ~Future() override
 	{
 		if(valid())
 			value().~type();
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
-#	endif
+#  endif
 	}
 
 	bool valid() const noexcept
@@ -615,7 +610,7 @@ public:
 		return *this;
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	void set(type&& value)
 	{
 		if(!set_prepare())
@@ -630,7 +625,7 @@ public:
 		set(std::move(value));
 		return *this;
 	}
-#	endif
+#  endif
 
 	type& value() LREF_QUALIFIED
 	{
@@ -646,14 +641,14 @@ public:
 		return *static_cast<type const*>(p);
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	type value() &&
 	{
 		wait();
 		void* p = m_data;
 		return std::move(*static_cast<type*>(p));
 	}
-#	endif
+#  endif
 
 	type const* operator*() const
 	{
@@ -681,9 +676,9 @@ private:
 		zth_assert(!valid());
 		if(valid())
 			return false;
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
-#	endif
+#  endif
 		return true;
 	}
 
@@ -711,12 +706,12 @@ public:
 		, m_valid()
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	explicit Future(cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_valid()
 	{}
-#	endif
+#  endif
 
 	virtual ~Future() override is_default
 
@@ -763,13 +758,13 @@ public:
 		, m_current()
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	Gate(size_t count, cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_count(count)
 		, m_current()
 	{}
-#	endif
+#  endif
 
 	virtual ~Gate() override is_default
 
@@ -947,9 +942,9 @@ zth_sem_getvalue(zth_sem_t* __restrict__ sem, size_t* __restrict__ value) noexce
 	return 0;
 }
 
-#	ifndef EOVERFLOW
-#		define EOVERFLOW EAGAIN
-#	endif
+#  ifndef EOVERFLOW
+#    define EOVERFLOW EAGAIN
+#  endif
 
 /*!
  * \brief Increments a semaphore.
@@ -1264,7 +1259,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) noexcept
 
 #else // !__cplusplus
 
-#	include <stdint.h>
+#  include <stdint.h>
 
 typedef struct {
 	void* p;

@@ -48,7 +48,10 @@
 			"windows": {
 				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Debug"
 			},
-			"problemMatcher": []
+			"problemMatcher": [],
+			"presentation": {
+				"clear": true
+			}
 		},
 		{
 			"label": "config-release",
@@ -63,7 +66,10 @@
 			"windows": {
 				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Release"
 			},
-			"problemMatcher": []
+			"problemMatcher": [],
+			"presentation": {
+				"clear": true
+			}
 		},
 		{
 			"label": "build",

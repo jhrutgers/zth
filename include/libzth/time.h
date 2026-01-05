@@ -1,12 +1,9 @@
 #ifndef ZTH_TIME_H
 #define ZTH_TIME_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -16,30 +13,30 @@
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/util.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/util.h>
 
-#	include <algorithm>
-#	include <cmath>
-#	include <cstdio>
-#	include <ctime>
-#	include <inttypes.h>
-#	include <limits>
+#  include <algorithm>
+#  include <cmath>
+#  include <cstdio>
+#  include <ctime>
+#  include <inttypes.h>
+#  include <limits>
 
-#	if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
-#		ifdef ZTH_CUSTOM_CLOCK_GETTIME
+#  if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
+#    ifdef ZTH_CUSTOM_CLOCK_GETTIME
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
-#		endif
+#    endif
 extern "C" int
 clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain);
-#		ifndef CLOCK_MONOTONIC
-#			define CLOCK_MONOTONIC 1
-#		endif
-#		ifndef TIMER_ABSTIME
-#			define TIMER_ABSTIME 1
-#		endif
-#	endif
+#    ifndef CLOCK_MONOTONIC
+#      define CLOCK_MONOTONIC 1
+#    endif
+#    ifndef TIMER_ABSTIME
+#      define TIMER_ABSTIME 1
+#    endif
+#  endif
 
 namespace zth {
 
@@ -73,13 +70,13 @@ public:
 		, m_negative()
 	{}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	// cppcheck-suppress noExplicitConstructor
 	constexpr TimeInterval(time_t s, long ns = 0, bool negative = false) noexcept
 		: m_t{s, ns}
 		, m_negative{negative}
 	{}
-#	else
+#  else
 	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(time_t s, long ns = 0, bool negative = false) noexcept
 		: m_t()
@@ -89,7 +86,7 @@ public:
 		m_t.tv_nsec = ns;
 		zth_assert(isNormal());
 	}
-#	endif
+#  endif
 
 	// cppcheck-suppress noExplicitConstructor
 	constexpr TimeInterval(struct timespec const& ts) noexcept
@@ -412,7 +409,7 @@ public:
 		if(m_negative)
 			res = "-";
 
-#	ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_OS_BAREMETAL
 		// Do a simplified print without float formatting support.
 		if(m_t.tv_sec >= 60)
 			res += format("%u s", (unsigned int)m_t.tv_sec);
@@ -422,7 +419,7 @@ public:
 				       (unsigned int)(m_t.tv_nsec / 1000000L));
 		else
 			res += format("%u us", (unsigned int)m_t.tv_nsec / 1000U);
-#	else
+#  else
 		uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
 		time_t rest = m_t.tv_sec - d * 3600 * 24;
 		bool doPrint = d > 0;
@@ -453,7 +450,7 @@ public:
 		} else {
 			res += format("%g s", sec);
 		}
-#	endif
+#  endif
 
 		return res;
 	}
@@ -469,7 +466,7 @@ inline cow_string str<TimeInterval const&>(TimeInterval const& value)
 	return value.str();
 }
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 /*!
  * \brief Define literals like \c 123_s, which is a #zth::TimeInterval of 123 seconds.
  *
@@ -518,7 +515,7 @@ ZTH_EXPORT inline TimeInterval operator"" _s(long double x)
 {
 	return TimeInterval(x);
 }
-#	endif // C++11
+#  endif // C++11
 
 /*!
  * \brief Convenient wrapper around \c struct \c timespec that contains an absolute timestamp.
@@ -564,7 +561,7 @@ public:
 	{
 		return m_t;
 	}
-	constexpr operator struct timespec const &() const noexcept
+	constexpr operator struct timespec const&() const noexcept
 	{
 		return ts();
 	}
@@ -685,12 +682,12 @@ private:
 	struct timespec m_t;
 };
 
-#	ifdef ZTH_OS_MAC
+#  ifdef ZTH_OS_MAC
 // Should be const, but the alias-trick does not work on OSX.
 extern Timestamp /* const */ startTime;
-#	else
+#  else
 extern Timestamp const startTime;
-#	endif
+#  endif
 
 } // namespace zth
 

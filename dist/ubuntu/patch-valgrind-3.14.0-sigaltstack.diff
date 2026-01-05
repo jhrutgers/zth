@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2016 phd (https://stackoverflow.com/questions/38172378/why-does-sigaltstack-fail-with-operation-not-permitted-only-under-valgrind)
+#
+# SPDX-License-Identifier: CC0-1.0
+
 --- a/coregrind/m_signals.c	2019-05-30 23:24:15.000000000 +0200
 +++ b/coregrind/m_signals.c	2019-05-30 23:25:23.000000000 +0200
 @@ -1101,7 +1101,8 @@ static Bool on_sig_stack ( ThreadId tid,

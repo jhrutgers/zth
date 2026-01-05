@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 // This example uses the old and deprecated FSM implementation.  See fsm14.cpp
 // for the improved one.
 

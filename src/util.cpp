@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/macros.h>
@@ -20,7 +17,7 @@
 #include <unistd.h>
 
 #ifdef ZTH_OS_WINDOWS
-#	include <windows.h>
+#  include <windows.h>
 #endif
 
 using namespace std;
@@ -158,17 +155,17 @@ void abortv(char const* fmt, va_list args) noexcept
 #ifndef ZTH_OS_BAREMETAL
 static void log_init()
 {
-#	ifdef ZTH_OS_WINDOWS
+#  ifdef ZTH_OS_WINDOWS
 	// Windows does not support line buffering.
 	// If set anyway, this implies full buffering.
 	// Only do that when we expect much debug output.
 	if(zth_config(EnableDebugPrint)) {
-#	endif
+#  endif
 		setvbuf(stdout, nullptr, _IOLBF, 4096);
 		setvbuf(stderr, nullptr, _IOLBF, 4096);
-#	ifdef ZTH_OS_WINDOWS
+#  ifdef ZTH_OS_WINDOWS
 	}
-#	endif
+#  endif
 }
 ZTH_INIT_CALL(log_init)
 #endif

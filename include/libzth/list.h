@@ -1,21 +1,18 @@
 #ifndef ZTH_LIST_H
 #define ZTH_LIST_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/util.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/util.h>
 
-#	include <functional>
+#  include <functional>
 
 namespace zth {
 
@@ -49,7 +46,7 @@ public:
 		return *this;
 	}
 
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 	Listable(Listable&& l) noexcept
 	{
 		*this = std::move(l);
@@ -64,7 +61,7 @@ public:
 		zth_assert(!l.next);
 		return *this;
 	}
-#	endif
+#  endif
 
 	type* listNext() const noexcept
 	{
@@ -611,7 +608,7 @@ protected:
 
 	static void decrease_level(elem_type* t) noexcept
 	{
-#ifndef CPPCHECK // Internal error, somehow.
+#  ifndef CPPCHECK // Internal error, somehow.
 		decltype(t->level) ll = t->left ? t->left->level : 0;
 		decltype(t->level) lr = t->right ? t->right->level : 0;
 		decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
@@ -620,7 +617,7 @@ protected:
 			if(t->right && should_be < t->right->level)
 				t->right->level = should_be;
 		}
-#endif
+#  endif
 	}
 
 	void check() const noexcept

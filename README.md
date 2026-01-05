@@ -159,5 +159,5 @@ this library.
 
 ## License
 
-This project is licensed under the terms of the Mozilla Public License, v. 2.0,
-as specified in LICENSE.
+(Most of) this project is licensed under the terms of the Mozilla Public License, v. 2.0, as
+specified in LICENSE. This project complies to [REUSE](https://reuse.software/).

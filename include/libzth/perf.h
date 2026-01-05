@@ -1,12 +1,9 @@
 #ifndef ZTH_PERF_H
 #define ZTH_PERF_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 /*!
@@ -27,14 +24,14 @@
 
 #ifdef __cplusplus
 
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/time.h>
-#	include <libzth/util.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/time.h>
+#  include <libzth/util.h>
 
-#	include <cstdio>
-#	include <cstdlib>
-#	include <cstring>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
 
 namespace zth {
 
@@ -196,8 +193,8 @@ struct PerfEvent {
 	};
 };
 
-#	pragma GCC diagnostic push
-#	pragma GCC diagnostic ignored "-Wunused-parameter"
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wunused-parameter"
 template <>
 struct PerfEvent<false> {
 	enum Type { Nothing, FiberName, FiberState, Log, Marker };
@@ -250,7 +247,7 @@ struct PerfEvent<false> {
 		int fiberState;
 	};
 };
-#	pragma GCC diagnostic pop
+#  pragma GCC diagnostic pop
 
 typedef vector_type<PerfEvent<> /**/>::type perf_eventBuffer_type;
 ZTH_TLS_DECLARE(perf_eventBuffer_type*, perf_eventBuffer)
@@ -266,7 +263,7 @@ void perf_flushEventBuffer() noexcept;
  * \hideinitializer
  * \ingroup zth_api_cpp_perf
  */
-#	if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L
 // Construct PerfEvent in-place in buffer.
 template <typename... Args>
 inline void perf_event(Args&&... args) noexcept
@@ -289,8 +286,8 @@ inline void perf_event(Args&&... args) noexcept
 		perf_flushEventBuffer();
 }
 
-#		define zth_perf_event(...) zth::perf_event(__VA_ARGS__)
-#	else
+#    define zth_perf_event(...) zth::perf_event(__VA_ARGS__)
+#  else
 // Copy PerfEvent into buffer.
 inline void perf_event(PerfEvent<> const& event) noexcept
 {
@@ -314,8 +311,8 @@ inline void perf_event(PerfEvent<> const& event) noexcept
 		perf_flushEventBuffer();
 }
 
-#		define zth_perf_event(...) zth::perf_event(PerfEvent<>(__VA_ARGS__))
-#	endif
+#    define zth_perf_event(...) zth::perf_event(PerfEvent<>(__VA_ARGS__))
+#  endif
 
 /*!
  * \brief Put a string marker into the perf output.
@@ -599,7 +596,7 @@ zth_perf_logv(char const* fmt, va_list args)
 
 #else // !__cplusplus
 
-#	include <stdarg.h>
+#  include <stdarg.h>
 
 ZTH_EXPORT void zth_perf_mark_(char const* marker);
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_perf_log(char const* fmt, ...);

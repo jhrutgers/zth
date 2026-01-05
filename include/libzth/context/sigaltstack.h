@@ -1,39 +1,36 @@
 #ifndef ZTH_CONTEXT_SIGALTSTACK_H
 #define ZTH_CONTEXT_SIGALTSTACK_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifndef ZTH_CONTEXT_CONTEXT_H
-#	error This file must be included by libzth/context/context.h.
+#  error This file must be included by libzth/context/context.h.
 #endif
 
 #ifdef __cplusplus
 
-#	ifdef ZTH_ENABLE_ASAN
-#		error Invalid configuration combination sigaltstack with asan.
-#	endif
+#  ifdef ZTH_ENABLE_ASAN
+#    error Invalid configuration combination sigaltstack with asan.
+#  endif
 
-#	include <csetjmp>
-#	include <csignal>
-#	include <sys/types.h>
+#  include <csetjmp>
+#  include <csignal>
+#  include <sys/types.h>
 
-#	ifdef ZTH_HAVE_PTHREAD
-#		include <pthread.h>
-#		ifndef ZTH_OS_MAC
-#			define pthread_yield_np() pthread_yield()
-#		endif
-#	else
-#		define pthread_sigmask(...) sigprocmask(__VA_ARGS__)
-#		define pthread_kill(...)    kill(__VA_ARGS__)
-#		define pthread_self()	     getpid()
-#		define pthread_yield_np()   sched_yield()
-#	endif
+#  ifdef ZTH_HAVE_PTHREAD
+#    include <pthread.h>
+#    ifndef ZTH_OS_MAC
+#      define pthread_yield_np() pthread_yield()
+#    endif
+#  else
+#    define pthread_sigmask(...) sigprocmask(__VA_ARGS__)
+#    define pthread_kill(...)	 kill(__VA_ARGS__)
+#    define pthread_self()	 getpid()
+#    define pthread_yield_np()	 sched_yield()
+#  endif
 
 namespace zth {
 namespace impl {
@@ -171,14 +168,14 @@ public:
 		ss.ss_sp = stack_.p;
 		ss.ss_size = stack_.size;
 
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		// Disable checking during bootstrap.
 		VALGRIND_DISABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
-#	endif
+#  endif
 
-#	ifdef SS_AUTODISARM
+#  ifdef SS_AUTODISARM
 		ss.ss_flags |= SS_AUTODISARM;
-#	endif
+#  endif
 		if(unlikely(sigaltstack(&ss, &oss))) {
 			res = errno;
 			goto rollback;
@@ -216,14 +213,14 @@ public:
 			zth_assert(!(ss.ss_flags & SS_ONSTACK));
 		}
 
-#	ifndef SS_AUTODISARM
+#  ifndef SS_AUTODISARM
 		// Reset sigaltstack.
 		ss.ss_flags = SS_DISABLE;
 		if(unlikely(sigaltstack(&ss, nullptr))) {
 			res = errno;
 			goto rollback_altstack;
 		}
-#	endif
+#  endif
 
 		if(unlikely(!(oss.ss_flags & SS_DISABLE))) {
 			if(sigaltstack(&oss, nullptr)) {
@@ -231,7 +228,7 @@ public:
 				goto rollback;
 			}
 		}
-#	ifdef ZTH_HAVE_VALGRIND
+#  ifdef ZTH_HAVE_VALGRIND
 		else if(RUNNING_ON_VALGRIND) {
 			// Valgrind has a hard time tracking when we left the signal handler
 			// and are not using the altstack anymore. Reset the altstack, such
@@ -248,7 +245,7 @@ public:
 			// Although the previous stack was disabled, it is still valid.
 			VALGRIND_MAKE_MEM_DEFINED(ss.ss_sp, ss.ss_size);
 		}
-#	endif
+#  endif
 
 		// Ok, we have returned from the signal handler.
 		// Now go back again and save a proper env.
@@ -258,10 +255,10 @@ public:
 		if(sigsetjmp(me, Config::ContextSignals) == 0)
 			longjmp(m_trampoline_env, 1);
 
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		// Disabled checking during bootstrap.
 		VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
-#	endif
+#  endif
 
 		if(Config::EnableAssert) {
 			if(unlikely(sigaltstack(nullptr, &oss))) {
@@ -278,9 +275,9 @@ public:
 		return 0;
 
 rollback_altstack:
-#	ifdef ZTH_USE_VALGRIND
+#  ifdef ZTH_USE_VALGRIND
 		VALGRIND_ENABLE_ADDR_ERROR_REPORTING_IN_RANGE(ss.ss_sp, ss.ss_size);
-#	endif
+#  endif
 		if(!(oss.ss_flags & SS_DISABLE))
 			sigaltstack(&oss, nullptr);
 rollback:
@@ -306,16 +303,16 @@ private:
 		sig_atomic_t volatile m_did_trampoline;
 		sigjmp_buf* volatile m_parent;
 	};
-#	ifdef ZTH_HAVE_VALGRIND
+#  ifdef ZTH_HAVE_VALGRIND
 	static char dummyAltStack[MINSIGSTKSZ];
-#	endif
+#  endif
 };
 
 ZTH_TLS_DEFINE(Context*, Context::trampoline_context, nullptr)
 
-#	ifdef ZTH_HAVE_VALGRIND
+#  ifdef ZTH_HAVE_VALGRIND
 char Context::dummyAltStack[MINSIGSTKSZ];
-#	endif
+#  endif
 
 } // namespace zth
 #endif // __cplusplus

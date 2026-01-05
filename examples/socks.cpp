@@ -1,11 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
 #include <zth>
 
 #include <cstdio>
 using namespace std;
 
 #ifdef ZTH_OS_WINDOWS
-#	define srand48(seed) srand(seed)
-#	define drand48()     ((double)rand() / (double)RAND_MAX)
+#  define srand48(seed) srand(seed)
+#  define drand48()	((double)rand() / (double)RAND_MAX)
 #endif
 
 struct Sock {

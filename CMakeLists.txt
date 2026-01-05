@@ -1,14 +1,9 @@
-# Zth (libzth), a cooperative userspace multitasking library.
-# Copyright (C) 2019-2022  Jochem Rutgers
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
 #
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.10)
 project(Zth)
-
-cmake_policy(SET CMP0057 NEW)
 
 include(CheckIncludeFileCXX)
 include(GNUInstallDirs)
@@ -82,13 +77,6 @@ if(APPLE)
 		set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 	endif()
 endif()
-
-add_subdirectory(version)
-
-set(ZTH_SOURCE_DIR
-    ${PROJECT_SOURCE_DIR}
-    CACHE STRING "libzth source directory" FORCE
-)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 	find_program(
@@ -183,209 +171,19 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 	endif()
 endif()
 
-add_library(
-	libzth
-	src/assert.cpp
-	src/config.cpp
-	src/context.cpp
-	src/fiber.cpp
-	src/init.cpp
-	src/inline.cpp
-	src/io.cpp
-	src/main.cpp
-	src/perf.cpp
-	src/poller.cpp
-	src/time.cpp
-	src/util.cpp
-	src/waiter.cpp
-	src/worker.cpp
-	src/zmq.cpp
-	src/zth_logv.cpp
+set(ZTH_SOURCE_DIR
+    ${PROJECT_SOURCE_DIR}
+    CACHE STRING "libzth source directory" FORCE
 )
 
-set(ZTH_HEADERS
-    include/libzth/allocator.h
-    include/libzth/async.h
-    include/libzth/config.h
-    include/libzth/context.h
-    include/libzth/fiber.h
-    include/libzth/fsm.h
-    include/libzth/fsm14.h
-    include/libzth/init.h
-    include/libzth/io.h
-    include/libzth/list.h
-    include/libzth/macros.h
-    include/libzth/perf.h
-    include/libzth/poller.h
-    include/libzth/regs.h
-    include/libzth/sync.h
-    include/libzth/time.h
-    include/libzth/util.h
-    include/libzth/version.h
-    include/libzth/waiter.h
-    include/libzth/worker.h
-    include/libzth/zmq.h
-)
-
-set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth" PUBLIC_HEADER "${ZTH_HEADERS}")
-
-if(ZTH_DRAFT_API)
-	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)
-endif()
-
-# Workaround glibc's __longjmp_chk, which may trigger on our unusual setjmp/longjmp
-set_source_files_properties(src/context.cpp PROPERTIES COMPILE_FLAGS -U_FORTIFY_SOURCE)
-
-if(ZTH_CONTEXT)
-	string(TOUPPER "${ZTH_CONTEXT}" ZTH_CONTEXT)
-	message(STATUS "Prefer context switch approach ${ZTH_CONTEXT}")
-	target_compile_definitions(libzth PUBLIC -DZTH_CONTEXT_${ZTH_CONTEXT})
-endif()
-
-target_include_directories(
-	libzth PUBLIC $<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
-		      $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
-)
-
-target_compile_options(
-	libzth
-	PRIVATE -Wall
-		-Wextra
-		-Werror
-		-Wdouble-promotion
-		-Wformat=2
-		-Wundef
-		-Wconversion
-		-ffunction-sections
-		-fdata-sections
-)
-if(CMAKE_CROSSCOMPILING)
-	target_compile_options(libzth PRIVATE -fstack-usage)
-endif()
-
-if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
-	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
-endif()
-
-install(
-	TARGETS libzth
-	EXPORT libzth
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
-)
-
-install(FILES include/zth include/zth.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-set(ZTH_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/zth_config.h)
-foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
-	if(EXISTS ${d}/zth_config.h)
-		set(ZTH_CONFIG_FILE ${d}/zth_config.h)
-		break()
-	endif()
-endforeach()
-install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
-
-configure_package_config_file(
-	cmake/ZthConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
-	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
-)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake
-	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
-)
-
-if(ZTH_HAVE_LIBZMQ)
-	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
-	target_link_libraries(libzth PUBLIC libzmq)
-endif()
-
-if(NOT APPLE)
-	check_include_file_cxx("libunwind.h" ZTH_HAVE_LIBUNWIND)
-	if(ZTH_HAVE_LIBUNWIND)
-		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBUNWIND)
-		target_link_libraries(libzth INTERFACE unwind)
-	endif()
-endif()
-
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_definitions(libzth PUBLIC -DNDEBUG)
-endif()
-
-option(ZTH_THREADS "Make libzth thread-aware" ON)
-if(ZTH_THREADS)
-	target_compile_options(libzth PUBLIC -DZTH_THREADS=1)
-else()
-	target_compile_options(libzth PUBLIC -DZTH_THREADS=0)
-endif()
-
-if(UNIX OR MINGW)
-	# Still compile/link with pthread, as it provides more than threads...
-	set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
-	set(THREADS_PREFER_PTHREAD_FLAG ON)
-	if(MINGW)
-		set(THREADS_HAVE_PTHREAD_ARG 1)
-	endif()
-
-	find_package(Threads REQUIRED)
-
-	if(CMAKE_THREAD_LIBS_INIT)
-		target_link_libraries(libzth PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-	endif()
-endif()
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-	target_link_libraries(libzth INTERFACE rt)
-endif()
-
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-	if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
-		target_link_libraries(libzth INTERFACE dl)
-	endif()
-endif()
-
-if(NOT COMMAND target_link_options)
-	macro(target_link_options target scope)
-		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ARGN}")
-		set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ARGN}")
-	endmacro()
-endif()
-
-if(ZTH_ENABLE_ASAN)
-	target_compile_options(libzth PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-	target_compile_definitions(libzth PRIVATE -DZTH_ENABLE_ASAN)
-	target_link_options(libzth INTERFACE -fsanitize=address)
-endif()
-
-if(ZTH_ENABLE_LSAN)
-	target_compile_options(libzth PRIVATE -fsanitize=leak -fno-omit-frame-pointer)
-	target_compile_definitions(libzth PRIVATE -DZTH_ENABLE_LSAN)
-	target_link_options(libzth INTERFACE -fsanitize=leak)
-endif()
-
-if(ZTH_ENABLE_UBSAN)
-	target_compile_options(libzth PRIVATE -fsanitize=undefined -fno-omit-frame-pointer)
-	target_compile_definitions(libzth PRIVATE -DZTH_ENABLE_UBSAN)
-	target_link_options(libzth INTERFACE -fsanitize=undefined)
+if(NOT PYTHON_EXECUTABLE AND EXISTS ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
+	set(PYTHON_EXECUTABLE ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
 endif()
 
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
 
-check_include_file_cxx("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
-if(NOT ZTH_ENABLE_ASAN
-   AND ZTH_HAVE_VALGRIND
-   AND ZTH_ENABLE_VALGRIND
-)
-	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
-endif()
-
-if(NOT CMAKE_CROSSCOMPILING
-   AND CMAKE_BUILD_TYPE STREQUAL "Debug"
-   AND NOT MINGW
-)
-	# Improve backtraces.
-	target_link_options(libzth INTERFACE -rdynamic)
-endif()
+list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
+include(zth)
 
 option(ZTH_BUILD_EXAMPLES "Build examples" ON)
 if(ZTH_BUILD_EXAMPLES)
@@ -434,9 +232,10 @@ if(ZTH_DOCUMENTATION)
 
 	add_custom_target(
 		doc ALL
-		COMMAND doxygen
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		COMMENT "Generating API documentation with Doxygen (see doxygen/html/index.html)"
+		COMMAND Doxygen::doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT
+			"Generating API documentation with Doxygen (see ${CMAKE_CURRENT_BINARY_DIR}/doxygen/html/index.html)"
 	)
 endif()
 
@@ -468,4 +267,16 @@ endif()
 
 if(ZTH_DIST_DIR)
 	add_subdirectory(${ZTH_DIST_DIR})
+endif()
+
+add_custom_target(
+	zth-reuse
+	COMMAND ${PYTHON_EXECUTABLE} -m reuse lint
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+	COMMENT "Checking REUSE compliance"
+	VERBATIM
+)
+
+if(ZTH_DEV)
+	add_custom_target(zth-reuse-all ALL DEPENDS zth-reuse)
 endif()

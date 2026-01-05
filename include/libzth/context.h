@@ -1,12 +1,9 @@
 #ifndef ZTH_CONTEXT_H
 #define ZTH_CONTEXT_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/config.h>
@@ -38,30 +35,31 @@
 EXTERN_C ZTH_EXPORT void*
 zth_stack_switch(void* stack, size_t size, void* (*f)(void*) noexcept, void* arg) noexcept;
 #else // !ZTH_STACK_SWITCH
-#	define zth_stack_switch(stack, size, f, arg) \
-		({                                    \
-			(void)(stack);                \
-			(void)(size);                 \
-			((f)(arg));                   \
-		})
+#  define zth_stack_switch(stack, size, f, arg) \
+    (                                           \
+	    {                                   \
+(void)(stack);                                      \
+(void)(size);                                       \
+((f)(arg));                                         \
+	    })
 #endif // !ZTH_STACK_SWITCH
 
 #ifdef __cplusplus
-#	include <libzth/util.h>
+#  include <libzth/util.h>
 
-#	if __cplusplus >= 201103L
-#		include <tuple>
-#	endif
+#  if __cplusplus >= 201103L
+#    include <tuple>
+#  endif
 
-#	if __cplusplus < 201103L
-#		undef ZTH_STACK_SWITCH98
+#  if __cplusplus < 201103L
+#    undef ZTH_STACK_SWITCH98
 // Always use C++98-compatible stack_switch() implementation.
-#		define ZTH_STACK_SWITCH98 1
-#	elif !defined(ZTH_STACK_SWITCH98)
+#    define ZTH_STACK_SWITCH98 1
+#  elif !defined(ZTH_STACK_SWITCH98)
 // By default only use C++11 stack_switch() implementation, but this can be
 // overridden for testing purposes.
-#		define ZTH_STACK_SWITCH98 0
-#	endif
+#    define ZTH_STACK_SWITCH98 0
+#  endif
 
 namespace zth {
 
@@ -98,7 +96,7 @@ size_t stack_watermark_remaining(void* stack) noexcept;
 
 namespace impl {
 
-#	if ZTH_STACK_SWITCH98
+#  if ZTH_STACK_SWITCH98
 template <typename R>
 struct FunctionIO0 {
 	union {
@@ -234,7 +232,7 @@ struct FunctionIO3<void, A1, A2, A3> {
 	}
 };
 
-#	elif __cplusplus >= 201103L
+#  elif __cplusplus >= 201103L
 
 template <typename T>
 struct Packed {
@@ -300,7 +298,7 @@ private:
 		f(std::forward<_A>(std::get<S>(a))...);
 	}
 };
-#	endif // C++11
+#  endif // C++11
 
 template <typename F>
 void* stack_switch_fwd(void* f) noexcept
@@ -310,7 +308,7 @@ void* stack_switch_fwd(void* f) noexcept
 
 } // namespace impl
 
-#	if ZTH_STACK_SWITCH98
+#  if ZTH_STACK_SWITCH98
 /*!
  * \copydoc zth::stack_switch(void,size_t,void(*)())
  */
@@ -402,7 +400,7 @@ inline void stack_switch(void* stack, size_t size, void (*f)(A1, A2, A3), A1 a1,
 	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
 }
 
-#	elif __cplusplus >= 201103L // !ZTH_STACK_SWITCH98
+#  elif __cplusplus >= 201103L // !ZTH_STACK_SWITCH98
 
 /*!
  * \brief \copybrief zth_stack_switch()
@@ -431,7 +429,7 @@ inline void stack_switch(void* stack, size_t size, void (*f)(A...) noexcept, A_&
 		{f, {std::forward<A_>(a)...}}};
 	zth_stack_switch(stack, size, &impl::stack_switch_fwd<decltype(f_)>, &f_);
 }
-#	endif			     // !ZTH_STACK_SWITCH98
+#  endif		       // !ZTH_STACK_SWITCH98
 
 } // namespace zth
 #endif // __cplusplus

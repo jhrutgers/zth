@@ -1,10 +1,7 @@
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #include <libzth/macros.h>
@@ -14,12 +11,12 @@
 #include <cerrno>
 
 #ifdef ZTH_OS_MAC
-#	include <mach/mach_time.h>
+#  include <mach/mach_time.h>
 #endif
 
 #ifdef ZTH_OS_MAC
 
-#	ifdef ZTH_CUSTOM_CLOCK_GETTIME
+#  ifdef ZTH_CUSTOM_CLOCK_GETTIME
 static mach_timebase_info_data_t clock_info;
 static uint64_t mach_clock_start;
 
@@ -58,7 +55,7 @@ int clock_gettime(int clk_id, struct timespec* res)
 	res->tv_sec = (time_t)(ns / zth::TimeInterval::BILLION);
 	return 0;
 }
-#	endif // ZTH_CUSTOM_CLOCK_GETTIME
+#  endif // ZTH_CUSTOM_CLOCK_GETTIME
 
 int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct timespec* remain)
 {

@@ -1,27 +1,24 @@
 #ifndef ZTH_WORKER_H
 #define ZTH_WORKER_H
 /*
- * Zth (libzth), a cooperative userspace multitasking library.
- * Copyright (C) 2019-2022  Jochem Rutgers
+ * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
  *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 #ifdef __cplusplus
-#	include <libzth/allocator.h>
-#	include <libzth/config.h>
-#	include <libzth/context.h>
-#	include <libzth/fiber.h>
-#	include <libzth/init.h>
-#	include <libzth/list.h>
-#	include <libzth/perf.h>
-#	include <libzth/waiter.h>
+#  include <libzth/allocator.h>
+#  include <libzth/config.h>
+#  include <libzth/context.h>
+#  include <libzth/fiber.h>
+#  include <libzth/init.h>
+#  include <libzth/list.h>
+#  include <libzth/perf.h>
+#  include <libzth/waiter.h>
 
-#	include <cstring>
-#	include <limits>
-#	include <time.h>
+#  include <cstring>
+#  include <limits>
+#  include <time.h>
 
 namespace zth {
 
@@ -33,9 +30,7 @@ class Worker;
  * \brief The class that manages the fibers within this thread.
  * \ingroup zth_api_cpp_fiber
  */
-class Worker
-	: public UniqueID<Worker>
-	, public ThreadLocalSingleton<Worker> {
+class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
 	ZTH_CLASS_NEW_DELETE(Worker)
 public:
 	Worker()
@@ -572,7 +567,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[
 
 #else // !__cplusplus
 
-#	include <time.h>
+#  include <time.h>
 
 ZTH_EXPORT void zth_yield();
 ZTH_EXPORT void zth_outOfWork();

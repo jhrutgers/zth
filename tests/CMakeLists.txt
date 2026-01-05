@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+#
+# SPDX-License-Identifier: MPL-2.0
+
 find_program(VALGRIND_EXE valgrind)
 
 if(WIN32 AND ZTH_HAVE_LIBZMQ)
@@ -32,15 +36,14 @@ endif()
 option(ZTH_USE_GTEST "Use googletest" ${ZTH_USE_GTEST_DEFAULT})
 
 if(ZTH_USE_GTEST)
-	set(CMAKE_CXX_STANDARD 14)
+	set(CMAKE_CXX_STANDARD 17)
 	set(CMAKE_CXX_STANDARD_REQUIRED ON)
-	set(CMAKE_CXX_CLANG_TIDY "")
 
 	include(FetchContent)
 	FetchContent_Declare(
 		googletest
 		GIT_REPOSITORY https://github.com/google/googletest.git
-		GIT_TAG release-1.11.0
+		GIT_TAG v1.17.0
 	)
 
 	set(gtest_force_shared_crt
