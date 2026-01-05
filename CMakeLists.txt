@@ -15,23 +15,32 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+	set(CMAKE_BUILD_TYPE
+	    Release
+	    CACHE STRING "Build type" FORCE
+	)
 endif()
 
 message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-	message(FATAL_ERROR "CMake generation is not allowed within the source directory! \
+	message(
+		FATAL_ERROR
+			"CMake generation is not allowed within the source directory! \
 		Remove the CMakeCache.txt file and try again from another folder, e.g.: \
 		\
 		  rm CMakeCache.txt \
 		  mkdir build \
 		  cd build \
-		  cmake ..")
+		  cmake .."
+	)
 endif()
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/deploy" CACHE PATH "Override default install path" FORCE)
+	set(CMAKE_INSTALL_PREFIX
+	    "${CMAKE_CURRENT_BINARY_DIR}/deploy"
+	    CACHE PATH "Override default install path" FORCE
+	)
 endif()
 
 option(ZTH_DEV "Enable by default development related build options" OFF)
@@ -52,7 +61,10 @@ if(ZTH_HAVE_LIBZMQ)
 	find_package(ZeroMQ REQUIRED)
 endif()
 
-if(ZTH_DEV_OPTION AND NOT CMAKE_CROSSCOMPILING AND NOT MINGW)
+if(ZTH_DEV_OPTION
+   AND NOT CMAKE_CROSSCOMPILING
+   AND NOT MINGW
+)
 	set(ZTH_SAN_DEFAULT ON)
 else()
 	set(ZTH_SAN_DEFAULT OFF)
@@ -73,14 +85,28 @@ endif()
 
 add_subdirectory(version)
 
-set(ZTH_SOURCE_DIR ${PROJECT_SOURCE_DIR} CACHE STRING "libzth source directory" FORCE)
+set(ZTH_SOURCE_DIR
+    ${PROJECT_SOURCE_DIR}
+    CACHE STRING "libzth source directory" FORCE
+)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
-	find_program(CLANG_TIDY_EXE NAMES "clang-tidy" DOC "Path to clang-tidy executable")
+	find_program(
+		CLANG_TIDY_EXE
+		NAMES "clang-tidy"
+		DOC "Path to clang-tidy executable"
+	)
 	if(CLANG_TIDY_EXE AND (NOT CMAKE_CXX_STANDARD OR NOT CMAKE_CXX_STANDARD EQUAL 98))
 		# It seems that if clang is not installed, clang-tidy doesn't work properly.
-		find_program(CLANG_EXE NAMES "clang" DOC "Path to clang executable")
-		if(CLANG_EXE AND ZTH_DEV AND NOT WIN32)
+		find_program(
+			CLANG_EXE
+			NAMES "clang"
+			DOC "Path to clang executable"
+		)
+		if(CLANG_EXE
+		   AND ZTH_DEV
+		   AND NOT WIN32
+		)
 			option(ZTH_CLANG_TIDY "Run clang-tidy" ${ZTH_DEV_OPTION})
 		else()
 			option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
@@ -89,68 +115,65 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 		if(ZTH_CLANG_TIDY)
 			message(STATUS "Enabled clang-tidy")
 
-			string(CONCAT CLANG_TIDY_CHECKS "-checks="
-				"bugprone-*,"
-				"-bugprone-easily-swappable-parameters,"
-
-				"clang-analyzer-*,"
-				"concurrency-*,"
-
-				"cppcoreguidelines-*,"
-				"-cppcoreguidelines-avoid-c-arrays,"
-				"-cppcoreguidelines-avoid-goto,"
-				"-cppcoreguidelines-avoid-magic-numbers,"
-				"-cppcoreguidelines-avoid-non-const-global-variables,"
-				"-cppcoreguidelines-explicit-virtual-functions,"
-				"-cppcoreguidelines-macro-usage,"
-				"-cppcoreguidelines-no-malloc,"
-				"-cppcoreguidelines-owning-memory,"
-				"-cppcoreguidelines-pro-bounds-array-to-pointer-decay,"
-				"-cppcoreguidelines-pro-bounds-constant-array-index,"
-				"-cppcoreguidelines-pro-bounds-pointer-arithmetic,"
-				"-cppcoreguidelines-pro-type-reinterpret-cast,"
-				"-cppcoreguidelines-pro-type-union-access,"
-				"-cppcoreguidelines-pro-type-vararg,"
-
-				"hicpp-*,"
-				"-hicpp-avoid-c-arrays,"
-				"-hicpp-avoid-goto,"
-				"-hicpp-braces-around-statements,"
-				"-hicpp-member-init,"
-				"-hicpp-no-array-decay,"
-				"-hicpp-no-malloc,"
-				"-hicpp-signed-bitwise,"
-				"-hicpp-uppercase-literal-suffix,"
-				"-hicpp-use-auto,"
-				"-hicpp-use-override,"
-				"-hicpp-vararg,"
-
-				"misc-*,"
-				"-misc-no-recursion,"
-				"-misc-non-private-member-variables-in-classes,"
-
-				"readability-*,"
-				"-readability-braces-around-statements,"
-				"-readability-convert-member-functions-to-static,"
-				"-readability-else-after-return,"
-				"-readability-function-cognitive-complexity,"
-				"-readability-identifier-length,"
-				"-readability-implicit-bool-conversion,"
-				"-readability-magic-numbers,"
-				"-readability-make-member-function-const,"
-				"-readability-redundant-access-specifiers,"
-				"-readability-uppercase-literal-suffix,"
-
-				"performance-*,"
-				"-performance-no-int-to-ptr," # Especially on WIN32 HANDLEs.
-
-				"portability-*,"
+			string(
+				CONCAT CLANG_TIDY_CHECKS
+				       "-checks="
+				       "bugprone-*,"
+				       "-bugprone-easily-swappable-parameters,"
+				       "clang-analyzer-*,"
+				       "concurrency-*,"
+				       "cppcoreguidelines-*,"
+				       "-cppcoreguidelines-avoid-c-arrays,"
+				       "-cppcoreguidelines-avoid-goto,"
+				       "-cppcoreguidelines-avoid-magic-numbers,"
+				       "-cppcoreguidelines-avoid-non-const-global-variables,"
+				       "-cppcoreguidelines-explicit-virtual-functions,"
+				       "-cppcoreguidelines-macro-usage,"
+				       "-cppcoreguidelines-no-malloc,"
+				       "-cppcoreguidelines-owning-memory,"
+				       "-cppcoreguidelines-pro-bounds-array-to-pointer-decay,"
+				       "-cppcoreguidelines-pro-bounds-constant-array-index,"
+				       "-cppcoreguidelines-pro-bounds-pointer-arithmetic,"
+				       "-cppcoreguidelines-pro-type-reinterpret-cast,"
+				       "-cppcoreguidelines-pro-type-union-access,"
+				       "-cppcoreguidelines-pro-type-vararg,"
+				       "hicpp-*,"
+				       "-hicpp-avoid-c-arrays,"
+				       "-hicpp-avoid-goto,"
+				       "-hicpp-braces-around-statements,"
+				       "-hicpp-member-init,"
+				       "-hicpp-no-array-decay,"
+				       "-hicpp-no-malloc,"
+				       "-hicpp-signed-bitwise,"
+				       "-hicpp-uppercase-literal-suffix,"
+				       "-hicpp-use-auto,"
+				       "-hicpp-use-override,"
+				       "-hicpp-vararg,"
+				       "misc-*,"
+				       "-misc-no-recursion,"
+				       "-misc-non-private-member-variables-in-classes,"
+				       "readability-*,"
+				       "-readability-braces-around-statements,"
+				       "-readability-convert-member-functions-to-static,"
+				       "-readability-else-after-return,"
+				       "-readability-function-cognitive-complexity,"
+				       "-readability-identifier-length,"
+				       "-readability-implicit-bool-conversion,"
+				       "-readability-magic-numbers,"
+				       "-readability-make-member-function-const,"
+				       "-readability-redundant-access-specifiers,"
+				       "-readability-uppercase-literal-suffix,"
+				       "performance-*,"
+				       "-performance-no-int-to-ptr," # Especially on WIN32 HANDLEs.
+				       "portability-*,"
 			)
-			set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "${CLANG_TIDY_CHECKS}"
-				"--extra-arg=-I${PROJECT_SOURCE_DIR}/include"
-				"--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
-				"--warnings-as-errors=*"
-				"--extra-arg=-Wno-unknown-warning-option"
+			set(DO_CLANG_TIDY
+			    "${CLANG_TIDY_EXE}"
+			    "${CLANG_TIDY_CHECKS}"
+			    "--extra-arg=-I${PROJECT_SOURCE_DIR}/include"
+			    "--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
+			    "--warnings-as-errors=*"
+			    "--extra-arg=-Wno-unknown-warning-option"
 			)
 
 			set(CMAKE_CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
@@ -160,7 +183,8 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0" AND NOT CMAKE_CROSSCOMPILING)
 	endif()
 endif()
 
-add_library(libzth
+add_library(
+	libzth
 	src/assert.cpp
 	src/config.cpp
 	src/context.cpp
@@ -180,33 +204,30 @@ add_library(libzth
 )
 
 set(ZTH_HEADERS
-	include/libzth/allocator.h
-	include/libzth/async.h
-	include/libzth/config.h
-	include/libzth/context.h
-	include/libzth/fiber.h
-	include/libzth/fsm.h
-	include/libzth/fsm14.h
-	include/libzth/init.h
-	include/libzth/io.h
-	include/libzth/list.h
-	include/libzth/macros.h
-	include/libzth/perf.h
-	include/libzth/poller.h
-	include/libzth/regs.h
-	include/libzth/sync.h
-	include/libzth/time.h
-	include/libzth/util.h
-	include/libzth/version.h
-	include/libzth/waiter.h
-	include/libzth/worker.h
-	include/libzth/zmq.h
+    include/libzth/allocator.h
+    include/libzth/async.h
+    include/libzth/config.h
+    include/libzth/context.h
+    include/libzth/fiber.h
+    include/libzth/fsm.h
+    include/libzth/fsm14.h
+    include/libzth/init.h
+    include/libzth/io.h
+    include/libzth/list.h
+    include/libzth/macros.h
+    include/libzth/perf.h
+    include/libzth/poller.h
+    include/libzth/regs.h
+    include/libzth/sync.h
+    include/libzth/time.h
+    include/libzth/util.h
+    include/libzth/version.h
+    include/libzth/waiter.h
+    include/libzth/worker.h
+    include/libzth/zmq.h
 )
 
-set_target_properties(libzth PROPERTIES
-	OUTPUT_NAME "zth"
-	PUBLIC_HEADER "${ZTH_HEADERS}"
-)
+set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth" PUBLIC_HEADER "${ZTH_HEADERS}")
 
 if(ZTH_DRAFT_API)
 	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)
@@ -221,13 +242,23 @@ if(ZTH_CONTEXT)
 	target_compile_definitions(libzth PUBLIC -DZTH_CONTEXT_${ZTH_CONTEXT})
 endif()
 
-target_include_directories(libzth PUBLIC
-	$<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
-	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-	$<INSTALL_INTERFACE:include>
+target_include_directories(
+	libzth PUBLIC $<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
+		      $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
 )
 
-target_compile_options(libzth PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -ffunction-sections -fdata-sections)
+target_compile_options(
+	libzth
+	PRIVATE -Wall
+		-Wextra
+		-Werror
+		-Wdouble-promotion
+		-Wformat=2
+		-Wundef
+		-Wconversion
+		-ffunction-sections
+		-fdata-sections
+)
 if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
 endif()
@@ -236,7 +267,9 @@ if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
 	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
 endif()
 
-install(TARGETS libzth EXPORT libzth
+install(
+	TARGETS libzth
+	EXPORT libzth
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
 )
@@ -254,12 +287,13 @@ install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
 
 configure_package_config_file(
-	cmake/ZthConfig.cmake.in
-	"${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
+	cmake/ZthConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
 	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
 )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake
+	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
+)
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
@@ -267,7 +301,7 @@ if(ZTH_HAVE_LIBZMQ)
 endif()
 
 if(NOT APPLE)
-	CHECK_INCLUDE_FILE_CXX("libunwind.h" ZTH_HAVE_LIBUNWIND)
+	check_include_file_cxx("libunwind.h" ZTH_HAVE_LIBUNWIND)
 	if(ZTH_HAVE_LIBUNWIND)
 		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBUNWIND)
 		target_link_libraries(libzth INTERFACE unwind)
@@ -337,12 +371,18 @@ endif()
 
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
 
-CHECK_INCLUDE_FILE_CXX("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
-if(NOT ZTH_ENABLE_ASAN AND ZTH_HAVE_VALGRIND AND ZTH_ENABLE_VALGRIND)
+check_include_file_cxx("valgrind/memcheck.h" ZTH_HAVE_VALGRIND)
+if(NOT ZTH_ENABLE_ASAN
+   AND ZTH_HAVE_VALGRIND
+   AND ZTH_ENABLE_VALGRIND
+)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
 endif()
 
-if(NOT CMAKE_CROSSCOMPILING AND CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MINGW)
+if(NOT CMAKE_CROSSCOMPILING
+   AND CMAKE_BUILD_TYPE STREQUAL "Debug"
+   AND NOT MINGW
+)
 	# Improve backtraces.
 	target_link_options(libzth INTERFACE -rdynamic)
 endif()
@@ -352,9 +392,14 @@ if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif()
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0" AND "cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0" AND "cxx_std_14" IN_LIST
+						       CMAKE_CXX_COMPILE_FEATURES
+)
 	if(CMAKE_CROSSCOMPILING)
-		if(UNIX AND ZTH_DIST_DIR AND EXISTS ${ZTH_DIST_DIR}/run.sh)
+		if(UNIX
+		   AND ZTH_DIST_DIR
+		   AND EXISTS ${ZTH_DIST_DIR}/run.sh
+		)
 			set(ZTH_TESTS_DEFAULT ${ZTH_DEV_OPTION})
 		else()
 			set(ZTH_TESTS_DEFAULT OFF)
@@ -378,7 +423,9 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0" AND "cxx_std_14" IN_LIST CMAK
 endif()
 
 find_package(Doxygen)
-option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)"
+       ${DOXYGEN_FOUND}
+)
 
 if(ZTH_DOCUMENTATION)
 	if(NOT DOXYGEN_FOUND)
@@ -395,28 +442,19 @@ endif()
 
 find_program(CPPCHECK_CMD NAMES cppcheck)
 if(CPPCHECK_CMD)
-	add_custom_target(libzth-cppcheck
+	add_custom_target(
+		libzth-cppcheck
 		COMMAND
-			${CPPCHECK_CMD}
-			--std=c++11 --language=c++ -D__cplusplus=201103L
-			--enable=warning,style,information
-			--force
-			--inline-suppr
-			--quiet
+			${CPPCHECK_CMD} --std=c++11 --language=c++ -D__cplusplus=201103L
+			--enable=warning,style,information --force --inline-suppr --quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
-			--error-exitcode=1
-			-j 4
-			--library=gnu
-			"--template=[{file}:{line}]: ({severity},{id}) {message}"
-			-D__GNUC__=10 -DCPPCHECK -U__ARM_ARCH
-#			--xml
-			-I include
-			src
-			examples
-			tests
-			-i tests/test_fsm14.cpp
-			-i tests/test_fsm17.cpp
-#			--check-config
+			--error-exitcode=1 -j 4 --library=gnu
+			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
+			-DCPPCHECK -U__ARM_ARCH
+			# --xml
+			-I include src examples tests -i tests/test_fsm14.cpp -i
+			tests/test_fsm17.cpp
+		# --check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
 		COMMENT "Running cppcheck"

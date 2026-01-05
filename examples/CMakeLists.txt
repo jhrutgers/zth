@@ -5,19 +5,29 @@ cmake_policy(SET CMP0057 NEW)
 
 function(add_example example)
 	add_executable(${example} ${ARGN})
-	target_compile_options(${example} PRIVATE -Wall -Wextra -Werror -Wdouble-promotion -Wformat=2 -Wundef -Wconversion -Wno-error=missing-braces -Wno-missing-braces -Wno-missing-field-initializers)
+	target_compile_options(
+		${example}
+		PRIVATE -Wall
+			-Wextra
+			-Werror
+			-Wdouble-promotion
+			-Wformat=2
+			-Wundef
+			-Wconversion
+			-Wno-error=missing-braces
+			-Wno-missing-braces
+			-Wno-missing-field-initializers
+	)
 	target_link_libraries(${example} libzth)
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-		# Don't use the CRT's version which calls WinMain for a GUI,
-		# but use zth's weak main(), if the use does not specify one.
+		# Don't use the CRT's version which calls WinMain for a GUI, but use zth's weak
+		# main(), if the use does not specify one.
 		target_link_libraries(${example} -Wl,-umain)
 		target_link_libraries(${example} -Wl,-uzth_logv)
 	endif()
 
-	install(TARGETS ${example}
-		RUNTIME DESTINATION bin
-	)
+	install(TARGETS ${example} RUNTIME DESTINATION bin)
 endfunction()
 
 add_example(1_helloworld 1_helloworld.cpp)
@@ -44,7 +54,7 @@ if(UNIX)
 	add_example(work work.cpp)
 
 	# deprecated
-#	add_example(fsm fsm.cpp)
+	# add_example(fsm fsm.cpp)
 
 	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 		add_example(fsm14 fsm14.cpp)
