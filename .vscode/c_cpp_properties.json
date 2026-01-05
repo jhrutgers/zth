@@ -1,0 +1,53 @@
+{
+	"env": {
+		"includePath": [
+			"${workspaceFolder}/include",
+			"${workspaceFolder}/dist/*/build/*-extern-prefix/src/**",
+			"${workspaceFolder}/dist/*/build/_deps/*-src/*/include",
+			"${workspaceFolder}/examples/**",
+			"${workspaceFolder}/tests/**"
+		],
+		"defines": [
+		]
+	},
+	"configurations": [
+		{
+			"name": "Linux",
+			"includePath": [
+				"${env:includePath}"
+			],
+			"defines": [
+				"${env:defines}"
+			],
+			"compilerPath": "/usr/bin/clang",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "linux-clang-x64"
+		},
+		{
+			"name": "Win32",
+			"includePath": [
+				"${env:includePath}"
+			],
+			"defines": [
+				"${env:defines}"
+			],
+			"cStandard": "c17",
+			"cppStandard": "c++17"
+		},
+		{
+			"name": "Mac",
+			"includePath": [
+				"${env:includePath}"
+			],
+			"defines": [
+				"${env:defines}"
+			],
+			"compilerPath": "/usr/bin/clang",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "macos-clang-x64"
+		}
+	],
+	"version": 4
+}
