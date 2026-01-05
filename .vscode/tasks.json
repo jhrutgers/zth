@@ -1,0 +1,268 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "bootstrap",
+			"detail": "Install system dependencies",
+			"type": "shell",
+			"osx": {
+				"command": "${workspaceFolder}/dist/macos/bootstrap.sh"
+			},
+			"linux": {
+				"command": "${workspaceFolder}/dist/ubuntu/bootstrap.sh"
+			},
+			"windows": {
+				"command": "${workspaceFolder}\\dist\\win32\\bootstrap.cmd"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "config",
+			"detail": "(Re)configure the project with given CMAKE_BUILD_TYPE",
+			"type": "shell",
+			"osx": {
+				"command": "${workspaceFolder}/dist/macos/build.sh ${input:buildtype} conf test dev nosan"
+			},
+			"linux": {
+				"command": "${workspaceFolder}/dist/ubuntu/build.sh ${input:buildtype} conf test dev nosan"
+			},
+			"windows": {
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd ${input:buildtype}"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "config-debug",
+			"detail": "(Re)configure the project as Debug",
+			"type": "shell",
+			"osx": {
+				"command": "${workspaceFolder}/dist/macos/build.sh Debug conf test dev san"
+			},
+			"linux": {
+				"command": "${workspaceFolder}/dist/ubuntu/build.sh Debug conf test dev san"
+			},
+			"windows": {
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Debug"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "config-release",
+			"detail": "(Re)configure the project as Release",
+			"type": "shell",
+			"osx": {
+				"command": "${workspaceFolder}/dist/macos/build.sh Release conf test dev"
+			},
+			"linux": {
+				"command": "${workspaceFolder}/dist/ubuntu/build.sh Release conf test dev"
+			},
+			"windows": {
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Release"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "build",
+			"detail": "Build a target. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build . --target ${input:target}",
+			"osx": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/macos/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"linux": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/ubuntu/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}\\dist\\win32\\build"
+				},
+				"problemMatcher": [
+					"$msCompile"
+				]
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "build-all",
+			"detail": "Build all. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build .",
+			"osx": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/macos/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"linux": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/ubuntu/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}\\dist\\win32\\build"
+				},
+				"problemMatcher": [
+					"$msCompile"
+				]
+			},
+			"group": {
+				"kind": "build"
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "build-examples",
+			"detail": "Build the examples. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build . --target examples",
+			"osx": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/macos/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"linux": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/ubuntu/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}\\dist\\win32\\build"
+				},
+				"problemMatcher": [
+					"$msCompile"
+				]
+			},
+			"group": {
+				"kind": "build"
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "install",
+			"detail": "Install all built targets.",
+			"type": "shell",
+			"dependsOn": "build-all",
+			"command": "cmake --build . --target install",
+			"osx": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/macos/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"linux": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/ubuntu/build"
+				},
+				"problemMatcher": [
+					"$gcc"
+				]
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}\\dist\\win32\\build"
+				},
+				"problemMatcher": [
+					"$msCompile"
+				]
+			},
+			"group": {
+				"kind": "build",
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "test",
+			"detail": "Run all tests.",
+			"type": "shell",
+			"dependsOn": "install",
+			"command": [
+				"cmake --build . --target test",
+			],
+			"osx": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/macos/build"
+				},
+			},
+			"linux": {
+				"options": {
+					"cwd": "${workspaceFolder}/dist/ubuntu/build"
+				},
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}\\dist\\win32\\build"
+				},
+			},
+			"group": {
+				"kind": "test"
+			},
+			"presentation": {
+				"clear": true
+			}
+		}
+	],
+	"inputs": [
+		{
+			"id": "buildtype",
+			"type": "pickString",
+			"description": "CMAKE_BUILD_TYPE",
+			"options": [
+				"Debug",
+				"RelWithDebInfo",
+				"Release"
+			],
+			"default": "Debug"
+		},
+		{
+			"id": "target",
+			"type": "command",
+			"command": "memento.promptString",
+			"args": {
+				"id": "target",
+				"description": "build target",
+				"default": "all"
+			}
+		}
+	]
+}

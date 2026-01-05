@@ -38,6 +38,7 @@ pushd build > /dev/null
 
 # Simplify setting specific configuration flag.
 support_test=1
+do_build=1
 do_test=0
 use_ninja=0
 
@@ -63,6 +64,8 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=17 -DCMAKE_C_STANDARD=17";;
 		C++20)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_STANDARD=17";;
+		conf)
+			do_build=0;;
 		dev)
 			cmake_opts="${cmake_opts} -DZTH_DEV=ON"
 			do_test=1
@@ -125,11 +128,13 @@ if [[ ! -z ${BUILD_TYPE:-} ]]; then
 fi
 
 cmake -DCMAKE_MODULE_PATH="${repo}/dist/common" ${cmake_opts} "$@" ../../..
-cmake --build . -j`nproc`
-cmake --build . --target install -j`nproc`
+if [[ ${do_build} == 1 ]]; then
+	cmake --build . -j`nproc`
+	cmake --build . --target install -j`nproc`
 
-if [[ ${do_test} == 1 ]]; then
-	cmake --build . --target test
+	if [[ ${do_test} == 1 ]]; then
+		cmake --build . --target test
+	fi
 fi
 
 popd > /dev/null
