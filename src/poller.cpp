@@ -31,7 +31,8 @@ int PollerInterface::add(std::initializer_list<std::reference_wrapper<Pollable>>
 	size_t count = 0;
 
 	for(Pollable& p : l) {
-		if((res = add(p))) {
+		res = add(p);
+		if(res) {
 			// Rollback.
 			for(auto const* it = l.begin(); it != l.end() && count > 0; ++it, count--)
 				remove(*it);
@@ -243,7 +244,7 @@ void PollerClient::reserve(size_t more)
 int PollerClient::add(Pollable& p) noexcept
 {
 	try {
-		m_result.reserve(m_pollables.size() + 1u);
+		m_result.reserve(m_pollables.size() + 1U);
 		m_pollables.push_back(&p);
 		zth_dbg(io, "[%s] poll %p for events 0x%lu", id_str(), &p, p.events.to_ulong());
 		return 0;
@@ -255,7 +256,7 @@ int PollerClient::add(Pollable& p) noexcept
 int PollerClient::remove(Pollable& p) noexcept
 {
 	for(size_t i = m_pollables.size(); i > 0; i--) {
-		Pollable*& pi = m_pollables[i - 1u];
+		Pollable*& pi = m_pollables[i - 1U];
 		if(pi == &p) {
 			pi = m_pollables.back();
 			m_pollables.pop_back();
@@ -311,7 +312,7 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 
 	// Remove our pollables from the server.
 	for(size_t i = m_pollables.size(); i > 0; i--)
-		p.remove(*m_pollables[i - 1u], this);
+		p.remove(*m_pollables[i - 1U], this);
 
 	// m_result got populated by event().
 	if(m_result.empty() && !res)

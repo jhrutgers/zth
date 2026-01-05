@@ -37,6 +37,7 @@
 
 namespace zth {
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, nullptr)
 
 class PerfFiber : public Runnable {
@@ -58,12 +59,12 @@ public:
 			finalizeVCD();
 
 		if(m_vcdd) {
-			fclose(m_vcdd);
+			(void)fclose(m_vcdd);
 			m_vcdd = nullptr;
 		}
 
 		if(m_vcd) {
-			fclose(m_vcd);
+			(void)fclose(m_vcd);
 			m_vcd = nullptr;
 		}
 
@@ -321,9 +322,11 @@ write_error:
 				? vcdFilename_
 				: "zth.vcd";
 
-		if(!(m_vcd = fopen(vcdFilename, "w"))) {
+		m_vcd = fopen(vcdFilename, "w");
+		if(!m_vcd) {
 			res = errno;
-			fprintf(stderr, "Cannot open VCD file %s; %s\n", vcdFilename,
+			(void)fprintf(
+				stderr, "Cannot open VCD file %s; %s\n", vcdFilename,
 				err(res).c_str());
 			goto rollback;
 		}
@@ -335,7 +338,8 @@ write_error:
 		m_vcdd = tmpfile();
 #endif
 		if(!(m_vcdd)) {
-			fprintf(stderr, "Cannot open temporary VCD data file; %s\n",
+			(void)fprintf(
+				stderr, "Cannot open temporary VCD data file; %s\n",
 				err(errno).c_str());
 			goto rollback;
 		}
@@ -362,19 +366,19 @@ write_error:
 		   < 0)
 			goto write_error;
 
-		fprintf(stderr, "Using %s for perf VCD output\n", vcdFilename);
+		(void)fprintf(stderr, "Using %s for perf VCD output\n", vcdFilename);
 		return 0;
 
 write_error:
-		fprintf(stderr, "Cannot write %s", vcdFilename);
+		(void)fprintf(stderr, "Cannot write %s", vcdFilename);
 		res = EIO;
 rollback:
 		if(m_vcdd) {
-			fclose(m_vcdd);
+			(void)fclose(m_vcdd);
 			m_vcdd = nullptr;
 		}
 		if(m_vcd) {
-			fclose(m_vcd);
+			(void)fclose(m_vcd);
 			m_vcd = nullptr;
 		}
 		return res ? res : EIO;
@@ -389,7 +393,7 @@ rollback:
 		if(fprintf(m_vcd, "$upscope $end\n$enddefinitions $end\n") < 0)
 			goto write_error;
 
-		rewind(m_vcdd);
+		(void)fseek(m_vcdd, 0, SEEK_SET);
 
 		{
 			char buf[1024];
@@ -405,9 +409,9 @@ rollback:
 		zth_assert(feof(m_vcdd));
 		zth_assert(!ferror(m_vcd));
 
-		fclose(m_vcdd);
+		(void)fclose(m_vcdd);
 		m_vcdd = nullptr;
-		fclose(m_vcd);
+		(void)fclose(m_vcd);
 		m_vcd = nullptr;
 		return 0;
 
@@ -435,6 +439,7 @@ write_error:
 		char* s = &buf[sizeof(buf) - 1];
 		*s = 0;
 
+		// NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
 		do {
 			*--s = (char)(id % 93 + 34);
 			id /= 93;
@@ -457,6 +462,7 @@ private:
 	map_type<uint64_t, string>::type m_vcdIds;
 };
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ZTH_TLS_STATIC(PerfFiber*, perfFiber, nullptr);
 
 int perf_init()
@@ -619,7 +625,7 @@ void Backtrace::printPartial(
 					reinterpret_cast<uintptr_t>(bt()[i]));
 #  endif
 
-				free(demangled);
+				free(demangled); // NOLINT
 				continue;
 			}
 		}
@@ -636,7 +642,7 @@ void Backtrace::printPartial(
 	}
 
 	if(syms)
-		free(syms);
+		free(syms); // NOLINT
 
 #  ifdef ZTH_OS_MAC
 	if(atosf)

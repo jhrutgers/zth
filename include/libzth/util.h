@@ -36,7 +36,8 @@
  */
 #ifndef likely
 #  ifdef __GNUC__
-#    define likely(expr) __builtin_expect(!!(expr), 1)
+#    define likely(expr) \
+      __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 1)
 #  else
 #    define likely(expr) (expr)
 #  endif
@@ -50,7 +51,8 @@
  */
 #ifndef unlikely
 #  ifdef __GNUC__
-#    define unlikely(expr) __builtin_expect(!!(expr), 0)
+#    define unlikely(expr) \
+      __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 0)
 #  else
 #    define unlikely(expr) (expr)
 #  endif
@@ -188,7 +190,7 @@ zth_logv(char const* fmt, va_list arg);
  * \hideinitializer
  */
 #    define zth_dbg(group, fmt, a...)                                                   \
-      do {                                                                              \
+      do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                               \
 	if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0         \
 	   && zth_config(EnableDebugPrint)) {                                           \
 	  if(::zth::Config::EnableColorLog)                                             \
@@ -206,7 +208,7 @@ zth_logv(char const* fmt, va_list arg);
  */
 #    ifndef NDEBUG
 #      define zth_assert(expr)                                                        \
-	do {                                                                          \
+	do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                           \
 	  if(unlikely(::zth::Config::EnableAssert && !(expr)))                        \
 	    ::zth::assert_handler(                                                    \
 		    __FILE__, __LINE__,                                               \

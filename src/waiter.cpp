@@ -36,7 +36,7 @@ void Waiter::wait(TimedWaitable& w)
 
 	Timestamp now = Timestamp::now();
 	if(unlikely(w.poll(now))) {
-		yield(NULL, false, now);
+		yield(nullptr, false, now);
 		return;
 	}
 
@@ -212,7 +212,7 @@ void Waiter::entry()
 						"is %s",
 						id_str(), dt.str().c_str());
 					timeout_ms =
-						std::max<int>(0, (int)(dt.s<float>() * 1000.0f));
+						std::max<int>(0, (int)(dt.s<float>() * 1000.0F));
 				}
 
 				perf_mark("blocking poll()");
@@ -234,7 +234,7 @@ void Waiter::entry()
 				id_str(), m_waiting.front().str().c_str());
 			perf_mark("idle system; sleep");
 			zth_perf_event(*fiber(), Fiber::Waiting);
-			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), NULL);
+			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), nullptr);
 			zth_perf_event(*fiber(), fiber()->state());
 			perf_mark("wakeup");
 		}

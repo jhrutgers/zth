@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+if(TARGET libzth)
+	return()
+endif()
+
 cmake_policy(VERSION 3.10)
 
 option(ZTH_DEV "Enable development related build options" OFF)
@@ -11,7 +15,8 @@ option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" OFF)
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" OFF)
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" OFF)
 option(ZTH_THREADS "Make libzth thread-aware" ON)
-option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
+option(ZTH_ENABLE_VALGRIND "Enable valgrind support" OFF)
+option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
 
 if(NOT ZTH_SOURCE_DIR)
 	get_filename_component(ZTH_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
@@ -239,4 +244,53 @@ if(NOT CMAKE_CROSSCOMPILING
 )
 	# Improve backtraces.
 	target_link_options(libzth INTERFACE -rdynamic)
+endif()
+
+if(ZTH_CLANG_TIDY)
+	find_program(
+		CLANG_EXE
+		NAMES "clang"
+		DOC "Path to clang executable"
+	)
+
+	if(CLANG_EXE AND NOT CLANG_TIDY_EXE14)
+		execute_process(
+			COMMAND ${CLANG_EXE} -dumpversion
+			OUTPUT_VARIABLE CLANG_VERSION
+			ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+
+		# We need clang-tidy 14 or later for --config-file.
+		if("${CLANG_VERSION}" VERSION_GREATER_EQUAL 14)
+			find_program(
+				CLANG_TIDY_EXE14
+				NAMES "clang-tidy"
+				DOC "Path to clang-tidy executable"
+			)
+
+			if(CLANG_TIDY_EXE14)
+				message(STATUS "Found clang-tidy ${CLANG_VERSION}")
+			endif()
+		endif()
+	endif()
+
+	if(CLANG_TIDY_EXE14)
+		message(STATUS "Enabled clang-tidy for libzth")
+
+		set(DO_CLANG_TIDY
+		    "${CLANG_TIDY_EXE14}" "--config-file=${ZTH_SOURCE_DIR}/.clang-tidy"
+		    "--extra-arg=-I${ZTH_SOURCE_DIR}/include"
+		    "--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
+		)
+
+		if(CMAKE_CXX_STANDARD)
+			set(DO_CLANG_TIDY "${DO_CLANG_TIDY}"
+					  "--extra-arg=-std=c++${CMAKE_CXX_STANDARD}"
+			)
+		endif()
+
+		set_target_properties(libzth PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+	else()
+		set_target_properties(libzth PROPERTIES CXX_CLANG_TIDY "")
+	endif()
 endif()
