@@ -23,7 +23,8 @@ void fiber(int id)
 	for(int i = 0; i < 3; i++) {
 		printf("fiber %d outside of critical section\n", id);
 
-		mutex.lock();
+		zth::Locked l(mutex);
+
 		printf(" { fiber %d at start of critical section\n", id);
 		// It does not matter how and how often we yield, other fibers
 		// trying to lock the mutex will not be scheduled, but others
@@ -31,7 +32,6 @@ void fiber(int id)
 		zth::yield();
 		zth::outOfWork();
 		printf(" } fiber %d at end of critical section\n", id);
-		mutex.unlock();
 
 		zth::outOfWork();
 	}
