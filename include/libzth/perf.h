@@ -109,43 +109,43 @@ struct PerfEvent {
 		, unused()
 	{}
 
-	explicit PerfEvent(UniqueID<Fiber> const& fiber)
-		: fiber(fiber.id())
+	explicit PerfEvent(UniqueID<Fiber> const& fiber_)
+		: fiber(fiber_.id())
 		, type(FiberName)
-		, str(strdup(fiber.name().c_str()))
+		, str(strdup(fiber_.name().c_str()))
 	{}
 
 	PerfEvent(
-		UniqueID<Fiber> const& fiber, int state,
-		Timestamp const& t = Timestamp::now()) noexcept
-		: t(t)
-		, fiber(fiber.id())
+		UniqueID<Fiber> const& fiber_, int state,
+		Timestamp const& t_ = Timestamp::now()) noexcept
+		: t(t_)
+		, fiber(fiber_.id())
 		, type(FiberState)
 		, fiberState(state)
 	{}
 
 	PerfEvent(
-		UniqueID<Fiber> const& fiber, string const& str,
-		Timestamp const& t = Timestamp::now())
-		: t(t)
-		, fiber(fiber.id())
+		UniqueID<Fiber> const& fiber_, string const& str_,
+		Timestamp const& t_ = Timestamp::now())
+		: t(t_)
+		, fiber(fiber_.id())
 		, type(Log)
-		, str(strdup(str.c_str()))
+		, str(strdup(str_.c_str()))
 	{}
 
 	PerfEvent(
-		UniqueID<Fiber> const& fiber, char const* marker,
-		Timestamp const& t = Timestamp::now()) noexcept
-		: t(t)
-		, fiber(fiber.id())
+		UniqueID<Fiber> const& fiber_, char const* marker,
+		Timestamp const& t_ = Timestamp::now()) noexcept
+		: t(t_)
+		, fiber(fiber_.id())
 		, type(Marker)
 		, c_str(marker)
 	{}
 
 	__attribute__((format(ZTH_ATTR_PRINTF, 4, 5)))
-	PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...)
-		: t(t)
-		, fiber(fiber.id())
+	PerfEvent(UniqueID<Fiber> const& fiber_, Timestamp const& t_, char const* fmt, ...)
+		: t(t_)
+		, fiber(fiber_.id())
 		, type(Log)
 	{
 		va_list args;
@@ -156,9 +156,9 @@ struct PerfEvent {
 	}
 
 	__attribute__((format(ZTH_ATTR_PRINTF, 4, 0)))
-	PerfEvent(UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, va_list args)
-		: t(t)
-		, fiber(fiber.id())
+	PerfEvent(UniqueID<Fiber> const& fiber_, Timestamp const& t_, char const* fmt, va_list args)
+		: t(t_)
+		, fiber(fiber_.id())
 		, type(Log)
 	{
 		if(vasprintf(&str, fmt, args) == -1)
@@ -177,6 +177,9 @@ struct PerfEvent {
 		case Log:
 			free(str);
 			break;
+		case Nothing:
+		case FiberState:
+		case Marker:
 		default:;
 		}
 	}
@@ -203,34 +206,35 @@ struct PerfEvent<false> {
 		: unused()
 	{}
 
-	constexpr explicit PerfEvent(UniqueID<Fiber> const& fiber) noexcept
+	constexpr explicit PerfEvent(UniqueID<Fiber> const& fiber_) noexcept
 		: unused()
 	{}
 
 	constexpr PerfEvent(
-		UniqueID<Fiber> const& fiber, int state, Timestamp const& t = Timestamp()) noexcept
+		UniqueID<Fiber> const& fiber_, int state,
+		Timestamp const& t_ = Timestamp()) noexcept
 		: unused()
 	{}
 
 	constexpr PerfEvent(
-		UniqueID<Fiber> const& fiber, string const& str,
-		Timestamp const& t = Timestamp()) noexcept
+		UniqueID<Fiber> const& fiber_, string const& str_,
+		Timestamp const& t_ = Timestamp()) noexcept
 		: unused()
 	{}
 
 	constexpr PerfEvent(
-		UniqueID<Fiber> const& fiber, char const* marker,
-		Timestamp const& t = Timestamp()) noexcept
+		UniqueID<Fiber> const& fiber_, char const* marker,
+		Timestamp const& t_ = Timestamp()) noexcept
 		: unused()
 	{}
 
 	__attribute__((format(ZTH_ATTR_PRINTF, 4, 5))) constexpr PerfEvent(
-		UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt, ...) noexcept
+		UniqueID<Fiber> const& fiber_, Timestamp const& t_, char const* fmt, ...) noexcept
 		: unused()
 	{}
 
 	__attribute__((format(ZTH_ATTR_PRINTF, 4, 0))) PerfEvent(
-		UniqueID<Fiber> const& fiber, Timestamp const& t, char const* fmt,
+		UniqueID<Fiber> const& fiber_, Timestamp const& t_, char const* fmt,
 		va_list args) noexcept
 		: unused()
 	{}

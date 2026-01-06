@@ -282,6 +282,9 @@ reschedule:
 			// Not on my queue...
 			fiber.suspend();
 			break;
+		case Fiber::Uninitialized:
+		case Fiber::Dead:
+		case Fiber::Suspended:
 		default:; // Ignore.
 		}
 	}

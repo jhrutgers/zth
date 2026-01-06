@@ -5,6 +5,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/init.h>
 #include <libzth/time.h>
 #include <libzth/util.h>

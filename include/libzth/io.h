@@ -16,6 +16,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/poller.h>
 
 #include <unistd.h>

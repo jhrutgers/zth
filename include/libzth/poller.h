@@ -139,21 +139,21 @@ struct PollableFd : public Pollable {
 	 * Do not pass ZeroMQ sockets as a file descriptor.
 	 * Use the socket \c void* for that.
 	 */
-	constexpr PollableFd(int fd, Events const& e, void* user = nullptr) noexcept
+	constexpr PollableFd(int f, Events const& e, void* user = nullptr) noexcept
 		: Pollable(e, user)
 #  ifdef ZTH_HAVE_LIBZMQ
 		, socket()
-#  endif
-		, fd(fd)
+#  endif // ZTH_HAVE_LIBZMQ
+		, fd(f)
 	{}
 
 #  ifdef ZTH_HAVE_LIBZMQ
 	/*!
 	 * \brief Ctor for a ZeroMQ socket.
 	 */
-	constexpr PollableFd(void* socket, Events const& e, void* user = nullptr) noexcept
+	constexpr PollableFd(void* s, Events const& e, void* user = nullptr) noexcept
 		: Pollable(e, user)
-		, socket(socket)
+		, socket(s)
 		, fd()
 	{}
 

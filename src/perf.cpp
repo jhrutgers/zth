@@ -7,6 +7,7 @@
 #define UNW_LOCAL_ONLY
 
 #include <libzth/macros.h>
+
 #include <libzth/allocator.h>
 
 #ifdef ZTH_OS_MAC
@@ -295,6 +296,7 @@ protected:
 				}
 			}
 
+			case PerfEvent<>::Nothing:
 			default:; // ignore
 			}
 		}

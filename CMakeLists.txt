@@ -217,9 +217,8 @@ if(ZTH_DOCUMENTATION)
 	add_custom_target(
 		doc ALL
 		COMMAND Doxygen::doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMENT
-			"Generating API documentation with Doxygen (see ${CMAKE_CURRENT_BINARY_DIR}/doxygen/html/index.html)"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating API documentation with Doxygen (see doxygen/html/index.html)"
 	)
 endif()
 

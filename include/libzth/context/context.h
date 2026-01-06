@@ -105,14 +105,14 @@ public:
 	 * \brief Stack information.
 	 */
 	struct Stack {
-		constexpr Stack(void* p, size_t size) noexcept
-			: p(static_cast<char*>(p))
-			, size(size)
+		constexpr Stack(void* p_, size_t size_) noexcept
+			: p(static_cast<char*>(p_))
+			, size(size_)
 		{}
 
-		constexpr explicit Stack(size_t size = 0) noexcept
+		constexpr explicit Stack(size_t size_ = 0) noexcept
 			: p()
-			, size(size)
+			, size(size_)
 		{}
 
 		constexpr operator bool() const noexcept

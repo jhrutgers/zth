@@ -17,6 +17,8 @@ option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" OFF)
 option(ZTH_THREADS "Make libzth thread-aware" ON)
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" OFF)
 option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
+option(ZTH_DISABLE_EXCEPTIONS "Disable exceptions to reduce code size" OFF)
+option(ZTH_DISABLE_RTTI "Disable RTTI, to reduce code size" OFF)
 
 if(NOT ZTH_SOURCE_DIR)
 	get_filename_component(ZTH_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
@@ -118,11 +120,30 @@ target_compile_options(
 		-Wformat=2
 		-Wundef
 		-Wconversion
+		-Wshadow
+		-Wswitch-default
+		-Wswitch-enum
+		-Wfloat-equal
 		-ffunction-sections
 		-fdata-sections
+		-Wlogical-op
 )
 if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
+endif()
+
+if(ZTH_DEV)
+	if(NOT WIN32)
+		target_compile_options(libzth PUBLIC -fstack-protector-strong)
+	endif()
+endif()
+
+if(ZTH_DISABLE_EXCEPTIONS)
+	target_compile_options(libzth PRIVATE -fno-exceptions)
+endif()
+
+if(ZTH_DISABLE_RTTI)
+	target_compile_options(libzth PUBLIC -fno-rtti)
 endif()
 
 if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)

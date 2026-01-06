@@ -2406,7 +2406,9 @@ PREDEFINED             = DOXYGEN \
                          EXTERN_C= \
                          ZTH_HAVE_POLL \
                          ZTH_HAVE_LIBZMQ \
-                         inline17=inline
+                         inline17=inline \
+			 FOREACH(...)= \
+			 REVERSED(...)= \
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The

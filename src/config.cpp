@@ -5,6 +5,7 @@
  */
 
 #include <libzth/config.h>
+
 #include <libzth/util.h>
 
 #include <cstdlib>
