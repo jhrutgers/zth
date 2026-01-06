@@ -150,11 +150,14 @@ int clock_gettime(int clk_id, struct timespec* res)
 	return 0;
 }
 
+#pragma GCC push_options
+#pragma GCC target("general-regs-only")
 __attribute__((interrupt)) void systick_handler()
 {
 	// Ticks are configured to be fired every ms.
 	systicks_ns += (uint64_t)1000000;
 }
+#pragma GCC pop_options
 
 void _crt()
 {

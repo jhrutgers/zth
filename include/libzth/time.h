@@ -414,7 +414,7 @@ public:
 		if(m_negative)
 			res = "-";
 
-#  ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_FORMAT_LIMITED
 		// Do a simplified print without float formatting support.
 		if(m_t.tv_sec >= 60)
 			res += format("%u s", (unsigned int)m_t.tv_sec);

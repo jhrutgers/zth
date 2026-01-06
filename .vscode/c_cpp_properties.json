@@ -39,6 +39,20 @@
 			"intelliSenseMode": "linux-gcc-x64"
 		},
 		{
+			"name": "ARM",
+			"includePath": [
+				"${env:includePath}"
+			],
+			"defines": [
+				"${env:defines}",
+				"ZTH_OS_BAREMETAL=1"
+			],
+			"compilerPath": "/usr/bin/arm-none-eabi-g++",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "gcc-arm"
+		},
+		{
 			"name": "Win32",
 			"includePath": [
 				"${env:includePath}"

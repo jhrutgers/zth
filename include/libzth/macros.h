@@ -278,7 +278,7 @@ ZTH_EXPORT void foo();
 #  ifdef ZTH_CONFIG_WRAP_IO
 #    error ZTH_CONFIG_WRAP_IO is not supported on Windows.
 #  endif
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(ZTH_OS_BAREMETAL)
 #  define ZTH_OS_LINUX 1
 #  define ZTH_OS_POSIX 1
 // #  define ZTH_HAVE_VALGRIND
@@ -309,6 +309,9 @@ ZTH_EXPORT void foo();
 #  include <newlib.h>
 #  ifndef NEWLIB_VERSION
 #    define NEWLIB_VERSION (__NEWLIB__ * 10000L + __NEWLIB_MINOR__ * 100L + __NEWLIB_PATCHLEVEL__)
+#  endif
+#  ifndef ZTH_FORMAT_LIMITED
+#    define ZTH_FORMAT_LIMITED 1
 #  endif
 #else
 #  error Unsupported OS.
