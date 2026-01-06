@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/jhrutgers/zth/compare/v1.1.0...HEAD)
 
+### Added
+
+- `zth::Locked` RAII for scoped locks of `zth::Mutex`.
+
 ### Changed
 
 - Make REUSE compliant.
+- Fixes for tooling on Ubuntu 24.04.
+- Use `std::terminate()` instead of `std::abort()` on errors, to allow setting a handler.
+- Redirect standard ``assert()`` failure handling to `zth::assert_handler()`.
 
 
 
