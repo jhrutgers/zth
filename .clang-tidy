@@ -10,6 +10,7 @@ Checks: >
 
   cert-*,
   -cert-dcl37-c,
+  -cert-dcl50-cpp,
   -cert-dcl51-cpp,
 
   clang-analyzer-*,

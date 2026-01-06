@@ -105,7 +105,7 @@ PollerServerBase& Waiter::poller()
 
 bool Waiter::polling() const
 {
-	PollerServerBase* p = m_poller;
+	PollerServerBase const* p = m_poller;
 
 	if(!p)
 		p = m_defaultPoller;

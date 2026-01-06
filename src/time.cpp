@@ -38,13 +38,13 @@ int clock_gettime(int clk_id, struct timespec* res)
 	if(unlikely(clock_info.numer != clock_info.denom)) // For all recent Mac OSX versions,
 							   // mach_absolute_time() is in ns.
 	{
-		uint64_t chigh = (c >> 32u) * clock_info.numer;
-		uint64_t chighrem = ((chigh % clock_info.denom) << 32u) / clock_info.denom;
+		uint64_t chigh = (c >> 32U) * clock_info.numer;
+		uint64_t chighrem = ((chigh % clock_info.denom) << 32U) / clock_info.denom;
 		chigh /= clock_info.denom;
 		uint64_t clow =
-			(c & (((uint64_t)1 << 32u) - 1)) * clock_info.numer / clock_info.denom;
+			(c & (((uint64_t)1 << 32U) - 1)) * clock_info.numer / clock_info.denom;
 		clow += chighrem;
-		ns = (chigh << 32u)
+		ns = (chigh << 32U)
 		     + clow; // 64-bit ns gives us more than 500 y before wrap-around.
 	} else {
 		ns = c;
@@ -175,6 +175,7 @@ static void startTimeInit()
 }
 ZTH_INIT_CALL(startTimeInit)
 #else  // !ZTH_OS_MAC
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 zth::Timestamp startTime_;
 
 static void startTimeInit()

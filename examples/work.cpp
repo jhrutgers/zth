@@ -52,7 +52,7 @@ static void employer()
 
 	while(true) {
 		// Do a blocking read.
-		ssize_t cnt = zth::io::read(0, &buf[len], sizeof(buf) - len - 1u);
+		ssize_t cnt = zth::io::read(0, &buf[len], sizeof(buf) - len - 1U);
 
 		if(cnt == 0) {
 			// stdin was closed.
@@ -104,7 +104,7 @@ static void employer()
 				}
 				// fall-through
 			default:
-				if(totalScanned == 0 && len == sizeof(buf) - 1u) {
+				if(totalScanned == 0 && len == sizeof(buf) - 1U) {
 					// Buffer does not make sense.
 					totalScanned = len;
 				}

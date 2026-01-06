@@ -8,7 +8,9 @@
 #include <libzth/init.h>
 #include <libzth/util.h>
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 struct zth_init_entry const* zth_init_head = nullptr;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 struct zth_init_entry* zth_init_tail = nullptr;
 
 /*!

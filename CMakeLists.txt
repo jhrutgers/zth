@@ -122,6 +122,53 @@ option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
 list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
 include(zth)
 
+option(ZTH_REGEN_LAUNCH_JSON "Regenerate launch.json" OFF)
+if(NOT EXISTS ${ZTH_SOURCE_DIR}/.vscode/launch.json OR ZTH_REGEN_LAUNCH_JSON)
+	set(ZTH_GEN_LAUNCH_JSON ON)
+else()
+	set(ZTH_GEN_LAUNCH_JSON OFF)
+endif()
+
+set_property(GLOBAL PROPERTY ZTH_LAUNCH_JSON "")
+
+function(add_launch_json TARGET)
+	get_property(_launch GLOBAL PROPERTY ZTH_LAUNCH_JSON)
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		set_property(
+			GLOBAL
+			PROPERTY
+				ZTH_LAUNCH_JSON
+				"${_launch}
+		{
+			\"type\": \"cppdbg\",
+			\"request\": \"launch\",
+			\"name\": \"${TARGET}\",
+			\"program\": \"$<TARGET_FILE:${TARGET}>\",
+			\"cwd\": \"$<TARGET_FILE_DIR:${TARGET}>\",
+			\"environment\": [
+				{
+					\"name\": \"ASAN_OPTIONS\",
+					\"value\": \"detect_leaks=0\"
+				}
+			]
+		},"
+		)
+	else()
+		set_property(
+			GLOBAL
+			PROPERTY
+				ZTH_LAUNCH_JSON
+				"${_launch}
+		{
+			\"type\": \"f5anything\",
+			\"request\": \"launch\",
+			\"name\": \"${TARGET}\",
+			\"command\": \"$<TARGET_FILE:${TARGET}>\",
+		},"
+		)
+	endif()
+endfunction()
+
 option(ZTH_BUILD_EXAMPLES "Build examples" ON)
 if(ZTH_BUILD_EXAMPLES)
 	add_subdirectory(examples)
@@ -181,12 +228,12 @@ if(CPPCHECK_CMD)
 	add_custom_target(
 		libzth-cppcheck
 		COMMAND
-			${CPPCHECK_CMD} --std=c++11 --language=c++ -D__cplusplus=201103L
+			${CPPCHECK_CMD} --std=c++17 --language=c++ -D__cplusplus=201703L
 			--enable=warning,style,information --force --inline-suppr --quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
 			--error-exitcode=1 -j 4 --library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
-			-DCPPCHECK -U__ARM_ARCH
+			--enable=missingInclude -DCPPCHECK -U__ARM_ARCH
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
 			tests/test_fsm17.cpp
@@ -216,4 +263,28 @@ add_custom_target(
 
 if(ZTH_DEV)
 	add_custom_target(zth-reuse-all ALL DEPENDS zth-reuse)
+endif()
+
+if(ZTH_GEN_LAUNCH_JSON)
+	get_property(_launch GLOBAL PROPERTY ZTH_LAUNCH_JSON)
+	set(ZTH_LAUNCH_JSON
+	    "\
+{
+	\"version\": \"0.2.0\",
+	\"configurations\": [${_launch}
+	]
+}
+"
+	)
+
+	file(
+		GENERATE
+		OUTPUT ${ZTH_SOURCE_DIR}/.vscode/launch.json
+		CONTENT "${ZTH_LAUNCH_JSON}"
+	)
+
+	set(ZTH_REGEN_LAUNCH_JSON
+	    OFF
+	    CACHE INTERNAL "" FORCE
+	)
 endif()

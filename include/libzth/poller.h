@@ -444,21 +444,21 @@ public:
 
 		size_t i;
 		for(i = count; i > 0; i--) {
-			MetaItem& m = m_metaItems[i - 1u];
+			MetaItem const& m = m_metaItems[i - 1U];
 			if(m.pollable == &p && m.client == client)
 				break;
 		}
 
-		if(i == 0u)
+		if(i == 0U)
 			return ESRCH;
 
 		i--;
 
-		if(i < count - 1u) {
+		if(i < count - 1U) {
 			// Not removing the last element, fill the gap.
 			if(i < m_pollItems.size()) {
 				deinit(*m_metaItems[i].pollable, m_pollItems[i]);
-				if(i < m_pollItems.size() - 1u) {
+				if(i < m_pollItems.size() - 1U) {
 #  if __cplusplus >= 201103L
 					m_pollItems[i] = std::move(m_pollItems.back());
 #  else
@@ -476,7 +476,7 @@ public:
 			m_metaItems.pop_back();
 		} else {
 			// Drop the last element.
-			remove(1u);
+			remove(1U);
 		}
 
 		zth_dbg(io, "[%s] removed pollable %p", this->id_str(), &p);

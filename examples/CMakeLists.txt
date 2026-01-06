@@ -27,6 +27,7 @@ function(add_example example)
 	endif()
 
 	install(TARGETS ${example} RUNTIME DESTINATION bin)
+	add_launch_json(${example})
 endfunction()
 
 add_example(1_helloworld 1_helloworld.cpp)

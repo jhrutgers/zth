@@ -20,6 +20,7 @@ function show_help {
 	exit 2
 }
 
+distdir="$(pwd -P)"
 repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." &> /dev/null; pwd -P)"
 
 case ${1:-} in
@@ -30,11 +31,9 @@ esac
 BUILD_TYPE="${1:-}"
 shift || true
 
-mkdir -p build
-pushd build > /dev/null
-
 # Simplify setting specific configuration flag.
 support_test=1
+do_clean=0
 do_build=1
 do_test=0
 use_ninja=0
@@ -61,6 +60,10 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=17 -DCMAKE_C_STANDARD=17";;
 		C++20)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_STANDARD=17";;
+		clean)
+			do_clean=1
+			cmake_opts="${cmake_opts} -DZTH_REGEN_LAUNCH_JSON=ON"
+			;;
 		conf)
 			do_build=0;;
 		dev)
@@ -97,6 +100,15 @@ while [[ ! -z ${1:-} ]]; do
 	esac
 	shift
 done
+
+
+builddir="${distdir}/build"
+if [[ ${do_clean} -eq 1 ]] && [[ -d "${builddir}" ]]; then
+	rm -rf "${builddir}"
+fi
+
+mkdir -p "${builddir}"
+pushd "${builddir}" > /dev/null
 
 if [[ ${repo}/dist/common/requirements.txt -nt ${repo}/dist/venv/.timestamp ]]; then
 	[[ ! -e ${repo}/dist/venv ]] || rm -rf "${repo}/dist/venv"

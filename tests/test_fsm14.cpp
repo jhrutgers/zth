@@ -160,6 +160,7 @@ TEST(Fsm14, Empty)
 	fsm2.run(true);
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static bool f_check_flag;
 
 static void f_check()

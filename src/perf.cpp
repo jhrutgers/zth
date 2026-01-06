@@ -96,7 +96,7 @@ public:
 		}
 
 		// Almost full, but enough room to signal that we are going to process the buffer.
-		Fiber* currentFiber_ = m_worker.currentFiber();
+		Fiber const* currentFiber_ = m_worker.currentFiber();
 		if(unlikely(!currentFiber_)) {
 			// Huh? Do it here anyway.
 			processEventBuffer();
@@ -349,10 +349,10 @@ write_error:
 			if(time(&now) != -1) {
 #if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
 				char dateBuf[128];
-				char* strnow = ctime_r(&now, dateBuf);
+				char const* strnow = ctime_r(&now, dateBuf);
 #else
 				// Possibly not thread-safe.
-				char* strnow = ctime(&now);
+				char const* strnow = ctime(&now);
 #endif
 				if(strnow)
 					if(fprintf(m_vcd, "$date %s$end\n", strnow) < 0)
@@ -515,7 +515,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	, m_fiberId()
 	, m_truncated(true)
 {
-	Worker* worker = Worker::instance();
+	Worker const* worker = Worker::instance();
 	m_fiber = worker ? worker->currentFiber() : nullptr;
 	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_fiberId = m_fiber ? m_fiber->id() : 0;

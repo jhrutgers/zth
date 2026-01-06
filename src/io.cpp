@@ -36,7 +36,8 @@ ssize_t read(int fd, void* buf, size_t count)
 		return ::read(fd, buf, count);
 	}
 
-	if((errno = zth::poll(PollableFd(fd, Pollable::PollIn), -1)))
+	errno = zth::poll(PollableFd(fd, Pollable::PollIn), -1);
+	if(errno)
 		return -1;
 
 	// Got data to read.
@@ -63,7 +64,8 @@ ssize_t write(int fd, void const* buf, size_t count)
 		return ::write(fd, buf, count);
 	}
 
-	if((errno = zth::poll(PollableFd(fd, Pollable::PollOut), -1)))
+	errno = zth::poll(PollableFd(fd, Pollable::PollOut), -1);
+	if(errno)
 		return -1;
 
 	// Go write the data.

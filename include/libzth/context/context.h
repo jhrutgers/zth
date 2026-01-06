@@ -18,9 +18,9 @@
 
 #  include "libzth/macros.h"
 
-#  include "libzth/util.h"
 #  include "libzth/allocator.h"
 #  include "libzth/context.h"
+#  include "libzth/util.h"
 #  include "libzth/worker.h"
 
 #  include <setjmp.h>
@@ -205,7 +205,7 @@ public:
 		zth_assert(__builtin_popcount((unsigned int)page) == 1);
 
 		// Round up to full pages.
-		stack.size = (stack.size + page - 1u) & ~(page - 1u);
+		stack.size = (stack.size + page - 1U) & ~(page - 1U);
 
 		// Add another page size to allow arbitrary allocation location.
 		stack.size += page;
@@ -342,15 +342,15 @@ public:
 		// The stack should not wrap.
 		zth_assert(stack_old + stack.size > stack_old);
 
-		uintptr_t stack_new = ((uintptr_t)(stack_old + ps - 1u) & ~(ps - 1u));
-		stack.size = (stack.size - (stack_new - stack_old)) & ~(ps - 1u);
+		uintptr_t stack_new = ((uintptr_t)(stack_old + ps - 1U) & ~(ps - 1U));
+		stack.size = (stack.size - (stack_new - stack_old)) & ~(ps - 1U);
 
 #  ifdef ZTH_HAVE_MMAN
 		if(Config::EnableStackGuard) {
 			// Do not use the pages at both sides.
-			zth_assert(stack.size > ps * 2u);
+			zth_assert(stack.size > ps * 2U);
 			stack_new += ps;
-			stack.size -= ps * 2u;
+			stack.size -= ps * 2U;
 		}
 #  endif
 
@@ -368,7 +368,7 @@ public:
 			return;
 
 		m_valgrind_stack_id = VALGRIND_STACK_REGISTER(
-			m_stackUsable.p, m_stackUsable.p + m_stackUsable.size - 1u);
+			m_stackUsable.p, m_stackUsable.p + m_stackUsable.size - 1U);
 
 		if(RUNNING_ON_VALGRIND)
 			zth_dbg(context, "[%s] Stack of context %p has Valgrind id %u",
