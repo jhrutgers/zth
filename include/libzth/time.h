@@ -184,7 +184,10 @@ private:
 	template <typename T>
 	void init_float(T dt)
 	{
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wfloat-equal"
 		zth_assert(dt == dt); // Should not be NaN
+#  pragma GCC diagnostic pop
 
 		m_negative = dt < 0;
 

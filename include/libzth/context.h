@@ -7,6 +7,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/config.h>
 
 /*!
@@ -70,10 +71,10 @@ struct ContextAttr {
 	typedef void* EntryArg;
 	typedef void (*Entry)(EntryArg);
 
-	constexpr explicit ContextAttr(Entry entry = nullptr, EntryArg arg = EntryArg()) noexcept
+	constexpr explicit ContextAttr(Entry entry_ = nullptr, EntryArg arg_ = EntryArg()) noexcept
 		: stackSize(Config::DefaultFiberStackSize)
-		, entry(entry)
-		, arg(arg)
+		, entry(entry_)
+		, arg(arg_)
 	{}
 
 	size_t stackSize;

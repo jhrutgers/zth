@@ -16,6 +16,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/allocator.h>
 #include <libzth/async.h>
 #include <libzth/config.h>

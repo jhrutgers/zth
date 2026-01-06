@@ -12,11 +12,11 @@
 
 struct zth_init_entry {
 #ifdef __cplusplus
-	zth_init_entry(void (*f)(void), zth_init_entry const* next) noexcept
-		: f(f)
-		, next(next)
+	zth_init_entry(void (*f_)(void), zth_init_entry const* next_) noexcept
+		: f(f_)
+		, next(next_)
 	{}
-#endif
+#endif // C++
 	void (*f)(void);
 	struct zth_init_entry const* next;
 };

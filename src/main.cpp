@@ -13,7 +13,7 @@ __attribute__((weak)) int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(arg
 	return 0;
 }
 #ifndef DOXYGEN
-zth_fiber(main_fiber);
+zth_fiber_define_1(static, main_fiber);
 #endif
 
 /*!

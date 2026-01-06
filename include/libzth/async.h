@@ -41,9 +41,9 @@ public:
 	typedef F Function;
 	typedef Future<Return> Future_type;
 
-	explicit TypedFiber(Function function)
+	explicit TypedFiber(Function func)
 		: Fiber(&entry, this)
-		, m_function(function)
+		, m_function(func)
 	{}
 
 	virtual ~TypedFiber() override is_default
@@ -492,8 +492,8 @@ public:
 
 	template <typename... Args_>
 	// cppcheck-suppress passedByValue
-	TypedFiberN(typename base::Function function, Args_&&... args)
-		: base(function)
+	TypedFiberN(typename base::Function func, Args_&&... args)
+		: base(func)
 		, m_args(std::forward<Args_>(args)...)
 	{}
 

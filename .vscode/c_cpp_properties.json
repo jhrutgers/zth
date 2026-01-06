@@ -7,8 +7,7 @@
 			"${workspaceFolder}/examples/**",
 			"${workspaceFolder}/tests/**"
 		],
-		"defines": [
-		]
+		"defines": []
 	},
 	"configurations": [
 		{
@@ -17,12 +16,13 @@
 				"${env:includePath}"
 			],
 			"defines": [
-				"${env:defines}"
+				"${env:defines}",
+				"ZTH_HAVE_LIBZMQ"
 			],
-			"compilerPath": "/usr/bin/clang",
+			"compilerPath": "/usr/bin/g++",
 			"cStandard": "c17",
 			"cppStandard": "c++17",
-			"intelliSenseMode": "linux-clang-x64"
+			"intelliSenseMode": "linux-gcc-x64"
 		},
 		{
 			"name": "Win32",

@@ -44,34 +44,63 @@ __attribute__((warn_unused_result)) static inline T* allocate_noexcept(size_t n 
 {
 	try {
 		return allocate<T>(n);
+	} catch(std::bad_alloc const&) {
+		return nullptr;
 	} catch(...) {
+		std::terminate();
 	}
+
+	// Should not get here.
 	return nullptr;
 }
 
 template <typename T>
 __attribute__((warn_unused_result)) static inline T* new_alloc()
 {
-	T* o = allocate<T>(1);
-	new(o) T;
-	return o;
+	T* o = allocate<T>();
+	try {
+		new(o) T;
+		return o;
+	} catch(...) {
+		deallocate(o);
+		zth_throw();
+	}
+
+	// Should not get here.
+	return nullptr;
 }
 
 template <typename T, typename Arg>
 __attribute__((warn_unused_result)) static inline T* new_alloc(Arg const& arg)
 {
-	T* o = allocate<T>(1);
-	new(o) T(arg);
-	return o;
+	T* o = allocate<T>();
+	try {
+		new(o) T(arg);
+		return o;
+	} catch(...) {
+		deallocate(o);
+		zth_throw();
+	}
+
+	// Should not get here.
+	return nullptr;
 }
 
 #  if __cplusplus >= 201103L
 template <typename T, typename... Arg>
 __attribute__((warn_unused_result)) static inline T* new_alloc(Arg&&... arg)
 {
-	T* o = allocate<T>(1);
-	new(o) T(std::forward<Arg>(arg)...);
-	return o;
+	T* o = allocate<T>();
+	try {
+		new(o) T{std::forward<Arg>(arg)...};
+		return o;
+	} catch(...) {
+		deallocate(o);
+		zth_throw();
+	}
+
+	// Should not get here.
+	return nullptr;
 }
 #  endif
 
@@ -96,7 +125,7 @@ static inline void delete_alloc(T* p) noexcept
 		return;
 
 	p->~T();
-	deallocate(p, 1);
+	deallocate(p);
 }
 
 /*!

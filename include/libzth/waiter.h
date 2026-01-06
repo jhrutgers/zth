@@ -129,11 +129,11 @@ public:
 		if(m_f())
 			return true;
 
-		Timestamp next = timeout() + interval();
-		if(unlikely(next < now))
-			next = now + interval();
+		Timestamp next_poll = timeout() + interval();
+		if(unlikely(next_poll < now))
+			next_poll = now + interval();
 
-		setTimeout(next);
+		setTimeout(next_poll);
 		return false;
 	}
 
@@ -156,9 +156,9 @@ private:
 
 template <typename C>
 struct PolledMemberWaitingHelper {
-	constexpr PolledMemberWaitingHelper(C& that, bool (C::*f)()) noexcept
-		: that(that)
-		, f(f)
+	constexpr PolledMemberWaitingHelper(C& that_, bool (C::*f_)()) noexcept
+		: that(that_)
+		, f(f_)
 	{}
 
 	bool operator()() const
@@ -435,8 +435,6 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_unap(long sleepFor_us)
 }
 
 #else // !__cplusplus
-
-#  include <libzth/macros.h>
 
 #  include <time.h>
 

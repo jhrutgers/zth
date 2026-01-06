@@ -17,7 +17,6 @@
 
 #if defined(__cplusplus) && __cplusplus >= 201402L
 
-#  include <libzth/macros.h>
 #  include <libzth/allocator.h>
 #  include <libzth/sync.h>
 #  include <libzth/util.h>

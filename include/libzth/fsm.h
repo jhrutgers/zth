@@ -738,21 +738,21 @@ public:
 
 	FsmCallback(
 		// cppcheck-suppress constParameter
-		typename base::Compiler const& compiler, Callback callback, CallbackArg callbackArg,
+		typename base::Compiler const& compiler, Callback cb, CallbackArg cbArg,
 		char const* name = "FSM")
 		: base(compiler, name)
-		, m_callback(callback)
-		, m_callbackArg(callbackArg)
+		, m_callback(cb)
+		, m_callbackArg(cbArg)
 	{}
 
 	FsmCallback(
 		// cppcheck-suppress passedByValue
 		// cppcheck-suppress constParameter
-		typename base::Description description, Callback callback, CallbackArg callbackArg,
+		typename base::Description description, Callback cb, CallbackArg cbArg,
 		char const* name = "FSM")
 		: base(description, name)
-		, m_callback(callback)
-		, m_callbackArg(callbackArg)
+		, m_callback(cb)
+		, m_callbackArg(cbArg)
 	{}
 
 	virtual ~FsmCallback() {}
@@ -794,18 +794,18 @@ public:
 	typedef void (*Callback)(FsmCallback&);
 
 	explicit FsmCallback(
-		typename base::Compiler const& compiler, Callback callback = nullptr,
+		typename base::Compiler const& compiler, Callback cb = nullptr,
 		char const* name = "FSM")
 		: base(compiler, name)
-		, m_callback(callback)
+		, m_callback(cb)
 	{}
 
 	explicit FsmCallback(
 		// cppcheck-suppress passedByValue
-		typename base::Description description, Callback callback = nullptr,
+		typename base::Description description, Callback cb = nullptr,
 		char const* name = "FSM")
 		: base(description, name)
-		, m_callback(callback)
+		, m_callback(cb)
 	{}
 
 	virtual ~FsmCallback() {}

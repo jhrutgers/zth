@@ -6,14 +6,13 @@
 
 #define ZTH_REDIRECT_ZMQ 0
 
-#include <libzth/macros.h>
+#include <libzth/zmq.h>
 
 #ifdef ZTH_HAVE_LIBZMQ
 
 #  include <libzth/poller.h>
 #  include <libzth/waiter.h>
 #  include <libzth/worker.h>
-#  include <libzth/zmq.h>
 
 namespace zth {
 namespace zmq {

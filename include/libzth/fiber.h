@@ -254,6 +254,9 @@ again:
 			// Can't run dead fibers.
 			return EPERM;
 
+		case Uninitialized:
+		case Waiting:
+		case Suspended:
 		default:
 			zth_assert(false);
 			return EINVAL;
@@ -297,6 +300,8 @@ again:
 			m_stateNext = Waiting;
 			break;
 		case Waiting:
+		case Uninitialized:
+		case Dead:
 		default:
 			return;
 		}
@@ -313,6 +318,12 @@ again:
 				zth_dbg(fiber, "[%s] Suspend after wakeup", id_str());
 				m_stateNext = Ready;
 				break;
+			case Uninitialized:
+			case New:
+			case Ready:
+			case Running:
+			case Waiting:
+			case Dead:
 			default:
 				zth_dbg(fiber, "[%s] Wakeup", id_str());
 			}
@@ -334,7 +345,10 @@ again:
 			break;
 		case Waiting:
 			m_stateNext = Waiting;
+			// fall-through
 		case Suspended:
+		case Uninitialized:
+		case Dead:
 		default:
 			// Ignore.
 			return;
@@ -385,6 +399,7 @@ again:
 		case Dead:
 			res += " Dead";
 			break;
+		default:;
 		}
 
 		res += format(" t=%s", m_totalTime.str().c_str());

@@ -5,6 +5,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/allocator.h>
 #include <libzth/init.h>
 #include <libzth/perf.h>
@@ -14,6 +15,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <unistd.h>
 
 #ifdef ZTH_OS_WINDOWS
@@ -151,7 +153,7 @@ void abortv(char const* fmt, va_list args) noexcept
 		Backtrace().print();
 	}
 
-	::abort();
+	std::terminate();
 }
 
 #ifndef ZTH_OS_BAREMETAL

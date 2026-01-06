@@ -16,6 +16,7 @@
  */
 
 #include <libzth/macros.h>
+
 #include <libzth/config.h>
 
 /*!
@@ -64,7 +65,7 @@
 #  define static_assert(expr, msg) typedef int static_assert_[(expr) ? 1 : -1]
 #endif
 
-/*! \brief Helper for #FOREACH and #REVERSE. \private */
+/*! \brief Helper for FOREACH and REVERSE. \private */
 #define ZTH_GET_MACRO_ARGN(                                                                   \
 	_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, NAME, ...) \
   NAME
