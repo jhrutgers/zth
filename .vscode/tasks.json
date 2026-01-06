@@ -21,6 +21,20 @@
 			}
 		},
 		{
+			"label": "bootstrap-mingw",
+			"detail": "Install system dependencies for building with MinGW",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/mingw/bootstrap.sh",
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
 			"label": "config",
 			"detail": "(Re)configure the project with given CMAKE_BUILD_TYPE",
 			"type": "shell",
@@ -70,6 +84,16 @@
 			"presentation": {
 				"clear": true
 			}
+		},
+		{
+			"label": "config-mingw",
+			"detail": "(Re)configure the MinGW project with given CMAKE_BUILD_TYPE",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/mingw/build.sh ${input:buildtype} conf test dev nosan clean",
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": []
 		},
 		{
 			"label": "build",
@@ -145,42 +169,6 @@
 			}
 		},
 		{
-			"label": "build-examples",
-			"detail": "Build the examples. The project must be configured first.",
-			"type": "shell",
-			"command": "cmake --build . --target examples",
-			"osx": {
-				"options": {
-					"cwd": "${workspaceFolder}/dist/macos/build"
-				},
-				"problemMatcher": [
-					"$gcc"
-				]
-			},
-			"linux": {
-				"options": {
-					"cwd": "${workspaceFolder}/dist/ubuntu/build"
-				},
-				"problemMatcher": [
-					"$gcc"
-				]
-			},
-			"windows": {
-				"options": {
-					"cwd": "${workspaceFolder}\\dist\\win32\\build"
-				},
-				"problemMatcher": [
-					"$msCompile"
-				]
-			},
-			"group": {
-				"kind": "build"
-			},
-			"presentation": {
-				"clear": true
-			}
-		},
-		{
 			"label": "install",
 			"detail": "Install all built targets.",
 			"type": "shell",
@@ -212,6 +200,28 @@
 			},
 			"group": {
 				"kind": "build",
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "build-mingw",
+			"detail": "Build a target for MinGW. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build . --target ${input:target}",
+			"options": {
+				"cwd": "${workspaceFolder}/dist/mingw/build"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
 			},
 			"presentation": {
 				"clear": true

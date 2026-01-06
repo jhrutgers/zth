@@ -133,7 +133,21 @@ set_property(GLOBAL PROPERTY ZTH_LAUNCH_JSON "")
 
 function(add_launch_json TARGET)
 	get_property(_launch GLOBAL PROPERTY ZTH_LAUNCH_JSON)
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	if(MINGW)
+		# Install before starting in VSCode.
+		set_property(
+			GLOBAL
+			PROPERTY
+				ZTH_LAUNCH_JSON
+				"${_launch}
+		{
+			\"type\": \"f5anything\",
+			\"request\": \"launch\",
+			\"name\": \"${TARGET}\",
+			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\",
+		},"
+		)
+	elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CROSSCOMPILING)
 		set_property(
 			GLOBAL
 			PROPERTY

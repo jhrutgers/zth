@@ -25,6 +25,20 @@
 			"intelliSenseMode": "linux-gcc-x64"
 		},
 		{
+			"name": "MinGW",
+			"includePath": [
+				"${env:includePath}"
+			],
+			"defines": [
+				"${env:defines}",
+				"ZTH_HAVE_LIBZMQ"
+			],
+			"compilerPath": "/usr/bin/x86_64-w64-mingw32-g++",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "linux-gcc-x64"
+		},
+		{
 			"name": "Win32",
 			"includePath": [
 				"${env:includePath}"
