@@ -50,6 +50,7 @@ public:
 		if(instance() != this)
 			zth_abort("Only one worker allowed per thread");
 
+		// cppcheck-suppress knownConditionTrueFalse
 		if((res = context_init()))
 			goto error;
 
@@ -413,7 +414,7 @@ inline void getContext(Worker** worker, Fiber** fiber) noexcept
 		*worker = &current_worker;
 
 	if(likely(fiber)) {
-		Fiber* currentFiber_ = *fiber = current_worker.currentFiber();
+		Fiber const* const currentFiber_ = *fiber = current_worker.currentFiber();
 		if(unlikely(!currentFiber_))
 			zth_abort("Not within fiber context");
 	}

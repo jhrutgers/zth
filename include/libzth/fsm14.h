@@ -59,6 +59,7 @@ struct function_traits_detail {
 // Assume it's a lambda, with captures (so it is a functor).
 template <typename T>
 struct function_traits : function_traits<decltype(&T::operator())> {
+	// cppcheck-suppress duplInheritedMember
 	static constexpr bool is_functor = true;
 };
 
@@ -168,6 +169,7 @@ public:
 	 * \brief Ctor.
 	 * \param s the string, or \c nullptr to create a default (invalid) Symbol.
 	 */
+	// cppcheck-suppress noExplicitConstructor
 	constexpr Symbol(char const* s = nullptr) noexcept
 		: m_symbol{s}
 	{}
@@ -184,7 +186,7 @@ public:
 		// constexpr context.  This implementation does a string
 		// compare.
 
-		if(!a ^ !b)
+		if((!a) ^ (!b))
 			return false;
 		if(!a && !b)
 			return true;
@@ -301,6 +303,7 @@ protected:
 	~Named() = default;
 
 public:
+	// cppcheck-suppress duplInheritedMember
 	cow_string name() const
 	{
 		if(m_name)
@@ -333,6 +336,7 @@ class Callback<T, R, false, false, true> : public Named<> {
 	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
+	// cppcheck-suppress noExplicitConstructor
 	constexpr Callback(T_&& c, char const* name = nullptr)
 		: Named{name}
 		, m_callback{std::forward<T_>(c)}
@@ -352,6 +356,7 @@ class Callback<T, R, true, false, true> : public Named<> {
 	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
+	// cppcheck-suppress noExplicitConstructor
 	constexpr Callback(T_&& c, char const* name = nullptr)
 		: Named{name}
 		, m_callback{std::forward<T_>(c)}
@@ -392,6 +397,7 @@ class Callback<T, R, false, true, true> : public Named<> {
 	ZTH_CLASS_NEW_DELETE(Callback)
 public:
 	template <typename T_>
+	// cppcheck-suppress noExplicitConstructor
 	constexpr Callback(T_&& c, char const* name = nullptr)
 		: Named{name}
 		, m_callback{std::forward<T_>(c)}
@@ -413,6 +419,7 @@ private:
 class GuardPollInterval : public TimeInterval {
 	ZTH_CLASS_NEW_DELETE(GuardPollInterval)
 public:
+	// cppcheck-suppress noExplicitConstructor
 	constexpr GuardPollInterval(bool enabled = false)
 		: TimeInterval(enabled ? TimeInterval::null() : TimeInterval::infinity())
 	{}
@@ -422,6 +429,7 @@ public:
 	constexpr GuardPollInterval(GuardPollInterval const&) noexcept = default;
 	GuardPollInterval& operator=(GuardPollInterval const&) noexcept = default;
 
+	// cppcheck-suppress noExplicitConstructor
 	template <typename... A>
 	constexpr GuardPollInterval(A&&... a) noexcept
 		: TimeInterval(std::forward<A>(a)...)
@@ -669,6 +677,7 @@ public:
 		return true;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	GuardPollInterval operator()(BasicFsm& fsm) const
 	{
 		return tryRun(fsm);
@@ -689,14 +698,17 @@ public:
 		, m_action{action}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr GuardedAction(Guard const& guard) noexcept
 		: GuardedAction{guard, nothing}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr GuardedAction(Symbol&& input) noexcept
 		: GuardedAction{std::move(input), nothing}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr GuardedAction(Action const& action) noexcept
 		: GuardedAction{always, action}
 	{}
@@ -796,21 +808,25 @@ class Transition;
 class TransitionStart final : public GuardedActionBase {
 	ZTH_CLASS_NEW_DELETE(TransitionStart)
 public:
+	// cppcheck-suppress noExplicitConstructor
 	constexpr TransitionStart(State&& state) noexcept
 		: m_state{std::move(state)}
 		, m_guardedAction{never / nothing}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr TransitionStart(Guard const& guard) noexcept
 		: m_state{}
 		, m_guardedAction{guard / nothing}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr TransitionStart(Action const& action) noexcept
 		: m_state{}
 		, m_guardedAction{always / action}
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr TransitionStart(GuardedAction&& ga) noexcept
 		: m_state{}
 		, m_guardedAction{std::move(ga)}
@@ -920,6 +936,7 @@ class Transition final : public GuardedActionBase {
 	ZTH_CLASS_NEW_DELETE(Transition)
 public:
 	template <typename F>
+	// cppcheck-suppress noExplicitConstructor
 	constexpr Transition(F&& from) noexcept
 		: m_from{std::forward<F>(from)}
 		, m_to{}
@@ -1181,7 +1198,7 @@ public:
 
 	virtual size_t size() const noexcept final
 	{
-		return Size + 1u;
+		return Size + 1U;
 	}
 
 	virtual bool isInput(index_type i) const noexcept final
@@ -1249,12 +1266,12 @@ private:
 			zth_throw(invalid_fsm{"Target state not found"});
 
 		// Unreachable.
-		return Size + 1u;
+		return Size + 1U;
 	}
 
 private:
 	static_assert(std::numeric_limits<Index>::max() > Size, "");
-	CompiledTransition m_transitions[Size + 1u];
+	CompiledTransition m_transitions[Size + 1U];
 };
 
 /*!
@@ -1299,7 +1316,7 @@ public:
 	/*!
 	 * \brief Ctor.
 	 */
-	BasicFsm(cow_string const& name = "FSM")
+	explicit BasicFsm(cow_string const& name = "FSM")
 		: UniqueID{name}
 	{
 		zth_assert(std::atomic_is_lock_free(&m_state));
@@ -1786,7 +1803,7 @@ public:
 	/*!
 	 * \brief Ctor.
 	 */
-	Fsm(cow_string const& name = "FSM")
+	explicit Fsm(cow_string const& name = "FSM")
 		: base{name}
 	{}
 
@@ -1874,6 +1891,7 @@ public:
 				continue;
 
 			if(returnWhenBlocked)
+				// cppcheck-suppress identicalConditionAfterEarlyExit
 				return p;
 
 			m_trigger.wait(p);
@@ -2094,9 +2112,9 @@ GuardPollInterval Transitions<Size>::enabled(Transitions::index_type i, BasicFsm
 
 inline Fsm TransitionsBase::spawn() const
 {
-	Fsm fsm;
-	fsm.init(*this);
-	return fsm;
+	Fsm fsm_;
+	fsm_.init(*this);
+	return fsm_;
 }
 
 } // namespace fsm

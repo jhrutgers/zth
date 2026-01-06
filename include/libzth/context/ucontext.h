@@ -61,6 +61,7 @@ private:
 	}
 
 public:
+	// cppcheck-suppress duplInheritedMember
 	int create() noexcept
 	{
 		int res = base::create();
@@ -109,6 +110,7 @@ public:
 		return 0;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	void context_switch(Context& to) noexcept
 	{
 		// switchcontext() restores signal masks, which is slow...

@@ -1073,7 +1073,7 @@ public:
 	value_type& back() noexcept
 	{
 		zth_assert(!empty());
-		return (*this)[size() - 1u];
+		return (*this)[size() - 1U];
 	}
 
 	/*!
@@ -1084,7 +1084,7 @@ public:
 	value_type const& back() const noexcept
 	{
 		zth_assert(!empty());
-		return (*this)[size() - 1u];
+		return (*this)[size() - 1U];
 	}
 
 	/*!
@@ -1176,7 +1176,7 @@ public:
 	 */
 	void push_back(value_type const& v)
 	{
-		reserve(size() + 1u);
+		reserve(size() + 1U);
 
 		if(m_size < prealloc) {
 			new(&array()[m_size]) value_type(v);
@@ -1193,7 +1193,7 @@ public:
 	template <class... Args>
 	void emplace_back(Args&&... args)
 	{
-		reserve(size() + 1u);
+		reserve(size() + 1U);
 
 		if(m_size < prealloc) {
 			new(&array()[m_size]) value_type(std::forward<Args>(args)...);
@@ -1308,7 +1308,7 @@ protected:
 			array()[i].~value_type();
 		}
 
-		m_size = prealloc + 1u;
+		m_size = prealloc + 1U;
 		new(m_buffer) vector_type;
 		vector().swap(v);
 	}

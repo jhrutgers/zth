@@ -50,15 +50,17 @@ protected:
 	{}
 
 public:
+	// cppcheck-suppress duplInheritedMember
 	static size_t pageSize() noexcept
 	{
 #  ifdef ZTH_ARM_DO_STACK_GUARD
 		if(Config::EnableStackGuard)
 			return (size_t)ZTH_ARM_STACK_GUARD_SIZE;
 #  endif
-		return std::max(sizeof(void*) * 2u, base::pageSize());
+		return std::max(sizeof(void*) * 2U, base::pageSize());
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	size_t calcStackSize(size_t size) noexcept
 	{
 #  ifndef ZTH_ARM_USE_PSP
@@ -69,7 +71,7 @@ public:
 		if(Config::EnableStackGuard) {
 #  if defined(ZTH_HAVE_MMAN)
 			// Both ends of the stack are guarded using mprotect().
-			size += impl().pageSize() * 2u;
+			size += impl().pageSize() * 2U;
 #  elif defined(ZTH_ARM_DO_STACK_GUARD)
 			// Only the end of the stack is protected using MPU.
 			size += impl().pageSize();
@@ -79,6 +81,7 @@ public:
 		return size;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	void stackAlign(Stack& stack) noexcept
 	{
 		base::stackAlign(stack);
@@ -101,8 +104,8 @@ public:
 
 		// Stack must be double-word aligned.  This should already be
 		// guaranteed by page alignment, but check anyway.
-		zth_assert(((uintptr_t)stack.p & (sizeof(void*) * 2u - 1u)) == 0);
-		zth_assert(((uintptr_t)stack.size & (sizeof(void*) * 2u - 1u)) == 0);
+		zth_assert(((uintptr_t)stack.p & (sizeof(void*) * 2U - 1U)) == 0);
+		zth_assert(((uintptr_t)stack.size & (sizeof(void*) * 2U - 1U)) == 0);
 	}
 
 
@@ -313,6 +316,7 @@ private:
 	}
 
 public:
+	// cppcheck-suppress duplInheritedMember
 	static void** sp(Stack const& stack) noexcept
 	{
 		int dummy __attribute__((unused)) = 0;
@@ -321,22 +325,26 @@ public:
 		return (void**)((uintptr_t)(stack.p + stack.size - sizeof(void*)) & ~(uintptr_t)7);
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	static void stack_push(void**& sp, void* p) noexcept
 	{
 		*sp = p;
 		sp--;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	static void set_sp(jmp_buf& env, void** sp) noexcept
 	{
-		env[get_lr_offset(env) - 1u] = (intptr_t)sp;
+		env[get_lr_offset(env) - 1U] = (intptr_t)sp;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	static void set_pc(jmp_buf& env, void* pc) noexcept
 	{
 		env[get_lr_offset(env)] = (intptr_t)pc; // lr = pc after return
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	__attribute__((naked)) static void context_trampoline_from_jmp_buf()
 	{
 		// The this pointer is saved on the stack, as r0 is not part of
@@ -390,9 +398,9 @@ public:
 			asm("mrs %0, control\n" : "=r"(control));
 
 			if(to.stackUsable())
-				control |= 2u; // set SPSEL to PSP
+				control |= 2U; // set SPSEL to PSP
 			else
-				control &= ~2u; // set SPSEL to MSR
+				control &= ~2U; // set SPSEL to MSR
 
 			// As the SP changes, do not return from this function,
 			// but actually do the longjmp.

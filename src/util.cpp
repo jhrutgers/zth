@@ -55,6 +55,8 @@ char const* banner() noexcept
 #endif
 #ifdef ZTH_OS_BAREMETAL
 		" baremetal"
+#endif
+#ifdef _NEWLIB_VERSION
 		" newlib" _NEWLIB_VERSION
 #endif
 #ifdef ZTH_ARCH_X86_64
@@ -161,8 +163,8 @@ static void log_init()
 	// Only do that when we expect much debug output.
 	if(zth_config(EnableDebugPrint)) {
 #  endif
-		setvbuf(stdout, nullptr, _IOLBF, 4096);
-		setvbuf(stderr, nullptr, _IOLBF, 4096);
+		(void)setvbuf(stdout, nullptr, _IOLBF, 4096);
+		(void)setvbuf(stderr, nullptr, _IOLBF, 4096);
 #  ifdef ZTH_OS_WINDOWS
 	}
 #  endif
@@ -226,7 +228,7 @@ void log_colorv(int color, char const* fmt, va_list args)
 	logv(fmt, args);
 
 	if(do_color && color > 0)
-		log("\x1b[0m");
+		zth::log("\x1b[0m");
 }
 
 /*!
@@ -247,7 +249,7 @@ string formatv(char const* fmt, va_list args)
 	int c = vsnprintf(sbuf, maxstack, fmt, args);
 
 	if(c >= maxstack) {
-		hbuf_size = (size_t)c + 1u;
+		hbuf_size = (size_t)c + 1U;
 		hbuf = allocate_noexcept<char>(hbuf_size);
 
 		if(unlikely(!hbuf)) {

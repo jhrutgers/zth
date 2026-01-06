@@ -124,14 +124,14 @@ int execlp(char const* file, char const* arg, ... /*, nullptr */)
 
 	for(size_t i = 0; i < argv.size(); i++)
 		if(argv[i])
-			free(argv[i]);
+			free(argv[i]); // NOLINT
 
 	return res;
 }
 
 __attribute__((unused)) static cow_string thread_id_str() noexcept
 {
-	Worker* w = Worker::instance();
+	Worker const* w = Worker::instance();
 	if(w)
 		return w->id_str();
 
@@ -157,8 +157,8 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 	perf_syscall("execvp()");
 	zth_dbg(thread, "[%s] execvp %s", thread_id_str().c_str(), file);
 
-	pid_t pid = 0;
-	if((pid = fork()) == 0) {
+	pid_t pid = fork();
+	if(!pid) {
 		// In child.
 		execve(file, arg, environ);
 		// If we get here, we could not create the process.
@@ -176,6 +176,7 @@ int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 }
 
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static volatile sig_atomic_t sigchld_cleanup = 0;
 
 static void sigchld_handler(int /*unused*/)

@@ -18,3 +18,8 @@ SPDX-License-Identifier = "CC0-1.0"
 path = "**/README*.md"
 SPDX-FileCopyrightText = "2019-2026 Jochem Rutgers"
 SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = ".cppcheck_suppr"
+SPDX-FileCopyrightText = "2019-2026 Jochem Rutgers"
+SPDX-License-Identifier = "CC0-1.0"

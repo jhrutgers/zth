@@ -145,7 +145,7 @@ int clock_gettime(int clk_id, struct timespec* res)
 
 	cnt_prev = cnt;
 
-	uint64_t ns = (((uint64_t)cnt_wraps << 32u) | (uint64_t)cnt) * 16u;
+	uint64_t ns = (((uint64_t)cnt_wraps << 32U) | (uint64_t)cnt) * 16U;
 	res->tv_sec = ns / (uint64_t)1000000000UL;
 	res->tv_nsec = ns % (uint64_t)1000000000UL;
 	return 0;

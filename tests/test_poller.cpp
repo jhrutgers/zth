@@ -119,7 +119,7 @@ static void zmq_fiber()
 	zth_assert((size_t)rc < sizeof(buf));
 
 	for(int i = 0; i < rc; i++)
-		buf[i]++;
+		buf[i]++; // NOLINT
 
 	rc = zmq_send(socket, buf, (size_t)rc, 0);
 	zth_assert(rc > 0);

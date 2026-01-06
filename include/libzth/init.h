@@ -12,7 +12,7 @@
 
 struct zth_init_entry {
 #ifdef __cplusplus
-	zth_init_entry(void (*f)(void), zth_init_entry const* next)
+	zth_init_entry(void (*f)(void), zth_init_entry const* next) noexcept
 		: f(f)
 		, next(next)
 	{}
@@ -34,7 +34,7 @@ EXTERN_C ZTH_EXPORT int zth_postdeinit();
  */
 #    define ZTH_INIT_CALL_(f, ...)               \
       struct f##__init : public zth_init_entry { \
-	f##__init()                              \
+	f##__init() noexcept                     \
 		: zth_init_entry(&exec, nullptr) \
 	{                                        \
 	  if(zth_init_tail)                      \

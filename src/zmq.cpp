@@ -39,7 +39,7 @@ static void* zmq_global_init()
 		zth_abort("0MQ context creation failed; %s", err(errno).c_str());
 
 	// Only do the deinit this when 0MQ was actually used.
-	atexit(zmq_global_deinit);
+	(void)atexit(zmq_global_deinit);
 	return zmq_ctx;
 }
 
@@ -78,7 +78,8 @@ int zmq_msg_send(zmq_msg_t* msg, void* socket, int flags)
 
 	zth_dbg(zmq, "[%s] zmq_msg_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
+	errno = poll(PollableFd(socket, Pollable::PollOut));
+	if(errno)
 		return -1;
 
 	return ::zmq_msg_send(msg, socket, flags | ZMQ_DONTWAIT);
@@ -99,7 +100,8 @@ int zmq_msg_recv(zmq_msg_t* msg, void* socket, int flags)
 
 	zth_dbg(zmq, "[%s] zmq_msg_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	if((errno = poll(PollableFd(socket, Pollable::PollIn))))
+	errno = poll(PollableFd(socket, Pollable::PollIn));
+	if(errno)
 		return -1;
 
 	return ::zmq_msg_recv(msg, socket, flags | ZMQ_DONTWAIT);
@@ -120,7 +122,8 @@ int zmq_send(void* socket, void const* buf, size_t len, int flags)
 
 	zth_dbg(zmq, "[%s] zmq_send(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
+	errno = poll(PollableFd(socket, Pollable::PollOut));
+	if(errno)
 		return -1;
 
 	return ::zmq_send(socket, buf, len, flags | ZMQ_DONTWAIT);
@@ -141,7 +144,8 @@ int zmq_recv(void* socket, void* buf, size_t len, int flags)
 
 	zth_dbg(zmq, "[%s] zmq_recv(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	if((errno = poll(PollableFd(socket, Pollable::PollIn))))
+	errno = poll(PollableFd(socket, Pollable::PollIn));
+	if(errno)
 		return -1;
 
 	return ::zmq_recv(socket, buf, len, flags | ZMQ_DONTWAIT);
@@ -162,7 +166,8 @@ int zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 
 	zth_dbg(zmq, "[%s] zmq_send_const(%p) hand-off", zth::currentFiber().str().c_str(), socket);
 
-	if((errno = poll(PollableFd(socket, Pollable::PollOut))))
+	errno = poll(PollableFd(socket, Pollable::PollOut));
+	if(errno)
 		return -1;
 
 	return ::zmq_send_const(socket, buf, len, flags | ZMQ_DONTWAIT);

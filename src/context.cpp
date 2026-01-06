@@ -152,6 +152,7 @@ size_t context_stack_usage(Context* context) noexcept
 
 	size_t res = stack_watermark_maxused(context->stackUsable().p);
 
+	// cppcheck-suppress knownConditionTrueFalse
 	if(guard)
 		context->stackGuard(guard);
 

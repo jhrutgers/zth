@@ -1,24 +1,23 @@
-# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
-#
-# SPDX-License-Identifier: CC0-1.0
-
+missingIncludeSystem:*
+cstyleCast:*
 unmatchedSuppression:*
+constParameterCallback:*
+constParameterPointer:*
+constParameterReference:*
 
 unknownMacro:examples/*
 unmatchedSuppression:examples/*
 
 unmatchedSuppression:src/context.cpp
 
-constParameter:examples/measure.cpp
-constParameterCallback:examples/measure.cpp
 negativeContainerIndex:examples/measure.cpp
 redundantAssignment:examples/measure.cpp
 unmatchedSuppression:examples/measure.cpp
 unreadVariable:examples/measure.cpp
 
-constParameter:examples/fsm.cpp
-constParameterCallback:examples/fsm.cpp
 unmatchedSuppression:examples/fsm.cpp
 
-constParameter:include/libzth/context.h
+unusedStructMember:examples/socks.cpp
+
 unmatchedSuppression:include/libzth/context.h
+badBitmaskCheck:include/libzth/context/context.h

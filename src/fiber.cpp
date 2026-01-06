@@ -5,6 +5,7 @@
  */
 
 #include <libzth/fiber.h>
+
 #include <libzth/worker.h>
 
 namespace zth {
@@ -19,11 +20,16 @@ int Runnable::run()
 		return EAGAIN;
 
 	Fiber* f = new Fiber(&Runnable::entry_, (void*)this);
-	int res = 0;
-	if(unlikely((res = fiberHook(*f)))) {
-		// Rollback.
+	try {
+		int res = fiberHook(*f);
+		if(unlikely(res)) {
+			// Rollback.
+			delete f;
+			return res;
+		}
+	} catch(...) {
 		delete f;
-		return res;
+		zth_throw();
 	}
 
 	w->add(f);

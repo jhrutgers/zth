@@ -480,8 +480,11 @@ public:
 
 	operator Fiber&() const noexcept
 	{
-		zth_assert(fiber());
-		return *fiber();
+		// cppcheck-suppress constVariablePointer
+		Fiber* const f = fiber();
+		zth_assert(f);
+		// cppcheck-suppress nullPointerRedundantCheck
+		return *f;
 	}
 
 	char const* id_str() const

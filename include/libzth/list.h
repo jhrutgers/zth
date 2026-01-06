@@ -613,7 +613,7 @@ protected:
 #  ifndef CPPCHECK // Internal error, somehow.
 		decltype(t->level) ll = t->left ? t->left->level : 0;
 		decltype(t->level) lr = t->right ? t->right->level : 0;
-		decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1u);
+		decltype(t->level) should_be = (decltype(t->level))((ll < lr ? ll : lr) + 1U);
 		if(should_be < t->level) {
 			t->level = should_be;
 			if(t->right && should_be < t->right->level)
