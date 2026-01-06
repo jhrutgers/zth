@@ -35,6 +35,23 @@
 			}
 		},
 		{
+			"label": "bootstrap-qemu-arm-a15",
+			"detail": "Install system dependencies for building with QEMU ARM A15",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-a15/bootstrap.sh",
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
 			"label": "config",
 			"detail": "(Re)configure the project with given CMAKE_BUILD_TYPE",
 			"type": "shell",
@@ -90,6 +107,19 @@
 			"detail": "(Re)configure the MinGW project with given CMAKE_BUILD_TYPE",
 			"type": "shell",
 			"command": "${workspaceFolder}/dist/mingw/build.sh ${input:buildtype} conf test dev nosan clean",
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "config-qemu-arm-a15",
+			"detail": "(Re)configure the QEMU ARM A15 project with given CMAKE_BUILD_TYPE",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-a15/build.sh ${input:buildtype} conf dev nosan clean",
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
 			"windows": {
 				"command": "echo Not supported on Windows & exit /b 1"
 			},
@@ -216,6 +246,31 @@
 			"problemMatcher": [
 				"$gcc"
 			],
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "build-qemu-arm-a15",
+			"detail": "Build a target for QEMU ARM A15. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build . --target ${input:target}",
+			"options": {
+				"cwd": "${workspaceFolder}/dist/qemu-arm-a15/build"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
 			"windows": {
 				"command": "echo Not supported on Windows & exit /b 1"
 			},

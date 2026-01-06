@@ -94,6 +94,8 @@ if(# We must have clang-tidy.
        (NOT WIN32)
    AND # ...and somehow mingw builds don't work properly on newer versions of clang-tidy.
        (NOT MINGW)
+   AND # Cross-compiling is tricky too.
+       (NOT CMAKE_CROSSCOMPILING)
 )
 	# It seems that if clang is not installed, clang-tidy doesn't work properly.
 	find_program(

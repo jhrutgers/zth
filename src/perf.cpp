@@ -19,6 +19,7 @@
 #include <libzth/perf.h>
 #include <libzth/worker.h>
 
+#include <cinttypes>
 #include <cstdlib>
 #include <fcntl.h>
 #include <map>

@@ -502,25 +502,41 @@ inline cow_string str<char>(char value)
 template <>
 inline cow_string str<signed char>(signed char value)
 {
+#  if ZTH_FORMAT_LIMITED
+	return format("%d", (int)value);
+#  else
 	return format("%hhd", value);
+#  endif
 }
 
 template <>
 inline cow_string str<unsigned char>(unsigned char value)
 {
+#  if ZTH_FORMAT_LIMITED
+	return format("%u", (unsigned int)value);
+#  else
 	return format("%hhu", value);
+#  endif
 }
 
 template <>
 inline cow_string str<short>(short value)
 {
+#  if ZTH_FORMAT_LIMITED
+	return format("%d", (int)value);
+#  else
 	return format("%hd", value);
+#  endif
 }
 
 template <>
 inline cow_string str<unsigned short>(unsigned short value)
 {
+#  if ZTH_FORMAT_LIMITED
+	return format("%u", (unsigned int)value);
+#  else
 	return format("%hu", value);
+#  endif
 }
 
 template <>
@@ -535,46 +551,103 @@ inline cow_string str<unsigned int>(unsigned int value)
 	return format("%u", value);
 }
 
+namespace impl {
+inline cow_string strull(unsigned long long value)
+{
+#  ifdef ZTH_FORMAT_LIMITED
+	if(value > std::numeric_limits<int>::max())
+		return format(
+			"0x%x%08x", (unsigned)(value >> 32U), (unsigned)(value & 0xFFFFFFFFU));
+	else
+		return format("%d", (int)value);
+#  else
+	return format("%llu", value);
+#  endif
+}
+} // namespace impl
+
 template <>
 inline cow_string str<long>(long value)
 {
+#  if ZTH_FORMAT_LIMITED
+	if(sizeof(long) == sizeof(int)
+	   || (value <= std::numeric_limits<int>::max()
+	       && value >= std::numeric_limits<int>::min()))
+		return format("%d", (int)value);
+	else
+		return impl::strull((unsigned long long)value);
+#  else
 	return format("%ld", value);
+#  endif
 }
 
 template <>
 inline cow_string str<unsigned long>(unsigned long value)
 {
+#  if ZTH_FORMAT_LIMITED
+	if(sizeof(unsigned long) == sizeof(unsigned int)
+	   || value <= std::numeric_limits<unsigned int>::max())
+		return format("%u", (unsigned int)value);
+	else
+		return impl::strull((unsigned long long)value);
+#  else
 	return format("%lu", value);
+#  endif
 }
 
 template <>
 inline cow_string str<long long>(long long value)
 {
+#  ifdef ZTH_FORMAT_LIMITED
+	if(value > std::numeric_limits<int>::max() || value < std::numeric_limits<int>::min())
+		return impl::strull((unsigned long long)value);
+	else
+		return format("%d", (int)value);
+#  else
 	return format("%lld", value);
+#  endif
 }
 
 template <>
 inline cow_string str<unsigned long long>(unsigned long long value)
 {
-	return format("%llu", value);
+	return impl::strull(value);
 }
 
 template <>
 inline cow_string str<float>(float value)
 {
-	return format("%g", (double)value);
+	return str((double)value);
 }
 
 template <>
 inline cow_string str<double>(double value)
 {
+#  ifdef ZTH_FORMAT_LIMITED
+	float value_f = (float)value;
+	if(!(value_f < std::numeric_limits<int>::max()
+	     && value_f > -std::numeric_limits<int>::max()))
+		return "?range?";
+
+	int i = (int)value_f;
+	float fi = (float)i;
+	if(fi == value_f)
+		return format("%d", i);
+	int f = std::min(std::abs((int)((value_f - fi) * 1000.0 + 0.5)), 999);
+	return format("%d.%03d", i, f);
+#  else
 	return format("%g", value);
+#  endif
 }
 
 template <>
 inline cow_string str<long double>(long double value)
 {
+#  ifdef ZTH_FORMAT_LIMITED
+	return str((double)value);
+#  else
 	return format("%Lg", value);
+#  endif
 }
 
 #  if __cplusplus >= 201103L
