@@ -77,6 +77,7 @@ if(ZTH_USE_GTEST)
 		if(TARGET test-prepare)
 			add_dependencies(${TESTNAME} test-prepare)
 		endif()
+		add_launch_json(${TESTNAME})
 	endfunction()
 
 	function(zth_add_test TESTNAME)
