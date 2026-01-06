@@ -381,6 +381,54 @@ private:
 };
 
 /*!
+ * \brief Mutex RAII, that locks and unlocks the mutex automatically.
+ * \ingroup zth_api_cpp_sync
+ */
+class Locked {
+	ZTH_CLASS_NEW_DELETE(Locked)
+public:
+	explicit Locked(Mutex& mutex)
+		: m_mutex(&mutex)
+	{
+		m_mutex->lock();
+	}
+
+	~Locked()
+	{
+		if(m_mutex)
+			m_mutex->unlock();
+	}
+
+#  if __cplusplus >= 201103L
+	Locked(Locked const&) = delete;
+	Locked& operator=(Locked const&) = delete;
+
+	Locked(Locked&& l) noexcept
+		: m_mutex{}
+	{
+		*this = std::move(l);
+	}
+
+	Locked& operator=(Locked&& l) noexcept
+	{
+		if(m_mutex)
+			m_mutex->unlock();
+
+		m_mutex = l.m_mutex;
+		l.m_mutex = nullptr;
+		return *this;
+	}
+#  else	 // Pre C++11
+private:
+	Locked(Locked const&);
+	Locked& operator=(Locked const&);
+#  endif // Pre C++11
+
+private:
+	Mutex* m_mutex;
+};
+
+/*!
  * \brief Fiber-aware semaphore.
  * \ingroup zth_api_cpp_sync
  */
