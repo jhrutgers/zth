@@ -100,20 +100,18 @@ After building, check out the `doxygen/html` directory for
 
 ### How to integrate in your project
 
-Include the Zth top-level `CMakeLists.txt` in your project, and link to
-`libzth`.  Configure Zth options as required, like this:
+Configure Zth options as required, like this:
 
 ```cmake
-set(ZTH_HAVE_LIBZMQ OFF CACHE BOOL "Disable ZMQ" FORCE)
 set(ZTH_THREADS OFF CACHE BOOL "Disable threads" FORCE)
-set(ZTH_BUILD_EXAMPLES OFF CACHE BOOL "Disable Zth examples" FORCE)
-set(ZTH_TESTS OFF CACHE BOOL "Disable Zth tests" FORCE)
-
-add_subdirectory(zth)
 
 # Override search path to your own zth_config.h.
 target_include_directories(libzth BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/include)
 ```
+
+See `cmake/zth.cmake` for the available options.
+Next, add libzth's `cmake` directory to your `CMAKE_MODULE_PATH` and `include(zth)`.
+Then, just link to `libzth`.
 
 This also works for cross-compiling.  Refer to
 `dist/qemu-arm-a15/README-ARM.md` for some hints when compiling for bare-metal
