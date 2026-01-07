@@ -42,6 +42,8 @@ if which ninja > /dev/null; then
 	use_ninja=1
 fi
 
+cmake_opts="${cmake_opts} -DZTH_DIST='$(basename "${distdir}")' -DZTH_DIST_DIR='${distdir}'"
+
 while [[ ! -z ${1:-} ]]; do
 	case "$1" in
 		"-?"|-h|--help|help)

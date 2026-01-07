@@ -149,7 +149,7 @@ function(add_launch_json TARGET)
 			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\",
 		},"
 		)
-	elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CROSSCOMPILING)
+	elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_CROSSCOMPILING)
 		set_property(
 			GLOBAL
 			PROPERTY
@@ -167,6 +167,25 @@ function(add_launch_json TARGET)
 					\"value\": \"detect_leaks=0\"
 				}
 			]
+		},"
+		)
+	elseif(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+		set_property(
+			GLOBAL
+			PROPERTY
+				ZTH_LAUNCH_JSON
+				"${_launch}
+		{
+			\"type\": \"cppdbg\",
+			\"request\": \"launch\",
+			\"name\": \"${TARGET}\",
+			\"program\": \"$<TARGET_FILE:${TARGET}>\",
+			\"cwd\": \"$<TARGET_FILE_DIR:${TARGET}>\",
+			\"miDebuggerPath\": \"gdb-multiarch\",
+			\"miDebuggerServerAddress\": \"localhost:1234\",
+			\"MIMode\": \"gdb\",
+			\"stopAtEntry\": true,
+			\"preLaunchTask\": \"run-${ZTH_DIST}\"
 		},"
 		)
 	else()
@@ -264,7 +283,7 @@ if(CPPCHECK_CMD)
 	endif()
 endif()
 
-if(ZTH_DIST_DIR)
+if(ZTH_DIST_DIR AND EXISTS ${ZTH_DIST_DIR}/CMakeLists.txt)
 	add_subdirectory(${ZTH_DIST_DIR})
 endif()
 

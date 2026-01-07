@@ -288,28 +288,48 @@ public:
 
 #  ifdef ZTH_OS_BAREMETAL
 private:
-	static size_t get_lr_offset(jmp_buf const& env) noexcept
+	static size_t get_lr_offset() noexcept
 	{
 		static size_t lr_offset = 0;
 
 		if(unlikely(lr_offset == 0)) {
 			// Not initialized yet.
 
-			// env is filled with several registers. The number of
-			// registers depends on the ARM architecture and Thumb mode,
-			// and compile settings for newlib. We have to change the sp
-			// and lr registers in this env.  These are always the last two
-			// registers in the list, and are always non-zero.  So, find
-			// the last non-zero register to determine the lr offset.
+			// env is filled with several registers. The number of registers depends on
+			// the ARM architecture and Thumb mode, and compile settings for newlib. We
+			// have to change the sp and lr registers in this env.  These follow other
+			// caller-saved registers, but may be placed before VPU registers.
+			//
+			// Instead of hardcoding the offset, we try to find it dynamically. The sp
+			// and lr registers are always next to each other. We assume here that the
+			// sp is not part of the VPU registers, so this is our marker.
 
-			lr_offset = sizeof(env) / sizeof(env[0]) - 1;
-			for(; lr_offset > 1 && !env[lr_offset]; lr_offset--)
+			static_assert(
+				sizeof(jmp_buf) >= sizeof(void*) * 4U,
+				"jmp_buf size too small to find lr offset");
+
+			jmp_buf test_env = {};
+			::setjmp(test_env);
+
+			uintptr_t sp = 0;
+			asm volatile("mov %0, sp;" : "=r"(sp));
+			zth_assert(sp);
+
+			// Note that jmp_buf may be an array type with other elements than void*.
+			uintptr_t const* test_env_ = (uintptr_t const*)test_env;
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wsizeof-array-div"
+			size_t sp_offset = sizeof(jmp_buf) / sizeof(void*) - 2U;
+#    pragma GCC diagnostic pop
+			for(; sp_offset > 0 && test_env_[sp_offset] != sp; sp_offset--)
 				;
 
-			if(lr_offset <= 1) {
+			if(sp_offset == 0) {
 				// Should not be possible.
 				zth_abort("Invalid lr offset");
 			}
+
+			lr_offset = sp_offset + 1U;
 		}
 
 		return lr_offset;
@@ -335,13 +355,15 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	static void set_sp(jmp_buf& env, void** sp) noexcept
 	{
-		env[get_lr_offset(env) - 1U] = (intptr_t)sp;
+		uintptr_t* env_ = (uintptr_t*)env;
+		env_[get_lr_offset() - 1U] = (uintptr_t)sp;
 	}
 
 	// cppcheck-suppress duplInheritedMember
 	static void set_pc(jmp_buf& env, void* pc) noexcept
 	{
-		env[get_lr_offset(env)] = (intptr_t)pc; // lr = pc after return
+		uintptr_t* env_ = (uintptr_t*)env;
+		env_[get_lr_offset()] = (uintptr_t)pc; // lr = pc after return
 	}
 
 	// cppcheck-suppress duplInheritedMember
