@@ -26,6 +26,14 @@ function(add_example example)
 		target_link_libraries(${example} -Wl,-uzth_logv)
 	endif()
 
+	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+		add_custom_command(
+			TARGET ${example}
+			POST_BUILD
+			COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${example}>
+		)
+	endif()
+
 	install(TARGETS ${example} RUNTIME DESTINATION bin)
 	add_launch_json(${example})
 endfunction()

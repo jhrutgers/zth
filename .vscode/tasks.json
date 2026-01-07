@@ -351,14 +351,18 @@
 	"inputs": [
 		{
 			"id": "buildtype",
-			"type": "pickString",
-			"description": "CMAKE_BUILD_TYPE",
-			"options": [
-				"Debug",
-				"RelWithDebInfo",
-				"Release"
-			],
-			"default": "Debug"
+			"type": "command",
+			"command": "memento.pickString",
+			"args": {
+				"id": "CMAKE_BUILD_TYPE",
+				"description": "CMake build type",
+				"options": [
+					"Debug",
+					"RelWithDebInfo",
+					"Release"
+				],
+				"default": "Debug"
+			}
 		},
 		{
 			"id": "target",
@@ -373,11 +377,29 @@
 		{
 			"id": "example",
 			"type": "command",
-			"command": "memento.promptString",
+			"command": "memento.pickString",
 			"args": {
 				"id": "example",
 				"description": "example to run",
-				"default": "1_helloworld"
+				"default": "1_helloworld",
+				"options": [
+					"1_helloworld",
+					"2_fibers",
+					"3_coop",
+					"4_sync",
+					"5_perf",
+					"6_stack",
+					"7_no_async",
+					"9_c_api",
+					"blinky",
+					"daemon_pattern",
+					"fsm",
+					"fsm14",
+					"measure",
+					"socks",
+					"work",
+					"zmq"
+				]
 			}
 		}
 	]
