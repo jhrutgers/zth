@@ -189,6 +189,11 @@ ZTH_EXPORT void foo();
 #  ifndef inline17
 #    define inline17 static
 #  endif
+#  ifndef static_assert
+#    define ZTH_STATIC_ASSERT_FAILED_(line) zth_static_assert_failed_##line
+#    define ZTH_STATIC_ASSERT_FAILED(line)  ZTH_STATIC_ASSERT_FAILED_(line)
+#    define static_assert(x, ...)	    typedef char ZTH_STATIC_ASSERT_FAILED(__LINE__)[(x) ? 1 : -1]
+#  endif
 #else
 #  ifndef constexpr14
 #    if __cplusplus < 201402L

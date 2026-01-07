@@ -229,7 +229,7 @@
 				]
 			},
 			"group": {
-				"kind": "build",
+				"kind": "build"
 			},
 			"presentation": {
 				"clear": true
@@ -288,28 +288,63 @@
 			"type": "shell",
 			"dependsOn": "install",
 			"command": [
-				"cmake --build . --target test",
+				"cmake --build . --target test"
 			],
 			"osx": {
 				"options": {
 					"cwd": "${workspaceFolder}/dist/macos/build"
-				},
+				}
 			},
 			"linux": {
 				"options": {
 					"cwd": "${workspaceFolder}/dist/ubuntu/build"
-				},
+				}
 			},
 			"windows": {
 				"options": {
 					"cwd": "${workspaceFolder}\\dist\\win32\\build"
-				},
+				}
 			},
 			"group": {
 				"kind": "test"
 			},
 			"presentation": {
 				"clear": true
+			}
+		},
+		{
+			"label": "run-qemu-arm-a15",
+			"detail": "Run an example on QEMU ARM A15.",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-a15/run.sh ${workspaceFolder}/dist/qemu-arm-a15/build/examples/${input:example} -S",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}/dist/qemu-arm-a15/build"
+			},
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"group": {
+				"kind": "none",
+				"isDefault": true
+			},
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": {
+				"owner": "custom",
+				"fileLocation": "relative",
+				"pattern": {
+					"regexp": ".",
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "^Waiting for GDB connection.*"
+				}
 			}
 		}
 	],
@@ -333,6 +368,16 @@
 				"id": "target",
 				"description": "build target",
 				"default": "all"
+			}
+		},
+		{
+			"id": "example",
+			"type": "command",
+			"command": "memento.promptString",
+			"args": {
+				"id": "example",
+				"description": "example to run",
+				"default": "1_helloworld"
 			}
 		}
 	]
