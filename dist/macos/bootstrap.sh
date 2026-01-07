@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-set -euo pipefail
+set -xeuo pipefail
 
 function gotErr {
 	echo -e "\nError occurred, stopping\n"

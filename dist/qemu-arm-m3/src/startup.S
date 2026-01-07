@@ -115,6 +115,7 @@ _start:
 	// Halt, in case the bkpt didn't work.
 	b .
 
+	.align 8
 .L_ADP_Stopped_RunTimeErrorUnknown:
 	.word 0x20023
 .L_ADP_Stopped_ApplicationExit:
