@@ -311,9 +311,9 @@ private:
 			jmp_buf test_env = {};
 			::setjmp(test_env);
 
-			uintptr_t sp = 0;
-			asm volatile("mov %0, sp;" : "=r"(sp));
-			zth_assert(sp);
+			uintptr_t sp_ = 0;
+			asm volatile("mov %0, sp;" : "=r"(sp_));
+			zth_assert(sp_);
 
 			// Note that jmp_buf may be an array type with other elements than void*.
 			uintptr_t const* test_env_ = (uintptr_t const*)test_env;
@@ -321,7 +321,7 @@ private:
 #    pragma GCC diagnostic ignored "-Wsizeof-array-div"
 			size_t sp_offset = sizeof(jmp_buf) / sizeof(void*) - 2U;
 #    pragma GCC diagnostic pop
-			for(; sp_offset > 0 && test_env_[sp_offset] != sp; sp_offset--)
+			for(; sp_offset > 0 && test_env_[sp_offset] != sp_; sp_offset--)
 				;
 
 			if(sp_offset == 0) {
@@ -393,7 +393,7 @@ public:
 	}
 
 #    if defined(ZTH_CONTEXT_SJLJ)
-#      if defined(__ARM_FP) && !defined(__SOFTFP__)
+#      if defined(__ARM_FP) && !defined(__SOFTFP__) && NEWLIB_VERSION < 40300
 #	define ZTH_CONTEXT_FPU
 	inline __attribute__((always_inline)) void context_push_regs() noexcept
 	{
