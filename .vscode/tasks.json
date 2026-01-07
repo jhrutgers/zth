@@ -36,9 +36,26 @@
 		},
 		{
 			"label": "bootstrap-qemu-arm-a15",
-			"detail": "Install system dependencies for building with QEMU ARM A15",
+			"detail": "Install system dependencies for building with QEMU ARM Cortex-A15",
 			"type": "shell",
 			"command": "${workspaceFolder}/dist/qemu-arm-a15/bootstrap.sh",
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "bootstrap-qemu-arm-m3",
+			"detail": "Install system dependencies for building with QEMU ARM Cortex-M3",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-m3/bootstrap.sh",
 			"osx": {
 				"command": "echo Not supported on macOS && exit 1"
 			},
@@ -114,9 +131,22 @@
 		},
 		{
 			"label": "config-qemu-arm-a15",
-			"detail": "(Re)configure the QEMU ARM A15 project with given CMAKE_BUILD_TYPE",
+			"detail": "(Re)configure the QEMU ARM Cortex-A15 project with given CMAKE_BUILD_TYPE",
 			"type": "shell",
 			"command": "${workspaceFolder}/dist/qemu-arm-a15/build.sh ${input:buildtype} conf dev nosan clean",
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "config-qemu-arm-m3",
+			"detail": "(Re)configure the QEMU ARM Cortex-M3 project with given CMAKE_BUILD_TYPE",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-m3/build.sh ${input:buildtype} conf dev nosan clean",
 			"osx": {
 				"command": "echo Not supported on macOS && exit 1"
 			},
@@ -259,11 +289,36 @@
 		},
 		{
 			"label": "build-qemu-arm-a15",
-			"detail": "Build a target for QEMU ARM A15. The project must be configured first.",
+			"detail": "Build a target for QEMU ARM Cortex-A15. The project must be configured first.",
 			"type": "shell",
 			"command": "cmake --build . --target ${input:target}",
 			"options": {
 				"cwd": "${workspaceFolder}/dist/qemu-arm-a15/build"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"clear": true
+			}
+		},
+		{
+			"label": "build-qemu-arm-m3",
+			"detail": "Build a target for QEMU ARM Cortex-M3. The project must be configured first.",
+			"type": "shell",
+			"command": "cmake --build . --target ${input:target}",
+			"options": {
+				"cwd": "${workspaceFolder}/dist/qemu-arm-m3/build"
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -314,12 +369,47 @@
 		},
 		{
 			"label": "run-qemu-arm-a15",
-			"detail": "Run an example on QEMU ARM A15.",
+			"detail": "Run an example on QEMU ARM Cortex-A15.",
 			"type": "shell",
 			"command": "${workspaceFolder}/dist/qemu-arm-a15/run.sh ${workspaceFolder}/dist/qemu-arm-a15/build/examples/${input:example} -S",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}/dist/qemu-arm-a15/build"
+			},
+			"osx": {
+				"command": "echo Not supported on macOS && exit 1"
+			},
+			"windows": {
+				"command": "echo Not supported on Windows & exit /b 1"
+			},
+			"group": {
+				"kind": "none",
+				"isDefault": true
+			},
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": {
+				"owner": "custom",
+				"fileLocation": "relative",
+				"pattern": {
+					"regexp": ".",
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "^Waiting for GDB connection.*"
+				}
+			}
+		},
+		{
+			"label": "run-qemu-arm-m3",
+			"detail": "Run an example on QEMU ARM Cortex-M3.",
+			"type": "shell",
+			"command": "${workspaceFolder}/dist/qemu-arm-m3/run.sh ${workspaceFolder}/dist/qemu-arm-m3/build/examples/${input:example} -S",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}/dist/qemu-arm-m3/build"
 			},
 			"osx": {
 				"command": "echo Not supported on macOS && exit 1"
