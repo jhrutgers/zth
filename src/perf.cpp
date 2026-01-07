@@ -190,11 +190,10 @@ protected:
 					}
 					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd,
-						   "$var wire 1 %s \\#%" PRIu64
-						   "_%s $end\n$var real 0 %s! \\#%" PRIu64
-						   "_%s/log $end\n",
-						   id.c_str(), e.fiber, e.str, id.c_str(), e.fiber,
-						   e.str)
+						   "$var wire 1 %s \\#%s_%s $end\n$var real 0 %s! "
+						   "\\#%s_%s/log $end\n",
+						   id.c_str(), str(e.fiber).c_str(), e.str,
+						   id.c_str(), str(e.fiber).c_str(), e.str)
 					   <= 0) {
 						res = errno;
 						goto write_error;
@@ -202,10 +201,10 @@ protected:
 				} else {
 					string const& id = vcdId(e.fiber);
 					if(fprintf(m_vcd,
-						   "$var wire 1 %s %" PRIu64
-						   "_Fiber $end\n$var real 0 %s! %" PRIu64
-						   "_Fiber_log $end\n",
-						   id.c_str(), e.fiber, id.c_str(), e.fiber)
+						   "$var wire 1 %s \\#%s_Fiber $end\n$var real 0 "
+						   "%s! \\#%s_Fiber_log $end\n",
+						   id.c_str(), str(e.fiber).c_str(), id.c_str(),
+						   str(e.fiber).c_str())
 					   <= 0) {
 						res = errno;
 						goto write_error;
@@ -240,9 +239,10 @@ protected:
 					doCleanup = true;
 				}
 
-				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\n%c%s\n",
-					   (uint64_t)t.ts().tv_sec, t.ts().tv_nsec, x,
-					   vcdId(e.fiber).c_str())
+				static_assert(sizeof(unsigned) >= 4, "");
+
+				if(fprintf(m_vcdd, "#%s%09u\n%c%s\n", str(t.ts().tv_sec).c_str(),
+					   (unsigned)t.ts().tv_nsec, x, vcdId(e.fiber).c_str())
 				   <= 0) {
 					res = errno;
 					goto write_error;
@@ -264,8 +264,10 @@ protected:
 				if(!s)
 					break;
 
-				if(fprintf(m_vcdd, "#%" PRIu64 "%09ld\ns", (uint64_t)t.ts().tv_sec,
-					   t.ts().tv_nsec)
+				static_assert(sizeof(unsigned) >= 4, "");
+
+				if(fprintf(m_vcdd, "#%s%09u\ns", str(t.ts().tv_sec).c_str(),
+					   (unsigned)t.ts().tv_nsec)
 				   <= 0) {
 					res = errno;
 					goto write_error;
@@ -276,8 +278,8 @@ protected:
 				int len = 0;
 				while(chunkEnd[1]) {
 					if(*chunkEnd < 33 || *chunkEnd > 126) {
-						if(fprintf(m_vcdd, "%.*s\\x%02hhx", len, chunkStart,
-							   (unsigned char)*chunkEnd)
+						if(fprintf(m_vcdd, "%.*s\\x%02x", len, chunkStart,
+							   (unsigned)(unsigned char)*chunkEnd)
 						   < 0) {
 							res = errno;
 							goto write_error;
@@ -702,8 +704,8 @@ void Backtrace::printDelta(Backtrace const& other, int color) const
 	}
 
 	log_color(
-		color, "%sExecution from fiber %p #%" PRIu64 ":\n",
-		color >= 0 ? ZTH_DBG_PREFIX : "", m_fiber, m_fiberId);
+		color, "%sExecution from fiber %p #%s:\n", color >= 0 ? ZTH_DBG_PREFIX : "",
+		m_fiber, str(m_fiberId).c_str());
 	other.printPartial(0, -common - 1, color);
 	log_color(color, "%sto:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
 	printPartial(0, -common - 1, color);
