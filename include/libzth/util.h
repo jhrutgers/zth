@@ -552,7 +552,7 @@ inline cow_string str<unsigned int>(unsigned int value)
 }
 
 namespace impl {
-inline cow_string strull(unsigned long long value)
+ZTH_EXPORT ZTH_INLINE cow_string strull(unsigned long long value)
 {
 #  ifdef ZTH_FORMAT_LIMITED
 	if(value > std::numeric_limits<int>::max())
@@ -614,27 +614,42 @@ inline cow_string str<unsigned long long>(unsigned long long value)
 	return impl::strull(value);
 }
 
+namespace impl {
+ZTH_EXPORT ZTH_INLINE cow_string strf(float value)
+{
+#  ifdef ZTH_FORMAT_LIMITED
+	if(!(value < (float)std::numeric_limits<int>::max()
+	     && value > (float)-std::numeric_limits<int>::max()))
+		return "?range?";
+
+	int i = (int)value;
+	float fi = (float)i;
+	if(std::abs(fi - value) < 0.0005F)
+		return format("%d", i);
+
+	int f = std::min(std::abs((int)((value - fi) * 1000.0F + 0.5F)), 999);
+	return format("%d.%03d", i, f);
+#  else
+	return format("%g", value);
+#  endif
+}
+} // namespace impl
+
 template <>
 inline cow_string str<float>(float value)
 {
-	return str((double)value);
+#  ifdef ZTH_FORMAT_LIMITED
+	return impl::strf(value);
+#  else
+	return format("%g", (double)value);
+#  endif
 }
 
 template <>
 inline cow_string str<double>(double value)
 {
 #  ifdef ZTH_FORMAT_LIMITED
-	float value_f = (float)value;
-	if(!(value_f < std::numeric_limits<int>::max()
-	     && value_f > -std::numeric_limits<int>::max()))
-		return "?range?";
-
-	int i = (int)value_f;
-	float fi = (float)i;
-	if(fi == value_f)
-		return format("%d", i);
-	int f = std::min(std::abs((int)((value_f - fi) * 1000.0 + 0.5)), 999);
-	return format("%d.%03d", i, f);
+	return impl::strf((float)value);
 #  else
 	return format("%g", value);
 #  endif
@@ -644,7 +659,7 @@ template <>
 inline cow_string str<long double>(long double value)
 {
 #  ifdef ZTH_FORMAT_LIMITED
-	return str((double)value);
+	return impl::strf((float)value);
 #  else
 	return format("%Lg", value);
 #  endif
