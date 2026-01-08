@@ -80,11 +80,10 @@ public:
 		, m_contextAttr(&fiberEntry, this)
 		, m_context()
 		, m_fls()
-		, m_timeslice(Config::MinTimeslice_s())
+		, m_timeslice(Config::MinTimeslice())
 		, m_dtMax(Config::CheckTimesliceOverrun
-				  ? Config::MinTimeslice_s()
-					    * Config::TimesliceOverrunFactorReportThreshold
-				  : 0)
+				  ? TimeInterval(Config::TimesliceOverrunReportThreshold())
+				  : TimeInterval())
 	{
 		zth_init();
 		setState(New);
