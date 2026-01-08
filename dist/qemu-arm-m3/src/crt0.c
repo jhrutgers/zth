@@ -5,6 +5,7 @@
  */
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -129,25 +130,31 @@ int clock_gettime(int clk_id, struct timespec* res)
 	// that it happens, prescale it by 16.  This is good enough for this
 	// example.
 	static uint32_t cnt_prev = 0;
-	static uint32_t cnt_wraps = 0;
+	static bool initialized = false;
 
-	if(cnt_wraps == 0) {
+	if(!initialized) {
 		// Initialization needed.
 		*((uint32_t volatile*)0x40000000) = 1;	// TIM2_CR1: enable counter
 		*((uint32_t volatile*)0x40000028) = 15; // TIM2_PSC: set prescaler to 16
-		cnt_wraps = 1;
+		initialized = true;
 	}
 
 	uint32_t cnt = *((uint32_t volatile*)0x40000024); // TIM2_CNT
-
-	if(cnt < cnt_prev)
-		cnt_wraps++;
-
+	uint32_t dt_cnt = cnt - cnt_prev;
+	uint64_t dt_ns = (uint64_t)dt_cnt * 16U;
 	cnt_prev = cnt;
 
-	uint64_t ns = (((uint64_t)cnt_wraps << 32U) | (uint64_t)cnt) * 16U;
-	res->tv_sec = ns / (uint64_t)1000000000UL;
-	res->tv_nsec = ns % (uint64_t)1000000000UL;
+	// uint64_t division is expensive. As we know that this function is called often, just check
+	// for second overflows.
+	static struct timespec ts_prev = {};
+	uint64_t ns = (uint64_t)ts_prev.tv_nsec + dt_ns;
+	while(ns > (uint64_t)1000000000UL) {
+		ts_prev.tv_sec += 1;
+		ns -= (uint64_t)1000000000UL;
+	}
+
+	ts_prev.tv_nsec = (long)ns;
+	*res = ts_prev;
 	return 0;
 }
 

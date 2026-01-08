@@ -367,7 +367,7 @@ public:
 	}
 
 	// cppcheck-suppress duplInheritedMember
-	__attribute__((naked)) static void context_trampoline_from_jmp_buf()
+	__attribute__((naked)) static void context_trampoline_from_jmp_buf() noexcept
 	{
 		// The this pointer is saved on the stack, as r0 is not part of
 		// the jmp_buf. Load it and call context_entry according to
@@ -375,9 +375,6 @@ public:
 
 		// clang-format off
 		asm volatile(
-#ifndef __cpp_exceptions
-			".fnstart\n"
-#endif
 			"ldr r0, [sp]\n"
 			// Terminate stack frame list here, only for debugging purposes.
 			"mov " REG_FP ", #0\n"
@@ -385,9 +382,6 @@ public:
 			"push {" REG_FP ", lr}\n"
 			"mov " REG_FP ", sp\n"
 			"bl context_entry\n"
-#ifndef __cpp_exceptions
-			".fnend\n"
-#endif
 		);
 		// clang-format on
 	}
@@ -448,11 +442,10 @@ private:
 	{
 		// clang-format off
 		asm volatile(
-#ifndef __cpp_exceptions
-			".fnstart\n"
-#endif
 			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+#ifdef __cpp_exceptions
 			".save {r4, " REG_FP ", lr}\n"
+#endif
 			"add " REG_FP ", sp, #0\n"
 
 			"mrs r4, control\n"		// Save current control register
@@ -464,7 +457,9 @@ private:
 			// We are on MSP now.
 
 			"push {" REG_FP ", lr}\n"	// Save frame pointer on MSP
+#ifdef __cpp_exceptions
 			".setfp " REG_FP ", sp\n"
+#endif
 			"add " REG_FP ", sp, #0\n"
 
 			"blx r1\n"			// Call f(arg)
@@ -477,9 +472,6 @@ private:
 			// We are back on the previous stack.
 
 			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
-#ifndef __cpp_exceptions
-			".fnend\n"
-#endif
 		);
 		// clang-format on
 	}
@@ -490,26 +482,24 @@ private:
 	{
 		// clang-format off
 		asm volatile(
-#ifndef __cpp_exceptions
-			".fnstart\n"
-#endif
 			"push {r4, " REG_FP ", lr}\n"	// Save pc and variables
+#ifdef __cpp_exceptions
 			".save {r4, " REG_FP ", lr}\n"
+#endif
 			"add " REG_FP ", sp, #0\n"
 
 			"mov r4, sp\n"			// Save previous stack pointer
 			"mov sp, r2\n"			// Set new stack pointer
 			"push {" REG_FP ", lr}\n"	// Save previous frame pointer on new stack
+#ifdef __cpp_exceptions
 			".setfp " REG_FP ", sp\n"
+#endif
 			"add " REG_FP ", sp, #0\n"
 
 			"blx r1\n"			// Call f(arg)
 
 			"mov sp, r4\n"			// Restore previous stack
 			"pop {r4, " REG_FP ", pc}\n"	// Return to caller
-#ifndef __cpp_exceptions
-			".fnend\n"
-#endif
 		);
 		// clang-format on
 	}
@@ -610,6 +600,16 @@ private:
 
 } // namespace impl
 } // namespace zth
+
+#  if !defined(__cpp_exceptions) && defined(__NEWLIB__)
+// It seems that newlib depends on this function by setjmp.o, even when exceptions are disabled. It
+// would pull in all unwinding code, which is dead code anyway.  Forcibly define the symbol here to
+// prevent that.
+EXTERN_C void __aeabi_unwind_cpp_pr0()
+{
+	zth_abort("No exceptions");
+}
+#  endif
 
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_ARCH_ARM_H

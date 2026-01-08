@@ -32,6 +32,10 @@ function(add_example example)
 			POST_BUILD
 			COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${example}>
 		)
+
+		target_link_options(
+			${example} PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/${example}.map"
+		)
 	endif()
 
 	install(TARGETS ${example} RUNTIME DESTINATION bin)
