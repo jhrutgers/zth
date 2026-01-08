@@ -15,6 +15,7 @@
 
 #ifdef __cplusplus
 #  include <cstddef>
+#  include <sys/time.h>
 
 #  if __cplusplus >= 201103L
 #    include <cstdint>
@@ -135,13 +136,15 @@ struct DefaultConfig {
 	/*! \brief Take POSIX signal into account when doing a context switch. */
 	static bool const ContextSignals = false;
 	/*! \brief Minimum time slice before zth::yield() actually yields. */
-	constexpr static float MinTimeslice_s()
+	constexpr static struct timespec MinTimeslice()
 	{
-		return 1e-4F;
+		return {0, 100000};
 	}
-
-	/*! \brief Print an overrun reported when MinTimeslice_s() is exceeded by this factor. */
-	static int const TimesliceOverrunFactorReportThreshold = 4;
+	/*! \brief Print an overrun reported when this timeslice is exceeded. */
+	constexpr static struct timespec TimesliceOverrunReportThreshold()
+	{
+		return {0, 10000000};
+	}
 	/*! \brief Check time slice overrun at every context switch. */
 	static bool const CheckTimesliceOverrun = Debug;
 	/*! \brief Save names for all #zth::Synchronizer instances. */

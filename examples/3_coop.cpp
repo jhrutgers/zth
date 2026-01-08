@@ -67,13 +67,13 @@ void example_1()
 // nice_fiber() make significantly more progress; nice_fiber() finishes before
 // nicer_fiber() gets to its second iteration.  That is not fair.  Zth
 // implements the following: every fiber gets at least
-// zth::Config::MinTimeslice_s() time, regardless of how many times
+// zth::Config::MinTimeslice() time, regardless of how many times
 // zth::yield() is called. If a fiber calls yield more often, these calls are
 // just ignored as long as we are within this time slice.
 
 // So, if every fiber yields at least once in this time period, the CPU is
 // fairly shared among all fibers. For your application, determine a realistic
-// and usable MinTimeslice_s() value, and make sure (by profiling) that you
+// and usable MinTimeslice() value, and make sure (by profiling) that you
 // yield often enough.
 
 // Now a new question pops up, what if you really want to yield within this
@@ -97,7 +97,7 @@ void server()
 		} else {
 			// If we would call zth::yield() here, we would
 			// effectively do a useless busy-wait for
-			// zth::Config::MinTimeslice_s() before client() would
+			// zth::Config::MinTimeslice() before client() would
 			// get a chance to enqueue more work.
 			zth::outOfWork();
 		}
