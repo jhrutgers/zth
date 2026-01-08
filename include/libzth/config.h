@@ -135,9 +135,9 @@ struct DefaultConfig {
 	/*! \brief Take POSIX signal into account when doing a context switch. */
 	static bool const ContextSignals = false;
 	/*! \brief Minimum time slice before zth::yield() actually yields. */
-	constexpr static double MinTimeslice_s()
+	constexpr static float MinTimeslice_s()
 	{
-		return 1e-4;
+		return 1e-4F;
 	}
 
 	/*! \brief Print an overrun reported when MinTimeslice_s() is exceeded by this factor. */

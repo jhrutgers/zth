@@ -38,20 +38,46 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	)
 endif()
 
-option(ZTH_DEV "Enable by default development related build options" OFF)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(ZTH_DEV_DEFAULT ON)
+else()
+	set(ZTH_DEV_DEFAULT OFF)
+endif()
+option(ZTH_DEV "Enable by default development related build options" ${ZTH_DEV_DEFAULT})
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+	set(CMAKE_C_FLAGS_DEBUG "-g -Og")
+	set(CMAKE_CXX_FLAGS_DEBUG "-g -Og")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -Os")
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -Os")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti")
+endif()
+
 if(ZTH_DEV)
 	set(ZTH_DEV_OPTION ON)
 	set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+	if(NOT WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+		add_compile_options(-fstack-protector-strong)
+	endif()
 else()
 	set(ZTH_DEV_OPTION OFF)
 endif()
 
-option(ZTH_DRAFT_API "Enable draft API" OFF)
+option(ZTH_DRAFT_API "Enable draft API" ON)
 if(ZTH_DRAFT_API)
 	message(STATUS "Enable Zth draft API")
 endif()
 
-option(ZTH_HAVE_LIBZMQ "Use libzmq" ON)
+if(WIN32
+   OR MINGW
+   OR UNIX
+)
+	set(ZTH_HAVE_LIBZMQ_DEFAULT ON)
+else()
+	set(ZTH_HAVE_LIBZMQ_DEFAULT OFF)
+endif()
+option(ZTH_HAVE_LIBZMQ "Use libzmq" ${ZTH_HAVE_LIBZMQ_DEFAULT})
 if(ZTH_HAVE_LIBZMQ)
 	find_package(ZeroMQ REQUIRED)
 endif()
@@ -121,6 +147,15 @@ endif()
 
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})
 
+if(ZTH_DEV AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(ZTH_CONFIG_ENABLE_DEBUG_PRINT_DEFAULT ON)
+else()
+	set(ZTH_CONFIG_ENABLE_DEBUG_PRINT_DEFAULT OFF)
+endif()
+option(ZTH_CONFIG_ENABLE_DEBUG_PRINT "Enable debug print statements"
+       ${ZTH_CONFIG_ENABLE_DEBUG_PRINT_DEFAULT}
+)
+
 list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
 include(zth)
 
@@ -149,7 +184,11 @@ function(add_launch_json TARGET)
 			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\",
 		},"
 		)
-	elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_CROSSCOMPILING)
+	elseif(
+		CMAKE_BUILD_TYPE STREQUAL "Debug"
+		OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
+		AND NOT CMAKE_CROSSCOMPILING
+	)
 		set_property(
 			GLOBAL
 			PROPERTY

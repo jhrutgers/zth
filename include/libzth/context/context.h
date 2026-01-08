@@ -485,7 +485,7 @@ public:
 	 *
 	 * It should call context_entry in the end.
 	 */
-	static void context_trampoline_from_jmp_buf();
+	static void context_trampoline_from_jmp_buf() noexcept;
 
 	/*!
 	 * \brief Pre-sjlj context saving.

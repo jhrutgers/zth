@@ -8,17 +8,35 @@ endif()
 
 cmake_policy(VERSION 3.10)
 
-option(ZTH_DEV "Enable development related build options" OFF)
+# ##################################################################################################
+# Options
+#
+
 option(ZTH_DRAFT_API "Enable draft API" OFF)
 option(ZTH_HAVE_LIBZMQ "Use libzmq" OFF)
 option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" OFF)
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" OFF)
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" OFF)
-option(ZTH_THREADS "Make libzth thread-aware" ON)
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" OFF)
 option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
 option(ZTH_DISABLE_EXCEPTIONS "Disable exceptions to reduce code size" OFF)
 option(ZTH_DISABLE_RTTI "Disable RTTI, to reduce code size" OFF)
+option(ZTH_CONFIG_ENABLE_DEBUG_PRINT "Enable debug print statements" OFF)
+
+if(ZTH_HAVE_LIBZMQ
+   OR NOT CMAKE_CROSSCOMPILING
+   OR WIN32
+   OR UNIX
+)
+	set(ZTH_THREADS_DEFAULT ON)
+else()
+	set(ZTH_THREADS_DEFAULT OFF)
+endif()
+option(ZTH_THREADS "Make libzth thread-aware" ${ZTH_THREADS_DEFAULT})
+
+# ##################################################################################################
+# libzth
+#
 
 if(NOT ZTH_SOURCE_DIR)
 	get_filename_component(ZTH_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
@@ -132,14 +150,12 @@ if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
 endif()
 
-if(ZTH_DEV)
-	if(NOT WIN32)
-		target_compile_options(libzth PUBLIC -fstack-protector-strong)
-	endif()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32)
+	target_compile_options(libzth PRIVATE -fstack-protector-strong)
 endif()
 
 if(ZTH_DISABLE_EXCEPTIONS)
-	target_compile_options(libzth PRIVATE -fno-exceptions)
+	target_compile_options(libzth PUBLIC -fno-exceptions)
 endif()
 
 if(ZTH_DISABLE_RTTI)

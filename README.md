@@ -134,7 +134,7 @@ startup has no effect to Zth's behavior.
 	cannot be enabled in that case.
 
 * `ZTH_CONFIG_DO_PERF_EVENT`  
-	When set to 1, perf VCD file generation is enabeled.  Disabled by default.
+	When set to 1, perf VCD file generation is enabled.  Disabled by default.
 
 * `ZTH_CONFIG_DO_PERF_SYSCALL`  
 	When set to 1, the perf VCD logs will contain all calls to Zth's special
