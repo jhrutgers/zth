@@ -181,6 +181,14 @@ struct DefaultConfig {
 		false;
 #  endif
 
+	/*! \brief Use limited formatting specifiers. */
+	static bool const UseLimitedFormatSpecifiers =
+#  if defined(ZTH_FORMAT_LIMITED) && ZTH_FORMAT_LIMITED
+		true;
+#  else
+		false;
+#  endif
+
 	/*!
 	 * \brief Allocator type.
 	 *

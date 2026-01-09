@@ -414,48 +414,48 @@ public:
 		if(m_negative)
 			res = "-";
 
-#  ifdef ZTH_FORMAT_LIMITED
-		// Do a simplified print without float formatting support.
-		if(m_t.tv_sec >= 60)
-			res += format("%u s", (unsigned int)m_t.tv_sec);
-		else if(m_t.tv_sec > 0)
-			res +=
-				format("%u.%03u s", (unsigned int)m_t.tv_sec,
-				       (unsigned int)(m_t.tv_nsec / 1000000L));
-		else
-			res += format("%u us", (unsigned int)m_t.tv_nsec / 1000U);
-#  else
-		uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
-		time_t rest = m_t.tv_sec - d * 3600 * 24;
-		bool doPrint = d > 0;
-		if(doPrint)
-			res += format("%" PRIu64 "d:", d);
-
-		int h = int(rest / 3600);
-		rest -= h * 3600;
-		if(doPrint) {
-			res += format("%02d:", h);
-		} else if(h > 0) {
-			res += format("%d:", h);
-			doPrint = true;
-		}
-
-		int m = int(rest / 60);
-		rest -= m * 60;
-		if(doPrint) {
-			res += format("%02d:", m);
-		} else if(m > 0) {
-			res += format("%d:", m);
-			doPrint = true;
-		}
-
-		double sec = (double)rest + (double)m_t.tv_nsec * 1e-9;
-		if(doPrint) {
-			res += format("%06.3f", sec);
+		if(Config::UseLimitedFormatSpecifiers) {
+			// Do a simplified print without float formatting support.
+			if(m_t.tv_sec >= 60)
+				res += format("%u s", (unsigned int)m_t.tv_sec);
+			else if(m_t.tv_sec > 0)
+				res +=
+					format("%u.%03u s", (unsigned int)m_t.tv_sec,
+					       (unsigned int)(m_t.tv_nsec / 1000000L));
+			else
+				res += format("%u us", (unsigned int)m_t.tv_nsec / 1000U);
 		} else {
-			res += format("%g s", sec);
+			uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
+			time_t rest = m_t.tv_sec - d * 3600 * 24;
+			bool doPrint = d > 0;
+			if(doPrint)
+				res += format("%" PRIu64 "d:", d);
+
+			int h = int(rest / 3600);
+			rest -= h * 3600;
+			if(doPrint) {
+				res += format("%02d:", h);
+			} else if(h > 0) {
+				res += format("%d:", h);
+				doPrint = true;
+			}
+
+			int m = int(rest / 60);
+			rest -= m * 60;
+			if(doPrint) {
+				res += format("%02d:", m);
+			} else if(m > 0) {
+				res += format("%d:", m);
+				doPrint = true;
+			}
+
+			double sec = (double)rest + (double)m_t.tv_nsec * 1e-9;
+			if(doPrint) {
+				res += format("%06.3f", sec);
+			} else {
+				res += format("%g s", sec);
+			}
 		}
-#  endif
 
 		return res;
 	}

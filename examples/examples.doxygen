@@ -2,20 +2,36 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+// clang-format off
+
+/////////////////////////////////////////////////////////////////////////////
+// 1_helloworld
+//
+
 /*!
 \example 1_helloworld.cpp
 \brief Basic Zth usage.
+
 This program will print:
+
 \verbatim
 Hello
 World!!1
 \endverbatim
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 2_fibers
+//
+
 /*!
 \example 2_fibers.cpp
 \brief Fiber creation.
+
 This program will print:
+
 \verbatim
 fiber_vv()
 fddd is not valid yet
@@ -26,13 +42,22 @@ fiber_vii(3, 14)
 fiber_vi(42)
 fiber_vv()
 \endverbatim
+
 Note that the order of the last four lines is not deterministic.
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 3_coop
+//
 
 /*!
 \example 3_coop.cpp
 \brief Example how to yield properly.
+
 This program will print something like this (depending on the speed of your CPU):
+
 \verbatim
 Example 1: nice vs nicer
 Be nicer 0
@@ -82,10 +107,18 @@ Serving 9
 \endverbatim
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 4_sync
+//
+
 /*!
 \example 4_sync.cpp
 \brief Synchronization primitives example.
+
 This program will print something like this:
+
 \verbatim
 Other fiber
 fiber 3 outside of critical section
@@ -128,49 +161,104 @@ Other fiber
 \endverbatim
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 5_perf
+//
+
 /*!
 \example 5_perf.cpp
 \brief perf example.
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 6_stack
+//
 
 /*!
 \example 6_stack.cpp
 \brief Stack example.
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 7_no_async
+//
+
 /*!
 \example 7_no_async.cpp
 \brief \c async alternative syntax.
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 9_c_api
+//
 
 /*!
 \example 9_c_api.c
 \brief C-API example.
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// socks
+//
+
 /*!
 \example socks.cpp
 \brief More complex fiber and synchronization example.
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// zmq
+//
 
 /*!
 \example zmq.cpp
 \brief 0MQ integration
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// daemon_pattern
+//
+
 /*!
 \example daemon_pattern.cpp
 \brief Pattern how to use and trigger a background daemon fiber.
 */
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// fsm14
+//
 
 /*!
 \example fsm14.cpp
 \brief Finite-state machine example
 */
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// measure
+//
+
 /*!
 \example measure.cpp
 \brief Performance measurement of some aspects of Zth.
+
 On a MacBook Pro (2010), running the release build, it gives the following output:
 \verbatim
 [calib     ]  calibration                         :  0.000'000'002'613 s    (2^29 iterations, total 1.40 s)
@@ -186,3 +274,5 @@ On a MacBook Pro (2010), running the release build, it gives the following outpu
 [nap       ]  nap(100 ms)                         :  0.100'868'147'512 s    (2^ 4 iterations, total 1.61 s)
 \endverbatim
 */
+
+// clang-format on
