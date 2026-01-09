@@ -259,19 +259,38 @@ Other fiber
 \example measure.cpp
 \brief Performance measurement of some aspects of Zth.
 
-On a MacBook Pro (2010), running the release build, it gives the following output:
+On a ZBook (2025), running the release build in Windows 11 gives the following output:
+
 \verbatim
-[calib     ]  calibration                         :  0.000'000'002'613 s    (2^29 iterations, total 1.40 s)
-[calib     ]  empty test                          : -0.000'000'000'008 s    (2^29 iterations, total 1.40 s)
-[now       ]  Timestamp::now()                    :  0.000'000'043'526 s    (2^25 iterations, total 1.55 s)
-[context   ]  2 context_switch()s                 :  0.000'000'163'834 s    (2^23 iterations, total 1.40 s)
-[yield     ]  single-fiber yield()                :  0.000'000'073'900 s    (2^24 iterations, total 1.28 s)
-[yield     ]  single-fiber yield() always         :  0.000'000'074'261 s    (2^24 iterations, total 1.29 s)
-[yield     ]  yield() to fiber and back           :  0.000'000'406'253 s    (2^22 iterations, total 1.71 s)
-[fiber     ]  currentFiber()                      :  0.000'000'000'022 s    (2^29 iterations, total 1.41 s)
-[fiber     ]  create and cleanup fiber            :  0.000'019'744'122 s    (2^16 iterations, total 1.29 s)
-[nap       ]  nap(0)                              : -0.000'000'000'039 s    (2^29 iterations, total 1.38 s)
-[nap       ]  nap(100 ms)                         :  0.100'868'147'512 s    (2^ 4 iterations, total 1.61 s)
+Zth 1.2.0-alpha g++-15.2.0 C++17 x86_64 draft threads winfiber
+[calib     ]  calibration                         :  0.000'000'000'689 s    (2^31 iterations, total 1.48014 s)
+[calib     ]  empty test                          : -0.000'000'000'001 s    (2^31 iterations, total 1.476 s)
+[now       ]  Timestamp::now()                    :  0.000'000'024'904 s    (2^26 iterations, total 1.71758 s)
+[context   ]  2 context_switch()s                 :  0.000'000'051'062 s    (2^25 iterations, total 1.73651 s)
+[yield     ]  single-fiber yield()                :  0.000'000'045'201 s    (2^25 iterations, total 1.53985 s)
+[yield     ]  single-fiber yield() always         :  0.000'000'044'711 s    (2^25 iterations, total 1.52339 s)
+[yield     ]  yield() to fiber and back           :  0.000'000'213'797 s    (2^23 iterations, total 1.79925 s)
+[fiber     ]  currentFiber()                      : -0.000'000'000'020 s    (2^31 iterations, total 1.43625 s)
+[fiber     ]  create and cleanup fiber            :  0.000'012'833'787 s    (2^17 iterations, total 1.68224 s)
+[nap       ]  nap(0)                              : -0.000'000'000'026 s    (2^31 iterations, total 1.42389 s)
+[nap       ]  nap(100 ms)                         :  0.111'990'974'310 s    (2^ 4 iterations, total 1.79186 s)
+\endverbatim
+
+Same machine, same configuration, but now in WSL2:
+
+\verbatim
+Zth 1.2.0-alpha g++-13.3.0 C++17 linux x86_64 draft threads ucontext
+[calib     ]  calibration                         :  0.000'000'000'889 s    (2^31 iterations, total 1.9102 s)
+[calib     ]  empty test                          :  0.000'000'000'025 s    (2^31 iterations, total 1.96543 s)
+[now       ]  Timestamp::now()                    :  0.000'000'019'517 s    (2^26 iterations, total 1.36952 s)
+[context   ]  2 context_switch()s                 :  0.000'000'038'360 s    (2^25 iterations, total 1.31702 s)
+[yield     ]  single-fiber yield()                :  0.000'000'027'596 s    (2^25 iterations, total 0.955833 s)
+[yield     ]  single-fiber yield() always         :  0.000'000'027'665 s    (2^26 iterations, total 1.91631 s)
+[yield     ]  yield() to fiber and back           :  0.000'000'152'156 s    (2^23 iterations, total 1.28384 s)
+[fiber     ]  currentFiber()                      : -0.000'000'000'002 s    (2^31 iterations, total 1.90407 s)
+[fiber     ]  create and cleanup fiber            :  0.000'007'021'886 s    (2^18 iterations, total 1.84098 s)
+[nap       ]  nap(0)                              :  0.000'000'000'001 s    (2^31 iterations, total 1.91324 s)
+[nap       ]  nap(100 ms)                         :  0.107'671'804'797 s    (2^ 4 iterations, total 1.72275 s)
 \endverbatim
 */
 
