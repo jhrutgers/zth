@@ -319,7 +319,7 @@ if(CPPCHECK_CMD)
 			${CPPCHECK_CMD} --std=c++17 --language=c++ -D__cplusplus=201703L
 			--enable=warning,style,information --force --inline-suppr --quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
-			--error-exitcode=1 -j 4 --library=gnu
+			--error-exitcode=1 -j 8 --library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
 			--enable=missingInclude -DCPPCHECK -U__ARM_ARCH
 			# --xml

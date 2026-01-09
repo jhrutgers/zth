@@ -14,6 +14,11 @@
 
 #  include <windows.h>
 
+#  pragma GCC diagnostic push
+#  ifdef __MINGW32__
+#    pragma GCC diagnostic ignored "-Warray-bounds"
+#  endif
+
 namespace zth {
 
 class Context : public impl::ContextArch<Context> {
@@ -111,5 +116,7 @@ private:
 };
 
 } // namespace zth
+
+#  pragma GCC diagnostic pop
 #endif // __cplusplus
 #endif // ZTH_CONTEXT_WINFIBER_H
