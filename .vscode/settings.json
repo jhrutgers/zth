@@ -26,7 +26,7 @@
 		"**/.git": true,
 		"**/dist/venv/**": true
 	},
-	"clang-format.executable": "clang-format-15",
+	"clang-format.executable": "clang-format",
 	"cmakeFormat.env": {
 		"PYTHONPATH": "${workspaceFolder}/dist/venv"
 	},

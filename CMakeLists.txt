@@ -141,8 +141,19 @@ set(ZTH_SOURCE_DIR
     CACHE STRING "libzth source directory" FORCE
 )
 
-if(NOT PYTHON_EXECUTABLE AND EXISTS ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
-	set(PYTHON_EXECUTABLE ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
+if(NOT PYTHON_EXECUTABLE)
+	if(WIN32 AND NOT CMAKE_CROSSCOMPILING)
+		set(PYTHON_EXECUTABLE "${ZTH_SOURCE_DIR}/dist/venv/Scripts/python.exe")
+	elseif(EXISTS ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
+		set(PYTHON_EXECUTABLE ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
+	else()
+		find_package(Python3 COMPONENTS Interpreter REQUIRED)
+		set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+	endif()
+endif()
+
+if(PYTHON_EXECUTABLE)
+	message(STATUS "Using Python interpreter: ${PYTHON_EXECUTABLE}")
 endif()
 
 option(ZTH_ENABLE_VALGRIND "Enable valgrind support" ${ZTH_DEV_OPTION})

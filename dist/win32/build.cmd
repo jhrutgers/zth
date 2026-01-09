@@ -13,16 +13,24 @@ if not exist build mkdir build
 if errorlevel 1 goto error
 
 set build_type=Release
+set do_build=1
+set offset=1
 
 if "%~1" == "" goto build
 set build_type=%~1
+if "%~2" == "conf" (
+	set do_build=0
+	set offset=2
+)
 
 :build
 pushd build
 set "repo=%here%\..\.."
 set "repo=%repo:\=/%"
-for /f "tokens=1*" %%x in ("%*") do cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% "-GMinGW Makefiles" -DZTH_DIST=win32 -DZTH_DIST_DIR="%here%\." %%y ..\..\..
+for /f "tokens=%offset%*" %%x in ("%*") do cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% "-GMinGW Makefiles" -DZTH_DIST=win32 -DZTH_DIST_DIR="%here%\." %%y ..\..\..
 if errorlevel 1 goto error_popd
+if "%do_build%" == "0" goto done
+
 cmake --build . -- -j%NUMBER_OF_PROCESSORS%
 if errorlevel 1 goto error_popd
 cmake --build . --target install -- -j%NUMBER_OF_PROCESSORS%

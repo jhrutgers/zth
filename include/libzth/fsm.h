@@ -289,9 +289,9 @@ private:
 /*!
  * \brief A Finite-state machine.
  * \tparam State_ the type of a state, which can be anything, as long as it is
- *	default-constructable and assignable, and comparable with \c std:less.
- * \tparam Input_ the type of inputs, as used by #Fsm::input(), which has the
- *	same type requirements as \c State_.
+ *	default-constructable and assignable, and comparable with \c std::less.
+ * \tparam Input_ the type of inputs, as used by #zth::Fsm::input(), which has the
+ *      same type requirements as \c State_.
  * \tparam FsmImpl_ the actual subclass type of \c Fsm, which is used for the
  *	#zth::FsmDescription. So, if you derive from Fsm, pass your class to \p
  *	FsmImpl_, such that every guard gets your actual \c Fsm type reference.

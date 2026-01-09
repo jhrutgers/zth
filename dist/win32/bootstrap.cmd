@@ -45,7 +45,7 @@ echo Chocolatey not installed. Install from here: https://chocolatey.org/docs/in
 goto error
 :have_choco
 
-choco install -y --no-progress tortoisegit git cmake make mingw
+choco install -y --no-progress git cmake make mingw llvm
 if errorlevel 1 goto error
 
 :done

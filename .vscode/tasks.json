@@ -79,7 +79,7 @@
 				"command": "${workspaceFolder}/dist/ubuntu/build.sh ${input:buildtype} conf test dev nosan clean"
 			},
 			"windows": {
-				"command": "${workspaceFolder}\\dist\\win32\\build.cmd ${input:buildtype}"
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd ${input:buildtype} conf"
 			},
 			"problemMatcher": []
 		},
@@ -94,7 +94,7 @@
 				"command": "${workspaceFolder}/dist/ubuntu/build.sh Debug conf test dev san clean"
 			},
 			"windows": {
-				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Debug"
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Debug conf"
 			},
 			"problemMatcher": [],
 			"presentation": {
@@ -112,7 +112,7 @@
 				"command": "${workspaceFolder}/dist/ubuntu/build.sh Release conf test dev clean"
 			},
 			"windows": {
-				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Release"
+				"command": "${workspaceFolder}\\dist\\win32\\build.cmd Release conf"
 			},
 			"problemMatcher": [],
 			"presentation": {
@@ -177,6 +177,7 @@
 				]
 			},
 			"windows": {
+				"command": "cmake --build . --target ${input:target} -j ${env:NUMBER_OF_PROCESSORS}",
 				"options": {
 					"cwd": "${workspaceFolder}\\dist\\win32\\build"
 				},
@@ -214,6 +215,7 @@
 				]
 			},
 			"windows": {
+				"command": "cmake --build . -- -j ${env:NUMBER_OF_PROCESSORS}",
 				"options": {
 					"cwd": "${workspaceFolder}\\dist\\win32\\build"
 				},
@@ -251,6 +253,7 @@
 				]
 			},
 			"windows": {
+				"command": "cmake --build . --target install -- -j ${env:NUMBER_OF_PROCESSORS}",
 				"options": {
 					"cwd": "${workspaceFolder}\\dist\\win32\\build"
 				},
