@@ -9,8 +9,17 @@ if(MINGW AND CMAKE_CROSSCOMPILING)
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 	)
 
-	install(FILES /usr/lib/gcc/x86_64-w64-mingw32/${mingw_version}/libgcc_s_seh-1.dll
-		      /usr/lib/gcc/x86_64-w64-mingw32/${mingw_version}/libstdc++-6.dll
-		      /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll DESTINATION bin
+	set(mingw_libs
+	    /usr/lib/gcc/x86_64-w64-mingw32/${mingw_version}/libgcc_s_seh-1.dll
+	    /usr/lib/gcc/x86_64-w64-mingw32/${mingw_version}/libstdc++-6.dll
+	    /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll
 	)
+
+	install(FILES ${mingw_libs} DESTINATION bin)
+
+	if(ZTH_TESTS)
+		foreach(lib ${mingw_libs})
+			file(COPY "${lib}" DESTINATION "${CMAKE_BINARY_DIR}/tests")
+		endforeach()
+	endif()
 endif()

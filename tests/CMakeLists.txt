@@ -77,6 +77,11 @@ if(ZTH_USE_GTEST)
 		if(TARGET test-prepare)
 			add_dependencies(${TESTNAME} test-prepare)
 		endif()
+
+		if(MINGW)
+			install(TARGETS ${TESTNAME} DESTINATION bin)
+		endif()
+
 		add_launch_json(${TESTNAME})
 	endfunction()
 
