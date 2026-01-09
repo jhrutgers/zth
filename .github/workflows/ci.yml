@@ -45,7 +45,6 @@ jobs:
           rm -rf dist/ubuntu/build
           dist/ubuntu/build.sh Release ${{matrix.zmq}} test
 
-jobs:
   build-ubuntu-cxx:
     strategy:
       matrix:
@@ -69,7 +68,6 @@ jobs:
           rm -rf dist/ubuntu/build
           dist/ubuntu/build.sh Release ${{matrix.cxx}} test
 
-jobs:
   build-ubuntu-zmq:
     strategy:
       matrix:
