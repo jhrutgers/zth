@@ -10,7 +10,9 @@
 
 namespace zth {
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 Fiber::FiberHook* Fiber::hookNew = nullptr;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 Fiber::FiberHook* Fiber::hookDead = nullptr;
 
 int Runnable::run()
