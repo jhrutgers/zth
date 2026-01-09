@@ -254,7 +254,7 @@ string formatv(char const* fmt, va_list args)
 	va_list args2;
 	va_copy(args2, args);
 	// NOLINTNEXTLINE
-	int c = vsnprintf(res.data(), res.size(), fmt, args);
+	int c = vsnprintf(res.data(), res.size(), fmt, args2);
 	va_end(args2);
 
 	if(unlikely((size_t)c >= res.size())) {
