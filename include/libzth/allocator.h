@@ -139,29 +139,29 @@ static inline void delete_alloc(T* p) noexcept
  * \ingroup zth_api_cpp_util
  */
 // cppcheck-suppress-macro duplInheritedMember
-#  define ZTH_CLASS_NEW_DELETE(T)                                 \
-    public:                                                       \
-    static void* operator new(std::size_t UNUSED_PAR(n))          \
-    {                                                             \
-      zth_assert(n == sizeof(T));                                 \
-      return ::zth::allocate<T>();                                \
-    }                                                             \
-    static void operator delete(void* ptr)                        \
-    {                                                             \
-      ::zth::deallocate<T>(static_cast<T*>(ptr));                 \
-    }                                                             \
-    static void* operator new[](std::size_t sz)                   \
-    {                                                             \
-      zth_assert(sz % sizeof(T) == 0);                            \
-      return ::zth::allocate<T>(sz / sizeof(T));                  \
-    }                                                             \
-    static void operator delete[](void* ptr, size_t sz)           \
-    {                                                             \
-      zth_assert(sz % sizeof(T) == 0);                            \
-      ::zth::deallocate<T>(static_cast<T*>(ptr), sz / sizeof(T)); \
-    }                                                             \
-                                                                  \
-    private:
+#  define ZTH_CLASS_NEW_DELETE(T)                                             \
+  public:                                                                     \
+	  static void* operator new(std::size_t UNUSED_PAR(n))                \
+	  {                                                                   \
+		  zth_assert(n == sizeof(T));                                 \
+		  return ::zth::allocate<T>();                                \
+	  }                                                                   \
+	  static void operator delete(void* ptr)                              \
+	  {                                                                   \
+		  ::zth::deallocate<T>(static_cast<T*>(ptr));                 \
+	  }                                                                   \
+	  static void* operator new[](std::size_t sz)                         \
+	  {                                                                   \
+		  zth_assert(sz % sizeof(T) == 0);                            \
+		  return ::zth::allocate<T>(sz / sizeof(T));                  \
+	  }                                                                   \
+	  static void operator delete[](void* ptr, size_t sz)                 \
+	  {                                                                   \
+		  zth_assert(sz % sizeof(T) == 0);                            \
+		  ::zth::deallocate<T>(static_cast<T*>(ptr), sz / sizeof(T)); \
+	  }                                                                   \
+                                                                              \
+  private:
 
 /*!
  * \brief \c std::vector type using Config::Allocator::type.

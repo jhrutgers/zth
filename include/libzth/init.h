@@ -32,22 +32,22 @@ EXTERN_C ZTH_EXPORT int zth_postdeinit();
 /*!
  * \brief Mark the given function \c f to be invoked during static initialization.
  */
-#    define ZTH_INIT_CALL_(f, ...)               \
-      struct f##__init : public zth_init_entry { \
-	f##__init() noexcept                     \
-		: zth_init_entry(&exec, nullptr) \
-	{                                        \
-	  if(zth_init_tail)                      \
-	    zth_init_tail->next = this;          \
-	  zth_init_tail = this;                  \
-	  if(!zth_init_head)                     \
-	    zth_init_head = this;                \
-	}                                        \
-	static void exec(){__VA_ARGS__};         \
-      };
-#    define ZTH_INIT_CALL(f)  \
-      ZTH_INIT_CALL_(f, f();) \
-      static f##__init const f##__init_;
+#    define ZTH_INIT_CALL_(f, ...)                              \
+	    struct f##__init : public zth_init_entry {          \
+		    f##__init() noexcept                        \
+			    : zth_init_entry(&exec, nullptr)    \
+		    {                                           \
+			    if(zth_init_tail)                   \
+				    zth_init_tail->next = this; \
+			    zth_init_tail = this;               \
+			    if(!zth_init_head)                  \
+				    zth_init_head = this;       \
+		    }                                           \
+		    static void exec() { __VA_ARGS__ };         \
+	    };
+#    define ZTH_INIT_CALL(f)        \
+	    ZTH_INIT_CALL_(f, f();) \
+	    static f##__init const f##__init_;
 #  endif
 
 #  ifndef ZTH_DEINIT_CALL
@@ -57,9 +57,9 @@ EXTERN_C ZTH_EXPORT int zth_postdeinit();
 /*!
  * \brief Mark the given function \c f to be invoked at exit.
  */
-#      define ZTH_DEINIT_CALL(f)      \
-	ZTH_INIT_CALL_(f, atexit(f);) \
-	static f##__init f##__deinit_;
+#      define ZTH_DEINIT_CALL(f)            \
+	      ZTH_INIT_CALL_(f, atexit(f);) \
+	      static f##__init f##__deinit_;
 #    endif
 #  endif
 

@@ -41,9 +41,9 @@
  * \ingroup zth_api_cpp_util
  * \hideinitializer
  */
-#define ZTH_VERSION                \
-  ZTH_STRINGIFY(ZTH_VERSION_MAJOR) \
-  "." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
+#define ZTH_VERSION                      \
+	ZTH_STRINGIFY(ZTH_VERSION_MAJOR) \
+	"." ZTH_STRINGIFY(ZTH_VERSION_MINOR) "." ZTH_STRINGIFY(ZTH_VERSION_PATCH) ZTH_VERSION_SUFFIX
 
 /*!
  * \brief Zth version as number.
