@@ -7,40 +7,91 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
-  build-ubuntu:
+  build-ubuntu-gcc:
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
-        gcc: [9, 10, 11]
-        cxx: [C++03, C++11, C++14, C++17]
-        zmq: [zmq, nozmq]
+        os: [ubuntu-22.04, ubuntu-24.04]
+        gcc: [9, 10, 11, 12, 13, 14]
         exclude:
-          - os: ubuntu-20.04
-            gcc: 11
+          - os: ubuntu-22.04
+            gcc: 13
+          - os: ubuntu-22.04
+            gcc: 14
     runs-on: ${{matrix.os}}
     env:
       CC: gcc-${{matrix.gcc}}
       CXX: g++-${{matrix.gcc}}
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
-        run: |
-          dist/ubuntu/bootstrap.sh
-          sudo apt install -y clang clang-tidy cppcheck
+        run: dist/ubuntu/bootstrap.sh
       - name: build Debug
-        run: dist/ubuntu/build.sh Debug dev ${{matrix.cxx}} ${{matrix.zmq}} test
+        run: |
+          dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
+      - name: build RelWithDebInfo
+        run: |
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh RelWithDebInfo dev ${{matrix.zmq}} test
       - name: build Release
         run: |
           rm -rf dist/ubuntu/build
-          dist/ubuntu/build.sh Release ${{matrix.cxx}} ${{matrix.zmq}} test
+          dist/ubuntu/build.sh Release ${{matrix.zmq}} test
+
+jobs:
+  build-ubuntu-cxx:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        cxx: [C++03, C++11, C++14, C++17, C++20]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: bootstrap
+        run: dist/ubuntu/bootstrap.sh
+      - name: build Debug
+        run: |
+          dist/ubuntu/build.sh Debug dev ${{matrix.cxx}} test
+      - name: build RelWithDebInfo
+        run: |
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh RelWithDebInfo dev ${{matrix.cxx}} test
+      - name: build Release
+        run: |
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh Release ${{matrix.cxx}} test
+
+jobs:
+  build-ubuntu-zmq:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        zmq: [zmq, nozmq]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: bootstrap
+        run: dist/ubuntu/bootstrap.sh
+      - name: build Debug
+        run: |
+          dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
+      - name: build RelWithDebInfo
+        run: |
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh RelWithDebInfo dev ${{matrix.zmq}} test
+      - name: build Release
+        run: |
+          rm -rf dist/ubuntu/build
+          dist/ubuntu/build.sh Release ${{matrix.zmq}} test
 
   build-windows:
     runs-on: windows-latest
@@ -49,7 +100,7 @@ jobs:
         zmq: [ON, OFF]
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist\win32\bootstrap.cmd
       - name: build Debug
@@ -69,7 +120,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: |
           # Workaround for linker bug in XCode 14.0
@@ -86,7 +137,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist/qemu-arm-a15/bootstrap.sh
       - name: build Debug
@@ -100,7 +151,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist/qemu-arm-m3/bootstrap.sh
       - name: build Debug
@@ -114,7 +165,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist/mingw/bootstrap.sh
       - name: build Debug
@@ -125,12 +176,12 @@ jobs:
           dist/mingw/build.sh Release
 
   documentation:
-    if: github.ref == 'refs/heads/master'
-    needs: [build-ubuntu, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw]
+    if: github.ref == 'refs/heads/main'
+    needs: [build-ubuntu-gcc, build-ubuntu-cxx, build-ubuntu-zmq, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw]
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist/ubuntu/bootstrap.sh
       - name: build
@@ -142,19 +193,19 @@ jobs:
           publish_dir: ./doxygen/html
 
   test-documentation:
-    if: github.ref != 'refs/heads/master'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: bootstrap
         run: dist/ubuntu/bootstrap.sh
       - name: build
         run: dist/ubuntu/build.sh -DZTH_DOCUMENTATION=ON
 
   merge-status-check:
-    if: github.ref != 'refs/heads/master'
-    needs: [build-ubuntu, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw, test-documentation]
+    if: github.ref != 'refs/heads/main'
+    needs: [build-ubuntu-gcc, build-ubuntu-cxx, build-ubuntu-zmq, build-windows, build-mac, build-arm-a15, build-arm-m3, build-mingw, test-documentation]
     runs-on: ubuntu-latest
     steps:
       - name: accept

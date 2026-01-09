@@ -46,6 +46,8 @@ char const* banner() noexcept
 		" C++14"
 #elif __cplusplus == 201703L
 		" C++17"
+#elif __cplusplus == 202002L
+		" C++20"
 #else
 		" C++" ZTH_STRINGIFY(__cplusplus)
 #endif

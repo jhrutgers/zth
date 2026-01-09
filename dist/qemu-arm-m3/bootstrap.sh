@@ -6,6 +6,9 @@
 
 set -xeuo pipefail
 
+here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)"
+"${here}/../ubuntu/bootstrap.sh"
+
 function gotErr {
 	echo -e "\nError occurred, stopping\n"
 	exit 1
@@ -13,8 +16,4 @@ function gotErr {
 
 trap gotErr ERR
 
-sudo apt install -y build-essential gdb-multiarch qemu-system-arm
-which arm-none-eabi-g++ > /dev/null || sudo apt install -y gcc-arm-none-eabi
-which cmake > /dev/null || sudo apt install -y cmake
-which doxygen > /dev/null || sudo apt install -y doxygen
-which git > /dev/null || sudo apt install -y git-core
+sudo apt install -y gdb-multiarch qemu-system-arm gcc-arm-none-eabi
