@@ -109,8 +109,22 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 #ifdef ZTH_OS_WINDOWS
 // When using gcc and MinGW, clock_nanosleep() only accepts CLOCK_REALTIME, but we use
 // CLOCK_MONOTONIC.
+#  ifdef WINPTHREADS_TIME_BITS
+// The newer MinGW redirects clock_nanosleep() to either clock_nanosleep32() or
+// clock_nanosleep64().
+#    if WINPTHREADS_TIME_BITS == 32
+int clock_nanosleep32(
+	clockid_t clock_id, int flags, const struct _timespec32* request,
+	struct _timespec32* remain)
+#    else  // 64-bit time_t
+int clock_nanosleep64(
+	clockid_t clock_id, int flags, const struct _timespec64* request,
+	struct _timespec64* remain)
+#    endif // 64-bit time_t
+#  else
 int clock_nanosleep(
 	clockid_t clock_id, int flags, const struct timespec* request, struct timespec* remain)
+#  endif
 {
 	if(unlikely(!request))
 		return EFAULT;
@@ -134,7 +148,8 @@ int clock_nanosleep(
 		t.tv_sec--;
 	}
 
-	return nanosleep(&t, remain) ? errno : 0;
+	// NOLINTNEXTLINE
+	return nanosleep(&t, (struct timespec*)remain) ? errno : 0;
 }
 #endif
 

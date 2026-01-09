@@ -55,7 +55,8 @@
 		{
 			"name": "Win32",
 			"includePath": [
-				"${env:includePath}"
+				"${env:includePath}",
+				"C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include"
 			],
 			"defines": [
 				"${env:defines}"

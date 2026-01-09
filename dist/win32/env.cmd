@@ -7,7 +7,7 @@ rem SPDX-License-Identifier: MPL-2.0
 rem Call this script to prepare the runtime environment on Windows for building the project.
 
 set here=%~dp0
-pushd %here%\..
+pushd %here%\..\..
 
 set PATH=%ChocolateyInstall%\lib\mingw\tools\install\mingw64\bin;%ChocolateyInstall%\bin;%PATH%
 
@@ -36,6 +36,21 @@ where gcc 2> NUL | cmd /e /v /q /c"set/p.=&&echo gcc: ^!.^!"
 where /q make > NUL 2> NUL
 if errorlevel 1 goto need_bootstrap
 where make 2> NUL | cmd /e /v /q /c"set/p.=&&echo make: ^!.^!"
+
+where /q python > NUL 2> NUL
+if errorlevel 1 goto need_bootstrap
+where python 2> NUL | cmd /e /v /q /c"set/p.=&&echo python: ^!.^!"
+
+if exist dist\venv goto done
+echo Setting up Python virtual environment...
+python -m venv dist\venv
+if errorlevel 1 goto error
+call dist\venv\Scripts\activate.bat
+if errorlevel 1 goto error
+python -m pip install --upgrade pip setuptools wheel
+if errorlevel 1 goto error
+python -m pip install -r dist\common\requirements.txt
+if errorlevel 1 goto error
 
 :done
 popd

@@ -13,7 +13,7 @@ function gotErr {
 
 trap gotErr ERR
 
-sudo apt install -y build-essential cmake doxygen git-core python3 python3-pip python3-venv
+sudo apt install -y build-essential cmake doxygen git-core python3 python3-pip python3-venv clang-format
 
 [[ ! -z ${CXX:-} ]] || which g++ > /dev/null || sudo apt install -y g++-multilib gdb-multiarch
 [[ ! -z ${CC:-} ]] || which gcc > /dev/null || sudo apt install -y gcc-multilib gdb-multiarch
