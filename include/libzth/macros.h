@@ -44,8 +44,8 @@
 #  ifdef __cplusplus
 #    if __cplusplus < 201103L && !defined(decltype)
 #      define decltype(x) \
-	__typeof__(x) // Well, not really true when references are
-		      // involved...
+	      __typeof__(x) // Well, not really true when references are
+			    // involved...
 #    endif
 #  endif
 #  if ZTH_THREADS
@@ -172,7 +172,7 @@ ZTH_EXPORT void foo();
 #  endif
 #  ifndef is_default
 #    define is_default \
-      {}
+	    {}
 #  endif
 #  ifndef noexcept
 #    define noexcept throw()

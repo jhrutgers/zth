@@ -525,10 +525,9 @@ public:
 			void* prevGuard = nullptr;
 
 			if(zth::Config::EnableStackGuard && size >= ZTH_ARM_STACK_GUARD_SIZE * 2) {
-				void* guard =
-					(void*)(((uintptr_t)stack + 2 * ZTH_ARM_STACK_GUARD_SIZE
-						 - 1)
-						& ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
+				void* guard = (void*)(((uintptr_t)stack
+						       + 2 * ZTH_ARM_STACK_GUARD_SIZE - 1)
+						      & ~(ZTH_ARM_STACK_GUARD_SIZE - 1));
 				prevGuard = setGuard(guard);
 				stackGuard();
 			}

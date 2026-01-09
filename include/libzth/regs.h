@@ -113,20 +113,20 @@ struct Register {
  * \see zth::Register
  * \ingroup zth_api_cpp_regs
  */
-#  define ZTH_REG_DEFINE(T, name, addr, fields...)              \
-    struct name##__type {                                       \
-      T ZTH_REG_BITFIELDS(fields);                              \
-    } __attribute__((packed));                                  \
-    struct name : public zth::Register<T, addr, name##__type> { \
-      typedef zth::Register<T, addr, name##__type> base;        \
-      using typename base::type;                                \
-      name() noexcept                                           \
-	      : base()                                          \
-      {}                                                        \
-      constexpr explicit name(type v) noexcept                  \
-	      : base(v)                                         \
-      {}                                                        \
-    };
+#  define ZTH_REG_DEFINE(T, name, addr, fields...)                    \
+	  struct name##__type {                                       \
+		  T ZTH_REG_BITFIELDS(fields);                        \
+	  } __attribute__((packed));                                  \
+	  struct name : public zth::Register<T, addr, name##__type> { \
+		  typedef zth::Register<T, addr, name##__type> base;  \
+		  using typename base::type;                          \
+		  name() noexcept                                     \
+			  : base()                                    \
+		  {}                                                  \
+		  constexpr explicit name(type v) noexcept            \
+			  : base(v)                                   \
+		  {}                                                  \
+	  };
 
 } // namespace zth
 #endif // __cplusplus

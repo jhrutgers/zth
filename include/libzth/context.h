@@ -38,12 +38,11 @@ EXTERN_C ZTH_EXPORT void*
 zth_stack_switch(void* stack, size_t size, void* (*f)(void*) noexcept, void* arg) noexcept;
 #else // !ZTH_STACK_SWITCH
 #  define zth_stack_switch(stack, size, f, arg) \
-    (                                           \
-	    {                                   \
-(void)(stack);                                      \
-(void)(size);                                       \
-((f)(arg));                                         \
-	    })
+	  ({                                    \
+	    (void)(stack);                      \
+	    (void)(size);                       \
+	    ((f)(arg));                         \
+	  })
 #endif // !ZTH_STACK_SWITCH
 
 #ifdef __cplusplus

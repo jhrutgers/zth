@@ -752,9 +752,8 @@ public:
 	virtual cow_string name() const final
 	{
 		return isInput() ? format("input %s / %s", input().str(), action().name().c_str())
-				 : format(
-					 "guard %s / %s", guard().name().c_str(),
-					 action().name().c_str());
+				 : format("guard %s / %s", guard().name().c_str(),
+					  action().name().c_str());
 	}
 
 private:

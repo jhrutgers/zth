@@ -66,8 +66,8 @@ public:
 				!Config::NamedSynchronizer
 					? new Future_type()
 					: new Future_type(
-						format("Future of %s", this->name().c_str())
-							.c_str()));
+						  format("Future of %s", this->name().c_str())
+							  .c_str()));
 		}
 
 		return m_future;
@@ -720,12 +720,12 @@ namespace fibered {}
 
 } // namespace zth
 
-#  define zth_fiber_declare_1(f)                             \
-    namespace zth {                                          \
-    namespace fibered {                                      \
-    extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
-    }                                                        \
-    }
+#  define zth_fiber_declare_1(f)                                   \
+	  namespace zth {                                          \
+	  namespace fibered {                                      \
+	  extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
+	  }                                                        \
+	  }
 
 /*!
  * \brief Do the declaration part of #zth_fiber() (to be used in an .h file).
@@ -734,16 +734,16 @@ namespace fibered {}
  */
 #  define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
 
-#  define zth_fiber_define_1(storage, f)                                              \
-    namespace zth {                                                                   \
-    namespace fibered {                                                               \
-    storage ::zth::TypedFiberFactory<decltype(&::f)> const                            \
-	    f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
-			    ? ZTH_STRINGIFY(f) "()"                                   \
-			    : nullptr); /* NOLINT */                                  \
-    }                                                                                 \
-    }                                                                                 \
-    typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
+#  define zth_fiber_define_1(storage, f)                                                    \
+	  namespace zth {                                                                   \
+	  namespace fibered {                                                               \
+	  storage ::zth::TypedFiberFactory<decltype(&::f)> const                            \
+		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
+				  ? ZTH_STRINGIFY(f) "()"                                   \
+				  : nullptr); /* NOLINT */                                  \
+	  }                                                                                 \
+	  }                                                                                 \
+	  typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
 #  define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
 #  define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)
 
