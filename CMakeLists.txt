@@ -16,7 +16,7 @@ if(NOT CMAKE_BUILD_TYPE)
 	)
 endif()
 
-message(STATUS "CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build Zth as ${CMAKE_BUILD_TYPE} for ${ZTH_DIST}")
 
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 	message(
@@ -293,6 +293,21 @@ if(ZTH_DOCUMENTATION)
 		COMMAND Doxygen::doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		COMMENT "Generating API documentation with Doxygen (see doxygen/html/index.html)"
+	)
+
+	add_custom_target(
+		doc-zip ALL
+		DEPENDS doc
+		COMMAND ${CMAKE_COMMAND} -E tar "cf" "${CMAKE_CURRENT_BINARY_DIR}/doc.zip"
+			--format=zip -- html
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doxygen
+		COMMENT "Creating ZIP archive of API documentation"
+	)
+
+	install(
+		FILES ${CMAKE_CURRENT_BINARY_DIR}/doc.zip
+		DESTINATION ${CMAKE_INSTALL_DOCDIR}
+		RENAME Zth_doc_${ZTH_VERSION}.zip
 	)
 endif()
 

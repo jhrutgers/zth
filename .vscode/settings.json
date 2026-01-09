@@ -5,7 +5,8 @@
 		"stored": "cpp",
 		".clang-tidy": "yaml",
 		"*.h": "cpp",
-		"**/include/**": "cpp"
+		"**/include/**": "cpp",
+		"*.doxygen": "cpp"
 	},
 	"cSpell.words": [
 		"zth"

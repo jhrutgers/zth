@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `std::terminate()` instead of `std::abort()` on errors, to allow setting a handler.
 - Redirect standard ``assert()`` failure handling to `zth::assert_handler()`.
 - Fix support for newlib 4.4.0.
+- `Config::MinTimeslice` and `Config::TimesliceOverrunReportThreshold` return `struct timespec` for performance reasons.
 
 
 
