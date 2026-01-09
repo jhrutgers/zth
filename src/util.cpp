@@ -238,20 +238,21 @@ void log_colorv(int color, char const* fmt, va_list args)
 /*!
  * \brief Format like \c vsprintf(), but save the result in an \c zth::string.
  */
+#if __cplusplus >= 201703L
 string formatv(char const* fmt, va_list args)
 {
 	// std::string has a small internal buffer. Try to use that first.
 	string res;
 
-#if defined(__cpp_lib_string_resize_and_overwrite) \
-	&& __cpp_lib_string_resize_and_overwrite >= 202110L
+#  if defined(__cpp_lib_string_resize_and_overwrite) \
+	  && __cpp_lib_string_resize_and_overwrite >= 202110L
 	// C++23: Don't initialize the buffer.
 	res.resize_and_overwrite(
 		res.capacity(), [](char* /*buf*/, size_t size) -> size_t { return size; });
-#else  // !resize_and_overwrite
-       // This will initialize the buffer with zeros.
+#  else	 // !resize_and_overwrite
+	 // This will initialize the buffer with zeros.
 	res.resize(res.capacity());
-#endif // resize_and_overwrite
+#  endif // resize_and_overwrite
 
 	va_list args2;
 	va_copy(args2, args);
@@ -261,13 +262,13 @@ string formatv(char const* fmt, va_list args)
 
 	if(unlikely((size_t)c >= res.size())) {
 		// Buffer too small.
-#if defined(__cpp_lib_string_resize_and_overwrite) \
-	&& __cpp_lib_string_resize_and_overwrite >= 202110L
+#  if defined(__cpp_lib_string_resize_and_overwrite) \
+	  && __cpp_lib_string_resize_and_overwrite >= 202110L
 		res.resize_and_overwrite(
 			(size_t)c + 1U, [](char* /*buf*/, size_t size) -> size_t { return size; });
-#else  // !resize_and_overwrite
+#  else	 // !resize_and_overwrite
 		res.resize((size_t)c + 1U);
-#endif // resize_and_overwrite
+#  endif // resize_and_overwrite
 
 		// NOLINTNEXTLINE
 		c = vsnprintf(res.data(), res.size(), fmt, args);
@@ -277,6 +278,43 @@ string formatv(char const* fmt, va_list args)
 	res.resize(c > 0 ? (size_t)c : 0);
 	return res; // RVO
 }
+#else  // < C++17
+// Pre C++17 version without guaranteed contiguous string storage.
+string formatv(char const* fmt, va_list args)
+{
+	int const maxstack = (int)sizeof(void*) * 8;
+
+	char sbuf[maxstack];
+	char* hbuf = nullptr;
+	size_t hbuf_size = 0;
+	char* buf = sbuf;
+
+	va_list args2;
+	va_copy(args2, args);
+	// NOLINTNEXTLINE
+	int c = vsnprintf(sbuf, maxstack, fmt, args2);
+	va_end(args2);
+
+	if(c >= maxstack) {
+		hbuf_size = (size_t)c + 1U;
+		hbuf = allocate_noexcept<char>(hbuf_size);
+
+		if(unlikely(!hbuf)) {
+			c = 0;
+		} else {
+			// NOLINTNEXTLINE
+			int c2 = vsprintf(hbuf, fmt, args);
+			zth_assert(c2 <= c);
+			c = c2;
+			buf = hbuf;
+		}
+	}
+
+	string res(buf, (size_t)(c < 0 ? 0 : c));
+	deallocate(hbuf, hbuf_size);
+	return res;
+}
+#endif // C++17
 
 } // namespace zth
 

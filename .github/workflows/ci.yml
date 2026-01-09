@@ -32,7 +32,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/ubuntu/bootstrap.sh
+        run: |
+          sudo apt install -y gcc-${{matrix.gcc}} g++-${{matrix.gcc}}
+          dist/ubuntu/bootstrap.sh
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
