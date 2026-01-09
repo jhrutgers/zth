@@ -105,6 +105,7 @@ static void zmq_fiber()
 	void* socket = zmq_socket(zth_zmq_context(), ZMQ_REP);
 	int rc = zmq_bind(socket, "inproc://test_poller");
 	zth_assert(rc == 0);
+	(void)rc;
 
 	char buf[4];
 
@@ -123,6 +124,7 @@ static void zmq_fiber()
 
 	rc = zmq_send(socket, buf, (size_t)rc, 0);
 	zth_assert(rc > 0);
+	(void)rc;
 
 	zmq_close(socket);
 }

@@ -197,6 +197,7 @@ void sigchld_check()
 
 	Worker* w = Worker::instance();
 	char const* id_str = w ? w->id_str() : "?";
+	(void)id_str;
 
 	while(true) {
 		sigchld_cleanup = 0;

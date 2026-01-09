@@ -38,7 +38,7 @@
 #ifndef likely
 #  ifdef __GNUC__
 #    define likely(expr) \
-      __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 1)
+	    __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 1)
 #  else
 #    define likely(expr) (expr)
 #  endif
@@ -53,7 +53,7 @@
 #ifndef unlikely
 #  ifdef __GNUC__
 #    define unlikely(expr) \
-      __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 0)
+	    __builtin_expect(!!(expr) /* NOLINT(readability-simplify-boolean-expr) */, 0)
 #  else
 #    define unlikely(expr) (expr)
 #  endif
@@ -68,52 +68,52 @@
 /*! \brief Helper for FOREACH and REVERSE. \private */
 #define ZTH_GET_MACRO_ARGN(                                                                   \
 	_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, NAME, ...) \
-  NAME
+	NAME
 
 #ifndef FOREACH
 #  define FOREACH_0(WHAT)	     //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_1(WHAT, X) WHAT(X) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_2(WHAT, X, ...) \
-    WHAT(X) FOREACH_1(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_1(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_3(WHAT, X, ...) \
-    WHAT(X) FOREACH_2(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_2(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_4(WHAT, X, ...) \
-    WHAT(X) FOREACH_3(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_3(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_5(WHAT, X, ...) \
-    WHAT(X) FOREACH_4(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_4(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_6(WHAT, X, ...) \
-    WHAT(X) FOREACH_5(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_5(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_7(WHAT, X, ...) \
-    WHAT(X) FOREACH_6(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_6(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_8(WHAT, X, ...) \
-    WHAT(X) FOREACH_7(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_7(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_9(WHAT, X, ...) \
-    WHAT(X) FOREACH_8(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_8(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_10(WHAT, X, ...) \
-    WHAT(X) FOREACH_9(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_9(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_11(WHAT, X, ...) \
-    WHAT(X) FOREACH_10(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_10(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_12(WHAT, X, ...) \
-    WHAT(X) FOREACH_11(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_11(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_13(WHAT, X, ...) \
-    WHAT(X) FOREACH_12(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_12(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_14(WHAT, X, ...) \
-    WHAT(X) FOREACH_13(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_13(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_15(WHAT, X, ...) \
-    WHAT(X) FOREACH_14(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_14(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 #  define FOREACH_16(WHAT, X, ...) \
-    WHAT(X) FOREACH_15(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
+	  WHAT(X) FOREACH_15(WHAT, __VA_ARGS__) //!< \brief Helper for #FOREACH. \private
 //... repeat as needed
 
 /*!
  * \brief Evaluates to \c action(x) for every argument.
  */
-#  define FOREACH(action, ...)                                                             \
-    ZTH_GET_MACRO_ARGN(                                                                    \
-	    0, ##__VA_ARGS__, FOREACH_16, FOREACH_15, FOREACH_14, FOREACH_13, FOREACH_12,  \
-	    FOREACH_11, FOREACH_10, FOREACH_9, FOREACH_8, FOREACH_7, FOREACH_6, FOREACH_5, \
-	    FOREACH_4, FOREACH_3, FOREACH_2, FOREACH_1, FOREACH_0)                         \
-    (action, ##__VA_ARGS__)
+#  define FOREACH(action, ...)                                                                   \
+	  ZTH_GET_MACRO_ARGN(                                                                    \
+		  0, ##__VA_ARGS__, FOREACH_16, FOREACH_15, FOREACH_14, FOREACH_13, FOREACH_12,  \
+		  FOREACH_11, FOREACH_10, FOREACH_9, FOREACH_8, FOREACH_7, FOREACH_6, FOREACH_5, \
+		  FOREACH_4, FOREACH_3, FOREACH_2, FOREACH_1, FOREACH_0)                         \
+	  (action, ##__VA_ARGS__)
 #endif
 
 #ifndef REVERSE
@@ -134,12 +134,12 @@
 #  define REVERSE_14(a, ...) REVERSE_13(__VA_ARGS__), a
 #  define REVERSE_15(a, ...) REVERSE_14(__VA_ARGS__), a
 #  define REVERSE_16(a, ...) REVERSE_15(__VA_ARGS__), a
-#  define REVERSE(...)                                                                     \
-    ZTH_GET_MACRO_ARGN(                                                                    \
-	    0, ##__VA_ARGS__, REVERSE_16, REVERSE_15, REVERSE_14, REVERSE_13, REVERSE_12,  \
-	    REVERSE_11, REVERSE_10, REVERSE_9, REVERSE_8, REVERSE_7, REVERSE_6, REVERSE_5, \
-	    REVERSE_4, REVERSE_3, REVERSE_2, REVERSE_1, REVERSE_0)                         \
-    (__VA_ARGS__)
+#  define REVERSE(...)                                                                           \
+	  ZTH_GET_MACRO_ARGN(                                                                    \
+		  0, ##__VA_ARGS__, REVERSE_16, REVERSE_15, REVERSE_14, REVERSE_13, REVERSE_12,  \
+		  REVERSE_11, REVERSE_10, REVERSE_9, REVERSE_8, REVERSE_7, REVERSE_6, REVERSE_5, \
+		  REVERSE_4, REVERSE_3, REVERSE_2, REVERSE_1, REVERSE_0)                         \
+	  (__VA_ARGS__)
 #endif
 
 #include <stdarg.h>
@@ -190,55 +190,62 @@ zth_logv(char const* fmt, va_list arg);
  * \ingroup zth_api_cpp_util
  * \hideinitializer
  */
-#    define zth_dbg(group, fmt, a...)                                                   \
-      do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                               \
-	if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0         \
-	   && zth_config(EnableDebugPrint)) {                                           \
-	  if(::zth::Config::EnableColorLog)                                             \
-	    ::zth::log_color(                                                           \
-		    ::zth::Config::Print_##group,                                       \
-		    ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a);    \
-	  else                                                                          \
-	    ::zth::log(ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt "\n", ##a); \
-	}                                                                               \
-      } while(0)
+#    define zth_dbg(group, fmt, a...)                                                            \
+	    do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                                  \
+		    if(::zth::Config::SupportDebugPrint && ::zth::Config::Print_##group > 0      \
+		       && zth_config(EnableDebugPrint)) {                                        \
+			    if(::zth::Config::EnableColorLog)                                    \
+				    ::zth::log_color(                                            \
+					    ::zth::Config::Print_##group,                        \
+					    ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt \
+											"\n",    \
+					    ##a);                                                \
+			    else                                                                 \
+				    ::zth::log(                                                  \
+					    ZTH_DBG_PREFIX "zth::" ZTH_STRINGIFY(group) ": " fmt \
+											"\n",    \
+					    ##a);                                                \
+		    }                                                                            \
+	    } while(0)
 
 /*!
  * \def zth_assert(expr)
  * \brief \c assert(), but better integrated in Zth.
  */
 #    ifndef NDEBUG
-#      define zth_assert(expr)                                                        \
-	do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                           \
-	  if(unlikely(::zth::Config::EnableAssert && !(expr)))                        \
-	    ::zth::assert_handler(                                                    \
-		    __FILE__, __LINE__,                                               \
-		    ::zth::Config::EnableFullAssert ? ZTH_STRINGIFY(expr) : nullptr); \
-	} while(false)
+#      define zth_assert(expr)                                                              \
+	      do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                           \
+		      if(unlikely(::zth::Config::EnableAssert && !(expr)))                  \
+			      ::zth::assert_handler(                                        \
+				      __FILE__, __LINE__,                                   \
+				      ::zth::Config::EnableFullAssert ? ZTH_STRINGIFY(expr) \
+								      : nullptr);           \
+	      } while(false)
 #    else
-#      define zth_assert(...) \
-	do {                  \
-	} while(0)
+#      define zth_assert(...)                                     \
+	      do { /* NOLINT(cppcoreguidelines-avoid-do-while) */ \
+	      } while(0)
 #    endif
 #  endif
 
 #  ifndef ZTH_CLASS_NOCOPY
 #    if __cplusplus >= 201103L
-#      define ZTH_CLASS_NOCOPY(Class)                                                         \
-public:                                                                                       \
-	Class(Class const&) = delete;                                                         \
-	Class(Class&&) = delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
-				  */                                                          \
-	Class& operator=(Class const&) noexcept = delete;                                     \
-	Class& operator=(Class&&) noexcept =                                                  \
-		delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses)          \
-			 */                                                                   \
-private:
+#      define ZTH_CLASS_NOCOPY(Class)                                                      \
+      public:                                                                              \
+	      Class(Class const&) = delete;                                                \
+	      Class(Class&&) =                                                             \
+		      delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
+			       */                                                          \
+	      Class& operator=(Class const&) noexcept = delete;                            \
+	      Class& operator=(Class&&) noexcept =                                         \
+		      delete; /* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \
+			       */                                                          \
+      private:
 #    else
 #      define ZTH_CLASS_NOCOPY(Class) \
-private:                              \
-	Class(Class const&);          \
-	Class& operator=(Class const&);
+      private:                        \
+	      Class(Class const&);    \
+	      Class& operator=(Class const&);
 #    endif
 #  endif
 
