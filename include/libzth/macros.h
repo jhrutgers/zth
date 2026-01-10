@@ -71,6 +71,9 @@
 #  if GCC_VERSION >= 70000 && defined(__cplusplus) && __cplusplus < 201703L
 #    pragma GCC diagnostic ignored "-Wnoexcept-type"
 #  endif
+#  if GCC_VERSION >= 130000 && GCC_VERSION < 140000 && defined(__cplusplus)
+#    pragma GCC diagnostic ignored "-Wmismatched-new-delete"
+#  endif
 #  ifndef UNUSED_PAR
 #    define UNUSED_PAR(name) name __attribute__((unused))
 #  endif

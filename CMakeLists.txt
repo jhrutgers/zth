@@ -147,7 +147,11 @@ if(NOT PYTHON_EXECUTABLE)
 	elseif(EXISTS ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
 		set(PYTHON_EXECUTABLE ${ZTH_SOURCE_DIR}/dist/venv/bin/python3)
 	else()
-		find_package(Python3 COMPONENTS Interpreter REQUIRED)
+		find_package(
+			Python3
+			COMPONENTS Interpreter
+			REQUIRED
+		)
 		set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 	endif()
 endif()
@@ -333,6 +337,7 @@ if(CPPCHECK_CMD)
 			--error-exitcode=1 -j 8 --library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
 			--enable=missingInclude -DCPPCHECK -U__ARM_ARCH
+			--suppress=unmatchedSuppression:{}
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
 			tests/test_fsm17.cpp

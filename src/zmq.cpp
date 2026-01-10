@@ -176,5 +176,5 @@ int zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 } // namespace zmq
 } // namespace zth
 #else
-static int const no_zmq __attribute__((unused));
+static int const no_zmq __attribute__((unused)) = 0;
 #endif // ZTH_HAVE_LIBZMQ
