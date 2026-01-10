@@ -108,14 +108,14 @@ jobs:
       - name: bootstrap
         run: dist\win32\bootstrap.cmd
       - name: build Debug
-        run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
+        run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF"
       - name: test
         run: cmake --build . --target=test
         working-directory: dist\win32\build
       - name: build Release
         run: |
           Remove-Item -path dist\win32\build -recurse -force
-          dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}"
+          dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF"
       - name: test
         run: cmake --build . --target=test
         working-directory: dist\win32\build
