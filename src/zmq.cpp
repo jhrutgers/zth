@@ -48,6 +48,7 @@ static void* zmq_global_init()
  */
 void* zmq_context()
 {
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 	static void* zmq_ctx = zmq_global_init();
 	return zmq_ctx;
 }
@@ -175,5 +176,5 @@ int zmq_send_const(void* socket, void const* buf, size_t len, int flags)
 } // namespace zmq
 } // namespace zth
 #else
-static int no_zmq __attribute__((unused));
+static int const no_zmq __attribute__((unused));
 #endif // ZTH_HAVE_LIBZMQ

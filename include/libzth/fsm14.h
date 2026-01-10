@@ -428,8 +428,8 @@ public:
 	constexpr GuardPollInterval(GuardPollInterval const&) noexcept = default;
 	GuardPollInterval& operator=(GuardPollInterval const&) noexcept = default;
 
-	// cppcheck-suppress noExplicitConstructor
 	template <typename... A>
+	// cppcheck-suppress noExplicitConstructor
 	constexpr GuardPollInterval(A&&... a) noexcept
 		: TimeInterval(std::forward<A>(a)...)
 	{}
