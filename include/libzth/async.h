@@ -315,8 +315,8 @@ class TypedFiber0<void> final : public TypedFiber<void, void (*)()> {
 public:
 	typedef TypedFiber<void, void (*)()> base;
 
-	explicit TypedFiber0(typename base::Function function)
-		: base(function)
+	explicit TypedFiber0(typename base::Function func)
+		: base(func)
 	{}
 
 	virtual ~TypedFiber0() final is_default
@@ -335,8 +335,8 @@ class TypedFiber1 final : public TypedFiber<R, R (*)(A1)> {
 public:
 	typedef TypedFiber<R, R (*)(A1)> base;
 
-	TypedFiber1(typename base::Function function, A1 a1)
-		: base(function)
+	TypedFiber1(typename base::Function func, A1 a1)
+		: base(func)
 		, m_a1(a1)
 	{}
 
@@ -358,8 +358,8 @@ class TypedFiber1<void, A1> final : public TypedFiber<void, void (*)(A1)> {
 public:
 	typedef TypedFiber<void, void (*)(A1)> base;
 
-	TypedFiber1(typename base::Function function, A1 a1)
-		: base(function)
+	TypedFiber1(typename base::Function func, A1 a1)
+		: base(func)
 		, m_a1(a1)
 	{}
 
@@ -382,8 +382,8 @@ class TypedFiber2 final : public TypedFiber<R, R (*)(A1, A2)> {
 public:
 	typedef TypedFiber<R, R (*)(A1, A2)> base;
 
-	TypedFiber2(typename base::Function function, A1 a1, A2 a2)
-		: base(function)
+	TypedFiber2(typename base::Function func, A1 a1, A2 a2)
+		: base(func)
 		, m_a1(a1)
 		, m_a2(a2)
 	{}
@@ -407,8 +407,8 @@ class TypedFiber2<void, A1, A2> final : public TypedFiber<void, void (*)(A1, A2)
 public:
 	typedef TypedFiber<void, void (*)(A1, A2)> base;
 
-	TypedFiber2(typename base::Function function, A1 a1, A2 a2)
-		: base(function)
+	TypedFiber2(typename base::Function func, A1 a1, A2 a2)
+		: base(func)
 		, m_a1(a1)
 		, m_a2(a2)
 	{}
@@ -433,8 +433,8 @@ class TypedFiber3 final : public TypedFiber<R, R (*)(A1, A2, A3)> {
 public:
 	typedef TypedFiber<R, R (*)(A1, A2, A3)> base;
 
-	TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3)
-		: base(function)
+	TypedFiber3(typename base::Function func, A1 a1, A2 a2, A3 a3)
+		: base(func)
 		, m_a1(a1)
 		, m_a2(a2)
 		, m_a3(a3)
@@ -460,8 +460,8 @@ class TypedFiber3<void, A1, A2, A3> final : public TypedFiber<void, void (*)(A1,
 public:
 	typedef TypedFiber<void, void (*)(A1, A2, A3)> base;
 
-	TypedFiber3(typename base::Function function, A1 a1, A2 a2, A3 a3)
-		: base(function)
+	TypedFiber3(typename base::Function func, A1 a1, A2 a2, A3 a3)
+		: base(func)
 		, m_a1(a1)
 		, m_a2(a2)
 		, m_a3(a3)

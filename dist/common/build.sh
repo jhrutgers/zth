@@ -32,7 +32,6 @@ BUILD_TYPE="${1:-}"
 shift || true
 
 # Simplify setting specific configuration flag.
-support_test=1
 do_clean=0
 do_build=1
 do_test=0
@@ -50,11 +49,9 @@ while [[ ! -z ${1:-} ]]; do
 			show_help;;
 		C++98|C++03)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=98 -DCMAKE_C_STANDARD=99"
-			support_test=0
 			;;
 		C++11)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=11 -DCMAKE_C_STANDARD=11"
-			support_test=0
 			;;
 		C++14)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=14 -DCMAKE_C_STANDARD=11";;
@@ -62,6 +59,8 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=17 -DCMAKE_C_STANDARD=17";;
 		C++20)
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_STANDARD=17";;
+		C++23)
+			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=23 -DCMAKE_C_STANDARD=23";;
 		clean)
 			do_clean=1
 			cmake_opts="${cmake_opts} -DZTH_REGEN_LAUNCH_JSON=ON"
@@ -118,10 +117,6 @@ if [[ ${repo}/dist/common/requirements.txt -nt ${repo}/dist/venv/.timestamp ]]; 
 	"${repo}/dist/venv/bin/python3" -m pip install --upgrade pip setuptools wheel
 	"${repo}/dist/venv/bin/python3" -m pip install --upgrade -r "${repo}/dist/common/requirements.txt"
 	touch "${repo}/dist/venv/.timestamp"
-fi
-
-if [[ ${support_test} == 0 ]]; then
-	do_test=0
 fi
 
 if [[ ${do_test} == 1 ]]; then

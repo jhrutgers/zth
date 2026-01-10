@@ -78,7 +78,7 @@ int ZmqPoller::init(Pollable const& p, zmq_pollitem_t& item) noexcept
 	return 0;
 }
 
-int ZmqPoller::doPoll(int timeout_ms, typename base::PollItemList& items) noexcept
+int ZmqPoller::doPoll(int timeout_ms, base::PollItemList& items) noexcept
 {
 	zth_assert(items.size() <= (size_t)std::numeric_limits<int>::max());
 	int res = zmq_poll(items.data(), (int)items.size(), timeout_ms);

@@ -13,6 +13,7 @@
 #  include <libzth/config.h>
 #  include <libzth/util.h>
 
+#  include <exception>
 #  include <list>
 #  include <map>
 #  include <string>

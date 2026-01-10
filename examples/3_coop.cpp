@@ -17,12 +17,11 @@
 
 // There is a catch. Consider the following example:
 
-// Tweak the load default value at will to observe differences depending on the
-// speed of your CPU.
-static void do_work(int amount, int load = 1000)
+static void do_work(int amount)
 {
-	for(int volatile i = 0; i < amount * load; i++)
-		;
+	zth::Timestamp end = zth::Timestamp::now() + 1e-3f * (float)amount;
+	while(!end.hasPassed())
+		; // busy wait
 }
 
 void nice_fiber()

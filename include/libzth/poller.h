@@ -661,7 +661,7 @@ public:
 
 private:
 	virtual int init(Pollable const& p, zmq_pollitem_t& item) noexcept override;
-	virtual int doPoll(int timeout_ms, typename base::PollItemList& items) noexcept override;
+	virtual int doPoll(int timeout_ms, base::PollItemList& items) noexcept override;
 };
 
 typedef ZmqPoller DefaultPollerServer;

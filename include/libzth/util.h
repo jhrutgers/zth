@@ -60,10 +60,6 @@
 #endif
 
 #include <assert.h>
-#if defined(__cplusplus) && __cplusplus < 201103L && !defined(static_assert)
-#  pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#  define static_assert(expr, msg) typedef int static_assert_[(expr) ? 1 : -1]
-#endif
 
 /*! \brief Helper for FOREACH and REVERSE. \private */
 #define ZTH_GET_MACRO_ARGN(                                                                   \
@@ -558,7 +554,7 @@ namespace impl {
 ZTH_EXPORT ZTH_INLINE cow_string strull(unsigned long long value)
 {
 	if(Config::UseLimitedFormatSpecifiers) {
-		if(value > std::numeric_limits<int>::max())
+		if(value > (unsigned long long)std::numeric_limits<int>::max())
 			return format(
 				"0x%x%08x", (unsigned)(value >> 32U),
 				(unsigned)(value & 0xFFFFFFFFU));
