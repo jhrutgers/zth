@@ -190,9 +190,12 @@ ZTH_EXPORT void foo();
 #    define inline17 static
 #  endif
 #  ifndef static_assert
+#    pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #    define ZTH_STATIC_ASSERT_FAILED_(line) zth_static_assert_failed_##line
 #    define ZTH_STATIC_ASSERT_FAILED(line)  ZTH_STATIC_ASSERT_FAILED_(line)
-#    define static_assert(x, ...)	    typedef char ZTH_STATIC_ASSERT_FAILED(__LINE__)[(x) ? 1 : -1]
+#    define static_assert(x, ...)                  \
+	    typedef char ZTH_STATIC_ASSERT_FAILED( \
+		    __LINE__)[(x) ? 1 : -1] /* NOLINT(clang-diagnostic-vla-cxx-extension) */
 #  endif
 #else
 #  ifndef constexpr14

@@ -19,7 +19,12 @@
 #include <libzth/perf.h>
 #include <libzth/worker.h>
 
-#include <cinttypes>
+#if __cplusplus < 201103L
+#  include <inttypes.h>
+#else
+#  include <cinttypes>
+#endif
+
 #include <cstdlib>
 #include <fcntl.h>
 #include <map>
@@ -47,7 +52,7 @@ class PerfFiber : public Runnable {
 	ZTH_CLASS_NEW_DELETE(PerfFiber)
 public:
 	explicit PerfFiber(Worker* worker)
-		: m_worker(*worker)
+		: m_worker(worker)
 		, m_vcd()
 		, m_vcdd()
 	{
@@ -85,7 +90,7 @@ public:
 
 		Fiber* f = fiber();
 		size_t spareRoom = eventBuffer().capacity() - eventBuffer().size();
-		if(unlikely(!f || f == m_worker.currentFiber() || spareRoom < 3)) {
+		if(unlikely(!f || f == m_worker->currentFiber() || spareRoom < 3)) {
 			// Do it right here right now.
 			processEventBuffer();
 			return;
@@ -93,12 +98,12 @@ public:
 
 		if(likely(spareRoom > 3)) {
 			// Wakeup and do the processing later on.
-			m_worker.resume(*f);
+			m_worker->resume(*f);
 			return;
 		}
 
 		// Almost full, but enough room to signal that we are going to process the buffer.
-		Fiber const* currentFiber_ = m_worker.currentFiber();
+		Fiber const* currentFiber_ = m_worker->currentFiber();
 		if(unlikely(!currentFiber_)) {
 			// Huh? Do it here anyway.
 			processEventBuffer();
@@ -158,7 +163,7 @@ protected:
 			if(processEventBuffer())
 				return;
 
-			m_worker.suspend(*this);
+			m_worker->suspend(*this);
 		}
 
 		// Will never get here. The fiber is never properly stopped, but just killed when
@@ -461,7 +466,7 @@ write_error:
 	}
 
 private:
-	Worker& m_worker;
+	Worker* m_worker;
 	FILE* m_vcd;
 	FILE* m_vcdd;
 	map_type<uint64_t, string>::type m_vcdIds;

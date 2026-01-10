@@ -22,6 +22,10 @@
 #  include <windows.h>
 #endif
 
+#if __cplusplus < 201103L && !defined(va_copy)
+#  define va_copy(...) __va_copy(__VA_ARGS__)
+#endif
+
 using namespace std;
 
 namespace zth {
@@ -48,6 +52,8 @@ char const* banner() noexcept
 		" C++17"
 #elif __cplusplus == 202002L
 		" C++20"
+#elif __cplusplus == 202302L
+		" C++23"
 #else
 		" C++" ZTH_STRINGIFY(__cplusplus)
 #endif

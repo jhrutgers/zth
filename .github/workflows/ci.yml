@@ -16,6 +16,7 @@ on:
 jobs:
   build-ubuntu-gcc:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
         gcc: [9, 10, 11, 12, 13, 14]
@@ -49,9 +50,10 @@ jobs:
 
   build-ubuntu-cxx:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
-        cxx: [C++03, C++11, C++14, C++17, C++20]
+        cxx: [C++03, C++11, C++14, C++17, C++20, C++23]
     runs-on: ${{matrix.os}}
     steps:
       - name: checkout
@@ -72,6 +74,7 @@ jobs:
 
   build-ubuntu-zmq:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
         zmq: [zmq, nozmq]
@@ -96,6 +99,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         zmq: [ON, OFF]
     steps:

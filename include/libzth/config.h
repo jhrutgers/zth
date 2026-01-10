@@ -43,6 +43,14 @@ bool config(int env /* one of Env::* */, bool whenUnset);
  */
 #  define zth_config(name) (::zth::config(::zth::Env::name, ::zth::Config::name))
 
+#  if __cplusplus < 201103L
+#    define ZTH_CONSTEXPR_RETURN(type, ...) \
+	    type x = {__VA_ARGS__};         \
+	    return x;
+#  else // C++11 and up
+#    define ZTH_CONSTEXPR_RETURN(type, ...) return {__VA_ARGS__};
+#  endif // C++11 and up
+
 struct DefaultConfig {
 	/*! \brief This is a debug build when set to \c true. */
 	static bool const Debug =
@@ -135,16 +143,18 @@ struct DefaultConfig {
 	static bool const EnableStackWaterMark = Debug;
 	/*! \brief Take POSIX signal into account when doing a context switch. */
 	static bool const ContextSignals = false;
+
 	/*! \brief Minimum time slice before zth::yield() actually yields. */
 	constexpr static struct timespec MinTimeslice()
 	{
-		return {0, 100000};
+		ZTH_CONSTEXPR_RETURN(struct timespec, 0, 100000)
 	}
 	/*! \brief Print an overrun reported when this timeslice is exceeded. */
 	constexpr static struct timespec TimesliceOverrunReportThreshold()
 	{
-		return {0, 10000000};
+		ZTH_CONSTEXPR_RETURN(struct timespec, 0, 10000000)
 	}
+
 	/*! \brief Check time slice overrun at every context switch. */
 	static bool const CheckTimesliceOverrun = Debug;
 	/*! \brief Save names for all #zth::Synchronizer instances. */
@@ -206,4 +216,5 @@ struct DefaultConfig {
 
 #include "zth_config.h"
 
+#undef ZTH_CONSTEXPR_RETURN
 #endif // ZTH_CONFIG_H
