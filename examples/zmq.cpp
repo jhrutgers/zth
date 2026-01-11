@@ -41,7 +41,7 @@ void server()
 
 		printf("Received %s\n", buffer);
 		zth::nap(1); //  Do some 'work'
-		check(zmq_send(responder, (void*)"World", 5, 0));
+		check(zmq_send(responder, static_cast<void const*>("World"), 5, 0));
 	}
 }
 zth_fiber(server)
@@ -55,7 +55,7 @@ void client(int messages)
 	while(messages > 0 && !stop) {
 		char buffer[10];
 		printf("Sending Hello %d...\n", messages);
-		check(zmq_send(requester, (void*)"Hello", 5, 0));
+		check(zmq_send(requester, static_cast<void const*>("Hello"), 5, 0));
 		check(zmq_recv(requester, buffer, sizeof(buffer), 0));
 		printf("Received World %d\n", messages);
 		messages--;

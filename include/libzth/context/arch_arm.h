@@ -316,7 +316,8 @@ private:
 			zth_assert(sp_);
 
 			// Note that jmp_buf may be an array type with other elements than void*.
-			uintptr_t const* test_env_ = (uintptr_t const*)test_env;
+			// NOLINTNEXTLINE
+			uintptr_t const* test_env_ = reinterpret_cast<uintptr_t const*>(test_env);
 #    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Wsizeof-array-div"
 			size_t sp_offset = sizeof(jmp_buf) / sizeof(void*) - 2U;
@@ -355,14 +356,16 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	static void set_sp(jmp_buf& env, void** sp) noexcept
 	{
-		uintptr_t* env_ = (uintptr_t*)env;
+		// NOLINTNEXTLINE
+		uintptr_t* env_ = reinterpret_cast<uintptr_t*>(env);
 		env_[get_lr_offset() - 1U] = (uintptr_t)sp;
 	}
 
 	// cppcheck-suppress duplInheritedMember
 	static void set_pc(jmp_buf& env, void* pc) noexcept
 	{
-		uintptr_t* env_ = (uintptr_t*)env;
+		// NOLINTNEXTLINE
+		uintptr_t* env_ = reinterpret_cast<uintptr_t*>(env);
 		env_[get_lr_offset()] = (uintptr_t)pc; // lr = pc after return
 	}
 

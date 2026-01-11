@@ -239,7 +239,7 @@ protected:
 
 	virtual void apply(Fiber& fiber) const override
 	{
-		fiber.addCleanup(&cleanup, (void*)m_gate);
+		fiber.addCleanup(&cleanup, static_cast<void*>(m_gate));
 	}
 
 private:

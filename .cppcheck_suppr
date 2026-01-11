@@ -1,9 +1,8 @@
-missingIncludeSystem:*
-cstyleCast:*
-unmatchedSuppression:*
+missingIncludeSystem:include/*
+missingIncludeSystem:src/*
+missingIncludeSystem:examples/*
+missingIncludeSystem:tests/*
 constParameterCallback:*
-constParameterPointer:*
-constParameterReference:*
 
 unknownMacro:examples/*
 unmatchedSuppression:examples/*

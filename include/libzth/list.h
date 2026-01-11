@@ -307,7 +307,7 @@ public:
 		return iterator(m_head, m_head);
 	}
 
-	bool contains(elem_type& elem) const noexcept
+	bool contains(elem_type const& elem) const noexcept
 	{
 		for(iterator it = begin(); it != end(); ++it)
 			if(it.get() == &elem)
@@ -371,7 +371,7 @@ public:
 		}
 	}
 
-	bool contains(type& elem) const noexcept
+	bool contains(type const& elem) const noexcept
 	{
 		for(iterator it = begin(); it != end(); ++it)
 			if(it.get() == &elem)

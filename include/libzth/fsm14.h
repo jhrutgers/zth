@@ -402,6 +402,7 @@ public:
 		, m_callback{std::forward<T_>(c)}
 	{}
 
+	// cppcheck-suppress constParameterReference
 	R call(BasicFsm& fsm) const
 	{
 		using C = typename function_traits<T>::class_type;

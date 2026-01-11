@@ -21,7 +21,7 @@ int Runnable::run()
 	if(unlikely(!w))
 		return EAGAIN;
 
-	Fiber* f = new Fiber(&Runnable::entry_, (void*)this);
+	Fiber* f = new Fiber(&Runnable::entry_, static_cast<void*>(this));
 	try {
 		int res = fiberHook(*f);
 		if(unlikely(res)) {

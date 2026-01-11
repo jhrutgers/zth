@@ -437,7 +437,7 @@ public:
 		return add(p, nullptr);
 	}
 
-	// cppcheck-suppress constParameter
+	// cppcheck-suppress[constParameter,constParameterPointer]
 	int remove(Pollable& p, Client* client) noexcept final
 	{
 		size_t count = m_metaItems.size();

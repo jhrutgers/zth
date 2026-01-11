@@ -353,10 +353,10 @@ __attribute__((weak)) int vasprintf(char** strp, const char* fmt, va_list ap)
 	int len = vsnprintf(nullptr, 0, fmt, ap_dup);
 	va_end(ap_dup);
 
-	if(strp && (*strp = (char*)malloc(len + 1)))
+	if(strp && (*strp = static_cast<char*>(malloc(len + 1))))
 		vsnprintf(*strp, len + 1, fmt, ap);
 
-	// cppcheck-suppress memleak
+	// cppcheck-suppress[memleak,unmatchedSuppression]
 	return len;
 }
 #endif
