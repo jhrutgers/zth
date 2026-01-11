@@ -190,7 +190,7 @@ public:
 	/*!
 	 * \brief Dtor.
 	 */
-	virtual ~PollerInterface() is_default
+	virtual ~PollerInterface() override is_default
 
 	/*!
 	 * \brief Add a pollable object.

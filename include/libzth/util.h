@@ -770,7 +770,7 @@ public:
 			m_name = name;
 	}
 
-	virtual ~UniqueID() is_default
+	virtual ~UniqueID() override is_default
 
 	void const* normptr() const noexcept
 	{

@@ -608,6 +608,7 @@ protected:
 		return t ? highest(t->left) : nullptr;
 	}
 
+	// cppcheck-suppress constParameterPointer
 	static void decrease_level(elem_type* t) noexcept
 	{
 #  ifndef CPPCHECK // Internal error, somehow.

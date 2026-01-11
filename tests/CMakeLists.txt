@@ -72,7 +72,7 @@ if(ZTH_USE_GTEST)
 
 	function(zth_add_test_binary TESTNAME)
 		add_executable(${TESTNAME} ${ARGN} test_main.cpp)
-		target_link_libraries(${TESTNAME} gtest gmock libzth)
+		target_link_libraries(${TESTNAME} gtest libzth)
 
 		set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 

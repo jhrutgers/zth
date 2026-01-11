@@ -85,6 +85,7 @@ endif()
 if(ZTH_DEV_OPTION
    AND NOT CMAKE_CROSSCOMPILING
    AND NOT MINGW
+   AND NOT APPLE
 )
 	set(ZTH_SAN_DEFAULT ON)
 else()
@@ -328,6 +329,21 @@ endif()
 
 find_program(CPPCHECK_CMD NAMES cppcheck)
 if(CPPCHECK_CMD)
+	execute_process(
+		COMMAND ${CPPCHECK_CMD} --version
+		OUTPUT_VARIABLE CPPCHECK_VERSION
+	)
+
+	string(SUBSTRING "${CPPCHECK_VERSION}" 9 -1 CPPCHECK_VERSION)
+	string(STRIP "${CPPCHECK_VERSION}" CPPCHECK_VERSION)
+	message(STATUS "Found cppcheck ${CPPCHECK_VERSION}")
+
+	if("${CPPCHECK_VERSION}" VERSION_GREATER_EQUAL 2.11)
+		set(cppcheck_args --check-level=exhaustive)
+	else()
+		set(cppcheck_args)
+	endif()
+
 	add_custom_target(
 		libzth-cppcheck
 		COMMAND
@@ -338,10 +354,16 @@ if(CPPCHECK_CMD)
 			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
 			--enable=missingInclude -DCPPCHECK -U__ARM_ARCH
 			--suppress=unmatchedSuppression:*
+			-U__clang_analyzer__ -D__GNUC__ -U__SANITIZE_ADDRESS__ -U__CYGWIN__
+			-UZTH_HAVE_VALGRIND -D__thumb__ -UDOXYGEN
+			-DWINTHREADS_TIME_BITS=64 -DZTH_HAVE_LIBUNWIND
+			-DZTH_CONFIG_ENABLE_DEBUG_PRINT=1 -DZTH_DRAFT_API -UZTH_ENABLE_ASAN
+			-UZTH_ENABLE_LSAN -UZTH_ENABLE_UBSAN -DZTH_HAVE_PTHREAD
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
 			tests/test_fsm17.cpp
-		# --check-config
+			# --check-config
+			${cppcheck_args}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
 		COMMENT "Running cppcheck"

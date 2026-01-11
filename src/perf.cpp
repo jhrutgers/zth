@@ -545,6 +545,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	unw_proc_info_t pip;
 
 	while(unw_step(&cursor) > 0 && depth < maxDepth) {
+		// cppcheck-suppress knownConditionTrueFalse
 		if(depth == 0) {
 			unw_word_t sp = 0;
 			unw_get_reg(&cursor, UNW_REG_SP, &sp);
