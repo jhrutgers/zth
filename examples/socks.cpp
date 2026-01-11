@@ -111,11 +111,15 @@ void washSock(Sock& sock)
 	sock.done.set();
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	int count = 10;
+	if(argc > 1)
+		count = atoi(argv[1]);
+
 	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	srand48((long)time(nullptr));
 	zth::Worker w;
-	async takeSocks(10);
+	async takeSocks(count);
 	w.run();
 }
