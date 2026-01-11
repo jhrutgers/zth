@@ -1,7 +1,4 @@
-missingIncludeSystem:include/*
-missingIncludeSystem:src/*
-missingIncludeSystem:examples/*
-missingIncludeSystem:tests/*
+missingIncludeSystem:*
 constParameterCallback:*
 
 unknownMacro:examples/*
