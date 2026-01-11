@@ -12,6 +12,7 @@
 #  error Compile as C++17 or newer.
 #endif
 
+// NOLINTBEGIN(cert-err58-cpp)
 TEST(Fsm17, CallbackLambda)
 {
 	using namespace zth::fsm;
@@ -33,3 +34,4 @@ TEST(Fsm17, CallbackLambda)
 	fsm.run(true);
 	EXPECT_TRUE(flag);
 }
+// NOLINTEND(cert-err58-cpp)

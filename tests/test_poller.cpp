@@ -12,6 +12,7 @@
 // NOLINTNEXTLINE(misc-unused-using-decls)
 using zth::operator""_ms;
 
+// NOLINTBEGIN(cert-err58-cpp)
 TEST(Poller, Dummy)
 {
 	SUCCEED();
@@ -167,3 +168,4 @@ TEST(Poller, Migrate)
 
 	EXPECT_EQ(s2.remove(fd), 0);
 }
+// NOLINTEND(cert-err58-cpp)

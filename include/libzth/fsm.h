@@ -570,7 +570,7 @@ public:
 			if(false) {
 				ZTH_FALLTHROUGH
 			case evalInit:
-				m_compiledDescription = (StateAddr)m_compiler->description();
+				m_compiledDescription = m_compiler->description();
 			}
 			ZTH_FALLTHROUGH
 		case evalReset:
@@ -736,20 +736,22 @@ public:
 	typedef CallbackArg_ CallbackArg;
 	typedef void (*Callback)(FsmCallback&, CallbackArg);
 
+	// cppcheck-suppress noExplicitConstructor
 	FsmCallback(
 		// cppcheck-suppress constParameter
-		typename base::Compiler const& compiler, Callback cb, CallbackArg cbArg,
-		char const* name = "FSM")
+		typename base::Compiler const& compiler, Callback const& cb,
+		CallbackArg const& cbArg, char const* name = "FSM")
 		: base(compiler, name)
 		, m_callback(cb)
 		, m_callbackArg(cbArg)
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	FsmCallback(
 		// cppcheck-suppress passedByValue
 		// cppcheck-suppress constParameter
-		typename base::Description description, Callback cb, CallbackArg cbArg,
-		char const* name = "FSM")
+		typename base::Description description, Callback const& cb,
+		CallbackArg const& cbArg, char const* name = "FSM")
 		: base(description, name)
 		, m_callback(cb)
 		, m_callbackArg(cbArg)

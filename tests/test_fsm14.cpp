@@ -12,6 +12,7 @@
 #  error Compile as C++14 or newer.
 #endif
 
+// NOLINTBEGIN(cert-err58-cpp)
 TEST(Fsm14, Grammar)
 {
 	using namespace zth::fsm;
@@ -443,3 +444,4 @@ TEST(Fsm14, DelayedGuard)
 	auto fsm = transitions.spawn();
 	fsm.run();
 }
+// NOLINTEND(cert-err58-cpp)

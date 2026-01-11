@@ -225,7 +225,7 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 	// Align to size_t
 	stack_ = (stack_ + sizeof(size_t) - 1U) & ~(uintptr_t)(sizeof(size_t) - 1U);
 	// The stack size is stored here.
-	sizeptr = (size_t*)(void*)stack_; // NOLINT
+	sizeptr = reinterpret_cast<size_t*>(stack_); // NOLINT
 
 	// Reduce stack to store the size.
 	stack_ += sizeof(size_t);
@@ -233,7 +233,7 @@ static void stack_watermark_align(void*& stack, size_t*& sizeptr, size_t* size =
 		// Reduce remaining stack size.
 		*size -= stack_ - (uintptr_t)stack; // NOLINT
 
-	stack = (void*)stack_; // NOLINT
+	stack = reinterpret_cast<void*>(stack_); // NOLINT
 }
 
 /*!

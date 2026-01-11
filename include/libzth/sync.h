@@ -867,7 +867,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mutex_init(zth_mutex_t* mutex) noexcept
 		return EINVAL;
 
 	try {
-		mutex->p = (void*)new zth::Mutex();
+		mutex->p = static_cast<void*>(new zth::Mutex());
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
@@ -950,7 +950,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) no
 		return EINVAL;
 
 	try {
-		sem->p = (void*)new zth::Semaphore(value);
+		sem->p = static_cast<void*>(new zth::Semaphore(value));
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
@@ -1061,7 +1061,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_init(zth_cond_t* cond) noexcept
 		return EINVAL;
 
 	try {
-		cond->p = (void*)new zth::Signal();
+		cond->p = static_cast<void*>(new zth::Signal());
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
@@ -1147,7 +1147,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_future_init(zth_future_t* future) noexcep
 		return EINVAL;
 
 	try {
-		future->p = (void*)new zth_future_t_type();
+		future->p = static_cast<void*>(new zth_future_t_type());
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
@@ -1253,7 +1253,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_init(zth_gate_t* gate, size_t count)
 		return EINVAL;
 
 	try {
-		gate->p = (void*)new zth::Gate(count);
+		gate->p = static_cast<void*>(new zth::Gate(count));
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;

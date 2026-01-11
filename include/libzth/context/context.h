@@ -210,7 +210,7 @@ public:
 		// Add another page size to allow arbitrary allocation location.
 		stack.size += page;
 
-		if(unlikely(!(stack.p = (char*)impl().allocStack(stack.size))))
+		if(unlikely(!(stack.p = static_cast<char*>(impl().allocStack(stack.size)))))
 			return errno;
 
 		// Compute usable offsets.
@@ -297,7 +297,7 @@ public:
 		if(unlikely(p == MAP_FAILED))
 			return nullptr;
 #  else
-		if(unlikely((p = (void*)allocate_noexcept<char>(size)) == nullptr)) {
+		if(unlikely((p = static_cast<void*>(allocate_noexcept<char>(size))) == nullptr)) {
 			errno = ENOMEM;
 			return nullptr;
 		}
@@ -355,7 +355,7 @@ public:
 #  endif
 
 		zth_assert(stack.size > 0);
-		stack.p = (char*)stack_new;
+		stack.p = reinterpret_cast<char*>(stack_new); // NOLINT
 	}
 
 	/*!

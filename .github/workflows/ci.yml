@@ -189,7 +189,7 @@ jobs:
       - name: bootstrap
         run: dist/ubuntu/bootstrap.sh
       - name: build
-        run: dist/ubuntu/build.sh -DZTH_DOCUMENTATION=ON
+        run: dist/ubuntu/build.sh Release -DZTH_DOCUMENTATION=ON
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
