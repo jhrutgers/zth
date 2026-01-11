@@ -124,7 +124,7 @@ jobs:
         working-directory: dist\win32\build
 
   build-mac:
-    runs-on: macos-latest-large
+    runs-on: macos-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4
