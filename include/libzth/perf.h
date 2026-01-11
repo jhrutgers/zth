@@ -190,6 +190,7 @@ struct PerfEvent {
 
 	union {
 		void* unused;
+		// cppcheck-suppress unsafeClassCanLeak
 		char* str;
 		char const* c_str;
 		int fiberState;

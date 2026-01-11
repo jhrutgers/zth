@@ -446,6 +446,7 @@ public:
 	 * \brief Configure the guard for the address.
 	 * \return the previous guard
 	 */
+	// cppcheck-suppress constParameterPointer
 	void* stackGuard(void* UNUSED_PAR(p)) noexcept
 	{
 		return nullptr;
@@ -500,6 +501,7 @@ public:
 	/*!
 	 * \brief Pre-sjlj jump.
 	 */
+	// cppcheck-suppress constParameterReference
 	void context_prepare_jmp(Impl& UNUSED_PAR(to), jmp_buf& UNUSED_PAR(env)) noexcept {}
 
 	/*!

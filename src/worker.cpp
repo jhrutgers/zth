@@ -149,6 +149,7 @@ __attribute__((unused)) static cow_string thread_id_str() noexcept
  * \brief Start an external program.
  * \ingroup zth_api_cpp_fiber
  */
+// cppcheck-suppress constParameter
 int execvp(char const* UNUSED_PAR(file), char* const UNUSED_PAR(arg[]))
 {
 #if defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_BAREMETAL)

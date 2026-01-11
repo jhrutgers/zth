@@ -51,6 +51,7 @@ zth_fiber(fiber_ii)
 
 TEST(FiberTest, ii)
 {
+	// cppcheck-suppress danglingTemporaryLifetime
 	async fiber_ii(2);
 
 	fiber_ii_future f = async fiber_ii(3);

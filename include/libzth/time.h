@@ -195,6 +195,7 @@ private:
 			m_t.tv_sec = std::numeric_limits<time_t>::max();
 		else
 			m_t.tv_sec = (time_t)std::fabs(dt);
+		// cppcheck-suppress suspiciousFloatingPointCast
 		m_t.tv_nsec = (long)(std::fmod(std::fabs(dt), (T)1.0) * (T)1e9);
 
 		if(m_t.tv_nsec >= BILLION) {

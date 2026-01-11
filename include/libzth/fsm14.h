@@ -341,6 +341,7 @@ public:
 		, m_callback{std::forward<T_>(c)}
 	{}
 
+	// cppcheck-suppress constParameterReference
 	R call(BasicFsm& UNUSED_PAR(fsm)) const
 	{
 		return m_callback();
@@ -1353,7 +1354,7 @@ public:
 	/*!
 	 * \brief Dtor.
 	 */
-	virtual ~BasicFsm() = default;
+	virtual ~BasicFsm() override = default;
 
 	/*!
 	 * \brief Return the current state.

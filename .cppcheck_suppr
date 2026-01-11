@@ -1,9 +1,6 @@
 missingIncludeSystem:*
 constParameterCallback:*
 
-unknownMacro:examples/*
-unmatchedSuppression:examples/*
-
 unmatchedSuppression:src/context.cpp
 
 negativeContainerIndex:examples/measure.cpp

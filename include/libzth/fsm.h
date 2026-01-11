@@ -757,7 +757,7 @@ public:
 		, m_callbackArg(cbArg)
 	{}
 
-	virtual ~FsmCallback() {}
+	virtual ~FsmCallback() override {}
 
 	CallbackArg callbackArg() const
 	{
@@ -810,7 +810,7 @@ public:
 		, m_callback(cb)
 	{}
 
-	virtual ~FsmCallback() {}
+	virtual ~FsmCallback() override {}
 
 protected:
 	virtual void callback() override
