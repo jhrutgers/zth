@@ -329,19 +329,16 @@ endif()
 
 find_program(CPPCHECK_CMD NAMES cppcheck)
 if(CPPCHECK_CMD)
-	execute_process(
-		COMMAND ${CPPCHECK_CMD} --version
-		OUTPUT_VARIABLE CPPCHECK_VERSION
-	)
+	execute_process(COMMAND ${CPPCHECK_CMD} --version OUTPUT_VARIABLE CPPCHECK_VERSION)
 
 	string(SUBSTRING "${CPPCHECK_VERSION}" 9 -1 CPPCHECK_VERSION)
 	string(STRIP "${CPPCHECK_VERSION}" CPPCHECK_VERSION)
 	message(STATUS "Found cppcheck ${CPPCHECK_VERSION}")
 
 	if("${CPPCHECK_VERSION}" VERSION_GREATER_EQUAL 2.11)
-		set(cppcheck_args --check-level=exhaustive)
+		set(ZTH_CPPCHECK_DEFAULT ${ZTH_DEV_OPTION})
 	else()
-		set(cppcheck_args)
+		set(ZTH_CPPCHECK_DEFAULT OFF)
 	endif()
 
 	add_custom_target(
@@ -353,23 +350,21 @@ if(CPPCHECK_CMD)
 			--error-exitcode=1 -j 8 --library=gnu
 			"--template=[{file}:{line}]: ({severity},{id}) {message}" -D__GNUC__=10
 			--enable=missingInclude -DCPPCHECK -U__ARM_ARCH
-			--suppress=unmatchedSuppression:*
+			--suppress=unmatchedSuppression:* --check-level=exhaustive
 			-U__clang_analyzer__ -D__GNUC__ -U__SANITIZE_ADDRESS__ -U__CYGWIN__
-			-UZTH_HAVE_VALGRIND -D__thumb__ -UDOXYGEN
-			-DWINTHREADS_TIME_BITS=64 -DZTH_HAVE_LIBUNWIND
-			-DZTH_CONFIG_ENABLE_DEBUG_PRINT=1 -DZTH_DRAFT_API -UZTH_ENABLE_ASAN
-			-UZTH_ENABLE_LSAN -UZTH_ENABLE_UBSAN -DZTH_HAVE_PTHREAD
+			-UZTH_HAVE_VALGRIND -D__thumb__ -UDOXYGEN -DWINTHREADS_TIME_BITS=64
+			-DZTH_HAVE_LIBUNWIND -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1 -DZTH_DRAFT_API
+			-UZTH_ENABLE_ASAN -UZTH_ENABLE_LSAN -UZTH_ENABLE_UBSAN -DZTH_HAVE_PTHREAD
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
 			tests/test_fsm17.cpp
 			# --check-config
-			${cppcheck_args}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
 		COMMENT "Running cppcheck"
 	)
 
-	option(ZTH_CPPCHECK "Run cppcheck by default" ${ZTH_DEV_OPTION})
+	option(ZTH_CPPCHECK "Run cppcheck by default" ${ZTH_CPPCHECK_DEFAULT})
 	if(ZTH_CPPCHECK)
 		add_custom_target(libzth-cppcheck-all ALL DEPENDS libzth-cppcheck)
 	endif()
