@@ -75,6 +75,9 @@ char const* banner() noexcept
 #ifdef ZTH_ARCH_X86
 		" x86"
 #endif
+#ifdef ZTH_ARCH_ARM64
+		" arm64"
+#endif
 #ifdef ZTH_ARCH_ARM
 		" arm"
 #  ifdef __ARM_ARCH_PROFILE

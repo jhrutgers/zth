@@ -245,6 +245,8 @@ ZTH_EXPORT void foo();
 #  define ZTH_ARCH_X86_64 1
 #elif defined(__i386__)
 #  define ZTH_ARCH_X86 1
+#elif defined(__aarch64__) && defined(__APPLE__)
+#  define ZTH_ARCH_ARM64 1
 #elif defined(__arm__)
 #  define ZTH_ARCH_ARM 1
 #  if defined(__ARM_ARCH) && __ARM_ARCH >= 6 && defined(__ARM_ARCH_PROFILE) \
