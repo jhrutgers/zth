@@ -22,5 +22,5 @@ jobs:
         run: |
           dist/macos/build.sh Debug test conf
           cd dist/macos/build
-          cmake --build . --target 1_helloworld
-          examples/1_helloworld
+          cmake --build . --target 5_perf
+          examples/5_perf
