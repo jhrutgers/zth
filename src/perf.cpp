@@ -563,11 +563,12 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	}
 
 	m_truncated = depth == maxDepth;
+#elif defined(ZTH_OS_MAC) && defined(ZTH_ARCH_ARM64)
+	// macOS on ARM64 does not seem to support backtrace() in combination with ucontext.
+	m_truncated = true;
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
-	zth_dbg(perf, "backtrace");
 	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
-	zth_dbg(perf, "backtrace done");
 	//  NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_truncated = m_bt.size() == maxDepth;
 #endif
