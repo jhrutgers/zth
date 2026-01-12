@@ -100,7 +100,7 @@ int main_fiber(int argc, char** argv)
 			messages = 1;
 	}
 
-	async server();
-	async client(messages);
+	zth_async server();
+	zth_async client(messages);
 	return 0;
 }

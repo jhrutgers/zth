@@ -51,10 +51,10 @@ zth_fiber(otherFiber)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	fiber_future f1 = async fiber(1);
-	fiber_future f2 = async fiber(2);
-	fiber_future f3 = async fiber(3);
-	async otherFiber();
+	fiber_future f1 = zth_async fiber(1);
+	fiber_future f2 = zth_async fiber(2);
+	fiber_future f3 = zth_async fiber(3);
+	zth_async otherFiber();
 	f1->wait();
 	f2->wait();
 	f3->wait();

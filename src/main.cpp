@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 	{
 		zth::Worker w;
 		main_fiber_future f =
-			async main_fiber(argc, argv) << zth::setName(
+			zth_async main_fiber(argc, argv) << zth::setName(
 				zth::Config::EnableDebugPrint || zth::Config::EnablePerfEvent
 						|| zth::Config::EnableStackWaterMark
 					? "main_fiber"

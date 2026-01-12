@@ -31,6 +31,11 @@
 #    include <valgrind/memcheck.h>
 #  endif
 
+#  if __cplusplus >= 201103L && defined(__cpp_exceptions)
+#    include <exception>
+#    define ZTH_FUTURE_EXCEPTION
+#  endif
+
 namespace zth {
 
 class RefCounted {
@@ -613,7 +618,11 @@ public:
 
 	virtual ~Future() override
 	{
-		if(valid())
+		if(valid()
+#  ifdef ZTH_FUTURE_EXCEPTION
+		   && !m_exception
+#  endif // ZTH_FUTURE_EXCEPTION
+		)
 			value().~type();
 #  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
@@ -677,9 +686,37 @@ public:
 	}
 #  endif
 
+#  ifdef ZTH_FUTURE_EXCEPTION
+	void set(std::exception_ptr exception)
+	{
+		if(!set_prepare())
+			return;
+
+		m_exception = std::move(exception);
+		set_finalize();
+	}
+
+	Future& operator=(std::exception_ptr value)
+	{
+		set(std::move(value));
+		return *this;
+	}
+
+	std::exception_ptr exception() const
+	{
+		return m_exception;
+	}
+#  endif // ZTH_FUTURE_EXCEPTION
+
 	type& value() LREF_QUALIFIED
 	{
 		wait();
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+#  endif // ZTH_FUTURE_EXCEPTION
+
 		void* p = m_data;
 		return *static_cast<type*>(p);
 	}
@@ -687,6 +724,12 @@ public:
 	type const& value() const LREF_QUALIFIED
 	{
 		wait();
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+#  endif // ZTH_FUTURE_EXCEPTION
+
 		void const* p = m_data;
 		return *static_cast<type const*>(p);
 	}
@@ -695,6 +738,12 @@ public:
 	type value() &&
 	{
 		wait();
+
+#    ifdef ZTH_FUTURE_EXCEPTION
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+#    endif // ZTH_FUTURE_EXCEPTION
+
 		void* p = m_data;
 		return std::move(*static_cast<type*>(p));
 	}
@@ -741,6 +790,9 @@ private:
 
 private:
 	alignas(type) char m_data[sizeof(type)];
+#  ifdef ZTH_FUTURE_EXCEPTION
+	std::exception_ptr m_exception;
+#  endif // ZTH_FUTURE_EXCEPTION
 	bool m_valid;
 };
 
@@ -769,6 +821,7 @@ public:
 	{
 		return m_valid;
 	}
+
 	operator bool() const noexcept
 	{
 		return valid();
@@ -791,7 +844,29 @@ public:
 		unblockAll();
 	}
 
+#  ifdef ZTH_FUTURE_EXCEPTION
+	void set(std::exception_ptr exception)
+	{
+		set();
+		m_exception = std::move(exception);
+	}
+
+	Future& operator=(std::exception_ptr value)
+	{
+		set(std::move(value));
+		return *this;
+	}
+
+	std::exception_ptr exception() const
+	{
+		return m_exception;
+	}
+#  endif // ZTH_FUTURE_EXCEPTION
+
 private:
+#  ifdef ZTH_FUTURE_EXCEPTION
+	std::exception_ptr m_exception;
+#  endif // ZTH_FUTURE_EXCEPTION
 	bool m_valid;
 };
 

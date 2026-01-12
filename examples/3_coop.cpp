@@ -56,8 +56,8 @@ zth_fiber(nicer_fiber)
 void example_1()
 {
 	printf("Example 1: nice vs nicer\n");
-	nice_fiber_future nice = async nice_fiber();
-	nicer_fiber_future nicer = async nicer_fiber();
+	nice_fiber_future nice = zth_async nice_fiber();
+	nicer_fiber_future nicer = zth_async nicer_fiber();
 	nice->wait();
 	nicer->wait();
 }
@@ -118,8 +118,8 @@ zth_fiber(client)
 void example_2()
 {
 	printf("\nExample 2: server-client\n");
-	server_future s = async server();
-	client_future c = async client();
+	server_future s = zth_async server();
+	client_future c = zth_async client();
 	c->wait();
 	terminate_server = true;
 	s->wait();

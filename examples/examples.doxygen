@@ -191,7 +191,7 @@ Other fiber
 
 /*!
 \example 7_no_async.cpp
-\brief \c async alternative syntax.
+\brief \c zth_async alternative syntax.
 */
 
 

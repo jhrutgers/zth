@@ -8,7 +8,7 @@
 
 #include <cstdio>
 
-// zth_fiber() is used to allow using `async' on a function to start a fiber
+// zth_fiber() is used to allow using `zth_async' on a function to start a fiber
 // with the given function as entry point.  zth_fiber() generates some static
 // variables to implement this. So, don't use zth_fiber() in a header file, as
 // it will result in a linker complaining about multiple symbols. You can split
@@ -25,7 +25,7 @@
 void fiber_vv();
 
 // Then, use zth_fiber_declare() instead of zth_fiber() to generate everything
-// that is required such that other compilation units can do `async
+// that is required such that other compilation units can do `zth_async
 // fiber_vv()'.
 zth_fiber_declare(fiber_vv)
 
@@ -84,12 +84,12 @@ zth_fiber(fiber_ddddi)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	// `async' is just like a function call, but its execution is
+	// `zth_async' is just like a function call, but its execution is
 	// postponed.  Note that the order in which the fibers get initialized
 	// or execute is not defined.
-	async fiber_vv();
-	async fiber_vi(42);
-	async fiber_vii(3, 14);
+	zth_async fiber_vv();
+	zth_async fiber_vi(42);
+	zth_async fiber_vii(3, 14);
 
 	// The fiber entry points are still available to be called directly.
 	// So, the following line just calls fiber_vv() right away. There is no
@@ -100,11 +100,11 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	// return value is just lost, just like what would happen if you would
 	// call fiber_ddd() as a normal function without using its return
 	// value.
-	async fiber_ddd(1, 2);
+	zth_async fiber_ddd(1, 2);
 
 	// zth_fiber() also defines a <function>_future type, which allows
-	// synchronization between fibers. `async' returns this type.
-	fiber_ddd_future fddd = async fiber_ddd(3, 4);
+	// synchronization between fibers. `zth_async' returns this type.
+	fiber_ddd_future fddd = zth_async fiber_ddd(3, 4);
 
 	// Now, fddd is a (smart) pointer to a Future object. fddd is small and
 	// can safely be copied or passed using pass-by-value. It gives a few
@@ -124,7 +124,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 
 #if __cplusplus >= 201103L
 	// Arbitrary fiber argument number example.
-	async fiber_ddddi(4, 5, 6, 7);
+	zth_async fiber_ddddi(4, 5, 6, 7);
 #endif
 
 	return 0;

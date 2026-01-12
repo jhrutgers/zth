@@ -23,9 +23,9 @@ zth_fiber(fiber_v)
 
 TEST(FiberTest, v)
 {
-	async fiber_v();
+	zth_async fiber_v();
 
-	fiber_v_future f = async fiber_v();
+	fiber_v_future f = zth_async fiber_v();
 	f->wait();
 }
 
@@ -37,9 +37,9 @@ zth_fiber(fiber_i)
 
 TEST(FiberTest, i)
 {
-	async fiber_i();
+	zth_async fiber_i();
 
-	fiber_i_future f = async fiber_i();
+	fiber_i_future f = zth_async fiber_i();
 	EXPECT_EQ(f->value(), 1);
 }
 
@@ -52,9 +52,9 @@ zth_fiber(fiber_ii)
 TEST(FiberTest, ii)
 {
 	// cppcheck-suppress danglingTemporaryLifetime
-	async fiber_ii(2);
+	zth_async fiber_ii(2);
 
-	fiber_ii_future f = async fiber_ii(3);
+	fiber_ii_future f = zth_async fiber_ii(3);
 	EXPECT_EQ(f->value(), 4);
 }
 
@@ -68,9 +68,9 @@ zth_fiber(fiber_iPi)
 TEST(FiberTest, iPi)
 {
 	int i = 4;
-	async fiber_iPi(&i);
+	zth_async fiber_iPi(&i);
 
-	fiber_iPi_future f = async fiber_iPi(&i);
+	fiber_iPi_future f = zth_async fiber_iPi(&i);
 	EXPECT_EQ(f->value(), 5);
 }
 
@@ -83,11 +83,11 @@ zth_fiber(fiber_iRi)
 TEST(FiberTest, iRi)
 {
 	int i = 5;
-	fiber_iRi_future f = async fiber_iRi(i);
+	fiber_iRi_future f = zth_async fiber_iRi(i);
 	EXPECT_EQ(f->value(), 6);
 	EXPECT_EQ(i, 6);
 
-	async fiber_iRi(i);
+	zth_async fiber_iRi(i);
 }
 
 static void fiber_viRd(int i, double& d)
@@ -100,11 +100,11 @@ TEST(FiberTest, viRd)
 {
 	int i = 6;
 	double d = 0.1;
-	fiber_viRd_future f = async fiber_viRd(i, d);
+	fiber_viRd_future f = zth_async fiber_viRd(i, d);
 	f->wait();
 	EXPECT_DOUBLE_EQ(d, 0.6);
 
-	async fiber_viRd(i, d);
+	zth_async fiber_viRd(i, d);
 }
 
 static double fiber_did(int i, double d)
@@ -117,10 +117,10 @@ TEST(FiberTest, did)
 {
 	int i = 7;
 	double d = 0.1;
-	fiber_did_future f = async fiber_did(i, d);
+	fiber_did_future f = zth_async fiber_did(i, d);
 	EXPECT_DOUBLE_EQ(f->value(), 0.7);
 
-	async fiber_did(i, d);
+	zth_async fiber_did(i, d);
 }
 
 static void fiber_viRdf(int i, double& d, float f)
@@ -134,11 +134,11 @@ TEST(FiberTest, viRdf)
 	int i = 8;
 	double d = 0.1;
 	float f = 2.0f;
-	fiber_viRdf_future r = async fiber_viRdf(i, d, f);
+	fiber_viRdf_future r = zth_async fiber_viRdf(i, d, f);
 	r->wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
-	async fiber_viRdf(i, d, f);
+	zth_async fiber_viRdf(i, d, f);
 }
 
 static double fiber_didf(int i, double d, float f)
@@ -152,10 +152,10 @@ TEST(FiberTest, didf)
 	int i = 9;
 	double d = 0.1;
 	float f = 2.0f;
-	fiber_didf_future r = async fiber_didf(i, d, f);
+	fiber_didf_future r = zth_async fiber_didf(i, d, f);
 	EXPECT_DOUBLE_EQ(r->value(), 1.8);
 
-	async fiber_didf(i, d, f);
+	zth_async fiber_didf(i, d, f);
 }
 
 static void fiber_viRdfPl(int i, double& d, float f, long* l)
@@ -170,11 +170,11 @@ TEST(FiberTest, viRdfPl)
 	double d = 0.1;
 	float f = 2.0f;
 	long l = 1;
-	fiber_viRdfPl_future r = async fiber_viRdfPl(i, d, f, &l);
+	fiber_viRdfPl_future r = zth_async fiber_viRdfPl(i, d, f, &l);
 	r->wait();
 	EXPECT_DOUBLE_EQ(d, 3.2);
 
-	async fiber_viRdfPl(i, d, f, &l);
+	zth_async fiber_viRdfPl(i, d, f, &l);
 }
 
 static double fiber_diRdfPl(int i, double& d, float f, long* l)
@@ -189,11 +189,11 @@ TEST(FiberTest, diRdfPl)
 	double d = 0.1;
 	float f = 2.0f;
 	long l = 1;
-	fiber_diRdfPl_future r = async fiber_diRdfPl(i, d, f, &l);
+	fiber_diRdfPl_future r = zth_async fiber_diRdfPl(i, d, f, &l);
 	EXPECT_DOUBLE_EQ(r->value(), 3.4);
 	EXPECT_DOUBLE_EQ(d, 3.4);
 
-	async fiber_diRdfPl(i, d, f, &l);
+	zth_async fiber_diRdfPl(i, d, f, &l);
 }
 
 TEST(FiberTest, direct_v)
@@ -233,7 +233,7 @@ TEST(FiberTest, direct_viRdf)
 	future->wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
-	async fiber_viRdf(i, d, f);
+	zth_async fiber_viRdf(i, d, f);
 }
 
 TEST(FiberTest, direct_diRdfPl)

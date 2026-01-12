@@ -26,7 +26,7 @@ The main benefits of Zth are:
   [Valgrind](https://valgrind.org/).
 
 Working with fibers is very easy. The `examples/1_helloworld` example starts
-two fibers by using the `async` keyword:
+two fibers by using the `zth_async` keyword:
 
 ```cpp
 #include <zth>
@@ -40,14 +40,14 @@ zth_fiber(world)
 
 void hello()
 {
-	async world();
+	zth_async world();
 	printf("Hello\n");
 }
 zth_fiber(hello)
 
 int main_fiber(int argc, char** argv)
 {
-	async hello();
+	zth_async hello();
 	return 0;
 }
 ```

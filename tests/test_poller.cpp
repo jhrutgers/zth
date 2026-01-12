@@ -69,7 +69,7 @@ TEST(Poller, FiberedPipeWrite)
 	int pipefd[]{-1, -1};
 	ASSERT_EQ(pipe(pipefd), 0);
 
-	async read_fiber(pipefd[0]);
+	zth_async read_fiber(pipefd[0]);
 
 	zth::nap(100_ms);
 	EXPECT_EQ(zth::io::write(pipefd[1], "2", 1), 1);
@@ -90,7 +90,7 @@ TEST(Poller, FiberedPipeRead)
 	int pipefd[]{-1, -1};
 	ASSERT_EQ(pipe(pipefd), 0);
 
-	async write_fiber(pipefd[1]);
+	zth_async write_fiber(pipefd[1]);
 
 	char buf = 0;
 	EXPECT_EQ(zth::io::read(pipefd[0], &buf, 1), 1);
@@ -133,7 +133,7 @@ zth_fiber(zmq_fiber)
 
 TEST(Poller, Zmq)
 {
-	zmq_fiber_future f = async zmq_fiber();
+	zmq_fiber_future f = zth_async zmq_fiber();
 
 	void* socket = zmq_socket(zth_zmq_context(), ZMQ_REQ);
 	ASSERT_EQ(zmq_connect(socket, "inproc://test_poller"), 0);

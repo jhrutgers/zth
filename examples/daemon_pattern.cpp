@@ -34,7 +34,7 @@ void someDaemon()
 	// The daemon is an infinite loop, which ends waiting for its trigger
 	// signal.  The wait for the signal is blocking. If a wakeup is
 	// required at some interval, start a timer to do this.
-	async trigger(&triggerSomeDaemon, 1);
+	zth_async trigger(&triggerSomeDaemon, 1);
 
 	while(!shutdown_flag) {
 		printf("daemon wakeup\n");
@@ -57,12 +57,12 @@ zth_fiber(foo)
 
 int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
-	async someDaemon();
+	zth_async someDaemon();
 
 	zth::Gate gate(4);
-	async foo() << zth::passOnExit(gate);
-	async foo() << zth::passOnExit(gate);
-	async foo() << zth::passOnExit(gate);
+	zth_async foo() << zth::passOnExit(gate);
+	zth_async foo() << zth::passOnExit(gate);
+	zth_async foo() << zth::passOnExit(gate);
 	gate.wait();
 
 	// Nap for a while, to show the interval trigger of the daemon.

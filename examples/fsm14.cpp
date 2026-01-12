@@ -327,7 +327,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	// This will create an zth::fsm::Fsm instance, initialize it, and
 	// return it.
 
-	async trafficDetect(fsm);
+	zth_async trafficDetect(fsm);
 
 	// Run the Fsm, until it hits the 'stop' action (but there is none in
 	// this example). You could pass a zth::Timestamp or zth::TimeInterval

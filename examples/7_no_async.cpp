@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-// If you don't like the zth_fiber() and async macros, you may use zth::fiber()
+// If you don't like the zth_fiber() and zth_async macros, you may use zth::fiber()
 // instead.  This example shows this alternative syntax.
 
 #include <zth>
