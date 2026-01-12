@@ -42,6 +42,7 @@ private:
 	static void context_trampoline(Context* context, sigjmp_buf origin)
 	{
 		// We got here via setcontext().
+		zth_dbg(context, "[%s] trampoline", zth::currentWorker().id_str());
 
 #  ifdef ZTH_ENABLE_ASAN
 		void const* oldstack = nullptr;
@@ -53,8 +54,12 @@ private:
 #  endif
 
 		// Save the current context, and return to create().
-		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
+		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
+			zth_dbg(context, "[%s] longjmp", zth::currentWorker().id_str());
 			siglongjmp(origin, 1);
+		}
+
+		zth_dbg(context, "[%s] entry", zth::currentWorker().id_str());
 
 		// Note that context_entry has the __sanitizer_finish_switch_fiber().
 		context_entry(context);
