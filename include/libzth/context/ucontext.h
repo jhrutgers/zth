@@ -42,7 +42,7 @@ private:
 	static void context_trampoline(Context* context, sigjmp_buf origin)
 	{
 		// We got here via setcontext().
-		zth_dbg(context, "[%s] trampoline", zth::currentWorker().id_str());
+		zth_dbg(context, "[%s] trampoline %p", zth::currentWorker().id_str(), context);
 
 #  ifdef ZTH_ENABLE_ASAN
 		void const* oldstack = nullptr;
@@ -53,8 +53,10 @@ private:
 		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
 #  endif
 
-		zth_dbg(context, "[%s] sigsetjmp %p %d", zth::currentWorker().id_str(),
-			&context->m_env, (int)Config::ContextSignals);
+		volatile int dummy;
+
+		zth_dbg(context, "[%s] sigsetjmp %p %d %p", zth::currentWorker().id_str(),
+			&context->m_env, (int)Config::ContextSignals, &dummy);
 
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
