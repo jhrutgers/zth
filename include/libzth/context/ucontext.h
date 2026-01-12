@@ -64,7 +64,10 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	int create() noexcept
 	{
+		zth_dbg(context, "[%s] Creating context %p", zth::currentWorker().id_str(), this);
 		int res = base::create();
+		zth_dbg(context, "[%s] Creating context %p = %d", zth::currentWorker().id_str(),
+			this, res);
 		if(unlikely(res))
 			return res;
 
@@ -74,6 +77,8 @@ public:
 
 		// Get current context, to inherit signals/masks.
 		ucontext_t uc;
+		zth_dbg(context, "[%s] Getting ucontext for context %p",
+			zth::currentWorker().id_str(), this);
 		if(getcontext(&uc))
 			return EINVAL;
 
@@ -82,6 +87,8 @@ public:
 		Stack const& stack_ = stackUsable();
 		uc.uc_stack.ss_sp = stack_.p;
 		uc.uc_stack.ss_size = stack_.size;
+		zth_dbg(context, "[%s] Stack for context %p: %p-%p", zth::currentWorker().id_str(),
+			this, stack_.p, stack_.p + stack_.size - 1U);
 
 		// Modify the function to call from this new context.
 		sigjmp_buf origin;
@@ -99,10 +106,13 @@ public:
 		// After this initial setup, context_switch() is good to go.
 		if(sigsetjmp(origin, Config::ContextSignals) == 0) {
 			// Here we go into the context for the first time.
+			zth_dbg(context, "[%s] Setting context for context %p",
+				zth::currentWorker().id_str(), this);
 			setcontext(&uc);
 		}
 
 		// Got back from context_trampoline(). The context is ready now.
+		zth_dbg(context, "[%s] Created context %p", zth::currentWorker().id_str(), this);
 
 #  ifdef ZTH_ENABLE_ASAN
 		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
