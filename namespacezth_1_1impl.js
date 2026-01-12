@@ -7,5 +7,9 @@ var namespacezth_1_1impl =
     [ "FunctionION< void, A, A_ >", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4.html", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4" ],
     [ "Packed", "structzth_1_1impl_1_1_packed.html", "structzth_1_1impl_1_1_packed" ],
     [ "Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4" ],
+    [ "std_future_base", "classzth_1_1impl_1_1std__future__base.html", "classzth_1_1impl_1_1std__future__base" ],
+    [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html", "classzth_1_1impl_1_1std__promise__base" ],
+    [ "std_shared_future_base", "classzth_1_1impl_1_1std__shared__future__base.html", "classzth_1_1impl_1_1std__shared__future__base" ],
+    [ "invoke_result", "namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319", null ],
     [ "stack_switch_fwd", "namespacezth_1_1impl.html#a49573469aceb9d31b9eeb67a1ac1e84c", null ]
 ];

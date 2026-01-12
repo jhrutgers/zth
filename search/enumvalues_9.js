@@ -1,11 +1,5 @@
 var searchData=
 [
-  ['perfsyscall_0',['PerfSyscall',['../structzth_1_1_env.html#a56a529ae08885620b107b10f88cfe9a3a73d75fad07e84d58ee9747463ac25212',1,'zth::Env']]],
-  ['pollerrindex_1',['PollErrIndex',['../structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aa5efa00e518f15fb0b82159f3f54a4da',1,'zth::Pollable']]],
-  ['pollhupindex_2',['PollHupIndex',['../structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698ae302730f8f1eb397bfc128fc7da06334',1,'zth::Pollable']]],
-  ['pollinindex_3',['PollInIndex',['../structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698aab8c6a641091f94d53c3d2f98ec5d8fe',1,'zth::Pollable']]],
-  ['polloutindex_4',['PollOutIndex',['../structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a12aa4123fc8f2aef316c670aa12991e3',1,'zth::Pollable']]],
-  ['pollpriindex_5',['PollPriIndex',['../structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a72b8ba68f1555ed8d54cfbd3e5662dff',1,'zth::Pollable']]],
-  ['popped_6',['popped',['../classzth_1_1fsm_1_1_basic_fsm.html#a12ecee1fef1b06bcdc992a95d8b70851acd31f7d3dc5aba0fc6d755a9b8b702c9',1,'zth::fsm::BasicFsm']]],
-  ['pushed_7',['pushed',['../classzth_1_1fsm_1_1_basic_fsm.html#a12ecee1fef1b06bcdc992a95d8b70851abefdb61f29fafe2fa668659fc8058f54',1,'zth::fsm::BasicFsm']]]
+  ['new_0',['New',['../classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa8c48c3ee41262fe01b57b93f937760cb',1,'zth::Fiber']]],
+  ['nothing_1',['nothing',['../structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a8a732d3f5d80ec1a1c1c8dd67f969e53',1,'zth::PerfEvent::Nothing'],['../structzth_1_1_perf_event_3_01false_01_4.html#aa7a385666d3a51491ee4b8ab21f69350a3dc995c8e115ace5ae9c56ec26203c6e',1,'zth::PerfEvent&lt; false &gt;::Nothing']]]
 ];

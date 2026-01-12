@@ -113,7 +113,7 @@ fiber_vv()
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// zth_fiber() is used to allow using `async&#39; on a function to start a fiber</span></div>
+<div class="line"><span class="comment">// zth_fiber() is used to allow using `zth_async&#39; on a function to start a fiber</span></div>
 <div class="line"><span class="comment">// with the given function as entry point.  zth_fiber() generates some static</span></div>
 <div class="line"><span class="comment">// variables to implement this. So, don&#39;t use zth_fiber() in a header file, as</span></div>
 <div class="line"><span class="comment">// it will result in a linker complaining about multiple symbols. You can split</span></div>
@@ -130,7 +130,7 @@ fiber_vv()
 <div class="line"><span class="keywordtype">void</span> fiber_vv();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Then, use zth_fiber_declare() instead of zth_fiber() to generate everything</span></div>
-<div class="line"><span class="comment">// that is required such that other compilation units can do `async</span></div>
+<div class="line"><span class="comment">// that is required such that other compilation units can do `zth_async</span></div>
 <div class="line"><span class="comment">// fiber_vv()&#39;.</span></div>
 <div class="line"><a id="a0" name="a0"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d">zth_fiber_declare</a>(fiber_vv)</div>
 <div class="line"> </div>
@@ -189,12 +189,12 @@ fiber_vv()
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> <a id="a3" name="a3"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
 <div class="line">{</div>
-<div class="line">        <span class="comment">// `async&#39; is just like a function call, but its execution is</span></div>
+<div class="line">        <span class="comment">// `zth_async&#39; is just like a function call, but its execution is</span></div>
 <div class="line">        <span class="comment">// postponed.  Note that the order in which the fibers get initialized</span></div>
 <div class="line">        <span class="comment">// or execute is not defined.</span></div>
-<div class="line">        <a id="a4" name="a4"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_vv();</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_vi(42);</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_vii(3, 14);</div>
+<div class="line">        <a id="a4" name="a4"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vv();</div>
+<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vi(42);</div>
+<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vii(3, 14);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// The fiber entry points are still available to be called directly.</span></div>
 <div class="line">        <span class="comment">// So, the following line just calls fiber_vv() right away. There is no</span></div>
@@ -205,11 +205,11 @@ fiber_vv()
 <div class="line">        <span class="comment">// return value is just lost, just like what would happen if you would</span></div>
 <div class="line">        <span class="comment">// call fiber_ddd() as a normal function without using its return</span></div>
 <div class="line">        <span class="comment">// value.</span></div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_ddd(1, 2);</div>
+<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddd(1, 2);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// zth_fiber() also defines a &lt;function&gt;_future type, which allows</span></div>
-<div class="line">        <span class="comment">// synchronization between fibers. `async&#39; returns this type.</span></div>
-<div class="line">        fiber_ddd_future fddd = <a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_ddd(3, 4);</div>
+<div class="line">        <span class="comment">// synchronization between fibers. `zth_async&#39; returns this type.</span></div>
+<div class="line">        fiber_ddd_future fddd = <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddd(3, 4);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Now, fddd is a (smart) pointer to a Future object. fddd is small and</span></div>
 <div class="line">        <span class="comment">// can safely be copied or passed using pass-by-value. It gives a few</span></div>
@@ -229,16 +229,16 @@ fiber_vv()
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
 <div class="line">        <span class="comment">// Arbitrary fiber argument number example.</span></div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a> fiber_ddddi(4, 5, 6, 7);</div>
+<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddddi(4, 5, 6, 7);</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2603bf564dbfe29105402410f898bcde"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2603bf564dbfe29105402410f898bcde">zth_fiber_define</a></div><div class="ttdeci">#define zth_fiber_define(...)</div><div class="ttdoc">Do the definition part of zth_fiber() (to be used in a .cpp file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00755">async.h:755</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00762">async.h:762</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaa75c9c194e3894b31f044e0e9d3a8c1d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d">zth_fiber_declare</a></div><div class="ttdeci">#define zth_fiber_declare(...)</div><div class="ttdoc">Do the declaration part of zth_fiber() (to be used in an .h file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00735">async.h:735</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gada84521eeb4bb9ac422d21429806aff3"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3">async</a></div><div class="ttdeci">#define async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00786">async.h:786</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2603bf564dbfe29105402410f898bcde"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2603bf564dbfe29105402410f898bcde">zth_fiber_define</a></div><div class="ttdeci">#define zth_fiber_define(...)</div><div class="ttdoc">Do the definition part of zth_fiber() (to be used in a .cpp file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00799">async.h:799</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaa75c9c194e3894b31f044e0e9d3a8c1d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d">zth_fiber_declare</a></div><div class="ttdeci">#define zth_fiber_declare(...)</div><div class="ttdoc">Do the declaration part of zth_fiber() (to be used in an .h file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00779">async.h:779</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

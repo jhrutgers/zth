@@ -41,6 +41,9 @@ var hierarchy =
       [ "zth::AutoFuture< T >", "classzth_1_1_auto_future.html", null ]
     ] ],
     [ "zth::SharedPointer< zth::Future >", "classzth_1_1_shared_pointer.html", null ],
+    [ "zth::SharedPointer< zth::Future< T * > >", "classzth_1_1_shared_pointer.html", null ],
+    [ "zth::SharedPointer< zth::Future< T > >", "classzth_1_1_shared_pointer.html", null ],
+    [ "zth::SharedPointer< zth::Future< void > >", "classzth_1_1_shared_pointer.html", null ],
     [ "zth::small_vector< MetaItem, PollItemList::prealloc >", "classzth_1_1small__vector.html", null ],
     [ "zth::small_vector< Pollable * >", "classzth_1_1small__vector.html", null ],
     [ "zth::small_vector< PollItem, 4 >", "classzth_1_1small__vector.html", null ],
@@ -50,6 +53,10 @@ var hierarchy =
         [ "zth::fsm::invalid_fsm", "structzth_1_1fsm_1_1invalid__fsm.html", null ]
       ] ]
     ] ],
+    [ "zth::impl::std_promise_base< T * >", "classzth_1_1impl_1_1std__promise__base.html", null ],
+    [ "zth::impl::std_promise_base< void >", "classzth_1_1impl_1_1std__promise__base.html", null ],
+    [ "zth::impl::std_shared_future_base< T * >", "classzth_1_1impl_1_1std__shared__future__base.html", null ],
+    [ "zth::impl::std_shared_future_base< void >", "classzth_1_1impl_1_1std__shared__future__base.html", null ],
     [ "zth::ThreadLocalSingleton< Worker >", "classzth_1_1_thread_local_singleton.html", [
       [ "zth::Worker", "classzth_1_1_worker.html", null ]
     ] ],
@@ -123,6 +130,12 @@ var hierarchy =
     [ "zth::impl::FunctionION< void, A, A_ >", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4.html", null ],
     [ "zth::impl::Packed< T >", "structzth_1_1impl_1_1_packed.html", null ],
     [ "zth::impl::Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", null ],
+    [ "zth::impl::std_promise_base< T >", "classzth_1_1impl_1_1std__promise__base.html", null ],
+    [ "zth::impl::std_shared_future_base< T >", "classzth_1_1impl_1_1std__shared__future__base.html", [
+      [ "zth::impl::std_future_base< T * >", "classzth_1_1impl_1_1std__future__base.html", null ],
+      [ "zth::impl::std_future_base< void >", "classzth_1_1impl_1_1std__future__base.html", null ],
+      [ "zth::impl::std_future_base< T >", "classzth_1_1impl_1_1std__future__base.html", null ]
+    ] ],
     [ "zth::List< T >", "classzth_1_1_list.html", null ],
     [ "zth::List< T >::iterator", "classzth_1_1_list_1_1iterator.html", null ],
     [ "zth::list_type< T >", "structzth_1_1list__type.html", null ],
@@ -130,6 +143,7 @@ var hierarchy =
     [ "zth::Load< T >", "classzth_1_1_load.html", null ],
     [ "zth::Locked", "classzth_1_1_locked.html", null ],
     [ "zth::map_type< Key, T, Compare >", "structzth_1_1map__type.html", null ],
+    [ "zth::monotonic_clock", "structzth_1_1monotonic__clock.html", null ],
     [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
     [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
     [ "zth::PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", null ],
@@ -139,6 +153,7 @@ var hierarchy =
     [ "zth::PolledMemberWaitingHelper< C >", "structzth_1_1_polled_member_waiting_helper.html", null ],
     [ "zth::RefCounted", "classzth_1_1_ref_counted.html", [
       [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", [
+        [ "zth::Future< T * >", "classzth_1_1_future.html", null ],
         [ "zth::Future< T >", "classzth_1_1_future.html", null ],
         [ "zth::Future< T >", "classzth_1_1_future.html", null ],
         [ "zth::Future< void >", "classzth_1_1_future_3_01void_01_4.html", null ],
@@ -168,6 +183,7 @@ var hierarchy =
       [ "zth::fsm::GuardPollInterval", "classzth_1_1fsm_1_1_guard_poll_interval.html", null ]
     ] ],
     [ "zth::Timestamp", "classzth_1_1_timestamp.html", null ],
+    [ "zth::type< T >", "structzth_1_1type.html", null ],
     [ "zth::TypedFiberFactory< F >", "classzth_1_1_typed_fiber_factory.html", null ],
     [ "zth::TypedFiberType< F >", "structzth_1_1_typed_fiber_type.html", null ],
     [ "zth::TypedFiberType< R(*)(Args...)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ],

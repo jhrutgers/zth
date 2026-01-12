@@ -7,6 +7,6 @@ var searchData=
   ['next_4',['next',['../classzth_1_1_fsm.html#aad7d91a931fc453e1b059bae28eab6df',1,'zth::Fsm::next()'],['../classzth_1_1_list_1_1iterator.html#ab1512efaf3864823851c1997d59d1673',1,'zth::List::iterator::next()']]],
   ['normptr_5',['normptr',['../classzth_1_1_unique_i_d.html#a10453b68babff6dd85ad155103f2f1ab',1,'zth::UniqueID']]],
   ['nothing_5faction_6',['nothing_action',['../namespacezth_1_1fsm.html#a57f08934a18a00fc7eb5edbd72ca73ab',1,'zth::fsm']]],
-  ['now_7',['now',['../classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133',1,'zth::Timestamp']]],
+  ['now_7',['now',['../structzth_1_1monotonic__clock.html#a18d4ee7e2d618453828f70ccb7c85a2d',1,'zth::monotonic_clock::now()'],['../classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133',1,'zth::Timestamp::now()']]],
   ['null_8',['null',['../classzth_1_1_time_interval.html#a117f1f67f3e701a349e10354b7b4abde',1,'zth::TimeInterval::null()'],['../classzth_1_1_timestamp.html#a7ea0fae11836050baf851415b0cfc752',1,'zth::Timestamp::null()']]]
 ];

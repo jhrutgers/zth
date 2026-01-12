@@ -133,10 +133,10 @@ Macros</h2></td></tr>
 <tr class="memitem:ga15bf32dde0718b1eafdcdbc9057d36f7" id="r_ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7">zth_dbg</a>(group,  fmt,  a...)</td></tr>
 <tr class="memdesc:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug printf()-like function.  <br /></td></tr>
 <tr class="separator:ga15bf32dde0718b1eafdcdbc9057d36f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5d7e7374885e201362c15a28066c5591" id="r_ga5d7e7374885e201362c15a28066c5591"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga5d7e7374885e201362c15a28066c5591">ZTH_VERSION_MAJOR</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:ga5d7e7374885e201362c15a28066c5591" id="r_ga5d7e7374885e201362c15a28066c5591"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga5d7e7374885e201362c15a28066c5591">ZTH_VERSION_MAJOR</a>&#160;&#160;&#160;2</td></tr>
 <tr class="memdesc:ga5d7e7374885e201362c15a28066c5591"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth major version as int.  <br /></td></tr>
 <tr class="separator:ga5d7e7374885e201362c15a28066c5591"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga318d2e7b9ebb2f25eda87dec55b7cc5c" id="r_ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga318d2e7b9ebb2f25eda87dec55b7cc5c">ZTH_VERSION_MINOR</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memitem:ga318d2e7b9ebb2f25eda87dec55b7cc5c" id="r_ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga318d2e7b9ebb2f25eda87dec55b7cc5c">ZTH_VERSION_MINOR</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zth minor version as int.  <br /></td></tr>
 <tr class="separator:ga318d2e7b9ebb2f25eda87dec55b7cc5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2892912ba885d1255ce529e0f14eee2d" id="r_ga2892912ba885d1255ce529e0f14eee2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga2892912ba885d1255ce529e0f14eee2d">ZTH_VERSION_PATCH</a>&#160;&#160;&#160;0</td></tr>
@@ -222,9 +222,11 @@ Functions</h2></td></tr>
 <div class="line">                  zth_assert(sz % <span class="keyword">sizeof</span>(T) == 0);                            \</div>
 <div class="line">                  ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr), sz / <span class="keyword">sizeof</span>(T)); \</div>
 <div class="line">          }                                                                   \</div>
+<div class="line">          <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code hl_struct" href="structzth_1_1_default_config_1_1_allocator.html">zth::Config::Allocator&lt;T&gt;::type</a> allocator_type;    \</div>
 <div class="line">                                                                              \</div>
 <div class="line">  <span class="keyword">private</span>:</div>
 <div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition</b> <a href="macros_8h_source.html#l00078">macros.h:78</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_1_1_allocator_html"><div class="ttname"><a href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator</a></div><div class="ttdoc">Allocator type.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00210">config.h:210</a></div></div>
 </div><!-- fragment -->
 <p>Define new/delete operators for a class, which are allocator-aware. </p>
 <p>Put a call to this macro in the private section of your class definition. Additionally, make sure to have a virtual destructor to deallocate subclasses properly.</p>
@@ -310,7 +312,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ZTH_VERSION_MAJOR&#160;&#160;&#160;1</td>
+          <td class="memname">#define ZTH_VERSION_MAJOR&#160;&#160;&#160;2</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -328,7 +330,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ZTH_VERSION_MINOR&#160;&#160;&#160;2</td>
+          <td class="memname">#define ZTH_VERSION_MINOR&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">

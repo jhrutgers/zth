@@ -5,6 +5,7 @@ var classzth_1_1_shared_pointer =
     [ "~SharedPointer", "classzth_1_1_shared_pointer.html#af6ce043884fdf9165175bf26a7ee4043", null ],
     [ "SharedPointer", "classzth_1_1_shared_pointer.html#ad22f63b195a3ec09a896c611a07f607b", null ],
     [ "get", "classzth_1_1_shared_pointer.html#a6409fc0d0f2db259e25f9892e0575a6e", null ],
+    [ "operator bool", "classzth_1_1_shared_pointer.html#a6e682f19e3b19adf0fc5d7ef1413e575", null ],
     [ "operator T*", "classzth_1_1_shared_pointer.html#a897d3f245f5ca44dd778e19a9a538ca4", null ],
     [ "operator*", "classzth_1_1_shared_pointer.html#a91aeaafe915413556a87ca3b17f003df", null ],
     [ "operator->", "classzth_1_1_shared_pointer.html#a7e051e45a23666ace6422d7bd509025e", null ],

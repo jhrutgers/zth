@@ -71,15 +71,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "1_helloworld_8cpp-example.html",
-"classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6da6ee97ca21bdb9f80f6d6192af1f67b4d",
+"classzth_1_1_fsm.html#aaf4cf5a723e0e47cb33e2579e4129a6da9224c2fcd931df34f5821836b1d2960d",
 "classzth_1_1_perf_fiber.html#aafcdd7b499304af787a9f7698ab13b7f",
-"classzth_1_1_time_interval.html#a6c7b16a6ad30f271a15ac2a43e51b719",
-"classzth_1_1cow__string.html#a6a9c83a64b38a724fe2b6edcbedbbb67",
-"classzth_1_1fsm_1_1_named_3_01false_01_4.html#adcddef24666403e9ea49368017c6d56e",
-"classzth_1_1safe__ptr.html#a5ce1d1a9a096796beaafea133f6b20c6",
-"group__zth__api__cpp__fiber.html#ga17f92480e82203077853ee3e3c59d3d5",
-"namespacezth_1_1fsm.html#aeb6fbb69abf74914e0780d5fce5e0267",
-"structzth_1_1impl_1_1_context_base_1_1_stack.html#ad0cf007b1908a8cd4197822c8db29cf8"
+"classzth_1_1_time_interval.html#a68024986f445486f4c9c93c87d343fb9",
+"classzth_1_1cow__string.html#a661f8f638812e38b584386397765512a",
+"classzth_1_1fsm_1_1_named.html",
+"classzth_1_1impl_1_1std__future__base.html#a9c130e025a6db5efd9ff07d8c1c1a12a",
+"functions_s.html",
+"macros_8h_source.html",
+"structzth_1_1_pollable.html#ab1118549d5ef78fea50fa9a64bfd0698a85fa2e6853464dc8f2841365c8cfa150",
+"waiter_8cpp.html#a43a403677c60668b28e760f217473f30"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

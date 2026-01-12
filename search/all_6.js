@@ -14,11 +14,13 @@ var searchData=
   ['delete_5f_11',['delete_',['../classzth_1_1_sorted_list.html#ac5972e9c2b149237366e7ab861e1ae66',1,'zth::SortedList']]],
   ['deprecated_20list_12',['Deprecated List',['../deprecated.html',1,'']]],
   ['deprecated14_13',['deprecated14',['../fsm_8h.html#aff42a341570ce15b51caa7c1256cc612',1,'fsm.h']]],
-  ['description_14',['description',['../classzth_1_1_fsm.html#a74bf9d976e7bf652f729a9b65679f4e9',1,'zth::Fsm::Description'],['../classzth_1_1_fsm_compiler.html#a44b1da45120e264ad7236a0ea5ae07eb',1,'zth::FsmCompiler::description()']]],
+  ['description_14',['description',['../classzth_1_1_fsm_compiler.html#a44b1da45120e264ad7236a0ea5ae07eb',1,'zth::FsmCompiler::description()'],['../classzth_1_1_fsm.html#a74bf9d976e7bf652f729a9b65679f4e9',1,'zth::Fsm::Description']]],
   ['destroy_15',['destroy',['../classzth_1_1impl_1_1_context_base.html#acbe2fb8d443a394f4eaf093327a1748b',1,'zth::impl::ContextBase::destroy()'],['../classzth_1_1_context.html#a142f2b3eb76caf440e05df2792a7e9b1',1,'zth::Context::destroy()']]],
-  ['die_16',['die',['../classzth_1_1impl_1_1_context_base.html#a50cd50e90718f3a4d15b9b18e339fb53',1,'zth::impl::ContextBase']]],
-  ['doperfevent_17',['doperfevent',['../structzth_1_1_env.html#a56a529ae08885620b107b10f88cfe9a3a1f513968e9db169031df7b95dd9111c5',1,'zth::Env::DoPerfEvent'],['../structzth_1_1_default_config.html#a312466af074cf29ac480f7b64508d7aa',1,'zth::DefaultConfig::DoPerfEvent']]],
-  ['dt_18',['dt',['../classzth_1_1_fsm.html#a7ff6ec92014f253008ae62336d44be28',1,'zth::Fsm::dt()'],['../classzth_1_1fsm_1_1_fsm.html#acf0d2b3800beb54873d211bbbd12a76a',1,'zth::fsm::Fsm::dt()']]],
-  ['dummyworkerentry_19',['dummyWorkerEntry',['../classzth_1_1_worker.html#a10e938fcaccbcc98bb85f4017ccdaeea',1,'zth::Worker']]],
-  ['dump_20',['dump',['../classzth_1_1fsm_1_1_transitions_base.html#ae66b63f9206dcb494e13691cb91c8cef',1,'zth::fsm::TransitionsBase']]]
+  ['detached_16',['detached',['../namespacezth.html#a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119',1,'zth']]],
+  ['die_17',['die',['../classzth_1_1impl_1_1_context_base.html#a50cd50e90718f3a4d15b9b18e339fb53',1,'zth::impl::ContextBase']]],
+  ['doperfevent_18',['doperfevent',['../structzth_1_1_env.html#a56a529ae08885620b107b10f88cfe9a3a1f513968e9db169031df7b95dd9111c5',1,'zth::Env::DoPerfEvent'],['../structzth_1_1_default_config.html#a312466af074cf29ac480f7b64508d7aa',1,'zth::DefaultConfig::DoPerfEvent']]],
+  ['dt_19',['dt',['../classzth_1_1_fsm.html#a7ff6ec92014f253008ae62336d44be28',1,'zth::Fsm::dt()'],['../classzth_1_1fsm_1_1_fsm.html#acf0d2b3800beb54873d211bbbd12a76a',1,'zth::fsm::Fsm::dt()']]],
+  ['dummyworkerentry_20',['dummyWorkerEntry',['../classzth_1_1_worker.html#a10e938fcaccbcc98bb85f4017ccdaeea',1,'zth::Worker']]],
+  ['dump_21',['dump',['../classzth_1_1fsm_1_1_transitions_base.html#ae66b63f9206dcb494e13691cb91c8cef',1,'zth::fsm::TransitionsBase']]],
+  ['duration_22',['duration',['../structzth_1_1monotonic__clock.html#aaabbfef69d13e08acbf541f88644b6e7',1,'zth::monotonic_clock']]]
 ];

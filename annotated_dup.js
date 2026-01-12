@@ -34,7 +34,10 @@ var annotated_dup =
         [ "FunctionION", "structzth_1_1impl_1_1_function_i_o_n.html", "structzth_1_1impl_1_1_function_i_o_n" ],
         [ "FunctionION< void, A, A_ >", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4.html", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4" ],
         [ "Packed", "structzth_1_1impl_1_1_packed.html", "structzth_1_1impl_1_1_packed" ],
-        [ "Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4" ]
+        [ "Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4" ],
+        [ "std_future_base", "classzth_1_1impl_1_1std__future__base.html", "classzth_1_1impl_1_1std__future__base" ],
+        [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html", "classzth_1_1impl_1_1std__promise__base" ],
+        [ "std_shared_future_base", "classzth_1_1impl_1_1std__shared__future__base.html", "classzth_1_1impl_1_1std__shared__future__base" ]
       ] ],
       [ "AutoFuture", "classzth_1_1_auto_future.html", "classzth_1_1_auto_future" ],
       [ "Backtrace", "classzth_1_1_backtrace.html", "classzth_1_1_backtrace" ],
@@ -67,6 +70,7 @@ var annotated_dup =
       [ "Load", "classzth_1_1_load.html", "classzth_1_1_load" ],
       [ "Locked", "classzth_1_1_locked.html", "classzth_1_1_locked" ],
       [ "map_type", "structzth_1_1map__type.html", "structzth_1_1map__type" ],
+      [ "monotonic_clock", "structzth_1_1monotonic__clock.html", "structzth_1_1monotonic__clock" ],
       [ "Mutex", "classzth_1_1_mutex.html", "classzth_1_1_mutex" ],
       [ "passOnExit", "classzth_1_1pass_on_exit.html", "classzth_1_1pass_on_exit" ],
       [ "PerfEvent", "structzth_1_1_perf_event.html", "structzth_1_1_perf_event" ],
@@ -105,6 +109,7 @@ var annotated_dup =
       [ "TimedWaitable", "classzth_1_1_timed_waitable.html", "classzth_1_1_timed_waitable" ],
       [ "TimeInterval", "classzth_1_1_time_interval.html", "classzth_1_1_time_interval" ],
       [ "Timestamp", "classzth_1_1_timestamp.html", "classzth_1_1_timestamp" ],
+      [ "type", "structzth_1_1type.html", null ],
       [ "TypedFiber", "classzth_1_1_typed_fiber.html", "classzth_1_1_typed_fiber" ],
       [ "TypedFiberFactory", "classzth_1_1_typed_fiber_factory.html", "classzth_1_1_typed_fiber_factory" ],
       [ "TypedFiberN", "classzth_1_1_typed_fiber_n.html", "classzth_1_1_typed_fiber_n" ],

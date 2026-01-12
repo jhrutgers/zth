@@ -23,7 +23,7 @@ var searchData=
   ['zth_5fabort_20',['zth_abort',['../group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb',1,'util.cpp']]],
   ['zth_5farch_5fx86_5f64_21',['ZTH_ARCH_X86_64',['../macros_8h.html#ab9203ff12342d6e21ed85bf7c18e5fa0',1,'macros.h']]],
   ['zth_5fassert_22',['zth_assert',['../util_8h.html#a68e25b27d7e03b3711eb1ac56ef4c1f2',1,'util.h']]],
-  ['zth_5fasync_23',['zth_async',['../async_8h.html#a121a5e39c7e4138aa09c2ce6ea7e213d',1,'async.h']]],
+  ['zth_5fasync_23',['zth_async',['../group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d',1,'async.h']]],
   ['zth_5fattr_5fprintf_24',['ZTH_ATTR_PRINTF',['../macros_8h.html#ab2b55ee9e338b49fe9e6aca15c4fe28e',1,'macros.h']]],
   ['zth_5fbanner_25',['zth_banner',['../group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588',1,'util.h']]],
   ['zth_5fclass_5fnew_5fdelete_26',['ZTH_CLASS_NEW_DELETE',['../group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4',1,'allocator.h']]],

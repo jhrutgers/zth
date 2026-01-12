@@ -323,7 +323,7 @@ $(document).ready(function(){initNavTree('macros_8h_source.html',''); initResiza
 <div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="preprocessor">#if defined(__cplusplus) &amp;&amp; !defined(__cpp_exceptions)</span></div>
 <div class="line"><a id="l00227" name="l00227"></a><span class="lineno"><a class="line" href="macros_8h.html#a28599e8ac99ea9faff60a2258a914aee">  227</a></span><span class="preprocessor">#  define try            if(true)</span></div>
 <div class="line"><a id="l00228" name="l00228"></a><span class="lineno"><a class="line" href="macros_8h.html#a1a4911274ef84e9a3efa3471b7d9d0e7">  228</a></span><span class="preprocessor">#  define catch(...)     if(false)</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="macros_8h.html#a2aa653730ef82e838590b01012202ab7">  229</a></span><span class="preprocessor">#  define zth_throw(...) std::abort()</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="macros_8h.html#a2aa653730ef82e838590b01012202ab7">  229</a></span><span class="preprocessor">#  define zth_throw(...) std::terminate()</span></div>
 <div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="preprocessor">#  define zth_throw(...) throw __VA_ARGS__</span></div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="preprocessor">#endif</span></div>

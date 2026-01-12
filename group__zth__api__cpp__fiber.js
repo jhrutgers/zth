@@ -51,7 +51,7 @@ var group__zth__api__cpp__fiber =
       [ "waiter", "classzth_1_1_worker.html#a6cc612b9aba1143d96db88dc4df17723", null ],
       [ "worker_global_init", "classzth_1_1_worker.html#a2ce9b915665078d9d49f866be74d9b27", null ]
     ] ],
-    [ "async", "group__zth__api__cpp__fiber.html#gada84521eeb4bb9ac422d21429806aff3", null ],
+    [ "zth_async", "group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d", null ],
     [ "zth_fiber", "group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2", null ],
     [ "zth_fiber_declare", "group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d", null ],
     [ "zth_fiber_define", "group__zth__api__cpp__fiber.html#ga2603bf564dbfe29105402410f898bcde", null ],

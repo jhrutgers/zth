@@ -21,6 +21,7 @@ var searchData=
   ['functionion_18',['FunctionION',['../structzth_1_1impl_1_1_function_i_o_n.html',1,'zth::impl']]],
   ['functionion_3c_20void_2c_20a_2c_20a_5f_20_3e_19',['FunctionION&lt; void, A, A_ &gt;',['../structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4.html',1,'zth::impl']]],
   ['future_20',['Future',['../classzth_1_1_future.html',1,'zth']]],
-  ['future_3c_20t_20_3e_21',['Future&lt; T &gt;',['../classzth_1_1_future.html',1,'zth']]],
-  ['future_3c_20void_20_3e_22',['Future&lt; void &gt;',['../classzth_1_1_future_3_01void_01_4.html',1,'zth']]]
+  ['future_3c_20t_20_2a_20_3e_21',['Future&lt; T * &gt;',['../classzth_1_1_future.html',1,'zth']]],
+  ['future_3c_20t_20_3e_22',['Future&lt; T &gt;',['../classzth_1_1_future.html',1,'zth']]],
+  ['future_3c_20void_20_3e_23',['Future&lt; void &gt;',['../classzth_1_1_future_3_01void_01_4.html',1,'zth']]]
 ];
