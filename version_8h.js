@@ -6,6 +6,6 @@ var version_8h =
     [ "ZTH_VERSION_NUM", "group__zth__api__cpp__util.html#ga3e497c5f6a1e3d083a526307494c66bd", null ],
     [ "ZTH_VERSION_PATCH", "group__zth__api__cpp__util.html#ga2892912ba885d1255ce529e0f14eee2d", null ],
     [ "ZTH_VERSION_SUFFIX", "group__zth__api__cpp__util.html#gad38e14c5d8ad64a9586e99952293c17b", null ],
-    [ "version", "version_8h.html#gaddd4a979293a0402bd22d2417728b43c", null ],
-    [ "zth_version", "group__zth__api__c__util.html#ga569a1312976a3427bc766b16d773cc7d", null ]
+    [ "version", "version_8h.html#ga061c3ba865e879bb557bc71880b71e09", null ],
+    [ "zth_version", "group__zth__api__c__util.html#ga4e4cdaa1eb49d9532b40ece6e7ff9edf", null ]
 ];

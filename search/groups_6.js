@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['stack_2140',['stack',['../group__zth__api__c__stack.html',1,'(Global Namespace)'],['../group__zth__api__cpp__stack.html',1,'(Global Namespace)']]],
-  ['sync_2141',['sync',['../group__zth__api__c__sync.html',1,'(Global Namespace)'],['../group__zth__api__cpp__sync.html',1,'(Global Namespace)']]]
+  ['perf_0',['perf',['../group__zth__api__cpp__perf.html',1,'perf'],['../group__zth__api__c__perf.html',1,'perf']]],
+  ['poller_1',['poller',['../group__zth__api__cpp__poller.html',1,'']]]
 ];

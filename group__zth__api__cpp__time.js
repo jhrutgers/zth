@@ -1,6 +1,6 @@
 var group__zth__api__cpp__time =
 [
-    [ "TimeInterval", "classzth_1_1_time_interval.html", [
+    [ "zth::TimeInterval", "classzth_1_1_time_interval.html", [
       [ "TimeInterval", "classzth_1_1_time_interval.html#a4d6179da93712941454938a429efdb62", null ],
       [ "TimeInterval", "classzth_1_1_time_interval.html#a8dd664ceef93663739ae721afe27b3cd", null ],
       [ "TimeInterval", "classzth_1_1_time_interval.html#ae08fc89e318c4852bb96aa72db583576", null ],
@@ -20,17 +20,17 @@ var group__zth__api__cpp__time =
       [ "isPositive", "classzth_1_1_time_interval.html#a68e9d345a58dc8d31281a80ba33f82b8", null ],
       [ "mul", "classzth_1_1_time_interval.html#a5684491dbe9fe76be36cf069538d78fa", null ],
       [ "operator*", "classzth_1_1_time_interval.html#ad1615370f61974cf6580eccd80cf9af0", null ],
-      [ "operator*=", "classzth_1_1_time_interval.html#a3749aa6978872fcc88db4e59a793dbf2", null ],
+      [ "operator*=", "classzth_1_1_time_interval.html#a68024986f445486f4c9c93c87d343fb9", null ],
       [ "operator+", "classzth_1_1_time_interval.html#a00c5a2fa3955b0d75d5bacf3d3d686e6", null ],
-      [ "operator+=", "classzth_1_1_time_interval.html#aeef4e2568271606bf797df9af27508ae", null ],
+      [ "operator+=", "classzth_1_1_time_interval.html#aaf3f4add22e099f22d0de8a7768b0224", null ],
       [ "operator-", "classzth_1_1_time_interval.html#ac21132744292cfacbc87b766d59590d9", null ],
       [ "operator-", "classzth_1_1_time_interval.html#a1a00f6772399792544eac096710c3bb5", null ],
-      [ "operator-=", "classzth_1_1_time_interval.html#a8c3d82624eab45c34b66dfb9fd4258c1", null ],
+      [ "operator-=", "classzth_1_1_time_interval.html#a6c7b16a6ad30f271a15ac2a43e51b719", null ],
       [ "operator/", "classzth_1_1_time_interval.html#a5197056066fdfe788a9a1200067a04a6", null ],
-      [ "operator/=", "classzth_1_1_time_interval.html#a440b1638217de9a9a65e825a2aaf11ec", null ],
+      [ "operator/=", "classzth_1_1_time_interval.html#acfc1ee047af726fe1cfa9975be0c575f", null ],
       [ "operator<", "classzth_1_1_time_interval.html#ab12da33084297dc1b8a6104405235d69", null ],
       [ "operator<=", "classzth_1_1_time_interval.html#a67c9f202b7352bcde713cff7274605cc", null ],
-      [ "operator=", "classzth_1_1_time_interval.html#a846c3b99c1f8d53ddbd8364f591f7145", null ],
+      [ "operator=", "classzth_1_1_time_interval.html#a87d1b7b99cc4759b0f8a59ab11eb0cf1", null ],
       [ "operator==", "classzth_1_1_time_interval.html#a00a82827cd8fc8d60b9a76fc4d908917", null ],
       [ "operator>", "classzth_1_1_time_interval.html#a0b33539dce732887620e08d1c20f8045", null ],
       [ "operator>=", "classzth_1_1_time_interval.html#a7ec23c007935cc7f9ee18df10897e4ac", null ],
@@ -38,9 +38,9 @@ var group__zth__api__cpp__time =
       [ "s", "classzth_1_1_time_interval.html#a8fc92ac4cb65220bb424ed55bd009e57", null ],
       [ "str", "classzth_1_1_time_interval.html#a5eaa6c233f3fd97f62434184485d1e73", null ],
       [ "sub", "classzth_1_1_time_interval.html#a4910bd206f3e971c3b1d1f8628aa81a7", null ],
-      [ "ts", "classzth_1_1_time_interval.html#a71b1b0463bea81a26fb5d39bffbe4b05", null ]
+      [ "ts", "classzth_1_1_time_interval.html#ae02940743819c5bb94a04b28bad24667", null ]
     ] ],
-    [ "Timestamp", "classzth_1_1_timestamp.html", [
+    [ "zth::Timestamp", "classzth_1_1_timestamp.html", [
       [ "Timestamp", "classzth_1_1_timestamp.html#a9e96a229ad728adeddca8aa82fa4314f", null ],
       [ "Timestamp", "classzth_1_1_timestamp.html#a0968d624c7ee9153b368e803ae66309c", null ],
       [ "Timestamp", "classzth_1_1_timestamp.html#a9aa2b3fb59f167f575c4cfa4a820b794", null ],
@@ -53,10 +53,10 @@ var group__zth__api__cpp__time =
       [ "operator struct timespec const &", "classzth_1_1_timestamp.html#af2b3b04edab0a31deec06d101b8b975e", null ],
       [ "operator!=", "classzth_1_1_timestamp.html#a667064c66e602027148fd4dec50e3f4f", null ],
       [ "operator+", "classzth_1_1_timestamp.html#aff75ece81bb85882b5d9bec5dc05a276", null ],
-      [ "operator+=", "classzth_1_1_timestamp.html#aa0d2c31c8f9015ca66dc845fede19adf", null ],
+      [ "operator+=", "classzth_1_1_timestamp.html#afc8e81da0187b3ad1153f005909c9771", null ],
       [ "operator-", "classzth_1_1_timestamp.html#a141e52c540cebdab587636397b2e96c9", null ],
       [ "operator-", "classzth_1_1_timestamp.html#a0eec08178ae80a59011a92dd2074c250", null ],
-      [ "operator-=", "classzth_1_1_timestamp.html#a0081660e4aa4a44c76d67db4502f3943", null ],
+      [ "operator-=", "classzth_1_1_timestamp.html#a43b5682dc7f70b1592c82bca9ea4c128", null ],
       [ "operator<", "classzth_1_1_timestamp.html#a6a7ffbe49c22c704ae229243b581be05", null ],
       [ "operator<=", "classzth_1_1_timestamp.html#aee1b0980428c9745deea05883e2098b4", null ],
       [ "operator==", "classzth_1_1_timestamp.html#a12ded5c40e8dc2b7955cffa359f6dec5", null ],
@@ -64,10 +64,10 @@ var group__zth__api__cpp__time =
       [ "operator>=", "classzth_1_1_timestamp.html#a4f79802fa12791e397539d4224602f7a", null ],
       [ "passed", "classzth_1_1_timestamp.html#ac51186b29ff02e28ff424650f78a10ba", null ],
       [ "timeTo", "classzth_1_1_timestamp.html#aa6668315bcc35653f83e279121a7b899", null ],
-      [ "ts", "classzth_1_1_timestamp.html#a33913e5ccf0833106d6aba7951d5220f", null ]
+      [ "ts", "classzth_1_1_timestamp.html#a2c7ecd8a0b7ec5e51f8347205820cdf2", null ]
     ] ],
-    [ "operator\"\"_ms", "group__zth__api__cpp__time.html#ga4d18ed4dbbf907fe4ad56e8d52cf821e", null ],
-    [ "operator\"\"_s", "group__zth__api__cpp__time.html#gaf57a16867f943d24fe5d77e683436b4a", null ],
-    [ "operator\"\"_s", "group__zth__api__cpp__time.html#gadb0cff5bdc7e25b688558c11522915dc", null ],
-    [ "operator\"\"_us", "group__zth__api__cpp__time.html#gac46f79fa542ccf8d0559a73b18e6152f", null ]
+    [ "zth::operator\"\"_ms", "group__zth__api__cpp__time.html#ga4d18ed4dbbf907fe4ad56e8d52cf821e", null ],
+    [ "zth::operator\"\"_s", "group__zth__api__cpp__time.html#gaf57a16867f943d24fe5d77e683436b4a", null ],
+    [ "zth::operator\"\"_s", "group__zth__api__cpp__time.html#gadb0cff5bdc7e25b688558c11522915dc", null ],
+    [ "zth::operator\"\"_us", "group__zth__api__cpp__time.html#gac46f79fa542ccf8d0559a73b18e6152f", null ]
 ];

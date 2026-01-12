@@ -3,7 +3,7 @@ var classzth_1_1_poller_client =
     [ "base", "classzth_1_1_poller_client.html#a5b500bf7847c78c974d9768d19be197d", null ],
     [ "Result", "classzth_1_1_poller_client.html#aeaa2e5123ce30dec5bcf0891cca96a73", null ],
     [ "PollerClient", "classzth_1_1_poller_client.html#a3273fbf5291d81bead3d07076d4e5eaf", null ],
-    [ "PollerClient", "classzth_1_1_poller_client.html#aee01e82ddf610689edf794b89293fc20", null ],
+    [ "PollerClient", "classzth_1_1_poller_client.html#ac728d7cfdf73741665621b0d028fe884", null ],
     [ "~PollerClient", "classzth_1_1_poller_client.html#a143050782fa3f05eedb88380ebe6f315", null ],
     [ "add", "classzth_1_1_poller_client.html#a7fc1508f5d43c39be3f6e677ad8bc7b5", null ],
     [ "empty", "classzth_1_1_poller_client.html#a78d24220e0ebd3b781e72bdf9491a225", null ],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['time_2142',['time',['../group__zth__api__cpp__time.html',1,'']]]
+  ['regs_0',['regs',['../group__zth__api__cpp__regs.html',1,'']]]
 ];

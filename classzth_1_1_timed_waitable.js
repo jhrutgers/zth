@@ -6,5 +6,5 @@ var classzth_1_1_timed_waitable =
     [ "poll", "classzth_1_1_timed_waitable.html#a27360262a2425148f076c99f7223847b", null ],
     [ "setTimeout", "classzth_1_1_timed_waitable.html#a3d6e4b3b80e53ce4a389c510fdca68e9", null ],
     [ "str", "classzth_1_1_timed_waitable.html#abf9ddf73918a86386356c0e3630ed522", null ],
-    [ "timeout", "classzth_1_1_timed_waitable.html#a4b32289351a7badb70ee9b8d8bcaa6cd", null ]
+    [ "timeout", "classzth_1_1_timed_waitable.html#a6003bfbff212232ad92cb6ccddceeb3e", null ]
 ];

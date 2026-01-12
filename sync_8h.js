@@ -1,10 +1,10 @@
 var sync_8h =
 [
-    [ "RefCounted", "classzth_1_1_ref_counted.html", "classzth_1_1_ref_counted" ],
-    [ "SharedPointer", "classzth_1_1_shared_pointer.html", "classzth_1_1_shared_pointer" ],
-    [ "Synchronizer", "classzth_1_1_synchronizer.html", "classzth_1_1_synchronizer" ],
-    [ "AlarmClock", "classzth_1_1_synchronizer_1_1_alarm_clock.html", "classzth_1_1_synchronizer_1_1_alarm_clock" ],
-    [ "Future< void >", "classzth_1_1_future_3_01void_01_4.html", "classzth_1_1_future_3_01void_01_4" ],
+    [ "zth::RefCounted", "classzth_1_1_ref_counted.html", "classzth_1_1_ref_counted" ],
+    [ "zth::SharedPointer< T >", "classzth_1_1_shared_pointer.html", "classzth_1_1_shared_pointer" ],
+    [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", "classzth_1_1_synchronizer" ],
+    [ "zth::Synchronizer::AlarmClock", "classzth_1_1_synchronizer_1_1_alarm_clock.html", "classzth_1_1_synchronizer_1_1_alarm_clock" ],
+    [ "zth::Future< void >", "classzth_1_1_future_3_01void_01_4.html", "classzth_1_1_future_3_01void_01_4" ],
     [ "zth_mutex_t", "structzth__mutex__t.html", "structzth__mutex__t" ],
     [ "zth_sem_t", "structzth__sem__t.html", "structzth__sem__t" ],
     [ "zth_cond_t", "structzth__cond__t.html", "structzth__cond__t" ],

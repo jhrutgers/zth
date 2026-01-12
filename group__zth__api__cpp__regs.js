@@ -1,6 +1,6 @@
 var group__zth__api__cpp__regs =
 [
-    [ "Register", "structzth_1_1_register.html", [
+    [ "zth::Register< T, Addr, Fields >", "structzth_1_1_register.html", [
       [ "type", "structzth_1_1_register.html#aa49235d363a83851ba7a7275a6d08404", null ],
       [ "Register", "structzth_1_1_register.html#ac61e82f57d5a07284e4f5b3708bf5286", null ],
       [ "Register", "structzth_1_1_register.html#a7ac1d5407bb6d1fe57699d1f30ffaccb", null ],

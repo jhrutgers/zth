@@ -1,6 +1,6 @@
 var group__zth__api__c =
 [
-    [ "0MQ", "group__zth__api__c__zmq.html", "group__zth__api__c__zmq" ],
+    [ "0MQ", "group__zth__api__c__zmq.html", null ],
     [ "fiber", "group__zth__api__c__fiber.html", "group__zth__api__c__fiber" ],
     [ "io", "group__zth__api__c__io.html", "group__zth__api__c__io" ],
     [ "perf", "group__zth__api__c__perf.html", "group__zth__api__c__perf" ],

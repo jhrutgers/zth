@@ -8,6 +8,6 @@ var classzth_1_1_perf_fiber =
     [ "flushEventBuffer", "classzth_1_1_perf_fiber.html#a534893a214f7a2e098ecb2de3eb17bb0", null ],
     [ "processEventBuffer", "classzth_1_1_perf_fiber.html#a31d389eda4fa6e362ae67158b238582b", null ],
     [ "startVCD", "classzth_1_1_perf_fiber.html#a5c0ca3add9ce6a032ee96cf10a4f8b91", null ],
-    [ "vcdId", "classzth_1_1_perf_fiber.html#a385207c92315865f7054cac46ee9ad57", null ],
+    [ "vcdId", "classzth_1_1_perf_fiber.html#a191fa457ec4fef75742c4dadd21996ce", null ],
     [ "vcdIdRelease", "classzth_1_1_perf_fiber.html#ad30af969718c97daca7c8ebbdcb9078d", null ]
 ];

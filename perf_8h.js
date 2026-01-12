@@ -1,9 +1,9 @@
 var perf_8h =
 [
-    [ "PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", "structzth_1_1_perf_event_3_01false_01_4" ],
+    [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", "structzth_1_1_perf_event_3_01false_01_4" ],
     [ "zth_perf_event", "group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302", null ],
     [ "zth_perf_mark", "group__zth__api__c__perf.html#gae5ad38cc005a1b590020370a5d8362b9", null ],
-    [ "perf_eventBuffer_type", "perf_8h.html#a4c3bceeb47d721eab016705851f5f500", null ],
+    [ "perf_eventBuffer_type", "perf_8h.html#af8c90d70e578146d277b1215c11c22ce", null ],
     [ "currentFiberID", "perf_8h.html#acfaff359fbc3634fd92a8f4a26aa5216", null ],
     [ "perf_deinit", "perf_8h.html#a3f8a6fdc27b5e9243380e5b67d672812", null ],
     [ "perf_event", "perf_8h.html#aa0a9cb2d2794cd2768a0b5fde149f179", null ],
@@ -16,5 +16,5 @@ var perf_8h =
     [ "zth_perf_log", "group__zth__api__c__perf.html#ga61afefce5ee116a8bce4e28120a79bc8", null ],
     [ "zth_perf_logv", "group__zth__api__c__perf.html#gaae80b9853d0ba648e47b9f5e15e495be", null ],
     [ "zth_perf_mark_", "perf_8h.html#a62d726b7de91c7728496e57aa6817bed", null ],
-    [ "perf_eventBuffer", "perf_8h.html#a49f9701be753524556176caf391c2b16", null ]
+    [ "perf_eventBuffer", "perf_8h.html#a458007e75c57d5b68d0115cf17250dad", null ]
 ];

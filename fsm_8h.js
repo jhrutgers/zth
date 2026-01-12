@@ -1,7 +1,7 @@
 var fsm_8h =
 [
-    [ "FsmCallback", "classzth_1_1_fsm_callback.html", "classzth_1_1_fsm_callback" ],
-    [ "FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4" ],
+    [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", "classzth_1_1_fsm_callback" ],
+    [ "zth::FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4" ],
     [ "deprecated14", "fsm_8h.html#aff42a341570ce15b51caa7c1256cc612", null ],
     [ "End", "fsm_8h.html#a7794029333471a5b06bcf2fa09de9ec5", [
       [ "end", "fsm_8h.html#ga7794029333471a5b06bcf2fa09de9ec5ab3346a445955528087930465ba0f93dc", null ]

@@ -2,7 +2,7 @@ var worker_8h =
 [
     [ "currentFiber", "worker_8h.html#ga7aad33249b0dcad742743123a1a391ee", null ],
     [ "currentFiberID", "worker_8h.html#acfaff359fbc3634fd92a8f4a26aa5216", null ],
-    [ "currentWorker", "worker_8h.html#ga5fcfd63873716813f381a787e1cc218c", null ],
+    [ "currentWorker", "worker_8h.html#ga588e74a52128f38070beb60c327eac1e", null ],
     [ "execlp", "worker_8h.html#ga2253ebdcaef7df7487bb2ff9aa991b8f", null ],
     [ "execvp", "worker_8h.html#gace10a072a53ecfc4db384c7301c5e7aa", null ],
     [ "getContext", "worker_8h.html#a09b2eb10eda01a1fc268f5526c19b88d", null ],

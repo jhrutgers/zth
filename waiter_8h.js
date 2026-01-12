@@ -1,11 +1,11 @@
 var waiter_8h =
 [
-    [ "Waitable", "classzth_1_1_waitable.html", "classzth_1_1_waitable" ],
-    [ "TimedWaitable", "classzth_1_1_timed_waitable.html", "classzth_1_1_timed_waitable" ],
-    [ "PolledWaiting", "classzth_1_1_polled_waiting.html", "classzth_1_1_polled_waiting" ],
-    [ "PolledMemberWaitingHelper", "structzth_1_1_polled_member_waiting_helper.html", "structzth_1_1_polled_member_waiting_helper" ],
-    [ "PolledMemberWaiting", "classzth_1_1_polled_member_waiting.html", "classzth_1_1_polled_member_waiting" ],
-    [ "Waiter", "classzth_1_1_waiter.html", "classzth_1_1_waiter" ],
+    [ "zth::Waitable", "classzth_1_1_waitable.html", "classzth_1_1_waitable" ],
+    [ "zth::TimedWaitable", "classzth_1_1_timed_waitable.html", "classzth_1_1_timed_waitable" ],
+    [ "zth::PolledWaiting< F >", "classzth_1_1_polled_waiting.html", "classzth_1_1_polled_waiting" ],
+    [ "zth::PolledMemberWaitingHelper< C >", "structzth_1_1_polled_member_waiting_helper.html", "structzth_1_1_polled_member_waiting_helper" ],
+    [ "zth::PolledMemberWaiting< C >", "classzth_1_1_polled_member_waiting.html", "classzth_1_1_polled_member_waiting" ],
+    [ "zth::Waiter", "classzth_1_1_waiter.html", "classzth_1_1_waiter" ],
     [ "mnap", "waiter_8h.html#gabb282193c9fb32207257bb6474436152", null ],
     [ "nap", "waiter_8h.html#ga786a7557ff189b1f1e7552a37f772665", null ],
     [ "nap", "waiter_8h.html#ga0c69f207354e0928b738da3388bdd913", null ],

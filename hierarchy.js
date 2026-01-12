@@ -6,6 +6,7 @@ var hierarchy =
     [ "zth::fsm::Callback< T, void >", "classzth_1_1fsm_1_1_callback.html", [
       [ "zth::fsm::TypedAction< T >", "classzth_1_1fsm_1_1_typed_action.html", null ]
     ] ],
+    [ "zth::impl::ContextBase< Context >", "classzth_1_1impl_1_1_context_base.html", null ],
     [ "zth::fiber_type_impl< R(*)(Args...)>", "structzth_1_1fiber__type__impl.html", [
       [ "zth::fiber_type< R(*)(Args...)>", "structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ]
     ] ],
@@ -127,6 +128,7 @@ var hierarchy =
     [ "zth::list_type< T >", "structzth_1_1list__type.html", null ],
     [ "zth::Listable< ChildClass >", "classzth_1_1_listable.html", null ],
     [ "zth::Load< T >", "classzth_1_1_load.html", null ],
+    [ "zth::Locked", "classzth_1_1_locked.html", null ],
     [ "zth::map_type< Key, T, Compare >", "structzth_1_1map__type.html", null ],
     [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
     [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
@@ -137,6 +139,7 @@ var hierarchy =
     [ "zth::PolledMemberWaitingHelper< C >", "structzth_1_1_polled_member_waiting_helper.html", null ],
     [ "zth::RefCounted", "classzth_1_1_ref_counted.html", [
       [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", [
+        [ "zth::Future< T >", "classzth_1_1_future.html", null ],
         [ "zth::Future< T >", "classzth_1_1_future.html", null ],
         [ "zth::Future< void >", "classzth_1_1_future_3_01void_01_4.html", null ],
         [ "zth::Gate", "classzth_1_1_gate.html", null ],
@@ -170,25 +173,17 @@ var hierarchy =
     [ "zth::TypedFiberType< R(*)(Args...)>", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4.html", null ],
     [ "zth::TypedFiberType< R(*)(Args...)>::NoArg", "structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4_1_1_no_arg.html", null ],
     [ "zth::UniqueIDBase", "classzth_1_1_unique_i_d_base.html", [
-      [ "zth::UniqueID< BasicFsm >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::fsm::BasicFsm", "classzth_1_1fsm_1_1_basic_fsm.html", [
-          [ "zth::fsm::Fsm", "classzth_1_1fsm_1_1_fsm.html", null ]
-        ] ]
-      ] ],
       [ "zth::UniqueID< Fiber >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Fiber", "classzth_1_1_fiber.html", null ]
       ] ],
-      [ "zth::UniqueID< Synchronizer >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", null ]
-      ] ],
       [ "zth::UniqueID< Fsm< void, void, void > >", "classzth_1_1_unique_i_d.html", [
-        [ "zth::Fsm< State_, int, choose_type< void, FsmCallback< State_, void, int, void > >::type >", "classzth_1_1_fsm.html", [
-          [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", null ]
-        ] ],
+        [ "zth::Fsm< State_, int, choose_type< void, FsmCallback< State_, void, int, void > >::type >", "classzth_1_1_fsm.html", null ],
         [ "zth::Fsm< State_, Input_, choose_type< FsmImpl_, FsmCallback< State_, void, Input_, void > >::type >", "classzth_1_1_fsm.html", [
           [ "zth::FsmCallback< State_, void, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html", null ]
         ] ],
-        [ "zth::Fsm< State_, Input_, FsmImpl_ >", "classzth_1_1_fsm.html", null ]
+        [ "zth::Fsm< State_, Input_, FsmImpl_ >", "classzth_1_1_fsm.html", [
+          [ "zth::FsmCallback< State_, CallbackArg_, Input_, FsmImpl_ >", "classzth_1_1_fsm_callback.html", null ]
+        ] ]
       ] ],
       [ "zth::UniqueID< PollerInterface >", "classzth_1_1_unique_i_d.html", [
         [ "zth::PollerInterface", "classzth_1_1_poller_interface.html", [
@@ -203,8 +198,16 @@ var hierarchy =
           ] ]
         ] ]
       ] ],
+      [ "zth::UniqueID< Synchronizer >", "classzth_1_1_unique_i_d.html", [
+        [ "zth::Synchronizer", "classzth_1_1_synchronizer.html", null ]
+      ] ],
       [ "zth::UniqueID< Worker >", "classzth_1_1_unique_i_d.html", [
         [ "zth::Worker", "classzth_1_1_worker.html", null ]
+      ] ],
+      [ "zth::UniqueID< BasicFsm >", "classzth_1_1_unique_i_d.html", [
+        [ "zth::fsm::BasicFsm", "classzth_1_1fsm_1_1_basic_fsm.html", [
+          [ "zth::fsm::Fsm", "classzth_1_1fsm_1_1_fsm.html", null ]
+        ] ]
       ] ],
       [ "zth::UniqueID< T, ThreadSafe >", "classzth_1_1_unique_i_d.html", null ]
     ] ],
