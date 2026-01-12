@@ -161,6 +161,7 @@ static inline void delete_alloc(T* p) noexcept
 		  zth_assert(sz % sizeof(T) == 0);                            \
 		  ::zth::deallocate<T>(static_cast<T*>(ptr), sz / sizeof(T)); \
 	  }                                                                   \
+	  typedef typename zth::Config::Allocator<T>::type allocator_type;    \
                                                                               \
   private:
 

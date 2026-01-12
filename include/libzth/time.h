@@ -723,8 +723,8 @@ public:
 	}
 
 #  if __cplusplus >= 201103L
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Duration>
+	// cppcheck-suppress noExplicitConstructor
 	Timestamp(std::chrono::time_point<monotonic_clock, Duration> tp)
 	{
 		auto d = tp.time_since_epoch();

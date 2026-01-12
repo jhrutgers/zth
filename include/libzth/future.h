@@ -14,6 +14,14 @@
 #  include <libzth/time.h>
 
 #  include <future>
+#  include <stdexcept>
+#  include <type_traits>
+
+
+
+//////////////////////////////////////////////////////////////////////
+// std::promise and std::future
+//
 
 namespace zth {
 template <typename T>
@@ -36,14 +44,16 @@ public:
 	using Future_type = zth::Future<value_type>;
 
 protected:
-	explicit std_shared_future_base(Future_type* future = nullptr) noexcept
-		: m_future{future}
+	std_shared_future_base() noexcept = default;
+
+	explicit std_shared_future_base(SharedPointer<Future_type>&& future) noexcept
+		: m_future{std::move(future)}
 	{}
 
 public:
 	bool valid() const noexcept
 	{
-		return m_future != nullptr;
+		return m_future;
 	}
 
 	void wait() const
@@ -83,7 +93,7 @@ protected:
 			zth_throw(std::future_error(std::future_errc::no_state));
 	}
 
-	zth::Future<T>* m_future = nullptr;
+	zth::SharedPointer<zth::Future<T>> m_future;
 };
 
 template <typename T>
@@ -92,8 +102,10 @@ public:
 	using base = impl::std_shared_future_base<T>;
 
 protected:
-	explicit std_future_base(typename base::Future_type* future = nullptr) noexcept
-		: base{future}
+	std_future_base() noexcept = default;
+
+	explicit std_future_base(SharedPointer<typename base::Future_type> future) noexcept
+		: base{std::move(future)}
 	{}
 
 	std_future_base(std_future_base&& other) noexcept
@@ -104,8 +116,7 @@ protected:
 public:
 	std_future_base& operator=(std_future_base&& other)
 	{
-		this->m_future = other.m_future;
-		other.m_future = nullptr;
+		this->m_future = std::move(other.m_future);
 		return *this;
 	}
 
@@ -114,8 +125,7 @@ public:
 
 	std::shared_future<zth::type<T>> share() const
 	{
-		auto f = std::shared_future<zth::type<T>>(this->m_future);
-		this->m_future = nullptr;
+		auto f = std::shared_future<zth::type<T>>(std::move(this->m_future));
 		return f;
 	}
 };
@@ -127,8 +137,10 @@ public:
 	using Future_type = zth::Future<value_type>;
 
 protected:
-	explicit std_promise_base(Future_type* future = nullptr) noexcept
-		: m_future{future}
+	std_promise_base() noexcept = default;
+
+	explicit std_promise_base(SharedPointer<Future_type> future) noexcept
+		: m_future{std::move(future)}
 	{}
 
 	std_promise_base(std_promise_base&& other) noexcept
@@ -139,8 +151,7 @@ protected:
 public:
 	std_promise_base& operator=(std_promise_base&& other) noexcept
 	{
-		this->m_future = other.m_future;
-		other.m_future = nullptr;
+		this->m_future = std::move(other.m_future);
 		return *this;
 	}
 
@@ -198,7 +209,7 @@ protected:
 	}
 
 private:
-	Future_type* m_future = nullptr;
+	SharedPointer<Future_type> m_future;
 	bool m_got_future = false;
 };
 
@@ -213,9 +224,11 @@ public:
 	using value_type = T;
 	using base = zth::impl::std_future_base<T>;
 
+	future() noexcept = default;
+
 	// cppcheck-suppress noExplicitConstructor
-	future(typename base::Future_type* f = nullptr) noexcept
-		: base{f}
+	future(zth::SharedPointer<typename base::Future_type> f) noexcept
+		: base{std::move(f)}
 	{}
 
 	value_type get()
@@ -231,9 +244,11 @@ public:
 	using value_type = T&;
 	using base = zth::impl::std_future_base<T*>;
 
+	future() noexcept = default;
+
 	// cppcheck-suppress noExplicitConstructor
-	future(typename base::Future_type* f = nullptr) noexcept
-		: base{f}
+	future(zth::SharedPointer<typename base::Future_type> f) noexcept
+		: base{std::move(f)}
 	{}
 
 	value_type get()
@@ -249,9 +264,11 @@ public:
 	using value_type = void;
 	using base = zth::impl::std_future_base<void>;
 
+	future() noexcept = default;
+
 	// cppcheck-suppress noExplicitConstructor
-	future(typename base::Future_type* f = nullptr) noexcept
-		: base{f}
+	future(zth::SharedPointer<typename base::Future_type> f) noexcept
+		: base{std::move(f)}
 	{}
 
 	void get()
@@ -306,8 +323,11 @@ public:
 	using value_type = T;
 	using base = zth::impl::std_promise_base<T>;
 
-	explicit promise(typename base::Future_type* future = nullptr) noexcept
-		: base{future}
+	promise() noexcept = default;
+
+	// cppcheck-suppress noExplicitConstructor
+	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
+		: base{std::move(future)}
 	{}
 };
 
@@ -317,8 +337,11 @@ public:
 	using value_type = T&;
 	using base = zth::impl::std_promise_base<T*>;
 
-	explicit promise(typename base::Future_type* future = nullptr) noexcept
-		: base{future}
+	promise() noexcept = default;
+
+	// cppcheck-suppress noExplicitConstructor
+	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
+		: base{std::move(future)}
 	{}
 };
 
@@ -327,12 +350,66 @@ class promise<zth::type<void>> : public zth::impl::std_promise_base<void> {
 public:
 	using base = zth::impl::std_promise_base<void>;
 
-	explicit promise(typename base::Future_type* future = nullptr) noexcept
-		: base{future}
+	promise() noexcept = default;
+
+	// cppcheck-suppress noExplicitConstructor
+	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
+		: base{std::move(future)}
 	{}
 };
 
 } // namespace std
+
+
+
+//////////////////////////////////////////////////////////////////////
+// std::async
+//
+
+namespace zth {
+enum class launch { detached = 1, awaitable = 2 };
+
+namespace impl {
+#  if __cplusplus < 201703L
+template <typename Func, typename... Args>
+using invoke_result = typename std::result_of<Func(Args...)>::type;
+#  else
+template <typename Func, typename... Args>
+using invoke_result = typename std::invoke_result_t<Func, Args...>;
+#  endif
+} // namespace impl
+
+template <typename Func, typename... Args>
+zth::future<zth::impl::invoke_result<Func, Args...>> async(Func&& f, Args&&... args)
+{
+	return async(zth::launch::detached, std::forward<Func>(f), std::forward<Args>(args)...);
+}
+
+template <typename Func, typename... Args>
+zth::future<zth::impl::invoke_result<Func, Args...>>
+async(zth::launch policy, Func&& f, Args&&... args)
+{
+	auto& fib = zth::fiber(f)(std::forward<Args>(args)...);
+	switch(policy) {
+	case zth::launch::detached:
+		return {};
+	case zth::launch::awaitable:
+		return fib.withFuture();
+	default:
+		zth_throw(std::invalid_argument("policy"));
+	}
+}
+} // namespace zth
+
+namespace std {
+template <typename Func, typename... Args>
+zth::future<zth::impl::invoke_result<Func, Args...>>
+async(zth::launch policy, Func&& f, Args&&... args)
+{
+	return zth::async(policy, std::forward<Func>(f), std::forward<Args>(args)...);
+}
+} // namespace std
+
 
 #endif // C++11
 #endif // ZTH_FUTURE_H

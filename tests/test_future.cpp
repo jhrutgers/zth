@@ -24,8 +24,7 @@ zth_fiber(fiber_d)
 
 TEST(Promise, d)
 {
-	zth::Future<int> future;
-	zth::promise<int> p{&future};
+	zth::promise<int> p{new zth::Future<int>{}};
 	auto f = p.get_future();
 	zth_async fiber_d(std::move(p));
 
@@ -41,10 +40,22 @@ zth_fiber(fiber_exception)
 
 TEST(Promise, exception)
 {
-	zth::Future<int> future;
-	zth::promise<int> p{&future};
+	zth::promise<int> p{new zth::Future<int>{}};
 	auto f = p.get_future();
 	zth_async fiber_exception(std::move(p));
 
 	EXPECT_THROW(f.get(), std::runtime_error);
+}
+
+static void fiber_async() {}
+
+TEST(Future, async)
+{
+	auto future = std::async(zth::launch::awaitable, fiber_async);
+	EXPECT_EQ(future.valid(), true);
+	future.wait();
+
+	auto future2 = std::async(zth::launch::detached, fiber_async);
+	EXPECT_EQ(future2.valid(), false);
+	EXPECT_THROW(future2.get(), std::future_error);
 }
