@@ -59,9 +59,9 @@ void takeSocks(int count)
 		printf("Take %s\n", socks->str.c_str());
 
 #if __cplusplus >= 201103L
-		allSocks.emplace_back(async wearSocks(*socks));
+		allSocks.emplace_back(zth_async wearSocks(*socks));
 #else
-		allSocks.push_back(async wearSocks(*socks));
+		allSocks.push_back(zth_async wearSocks(*socks));
 #endif
 
 		zth::nap(0.5);
@@ -83,8 +83,8 @@ Socks* wearSocks(Socks& socks)
 	printf("Wear %s\n", socks.str.c_str());
 
 	// Done wearing, go wash both socks.
-	async washSock(socks.left); // in parallel
-	washSock(socks.right);	    // done right here and now
+	zth_async washSock(socks.left); // in parallel
+	washSock(socks.right);		// done right here and now
 
 	// Wait till the washing sequence has completed.
 	socks.left.done.wait();
@@ -120,6 +120,6 @@ int main(int argc, char** argv)
 	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	srand48((long)time(nullptr));
 	zth::Worker w;
-	async takeSocks(count);
+	zth_async takeSocks(count);
 	w.run();
 }

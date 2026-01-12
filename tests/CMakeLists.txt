@@ -97,6 +97,7 @@ if(ZTH_USE_GTEST)
 		zth_config_test(${tests})
 	endfunction()
 
+	zth_add_test(test_future test_future.cpp)
 	zth_add_test(test_poller test_poller.cpp)
 
 	zth_add_test(test_fsm14 test_fsm14.cpp)

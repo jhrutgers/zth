@@ -16,7 +16,7 @@ void world()
 	printf("World!!1\n");
 }
 // The zth_fiber() marks the given list of function as fiber entries and does
-// everything that is required to allow `async world()'.
+// everything that is required to allow `zth_async world()'.
 zth_fiber(world)
 
 void hello()
@@ -24,7 +24,7 @@ void hello()
 	// The following line does not call the function world() directly, but
 	// creates a fiber and schedules it at the current Worker.  world()
 	// will now be executed asynchronously to hello().
-	async world();
+	zth_async world();
 
 	// Even though world() was started before the following print
 	// statement, 'Hello' will always be printed first, as we did not yield
@@ -43,7 +43,7 @@ zth_fiber(hello)
 // Zth functionality is used.
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	async hello();
+	zth_async hello();
 
 	// This is the exit code of the application.  Although the application
 	// has not finished, the hello fiber is still running, this value is

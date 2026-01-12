@@ -284,7 +284,7 @@ zth_fiber(trafficDetect)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	async trafficDetect();
+	zth_async trafficDetect();
 	// Run the Fsm, until it hits a final state (but there is none in this example).
 	fsm.run();
 	return 0;

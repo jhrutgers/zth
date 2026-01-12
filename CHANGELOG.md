@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `zth::Locked` RAII for scoped locks of `zth::Mutex`.
+- `std::chrono` conversions for `zth::Timestamp` and `zth::TimeInterval`.
+- `std::promise` and `std::future` specializations to wrap `zth::Future`.
 
 ### Changed
 
@@ -21,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Redirect standard ``assert()`` failure handling to `zth::assert_handler()`.
 - Fix support for newlib 4.4.0.
 - `Config::MinTimeslice` and `Config::TimesliceOverrunReportThreshold` return `struct timespec` for performance reasons.
+- Removed `async` keyword in favor of `zth_async`, as it conflicts with C++11 `<future>`.
 
 
 

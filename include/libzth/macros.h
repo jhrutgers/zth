@@ -226,7 +226,7 @@ ZTH_EXPORT void foo();
 #if defined(__cplusplus) && !defined(__cpp_exceptions)
 #  define try		 if(true)
 #  define catch(...)	 if(false)
-#  define zth_throw(...) std::abort()
+#  define zth_throw(...) std::terminate()
 #else
 #  define zth_throw(...) throw __VA_ARGS__
 #endif

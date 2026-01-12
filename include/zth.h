@@ -23,6 +23,7 @@
 #include <libzth/fiber.h>
 #include <libzth/fsm.h>
 #include <libzth/fsm14.h>
+#include <libzth/future.h>
 #include <libzth/init.h>
 #include <libzth/io.h>
 #include <libzth/perf.h>

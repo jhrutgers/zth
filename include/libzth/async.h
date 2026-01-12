@@ -19,6 +19,7 @@
 
 #  if __cplusplus >= 201103L
 #    include <tuple>
+#    include <type_traits>
 #  endif
 
 #  if __cplusplus < 201103L
@@ -95,6 +96,14 @@ protected:
 			m_future->set();
 	}
 
+#  ifdef ZTH_FUTURE_EXCEPTION
+	void setFuture(std::exception_ptr exception)
+	{
+		if(m_future.get())
+			m_future->set(std::move(exception));
+	}
+#  endif // ZTH_FUTURE_EXCEPTION
+
 	Function function() const noexcept
 	{
 		return m_function;
@@ -123,7 +132,7 @@ TypedFiber<R, F>& operator<<(TypedFiber<R, F>& f, FiberManipulator const& m)
 }
 
 /*!
- * \brief Change the stack size of a fiber returned by #async.
+ * \brief Change the stack size of a fiber returned by #zth_async.
  *
  * This is a manipulator that calls #zth::Fiber::setStackSize().
  * Example:
@@ -132,7 +141,7 @@ TypedFiber<R, F>& operator<<(TypedFiber<R, F>& f, FiberManipulator const& m)
  * zth_fiber(foo)
  *
  * int main_fiber(int argc, char** argv) {
- *     async foo() << zth::setStackSize(0x10000);
+ *     zth_async foo() << zth::setStackSize(0x10000);
  *     return 0;
  * }
  * \endcode
@@ -156,7 +165,7 @@ private:
 };
 
 /*!
- * \brief Change the name of a fiber returned by #async.
+ * \brief Change the name of a fiber returned by #zth_async.
  * \details This is a manipulator that calls #zth::Fiber::setName().
  * \see zth::setStackSize() for an example
  * \ingroup zth_api_cpp_fiber
@@ -213,8 +222,8 @@ private:
  *
  * int main_fiber(int argc, char** argv) {
  *     zth::Gate gate(3);
- *     async foo() << zth::passOnExit(gate);
- *     async foo() << zth::passOnExit(gate);
+ *     zth_async foo() << zth::passOnExit(gate);
+ *     zth_async foo() << zth::passOnExit(gate);
  *     gate.wait();
  *     // If we get here, both foo()s have finished.
  *     return 0;
@@ -484,6 +493,20 @@ private:
 #  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
+
+// Always try to move the argument, unless it's an lvalue reference.
+template <typename T, typename std::enable_if<!std::is_lvalue_reference<T>::value, int>::type = 0>
+static constexpr T&& move_or_ref(T& t) noexcept
+{
+	return std::move(t);
+}
+
+template <typename T, typename std::enable_if<std::is_lvalue_reference<T>::value, int>::type = 0>
+static constexpr T move_or_ref(T t) noexcept
+{
+	return t;
+}
+
 template <typename R, typename... Args>
 class TypedFiberN final : public TypedFiber<R, R (*)(Args...)> {
 	ZTH_CLASS_NEW_DELETE(TypedFiberN)
@@ -509,7 +532,18 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-		this->setFuture(this->function()(std::get<S>(m_args)...));
+#    ifdef ZTH_FUTURE_EXCEPTION
+		try {
+#    endif // ZTH_FUTURE_EXCEPTION
+			this->setFuture(this->function()(
+				move_or_ref<
+					typename std::tuple_element<S, std::tuple<Args...>>::type>(
+					std::get<S>(m_args))...));
+#    ifdef ZTH_FUTURE_EXCEPTION
+		} catch(...) {
+			this->setFuture(std::current_exception());
+		}
+#    endif // ZTH_FUTURE_EXCEPTION
 	}
 
 private:
@@ -541,8 +575,18 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-		this->function()(std::get<S>(m_args)...);
-		this->setFuture();
+#    ifdef ZTH_FUTURE_EXCEPTION
+		try {
+#    endif // ZTH_FUTURE_EXCEPTION
+			this->function()(move_or_ref<
+					 typename std::tuple_element<S, std::tuple<Args...>>::type>(
+				std::get<S>(m_args))...);
+			this->setFuture();
+#    ifdef ZTH_FUTURE_EXCEPTION
+		} catch(...) {
+			this->setFuture(std::current_exception());
+		}
+#    endif // ZTH_FUTURE_EXCEPTION
 	}
 
 private:
@@ -755,14 +799,14 @@ namespace fibered {}
 #  define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
 
 /*!
- * \brief Prepare every given function to become a fiber by #async.
+ * \brief Prepare every given function to become a fiber by #zth_async.
  * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
 #  define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
 
 /*!
- * \def async
+ * \def zth_async
  * \brief Run a function as a new fiber.
  *
  * The function must have passed through #zth_fiber() (or friends) first.
@@ -773,7 +817,7 @@ namespace fibered {}
  * zth_fiber(foo)
  *
  * int main_fiber(int argc, char** argv) {
- *     async foo(42);
+ *     zth_async foo(42);
  *     return 0;
  * }
  * \endcode
@@ -782,9 +826,6 @@ namespace fibered {}
  * \hideinitializer
  */
 #  define zth_async ::zth::fibered::
-#  ifndef ZTH_NO_ASYNC_KEYWORD
-#    define async zth_async
-#  endif
 
 /*!
  * \brief Run a function as a new fiber.

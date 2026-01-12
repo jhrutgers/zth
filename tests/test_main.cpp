@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	testing::InitGoogleTest(&argc, argv);
 	{
 		zth::Worker w;
-		test_main_future f = async test_main();
+		test_main_future f = zth_async test_main();
 		w.run();
 		res = f->value();
 	}

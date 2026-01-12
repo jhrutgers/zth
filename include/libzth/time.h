@@ -26,6 +26,10 @@
 #  include <inttypes.h>
 #  include <limits>
 
+#  if __cplusplus >= 201103L
+#    include <chrono>
+#  endif // C++11
+
 #  if defined(ZTH_OS_MAC) || defined(ZTH_OS_BAREMETAL)
 #    ifdef ZTH_CUSTOM_CLOCK_GETTIME
 extern "C" int clock_gettime(int clk_id, struct timespec* res);
@@ -179,6 +183,21 @@ public:
 
 		return TimeInterval((time_t)s_, (long)ns % 1000000000L);
 	}
+
+#  if __cplusplus >= 201103L
+	// cppcheck-suppress noExplicitConstructor
+	TimeInterval(std::chrono::nanoseconds ns)
+	{
+		*this = from_ns(ns.count());
+	}
+
+	operator std::chrono::nanoseconds() const
+	{
+		return std::chrono::nanoseconds(
+			(std::chrono::nanoseconds::rep)m_t.tv_sec * BILLION
+			+ (std::chrono::nanoseconds::rep)m_t.tv_nsec);
+	}
+#  endif // C++11
 
 private:
 	template <typename T>
@@ -523,6 +542,25 @@ ZTH_EXPORT inline TimeInterval operator"" _s(long double x)
 }
 #  endif // C++11
 
+#  if __cplusplus >= 201103L
+struct monotonic_clock {
+	using duration = std::chrono::nanoseconds;
+	using rep = duration::rep;
+	using period = duration::period;
+	using time_point = std::chrono::time_point<monotonic_clock>;
+	static constexpr bool is_steady = true;
+
+	static time_point now() noexcept
+	{
+		struct timespec ts;
+		int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &ts);
+		zth_assert(res == 0);
+		return time_point{
+			duration((rep)ts.tv_sec * TimeInterval::BILLION + (rep)ts.tv_nsec)};
+	}
+};
+#  endif // C++11
+
 /*!
  * \brief Convenient wrapper around \c struct \c timespec that contains an absolute timestamp.
  * \ingroup zth_api_cpp_time
@@ -683,6 +721,25 @@ public:
 	{
 		return m_t.tv_sec == 0 && m_t.tv_nsec == 0;
 	}
+
+#  if __cplusplus >= 201103L
+	// cppcheck-suppress noExplicitConstructor
+	template <typename Duration>
+	Timestamp(std::chrono::time_point<monotonic_clock, Duration> tp)
+	{
+		auto d = tp.time_since_epoch();
+		auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(d).count();
+		m_t.tv_sec = (time_t)(ns / TimeInterval::BILLION);
+		m_t.tv_nsec = (long)(ns % TimeInterval::BILLION);
+	}
+
+	operator std::chrono::time_point<monotonic_clock>() const
+	{
+		return std::chrono::time_point<monotonic_clock>{monotonic_clock::duration{
+			(monotonic_clock::rep)m_t.tv_sec * TimeInterval::BILLION
+			+ (monotonic_clock::rep)m_t.tv_nsec}};
+	}
+#  endif // C++11
 
 private:
 	struct timespec m_t;

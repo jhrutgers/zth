@@ -99,7 +99,7 @@ static void employer()
 					totalScanned += (size_t)scanned;
 
 					// Start job.
-					async job(work);
+					zth_async job(work);
 					continue;
 				}
 				// fall-through

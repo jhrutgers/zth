@@ -106,8 +106,8 @@ zth_fiber(stack)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	async scheduling();
-	async measure();
-	async stack();
+	zth_async scheduling();
+	zth_async measure();
+	zth_async stack();
 	return 0;
 }
