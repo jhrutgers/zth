@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+#
+# SPDX-License-Identifier: CC0-1.0
+
+name: macos
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: bootstrap
+        run: |
+          # Workaround for linker bug in XCode 14.0
+          sudo xcode-select --switch /Library/Developer/CommandLineTools
+          dist/macos/bootstrap.sh
+      - name: build
+        run: |
+          dist/macos/build.sh Debug test conf
+          cd dist/macos/build
+          cmake --build . --target 1_helloworld
+          examples/1_helloworld
