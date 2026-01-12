@@ -53,6 +53,9 @@ private:
 		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
 #  endif
 
+		zth_dbg(context, "[%s] sigsetjmp %p %d", zth::currentWorker().id_str(),
+			&context->m_env, (int)Config::ContextSignals);
+
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
 			zth_dbg(context, "[%s] longjmp", zth::currentWorker().id_str());
