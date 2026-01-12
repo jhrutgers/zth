@@ -26,13 +26,6 @@
 
 namespace zth {
 
-namespace impl {
-static struct {
-	Context* context;
-	sigjmp_buf origin;
-} context_trampoline_args;
-} // namespace impl
-
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
 class Context : public impl::ContextArch<Context> {
@@ -46,10 +39,29 @@ public:
 	{}
 
 private:
-	static void context_trampoline()
+	// It seems that in Apple's aarch64 makecontext() does not pass 64-bit pointer arguments.
+	// Wrap the arguments in a struct, and pass it via separate low/high 32-bit args.
+	struct context_trampoline_args {
+		sigjmp_buf origin;
+		Context* context;
+	};
+
+	static void context_trampoline(uint32_t args_high, uint32_t args_low) noexcept
 	{
-		Context* context = impl::context_trampoline_args.context;
-		sigjmp_buf& origin = impl::context_trampoline_args.origin;
+		context_trampoline_args* args = nullptr;
+		if(sizeof(void*) == 4) {
+			// NOLINTNEXTLINE
+			args = reinterpret_cast<context_trampoline_args*>(
+				(static_cast<uintptr_t>(args_low)));
+		} else {
+			// NOLINTNEXTLINE
+			args = reinterpret_cast<context_trampoline_args*>(
+				((static_cast<uintptr_t>(args_high) << 32)
+				 | (static_cast<uintptr_t>(args_low))));
+		}
+
+		// Copy argument to local stack.
+		Context* context = args->context;
 
 		// We got here via setcontext().
 		zth_dbg(context, "[%s] trampoline %p", zth::currentWorker().id_str(), context);
@@ -71,8 +83,10 @@ private:
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
 			zth_dbg(context, "[%s] longjmp", zth::currentWorker().id_str());
-			siglongjmp(origin, 1);
+			siglongjmp(args->origin, 1);
 		}
+
+		// args is no longer valid here.
 
 		zth_dbg(context, "[%s] entry", zth::currentWorker().id_str());
 
@@ -111,9 +125,13 @@ public:
 			this, stack_.p, stack_.p + stack_.size - 1U);
 
 		// Modify the function to call from this new context.
-		impl::context_trampoline_args.context = this;
-		sigjmp_buf& origin = impl::context_trampoline_args.origin;
-		makecontext(&uc, reinterpret_cast<void (*)(void)>(&context_trampoline), 0);
+		context_trampoline_args args = {};
+		args.context = this;
+
+		makecontext(
+			&uc, reinterpret_cast<void (*)(void)>(&context_trampoline), 2,
+			static_cast<uint32_t>((reinterpret_cast<uintptr_t>(&args)) >> 32),
+			static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&args)));
 
 #  ifdef ZTH_ENABLE_ASAN
 		void* fake_stack = nullptr;
@@ -123,7 +141,7 @@ public:
 		// switchcontext() is slow, we want to use sigsetjmp/siglongjmp instead.
 		// So, we initialize the sigjmp_buf from the just created context.
 		// After this initial setup, context_switch() is good to go.
-		if(sigsetjmp(origin, Config::ContextSignals) == 0) {
+		if(sigsetjmp(args.origin, Config::ContextSignals) == 0) {
 			// Here we go into the context for the first time.
 			zth_dbg(context, "[%s] Setting context for context %p",
 				zth::currentWorker().id_str(), this);
