@@ -4,11 +4,6 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-// This file is included by test_fiber98.cpp and test_fiber11.cpp.  The test
-// cases are the same, but the C++98-compatible zth::FiberType implementation
-// is enforced for testing purposes. They should behave the same, but the C++11
-// implementation is more efficient.
-
 #include <zth>
 
 #include <exception>
@@ -24,7 +19,7 @@ zth_fiber(fiber_d)
 
 TEST(Promise, d)
 {
-	zth::promise<int> p{new zth::Future<int>{}};
+	zth::promise<int> p;
 	auto f = p.get_future();
 	zth_async fiber_d(std::move(p));
 
@@ -40,7 +35,7 @@ zth_fiber(fiber_exception)
 
 TEST(Promise, exception)
 {
-	zth::promise<int> p{new zth::Future<int>{}};
+	zth::promise<int> p;
 	auto f = p.get_future();
 	zth_async fiber_exception(std::move(p));
 

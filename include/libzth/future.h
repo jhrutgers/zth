@@ -137,7 +137,9 @@ public:
 	using Future_type = zth::Future<value_type>;
 
 protected:
-	std_promise_base() noexcept = default;
+	std_promise_base()
+		: m_future{new Future_type{}}
+	{}
 
 	explicit std_promise_base(SharedPointer<Future_type> future) noexcept
 		: m_future{std::move(future)}
@@ -323,7 +325,7 @@ public:
 	using value_type = T;
 	using base = zth::impl::std_promise_base<T>;
 
-	promise() noexcept = default;
+	promise() = default;
 
 	// cppcheck-suppress noExplicitConstructor
 	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
@@ -337,7 +339,7 @@ public:
 	using value_type = T&;
 	using base = zth::impl::std_promise_base<T*>;
 
-	promise() noexcept = default;
+	promise() = default;
 
 	// cppcheck-suppress noExplicitConstructor
 	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
@@ -350,7 +352,7 @@ class promise<zth::type<void>> : public zth::impl::std_promise_base<void> {
 public:
 	using base = zth::impl::std_promise_base<void>;
 
-	promise() noexcept = default;
+	promise() = default;
 
 	// cppcheck-suppress noExplicitConstructor
 	promise(zth::SharedPointer<typename base::Future_type> future) noexcept
