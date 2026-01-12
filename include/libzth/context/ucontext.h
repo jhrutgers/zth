@@ -74,8 +74,6 @@ private:
 		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
 #  endif
 
-		volatile int dummy;
-
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
 			siglongjmp(args->origin, 1);
