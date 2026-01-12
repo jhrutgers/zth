@@ -565,8 +565,10 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	m_truncated = depth == maxDepth;
 #elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
+	zth_dbg(perf, "backtrace");
 	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
-	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+	zth_dbg(perf, "backtrace done");
+	//  NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_truncated = m_bt.size() == maxDepth;
 #endif
 
