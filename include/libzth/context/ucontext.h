@@ -26,6 +26,13 @@
 
 namespace zth {
 
+namespace impl {
+static struct {
+	Context* context;
+	sigjmp_buf origin;
+} context_trampoline_args;
+} // namespace impl
+
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations" // I know...
 class Context : public impl::ContextArch<Context> {
@@ -39,8 +46,11 @@ public:
 	{}
 
 private:
-	static void context_trampoline(Context* context, sigjmp_buf origin)
+	static void context_trampoline()
 	{
+		Context* context = impl::context_trampoline_args.context;
+		sigjmp_buf& origin = impl::context_trampoline_args.origin;
+
 		// We got here via setcontext().
 		zth_dbg(context, "[%s] trampoline %p", zth::currentWorker().id_str(), context);
 
@@ -101,10 +111,9 @@ public:
 			this, stack_.p, stack_.p + stack_.size - 1U);
 
 		// Modify the function to call from this new context.
-		sigjmp_buf origin;
-		makecontext(
-			&uc, reinterpret_cast<void (*)(void)>(&context_trampoline), 2, this,
-			origin);
+		impl::context_trampoline_args.context = this;
+		sigjmp_buf& origin = impl::context_trampoline_args.origin;
+		makecontext(&uc, reinterpret_cast<void (*)(void)>(&context_trampoline), 0);
 
 #  ifdef ZTH_ENABLE_ASAN
 		void* fake_stack = nullptr;
