@@ -39,7 +39,7 @@ public:
 	{}
 
 private:
-	// It seems that in Apple's aarch64 makecontext() does not pass 64-bit pointer arguments.
+	// It seems that in Apple's aarch64, makecontext() does not pass 64-bit pointer arguments.
 	// Wrap the arguments in a struct, and pass it via separate low/high 32-bit args.
 	struct context_trampoline_args {
 		sigjmp_buf origin;
@@ -64,7 +64,6 @@ private:
 		Context* context = args->context;
 
 		// We got here via setcontext().
-		zth_dbg(context, "[%s] trampoline %p", zth::currentWorker().id_str(), context);
 
 #  ifdef ZTH_ENABLE_ASAN
 		void const* oldstack = nullptr;
@@ -77,18 +76,11 @@ private:
 
 		volatile int dummy;
 
-		zth_dbg(context, "[%s] sigsetjmp %p %d %p", zth::currentWorker().id_str(),
-			&context->m_env, (int)Config::ContextSignals, &dummy);
-
 		// Save the current context, and return to create().
-		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0) {
-			zth_dbg(context, "[%s] longjmp", zth::currentWorker().id_str());
+		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
 			siglongjmp(args->origin, 1);
-		}
 
 		// args is no longer valid here.
-
-		zth_dbg(context, "[%s] entry", zth::currentWorker().id_str());
 
 		// Note that context_entry has the __sanitizer_finish_switch_fiber().
 		context_entry(context);
@@ -98,10 +90,7 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	int create() noexcept
 	{
-		zth_dbg(context, "[%s] Creating context %p", zth::currentWorker().id_str(), this);
 		int res = base::create();
-		zth_dbg(context, "[%s] Creating context %p = %d", zth::currentWorker().id_str(),
-			this, res);
 		if(unlikely(res))
 			return res;
 
@@ -111,8 +100,6 @@ public:
 
 		// Get current context, to inherit signals/masks.
 		ucontext_t uc;
-		zth_dbg(context, "[%s] Getting ucontext for context %p",
-			zth::currentWorker().id_str(), this);
 		if(getcontext(&uc))
 			return EINVAL;
 
@@ -121,8 +108,6 @@ public:
 		Stack const& stack_ = stackUsable();
 		uc.uc_stack.ss_sp = stack_.p;
 		uc.uc_stack.ss_size = stack_.size;
-		zth_dbg(context, "[%s] Stack for context %p: %p-%p", zth::currentWorker().id_str(),
-			this, stack_.p, stack_.p + stack_.size - 1U);
 
 		// Modify the function to call from this new context.
 		context_trampoline_args args = {};
@@ -143,13 +128,10 @@ public:
 		// After this initial setup, context_switch() is good to go.
 		if(sigsetjmp(args.origin, Config::ContextSignals) == 0) {
 			// Here we go into the context for the first time.
-			zth_dbg(context, "[%s] Setting context for context %p",
-				zth::currentWorker().id_str(), this);
 			setcontext(&uc);
 		}
 
 		// Got back from context_trampoline(). The context is ready now.
-		zth_dbg(context, "[%s] Created context %p", zth::currentWorker().id_str(), this);
 
 #  ifdef ZTH_ENABLE_ASAN
 		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
