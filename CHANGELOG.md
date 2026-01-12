@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `zth::Locked` RAII for scoped locks of `zth::Mutex`.
 - `std::chrono` conversions for `zth::Timestamp` and `zth::TimeInterval`.
 - `std::promise` and `std::future` specializations to wrap `zth::Future`.
+- `std::async` specialization for fibers.
 
 ### Changed
 

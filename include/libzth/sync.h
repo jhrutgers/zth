@@ -67,7 +67,8 @@ private:
 template <typename T>
 class SharedPointer {
 public:
-	constexpr14 explicit SharedPointer(T* object = nullptr) noexcept
+	// cppcheck-suppress noExplicitConstructor
+	constexpr14 SharedPointer(T* object = nullptr) noexcept
 		: m_object(object)
 	{
 		if(m_object)
@@ -148,6 +149,11 @@ public:
 		T* object = get();
 		m_object = nullptr;
 		return object;
+	}
+
+	operator bool() const noexcept
+	{
+		return get() != nullptr;
 	}
 
 private:
