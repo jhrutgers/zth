@@ -183,6 +183,10 @@ struct DefaultConfig {
 	/*! \brief Use named FSM guards/actions. */
 	static bool const NamedFsm = Debug || (EnableDebugPrint && Print_fsm > 0);
 
+	/*! \brief Use named objects. */
+	static bool const NamedObjects =
+		SupportDebugPrint || EnablePerfEvent || NamedSynchronizer || CheckTimesliceOverrun;
+
 	/*! \brief Enable ZeroMQ support. */
 	static bool const UseZMQ =
 #  ifdef ZTH_HAVE_LIBZMQ
