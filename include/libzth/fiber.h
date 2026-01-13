@@ -405,12 +405,13 @@ again:
 		return res;
 	}
 
-protected:
+private:
 	virtual void changedName(string const& name) override
 	{
 		zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
 	}
 
+protected:
 	void setState(State state, Timestamp const& t = Timestamp::now()) noexcept
 	{
 		if(m_state == state)

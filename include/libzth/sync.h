@@ -796,10 +796,10 @@ private:
 
 private:
 	alignas(type) char m_data[sizeof(type)];
+	bool m_valid;
 #  ifdef ZTH_FUTURE_EXCEPTION
 	std::exception_ptr m_exception;
 #  endif // ZTH_FUTURE_EXCEPTION
-	bool m_valid;
 };
 
 template <>
