@@ -709,78 +709,30 @@ inline cow_string str<UniqueIDBase const&>(UniqueIDBase const& value)
 	return cow_string(value.id_str());
 }
 
-/*!
- * \brief Keeps track of a process-wide unique ID within the type \p T.
- * \ingroup zth_api_cpp_util
- */
-template <typename T, bool ThreadSafe = Config::EnableThreads>
-class UniqueID : public UniqueIDBase {
-#  if __cplusplus < 201103L
-	ZTH_CLASS_NOCOPY(UniqueID)
-#  else
-public:
-	UniqueID(UniqueID const&) = delete;
-	UniqueID& operator=(UniqueID const&) = delete;
-
-	UniqueID(UniqueID&& u) noexcept
-		: m_id{}
-	{
-		*this = std::move(u);
-	}
-
-	UniqueID& operator=(UniqueID&& u) noexcept
-	{
-		m_id = u.m_id;
-		m_name = std::move(u.m_name);
-		m_id_str = std::move(u.m_id_str);
-
-		u.m_id = 0;
-
-		return *this;
-	}
-#  endif
-public:
-	static uint64_t getID() noexcept
-	{
-		return ThreadSafe ?
-#  if GCC_VERSION < 40802L
-				  __sync_add_and_fetch(&m_nextId, 1)
-#  else
-				  __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
-#  endif
-				  : ++m_nextId;
-	}
-
-	explicit UniqueID(string const& name)
-		: m_id(getID())
-		, m_name(name)
-	{}
-
-#  if __cplusplus >= 201103L
-	explicit UniqueID(string&& name)
-		: m_id(getID())
-		, m_name(std::move(name))
-	{}
-#  endif
-
-	explicit UniqueID(char const* name = nullptr)
-		: m_id(getID())
+// In case names are enabled.
+template <bool Named = Config::NamedObjects>
+class NamedUniqueID : public UniqueIDBase {
+protected:
+	explicit NamedUniqueID(char const* UNUSED_PAR(name) = nullptr)
 	{
 		if(name)
 			m_name = name;
 	}
 
-	virtual ~UniqueID() override is_default
+	explicit NamedUniqueID(string const& name)
+		: m_name(name)
+	{}
 
-	void const* normptr() const noexcept
-	{
-		return this;
-	}
+#  if __cplusplus >= 201103L
+	explicit NamedUniqueID(string&& name)
+		: m_name(std::move(name))
+	{}
+#  endif // C++11
 
-	__attribute__((pure)) uint64_t id() const noexcept
-	{
-		return m_id;
-	}
+	virtual uint64_t id_() const noexcept = 0;
+
+public:
+	virtual ~NamedUniqueID() override is_default
 
 	string const& name() const noexcept
 	{
@@ -825,7 +777,7 @@ public:
 #    else
 				       (unsigned int)getpid(),
 #    endif
-				       id());
+				       id_());
 #  endif
 			if(unlikely(m_id_str.empty()))
 				// Should not happen, but make sure the string is not empty.
@@ -839,9 +791,131 @@ private:
 	virtual void changedName(string const& UNUSED_PAR(name)) {}
 
 private:
-	uint64_t m_id;
 	string m_name;
 	string mutable m_id_str;
+};
+
+// In case names are disabled.
+template <>
+class NamedUniqueID<false> : public UniqueIDBase {
+protected:
+	explicit NamedUniqueID(string const& UNUSED_PAR(name)) {}
+	explicit NamedUniqueID(char const* UNUSED_PAR(name) = nullptr) {}
+
+	virtual uint64_t id_() const noexcept = 0;
+
+public:
+	virtual ~NamedUniqueID() override is_default
+	string const& name() const noexcept
+	{
+		static string const null;
+		return null;
+	}
+
+	void setName(string const& UNUSED_PAR(name))
+	{
+		changedName(this->name());
+	}
+
+	void setName(char const* UNUSED_PAR(name))
+	{
+		changedName(this->name());
+	}
+
+#  if __cplusplus >= 201103L
+	void setName(string&& UNUSED_PAR(name))
+	{
+		changedName(this->name());
+	}
+#  endif
+
+	virtual char const* id_str() const override
+	{
+		return name().c_str();
+	}
+
+private:
+	virtual void changedName(string const& UNUSED_PAR(name)) {}
+};
+
+/*!
+ * \brief Keeps track of a process-wide unique ID within the type \p T.
+ * \ingroup zth_api_cpp_util
+ */
+template <typename T, bool ThreadSafe = Config::EnableThreads>
+class UniqueID : public NamedUniqueID<> {
+#  if __cplusplus < 201103L
+	ZTH_CLASS_NOCOPY(UniqueID)
+#  else
+public:
+	typedef NamedUniqueID<> base;
+
+	UniqueID(UniqueID const&) = delete;
+	UniqueID& operator=(UniqueID const&) = delete;
+
+	UniqueID(UniqueID&& u) noexcept
+		: m_id{}
+	{
+		*this = std::move(u);
+	}
+
+	UniqueID& operator=(UniqueID&& u) noexcept
+	{
+		m_id = u.m_id;
+		u.m_id = 0;
+		base::operator=(std::move(u));
+		return *this;
+	}
+#  endif
+public:
+	static uint64_t getID() noexcept
+	{
+		return ThreadSafe ?
+#  if GCC_VERSION < 40802L
+				  __sync_add_and_fetch(&m_nextId, 1)
+#  else
+				  __atomic_add_fetch(&m_nextId, 1, __ATOMIC_RELAXED)
+#  endif
+				  : ++m_nextId;
+	}
+
+	explicit UniqueID(string const& name)
+		: base(name)
+		, m_id(getID())
+	{}
+
+#  if __cplusplus >= 201103L
+	explicit UniqueID(string&& name)
+		: base(std::move(name))
+		, m_id(getID())
+	{}
+#  endif
+
+	explicit UniqueID(char const* name = nullptr)
+		: base(name)
+		, m_id(getID())
+	{}
+
+	virtual ~UniqueID() override is_default
+
+	void const* normptr() const noexcept
+	{
+		return this;
+	}
+
+	__attribute__((pure)) uint64_t id() const noexcept
+	{
+		return m_id;
+	}
+
+protected:
+	virtual uint64_t id_() const noexcept final
+	{
+		return id();
+	}
+
+private:
+	uint64_t m_id;
 	// If allocating once every ns, it takes more than 500 years until we run out of
 	// identifiers.
 	static uint64_t m_nextId;
