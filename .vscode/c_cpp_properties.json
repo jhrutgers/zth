@@ -21,7 +21,7 @@
 			],
 			"compilerPath": "/usr/bin/g++",
 			"cStandard": "c17",
-			"cppStandard": "c++17",
+			"cppStandard": "c++20",
 			"intelliSenseMode": "linux-gcc-x64"
 		},
 		{
@@ -35,7 +35,7 @@
 			],
 			"compilerPath": "/usr/bin/x86_64-w64-mingw32-g++",
 			"cStandard": "c17",
-			"cppStandard": "c++17",
+			"cppStandard": "c++20",
 			"intelliSenseMode": "linux-gcc-x64"
 		},
 		{
@@ -49,7 +49,7 @@
 			],
 			"compilerPath": "/usr/bin/arm-none-eabi-g++",
 			"cStandard": "c17",
-			"cppStandard": "c++17",
+			"cppStandard": "c++20",
 			"intelliSenseMode": "gcc-arm"
 		},
 		{
@@ -62,7 +62,7 @@
 				"${env:defines}"
 			],
 			"cStandard": "c17",
-			"cppStandard": "c++17"
+			"cppStandard": "c++20"
 		},
 		{
 			"name": "Mac",
@@ -74,7 +74,7 @@
 			],
 			"compilerPath": "/usr/bin/clang",
 			"cStandard": "c17",
-			"cppStandard": "c++17",
+			"cppStandard": "c++20",
 			"intelliSenseMode": "macos-clang-x64"
 		}
 	],

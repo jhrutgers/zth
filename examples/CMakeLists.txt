@@ -18,6 +18,9 @@ function(add_example example)
 			-Wno-missing-field-initializers
 	)
 	target_link_libraries(${example} libzth)
+	zth_clang_tidy(
+		${example} -cppcoreguidelines-avoid-non-const-global-variables -cert-err58-cpp
+	)
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 		# Don't use the CRT's version which calls WinMain for a GUI, but use zth's weak
