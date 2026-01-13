@@ -13,7 +13,7 @@
 
 static void do_work(int amount)
 {
-	zth::Timestamp end = zth::Timestamp::now() + 1e-1f * (float)amount;
+	zth::Timestamp end = zth::Timestamp::now() + 1e-1F * (float)amount;
 	while(!end.hasPassed())
 		; // busy wait
 }

@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 {
 	int count = 10;
 	if(argc > 1)
-		count = atoi(argv[1]);
+		count = (int)strtol(argv[1], nullptr, 0);
 
 	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	srand48((long)time(nullptr));

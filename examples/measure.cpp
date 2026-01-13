@@ -29,9 +29,10 @@ void context2entry(void* /*unused*/)
 
 void testContextInit()
 {
-	int res = 0;
 	context1 = zth::currentFiber().context();
-	if((res = zth::context_create(context2, zth::ContextAttr(&context2entry))))
+
+	int res = zth::context_create(context2, zth::ContextAttr(&context2entry));
+	if(res)
 		zth::abort("Cannot create context2; %s", zth::err(res).c_str());
 }
 
