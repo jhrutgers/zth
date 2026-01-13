@@ -37,6 +37,7 @@ void server()
 		case -1:
 			zmq_close(responder);
 			return;
+		default:;
 		}
 
 		printf("Received %s\n", buffer);
@@ -90,12 +91,12 @@ int main_fiber(int argc, char** argv)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	if(sigaction(SIGINT, &sa, nullptr) == -1)
-		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
+		(void)fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 #endif
 
 	int messages = 10;
 	if(argc > 1) {
-		messages = atoi(argv[1]);
+		messages = (int)strtol(argv[1], nullptr, 0);
 		if(messages == 0)
 			messages = 1;
 	}

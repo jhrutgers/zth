@@ -310,24 +310,51 @@ if(ZTH_CLANG_TIDY)
 			endif()
 		endif()
 	endif()
-
-	if(CLANG_TIDY_EXE14)
-		message(STATUS "Enabled clang-tidy for libzth")
-
-		set(DO_CLANG_TIDY
-		    "${CLANG_TIDY_EXE14}" "--config-file=${ZTH_SOURCE_DIR}/.clang-tidy"
-		    "--extra-arg=-I${ZTH_SOURCE_DIR}/include"
-		    "--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
-		)
-
-		if(CMAKE_CXX_STANDARD)
-			set(DO_CLANG_TIDY "${DO_CLANG_TIDY}"
-					  "--extra-arg=-std=c++${CMAKE_CXX_STANDARD}"
-			)
-		endif()
-
-		set_target_properties(libzth PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
-	else()
-		set_target_properties(libzth PROPERTIES CXX_CLANG_TIDY "")
-	endif()
 endif()
+
+function(zth_clang_tidy target)
+	if(NOT ZTH_CLANG_TIDY)
+		return()
+	endif()
+	if(NOT CLANG_TIDY_EXE14)
+		return()
+	endif()
+
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.15")
+		message(VERBOSE "Enabled clang-tidy for ${target}")
+	endif()
+
+	set(DO_CLANG_TIDY
+	    "${CLANG_TIDY_EXE14}" "--config-file=${ZTH_SOURCE_DIR}/.clang-tidy"
+	    "--extra-arg=-I${ZTH_SOURCE_DIR}/include"
+	    "--extra-arg=-I${CMAKE_INSTALL_PREFIX}/include"
+	)
+
+	get_property(
+		cxx_std
+		TARGET ${target}
+		PROPERTY CXX_STANDARD
+	)
+
+	set(CHECKS "")
+
+	if(cxx_std)
+		set(DO_CLANG_TIDY "${DO_CLANG_TIDY}" "--extra-arg=-std=c++${cxx_std}")
+
+		if(cxx_std GREATER_EQUAL 20 AND cxx_std LESS 98)
+			# This check seems to give a lot of false positives in C++20 with
+			# coroutines.
+			list(APPEND CHECKS "-clang-analyzer-core.uninitialized.UndefReturn")
+		endif()
+	endif()
+
+	set(CHECKS_ARG "")
+	foreach(arg IN LISTS CHECKS ARGN)
+		set(CHECKS_ARG "${CHECKS_ARG},${arg}")
+	endforeach()
+
+	set(DO_CLANG_TIDY "${DO_CLANG_TIDY}" "--checks=${CHECKS_ARG}")
+	set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+endfunction()
+
+zth_clang_tidy(libzth)

@@ -71,7 +71,7 @@ static void off_()
 	if(!zth_config(EnableDebugPrint))
 		printf("\n\x1b[11A");
 
-	fflush(nullptr);
+	(void)fflush(nullptr);
 }
 
 static void red_()
@@ -92,7 +92,7 @@ static void red_()
 	if(!zth_config(EnableDebugPrint))
 		printf("\n\x1b[11A");
 
-	fflush(nullptr);
+	(void)fflush(nullptr);
 }
 
 static void amber_()
@@ -113,7 +113,7 @@ static void amber_()
 	if(!zth_config(EnableDebugPrint))
 		printf("\n\x1b[11A");
 
-	fflush(nullptr);
+	(void)fflush(nullptr);
 }
 
 static void green_()
@@ -134,7 +134,7 @@ static void green_()
 	if(!zth_config(EnableDebugPrint))
 		printf("\n\x1b[11A");
 
-	fflush(nullptr);
+	(void)fflush(nullptr);
 }
 
 // The functions above are actions to be executed when a transition is taken.
@@ -307,12 +307,12 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 {
 	// Print the compiled transitions to stdout.
 	fsm::transitions.dump();
-	fflush(stdout);
+	(void)fflush(stdout);
 
 	// Print the FSM in plantuml format to stderr. You may pass it through
 	// `plantuml -p fsm.png` to render it.
 	fsm::transitions.uml(stderr);
-	fflush(stderr);
+	(void)fflush(stderr);
 
 	// Construct the Fsm. It is not a valid FSM, until...
 	fsm::TrafficLight fsm;

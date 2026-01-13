@@ -344,7 +344,7 @@ if(CPPCHECK_CMD)
 	add_custom_target(
 		libzth-cppcheck
 		COMMAND
-			${CPPCHECK_CMD} --std=c++17 --language=c++ -D__cplusplus=201703L
+			${CPPCHECK_CMD} --std=c++20 --language=c++ -D__cplusplus=202002L
 			--enable=warning,style,information --force --inline-suppr --quiet
 			--suppressions-list=${CMAKE_CURRENT_SOURCE_DIR}/.cppcheck_suppr
 			--error-exitcode=1 -j 8 --library=gnu

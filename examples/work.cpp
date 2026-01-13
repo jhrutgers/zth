@@ -41,11 +41,11 @@ static void employer()
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	if(sigaction(SIGINT, &sa, nullptr) == -1)
-		fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
+		(void)fprintf(stderr, "sigaction() failed; %s", zth::err(errno).c_str());
 #endif
 
 	printf("Enter job lengths in 0.1 s units: ");
-	fflush(stdout);
+	(void)fflush(stdout);
 
 	char buf[128];
 	size_t len = 0;
@@ -67,10 +67,11 @@ static void employer()
 #if EAGAIN != EWOULDBLOCK
 			case EWOULDBLOCK:
 #endif
-				fprintf(stderr, "Unexpected non-blocking read\n");
+				(void)fprintf(stderr, "Unexpected non-blocking read\n");
 				return;
 			default:
-				fprintf(stderr, "Cannot read stdin; %s", zth::err(errno).c_str());
+				(void)fprintf(
+					stderr, "Cannot read stdin; %s", zth::err(errno).c_str());
 				return;
 			}
 		}
@@ -91,6 +92,7 @@ static void employer()
 			int work = 0;
 			int scanned = 0;
 
+			// NOLINTNEXTLINE(cert-err34-c)
 			switch(sscanf(s, "%d%n", &work, &scanned)) {
 			case 1:
 				if(totalScanned + (size_t)scanned < len) {
@@ -112,7 +114,9 @@ static void employer()
 			break;
 		}
 
-		if((len -= totalScanned))
+
+		len -= totalScanned;
+		if(len)
 			memmove(buf, &buf[totalScanned], len);
 
 		buf[len] = '\0';
