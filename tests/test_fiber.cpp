@@ -27,6 +27,8 @@ TEST(FiberTest, v)
 
 	fiber_v_future f = zth_async fiber_v();
 	f->wait();
+
+	zth::outOfWork();
 }
 
 static int fiber_i()
@@ -41,6 +43,8 @@ TEST(FiberTest, i)
 
 	fiber_i_future f = zth_async fiber_i();
 	EXPECT_EQ(f->value(), 1);
+
+	zth::outOfWork();
 }
 
 static int fiber_ii(int i)
@@ -56,6 +60,8 @@ TEST(FiberTest, ii)
 
 	fiber_ii_future f = zth_async fiber_ii(3);
 	EXPECT_EQ(f->value(), 4);
+
+	zth::outOfWork();
 }
 
 // cppcheck-suppress[constParameter,unmatchedSuppression]
@@ -72,6 +78,8 @@ TEST(FiberTest, iPi)
 
 	fiber_iPi_future f = zth_async fiber_iPi(&i);
 	EXPECT_EQ(f->value(), 5);
+
+	zth::outOfWork();
 }
 
 static int fiber_iRi(int& i)
@@ -88,6 +96,8 @@ TEST(FiberTest, iRi)
 	EXPECT_EQ(i, 6);
 
 	zth_async fiber_iRi(i);
+
+	zth::outOfWork();
 }
 
 static void fiber_viRd(int i, double& d)
@@ -105,6 +115,8 @@ TEST(FiberTest, viRd)
 	EXPECT_DOUBLE_EQ(d, 0.6);
 
 	zth_async fiber_viRd(i, d);
+
+	zth::outOfWork();
 }
 
 static double fiber_did(int i, double d)
@@ -121,6 +133,8 @@ TEST(FiberTest, did)
 	EXPECT_DOUBLE_EQ(f->value(), 0.7);
 
 	zth_async fiber_did(i, d);
+
+	zth::outOfWork();
 }
 
 static void fiber_viRdf(int i, double& d, float f)
@@ -139,6 +153,8 @@ TEST(FiberTest, viRdf)
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
 	zth_async fiber_viRdf(i, d, f);
+
+	zth::outOfWork();
 }
 
 static double fiber_didf(int i, double d, float f)
@@ -156,6 +172,8 @@ TEST(FiberTest, didf)
 	EXPECT_DOUBLE_EQ(r->value(), 1.8);
 
 	zth_async fiber_didf(i, d, f);
+
+	zth::outOfWork();
 }
 
 static void fiber_viRdfPl(int i, double& d, float f, long* l)
@@ -175,6 +193,8 @@ TEST(FiberTest, viRdfPl)
 	EXPECT_DOUBLE_EQ(d, 3.2);
 
 	zth_async fiber_viRdfPl(i, d, f, &l);
+
+	zth::outOfWork();
 }
 
 static double fiber_diRdfPl(int i, double& d, float f, long* l)
@@ -194,32 +214,40 @@ TEST(FiberTest, diRdfPl)
 	EXPECT_DOUBLE_EQ(d, 3.4);
 
 	zth_async fiber_diRdfPl(i, d, f, &l);
+
+	zth::outOfWork();
 }
 
 TEST(FiberTest, direct_v)
 {
 	using fiber_type = zth::fiber_type<decltype(&fiber_v)>;
 
-	fiber_type::factory factory = zth::fiber(fiber_v);
+	fiber_type::factory factory = zth::factory(fiber_v);
 	fiber_type::fiber fiber = factory();
 	fiber_type::future future = fiber;
 	fiber_type::future future2 = fiber.withFuture();
 	future->wait();
 	EXPECT_TRUE(future2->valid());
+
+	zth::outOfWork();
 }
 
 TEST(FiberTest, direct_ii)
 {
-	auto factory = zth::fiber(fiber_ii, "fiber_ii()");
+	auto factory = zth::factory(fiber_ii, "fiber_ii()");
 	auto future = factory(5).withFuture();
 	EXPECT_EQ(future->value(), 6);
+
+	zth::outOfWork();
 }
 
 TEST(FiberTest, direct_iPi)
 {
 	int i = 4;
-	auto f = zth::fiber(fiber_iPi)(&i).withFuture();
+	auto f = zth::fiber(fiber_iPi, &i).withFuture();
 	EXPECT_EQ(f->value(), 5);
+
+	zth::outOfWork();
 }
 
 TEST(FiberTest, direct_viRdf)
@@ -229,11 +257,13 @@ TEST(FiberTest, direct_viRdf)
 	float f = 2.0f;
 
 	auto future =
-		(zth::fiber(fiber_viRdf)(i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
+		(zth::fiber(fiber_viRdf, i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
 	future->wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
 	zth_async fiber_viRdf(i, d, f);
+
+	zth::outOfWork();
 }
 
 TEST(FiberTest, direct_diRdfPl)
@@ -242,7 +272,9 @@ TEST(FiberTest, direct_diRdfPl)
 	double d = 0.1;
 	float f = 2.0f;
 	long l = 1;
-	auto r = zth::fiber(fiber_diRdfPl, "fiber_diRdfPl")(i, d, f, &l).withFuture();
+	auto r = zth::factory(fiber_diRdfPl, "fiber_diRdfPl")(i, d, f, &l).withFuture();
 	EXPECT_DOUBLE_EQ(r->value(), 3.4);
 	EXPECT_DOUBLE_EQ(d, 3.4);
+
+	zth::outOfWork();
 }
