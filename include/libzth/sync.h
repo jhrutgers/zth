@@ -57,7 +57,13 @@ public:
 	{
 		zth_assert(m_count > 0);
 		if(--m_count == 0)
-			delete this;
+			cleanup();
+	}
+
+protected:
+	virtual void cleanup() noexcept
+	{
+		delete this;
 	}
 
 private:
@@ -82,7 +88,7 @@ public:
 			m_object->used();
 	}
 
-	virtual ~SharedPointer()
+	~SharedPointer() noexcept
 	{
 		reset();
 	}
@@ -102,7 +108,7 @@ public:
 		return *this;
 	}
 
-	SharedPointer& operator=(SharedPointer const& p)
+	SharedPointer& operator=(SharedPointer const& p) noexcept
 	{
 		reset(p.get());
 		return *this;
@@ -160,29 +166,29 @@ private:
 	T* m_object;
 };
 
-class Synchronizer : public RefCounted, public UniqueID<Synchronizer> {
-	ZTH_CLASS_NEW_DELETE(Synchronizer)
-public:
-	explicit Synchronizer(cow_string const& name = "Synchronizer")
-		: RefCounted()
-		, UniqueID(Config::NamedSynchronizer ? name.str() : string())
+class SynchronizerBase : public RefCounted, public UniqueID<SynchronizerBase> {
+	ZTH_CLASS_NEW_DELETE(SynchronizerBase)
+protected:
+	explicit SynchronizerBase(cow_string const& name = "Synchronizer")
+		: UniqueID(Config::NamedSynchronizer ? name.str() : string())
 	{}
 
 #  if __cplusplus >= 201103L
-	explicit Synchronizer(cow_string&& name)
-		: RefCounted()
-		, UniqueID(Config::NamedSynchronizer ? std::move(name).str() : string())
+	explicit SynchronizerBase(cow_string&& name)
+		: UniqueID(Config::NamedSynchronizer ? std::move(name).str() : string())
 	{}
 #  endif
 
-	virtual ~Synchronizer() override
+public:
+	virtual ~SynchronizerBase() override
 	{
 		zth_dbg(sync, "[%s] Destruct", id_str());
-		zth_assert(m_queue.empty());
 	}
 
 protected:
-	void block()
+	virtual List<Fiber>& queue(size_t q = 0) = 0;
+
+	void block(size_t q = 0)
 	{
 		Worker* w = nullptr;
 		Fiber* f = nullptr;
@@ -190,7 +196,7 @@ protected:
 
 		zth_dbg(sync, "[%s] Block %s", id_str(), f->id_str());
 		w->release(*f);
-		m_queue.push_back(*f);
+		queue(q).push_back(*f);
 		f->nap(Timestamp::null());
 		w->schedule();
 	}
@@ -199,40 +205,43 @@ protected:
 	 * \brief Unblock the specific fiber.
 	 * \return \c true if unblocked, \c false when not queued by this Synchronizer.
 	 */
-	bool unblock(Fiber& f) noexcept
+	bool unblock(Fiber& f, size_t q = 0) noexcept
 	{
-		if(!m_queue.contains(f))
+		auto& queue_ = queue(q);
+		if(!queue_.contains(f))
 			return false;
 
 		Worker* w = nullptr;
 		getContext(&w, nullptr);
 
 		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
-		m_queue.erase(f);
+		queue_.erase(f);
 		f.wakeup();
 		w->add(&f);
 		return true;
 	}
 
-	bool unblockFirst() noexcept
+	bool unblockFirst(size_t q = 0) noexcept
 	{
-		if(m_queue.empty())
+		auto& queue_ = queue(q);
+		if(queue_.empty())
 			return false;
 
 		Worker* w = nullptr;
 		getContext(&w, nullptr);
 
-		Fiber& f = m_queue.front();
+		Fiber& f = queue_.front();
 		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
-		m_queue.pop_front();
+		queue_.pop_front();
 		f.wakeup();
 		w->add(&f);
 		return true;
 	}
 
-	bool unblockAll() noexcept
+	bool unblockAll(size_t q = 0) noexcept
 	{
-		if(m_queue.empty())
+		auto& queue_ = queue(q);
+		if(queue_.empty())
 			return false;
 
 		Worker* w = nullptr;
@@ -240,9 +249,9 @@ protected:
 
 		zth_dbg(sync, "[%s] Unblock all", id_str());
 
-		while(!m_queue.empty()) {
-			Fiber& f = m_queue.front();
-			m_queue.pop_front();
+		while(!queue_.empty()) {
+			Fiber& f = queue_.front();
+			queue_.pop_front();
 			f.wakeup();
 			w->add(&f);
 		}
@@ -254,9 +263,11 @@ protected:
 	public:
 		typedef TimedWaitable base;
 		AlarmClock(
-			Synchronizer& synchronizer, Fiber& fiber, Timestamp const& timeout) noexcept
+			SynchronizerBase& synchronizer, size_t q, Fiber& fiber,
+			Timestamp const& timeout) noexcept
 			: base(timeout)
 			, m_synchronizer(synchronizer)
+			, m_q(q)
 			, m_fiber(fiber)
 			, m_rang()
 		{}
@@ -270,7 +281,7 @@ protected:
 
 			zth_dbg(sync, "[%s] %s timed out", m_synchronizer.id_str(),
 				m_fiber.id_str());
-			m_rang = m_synchronizer.unblock(m_fiber);
+			m_rang = m_synchronizer.unblock(m_fiber, m_q);
 			return true;
 		}
 
@@ -280,7 +291,8 @@ protected:
 		}
 
 	private:
-		Synchronizer& m_synchronizer;
+		SynchronizerBase& m_synchronizer;
+		size_t m_q;
 		Fiber& m_fiber;
 		bool m_rang;
 	};
@@ -291,26 +303,27 @@ protected:
 	 * \brief Block, with timeout.
 	 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 	 */
-	bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now())
+	bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
 	{
 		if(timeout <= now)
 			// Immediate timeout.
 			return true;
 
-		return block_(timeout, now);
+		return block_(timeout, now, q);
 	}
 
 	/*!
 	 * \brief Block, with timeout.
 	 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 	 */
-	bool block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now())
+	bool
+	block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
 	{
 		if(timeout.isNegative() || timeout.isNull())
 			// Immediate timeout.
 			return true;
 
-		return block_(now + timeout, now);
+		return block_(now + timeout, now, q);
 	}
 
 private:
@@ -318,7 +331,7 @@ private:
 	 * \brief Block, with timeout.
 	 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 	 */
-	bool block_(Timestamp const& timeout, Timestamp const& now)
+	bool block_(Timestamp const& timeout, Timestamp const& now, size_t q = 0)
 	{
 		Worker* w;
 		Fiber* f;
@@ -326,26 +339,56 @@ private:
 
 		zth_dbg(sync, "[%s] Block %s with timeout", id_str(), f->id_str());
 		w->release(*f);
-		m_queue.push_back(*f);
+		queue(q).push_back(*f);
 		f->nap(Timestamp::null());
 
-		AlarmClock a(*this, *f, timeout);
+		AlarmClock a(*this, q, *f, timeout);
 		w->waiter().scheduleTask(a);
 		w->schedule(nullptr, now);
 
 		w->waiter().unscheduleTask(a);
 		return !a.rang();
 	}
+};
+
+template <size_t Size = 1>
+class Synchronizer : public SynchronizerBase {
+	ZTH_CLASS_NEW_DELETE(Synchronizer)
+public:
+	Synchronizer() is_default
+
+	explicit Synchronizer(cow_string const& name)
+		: SynchronizerBase(name)
+	{}
+
+#  if __cplusplus >= 201103L
+	explicit Synchronizer(cow_string&& name)
+		: SynchronizerBase(std::move(name))
+	{}
+#  endif // C++11
+
+	virtual ~Synchronizer() noexcept override
+	{
+		for(size_t i = 0; i < Size; i++)
+			zth_assert(m_queue[i].empty());
+	}
+
+protected:
+	List<Fiber>& queue(size_t q = 0) final
+	{
+		zth_assert(q < Size);
+		return m_queue[q];
+	}
 
 private:
-	List<Fiber> m_queue;
+	List<Fiber> m_queue[Size];
 };
 
 /*!
  * \brief Fiber-aware mutex.
  * \ingroup zth_api_cpp_sync
  */
-class Mutex : public Synchronizer {
+class Mutex : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Mutex)
 public:
 	explicit Mutex(cow_string const& name = "Mutex")
@@ -374,6 +417,17 @@ public:
 	{
 		if(m_locked)
 			return false;
+		m_locked = true;
+		zth_dbg(sync, "[%s] Locked", id_str());
+		return true;
+	}
+
+	bool trylock(Timestamp const& timeout)
+	{
+		while(unlikely(m_locked))
+			if(!block(timeout))
+				return false;
+
 		m_locked = true;
 		zth_dbg(sync, "[%s] Locked", id_str());
 		return true;
@@ -443,7 +497,7 @@ private:
  * \brief Fiber-aware semaphore.
  * \ingroup zth_api_cpp_sync
  */
-class Semaphore : public Synchronizer {
+class Semaphore : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Semaphore)
 public:
 	explicit Semaphore(size_t init = 0, cow_string const& name = "Semaphore")
@@ -509,7 +563,7 @@ private:
  * \brief Fiber-aware signal.
  * \ingroup zth_api_cpp_sync
  */
-class Signal : public Synchronizer {
+class Signal : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Signal)
 public:
 	explicit Signal(cow_string const& name = "Signal")
@@ -559,7 +613,7 @@ public:
 
 	bool wait(TimeInterval const& timeout, Timestamp const& now = Timestamp::now())
 	{
-		return wait(now + timeout);
+		return wait(now + timeout, now);
 	}
 
 	void signal(bool queue = true, bool queueEveryTime = false) noexcept
@@ -590,54 +644,320 @@ private:
 	int m_signalled;
 };
 
-/*!
- * \brief Fiber-aware future.
- * \ingroup zth_api_cpp_sync
- */
-template <typename T = void>
-class Future : public Synchronizer {
-	ZTH_CLASS_NEW_DELETE(Future)
+template <typename T>
+class Optional {
+	ZTH_CLASS_NEW_DELETE(Optional)
 public:
 	typedef T type;
 
+	// cppcheck-suppress[uninitMemberVar,noExplicitConstructor]
+	Optional()
+		: m_valid()
+	{
+		init();
+	}
+
+	~Optional() noexcept
+	{
+		deinit();
+	}
+
+	bool valid() const noexcept
+	{
+		return m_valid
+#  ifdef ZTH_FUTURE_EXCEPTION
+		       || m_exception
+#  endif // ZTH_FUTURE_EXCEPTION
+			;
+	}
+
+	operator bool() const noexcept
+	{
+		return valid();
+	}
+
+	void reset() noexcept
+	{
+		unuse();
+	}
+
+	// cppcheck-suppress[uninitMemberVar,noExplicitConstructor]
+	Optional(type const& value)
+		: m_valid()
+	{
+		init();
+		set(value);
+	}
+
+	void set(type const& value = type()) noexcept
+	{
+		unuse();
+		use();
+		new(m_data) type(value);
+		m_valid = true;
+	}
+
+	Optional& operator=(type const& value) noexcept
+	{
+		set(value);
+		return *this;
+	}
+
+#  if __cplusplus >= 201103L
+	// cppcheck-suppress[uninitMemberVar,noExplicitConstructor]
+	Optional(type&& value)
+		: m_valid{true}
+	{
+		use();
+		new(m_data) type{std::move(value)};
+	}
+
+	void set(type&& value) noexcept
+	{
+		unuse();
+		use();
+		new(m_data) type{std::move(value)};
+		m_valid = true;
+	}
+
+	Optional& operator=(type&& value) noexcept
+	{
+		set(std::move(value));
+		return *this;
+	}
+#  endif // C++11
+
+#  ifdef ZTH_FUTURE_EXCEPTION
 	// cppcheck-suppress uninitMemberVar
-	explicit Future(cow_string const& name = "Future")
-		: Synchronizer(name)
-		, m_valid()
+	Optional(std::exception_ptr exc)
+		: m_valid()
+		, m_exception(exc)
+	{
+		init();
+	}
+
+	void set(std::exception_ptr exception) noexcept
+	{
+		unuse();
+		m_exception = std::move(exception);
+	}
+
+	Optional& operator=(std::exception_ptr value) noexcept
+	{
+		set(value);
+		return *this;
+	}
+
+	type& value() LREF_QUALIFIED
+	{
+		zth_assert(valid());
+
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+
+		void* p = m_data;
+		return *static_cast<type*>(p);
+	}
+
+	type const& value() const LREF_QUALIFIED
+	{
+		zth_assert(valid());
+
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+
+		void const* p = m_data;
+		return *static_cast<type const*>(p);
+	}
+
+	std::exception_ptr exception() const noexcept
+	{
+		return m_exception;
+	}
+
+#    if __cplusplus >= 201103L
+	type value() &&
+	{
+		zth_assert(valid());
+
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+
+		void* p = m_data;
+		return std::move(*static_cast<type*>(p));
+	}
+#    endif // C++11
+#  else	   // !ZTH_FUTURE_EXCEPTION
+	type& value() noexcept LREF_QUALIFIED
+	{
+		zth_assert(valid());
+
+		void* p = m_data;
+		return *static_cast<type*>(p);
+	}
+
+	type const& value() const noexcept LREF_QUALIFIED
+	{
+		zth_assert(valid());
+
+		void const* p = m_data;
+		return *static_cast<type const*>(p);
+	}
+
+#    if __cplusplus >= 201103L
+	type value() noexcept&&
+	{
+		zth_assert(valid());
+
+		void* p = m_data;
+		return std::move(*static_cast<type*>(p));
+	}
+#    endif // C++11
+#  endif   // !ZTH_FUTURE_EXCEPTION
+
+private:
+	void init() noexcept
 	{
 #  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
 #  endif
 	}
 
-#  if __cplusplus >= 201103L
-	// cppcheck-suppress uninitMemberVar
-	explicit Future(cow_string&& name)
-		: Synchronizer(std::move(name))
-		, m_valid()
+	void use()
 	{
-#    ifdef ZTH_USE_VALGRIND
-		VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
-#    endif
-	}
-#  endif
-
-	virtual ~Future() override
-	{
-		if(valid()
-#  ifdef ZTH_FUTURE_EXCEPTION
-		   && !m_exception
-#  endif // ZTH_FUTURE_EXCEPTION
-		)
-			value().~type();
 #  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
 #  endif
 	}
 
+	void unuse()
+	{
+#  ifdef ZTH_FUTURE_EXCEPTION
+		if(m_exception)
+			m_exception = nullptr;
+#  endif // ZTH_FUTURE_EXCEPTION
+
+		if(m_valid) {
+			value().~type();
+			m_valid = false;
+#  ifdef ZTH_USE_VALGRIND
+			VALGRIND_MAKE_MEM_NOACCESS(m_data, sizeof(m_data));
+#  endif
+		}
+	}
+
+	void deinit()
+	{
+		if(m_valid) {
+			value().~type();
+#  ifdef ZTH_USE_VALGRIND
+			VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
+#  endif
+		}
+	}
+
+private:
+	alignas(type) char m_data[sizeof(type)];
+	bool m_valid;
+#  ifdef ZTH_FUTURE_EXCEPTION
+	std::exception_ptr m_exception;
+#  endif // ZTH_FUTURE_EXCEPTION
+};
+
+template <>
+class Optional<void> {
+	ZTH_CLASS_NEW_DELETE(Optional)
+public:
+	typedef void type;
+
+	Optional(bool set = false)
+		: m_set(set)
+	{}
+
 	bool valid() const noexcept
 	{
-		return m_valid;
+		return m_set
+#  ifdef ZTH_FUTURE_EXCEPTION
+		       || m_exception
+#  endif // ZTH_FUTURE_EXCEPTION
+			;
+	}
+
+	void reset()
+	{
+		m_set = false;
+#  ifdef ZTH_FUTURE_EXCEPTION
+		m_exception = nullptr;
+#  endif // ZTH_FUTURE_EXCEPTION
+	}
+
+	void set() noexcept
+	{
+		m_set = true;
+	}
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+	Optional(std::exception_ptr exc)
+		: m_exception(exc)
+		, m_set()
+	{}
+
+	void set(std::exception_ptr exception) noexcept
+	{
+		m_exception = std::move(exception);
+	}
+
+	void value() const
+	{
+		zth_assert(valid());
+
+		if(m_exception)
+			std::rethrow_exception(m_exception);
+	}
+
+	std::exception_ptr exception() const noexcept
+	{
+		return m_exception;
+	}
+#  else	 // !ZTH_FUTURE_EXCEPTION
+	void value() noexcept
+	{
+		zth_assert(valid());
+	}
+#  endif // !ZTH_FUTURE_EXCEPTION
+
+private:
+#  ifdef ZTH_FUTURE_EXCEPTION
+	std::exception_ptr m_exception;
+#  endif // ZTH_FUTURE_EXCEPTION
+	bool m_set;
+};
+
+/*!
+ * \brief Fiber-aware future.
+ * \ingroup zth_api_cpp_sync
+ */
+template <typename T = void>
+class Future : public Synchronizer<> {
+	ZTH_CLASS_NEW_DELETE(Future)
+public:
+	typedef T type;
+
+	explicit Future(cow_string const& name = "Future")
+		: Synchronizer(name)
+	{}
+
+#  if __cplusplus >= 201103L
+	explicit Future(cow_string&& name)
+		: Synchronizer{std::move(name)}
+	{}
+#  endif
+
+	virtual ~Future() noexcept override is_default
+
+	bool valid() const noexcept
+	{
+		return m_value.valid();
 	}
 
 	operator bool() const noexcept
@@ -651,21 +971,10 @@ public:
 			block();
 	}
 
-	void set()
+	void set(type const& value = type())
 	{
-		if(!set_prepare())
-			return;
-
-		new(m_data) type();
-		set_finalize();
-	}
-
-	void set(type const& value)
-	{
-		if(!set_prepare())
-			return;
-
-		new(m_data) type(value);
+		set_prepare();
+		m_value.set(value);
 		set_finalize();
 	}
 
@@ -678,10 +987,8 @@ public:
 #  if __cplusplus >= 201103L
 	void set(type&& value)
 	{
-		if(!set_prepare())
-			return;
-
-		new(m_data) type(std::move(value));
+		set_prepare();
+		m_value.set(std::move(value));
 		set_finalize();
 	}
 
@@ -695,10 +1002,8 @@ public:
 #  ifdef ZTH_FUTURE_EXCEPTION
 	void set(std::exception_ptr exception)
 	{
-		if(!set_prepare())
-			return;
-
-		m_exception = std::move(exception);
+		set_prepare();
+		m_value.set(std::move(exception));
 		set_finalize();
 	}
 
@@ -710,48 +1015,27 @@ public:
 
 	std::exception_ptr exception() const
 	{
-		return m_exception;
+		return m_value.exception();
 	}
 #  endif // ZTH_FUTURE_EXCEPTION
 
 	type& value() LREF_QUALIFIED
 	{
 		wait();
-
-#  ifdef ZTH_FUTURE_EXCEPTION
-		if(m_exception)
-			std::rethrow_exception(m_exception);
-#  endif // ZTH_FUTURE_EXCEPTION
-
-		void* p = m_data;
-		return *static_cast<type*>(p);
+		return m_value.value();
 	}
 
 	type const& value() const LREF_QUALIFIED
 	{
 		wait();
-
-#  ifdef ZTH_FUTURE_EXCEPTION
-		if(m_exception)
-			std::rethrow_exception(m_exception);
-#  endif // ZTH_FUTURE_EXCEPTION
-
-		void const* p = m_data;
-		return *static_cast<type const*>(p);
+		return m_value.value();
 	}
 
 #  if __cplusplus >= 201103L
 	type value() &&
 	{
 		wait();
-
-#    ifdef ZTH_FUTURE_EXCEPTION
-		if(m_exception)
-			std::rethrow_exception(m_exception);
-#    endif // ZTH_FUTURE_EXCEPTION
-
-		void* p = m_data;
-		return std::move(*static_cast<type*>(p));
+		return m_value.value();
 	}
 #  endif
 
@@ -776,48 +1060,35 @@ public:
 	}
 
 private:
-	bool set_prepare() noexcept
+	void set_prepare() noexcept
 	{
 		zth_assert(!valid());
-		if(valid())
-			return false;
-#  ifdef ZTH_USE_VALGRIND
-		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
-#  endif
-		return true;
 	}
 
 	void set_finalize() noexcept
 	{
-		m_valid = true;
 		zth_dbg(sync, "[%s] Set", id_str());
 		unblockAll();
 	}
 
 private:
-	alignas(type) char m_data[sizeof(type)];
-	bool m_valid;
-#  ifdef ZTH_FUTURE_EXCEPTION
-	std::exception_ptr m_exception;
-#  endif // ZTH_FUTURE_EXCEPTION
+	Optional<type> m_value;
 };
 
 template <>
 // cppcheck-suppress noConstructor
-class Future<void> : public Synchronizer {
+class Future<void> : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Future)
 public:
 	typedef void type;
 
 	explicit Future(cow_string const& name = "Future")
 		: Synchronizer(name)
-		, m_valid()
 	{}
 
 #  if __cplusplus >= 201103L
 	explicit Future(cow_string&& name)
 		: Synchronizer(std::move(name))
-		, m_valid()
 	{}
 #  endif
 
@@ -825,7 +1096,7 @@ public:
 
 	bool valid() const noexcept
 	{
-		return m_valid;
+		return m_value.valid();
 	}
 
 	operator bool() const noexcept
@@ -841,20 +1112,17 @@ public:
 
 	void set() noexcept
 	{
-		zth_assert(!valid());
-		if(valid())
-			return;
-
-		m_valid = true;
-		zth_dbg(sync, "[%s] Set", id_str());
-		unblockAll();
+		set_prepare();
+		m_value.set();
+		set_finalize();
 	}
 
 #  ifdef ZTH_FUTURE_EXCEPTION
 	void set(std::exception_ptr exception)
 	{
-		set();
-		m_exception = std::move(exception);
+		set_prepare();
+		m_value.set(std::move(exception));
+		set_finalize();
 	}
 
 	Future& operator=(std::exception_ptr value)
@@ -865,22 +1133,171 @@ public:
 
 	std::exception_ptr exception() const
 	{
-		return m_exception;
+		return m_value.exception();
 	}
 #  endif // ZTH_FUTURE_EXCEPTION
 
 private:
+	void set_prepare() noexcept
+	{
+		zth_assert(!valid());
+	}
+
+	void set_finalize() noexcept
+	{
+		zth_dbg(sync, "[%s] Set", id_str());
+		unblockAll();
+	}
+
+private:
+	Optional<void> m_value;
+};
+
+/*!
+ * \brief Fiber-aware mailbox.
+ * \ingroup zth_api_cpp_sync
+ */
+template <typename T>
+class Mailbox : public Synchronizer<2> {
+	ZTH_CLASS_NEW_DELETE(Mailbox)
+protected:
+	enum { Queue_Put = 0, Queue_Take = 1 };
+
+public:
+	typedef T type;
+
+	explicit Mailbox(cow_string const& name = "Mailbox")
+		: Synchronizer(name)
+	{}
+
+#  if __cplusplus >= 201103L
+	explicit Mailbox(cow_string&& name)
+		: Synchronizer{std::move(name)}
+	{}
+#  endif // C++11
+
+	virtual ~Mailbox() noexcept override is_default
+
+	bool valid() const noexcept
+	{
+		return m_value.valid();
+	}
+
+	operator bool() const noexcept
+	{
+		return valid();
+	}
+
+	void wait()
+	{
+		if(!valid())
+			block(Queue_Take);
+	}
+
+	void wait_empty()
+	{
+		if(valid())
+			block(Queue_Put);
+	}
+
+	void put(type const& value)
+	{
+		put_prepare();
+		m_value.set(value);
+		put_finalize();
+	}
+
+	Mailbox& operator=(type const& value)
+	{
+		put(value);
+		return *this;
+	}
+
+#  if __cplusplus >= 201103L
+	void put(type&& value)
+	{
+		put_prepare();
+		m_value.set(std::move(value));
+		put_finalize();
+	}
+
+	Mailbox& operator=(type&& value)
+	{
+		put(std::move(value));
+		return *this;
+	}
+#  endif
+
 #  ifdef ZTH_FUTURE_EXCEPTION
-	std::exception_ptr m_exception;
+	void put(std::exception_ptr exception)
+	{
+		put_prepare();
+		m_value.set(std::move(exception));
+		put_finalize();
+	}
+
+	Mailbox& operator=(std::exception_ptr value)
+	{
+		put(std::move(value));
+		return *this;
+	}
+
+	std::exception_ptr exception() const
+	{
+		return m_value.exception();
+	}
 #  endif // ZTH_FUTURE_EXCEPTION
-	bool m_valid;
+
+	type take()
+	{
+		take_prepare();
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+		std::exception_ptr exc = m_value.exception();
+		if(exc) {
+			take_finalize();
+			std::rethrow_exception(exc);
+		}
+#  endif // ZTH_FUTURE_EXCEPTION
+
+		type v = m_value.value();
+		m_value.reset();
+		take_finalize();
+		return v;
+	}
+
+private:
+	void put_prepare()
+	{
+		wait_empty();
+	}
+
+	void put_finalize() noexcept
+	{
+		zth_dbg(sync, "[%s] Put", id_str());
+		unblockFirst(Queue_Take);
+	}
+
+	void take_prepare()
+	{
+		wait();
+	}
+
+	void take_finalize() noexcept
+	{
+		zth_dbg(sync, "[%s] Take", id_str());
+		unblockFirst(Queue_Put);
+	}
+
+private:
+	Optional<type> m_value;
 };
 
 /*!
  * \brief Fiber-aware barrier/gate.
  * \ingroup zth_api_cpp_sync
  */
-class Gate : public Synchronizer {
+class Gate : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Gate)
 public:
 	explicit Gate(size_t count, cow_string const& name = "Gate")
