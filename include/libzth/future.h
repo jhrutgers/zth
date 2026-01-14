@@ -391,7 +391,7 @@ template <typename Func, typename... Args>
 zth::future<zth::impl::invoke_result<Func, Args...>>
 async(zth::launch policy, Func&& f, Args&&... args)
 {
-	auto& fib = zth::fiber(f)(std::forward<Args>(args)...);
+	auto& fib = zth::fiber(std::forward<Func>(f), std::forward<Args>(args)...);
 	switch(policy) {
 	case zth::launch::detached:
 		return {};

@@ -53,4 +53,7 @@ TEST(Future, async)
 	auto future2 = std::async(zth::launch::detached, fiber_async);
 	EXPECT_EQ(future2.valid(), false);
 	EXPECT_THROW(future2.get(), std::future_error);
+
+	auto future3 = std::async(zth::launch::awaitable, []() { return 3; });
+	EXPECT_EQ(future3.get(), 3);
 }
