@@ -174,10 +174,6 @@ size_t context_stack_usage(Context* context) noexcept
  */
 void context_entry(zth::Context* context) noexcept
 {
-#ifdef ZTH_ENABLE_ASAN
-	__sanitizer_finish_switch_fiber(nullptr, nullptr, nullptr);
-#endif
-
 	zth_assert(context);
 
 	// Go execute the fiber.
