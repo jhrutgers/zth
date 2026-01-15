@@ -48,6 +48,12 @@ private:
 
 	static void context_trampoline(uint32_t args_high, uint32_t args_low) noexcept
 	{
+#  ifdef ZTH_ENABLE_ASAN
+		void const* oldstack = nullptr;
+		size_t oldsize = 0;
+		__sanitizer_finish_switch_fiber(nullptr, &oldstack, &oldsize);
+#  endif
+
 		context_trampoline_args* args = nullptr;
 		if(sizeof(void*) == 4) {
 			// NOLINTNEXTLINE
@@ -66,21 +72,20 @@ private:
 		// We got here via setcontext().
 
 #  ifdef ZTH_ENABLE_ASAN
-		void const* oldstack = nullptr;
-		size_t oldsize = 0;
-		__sanitizer_finish_switch_fiber(nullptr, &oldstack, &oldsize);
-
 		// We are jumping back.
-		__sanitizer_start_switch_fiber(nullptr, oldstack, oldsize);
+		void* fake_stack = nullptr;
+		__sanitizer_start_switch_fiber(&fake_stack, oldstack, oldsize);
 #  endif
 
 		// Save the current context, and return to create().
 		if(sigsetjmp(context->m_env, Config::ContextSignals) == 0)
 			siglongjmp(args->origin, 1);
 
-		// args is no longer valid here.
+#  ifdef ZTH_ENABLE_ASAN
+		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
+#  endif
 
-		// Note that context_entry has the __sanitizer_finish_switch_fiber().
+		// args is no longer valid here.
 		context_entry(context);
 	}
 
