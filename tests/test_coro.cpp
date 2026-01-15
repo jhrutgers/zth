@@ -55,6 +55,17 @@ struct task {
 		return {true, p->get_future().value()};
 	}
 
+	T run()
+	{
+		while(true) {
+			auto res = resume();
+			if(res.done)
+				return res.value;
+
+			zth::outOfWork();
+		}
+	}
+
 private:
 	zth::SharedPointer<promise_type> m_promise;
 };
@@ -151,10 +162,39 @@ private:
 } // namespace coro
 } // namespace zth
 
-struct S {
+template <typename T>
+struct AwaitableFuture {
+	// NOLINTNEXTLINE
+	zth::Future<T>& future;
+
+	// NOLINTNEXTLINE
+	AwaitableFuture(zth::Future<T>& f)
+		: future{f}
+	{}
+
 	auto operator co_await() const noexcept
 	{
-		printf("co_await S\n");
+		printf("co_await AF\n");
+		return *this;
+	}
+
+	bool await_ready() const noexcept
+	{
+		printf("await_ready\n");
+		return future.valid();
+	}
+
+	void await_suspend(std::coroutine_handle<> h) noexcept
+	{
+		(void)h;
+		printf("await_suspend\n");
+		future.wait();
+	}
+
+	T await_resume() const
+	{
+		printf("await_resume\n");
+		return future.value();
 	}
 };
 
@@ -166,13 +206,22 @@ void foo()
 
 TEST(Coro, Coro)
 {
-	auto coro = []() -> zth::coro::task<int> {
+	zth::Future<int> f;
+	AwaitableFuture<int> af{f};
+
+	zth::fiber([&]() { f = 1; });
+
+	// NOLINTNEXTLINE
+	auto coro = [&]() -> zth::coro::task<int> {
 		int i = 10;
 		printf("In coroutine, %p\n", (void*)&i);
 		foo();
+		printf("Before co_await\n");
+		auto x = co_await af;
+		printf("After co_await; %d\n", x);
 		co_return 42;
 	}();
 
-	auto result = coro.resume().value;
+	auto result = coro.run();
 	EXPECT_EQ(result, 42);
 }
