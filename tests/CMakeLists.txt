@@ -27,8 +27,9 @@ function(zth_config_test TEST_LIST)
 	)
 endfunction()
 
-if((CMAKE_CROSSCOMPILING AND NOT MINGW) OR (CMAKE_CXX_STANDARD LESS 17 OR CMAKE_CXX_STANDARD
-									  GREATER_EQUAL 98)
+if((CMAKE_CROSSCOMPILING AND NOT MINGW)
+   OR (CMAKE_CXX_STANDARD LESS 17 OR CMAKE_CXX_STANDARD GREATER_EQUAL 98)
+   OR NOT ("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 )
 	set(ZTH_USE_GTEST_DEFAULT OFF)
 else()
@@ -38,8 +39,10 @@ endif()
 option(ZTH_USE_GTEST "Use googletest" ${ZTH_USE_GTEST_DEFAULT})
 
 if(ZTH_USE_GTEST)
-	set(CMAKE_CXX_STANDARD 17)
-	set(CMAKE_CXX_STANDARD_REQUIRED ON)
+	if(NOT CMAKE_CXX_STANDARD)
+		set(CMAKE_CXX_STANDARD 17)
+		set(CMAKE_CXX_STANDARD_REQUIRED ON)
+	endif()
 
 	include(FetchContent)
 	FetchContent_Declare(
@@ -68,11 +71,10 @@ add_compile_options(
 )
 
 if(ZTH_USE_GTEST)
-	set(CMAKE_CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
-
 	function(zth_add_test_binary TESTNAME)
 		add_executable(${TESTNAME} ${ARGN} test_main.cpp)
 		target_link_libraries(${TESTNAME} gtest libzth)
+		zth_clang_tidy(${TESTNAME})
 
 		set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 
@@ -97,14 +99,20 @@ if(ZTH_USE_GTEST)
 		zth_config_test(${tests})
 	endfunction()
 
-	zth_add_test(test_future test_future.cpp)
-	zth_add_test(test_poller test_poller.cpp)
-
-	zth_add_test(test_fsm14 test_fsm14.cpp)
-	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-		zth_add_test(test_fsm17 test_fsm17.cpp)
-		set_property(TARGET test_fsm17 PROPERTY CXX_STANDARD 17)
+	if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+		zth_add_test(test_coro test_coro.cpp)
+		set_property(TARGET test_coro PROPERTY CXX_STANDARD 20)
+		zth_clang_tidy(test_coro)
 	endif()
+
+	zth_add_test_binary(test_fiber98 test_fiber98.cpp)
+	gtest_add_tests(
+		TARGET test_fiber98
+		SOURCES test_fiber.cpp
+		TEST_PREFIX CXX98
+		TEST_LIST tests
+	)
+	zth_config_test(${tests})
 
 	zth_add_test_binary(test_fiber11 test_fiber11.cpp)
 	gtest_add_tests(
@@ -115,10 +123,20 @@ if(ZTH_USE_GTEST)
 	)
 	zth_config_test(${tests})
 
-	zth_add_test_binary(test_fiber98 test_fiber98.cpp)
+	zth_add_test(test_fsm14 test_fsm14.cpp)
+
+	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+		zth_add_test(test_fsm17 test_fsm17.cpp)
+		set_property(TARGET test_fsm17 PROPERTY CXX_STANDARD 17)
+	endif()
+
+	zth_add_test(test_future test_future.cpp)
+	zth_add_test(test_poller test_poller.cpp)
+
+	zth_add_test_binary(test_stack98 test_stack98.cpp)
 	gtest_add_tests(
-		TARGET test_fiber98
-		SOURCES test_fiber.cpp
+		TARGET test_stack98
+		SOURCES test_stack.cpp
 		TEST_PREFIX CXX98
 		TEST_LIST tests
 	)
@@ -133,14 +151,7 @@ if(ZTH_USE_GTEST)
 	)
 	zth_config_test(${tests})
 
-	zth_add_test_binary(test_stack98 test_stack98.cpp)
-	gtest_add_tests(
-		TARGET test_stack98
-		SOURCES test_stack.cpp
-		TEST_PREFIX CXX98
-		TEST_LIST tests
-	)
-	zth_config_test(${tests})
+	zth_add_test(test_sync test_sync.cpp)
 endif()
 
 if(ZTH_DIST_DIR)
