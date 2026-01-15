@@ -86,7 +86,7 @@ void Waiter::wakeup(TimedWaitable& w)
 
 		if(w.hasFiber()) {
 			w.fiber().wakeup();
-			m_worker.add(&w.fiber());
+			m_worker.add(&w.fiber(), true);
 			w.resetFiber();
 		}
 	}
@@ -160,7 +160,7 @@ void Waiter::entry()
 			if(w.poll(now)) {
 				if(w.hasFiber()) {
 					w.fiber().wakeup();
-					m_worker.add(&w.fiber());
+					m_worker.add(&w.fiber(), true);
 				}
 			} else {
 				// Reinsert, as the timeout() might have changed (and therefore the
