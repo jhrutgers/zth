@@ -942,6 +942,8 @@ class Future : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Future)
 public:
 	typedef T type;
+	typedef type& indirection_type;
+	typedef type* member_type;
 
 	explicit Future(cow_string const& name = "Future")
 		: Synchronizer(name)
@@ -1025,12 +1027,6 @@ public:
 		return m_value.value();
 	}
 
-	type const& value() const LREF_QUALIFIED
-	{
-		wait();
-		return m_value.value();
-	}
-
 #  if __cplusplus >= 201103L
 	type value() &&
 	{
@@ -1039,22 +1035,12 @@ public:
 	}
 #  endif
 
-	type const* operator*() const
+	indirection_type operator*()
 	{
-		return &value();
+		return value();
 	}
 
-	type* operator*()
-	{
-		return &value();
-	}
-
-	type const* operator->() const
-	{
-		return &value();
-	}
-
-	type* operator->()
+	member_type operator->()
 	{
 		return &value();
 	}
@@ -1081,6 +1067,8 @@ class Future<void> : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Future)
 public:
 	typedef void type;
+	typedef void indirection_type;
+	typedef void member_type;
 
 	explicit Future(cow_string const& name = "Future")
 		: Synchronizer(name)
@@ -1136,6 +1124,22 @@ public:
 		return m_value.exception();
 	}
 #  endif // ZTH_FUTURE_EXCEPTION
+
+	void value()
+	{
+		wait();
+		m_value.value();
+	}
+
+	indirection_type operator*()
+	{
+		value();
+	}
+
+	member_type operator->()
+	{
+		value();
+	}
 
 private:
 	void set_prepare() noexcept
