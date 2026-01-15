@@ -12,6 +12,7 @@
 
 #  include <libzth/allocator.h>
 #  include <libzth/config.h>
+#  include <libzth/exception.h>
 #  include <libzth/fiber.h>
 #  include <libzth/sync.h>
 #  include <libzth/util.h>
@@ -45,6 +46,9 @@ namespace zth {
  * \tparam R Return type of the fiber function.
  *
  * This is a virtual base class. Derive from this class and implement the entry function.
+ *
+ * Dereferencing this fiber, forces the fiber to have a future, and the caller waits till the future
+ * completes.
  */
 template <typename R>
 class TypedFiber : public Fiber {
@@ -63,6 +67,15 @@ public:
 	{
 		m_future.reset(future);
 		zth_dbg(sync, "[%s] Registered to %s", future->id_str(), id_str());
+
+		if(state() == Fiber::Dead) {
+			// Fiber already dead, set the future now.
+#  ifdef ZTH_FUTURE_EXCEPTION
+			setFuture(std::make_exception_ptr(fiber_already_dead()));
+#  else
+			setFuture();
+#  endif
+		}
 	}
 
 	Future_type* future() const
@@ -84,11 +97,33 @@ public:
 		return m_future;
 	}
 
+	typename Future_type::indirection_type operator*()
+	{
+		return withFuture()->operator*();
+	}
+
+	typename Future_type::member_type operator->()
+	{
+		return withFuture()->operator->();
+	}
+
 protected:
 	static void entry(void* that)
 	{
-		if(likely(that))
-			static_cast<TypedFiber*>(that)->entry_();
+		if(unlikely(!that))
+			return;
+
+		TypedFiber& fiber = *static_cast<TypedFiber*>(that);
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+		try {
+#  endif // ZTH_FUTURE_EXCEPTION
+			fiber.entry_();
+#  ifdef ZTH_FUTURE_EXCEPTION
+		} catch(...) {
+			fiber.setFuture(std::current_exception());
+		}
+#  endif // ZTH_FUTURE_EXCEPTION
 	}
 
 	virtual void entry_() = 0;
@@ -160,7 +195,9 @@ public:
 protected:
 	virtual void apply(Fiber& fiber) const override
 	{
-		fiber.setStackSize(m_stack);
+		int res = fiber.setStackSize(m_stack);
+		if(res)
+			zth_throw(errno_exception(res));
 	}
 
 private:
@@ -572,17 +609,8 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-#    ifdef ZTH_FUTURE_EXCEPTION
-		try {
-#    endif // ZTH_FUTURE_EXCEPTION
-			this->setFuture(
-				m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
-					std::get<S>(m_args))...));
-#    ifdef ZTH_FUTURE_EXCEPTION
-		} catch(...) {
-			this->setFuture(std::current_exception());
-		}
-#    endif // ZTH_FUTURE_EXCEPTION
+		this->setFuture(m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
+			std::get<S>(m_args))...));
 	}
 
 private:
@@ -615,17 +643,9 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-#    ifdef ZTH_FUTURE_EXCEPTION
-		try {
-#    endif // ZTH_FUTURE_EXCEPTION
-			m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
-				std::get<S>(m_args))...);
-			this->setFuture();
-#    ifdef ZTH_FUTURE_EXCEPTION
-		} catch(...) {
-			this->setFuture(std::current_exception());
-		}
-#    endif // ZTH_FUTURE_EXCEPTION
+		m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
+			std::get<S>(m_args))...);
+		this->setFuture();
 	}
 
 private:
