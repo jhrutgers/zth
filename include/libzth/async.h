@@ -34,6 +34,18 @@
 
 namespace zth {
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Typed fiber base class and manipulators
+//
+
+/*!
+ * \brief Typed fiber class.
+ * \tparam R Return type of the fiber function.
+ *
+ * This is a virtual base class. Derive from this class and implement the entry function.
+ */
 template <typename R>
 class TypedFiber : public Fiber {
 	ZTH_CLASS_NEW_DELETE(TypedFiber)
@@ -246,6 +258,12 @@ private:
 	Gate* m_gate;
 };
 
+/*!
+ * \brief Automatic create a future for a fiber, when needed.
+ *
+ * By default, a fiber does not save its return value. When a fiber is assigned to this class, a
+ * future is created automatically.
+ */
 template <typename T>
 class AutoFuture : public SharedPointer<Future<T> /**/> {
 public:
@@ -285,6 +303,15 @@ public:
 		return *this;
 	}
 };
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Actual TypedFiber implementations
+//
+// The TypedFiberX classes hold the actual entry point and arguments for the fiber.  For Pre-C++11,
+// up to 3 arguments are supported. For C++11 and later, arbitrary arguments are supported.
+//
 
 #  if ZTH_TYPEDFIBER98
 template <typename R>
@@ -501,7 +528,6 @@ private:
 #  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
-
 // Always try to move the argument, unless it's an lvalue reference.
 template <typename T, typename std::enable_if<!std::is_lvalue_reference<T>::value, int>::type = 0>
 static constexpr T&& move_or_ref(T& t) noexcept
@@ -515,9 +541,12 @@ static constexpr T move_or_ref(T t) noexcept
 	return t;
 }
 
-// F: function type (function pointer, lambda, etc.)
-// R: return type of F()
-// Args: argument types of F() as std::tuple<...>
+/*!
+ * \brief Actual fiber implementation for arbitrary function types and arguments.
+ * \tparam F function type (function pointer, lambda, etc.)
+ * \tparam R return type of \p F
+ * \tparam Args argument types of \p F as \c std::tuple<...>
+ */
 template <typename F, typename R, typename Args>
 class TypedFiberN final : public TypedFiber<R> {
 	ZTH_CLASS_NEW_DELETE(TypedFiberN)
@@ -605,33 +634,116 @@ private:
 };
 #  endif // C++11
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Define TypedFiberType to extract function type information to pick the right TypedFiberX class.
+//
+
 #  if __cplusplus >= 201103L
 template <typename F>
-struct FunctorTraits {
-private:
-	template <typename R, typename... Args>
-	static std::tuple<Args...> argsTupleTypeImpl(R (*)(Args...));
+struct remove_function_cvref {};
 
-public:
-	using argsTupleType = decltype(argsTupleTypeImpl(&F::operator()));
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(fun) \
+	    template <typename R, typename... Args>    \
+	    struct remove_function_cvref<fun> {        \
+		    using type = R(Args...);           \
+	    };
+
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R(Args...))
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R (*)(Args...))
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R (&)(Args...))
+
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(...)             \
+	    template <typename R, typename C, typename... Args>           \
+	    struct remove_function_cvref<R (C::*)(Args...) __VA_ARGS__> { \
+		    using type = R(Args...);                              \
+	    };
+
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(...)               \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(__VA_ARGS__)          \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const __VA_ARGS__)    \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(volatile __VA_ARGS__) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const volatile __VA_ARGS__)
+
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV()
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&)
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&&)
+
+#    if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(noexcept)
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(& noexcept)
+REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&& noexcept)
+#    endif // __cpp_noexcept_function_type
+
+#    undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS
+#    undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS
+#    undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV
+
+template <typename T>
+struct functor_operator_type {};
+
+template <typename R, typename... Args>
+struct functor_operator_type<R(Args...)> {
+	using return_type = R;
+	using args_type = std::tuple<Args...>;
 };
 
+// Extract function type from functor's operator().
 template <typename F>
-struct TypedFiberType {
-	using returnType = decltype(F::operator()());
-	using fiberType = TypedFiberN<F, returnType, typename FunctorTraits<F>::argsTupleType>;
+struct functor_traits {
+	using functor_type = typename std::decay<F>::type;
 
-	// Compatibility
-	struct NoArg {};
-	typedef NoArg a1Type;
-	typedef NoArg a2Type;
-	typedef NoArg a3Type;
+private:
+	using functor_operator_type_ = functor_operator_type<
+		typename remove_function_cvref<decltype(&functor_type::operator())>::type>;
+
+public:
+	using return_type = typename functor_operator_type_::return_type;
+	using args_type = typename functor_operator_type_::args_type;
+};
+
+// Extract function type from function pointer.
+template <typename R, typename... Args>
+struct functor_traits<R (*)(Args...)> {
+public:
+	using functor_type = R (*)(Args...);
+	using return_type = R;
+	using args_type = std::tuple<Args...>;
 };
 
 template <typename R, typename... Args>
-struct TypedFiberType<R (*)(Args...)> {
-	using returnType = R;
-	using fiberType = TypedFiberN<R (*)(Args...), R, std::tuple<Args...>>;
+struct functor_traits<R (*&)(Args...)> {
+public:
+	using functor_type = R (*)(Args...);
+	using return_type = R;
+	using args_type = std::tuple<Args...>;
+};
+
+// Extract function type from function reference.
+template <typename R, typename... Args>
+struct functor_traits<R (&)(Args...)> {
+public:
+	using functor_type = R (&)(Args...);
+	using return_type = R;
+	using args_type = std::tuple<Args...>;
+};
+
+// Extract function type from function type.
+template <typename R, typename... Args>
+struct functor_traits<R(Args...)> {
+public:
+	using functor_type = R (*)(Args...);
+	using return_type = R;
+	using args_type = std::tuple<Args...>;
+};
+
+// Extract fiber function type information.
+template <typename F>
+struct TypedFiberType {
+	using traitsType = functor_traits<F>;
+	using returnType = typename traitsType::return_type;
+	using fiberType = TypedFiberN<F, returnType, typename traitsType::args_type>;
 
 	// Compatibility
 	struct NoArg {};
@@ -686,10 +798,30 @@ struct TypedFiberType<R (*)(A1, A2, A3)> {
 };
 #  endif // ZTH_TYPEDFIBER98
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Define a TypedFiberFactory. It holds the entry function and creates fibers when the arguments are
+// passed. The entry function and name are stored in the factory, the arguments are passed directly
+// to the new fiber (managed by TypedFiberX).
+//
+
+template <typename F>
+struct function_type_helper {
+	typedef F type;
+};
+
+#  if __cplusplus >= 201103L
+template <typename R, typename... Args>
+struct function_type_helper<R(Args...)> {
+	using type = R (*)(Args...);
+};
+#  endif // C++11
+
 template <typename F>
 class TypedFiberFactory {
 public:
-	typedef F Function;
+	typedef typename function_type_helper<F>::type Function;
 	typedef typename TypedFiberType<Function>::returnType Return;
 	typedef typename TypedFiberType<Function>::fiberType TypedFiber_type;
 	typedef AutoFuture<Return> AutoFuture_type;
@@ -756,34 +888,64 @@ private:
 	char const* m_name;
 };
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Provide a zth::fiber_type<F> API to get fiber information.
+//
+
+namespace impl {
 template <typename F>
-struct fiber_type {
+struct fiber_type_impl {
 	typedef TypedFiberFactory<F> factory;
+	typedef typename factory::Function function;
 	typedef typename factory::TypedFiber_type& fiber;
 	typedef typename factory::AutoFuture_type future;
 };
+} // namespace impl
 
+#  if __cplusplus >= 201103L
+template <typename F>
+struct fiber_type : public impl::fiber_type_impl<F> {};
+
+template <typename R, typename... Args>
+struct fiber_type<R (*)(Args...)> : public impl::fiber_type_impl<R (*)(Args...)> {};
+
+template <typename R, typename... Args>
+struct fiber_type<R(Args...)> : public impl::fiber_type_impl<R (&)(Args...)> {};
+#  else	 // Pre C++11
 template <typename F>
 struct fiber_type {};
+#  endif // Pre C++11
 
 #  if ZTH_TYPEDFIBER98
 template <typename R>
-struct fiber_type<R (*)()> : public fiber_type_impl<R (*)()> {};
+struct fiber_type<R (*)()> : public impl::fiber_type_impl<R (*)()> {};
 
 template <typename R, typename A1>
-struct fiber_type<R (*)(A1)> : public fiber_type_impl<R (*)(A1)> {};
+struct fiber_type<R (*)(A1)> : public impl::fiber_type_impl<R (*)(A1)> {};
 
 template <typename R, typename A1, typename A2>
-struct fiber_type<R (*)(A1, A2)> : public fiber_type_impl<R (*)(A1, A2)> {};
+struct fiber_type<R (*)(A1, A2)> : public impl::fiber_type_impl<R (*)(A1, A2)> {};
 
 template <typename R, typename A1, typename A2, typename A3>
-struct fiber_type<R (*)(A1, A2, A3)> : public fiber_type_impl<R (*)(A1, A2, A3)> {};
+struct fiber_type<R (*)(A1, A2, A3)> : public impl::fiber_type_impl<R (*)(A1, A2, A3)> {};
 #  endif
 
-#  if __cplusplus >= 201103L
-template <typename R, typename... Args>
-struct fiber_type<R (*)(Args...)> : public fiber_type_impl<R (*)(Args...)> {};
-#  endif
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// zth::factory() and zth::fiber() functions
+//
+
+namespace impl {
+static inline char const* fiber_name(char const* name)
+{
+	return (Config::EnableDebugPrint || Config::EnablePerfEvent || Config::EnableStackWaterMark)
+		       ? name
+		       : nullptr;
+}
+} // namespace impl
 
 #  if __cplusplus >= 201103L
 /*!
@@ -797,23 +959,20 @@ struct fiber_type<R (*)(Args...)> : public fiber_type_impl<R (*)(Args...)> {};
 template <typename F>
 typename fiber_type<F>::factory factory(F&& f, char const* name = nullptr)
 {
-	return typename fiber_type<F>::factory(
-		std::forward<F>(f),
-		Config::EnableDebugPrint || Config::EnablePerfEvent || Config::EnableStackWaterMark
-			? name
-			: nullptr);
+	return typename fiber_type<F>::factory(std::forward<F>(f), impl::fiber_name(name));
 }
-#  else // Pre-C++11
+
+template <typename F>
+typename fiber_type<F>::factory factory(F const& f, char const* name = nullptr)
+{
+	return typename fiber_type<F>::factory(f, impl::fiber_name(name));
+}
+#  else	 // Pre-C++11
 template <typename F>
 typename fiber_type<F>::factory factory(F f, char const* name = nullptr)
 {
-	return typename fiber_type<F>::factory(
-		f,
-		Config::EnableDebugPrint || Config::EnablePerfEvent || Config::EnableStackWaterMark
-			? name
-			: nullptr);
+	return typename fiber_type<F>::factory(f, impl::fiber_name(name));
 }
-
 #  endif // Pre-C++11
 
 #  if ZTH_TYPEDFIBER98 && __cplusplus < 201103L
@@ -850,15 +1009,21 @@ typename fiber_type<F>::fiber fiber(F&& f, Args&&... args)
 }
 #  endif // C++11
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// zth_async macros
+//
+
 namespace fibered {}
 
 } // namespace zth
 
-#  define zth_fiber_declare_1(f)                                   \
-	  namespace zth {                                          \
-	  namespace fibered {                                      \
-	  extern ::zth::TypedFiberFactory<decltype(&::f)> const f; \
-	  }                                                        \
+#  define zth_fiber_declare_1(f)                                              \
+	  namespace zth {                                                     \
+	  namespace fibered {                                                 \
+	  extern typename ::zth::fiber_type<decltype(&::f)>::factory const f; \
+	  }                                                                   \
 	  }
 
 /*!
@@ -871,13 +1036,13 @@ namespace fibered {}
 #  define zth_fiber_define_1(storage, f)                                                    \
 	  namespace zth {                                                                   \
 	  namespace fibered {                                                               \
-	  storage ::zth::TypedFiberFactory<decltype(&::f)> const                            \
+	  storage typename ::zth::fiber_type<decltype(&::f)>::factory const                 \
 		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
 				  ? ZTH_STRINGIFY(f) "()"                                   \
 				  : nullptr); /* NOLINT */                                  \
 	  }                                                                                 \
 	  }                                                                                 \
-	  typedef ::zth::TypedFiberFactory<decltype(&::f)>::AutoFuture_type f##_future;
+	  typedef typename ::zth::fiber_type<decltype(&::f)>::future f##_future;
 #  define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
 #  define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)
 
@@ -917,6 +1082,12 @@ namespace fibered {}
  */
 #  define zth_async ::zth::fibered::
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// C API
+//
+
 /*!
  * \brief Run a function as a new fiber.
  * \ingroup zth_api_c_fiber
@@ -925,28 +1096,15 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 	void (*f)(void*), void* arg = nullptr, size_t stack = 0,
 	char const* name = nullptr) noexcept
 {
-	int res = 0;
-	zth::Fiber* fib = nullptr;
-
 	try {
-		fib = new zth::Fiber(f, arg);
+		zth::factory(f, name)(arg) << zth::setStackSize(stack);
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(...) {
 		return EAGAIN;
 	}
 
-	if(unlikely(stack))
-		if((res = fib->setStackSize(stack))) {
-			delete fib;
-			return res;
-		}
-
-	if(unlikely(name))
-		fib->setName(name);
-
-	zth::currentWorker().add(fib);
-	return res;
+	return 0;
 }
 #else // !__cplusplus
 
