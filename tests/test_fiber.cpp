@@ -220,9 +220,23 @@ TEST(FiberTest, diRdfPl)
 
 TEST(FiberTest, direct_v)
 {
-	using fiber_type = zth::fiber_type<decltype(&fiber_v)>;
+	using fiber_type = zth::fiber_type<decltype(fiber_v)>;
 
 	fiber_type::factory factory = zth::factory(fiber_v);
+	fiber_type::fiber fiber = factory();
+	fiber_type::future future = fiber;
+	fiber_type::future future2 = fiber.withFuture();
+	future->wait();
+	EXPECT_TRUE(future2->valid());
+
+	zth::outOfWork();
+}
+
+TEST(FiberTest, direct_v_p)
+{
+	using fiber_type = zth::fiber_type<decltype(&fiber_v)>;
+
+	fiber_type::factory factory = zth::factory(&fiber_v);
 	fiber_type::fiber fiber = factory();
 	fiber_type::future future = fiber;
 	fiber_type::future future2 = fiber.withFuture();
@@ -275,6 +289,60 @@ TEST(FiberTest, direct_diRdfPl)
 	auto r = zth::factory(fiber_diRdfPl, "fiber_diRdfPl")(i, d, f, &l).withFuture();
 	EXPECT_DOUBLE_EQ(r->value(), 3.4);
 	EXPECT_DOUBLE_EQ(d, 3.4);
+
+	zth::outOfWork();
+}
+
+static void fiber_exception()
+{
+	throw std::runtime_error("Test exception");
+}
+zth_fiber(fiber_exception)
+
+TEST(FiberTest, exception)
+{
+	zth_async fiber_exception();
+
+	fiber_exception_future f = zth_async fiber_exception();
+	f->wait();
+
+	EXPECT_TRUE(f->exception());
+
+	zth::outOfWork();
+}
+
+static int fiber_exception_i()
+{
+	throw std::runtime_error("Test exception");
+}
+zth_fiber(fiber_exception_i)
+
+TEST(FiberTest, exception_i)
+{
+	zth_async fiber_exception_i();
+
+	fiber_exception_i_future f = zth_async fiber_exception_i();
+	EXPECT_THROW(f->value(), std::runtime_error);
+
+	zth::outOfWork();
+}
+
+TEST(FiberTest, lambda)
+{
+	auto lambda = []() {};
+	zth::TypedFiberN<decltype(lambda), void, std::tuple<>> f{lambda};
+	zth::factory(lambda)();
+
+	int i = 3;
+	auto lambda2 = [&](int a) { return i + a; };
+	zth::TypedFiberN<decltype(lambda2), void, std::tuple<int>> f2{lambda2};
+	auto future = zth::factory(lambda2)(4).withFuture();
+	EXPECT_EQ(future->value(), 7);
+
+	i = 4;
+	EXPECT_EQ(zth::fiber(lambda2, 5).withFuture()->value(), 9);
+
+	EXPECT_EQ(zth::fiber([&]() { return i; }).withFuture()->value(), 4);
 
 	zth::outOfWork();
 }
