@@ -101,7 +101,7 @@ error:
 		return m_waiter;
 	}
 
-	void add(Fiber* fiber) noexcept
+	void add(Fiber* fiber, bool front = false) noexcept
 	{
 		zth_assert(fiber);
 		zth_assert(fiber->state() != Fiber::Waiting); // We don't manage 'Waiting' here.
@@ -110,7 +110,10 @@ error:
 			m_suspendedQueue.push_back(*fiber);
 			zth_dbg(worker, "[%s] Added suspended %s", id_str(), fiber->id_str());
 		} else {
-			m_runnableQueue.push_front(*fiber);
+			if(unlikely(front))
+				m_runnableQueue.push_front(*fiber);
+			else
+				m_runnableQueue.push_back(*fiber);
 			zth_dbg(worker, "[%s] Added runnable %s", id_str(), fiber->id_str());
 		}
 
@@ -149,9 +152,6 @@ error:
 			zth_dbg(worker, "[%s] Removed %s from suspended queue", id_str(),
 				fiber.id_str());
 		} else {
-			if(&fiber == m_currentFiber)
-				m_runnableQueue.rotate(*fiber.listNext());
-
 			m_runnableQueue.erase(fiber);
 			zth_dbg(worker, "[%s] Removed %s from runnable queue", id_str(),
 				fiber.id_str());

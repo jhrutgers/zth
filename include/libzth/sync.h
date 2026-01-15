@@ -205,7 +205,7 @@ protected:
 	 * \brief Unblock the specific fiber.
 	 * \return \c true if unblocked, \c false when not queued by this Synchronizer.
 	 */
-	bool unblock(Fiber& f, size_t q = 0) noexcept
+	bool unblock(Fiber& f, size_t q = 0, bool prio = false) noexcept
 	{
 		auto& queue_ = queue(q);
 		if(!queue_.contains(f))
@@ -217,11 +217,11 @@ protected:
 		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 		queue_.erase(f);
 		f.wakeup();
-		w->add(&f);
+		w->add(&f, prio);
 		return true;
 	}
 
-	bool unblockFirst(size_t q = 0) noexcept
+	bool unblockFirst(size_t q = 0, bool prio = false) noexcept
 	{
 		auto& queue_ = queue(q);
 		if(queue_.empty())
@@ -234,11 +234,11 @@ protected:
 		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
 		queue_.pop_front();
 		f.wakeup();
-		w->add(&f);
+		w->add(&f, prio);
 		return true;
 	}
 
-	bool unblockAll(size_t q = 0) noexcept
+	bool unblockAll(size_t q = 0, bool prio = false) noexcept
 	{
 		auto& queue_ = queue(q);
 		if(queue_.empty())
@@ -253,7 +253,7 @@ protected:
 			Fiber& f = queue_.front();
 			queue_.pop_front();
 			f.wakeup();
-			w->add(&f);
+			w->add(&f, prio);
 		}
 		return true;
 	}
@@ -303,7 +303,8 @@ protected:
 	 * \brief Block, with timeout.
 	 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 	 */
-	bool block(Timestamp const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
+	bool
+	blockUntil(Timestamp const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
 	{
 		if(timeout <= now)
 			// Immediate timeout.
@@ -317,7 +318,7 @@ protected:
 	 * \return \c true if unblocked by request, \c false when unblocked by timeout.
 	 */
 	bool
-	block(TimeInterval const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
+	blockFor(TimeInterval const& timeout, Timestamp const& now = Timestamp::now(), size_t q = 0)
 	{
 		if(timeout.isNegative() || timeout.isNull())
 			// Immediate timeout.
@@ -425,7 +426,7 @@ public:
 	bool trylock(Timestamp const& timeout)
 	{
 		while(unlikely(m_locked))
-			if(!block(timeout))
+			if(!blockUntil(timeout))
 				return false;
 
 		m_locked = true;
@@ -500,63 +501,75 @@ private:
 class Semaphore : public Synchronizer<> {
 	ZTH_CLASS_NEW_DELETE(Semaphore)
 public:
-	explicit Semaphore(size_t init = 0, cow_string const& name = "Semaphore")
+	typedef unsigned int count_type;
+
+	explicit Semaphore(count_type init = 0, cow_string const& name = "Semaphore")
 		: Synchronizer(name)
 		, m_count(init)
+		, m_unblockAll()
 	{}
 
 #  if __cplusplus >= 201103L
-	Semaphore(size_t init, cow_string&& name)
+	Semaphore(count_type init, cow_string&& name)
 		: Synchronizer(std::move(name))
 		, m_count(init)
+		, m_unblockAll()
 	{}
 #  endif
 
 	virtual ~Semaphore() override is_default
 
-	void acquire(size_t count = 1)
+	void acquire(count_type count = 1)
 	{
-		size_t remaining = count;
-		while(remaining > 0) {
-			if(remaining <= m_count) {
-				m_count -= remaining;
-				if(m_count > 0)
-					// There might be another one waiting.
-					unblockFirst();
-				return;
-			} else {
-				remaining -= m_count;
-				m_count = 0;
-				block();
-			}
+		while(m_count < count) {
+			if(count > 1)
+				m_unblockAll = true;
+
+			block();
 		}
-		zth_dbg(sync, "[%s] Acquired %zu", id_str(), count);
+
+		m_count -= count;
+		zth_dbg(sync, "[%s] Acquired %u", id_str(), count);
+
+		if(m_count > 0 && !m_unblockAll) {
+			// There is more to acquire. Wake the next in line.
+			unblockFirst();
+		}
 	}
 
-	void release(size_t count = 1) noexcept
+	void release(count_type count = 1) noexcept
 	{
 		zth_assert(m_count + count >= m_count); // ...otherwise it wrapped around, which is
 							// probably not want you wanted...
 
 		if(unlikely(m_count + count < m_count))
 			// wrapped around, saturate
-			m_count = std::numeric_limits<size_t>::max();
+			m_count = std::numeric_limits<count_type>::max();
 		else
 			m_count += count;
 
-		zth_dbg(sync, "[%s] Released %zu", id_str(), count);
+		zth_dbg(sync, "[%s] Released %u", id_str(), count);
 
-		if(likely(m_count > 0))
-			unblockFirst();
+		if(likely(m_count > 0)) {
+			if(!m_unblockAll) {
+				// As some fibers may be waiting for just one unit, and others for
+				// multiple, let them all try to acquire what they need.
+				unblockFirst();
+			} else if(!unblockAll()) {
+				// Nobody was waiting anymore.
+				m_unblockAll = false;
+			}
+		}
 	}
 
-	size_t value() const noexcept
+	count_type value() const noexcept
 	{
 		return m_count;
 	}
 
 private:
-	size_t m_count;
+	count_type m_count;
+	bool m_unblockAll;
 };
 
 /*!
@@ -598,7 +611,7 @@ public:
 	bool wait(Timestamp const& timeout, Timestamp const& now = Timestamp::now())
 	{
 		if(!m_signalled) {
-			if(!block(timeout, now))
+			if(!blockUntil(timeout, now))
 				// Timeout.
 				return false;
 		} else
@@ -1194,14 +1207,14 @@ public:
 
 	void wait()
 	{
-		if(!valid())
-			block(Queue_Take);
+		while(!valid())
+			block((size_t)Queue_Take);
 	}
 
 	void wait_empty()
 	{
-		if(valid())
-			block(Queue_Put);
+		while(valid())
+			block((size_t)Queue_Put);
 	}
 
 	void put(type const& value)
@@ -1265,7 +1278,6 @@ public:
 #  endif // ZTH_FUTURE_EXCEPTION
 
 		type v = m_value.value();
-		m_value.reset();
 		take_finalize();
 		return v;
 	}
@@ -1290,6 +1302,7 @@ private:
 	void take_finalize() noexcept
 	{
 		zth_dbg(sync, "[%s] Take", id_str());
+		m_value.reset();
 		unblockFirst(Queue_Put);
 	}
 
@@ -1451,8 +1464,11 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_init(zth_sem_t* sem, size_t value) no
 	if(unlikely(!sem || sem->p))
 		return EINVAL;
 
+	if(value > std::numeric_limits<zth::Semaphore::count_type>::max())
+		return EDOM;
+
 	try {
-		sem->p = static_cast<void*>(new zth::Semaphore(value));
+		sem->p = static_cast<void*>(new zth::Semaphore((zth::Semaphore::count_type)value));
 		return 0;
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
@@ -1614,7 +1630,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_cond_broadcast(zth_cond_t* cond) noexcept
 	if(unlikely(!cond || !cond->p))
 		return EINVAL;
 
-	static_cast<zth::Signal*>(cond->p)->signalAll();
+	static_cast<zth::Signal*>(cond->p)->signalAll(false);
 	return 0;
 }
 
@@ -1809,6 +1825,95 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_gate_wait(zth_gate_t* gate) noexcept
 	return 0;
 }
 
+struct zth_mailbox_t {
+	void* p;
+};
+
+typedef zth::Mailbox<uintptr_t> zth_mailbox_t_type;
+
+/*!
+ * \brief Initializes a mailbox.
+ * \details This is a C-wrapper to create a new zth::Mailbox.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_init(zth_mailbox_t* mailbox) noexcept
+{
+	if(unlikely(!mailbox || mailbox->p))
+		return EINVAL;
+
+	try {
+		mailbox->p = static_cast<void*>(new zth_mailbox_t_type());
+		return 0;
+	} catch(std::bad_alloc const&) {
+		return ENOMEM;
+	} catch(...) {
+	}
+	return EAGAIN;
+}
+
+/*!
+ * \brief Destroys a mailbox.
+ * \details This is a C-wrapper to delete a zth::Mailbox.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_destroy(zth_mailbox_t* mailbox) noexcept
+{
+	if(unlikely(!mailbox))
+		return EINVAL;
+	if(unlikely(!mailbox->p))
+		// Already destroyed.
+		return 0;
+
+	delete static_cast<zth_mailbox_t_type*>(mailbox->p);
+	mailbox->p = nullptr;
+	return 0;
+}
+
+/*!
+ * \brief Checks if a mailbox contains data.
+ * \details This is a C-wrapper for zth::Mailbox::valid().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_valid(zth_mailbox_t* mailbox) noexcept
+{
+	if(unlikely(!mailbox || !mailbox->p))
+		return EINVAL;
+
+	return static_cast<zth_mailbox_t_type*>(mailbox->p)->valid() ? 0 : EAGAIN;
+}
+
+/*!
+ * \brief Puts a value into the mailbox.
+ * \details This is a C-wrapper for zth::Mailbox::put(). It is blocking when there is already a
+ *          value in the mailbox.
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_put(zth_mailbox_t* mailbox, uintptr_t value) noexcept
+{
+	if(unlikely(!mailbox || !mailbox->p))
+		return EINVAL;
+
+	zth_mailbox_t_type* m = static_cast<zth_mailbox_t_type*>(mailbox->p);
+	m->put(value);
+	return 0;
+}
+
+/*!
+ * \brief Wait for and return a mailbox's value.
+ * \details This is a C-wrapper for zth::Mailbox::take().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int
+zth_mailbox_take(zth_mailbox_t* __restrict__ mailbox, uintptr_t* __restrict__ value) noexcept
+{
+	if(unlikely(!mailbox || !mailbox->p || !value))
+		return EINVAL;
+
+	*value = static_cast<zth_mailbox_t_type*>(mailbox->p)->take();
+	return 0;
+}
+
+
 #else // !__cplusplus
 
 #  include <stdint.h>
@@ -1863,6 +1968,16 @@ ZTH_EXPORT int zth_gate_init(zth_gate_t* gate, size_t count);
 ZTH_EXPORT int zth_gate_destroy(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_pass(zth_gate_t* gate);
 ZTH_EXPORT int zth_gate_wait(zth_gate_t* gate);
+
+typedef struct {
+	void* p;
+} zth_mailbox_t;
+
+ZTH_EXPORT int zth_mailbox_init(zth_mailbox_t* mailbox);
+ZTH_EXPORT int zth_mailbox_destroy(zth_mailbox_t* mailbox);
+ZTH_EXPORT int zth_mailbox_valid(zth_mailbox_t* mailbox);
+ZTH_EXPORT int zth_mailbox_put(zth_mailbox_t* mailbox, uintptr_t value);
+ZTH_EXPORT int zth_mailbox_take(zth_mailbox_t* __restrict__ mailbox, uintptr_t* __restrict__ value);
 
 #endif // !__cplusplus
 #endif // ZTH_SYNC_H
