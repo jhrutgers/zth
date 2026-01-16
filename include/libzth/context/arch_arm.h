@@ -39,7 +39,6 @@ class ContextArch : public ContextBase<Impl> {
 public:
 	typedef ContextBase<Impl> base;
 	using base::impl;
-	using typename base::Stack;
 
 protected:
 	constexpr explicit ContextArch(ContextAttr const& attr) noexcept

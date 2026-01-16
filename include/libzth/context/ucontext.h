@@ -52,6 +52,10 @@ private:
 		void const* oldstack = nullptr;
 		size_t oldsize = 0;
 		__sanitizer_finish_switch_fiber(nullptr, &oldstack, &oldsize);
+
+		Stack& workerStack = currentWorker().workerStack();
+		if(unlikely(!workerStack))
+			workerStack = Stack((void*)oldstack, oldsize);
 #  endif
 
 		context_trampoline_args* args = nullptr;
@@ -145,9 +149,25 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	void context_switch(Context& to) noexcept
 	{
+#  ifdef ZTH_ENABLE_ASAN
+		zth_assert(to.alive());
+		void* fake_stack = nullptr;
+
+		Stack const* stack = &to.stackUsable();
+		if(unlikely(!*stack))
+			stack = &currentWorker().workerStack();
+
+		__sanitizer_start_switch_fiber(
+			alive() ? &fake_stack : nullptr, stack->p, stack->size);
+#  endif
+
 		// switchcontext() restores signal masks, which is slow...
 		if(sigsetjmp(m_env, Config::ContextSignals) == 0)
 			siglongjmp(to.m_env, 1);
+
+#  ifdef ZTH_ENABLE_ASAN
+		__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
+#  endif
 	}
 
 private:
