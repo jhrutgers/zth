@@ -15,188 +15,112 @@
 
 #include <gtest/gtest.h>
 
-namespace zth {
-namespace coro {
+TEST(Coro, Mutex)
+{
+	zth::Mutex m;
+	m.lock();
 
-template <typename T>
-class promise;
-
-template <typename T = void>
-// NOLINTNEXTLINE
-struct task {
-	using promise_type = zth::coro::promise<T>;
-
-	explicit task(std::coroutine_handle<promise_type> h)
-		: m_promise{h.promise()}
-	{}
-
-	explicit task(zth::SharedPointer<promise_type>&& p)
-		: m_promise{std::move(p)}
-	{}
-
-	explicit task(promise_type* p = nullptr)
-		: m_promise{p}
-	{}
-
-	struct resume_result {
-		bool done;
-		T value;
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<> {
+		zth::fiber([&]() { m.unlock(); });
+		co_await m;
 	};
 
-	resume_result resume()
-	{
-		auto* p = m_promise.get();
-		if(!p)
-			throw std::runtime_error("Task already completed");
+	c().run();
+}
 
-		if(!p->resume())
-			return {false, T{}};
+TEST(Coro, Semaphore)
+{
+	zth::Semaphore s{};
 
-		return {true, p->get_future().value()};
-	}
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<> {
+		zth::fiber([&]() { s.release(); });
+		co_await s;
+	};
 
-	T run()
-	{
-		while(true) {
-			auto res = resume();
-			if(res.done)
-				return res.value;
+	c().run();
+}
 
-			zth::outOfWork();
-		}
-	}
+TEST(Coro, Signal)
+{
+	zth::Signal s{};
 
-private:
-	zth::SharedPointer<promise_type> m_promise;
-};
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<> {
+		zth::fiber([&]() { s.signal(); });
+		co_await s;
+	};
 
-template <typename T>
-class promise : public zth::RefCounted {
-public:
-	using return_type = T;
-	using Future_type = zth::Future<return_type>;
+	c().run();
+}
 
-	// NOLINTNEXTLINE(cert-dcl54-cpp,hicpp-new-delete-operators,misc-new-delete-overloads)
-	static void* operator new(std::size_t n)
-	{
-		return ::zth::allocate<char>(n);
-	}
+TEST(Coro, Future)
+{
+	zth::Future<int> f;
 
-	static void operator delete(void* ptr, std::size_t n)
-	{
-		::zth::deallocate<char>(static_cast<char*>(ptr), n);
-	}
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<int> {
+		zth::fiber([&]() { f = 42; });
+		co_return co_await f;
+	};
 
-	auto get_return_object()
-	{
-		printf("get_return_object\n");
-		return task();
-	}
+	EXPECT_EQ(c().run(), 42);
+}
 
-	std::suspend_always initial_suspend()
-	{
-		printf("initial_suspend\n");
-		return {};
-	}
+TEST(Coro, Future_exception)
+{
+	zth::Future<int> f;
 
-	std::suspend_always final_suspend() noexcept
-	{
-		printf("final_suspend\n");
-		return {};
-	}
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<int> {
+		zth::fiber([&]() { f.set(std::make_exception_ptr(std::runtime_error("error"))); });
+		co_return co_await f;
+	};
 
-	// NOLINTNEXTLINE
-	void return_value(return_type&& v)
-	{
-		printf("return_value: %d\n", (int)v);
-		m_future.set(std::move(v)); // NOLINT
-	}
+	EXPECT_THROW(c().run(), std::runtime_error);
+}
 
-	void unhandled_exception()
-	{
-		printf("unhandled_exception\n");
-		m_future.set(std::current_exception());
-	}
+TEST(Coro, Mailbox)
+{
+	zth::Mailbox<int> m;
 
-	Future_type& get_future()
-	{
-		return m_future;
-	}
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<> {
+		co_await m;
+		co_await m;
+	};
 
-	auto handle()
-	{
-		return std::coroutine_handle<promise>::from_promise(*this);
-	}
+	zth::fiber([&]() {
+		m.put(1);
+		m.put(std::make_exception_ptr(std::runtime_error("error")));
+	});
 
-	auto task()
-	{
-		return zth::coro::task<T>{this};
-	}
+	EXPECT_THROW(c().run(), std::runtime_error);
+}
 
-	bool resume()
-	{
-		if(m_running)
-			return false;
+TEST(Coro, Gate)
+{
+	zth::Gate g{2};
 
-		auto h = handle();
-		if(h.done())
-			return true;
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto c = [&]() -> zth::coro::task<> { co_await g; };
+	zth::fiber([&]() { g.wait(); });
+	c().run();
+}
 
-		m_running = true;
-		h.resume();
-		m_running = false;
-		return false;
-	}
+TEST(Coro, Nested)
+{
+	auto inner = []() -> zth::coro::task<int> { co_return 1; };
 
-protected:
-	virtual void cleanup() noexcept override
-	{
-		handle().destroy();
-	}
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto outer = [&]() -> zth::coro::task<int> {
+		int x = co_await inner();
+		co_return x + 1;
+	};
 
-private:
-	Future_type m_future;
-	bool m_running = false;
-};
-
-} // namespace coro
-} // namespace zth
-
-template <typename T>
-struct AwaitableFuture {
-	// NOLINTNEXTLINE
-	zth::Future<T>& future;
-
-	// NOLINTNEXTLINE
-	AwaitableFuture(zth::Future<T>& f)
-		: future{f}
-	{}
-
-	auto operator co_await() const noexcept
-	{
-		printf("co_await AF\n");
-		return *this;
-	}
-
-	bool await_ready() const noexcept
-	{
-		printf("await_ready\n");
-		return future.valid();
-	}
-
-	void await_suspend(std::coroutine_handle<> h) noexcept
-	{
-		(void)h;
-		printf("await_suspend\n");
-		future.wait();
-	}
-
-	T await_resume() const
-	{
-		printf("await_resume\n");
-		return future.value();
-	}
-};
+	EXPECT_EQ(outer().run(), 2);
+}
 
 void foo()
 {
@@ -207,9 +131,15 @@ void foo()
 TEST(Coro, Coro)
 {
 	zth::Future<int> f;
-	AwaitableFuture<int> af{f};
 
 	zth::fiber([&]() { f = 1; });
+
+	zth::Signal sig;
+
+	auto c = [&]() -> zth::coro::task<int> {
+		printf("In inner coroutine\n");
+		co_return 1;
+	};
 
 	// NOLINTNEXTLINE
 	auto coro = [&]() -> zth::coro::task<int> {
@@ -217,11 +147,27 @@ TEST(Coro, Coro)
 		printf("In coroutine, %p\n", (void*)&i);
 		foo();
 		printf("Before co_await\n");
-		auto x = co_await af;
-		printf("After co_await; %d\n", x);
-		co_return 42;
-	}();
+		auto x = co_await f;
+		printf("After co_await future; %d\n", x);
 
-	auto result = coro.run();
+		x = co_await c();
+		printf("After co_await coro; %d\n", x);
+
+		sig.signal();
+
+		co_return 42;
+	};
+
+	// NOLINTNEXTLINE
+	auto cf = [&]() -> zth::coro::task<int> {
+		printf("In coro fiber\n");
+		sig.wait();
+		printf("done coro fiber\n");
+		co_return 1;
+	};
+	auto& fut = cf().to_fiber();
+
+	auto result = coro().run();
+	*fut;
 	EXPECT_EQ(result, 42);
 }

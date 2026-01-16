@@ -134,6 +134,7 @@ struct DefaultConfig {
 	static int const Print_zmq = 9;	    // bright red
 	static int const Print_fsm = 14;    // bright cyan
 	static int const Print_thread = 3;  // yellow
+	static int const Print_coro = 13;   // bright magenta
 
 	/*! \brief Default fiber stack size in bytes. */
 	static size_t const DefaultFiberStackSize = 0x20000;
