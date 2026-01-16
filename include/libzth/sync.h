@@ -1355,6 +1355,7 @@ public:
 	{
 		return m_count;
 	}
+
 	size_t current() const noexcept
 	{
 		return m_current;

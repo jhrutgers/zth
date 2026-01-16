@@ -21,6 +21,16 @@ struct exception {};
 struct fiber_already_dead : public exception {};
 
 /*!
+ * \brief Exception thrown when an operation cannot be performed due to an invalid coroutine state.
+ */
+struct coro_invalid_state : public exception {};
+
+/*!
+ * \brief Exception thrown when a coroutine has already completed.
+ */
+struct coro_already_completed : public coro_invalid_state {};
+
+/*!
  * \brief Wrapper for an errno.
  */
 struct errno_exception : public exception {
