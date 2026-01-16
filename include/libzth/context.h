@@ -81,6 +81,29 @@ struct ContextAttr {
 	EntryArg arg;
 };
 
+/*!
+ * \brief Stack information.
+ */
+struct Stack {
+	constexpr Stack(void* p_, size_t size_) noexcept
+		: p(static_cast<char*>(p_))
+		, size(size_)
+	{}
+
+	constexpr explicit Stack(size_t size_ = 0) noexcept
+		: p()
+		, size(size_)
+	{}
+
+	constexpr operator bool() const noexcept
+	{
+		return p != nullptr && size > 0;
+	}
+
+	char* p;
+	size_t size;
+};
+
 int context_init() noexcept;
 void context_deinit() noexcept;
 int context_create(Context*& context, ContextAttr const& attr) noexcept;

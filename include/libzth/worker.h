@@ -369,6 +369,14 @@ protected:
 				zth_dbg(list, "[%s]   %s", id_str(), it->str().c_str());
 	}
 
+protected:
+	Stack& workerStack() noexcept
+	{
+		return m_stack;
+	}
+
+	friend class Context;
+
 private:
 	Fiber* m_currentFiber;
 	List<Fiber> m_runnableQueue;
@@ -378,6 +386,7 @@ private:
 	Timestamp m_end;
 	int m_disableContextSwitch;
 	Load_type m_load;
+	Stack m_stack;
 
 	friend void worker_global_init();
 };
