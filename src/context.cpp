@@ -78,7 +78,7 @@ int context_create(Context*& context, ContextAttr const& attr) noexcept
 #ifdef ZTH_CONTEXT_WINFIBER
 		zth_dbg(context, "[%s] New context %p", currentWorker().id_str(), context);
 #else
-		Context::Stack const& stack = context->stackUsable();
+		Stack const& stack = context->stackUsable();
 		zth_dbg(context, "[%s] New context %p with stack: %p-%p", currentWorker().id_str(),
 			context, stack.p, stack.p + stack.size - 1U);
 #endif
@@ -114,19 +114,8 @@ void context_switch(Context* from, Context* to) noexcept
 	zth_assert(from);
 	zth_assert(to);
 
-#ifdef ZTH_ENABLE_ASAN
-	zth_assert(to->alive());
-	void* fake_stack = nullptr;
-	__sanitizer_start_switch_fiber(
-		from->alive() ? &fake_stack : nullptr, to->stackUsable().p, to->stackUsable().size);
-#endif
-
 	// cppcheck-suppress nullPointerRedundantCheck
 	from->context_switch(*to);
-
-#ifdef ZTH_ENABLE_ASAN
-	__sanitizer_finish_switch_fiber(fake_stack, nullptr, nullptr);
-#endif
 
 	// Got back from somewhere else.
 	from->stackGuard();
