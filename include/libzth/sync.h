@@ -664,7 +664,7 @@ public:
 	typedef T type;
 
 	// cppcheck-suppress[uninitMemberVar,noExplicitConstructor]
-	Optional()
+	Optional() noexcept
 		: m_valid()
 	{
 		init();
@@ -718,7 +718,7 @@ public:
 
 #  if __cplusplus >= 201103L
 	// cppcheck-suppress[uninitMemberVar,noExplicitConstructor]
-	Optional(type&& value)
+	Optional(type&& value) noexcept
 		: m_valid{true}
 	{
 		use();
@@ -742,7 +742,7 @@ public:
 
 #  ifdef ZTH_FUTURE_EXCEPTION
 	// cppcheck-suppress uninitMemberVar
-	Optional(std::exception_ptr exc)
+	Optional(std::exception_ptr exc) noexcept
 		: m_valid()
 		, m_exception(exc)
 	{
@@ -836,14 +836,14 @@ private:
 #  endif
 	}
 
-	void use()
+	void use() noexcept
 	{
 #  ifdef ZTH_USE_VALGRIND
 		VALGRIND_MAKE_MEM_UNDEFINED(m_data, sizeof(m_data));
 #  endif
 	}
 
-	void unuse()
+	void unuse() noexcept
 	{
 #  ifdef ZTH_FUTURE_EXCEPTION
 		if(m_exception)
@@ -859,7 +859,7 @@ private:
 		}
 	}
 
-	void deinit()
+	void deinit() noexcept
 	{
 		if(m_valid) {
 			value().~type();
@@ -883,7 +883,7 @@ class Optional<void> {
 public:
 	typedef void type;
 
-	Optional(bool set = false)
+	Optional(bool set = false) noexcept
 		: m_set(set)
 	{}
 
@@ -896,7 +896,7 @@ public:
 			;
 	}
 
-	void reset()
+	void reset() noexcept
 	{
 		m_set = false;
 #  ifdef ZTH_FUTURE_EXCEPTION
@@ -910,7 +910,7 @@ public:
 	}
 
 #  ifdef ZTH_FUTURE_EXCEPTION
-	Optional(std::exception_ptr exc)
+	Optional(std::exception_ptr exc) noexcept
 		: m_exception(exc)
 		, m_set()
 	{}
@@ -986,28 +986,28 @@ public:
 			block();
 	}
 
-	void set(type const& value = type())
+	void set(type const& value = type()) noexcept
 	{
 		set_prepare();
 		m_value.set(value);
 		set_finalize();
 	}
 
-	Future& operator=(type const& value)
+	Future& operator=(type const& value) noexcept
 	{
 		set(value);
 		return *this;
 	}
 
 #  if __cplusplus >= 201103L
-	void set(type&& value)
+	void set(type&& value) noexcept
 	{
 		set_prepare();
 		m_value.set(std::move(value));
 		set_finalize();
 	}
 
-	Future& operator=(type&& value)
+	Future& operator=(type&& value) noexcept
 	{
 		set(std::move(value));
 		return *this;
@@ -1015,20 +1015,20 @@ public:
 #  endif
 
 #  ifdef ZTH_FUTURE_EXCEPTION
-	void set(std::exception_ptr exception)
+	void set(std::exception_ptr exception) noexcept
 	{
 		set_prepare();
 		m_value.set(std::move(exception));
 		set_finalize();
 	}
 
-	Future& operator=(std::exception_ptr value)
+	Future& operator=(std::exception_ptr value) noexcept
 	{
 		set(std::move(value));
 		return *this;
 	}
 
-	std::exception_ptr exception() const
+	std::exception_ptr exception() const noexcept
 	{
 		return m_value.exception();
 	}
@@ -1119,20 +1119,20 @@ public:
 	}
 
 #  ifdef ZTH_FUTURE_EXCEPTION
-	void set(std::exception_ptr exception)
+	void set(std::exception_ptr exception) noexcept
 	{
 		set_prepare();
 		m_value.set(std::move(exception));
 		set_finalize();
 	}
 
-	Future& operator=(std::exception_ptr value)
+	Future& operator=(std::exception_ptr value) noexcept
 	{
 		set(std::move(value));
 		return *this;
 	}
 
-	std::exception_ptr exception() const
+	std::exception_ptr exception() const noexcept
 	{
 		return m_value.exception();
 	}
@@ -1259,7 +1259,7 @@ public:
 		return *this;
 	}
 
-	std::exception_ptr exception() const
+	std::exception_ptr exception() const noexcept
 	{
 		return m_value.exception();
 	}
