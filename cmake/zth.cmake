@@ -88,6 +88,8 @@ set(ZTH_HEADERS
     ${ZTH_SOURCE_DIR}/include/libzth/async.h
     ${ZTH_SOURCE_DIR}/include/libzth/config.h
     ${ZTH_SOURCE_DIR}/include/libzth/context.h
+    ${ZTH_SOURCE_DIR}/include/libzth/coro.h
+    ${ZTH_SOURCE_DIR}/include/libzth/exception.h
     ${ZTH_SOURCE_DIR}/include/libzth/fiber.h
     ${ZTH_SOURCE_DIR}/include/libzth/fsm.h
     ${ZTH_SOURCE_DIR}/include/libzth/fsm14.h
