@@ -122,6 +122,22 @@ TEST(Coro, Nested)
 	EXPECT_EQ(outer().run(), 2);
 }
 
+TEST(Coro, Generator)
+{
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
+	auto gen = []() -> zth::coro::generator<int> {
+		for(int i = 0; i < 5; i++)
+			co_yield i;
+	};
+
+	int expected = 0;
+	for(auto&& v : gen()) {
+		EXPECT_EQ(v, expected);
+		expected++;
+	}
+	EXPECT_EQ(expected, 5);
+}
+
 void foo()
 {
 	int i = 20;

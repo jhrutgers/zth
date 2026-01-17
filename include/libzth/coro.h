@@ -21,6 +21,177 @@
 namespace zth {
 namespace coro {
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Promise base classes
+//
+
+template <typename Awaitable, typename Promise>
+struct awaitable {
+	Awaitable awaitable;
+	Promise& promise;
+};
+
+class promise_base : public RefCounted, public UniqueID<promise_base> {
+public:
+	static void operator delete(void* ptr, std::size_t n) noexcept
+	{
+		::zth::deallocate<char>(static_cast<char*>(ptr), n);
+	}
+
+	ZTH_MALLOC_ATTR(
+		(malloc((void (*)(void*, std::size_t))promise_base::operator delete, 1),
+		 alloc_size(1)))
+	__attribute__((returns_nonnull, warn_unused_result)) static void*
+	operator new(std::size_t n)
+	{
+		return ::zth::allocate<char>(n);
+	}
+
+	virtual ~promise_base() noexcept override = default;
+
+protected:
+	promise_base(cow_string const& name)
+		: UniqueID{name}
+	{}
+};
+
+template <typename Promise>
+class promise : public promise_base {
+public:
+	using promise_type = Promise;
+
+protected:
+	promise(cow_string const& name)
+		: promise_base{name}
+	{}
+
+public:
+	virtual ~promise() noexcept override
+	{
+		zth_assert(!running());
+	}
+
+	__attribute__((pure)) auto handle() noexcept
+	{
+		return std::coroutine_handle<promise_type>::from_promise(self());
+	}
+
+	decltype(auto) initial_suspend() noexcept
+	{
+		struct awaiter {
+			promise& p;
+
+			bool await_ready() noexcept
+			{
+				return false;
+			}
+
+			void await_suspend(std::coroutine_handle<>) noexcept
+			{
+				p.running(false);
+			}
+
+			void await_resume() noexcept
+			{
+				p.running(true);
+			}
+		};
+
+		return awaiter{*this};
+	}
+
+	std::suspend_always final_suspend() noexcept
+	{
+		running(false);
+
+		// Make sure to suspend, otherwise the coroutine is destroyed immediately upon
+		// return. However, we need RefCounted to manage this.
+		return {};
+	}
+
+	template <typename A>
+	decltype(auto) await_transform(A&& a) noexcept
+	{
+		return awaitable<A, promise_type>{std::forward<A>(a), self()};
+	}
+
+	bool running() const noexcept
+	{
+		return m_running;
+	}
+
+	void resume()
+	{
+		if(running())
+			// Runs in another fiber.
+			return;
+
+		auto h = handle();
+		zth_assert(h);
+
+		if(h.done())
+			return;
+
+		zth_dbg(coro, "[%s] Resume", id_str());
+		h();
+	}
+
+	void run()
+	{
+		if(running())
+			// Runs in another fiber.
+			zth_throw(coro_invalid_state{});
+
+		auto h = handle();
+		zth_assert(h);
+
+		zth_dbg(coro, "[%s] Run", id_str());
+
+		while(!self().completed()) {
+			h();
+			zth::yield();
+		}
+	}
+
+protected:
+	void running(bool set) noexcept
+	{
+		zth_assert(m_running != set);
+		m_running = set;
+	}
+
+	promise_type const& self() const noexcept
+	{
+		return static_cast<promise_type const&>(*this);
+	}
+
+	promise_type& self() noexcept
+	{
+		return static_cast<promise_type&>(*this);
+	}
+
+private:
+	// Invoked when RefCounted count reaches zero.
+	virtual void cleanup() noexcept final
+	{
+		zth_dbg(coro, "[%s] Cleanup", id_str());
+		handle().destroy();
+	}
+
+private:
+	bool m_running = false;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Task
+//
+// A task is a coroutine that produces a single result value (or void).
+//
+
 template <typename T>
 class task_promise;
 
@@ -46,15 +217,20 @@ struct task {
 		: m_promise{p}
 	{}
 
+	promise_type* promise() const noexcept
+	{
+		return m_promise.get();
+	}
+
 	bool completed() const noexcept
 	{
-		auto* p = m_promise.get();
+		auto* p = promise();
 		return !p || p->completed();
 	}
 
 	Future_type& future() const
 	{
-		auto* p = m_promise.get();
+		auto* p = promise();
 		if(!p)
 			zth_throw(coro_already_completed{});
 
@@ -68,7 +244,7 @@ struct task {
 
 	void resume()
 	{
-		auto* p = m_promise.get();
+		auto* p = promise();
 		if(!p)
 			zth_throw(coro_already_completed{});
 
@@ -77,7 +253,7 @@ struct task {
 
 	decltype(auto) run()
 	{
-		auto* p = m_promise.get();
+		auto* p = promise();
 		if(!p)
 			zth_throw(coro_already_completed{});
 
@@ -103,7 +279,7 @@ struct task {
 
 	void await_suspend(std::coroutine_handle<> UNUSED_PAR(h))
 	{
-		auto* p = m_promise.get();
+		auto* p = promise();
 		if(!p)
 			return;
 
@@ -127,126 +303,6 @@ struct task {
 
 private:
 	zth::SharedPointer<promise_type> m_promise;
-};
-
-class promise_base : public RefCounted, public UniqueID<promise_base> {
-public:
-	// NOLINTNEXTLINE
-	static void* operator new(std::size_t n)
-	{
-		return ::zth::allocate<char>(n);
-	}
-
-	static void operator delete(void* ptr, std::size_t n)
-	{
-		::zth::deallocate<char>(static_cast<char*>(ptr), n);
-	}
-
-	virtual ~promise_base() noexcept override = default;
-
-protected:
-	promise_base(cow_string const& name)
-		: UniqueID{name}
-	{}
-};
-
-template <typename Promise>
-class promise : public promise_base {
-public:
-	using promise_type = Promise;
-
-protected:
-	promise(cow_string const& name)
-		: promise_base{name}
-	{}
-
-public:
-	virtual ~promise() noexcept override = default;
-
-	auto handle() noexcept
-	{
-		return std::coroutine_handle<promise_type>::from_promise(self());
-	}
-
-	std::suspend_always initial_suspend() noexcept
-	{
-		return {};
-	}
-
-	std::suspend_always final_suspend() noexcept
-	{
-		// Make sure to suspend, otherwise the coroutine is destroyed immediately upon
-		// return. However, we need RefCounted to manage this.
-		return {};
-	}
-
-	bool running() const noexcept
-	{
-		return m_running;
-	}
-
-	void resume()
-	{
-		if(m_running)
-			return;
-
-		auto h = handle();
-		zth_assert(h);
-
-		if(h.done())
-			return;
-
-		m_running = true;
-		zth_dbg(coro, "[%s] Resuming", id_str());
-		h();
-		m_running = false;
-	}
-
-	void run()
-	{
-		if(running())
-			zth_throw(coro_invalid_state{});
-
-		auto h = handle();
-		zth_assert(h);
-
-		m_running = true;
-		zth_dbg(coro, "[%s] Run", id_str());
-
-		try {
-			while(!self().completed()) {
-				h();
-				zth::yield();
-			}
-		} catch(...) {
-			m_running = false;
-			zth_throw();
-		}
-
-		m_running = false;
-	}
-
-protected:
-	promise_type const& self() const noexcept
-	{
-		return static_cast<promise_type const&>(*this);
-	}
-
-	promise_type& self() noexcept
-	{
-		return static_cast<promise_type&>(*this);
-	}
-
-private:
-	// Invoked when RefCounted count reaches zero.
-	virtual void cleanup() noexcept final
-	{
-		zth_dbg(coro, "[%s] Cleanup", id_str());
-		handle().destroy();
-	}
-
-private:
-	bool m_running = false;
 };
 
 template <typename T>
@@ -277,20 +333,20 @@ public:
 		return m_future.valid();
 	}
 
-	auto get_return_object()
+	auto get_return_object() noexcept
 	{
 		zth_dbg(coro, "[%s] New %p", this->id_str(), this->handle().address());
 		return task{this};
 	}
 
 	template <typename T_>
-	void return_value(T_&& v)
+	void return_value(T_&& v) noexcept
 	{
 		zth_dbg(coro, "[%s] Returned", this->id_str());
 		m_future.set(std::forward<T_>(v));
 	}
 
-	void unhandled_exception()
+	void unhandled_exception() noexcept
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_future.set(std::current_exception());
@@ -324,19 +380,19 @@ public:
 		return m_future.valid();
 	}
 
-	auto get_return_object()
+	auto get_return_object() noexcept
 	{
 		zth_dbg(coro, "[%s] New %p", this->id_str(), this->handle().address());
 		return task{this};
 	}
 
 	template <typename X = void>
-	void return_void()
+	void return_void() noexcept
 	{
 		m_future.set();
 	}
 
-	void unhandled_exception()
+	void unhandled_exception() noexcept
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_future.set(std::current_exception());
@@ -346,12 +402,376 @@ private:
 	Future_type m_future;
 };
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Generators
+//
+// A generator is a coroutine that produces a sequence of values. It does not produce a return
+// value.
+//
+
+template <typename T>
+class generator_promise;
+
+template <typename T>
+requires(!std::is_void_v<T>) struct generator {
+	using return_type = T;
+	using promise_type = generator_promise<return_type>;
+	using Mailbox_type = typename promise_type::Mailbox_type;
+
+	explicit generator(std::coroutine_handle<promise_type> h) noexcept
+		: m_promise{h.promise()}
+	{}
+
+	explicit generator(zth::SharedPointer<promise_type> const& p) noexcept
+		: m_promise{std::move(p)}
+	{}
+
+	explicit generator(zth::SharedPointer<promise_type>&& p) noexcept
+		: m_promise{std::move(p)}
+	{}
+
+	explicit generator(promise_type* p = nullptr) noexcept
+		: m_promise{p}
+	{}
+
+	bool completed() const noexcept
+	{
+		auto* p = m_promise.get();
+		return !p || p->completed();
+	}
+
+	Mailbox_type& mailbox() const
+	{
+		auto* p = m_promise.get();
+		if(!p)
+			zth_throw(coro_already_completed{});
+
+		return p->mailbox();
+	}
+
+	bool valid() const noexcept
+	{
+		auto* p = m_promise.get();
+		return p && p->mailbox().valid();
+	}
+
+	decltype(auto) value()
+	{
+		return mailbox().take();
+	}
+
+	void resume()
+	{
+		auto* p = m_promise.get();
+		if(!p)
+			zth_throw(coro_already_completed{});
+
+		p->resume();
+	}
+
+	void generate()
+	{
+		auto* p = m_promise.get();
+		if(!p)
+			zth_throw(coro_already_completed{});
+
+		p->generate();
+	}
+
+	void run()
+	{
+		auto* p = m_promise.get();
+		if(!p)
+			zth_throw(coro_already_completed{});
+
+		p->run();
+
+		if(!completed())
+			return;
+
+#  ifdef ZTH_FUTURE_EXCEPTION
+		auto exc = p->mailbox().exception();
+		if(exc)
+			std::rethrow_exception(exc);
+#  endif // ZTH_FUTURE_EXCEPTION
+	}
+
+	Mailbox_type& to_fiber()
+	{
+		zth::fiber([](generator g) { g.run(); }, *this);
+		return mailbox();
+	}
+
+	/////////////////////////////////////////////////////
+	// Range support
+	//
+
+	generator& begin()
+	{
+		generate();
+		return *this;
+	}
+
+	struct end_type {};
+
+	end_type end()
+	{
+		return end_type{};
+	}
+
+	bool operator==(end_type) const
+	{
+		return completed();
+	}
+
+	bool operator!=(end_type) const
+	{
+		return !completed();
+	}
+
+	generator& operator++()
+	{
+		generate();
+		return *this;
+	}
+
+	decltype(auto) operator++(int)
+	{
+		auto temp = *this;
+		generate();
+		return temp;
+	}
+
+	decltype(auto) operator*()
+	{
+		zth_assert(valid());
+		return value();
+	}
+
+	decltype(auto) operator->()
+	{
+		zth_assert(valid());
+		return &value();
+	}
+
+	/////////////////////////////////////////////////////
+	// Coroutine support
+	//
+
+	auto& operator co_await() noexcept
+	{
+		return *this;
+	}
+
+	bool await_ready() const noexcept
+	{
+		return valid();
+	}
+
+	void await_suspend(std::coroutine_handle<> UNUSED_PAR(h))
+	{
+		auto* p = m_promise.get();
+		if(!p)
+			return;
+
+		if(p->running()) {
+			// Probably running in another fiber. Just wait.
+			zth_dbg(coro, "[%s] Awaited by %p", p->id_str(), (void*)h.address());
+
+			p->mailbox().wait();
+		} else {
+			zth_dbg(coro, "[%s] Awaited by %p; generating", p->id_str(),
+				(void*)h.address());
+
+			p->generate();
+		}
+	}
+
+	decltype(auto) await_resume()
+	{
+		return value();
+	}
+
+private:
+	zth::SharedPointer<promise_type> m_promise;
+};
+
+template <typename T>
+class generator_promise final : public promise<generator_promise<T>> {
+public:
+	using yield_type = T;
+	using Mailbox_type = Mailbox<yield_type>;
+	using generator_type = generator<yield_type>;
+	using base = promise<generator_promise<yield_type>>;
+
+	/////////////////////////////////////////////////////
+	// Administration
+	//
+
+	generator_promise()
+		: base{"coro::generator"}
+	{}
+
+	virtual ~generator_promise() noexcept override = default;
+
+	Mailbox_type const& mailbox() const noexcept
+	{
+		return m_mailbox;
+	}
+
+	Mailbox_type& mailbox() noexcept
+	{
+		return m_mailbox;
+	}
+
+	bool completed() const noexcept
+	{
+		return m_completed;
+	}
+
+	bool valid() const noexcept
+	{
+		return m_mailbox.valid() && !completed();
+	}
+
+	void generate()
+	{
+		if(completed())
+			zth_throw(coro_already_completed{});
+		if(mailbox().valid())
+			return;
+		if(this->running())
+			// Just wait for another fiber to fill the mailbox.
+			return;
+
+		auto h = this->handle();
+		zth_assert(h && !h.done());
+
+		zth_dbg(coro, "[%s] Generate", this->id_str());
+		try {
+			this->running(true);
+			do {
+				h();
+				zth::yield();
+			} while(!completed() && !mailbox().valid());
+			this->running(false);
+		} catch(...) {
+			this->running(false);
+			zth_throw();
+		}
+	}
+
+	auto get_return_object()
+	{
+		zth_dbg(coro, "[%s] New %p", this->id_str(), this->handle().address());
+		return generator{this};
+	}
+
+	template <typename T_>
+	decltype(auto) yield_value(T_&& v)
+	{
+		zth_dbg(coro, "[%s] Yield", this->id_str());
+		m_mailbox.put(std::forward<T_>(v));
+
+		struct awaiter {
+			generator_promise& p;
+
+			bool await_ready() const noexcept
+			{
+				return false;
+			}
+
+			void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept
+			{
+				p.running(false);
+			}
+
+			void await_resume() noexcept
+			{
+				p.running(true);
+				p.mailbox().wait_empty();
+			}
+		};
+
+		return awaiter{*this};
+	}
+
+	void return_void()
+	{
+		zth_dbg(coro, "[%s] Done", this->id_str());
+		m_completed = true;
+	}
+
+	void unhandled_exception()
+	{
+		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
+		m_completed = true;
+		zth_assert(!m_mailbox.valid());
+		m_mailbox.put(std::current_exception());
+	}
+
+private:
+	Mailbox_type m_mailbox;
+	bool m_completed = false;
+};
+
 } // namespace coro
 } // namespace zth
 
-static inline decltype(auto) operator co_await(zth::Mutex& m) noexcept
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Awaitable Synchronizer classes
+//
+
+template <typename T, typename P>
+static inline decltype(auto)
+operator co_await(zth::coro::awaitable<zth::coro::task<T>&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
+		zth::coro::task<T>& task;
+		P& promise;
+
+		bool await_ready() const noexcept
+		{
+			return task.completed();
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h))
+		{
+			auto* p = task.promise();
+			if(!p)
+				return;
+
+			if(p->running()) {
+				// Probably running in another fiber. Just wait.
+				zth_dbg(coro, "[%s] Awaited by %p", p->id_str(),
+					(void*)h.address());
+
+				p->future().wait();
+			} else {
+				zth_dbg(coro, "[%s] Awaited by %p; resuming", p->id_str(),
+					(void*)h.address());
+
+				p->run();
+			}
+		}
+
+		decltype(auto) await_resume()
+		{
+			return task.result();
+		}
+	};
+
+	return awaiter{a.awaitable, a.promise};
+}
+
+template <typename P>
+static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Mutex&, P>&& a) noexcept
+{
+	struct awaiter {
 		zth::Mutex& mutex;
 
 		bool await_ready() const noexcept
@@ -367,12 +787,14 @@ static inline decltype(auto) operator co_await(zth::Mutex& m) noexcept
 		}
 	};
 
-	return awaitable{m};
+	return awaiter{a.awaitable};
 }
 
-static inline decltype(auto) operator co_await(zth::Semaphore& s) noexcept
+template <typename P>
+static inline decltype(auto)
+operator co_await(zth::coro::awaitable<zth::Semaphore&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
 		zth::Semaphore& sem;
 
 		bool await_ready() const noexcept
@@ -388,12 +810,13 @@ static inline decltype(auto) operator co_await(zth::Semaphore& s) noexcept
 		}
 	};
 
-	return awaitable{s};
+	return awaiter{a.awaitable};
 }
 
-static inline decltype(auto) operator co_await(zth::Signal& s) noexcept
+template <typename P>
+static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Signal&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
 		zth::Signal& signal;
 
 		bool await_ready() const noexcept
@@ -409,24 +832,22 @@ static inline decltype(auto) operator co_await(zth::Signal& s) noexcept
 		}
 	};
 
-	return awaitable{s};
+	return awaiter{a.awaitable};
 }
 
-template <typename T>
-static inline decltype(auto) operator co_await(zth::Future<T>& f) noexcept
+template <typename T, typename P>
+static inline decltype(auto)
+operator co_await(zth::coro::awaitable<zth::Future<T>&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
 		zth::Future<T>& future;
 
 		bool await_ready() const noexcept
 		{
-			return future.valid();
+			return true;
 		}
 
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept
-		{
-			future.wait();
-		}
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
 
 		decltype(auto) await_resume() const
 		{
@@ -434,13 +855,14 @@ static inline decltype(auto) operator co_await(zth::Future<T>& f) noexcept
 		}
 	};
 
-	return awaitable{f};
+	return awaiter{a.awaitable};
 }
 
-template <typename T>
-static inline decltype(auto) operator co_await(zth::Mailbox<T>& m) noexcept
+template <typename T, typename P>
+static inline decltype(auto)
+operator co_await(zth::coro::awaitable<zth::Mailbox<T>&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
 		zth::Mailbox<T>& mailbox;
 
 		bool await_ready() const noexcept
@@ -459,12 +881,13 @@ static inline decltype(auto) operator co_await(zth::Mailbox<T>& m) noexcept
 		}
 	};
 
-	return awaitable{m};
+	return awaiter{a.awaitable};
 }
 
-static inline decltype(auto) operator co_await(zth::Gate& m) noexcept
+template <typename P>
+static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Gate&, P>&& a) noexcept
 {
-	struct awaitable {
+	struct awaiter {
 		zth::Gate& gate;
 
 		bool await_ready() const noexcept
@@ -480,7 +903,7 @@ static inline decltype(auto) operator co_await(zth::Gate& m) noexcept
 		}
 	};
 
-	return awaitable{m};
+	return awaiter{a.awaitable};
 }
 
 #endif // ZTH_HAVE_CORO
