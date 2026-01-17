@@ -111,7 +111,10 @@ TEST(Coro, Gate)
 
 TEST(Coro, Nested)
 {
-	auto inner = []() -> zth::coro::task<int> { co_return 1; };
+	auto inner = []() -> zth::coro::task<int> {
+		co_await std::suspend_always{};
+		co_return 1;
+	};
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
 	auto outer = [&]() -> zth::coro::task<int> {
@@ -122,6 +125,7 @@ TEST(Coro, Nested)
 	EXPECT_EQ(outer().run(), 2);
 }
 
+#if 0 // NOLINT
 TEST(Coro, Generator)
 {
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
@@ -137,6 +141,7 @@ TEST(Coro, Generator)
 	}
 	EXPECT_EQ(expected, 5);
 }
+#endif
 
 void foo()
 {

@@ -24,13 +24,218 @@ namespace coro {
 
 
 /////////////////////////////////////////////////////////////////////////////
+// Awaitable types
+//
+
+template <typename T>
+static inline decltype(auto) awaitable(T&& awaitable) noexcept
+{
+	return std::forward<T>(awaitable);
+}
+
+static inline decltype(auto) awaitable(Mutex& mutex) noexcept
+{
+	struct impl {
+		zth::Mutex& mutex;
+
+		char const* id_str() const noexcept
+		{
+			return mutex.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		zth::Locked await_resume() const
+		{
+			return zth::Locked{mutex};
+		}
+	};
+
+	return impl{mutex};
+}
+
+static inline decltype(auto) awaitable(Semaphore& sem) noexcept
+{
+	struct impl {
+		zth::Semaphore& sem;
+
+		char const* id_str() const noexcept
+		{
+			return sem.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		decltype(auto) await_resume() const
+		{
+			return sem.acquire();
+		}
+	};
+
+	return impl{sem};
+}
+
+static inline decltype(auto) awaitable(Signal& signal) noexcept
+{
+	struct impl {
+		zth::Signal& signal;
+
+		char const* id_str() const noexcept
+		{
+			return signal.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		decltype(auto) await_resume() const
+		{
+			return signal.wait();
+		}
+	};
+
+	return impl{signal};
+}
+
+template <typename T>
+static inline decltype(auto) awaitable(Future<T>& future) noexcept
+{
+	struct impl {
+		zth::Future<T>& future;
+
+		char const* id_str() const noexcept
+		{
+			return future.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		decltype(auto) await_resume() const
+		{
+			return *future;
+		}
+	};
+
+	return impl{future};
+}
+
+template <typename T>
+static inline decltype(auto) awaitable(zth::Mailbox<T>& mailbox) noexcept
+{
+	struct impl {
+		zth::Mailbox<T>& mailbox;
+
+		char const* id_str() const noexcept
+		{
+			return mailbox.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		decltype(auto) await_resume() const
+		{
+			return mailbox.take();
+		}
+	};
+
+	return impl{mailbox};
+}
+
+static inline decltype(auto) awaitable(zth::Gate& gate) noexcept
+{
+	struct impl {
+		zth::Gate& gate;
+
+		char const* id_str() const noexcept
+		{
+			return gate.id_str();
+		}
+
+		bool await_ready() const noexcept
+		{
+			return true;
+		}
+
+		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
+
+		void await_resume() const
+		{
+			gate.wait();
+		}
+	};
+
+	return impl{gate};
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////
 // Promise base classes
 //
 
-template <typename Awaitable, typename Promise>
-struct awaitable {
-	Awaitable awaitable;
+template <typename Promise, typename Awaitable>
+struct promise_awaitable {
 	Promise& promise;
+	Awaitable awaitable;
+	bool suspended = false;
+
+	char const* id_str() const noexcept requires(requires(Awaitable a) { a.id_str(); })
+	{
+		return awaitable.id_str();
+	}
+
+	decltype(auto) await_ready() noexcept
+	{
+		return awaitable.await_ready();
+	}
+
+	decltype(auto) await_suspend(std::coroutine_handle<> h) noexcept
+	{
+		zth_assert(promise.handle().address() == h.address());
+
+		if constexpr(requires(Awaitable a) { a.id_str(); })
+			zth_dbg(coro, "[%s] Await suspend by %s", promise.id_str(),
+				awaitable.id_str());
+		else
+			zth_dbg(coro, "[%s] Await suspend", promise.id_str());
+
+		suspended = true;
+		promise.running(false);
+		return awaitable.await_suspend(h);
+	}
+
+	decltype(auto) await_resume()
+	{
+		if(suspended) {
+			promise.running(true);
+			zth_dbg(coro, "[%s] Await resume", promise.id_str());
+		}
+		return awaitable.await_resume();
+	}
 };
 
 class promise_base : public RefCounted, public UniqueID<promise_base> {
@@ -81,21 +286,18 @@ public:
 	decltype(auto) initial_suspend() noexcept
 	{
 		struct awaiter {
-			promise& p;
+			std::reference_wrapper<promise> p;
 
 			bool await_ready() noexcept
 			{
 				return false;
 			}
 
-			void await_suspend(std::coroutine_handle<>) noexcept
-			{
-				p.running(false);
-			}
+			void await_suspend(std::coroutine_handle<>) noexcept {}
 
 			void await_resume() noexcept
 			{
-				p.running(true);
+				p.get().running(true);
 			}
 		};
 
@@ -114,8 +316,11 @@ public:
 	template <typename A>
 	decltype(auto) await_transform(A&& a) noexcept
 	{
-		return awaitable<A, promise_type>{std::forward<A>(a), self()};
+		return promise_awaitable{self(), awaitable(std::forward<A>(a))};
 	}
+
+	template <typename P, typename A>
+	friend class promise_awaitable;
 
 	bool running() const noexcept
 	{
@@ -220,6 +425,12 @@ struct task {
 	promise_type* promise() const noexcept
 	{
 		return m_promise.get();
+	}
+
+	char const* id_str() const noexcept
+	{
+		auto* p = promise();
+		return p ? p->id_str() : "coro::task";
 	}
 
 	bool completed() const noexcept
@@ -719,192 +930,6 @@ private:
 
 } // namespace coro
 } // namespace zth
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Awaitable Synchronizer classes
-//
-
-template <typename T, typename P>
-static inline decltype(auto)
-operator co_await(zth::coro::awaitable<zth::coro::task<T>&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::coro::task<T>& task;
-		P& promise;
-
-		bool await_ready() const noexcept
-		{
-			return task.completed();
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h))
-		{
-			auto* p = task.promise();
-			if(!p)
-				return;
-
-			if(p->running()) {
-				// Probably running in another fiber. Just wait.
-				zth_dbg(coro, "[%s] Awaited by %p", p->id_str(),
-					(void*)h.address());
-
-				p->future().wait();
-			} else {
-				zth_dbg(coro, "[%s] Awaited by %p; resuming", p->id_str(),
-					(void*)h.address());
-
-				p->run();
-			}
-		}
-
-		decltype(auto) await_resume()
-		{
-			return task.result();
-		}
-	};
-
-	return awaiter{a.awaitable, a.promise};
-}
-
-template <typename P>
-static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Mutex&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Mutex& mutex;
-
-		bool await_ready() const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
-
-		zth::Locked await_resume() const
-		{
-			return zth::Locked{mutex};
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
-
-template <typename P>
-static inline decltype(auto)
-operator co_await(zth::coro::awaitable<zth::Semaphore&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Semaphore& sem;
-
-		bool await_ready() const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
-
-		decltype(auto) await_resume() const
-		{
-			return sem.acquire();
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
-
-template <typename P>
-static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Signal&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Signal& signal;
-
-		bool await_ready() const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
-
-		decltype(auto) await_resume() const
-		{
-			return signal.wait();
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
-
-template <typename T, typename P>
-static inline decltype(auto)
-operator co_await(zth::coro::awaitable<zth::Future<T>&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Future<T>& future;
-
-		bool await_ready() const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
-
-		decltype(auto) await_resume() const
-		{
-			return *future;
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
-
-template <typename T, typename P>
-static inline decltype(auto)
-operator co_await(zth::coro::awaitable<zth::Mailbox<T>&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Mailbox<T>& mailbox;
-
-		bool await_ready() const noexcept
-		{
-			return mailbox.valid();
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept
-		{
-			mailbox.wait();
-		}
-
-		decltype(auto) await_resume() const
-		{
-			return mailbox.take();
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
-
-template <typename P>
-static inline decltype(auto) operator co_await(zth::coro::awaitable<zth::Gate&, P>&& a) noexcept
-{
-	struct awaiter {
-		zth::Gate& gate;
-
-		bool await_ready() const noexcept
-		{
-			return true;
-		}
-
-		void await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept {}
-
-		void await_resume() const
-		{
-			gate.wait();
-		}
-	};
-
-	return awaiter{a.awaitable};
-}
 
 #endif // ZTH_HAVE_CORO
 #endif // ZTH_CORO_H
