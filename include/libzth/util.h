@@ -698,7 +698,7 @@ inline string err(int e)
 
 class UniqueIDBase {
 protected:
-	virtual char const* id_str() const = 0;
+	virtual char const* id_str() const noexcept = 0;
 	virtual ~UniqueIDBase() is_default
 	friend cow_string str<UniqueIDBase const&>(UniqueIDBase const&);
 };
@@ -760,25 +760,30 @@ public:
 	}
 #  endif
 
-	virtual char const* id_str() const override
+	virtual char const* id_str() const noexcept override
 	{
 		if(unlikely(m_id_str.empty())) {
-			m_id_str =
+			try {
+				m_id_str =
 #  ifdef ZTH_OS_BAREMETAL
-				// No OS, no pid. And if newlib is used, don't try to format 64-bit
-				// ints.
-				format("%s #%u", name().empty() ? "Object" : name().c_str(),
-				       (unsigned int)id());
+					// No OS, no pid. And if newlib is used, don't try to format
+					// 64-bit ints.
+					format("%s #%u", name().empty() ? "Object" : name().c_str(),
+					       (unsigned int)id());
 #  else
-				format("%s #%u:%" PRIu64,
-				       name().empty() ? "Object" : name().c_str(),
+					format("%s #%u:%" PRIu64,
+					       name().empty() ? "Object" : name().c_str(),
 #    ifdef ZTH_OS_WINDOWS
-				       (unsigned int)_getpid(),
+					       (unsigned int)_getpid(),
 #    else
-				       (unsigned int)getpid(),
+					       (unsigned int)getpid(),
 #    endif
-				       id_());
+					       id_());
 #  endif
+			} catch(...) {
+				// Ignore exceptions here.
+			}
+
 			if(unlikely(m_id_str.empty()))
 				// Should not happen, but make sure the string is not empty.
 				m_id_str = "?";
@@ -829,7 +834,7 @@ public:
 	}
 #  endif
 
-	virtual char const* id_str() const override
+	virtual char const* id_str() const noexcept override
 	{
 		return name().c_str();
 	}
