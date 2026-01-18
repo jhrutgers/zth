@@ -213,7 +213,7 @@ struct promise_awaitable {
 		return awaitable.await_ready();
 	}
 
-	decltype(auto) await_suspend(std::coroutine_handle<> h) noexcept
+	std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
 	{
 		zth_assert(promise.handle().address() == h.address());
 
@@ -225,7 +225,24 @@ struct promise_awaitable {
 
 		suspended = true;
 		promise.running(false);
-		return awaitable.await_suspend(h);
+		zth::yield();
+
+		if constexpr(std::is_void_v<decltype(awaitable.await_suspend(h))>) {
+			awaitable.await_suspend(h);
+			return h;
+		} else if constexpr(std::is_same_v<bool, decltype(awaitable.await_suspend(h))>) {
+			awaitable.await_suspend(h);
+			return h;
+		} else if constexpr(std::is_convertible_v<
+					    decltype(awaitable.await_suspend(h)),
+					    std::coroutine_handle<>>) {
+			auto c = awaitable.await_suspend(h);
+			return c ? c : h;
+		} else {
+			static_assert(
+				false,
+				"await_suspend must return void, bool, or std::coroutine_handle<>");
+		}
 	}
 
 	decltype(auto) await_resume()
@@ -286,7 +303,7 @@ public:
 	decltype(auto) initial_suspend() noexcept
 	{
 		struct awaiter {
-			std::reference_wrapper<promise> p;
+			promise& p;
 
 			bool await_ready() noexcept
 			{
@@ -297,20 +314,33 @@ public:
 
 			void await_resume() noexcept
 			{
-				p.get().running(true);
+				p.running(true);
+				zth_dbg(coro, "[%s] Initial resume", p.id_str());
 			}
 		};
 
 		return awaiter{*this};
 	}
 
-	std::suspend_always final_suspend() noexcept
+	decltype(auto) final_suspend() noexcept
 	{
-		running(false);
+		struct impl {
+			promise_type& p;
 
-		// Make sure to suspend, otherwise the coroutine is destroyed immediately upon
-		// return. However, we need RefCounted to manage this.
-		return {};
+			bool await_ready() noexcept
+			{
+				return false;
+			}
+
+			void await_suspend(std::coroutine_handle<>) noexcept
+			{
+				p.running(false);
+			}
+
+			void await_resume() noexcept {}
+		};
+
+		return impl{self()};
 	}
 
 	template <typename A>
@@ -354,10 +384,8 @@ public:
 
 		zth_dbg(coro, "[%s] Run", id_str());
 
-		while(!self().completed()) {
+		while(!self().completed())
 			h();
-			zth::yield();
-		}
 	}
 
 protected:
@@ -485,26 +513,15 @@ struct task {
 
 	bool await_ready() const noexcept
 	{
-		return completed();
+		return completed() || promise()->running();
 	}
 
-	void await_suspend(std::coroutine_handle<> UNUSED_PAR(h))
+	std::coroutine_handle<promise_type> await_suspend(std::coroutine_handle<> h) noexcept
 	{
 		auto* p = promise();
-		if(!p)
-			return;
-
-		if(p->running()) {
-			// Probably running in another fiber. Just wait.
-			zth_dbg(coro, "[%s] Awaited by %p", p->id_str(), (void*)h.address());
-
-			p->future().wait();
-		} else {
-			zth_dbg(coro, "[%s] Awaited by %p; resuming", p->id_str(),
-				(void*)h.address());
-
-			p->run();
-		}
+		zth_assert(p && !p->running());
+		p->set_continuation(h);
+		return p->handle();
 	}
 
 	decltype(auto) await_resume()
@@ -517,22 +534,19 @@ private:
 };
 
 template <typename T>
-class task_promise final : public promise<task_promise<T>> {
+class task_promise_base : public promise<task_promise<T>> {
 public:
 	using return_type = T;
+	using base = promise<task_promise<return_type>>;
+	using typename base::promise_type;
 	using Future_type = Future<return_type>;
 	using task_type = task<return_type>;
-	using base = promise<task_promise<return_type>>;
 
-	/////////////////////////////////////////////////////
-	// Administration
-	//
-
-	task_promise()
+	task_promise_base()
 		: base{"coro::task"}
 	{}
 
-	virtual ~task_promise() noexcept override = default;
+	virtual ~task_promise_base() noexcept override = default;
 
 	Future_type& future() noexcept
 	{
@@ -547,70 +561,84 @@ public:
 	auto get_return_object() noexcept
 	{
 		zth_dbg(coro, "[%s] New %p", this->id_str(), this->handle().address());
-		return task{this};
+		return task{static_cast<promise_type*>(this)};
 	}
+
+	decltype(auto) final_suspend() noexcept
+	{
+		struct impl {
+			promise_type& p;
+			decltype(std::declval<base>().final_suspend()) awaitable;
+
+			bool await_ready() noexcept
+			{
+				return awaitable.await_ready();
+			}
+
+			std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
+			{
+				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
+				awaitable.await_suspend(h);
+				return p.m_continuation ? p.m_continuation : std::noop_coroutine();
+			}
+
+			decltype(auto) await_resume() noexcept
+			{
+				return awaitable.await_resume();
+			}
+		};
+
+		return impl{this->self(), base::final_suspend()};
+	}
+
+	void unhandled_exception() noexcept
+	{
+		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
+		m_future.set(std::current_exception());
+	}
+
+	void set_continuation(std::coroutine_handle<> cont) noexcept
+	{
+		zth_assert(!m_continuation || !cont || m_continuation == cont);
+		m_continuation = cont;
+	}
+
+private:
+	Future_type m_future;
+	std::coroutine_handle<> m_continuation;
+};
+
+template <typename T>
+class task_promise final : public task_promise_base<T> {
+public:
+	using base = task_promise_base<T>;
+	using typename base::Future_type;
+	using typename base::return_type;
+
+	virtual ~task_promise() noexcept override = default;
 
 	template <typename T_>
 	void return_value(T_&& v) noexcept
 	{
 		zth_dbg(coro, "[%s] Returned", this->id_str());
-		m_future.set(std::forward<T_>(v));
+		this->future().set(std::forward<T_>(v));
 	}
-
-	void unhandled_exception() noexcept
-	{
-		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
-		m_future.set(std::current_exception());
-	}
-
-private:
-	Future_type m_future;
 };
 
 template <>
-class task_promise<void> final : public promise<task_promise<void>> {
+class task_promise<void> final : public task_promise_base<void> {
 public:
+	using base = task_promise_base<void>;
 	using return_type = void;
-	using Future_type = Future<return_type>;
-	using task_type = task<return_type>;
-	using base = promise<task_promise<return_type>>;
-
-	task_promise()
-		: base{"coro::task"}
-	{}
+	using typename base::Future_type;
 
 	virtual ~task_promise() noexcept override = default;
 
-	Future_type& future() noexcept
-	{
-		return m_future;
-	}
-
-	bool completed() const noexcept
-	{
-		return m_future.valid();
-	}
-
-	auto get_return_object() noexcept
-	{
-		zth_dbg(coro, "[%s] New %p", this->id_str(), this->handle().address());
-		return task{this};
-	}
-
-	template <typename X = void>
 	void return_void() noexcept
 	{
-		m_future.set();
+		zth_dbg(coro, "[%s] Returned", this->id_str());
+		this->future().set();
 	}
-
-	void unhandled_exception() noexcept
-	{
-		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
-		m_future.set(std::current_exception());
-	}
-
-private:
-	Future_type m_future;
 };
 
 
@@ -865,7 +893,6 @@ public:
 			this->running(true);
 			do {
 				h();
-				zth::yield();
 			} while(!completed() && !mailbox().valid());
 			this->running(false);
 		} catch(...) {
