@@ -663,6 +663,12 @@ inline cow_string str<long double>(long double value)
 		return format("%Lg", value);
 }
 
+template <>
+inline cow_string str<void*>(void* value)
+{
+	return format("%p", value);
+}
+
 #  if __cplusplus >= 201103L
 template <>
 inline cow_string str<string&&>(string&& value)

@@ -125,7 +125,6 @@ TEST(Coro, Nested)
 	EXPECT_EQ(outer().run(), 2);
 }
 
-#if 0 // NOLINT
 TEST(Coro, Generator)
 {
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-capturing-lambda-coroutines)
@@ -141,7 +140,6 @@ TEST(Coro, Generator)
 	}
 	EXPECT_EQ(expected, 5);
 }
-#endif
 
 void foo()
 {

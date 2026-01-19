@@ -64,7 +64,7 @@ private:
 	Fiber* m_fiber;
 };
 
-class TimedWaitable : public Waitable, public Listable<TimedWaitable> {
+class TimedWaitable : public Waitable, public Listable {
 	ZTH_CLASS_NEW_DELETE(TimedWaitable)
 public:
 	explicit TimedWaitable(Timestamp const& timeout = Timestamp()) noexcept
