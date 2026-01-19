@@ -179,8 +179,6 @@ TEST(Coro, Generator_coro2fibers)
 	auto g = []() -> zth::coro::generator<int> {
 		for(int i = 0; i < 5; i++)
 			co_yield i;
-
-		printf("Generator done\n");
 	};
 
 	auto consumer = [](zth::coro::generator<int> g) -> zth::coro::task<int> {
@@ -206,53 +204,28 @@ TEST(Coro, Generator_coro2fibers)
 	EXPECT_EQ(*f1 + *f2, 10);
 }
 
-
-void foo()
+TEST(Coro, Generator_fiber2fibers)
 {
-	int i = 20;
-	printf("In foo, %p\n", (void*)&i);
-}
-
-TEST(Coro, Coro)
-{
-	zth::Future<int> f;
-
-	zth::fiber([&]() { f = 1; });
-
-	zth::Signal sig;
-
-	auto c = [&]() -> zth::coro::task<int> {
-		printf("In inner coroutine\n");
-		co_return 1;
+	auto g = []() -> zth::coro::generator<int> {
+		for(int i = 0; i < 5; i++)
+			co_yield i;
 	};
 
-	// NOLINTNEXTLINE
-	auto coro = [&]() -> zth::coro::task<int> {
-		int i = 10;
-		printf("In coroutine, %p\n", (void*)&i);
-		foo();
-		printf("Before co_await\n");
-		auto x = co_await f;
-		printf("After co_await future; %d\n", x);
-
-		x = co_await c();
-		printf("After co_await coro; %d\n", x);
-
-		sig.signal();
-
-		co_return 42;
+	auto consumer = [](zth::coro::generator<int> g) -> zth::coro::task<int> {
+		int sum = 0;
+		try {
+			while(true)
+				sum += co_await g;
+		} catch(zth::coro_already_completed const&) {
+			co_return sum;
+		}
 	};
 
-	// NOLINTNEXTLINE
-	auto cf = [&]() -> zth::coro::task<int> {
-		printf("In coro fiber\n");
-		sig.wait();
-		printf("done coro fiber\n");
-		co_return 1;
-	};
-	auto fut = cf().fiber();
-
-	auto result = coro().run();
-	*fut;
-	EXPECT_EQ(result, 42);
+	auto gg = g();
+	gg.fiber() << zth::setName("generator");
+	auto f1 = consumer(gg).fiber() << zth::setName("f1");
+	auto f2 = consumer(gg).fiber() << zth::setName("f2");
+	EXPECT_NE(*f1, 0);
+	EXPECT_NE(*f2, 0);
+	EXPECT_EQ(*f1 + *f2, 10);
 }
