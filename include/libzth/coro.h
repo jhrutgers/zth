@@ -225,7 +225,6 @@ struct promise_awaitable {
 
 		suspended = true;
 		promise.running(false);
-		// zth::yield();
 
 		if constexpr(std::is_void_v<decltype(awaitable.await_suspend(h))>) {
 			awaitable.await_suspend(h);
@@ -444,19 +443,11 @@ struct task_fiber {
 	}
 
 	template <typename M>
-	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber& operator<<(M&& m) &
+	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber& operator<<(M const& m)
 	{
 		zth_assert(!task.completed());
-		fiber << std::forward<M>(m);
+		fiber << m;
 		return *this;
-	}
-
-	template <typename M>
-	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber&& operator<<(M&& m) &&
-	{
-		zth_assert(!task.completed());
-		fiber << std::forward<M>(m);
-		return std::move(*this);
 	}
 
 	operator Fiber&() const noexcept
@@ -467,6 +458,12 @@ struct task_fiber {
 
 	operator typename Task::Future_type &() noexcept
 	{
+		return task.future();
+	}
+
+	decltype(auto) operator<<(asFuture const&)
+	{
+		zth_assert(!task.completed());
 		return task.future();
 	}
 };
@@ -720,7 +717,7 @@ public:
 
 	explicit Mailbox(promise_type& owner, cow_string const& name = "coro::Mailbox")
 		: base{name}
-		, m_owner{owner}
+		, m_owner{&owner}
 	{}
 
 	virtual ~Mailbox() noexcept override = default;
@@ -729,7 +726,8 @@ public:
 
 	promise_type& owner() const noexcept
 	{
-		return m_owner;
+		zth_assert(!abandoned());
+		return *m_owner;
 	}
 
 	std::coroutine_handle<> waiter() const noexcept
@@ -764,15 +762,13 @@ public:
 
 	void abandon()
 	{
-		if(m_waiter)
-			m_waiter = std::coroutine_handle<>{};
-
+		m_owner = nullptr;
 		this->unblockAll(base::Queue_Take);
 	}
 
 	bool abandoned() const noexcept
 	{
-		return !m_waiter;
+		return !m_owner;
 	}
 
 protected:
@@ -801,7 +797,7 @@ protected:
 	}
 
 private:
-	std::reference_wrapper<promise_type> m_owner;
+	promise_type* m_owner = nullptr;
 	std::coroutine_handle<> m_waiter;
 };
 
@@ -820,8 +816,8 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 
 		bool await_ready() noexcept
 		{
-			return mailbox.valid(nullptr) || mailbox.owner().running()
-			       || mailbox.owner().completed();
+			return mailbox.abandoned() || mailbox.valid(nullptr)
+			       || mailbox.owner().running();
 		}
 
 		std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
@@ -836,7 +832,7 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 			if(mailbox.valid(waiter)) {
 				// Got it.
 				return mailbox.take(waiter);
-			} else if(mailbox.owner().completed()) {
+			} else if(mailbox.abandoned()) {
 				// The generator has completed. Can't resume.
 				zth_throw(coro_already_completed{});
 			} else {
@@ -852,6 +848,29 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 
 template <typename T>
 class generator_promise;
+
+template <typename Generator, typename Fiber>
+struct generator_fiber {
+	Generator generator;
+	Fiber fiber;
+
+	template <typename M>
+	requires(std::is_base_of_v<FiberManipulator, M>) generator_fiber& operator<<(M const& m)
+	{
+		zth_assert(!generator.completed());
+		fiber << m;
+		return *this;
+	}
+
+	operator Fiber&() const noexcept
+	{
+		zth_assert(!generator.completed());
+		return fiber;
+	}
+
+private:
+	void operator<<(asFuture const&);
+};
 
 template <typename T>
 requires(!std::is_void_v<T>) class generator {
@@ -942,9 +961,9 @@ public:
 #  endif // ZTH_FUTURE_EXCEPTION
 	}
 
-	void fiber()
+	decltype(auto) fiber()
 	{
-		zth::fiber([](generator g) { g.run(); }, *this);
+		return generator_fiber{*this, zth::fiber([](generator g) { g.run(); }, *this)};
 	}
 
 	/////////////////////////////////////////////////////
