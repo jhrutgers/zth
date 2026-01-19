@@ -16,6 +16,11 @@ namespace zth {
 struct exception {};
 
 /*!
+ * \brief Exception thrown when an operation cannot be performed as there is no fiber context.
+ */
+struct not_in_fiber : public exception {};
+
+/*!
  * \brief Exception thrown when an operation cannot be performed, as the fiber is already dead.
  */
 struct fiber_already_dead : public exception {};

@@ -168,6 +168,11 @@ if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
 	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
 endif()
 
+if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+	# You want this when using C++20 coroutines, even in Debug builds.
+	target_compile_options(libzth PUBLIC -foptimize-sibling-calls)
+endif()
+
 install(
 	TARGETS libzth
 	EXPORT libzth

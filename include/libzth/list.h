@@ -95,9 +95,10 @@ public:
 	typedef Listable elem_type;
 	typedef elem_type::user_type user_type;
 
-	class iterator {
+	template <bool cyclic>
+	class Iterator {
 	public:
-		constexpr explicit iterator(elem_type* start, elem_type* current = nullptr) noexcept
+		constexpr explicit Iterator(elem_type* start, elem_type* current = nullptr) noexcept
 			: m_start(start)
 			, m_current(current)
 		{}
@@ -114,11 +115,12 @@ public:
 
 		elem_type* get() const noexcept
 		{
-			zth_assert(!atEnd());
+			zth_assert(cyclic || !atEnd());
 			return unlikely(atBegin()) ? m_start : m_current;
 		}
 
-		bool operator==(iterator const& rhs) const noexcept
+		template <bool C>
+		bool operator==(Iterator<C> const& rhs) const noexcept
 		{
 			if(atEnd())
 				return rhs.atEnd();
@@ -127,47 +129,47 @@ public:
 			return get() == rhs.get();
 		}
 
-		bool operator!=(iterator const& rhs) const noexcept
+		template <bool C>
+		bool operator!=(Iterator<C> const& rhs) const noexcept
 		{
 			return !(*this == rhs);
 		}
 
 		void next() noexcept
 		{
-			zth_assert(!atEnd());
+			zth_assert((cyclic || !atEnd()) && m_start);
 			m_current = unlikely(atBegin()) ? m_start->next : m_current->next;
 		}
 
 		void prev() noexcept
 		{
-			zth_assert(!atBegin());
-			zth_assert(m_start);
+			zth_assert((cyclic || !atEnd()) && m_start);
 			m_current =
 				unlikely(m_current->prev == m_start) ? nullptr : m_current->prev;
 		}
 
-		iterator& operator++() noexcept
+		Iterator& operator++() noexcept
 		{
 			next();
 			return *this;
 		}
 
-		iterator operator++(int) noexcept
+		Iterator operator++(int) noexcept
 		{
-			iterator i = *this;
+			Iterator i = *this;
 			next();
 			return i;
 		}
 
-		iterator& operator--() noexcept
+		Iterator& operator--() noexcept
 		{
 			prev();
 			return *this;
 		}
 
-		iterator operator--(int) noexcept
+		Iterator operator--(int) noexcept
 		{
-			iterator i = *this;
+			Iterator i = *this;
 			prev();
 			return i;
 		}
@@ -204,6 +206,9 @@ public:
 		elem_type* m_current;
 	};
 
+	typedef Iterator<false> iterator;
+	typedef Iterator<true> cyclic_iterator;
+
 	constexpr List() noexcept
 		: m_head()
 		, m_tail()
@@ -238,16 +243,18 @@ public:
 		zth_assert(elem.prev == nullptr);
 		zth_assert(elem.next == nullptr);
 
+		elem.user = user_type();
+
 		if(m_tail == nullptr) {
 			zth_assert(m_head == nullptr);
 			m_tail = m_head = elem.prev = elem.next = &elem;
+			return begin();
 		} else {
 			elem.next = m_tail->next;
 			elem.prev = m_tail;
 			m_tail = elem.next->prev = elem.prev->next = &elem;
+			return iterator(m_head, &elem);
 		}
-		elem.user = user_type();
-		return iterator(m_head, &elem);
 	}
 
 	user_type pop_back() noexcept
@@ -349,10 +356,10 @@ public:
 		return iterator(m_head);
 	}
 
-	iterator cyclic(elem_type& start) const noexcept
+	cyclic_iterator cyclic(elem_type& start) const noexcept
 	{
 		zth_assert(contains(start));
-		return iterator(&start);
+		return cyclic_iterator(&start);
 	}
 
 	iterator end() const noexcept

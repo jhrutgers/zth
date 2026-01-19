@@ -83,7 +83,7 @@ public:
 		return m_future;
 	}
 
-	SharedPointer<Future_type> withFuture()
+	SharedPointer<Future_type> const& withFuture()
 	{
 		if(!m_future.get()) {
 			registerFuture(
@@ -152,22 +152,7 @@ private:
 	SharedPointer<Future_type> m_future;
 };
 
-class FiberManipulator {
-protected:
-	constexpr FiberManipulator() noexcept is_default
-	virtual ~FiberManipulator() is_default
-	virtual void apply(Fiber& fiber) const = 0;
-
-	template <typename R>
-	friend TypedFiber<R>& operator<<(TypedFiber<R>& f, FiberManipulator const& m);
-};
-
-template <typename R>
-TypedFiber<R>& operator<<(TypedFiber<R>& f, FiberManipulator const& m)
-{
-	m.apply(f);
-	return f;
-}
+struct FiberManipulator {};
 
 /*!
  * \brief Change the stack size of a fiber returned by #zth_async.
@@ -186,23 +171,22 @@ TypedFiber<R>& operator<<(TypedFiber<R>& f, FiberManipulator const& m)
  *
  * \ingroup zth_api_cpp_fiber
  */
-class setStackSize : public FiberManipulator {
-public:
-	constexpr explicit setStackSize(size_t stack) noexcept
-		: m_stack(stack)
-	{}
-	virtual ~setStackSize() override is_default
-protected:
-	virtual void apply(Fiber& fiber) const override
-	{
-		int res = fiber.setStackSize(m_stack);
-		if(res)
-			zth_throw(errno_exception(res));
-	}
+struct setStackSize : public FiberManipulator {
+	size_t stack;
 
-private:
-	size_t m_stack;
+	constexpr setStackSize(size_t s) noexcept
+		: stack(s)
+	{}
 };
+
+template <typename R>
+TypedFiber<R>& operator<<(TypedFiber<R>& fiber, setStackSize const& m)
+{
+	int res = fiber.setStackSize(m.stack);
+	if(res)
+		zth_throw(errno_exception(res));
+	return fiber;
+}
 
 /*!
  * \brief Change the name of a fiber returned by #zth_async.
@@ -210,47 +194,50 @@ private:
  * \see zth::setStackSize() for an example
  * \ingroup zth_api_cpp_fiber
  */
-class setName : public FiberManipulator {
-public:
+struct setName : public FiberManipulator {
 #  if __cplusplus >= 201103L
-	explicit setName(char const* name)
-		: m_name(name ? std::string{name} : std::string{})
+	explicit setName(char const* n)
+		: name(n ? std::string{n} : std::string{})
 	{}
 
-	explicit setName(string const& name)
-		: m_name(name)
+	explicit setName(string const& n)
+		: name(n)
 	{}
-	explicit setName(string&& name)
-		: m_name(std::move(name))
+	explicit setName(string&& n)
+		: name(std::move(n))
 	{}
-#  else
-	explicit setName(char const* name)
-		: m_name(name)
+#  else	 // Pre C++11
+	explicit setName(char const* n)
+		: name(n)
 	{}
 
-	explicit setName(string const& name)
-		: m_name(name.c_str())
+	explicit setName(string const& n)
+		: name(n.c_str())
 	{}
-#  endif
+#  endif // Pre C++11
 
-	virtual ~setName() override is_default
-protected:
-	virtual void apply(Fiber& fiber) const override
-	{
 #  if __cplusplus >= 201103L
-		fiber.setName(std::move(m_name));
+	string name;
 #  else
-		fiber.setName(m_name);
-#  endif
-	}
-
-private:
-#  if __cplusplus >= 201103L
-	string m_name;
-#  else
-	char const* m_name;
+	char const* name;
 #  endif
 };
+
+template <typename R>
+TypedFiber<R>& operator<<(TypedFiber<R>& fiber, setName const& m)
+{
+	fiber.setName(m.name);
+	return fiber;
+}
+
+#  if __cplusplus >= 201103L
+template <typename R>
+TypedFiber<R>& operator<<(TypedFiber<R>& fiber, setName&& m)
+{
+	fiber.setName(std::move(m.name));
+	return fiber;
+}
+#  endif // C++11
 
 /*!
  * \brief Makes the fiber pass the given gate upon exit.
@@ -272,28 +259,52 @@ private:
  *
  * \ingroup zth_api_cpp_fiber
  */
-class passOnExit : public FiberManipulator {
+struct passOnExit : public FiberManipulator {
 public:
-	constexpr explicit passOnExit(Gate& gate) noexcept
-		: m_gate(&gate)
+	constexpr explicit passOnExit(Gate& g) noexcept
+		: gate(g)
 	{}
 
-	virtual ~passOnExit() override is_default
-
-protected:
-	static void cleanup(Fiber& UNUSED_PAR(f), void* gate)
+	static void cleanup(Fiber& UNUSED_PAR(f), void* g)
 	{
-		reinterpret_cast<Gate*>(gate)->pass();
+		reinterpret_cast<Gate*>(g)->pass();
 	}
 
-	virtual void apply(Fiber& fiber) const override
-	{
-		fiber.addCleanup(&cleanup, static_cast<void*>(m_gate));
-	}
-
-private:
-	Gate* m_gate;
+	Gate& gate;
 };
+
+template <typename R>
+TypedFiber<R>& operator<<(TypedFiber<R>& fiber, passOnExit const& m)
+{
+	fiber.addCleanup(&passOnExit::cleanup, static_cast<void*>(&m.gate));
+	return fiber;
+}
+
+/*!
+ * \brief Forces the fiber to have a future that outlives the fiber.
+ *
+ * This is a manipulator that calls #zth::TypedFiber::withFuture().
+ * Example:
+ * \code
+ * int foo() { ... }
+ * zth_fiber(foo)
+ *
+ * int main_fiber(int argc, char** argv) {
+ *     auto f = zth_async foo() << zth::asFuture();
+ *     return *f;
+ * }
+ * \endcode
+ *
+ * \ingroup zth_api_cpp_fiber
+ */
+struct asFuture : public FiberManipulator {};
+
+template <typename R>
+SharedReference<typename TypedFiber<R>::Future_type>
+operator<<(TypedFiber<R>& fiber, asFuture const&)
+{
+	return fiber.withFuture();
+}
 
 /*!
  * \brief Automatic create a future for a fiber, when needed.
@@ -919,8 +930,49 @@ template <typename F>
 struct fiber_type_impl {
 	typedef TypedFiberFactory<F> factory;
 	typedef typename factory::Function function;
-	typedef typename factory::TypedFiber_type& fiber;
 	typedef typename factory::AutoFuture_type future;
+
+	struct fiber {
+		typedef typename factory::TypedFiber_type type;
+		type& _fiber;
+
+		fiber(typename factory::TypedFiber_type& f) noexcept
+			: _fiber(f)
+		{}
+
+		typename factory::TypedFiber_type::Future_type::indirection_type operator*()
+		{
+			return *_fiber;
+		}
+
+		typename factory::TypedFiber_type::Future_type::member_type operator->()
+		{
+			return _fiber.operator->();
+		}
+
+		operator type&() const noexcept
+		{
+			return _fiber;
+		}
+
+		operator future() const noexcept
+		{
+			return _fiber;
+		}
+
+		template <typename Manipulator>
+		fiber& operator<<(Manipulator const& m)
+		{
+			_fiber << m;
+			return *this;
+		}
+
+		SharedReference<typename factory::TypedFiber_type::Future_type>
+		operator<<(asFuture const&)
+		{
+			return _fiber << asFuture{};
+		}
+	};
 };
 } // namespace impl
 
