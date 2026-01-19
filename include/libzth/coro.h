@@ -225,7 +225,7 @@ struct promise_awaitable {
 
 		suspended = true;
 		promise.running(false);
-		zth::yield();
+		// zth::yield();
 
 		if constexpr(std::is_void_v<decltype(awaitable.await_suspend(h))>) {
 			awaitable.await_suspend(h);
@@ -428,8 +428,52 @@ private:
 template <typename T>
 class task_promise;
 
+template <typename Task, typename Fiber>
+struct task_fiber {
+	Task task;
+	Fiber fiber;
+
+	decltype(auto) operator*()
+	{
+		return *task.future();
+	}
+
+	decltype(auto) operator->()
+	{
+		return &*task.future();
+	}
+
+	template <typename M>
+	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber& operator<<(M&& m) &
+	{
+		zth_assert(!task.completed());
+		fiber << std::forward<M>(m);
+		return *this;
+	}
+
+	template <typename M>
+	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber&& operator<<(M&& m) &&
+	{
+		zth_assert(!task.completed());
+		fiber << std::forward<M>(m);
+		return std::move(*this);
+	}
+
+	operator Fiber&() const noexcept
+	{
+		zth_assert(!task.completed());
+		return fiber;
+	}
+
+	operator typename Task::Future_type &() noexcept
+	{
+		return task.future();
+	}
+};
+
 template <typename T = void>
-struct task {
+class task {
+public:
 	using return_type = T;
 	using promise_type = task_promise<return_type>;
 	using Future_type = typename promise_type::Future_type;
@@ -505,10 +549,9 @@ struct task {
 		return run();
 	}
 
-	Future_type& to_fiber()
+	decltype(auto) fiber()
 	{
-		zth::fiber([](task t) { t.run(); }, *this);
-		return future();
+		return task_fiber{*this, zth::fiber([](task t) { t.run(); }, *this)};
 	}
 
 	auto& operator co_await() noexcept
@@ -651,8 +694,8 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 // Generators
 //
-// A generator is a coroutine that produces a sequence of values. It does not produce a return
-// value.
+// A generator is a coroutine that produces a sequence of values. It does not produce a
+// return value.
 //
 
 template <typename T>
@@ -694,19 +737,67 @@ public:
 		return m_waiter;
 	}
 
+	bool valid(std::coroutine_handle<> waiter) const noexcept
+	{
+		return waiter && base::valid(waiter.address());
+	}
+
+	using base::valid;
+
+	void wait(Listable& item, std::coroutine_handle<> waiter) noexcept
+	{
+		this->enqueue(item, this->Queue_Take).user() = waiter.address();
+		zth_dbg(coro, "[%s] Block coro %p", this->id_str(), (void*)waiter.address());
+	}
+
+	using base::wait;
+
+	type take(std::coroutine_handle<> waiter)
+	{
+		if(m_waiter == waiter)
+			m_waiter = std::coroutine_handle<>{};
+
+		return base::take(waiter.address());
+	}
+
+	using base::take;
+
+	void abandon()
+	{
+		if(m_waiter)
+			m_waiter = std::coroutine_handle<>{};
+
+		this->unblockAll(base::Queue_Take);
+	}
+
+	bool abandoned() const noexcept
+	{
+		return !m_waiter;
+	}
+
 protected:
-	virtual void
+	virtual void wait(base::assigned_type assigned) override
+	{
+		while(!valid(assigned)) {
+			this->block((size_t)base::Queue_Take);
+			if(abandoned())
+				zth_throw(coro_already_completed{});
+		}
+	}
+
+	virtual base::assigned_type
 	wakeup(Listable& item, typename base::queue_type::user_type user,
 	       bool prio) noexcept override
 	{
 		if(!user) {
-			// A fiber woke up. Pass through, we are not waiting for fibers here.
-			base::wakeup(item, user, prio);
-			return;
+			// A fiber woke up. Pass through, we are not waiting for fibers
+			// here.
+			return base::wakeup(item, user, prio);
 		}
 
 		zth_dbg(coro, "[%s] Unblock coro %s", this->id_str(), str(user).c_str());
 		m_waiter = std::coroutine_handle<>::from_address(user);
+		return user;
 	}
 
 private:
@@ -719,32 +810,38 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 {
 	struct impl {
 		Mailbox<T>& mailbox;
-		Listable item;
-		std::coroutine_handle<> waiter;
+		Listable item{};
+		std::coroutine_handle<> waiter{};
 
-		bool await_ready() const noexcept
+		char const* id_str() const noexcept
 		{
-			return mailbox.valid(nullptr) || mailbox.owner().running();
+			return mailbox.owner().id_str();
 		}
 
-		std::coroutine_handle<> await_suspend(std::coroutine_handle<> h)
+		bool await_ready() noexcept
+		{
+			return mailbox.valid(nullptr) || mailbox.owner().running()
+			       || mailbox.owner().completed();
+		}
+
+		std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
 		{
 			waiter = h;
-			mailbox.enqueue(item, mailbox.Queue_Take).user() = waiter.address();
-			zth_dbg(coro, "[%s] Block coro %p", mailbox.id_str(),
-				(void*)waiter.address());
-
-			return mailbox.owner();
+			mailbox.wait(item, waiter);
+			return mailbox.owner().handle();
 		}
 
 		decltype(auto) await_resume()
 		{
-			if(mailbox.valid(waiter.address())) {
+			if(mailbox.valid(waiter)) {
 				// Got it.
-				return mailbox.take(waiter.address());
+				return mailbox.take(waiter);
+			} else if(mailbox.owner().completed()) {
+				// The generator has completed. Can't resume.
+				zth_throw(coro_already_completed{});
 			} else {
-				// The generator runs in another fiber. Just supend our fiber while
-				// waiting.
+				// The generator runs in another fiber. Just supend our
+				// fiber while waiting.
 				return mailbox.take();
 			}
 		}
@@ -757,7 +854,8 @@ template <typename T>
 class generator_promise;
 
 template <typename T>
-requires(!std::is_void_v<T>) struct generator {
+requires(!std::is_void_v<T>) class generator {
+public:
 	using return_type = T;
 	using promise_type = generator_promise<return_type>;
 	using Mailbox_type = typename promise_type::Mailbox_type;
@@ -844,18 +942,9 @@ requires(!std::is_void_v<T>) struct generator {
 #  endif // ZTH_FUTURE_EXCEPTION
 	}
 
-	void to_fiber()
+	void fiber()
 	{
 		zth::fiber([](generator g) { g.run(); }, *this);
-	}
-
-	/////////////////////////////////////////////////////
-	// Coroutine support
-	//
-
-	decltype(auto) operator co_await() noexcept
-	{
-		return mailbox();
 	}
 
 	/////////////////////////////////////////////////////
@@ -879,6 +968,13 @@ requires(!std::is_void_v<T>) struct generator {
 private:
 	zth::SharedPointer<promise_type> m_promise;
 };
+
+template <template <typename> class G, typename T>
+requires(std::is_same_v<std::remove_reference_t<G<T>>, generator<T>>) //
+	static inline decltype(auto) awaitable(G<T> g) noexcept
+{
+	return awaitable(g.mailbox());
+}
 
 template <typename T>
 class generator_promise final : public promise<generator_promise<T>> {
@@ -973,7 +1069,36 @@ public:
 			void await_resume() noexcept {}
 		};
 
-		return impl{*this};
+		return this->await_transform(impl{*this});
+	}
+
+	decltype(auto) final_suspend() noexcept
+	{
+		struct impl {
+			generator_promise& self;
+			decltype(std::declval<base>().final_suspend()) awaitable;
+
+			bool await_ready() noexcept
+			{
+				return awaitable.await_ready();
+			}
+
+			std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
+			{
+				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
+				awaitable.await_suspend(h);
+				auto p = self.mailbox().waiter();
+				self.mailbox().abandon();
+				return p ? p : std::noop_coroutine();
+			}
+
+			decltype(auto) await_resume() noexcept
+			{
+				return awaitable.await_resume();
+			}
+		};
+
+		return impl{*this, base::final_suspend()};
 	}
 
 	void return_void() noexcept
@@ -986,7 +1111,6 @@ public:
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_completed = true;
-		zth_assert(!m_mailbox.valid());
 		m_mailbox.put(std::current_exception());
 	}
 

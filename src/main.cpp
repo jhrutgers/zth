@@ -49,8 +49,8 @@ int main(int argc, char** argv)
 	zth_preinit();
 	zth_dbg(thread, "main()");
 
-	int res = 0;
-	{
+	int res = EXIT_SUCCESS;
+	try {
 		zth::Worker w;
 		main_fiber_future f =
 			zth_async main_fiber(argc, argv) << zth::setName(
@@ -60,8 +60,22 @@ int main(int argc, char** argv)
 					: nullptr);
 
 		w.run();
-		if(f->valid())
+
+		if(!f->valid()) {
+			zth_dbg(thread, "main_fiber() did not exit normally");
+			res = EXIT_FAILURE;
+		} else {
 			res = f->value();
+		}
+	} catch(zth::errno_exception const& e) {
+		zth_dbg(thread, "main() caught exception with errno %d", e.error);
+		res = EXIT_FAILURE;
+	} catch(std::exception const& e) {
+		zth_dbg(thread, "main() caught exception: %s", e.what());
+		res = EXIT_FAILURE;
+	} catch(...) {
+		zth_dbg(thread, "main() caught unknown exception");
+		res = EXIT_FAILURE;
 	}
 
 	zth_dbg(thread, "main() returns %d", res);

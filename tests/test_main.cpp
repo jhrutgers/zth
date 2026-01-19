@@ -8,21 +8,18 @@
 
 #include <gtest/gtest.h>
 
-static int test_main()
-{
-	return RUN_ALL_TESTS();
-}
-zth_fiber(test_main)
-
 int main(int argc, char** argv)
 {
 	int res = 0;
 	testing::InitGoogleTest(&argc, argv);
-	{
+	try {
 		zth::Worker w;
-		test_main_future f = zth_async test_main();
+		auto f = zth::fiber([]() { return RUN_ALL_TESTS(); })
+			 << zth::setName("gtest") << zth::asFuture();
 		w.run();
-		res = f->value();
+		res = *f;
+	} catch(...) {
+		std::terminate();
 	}
 	return res;
 }
