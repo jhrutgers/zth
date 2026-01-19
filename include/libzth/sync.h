@@ -218,28 +218,37 @@ public:
 		m_object = std::move(p.m_object);
 		return *this;
 	}
+
+	constexpr14 operator SharedPointer<T>() && noexcept
+	{
+		return std::move(m_object);
+	}
 #  endif
 
-	constexpr T const& get() const noexcept
+	constexpr14 operator SharedPointer<T>() LREF_QUALIFIED noexcept
 	{
-		zth_assert(m_object.get());
+		return m_object;
+	}
+
+	constexpr T& get() const noexcept
+	{
+		zth_assert(valid());
 		return *m_object.get();
 	}
 
-	constexpr T& get() noexcept
-	{
-		zth_assert(m_object.get());
-		return *m_object.get();
-	}
-
-	constexpr14 decltype(*T{}) const operator*() const
+	constexpr14 decltype(*T()) operator*() const
 	{
 		return *get();
 	}
 
-	constexpr14 decltype(*T{}) operator*()
+	constexpr14 decltype(T().operator->()) operator->() const noexcept
 	{
-		return *get();
+		return get().operator->();
+	}
+
+	constexpr14 bool valid() const noexcept
+	{
+		return m_object.get();
 	}
 
 private:
@@ -890,7 +899,7 @@ public:
 	}
 #    endif // C++11
 #  else	   // !ZTH_FUTURE_EXCEPTION
-	type& value() noexcept LREF_QUALIFIED
+	type& value() LREF_QUALIFIED noexcept
 	{
 		zth_assert(valid());
 
@@ -898,7 +907,7 @@ public:
 		return *static_cast<type*>(p);
 	}
 
-	type const& value() const noexcept LREF_QUALIFIED
+	type const& value() const LREF_QUALIFIED noexcept
 	{
 		zth_assert(valid());
 
@@ -907,7 +916,7 @@ public:
 	}
 
 #    if __cplusplus >= 201103L
-	type value() noexcept&&
+	type value() && noexcept
 	{
 		zth_assert(valid());
 

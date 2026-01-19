@@ -28,14 +28,14 @@ TEST(FiberTest, v)
 	zth::fiber(&fiber_v);
 
 	fiber_v_future f = zth_async fiber_v();
-	f->wait();
+	f.wait();
 
 	*zth_async fiber_v();
 	*zth::fiber(fiber_v);
 	*zth::fiber(&fiber_v);
 
-	auto& fib = zth::fiber(fiber_v);
-	while(fib.state() != zth::Fiber::Dead)
+	auto fib = zth::fiber(fiber_v);
+	while(((zth::Fiber&)fib).state() != zth::Fiber::Dead)
 		zth::outOfWork();
 
 	EXPECT_THROW(*fib, zth::fiber_already_dead);
@@ -56,7 +56,7 @@ TEST(FiberTest, i)
 	zth::fiber(&fiber_i);
 
 	fiber_i_future f = zth_async fiber_i();
-	EXPECT_EQ(f->value(), 1);
+	EXPECT_EQ(*f, 1);
 	EXPECT_EQ(*zth_async fiber_i(), 1);
 	EXPECT_EQ(*zth::fiber(fiber_i), 1);
 	EXPECT_EQ(*zth::fiber(&fiber_i), 1);
@@ -78,7 +78,7 @@ TEST(FiberTest, ii)
 	zth::fiber(&fiber_ii, 2);
 
 	fiber_ii_future f = zth_async fiber_ii(3);
-	EXPECT_EQ(f->value(), 4);
+	EXPECT_EQ(*f, 4);
 	EXPECT_EQ(*zth_async fiber_ii(4), 5);
 	EXPECT_EQ(*zth::fiber(fiber_ii, 5), 6);
 	EXPECT_EQ(*zth::fiber(&fiber_ii, 6), 7);
@@ -101,7 +101,7 @@ TEST(FiberTest, iPi)
 	zth::fiber(&fiber_iPi, &i);
 
 	fiber_iPi_future f = zth_async fiber_iPi(&i);
-	EXPECT_EQ(f->value(), 5);
+	EXPECT_EQ(*f, 5);
 	EXPECT_EQ(*zth_async fiber_iPi(&i), 5);
 	EXPECT_EQ(*zth::fiber(fiber_iPi, &i), 5);
 	EXPECT_EQ(*zth::fiber(&fiber_iPi, &i), 5);
@@ -119,7 +119,7 @@ TEST(FiberTest, iRi)
 {
 	int i = 5;
 	fiber_iRi_future f = zth_async fiber_iRi(i);
-	EXPECT_EQ(f->value(), 6);
+	EXPECT_EQ(*f, 6);
 	EXPECT_EQ(i, 6);
 
 	zth_async fiber_iRi(i);
@@ -144,7 +144,7 @@ TEST(FiberTest, viRd)
 	int i = 6;
 	double d = 0.1;
 	fiber_viRd_future f = zth_async fiber_viRd(i, d);
-	f->wait();
+	f.wait();
 	EXPECT_DOUBLE_EQ(d, 0.6);
 
 	zth_async fiber_viRd(1, d);
@@ -173,7 +173,7 @@ TEST(FiberTest, did)
 	int i = 7;
 	double d = 0.1;
 	fiber_did_future f = zth_async fiber_did(i, d);
-	EXPECT_DOUBLE_EQ(f->value(), 0.7);
+	EXPECT_DOUBLE_EQ(*f, 0.7);
 	EXPECT_DOUBLE_EQ(*zth::fiber(fiber_did, 2, 0.2), 0.4);
 	EXPECT_DOUBLE_EQ(*zth::fiber(&fiber_did, 3, 0.2), 0.6);
 
@@ -194,7 +194,7 @@ TEST(FiberTest, viRdf)
 	double d = 0.1;
 	float f = 2.0f;
 	fiber_viRdf_future r = zth_async fiber_viRdf(i, d, f);
-	r->wait();
+	r.wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
 	zth_async fiber_viRdf(i, d, f);
@@ -216,7 +216,7 @@ TEST(FiberTest, didf)
 	double d = 0.1;
 	float f = 2.0f;
 	fiber_didf_future r = zth_async fiber_didf(i, d, f);
-	EXPECT_DOUBLE_EQ(r->value(), 1.8);
+	EXPECT_DOUBLE_EQ(*r, 1.8);
 	EXPECT_DOUBLE_EQ(*zth::fiber(fiber_didf, 2, 3.0, 4.F), 24.0);
 	EXPECT_DOUBLE_EQ(*zth::fiber(&fiber_didf, 2, 3.0, 5.F), 30.0);
 
@@ -238,7 +238,7 @@ TEST(FiberTest, viRdfPl)
 	float f = 2.0f;
 	long l = 1;
 	fiber_viRdfPl_future r = zth_async fiber_viRdfPl(i, d, f, &l);
-	r->wait();
+	r.wait();
 	EXPECT_DOUBLE_EQ(d, 3.2);
 
 	zth_async fiber_viRdfPl(i, d, f, &l);
@@ -261,7 +261,7 @@ TEST(FiberTest, diRdfPl)
 	float f = 2.0f;
 	long l = 1;
 	fiber_diRdfPl_future r = zth_async fiber_diRdfPl(i, d, f, &l);
-	EXPECT_DOUBLE_EQ(r->value(), 3.4);
+	EXPECT_DOUBLE_EQ(*r, 3.4);
 	EXPECT_DOUBLE_EQ(d, 3.4);
 
 	zth_async fiber_diRdfPl(i, d, f, &l);
@@ -278,9 +278,9 @@ TEST(FiberTest, direct_v)
 	fiber_type::factory factory = zth::factory(fiber_v);
 	fiber_type::fiber fiber = factory();
 	fiber_type::future future = fiber;
-	fiber_type::future future2 = fiber << zth::withFuture();
-	future->wait();
-	EXPECT_TRUE(future2->valid());
+	fiber_type::future future2 = fiber;
+	future.wait();
+	EXPECT_TRUE(future2.valid());
 
 	zth::outOfWork();
 }
@@ -292,9 +292,9 @@ TEST(FiberTest, direct_v_p)
 	fiber_type::factory factory = zth::factory(&fiber_v);
 	fiber_type::fiber fiber = factory();
 	fiber_type::future future = fiber;
-	fiber_type::future future2 = fiber.withFuture();
-	future->wait();
-	EXPECT_TRUE(future2->valid());
+	fiber_type::future future2 = fiber;
+	future.wait();
+	EXPECT_TRUE(future2.valid());
 
 	zth::outOfWork();
 }
@@ -303,7 +303,7 @@ TEST(FiberTest, direct_ii)
 {
 	auto factory = zth::factory(fiber_ii, "fiber_ii()");
 	auto future = factory(5).withFuture();
-	EXPECT_EQ(future->value(), 6);
+	EXPECT_EQ(*future, 6);
 
 	zth::outOfWork();
 }
@@ -311,8 +311,8 @@ TEST(FiberTest, direct_ii)
 TEST(FiberTest, direct_iPi)
 {
 	int i = 4;
-	auto f = zth::fiber(fiber_iPi, &i).withFuture();
-	EXPECT_EQ(f->value(), 5);
+	auto f = zth::fiber(fiber_iPi, &i) << zth::asFuture();
+	EXPECT_EQ(*f, 5);
 
 	zth::outOfWork();
 }
@@ -323,9 +323,9 @@ TEST(FiberTest, direct_viRdf)
 	double d = 0.1;
 	float f = 2.0f;
 
-	auto future =
-		(zth::fiber(fiber_viRdf, i, d, f) << zth::setName("fiber_viRdf()")).withFuture();
-	future->wait();
+	auto future = zth::fiber(fiber_viRdf, i, d, f)
+		      << zth::setName("fiber_viRdf()") << zth::asFuture();
+	future.wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 
 	zth_async fiber_viRdf(i, d, f);
@@ -358,9 +358,9 @@ TEST(FiberTest, exception)
 	zth_async fiber_exception();
 
 	fiber_exception_future f = zth_async fiber_exception();
-	f->wait();
+	f.wait();
 
-	EXPECT_TRUE(f->exception());
+	EXPECT_TRUE(f.exception());
 	EXPECT_NO_THROW(zth::fiber(fiber_exception));
 	EXPECT_THROW(*zth::fiber(fiber_exception), std::runtime_error);
 
@@ -378,7 +378,7 @@ TEST(FiberTest, exception_i)
 	zth_async fiber_exception_i();
 
 	fiber_exception_i_future f = zth_async fiber_exception_i();
-	EXPECT_THROW(f->value(), std::runtime_error);
+	EXPECT_THROW(*f, std::runtime_error);
 	EXPECT_NO_THROW(zth::fiber(fiber_exception_i));
 	EXPECT_THROW(*zth::fiber(fiber_exception_i), std::runtime_error);
 
@@ -399,15 +399,15 @@ TEST(FiberTest, lambda)
 	EXPECT_EQ(future->value(), 7);
 
 	i = 4;
-	EXPECT_EQ(zth::fiber(lambda2, 5).withFuture()->value(), 9);
+	EXPECT_EQ(*(zth::fiber(lambda2, 5) << zth::asFuture()), 9);
 
-	EXPECT_EQ(zth::fiber([&]() { return i; }).withFuture()->value(), 4);
-	EXPECT_EQ(*zth::fiber([&]() { return i + 1; }), 5);
+	EXPECT_EQ(*(zth::fiber([&]() { return i; }) << zth::asFuture()), 4);
+	EXPECT_EQ(*(zth::fiber([&]() { return i + 1; }) << zth::asFuture()), 5);
 
 	struct S {
 		int i;
 	};
-	EXPECT_EQ(zth::fiber([&]() { return S{2}; })->i, 2);
+	EXPECT_EQ((zth::fiber([&]() { return S{2}; }) << zth::asFuture())->i, 2);
 
 #ifdef ZTH_FUTURE_EXCEPTION
 	EXPECT_NO_THROW(zth::fiber([]() { throw std::runtime_error("Lambda exception"); }));

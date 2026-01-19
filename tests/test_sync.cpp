@@ -13,7 +13,7 @@ TEST(Sync, Mutex)
 	zth::Mutex m;
 	m.lock();
 
-	auto& f = zth::fiber([&]() { zth::Locked l{m}; });
+	auto f = zth::fiber([&]() { zth::Locked l{m}; });
 
 	for(int i = 0; i < 10; i++)
 		zth::outOfWork();
@@ -28,7 +28,7 @@ TEST(Sync, Mutex_C)
 	EXPECT_EQ(zth_mutex_init(&mutex), 0);
 	EXPECT_EQ(zth_mutex_lock(&mutex), 0);
 
-	auto& f = zth::fiber([&]() {
+	auto f = zth::fiber([&]() {
 		zth_mutex_lock(&mutex);
 		zth_mutex_unlock(&mutex);
 	});
