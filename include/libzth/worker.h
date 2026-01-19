@@ -195,16 +195,13 @@ reschedule:
 				nextFiber = &m_workerFiber;
 		}
 
-		zth_assert(nextFiber == &m_workerFiber || nextFiber->listPrev());
-		zth_assert(nextFiber == &m_workerFiber || nextFiber->listNext());
-
 		{
 			// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
 			Fiber* prevFiber = m_currentFiber;
 			m_currentFiber = nextFiber;
 
 			if(unlikely(nextFiber != &m_workerFiber))
-				m_runnableQueue.rotate(*nextFiber->listNext());
+				m_runnableQueue.rotate(*++m_runnableQueue.cyclic(*nextFiber));
 
 			int res =
 				nextFiber->run(likely(prevFiber) ? *prevFiber : m_workerFiber, now);

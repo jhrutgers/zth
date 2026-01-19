@@ -186,7 +186,14 @@ public:
 	}
 
 protected:
-	virtual List<Fiber>& queue(size_t q = 0) = 0;
+	typedef List<> queue_type;
+
+	virtual queue_type& queue(size_t q = 0) = 0;
+
+	queue_type::iterator enqueue(Listable& item, size_t q = 0)
+	{
+		return queue(q).push_back(item);
+	}
 
 	void block(size_t q = 0)
 	{
@@ -196,7 +203,7 @@ protected:
 
 		zth_dbg(sync, "[%s] Block %s", id_str(), f->id_str());
 		w->release(*f);
-		queue(q).push_back(*f);
+		enqueue(*f, q);
 		f->nap(Timestamp::null());
 		w->schedule();
 	}
@@ -207,55 +214,53 @@ protected:
 	 */
 	bool unblock(Fiber& f, size_t q = 0, bool prio = false) noexcept
 	{
-		auto& queue_ = queue(q);
+		queue_type& queue_ = queue(q);
 		if(!queue_.contains(f))
 			return false;
 
-		Worker* w = nullptr;
-		getContext(&w, nullptr);
-
-		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
-		queue_.erase(f);
-		f.wakeup();
-		w->add(&f, prio);
+		wakeup(f, queue_.erase(f), prio);
 		return true;
 	}
 
-	bool unblockFirst(size_t q = 0, bool prio = false) noexcept
+	Listable* unblockFirst(size_t q = 0, bool prio = false) noexcept
 	{
-		auto& queue_ = queue(q);
+		queue_type& queue_ = queue(q);
 		if(queue_.empty())
-			return false;
+			return nullptr;
 
 		Worker* w = nullptr;
 		getContext(&w, nullptr);
 
-		Fiber& f = queue_.front();
-		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
-		queue_.pop_front();
-		f.wakeup();
-		w->add(&f, prio);
-		return true;
+		Listable& l = queue_.front();
+		wakeup(l, queue_.pop_front(), prio);
+		return &l;
 	}
 
 	bool unblockAll(size_t q = 0, bool prio = false) noexcept
 	{
-		auto& queue_ = queue(q);
+		queue_type& queue_ = queue(q);
 		if(queue_.empty())
 			return false;
 
-		Worker* w = nullptr;
-		getContext(&w, nullptr);
-
-		zth_dbg(sync, "[%s] Unblock all", id_str());
-
 		while(!queue_.empty()) {
-			Fiber& f = queue_.front();
-			queue_.pop_front();
-			f.wakeup();
-			w->add(&f, prio);
+			Listable& f = queue_.front();
+			wakeup(f, queue_.pop_front(), prio);
 		}
 		return true;
+	}
+
+	virtual void wakeup(Listable& item, queue_type::user_type user, bool prio) noexcept
+	{
+		// Synchronizer only handles Fibers. Other types could be implemented in a derived
+		// class based on the user parameter.
+		zth_assert(user == queue_type::user_type());
+		Fiber& f = static_cast<Fiber&>(item);
+
+		Worker& w = currentWorker();
+
+		zth_dbg(sync, "[%s] Unblock %s", id_str(), f.id_str());
+		f.wakeup();
+		w.add(&f, prio);
 	}
 
 	class AlarmClock : public TimedWaitable {
@@ -356,6 +361,8 @@ template <size_t Size = 1>
 class Synchronizer : public SynchronizerBase {
 	ZTH_CLASS_NEW_DELETE(Synchronizer)
 public:
+	typedef SynchronizerBase base;
+
 	Synchronizer() is_default
 
 	explicit Synchronizer(cow_string const& name)
@@ -375,14 +382,16 @@ public:
 	}
 
 protected:
-	List<Fiber>& queue(size_t q = 0) final
+	typedef base::queue_type queue_type;
+
+	queue_type& queue(size_t q = 0) final
 	{
 		zth_assert(q < Size);
 		return m_queue[q];
 	}
 
 private:
-	List<Fiber> m_queue[Size];
+	queue_type m_queue[Size];
 };
 
 /*!
@@ -1185,11 +1194,13 @@ public:
 
 	explicit Mailbox(cow_string const& name = "Mailbox")
 		: Synchronizer(name)
+		, m_assigned()
 	{}
 
 #  if __cplusplus >= 201103L
 	explicit Mailbox(cow_string&& name)
 		: Synchronizer{std::move(name)}
+		, m_assigned()
 	{}
 #  endif // C++11
 
@@ -1200,6 +1211,11 @@ public:
 		return m_value.valid();
 	}
 
+	bool valid(void* assigned) const noexcept
+	{
+		return valid() && (!m_assigned || m_assigned == assigned);
+	}
+
 	operator bool() const noexcept
 	{
 		return valid();
@@ -1207,10 +1223,18 @@ public:
 
 	void wait()
 	{
-		while(!valid())
+		Fiber* f = &currentFiber();
+		wait(f);
+	}
+
+protected:
+	void wait(void* assigned)
+	{
+		while(!valid(assigned))
 			block((size_t)Queue_Take);
 	}
 
+public:
 	void wait_empty()
 	{
 		while(valid())
@@ -1267,7 +1291,13 @@ public:
 
 	type take()
 	{
-		take_prepare();
+		return take(&zth::currentFiber());
+	}
+
+protected:
+	type take(void* assigned)
+	{
+		take_prepare(assigned);
 
 #  ifdef ZTH_FUTURE_EXCEPTION
 		std::exception_ptr exc = m_value.exception();
@@ -1291,12 +1321,12 @@ private:
 	void put_finalize() noexcept
 	{
 		zth_dbg(sync, "[%s] Put", id_str());
-		unblockFirst(Queue_Take);
+		m_assigned = unblockFirst(Queue_Take);
 	}
 
-	void take_prepare()
+	void take_prepare(void* assigned)
 	{
-		wait();
+		wait(assigned);
 	}
 
 	void take_finalize() noexcept
@@ -1308,6 +1338,7 @@ private:
 
 private:
 	Optional<type> m_value;
+	void* m_assigned;
 };
 
 /*!
@@ -1871,8 +1902,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_destroy(zth_mailbox_t* mailbox) n
 }
 
 /*!
- * \brief Checks if a mailbox contains data.
- * \details This is a C-wrapper for zth::Mailbox::valid().
+ * \brief Checks if a mailbox contains data to take.
+ * \details This is a C-wrapper for zth::Mailbox::valid(zth::currentFiber()).
  * \ingroup zth_api_c_sync
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_valid(zth_mailbox_t* mailbox) noexcept
@@ -1880,7 +1911,21 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_valid(zth_mailbox_t* mailbox) noe
 	if(unlikely(!mailbox || !mailbox->p))
 		return EINVAL;
 
-	return static_cast<zth_mailbox_t_type*>(mailbox->p)->valid() ? 0 : EAGAIN;
+	return static_cast<zth_mailbox_t_type*>(mailbox->p)->valid(&zth::currentFiber()) ? 0
+											 : EAGAIN;
+}
+
+/*!
+ * \brief Checks if a mailbox is empty and can accept data.
+ * \details This is a C-wrapper for \c !zth::Mailbox::valid().
+ * \ingroup zth_api_c_sync
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_mailbox_can_put(zth_mailbox_t* mailbox) noexcept
+{
+	if(unlikely(!mailbox || !mailbox->p))
+		return EINVAL;
+
+	return static_cast<zth_mailbox_t_type*>(mailbox->p)->valid() ? EAGAIN : 0;
 }
 
 /*!
@@ -1976,7 +2021,8 @@ typedef struct {
 
 ZTH_EXPORT int zth_mailbox_init(zth_mailbox_t* mailbox);
 ZTH_EXPORT int zth_mailbox_destroy(zth_mailbox_t* mailbox);
-ZTH_EXPORT int zth_mailbox_valid(zth_mailbox_t* mailbox);
+ZTH_EXPORT int zth_mailbox_can_take(zth_mailbox_t* mailbox);
+ZTH_EXPORT int zth_mailbox_can_put(zth_mailbox_t* mailbox);
 ZTH_EXPORT int zth_mailbox_put(zth_mailbox_t* mailbox, uintptr_t value);
 ZTH_EXPORT int zth_mailbox_take(zth_mailbox_t* __restrict__ mailbox, uintptr_t* __restrict__ value);
 
