@@ -91,7 +91,7 @@ zth_fiber(testFiberCreateEntry)
 void testFiberCreate()
 {
 	testFiberCreateEntry_future f = zth_async testFiberCreateEntry();
-	f->wait();
+	f.wait();
 	zth::yield(nullptr, true); // Make sure to clean up old fibers.
 }
 

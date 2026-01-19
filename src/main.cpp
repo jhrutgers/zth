@@ -61,11 +61,11 @@ int main(int argc, char** argv)
 
 		w.run();
 
-		if(!f->valid()) {
+		if(!f.get().valid()) {
 			zth_dbg(thread, "main_fiber() did not exit normally");
 			res = EXIT_FAILURE;
 		} else {
-			res = f->value();
+			res = *f;
 		}
 	} catch(zth::errno_exception const& e) {
 		zth_dbg(thread, "main() caught exception with errno %d", e.error);

@@ -111,14 +111,14 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	// interesting functions:
 	// - poll whether the fiber has finished and the future becomes
 	//   therefore valid;
-	printf("fddd is %s\n", fddd->valid() ? "valid" : "not valid yet");
+	printf("fddd is %s\n", fddd.valid() ? "valid" : "not valid yet");
 
 	// - suspend the current fiber and wait until the fiber has finished;
-	fddd->wait();
+	fddd.wait();
 
 	// - retrieve the returned value by the fiber. If the future is not
 	//   valid yet, value() will imply wait().
-	printf("fddd = %g\n", fddd->value());
+	printf("fddd = %g\n", *fddd);
 	// In case the return type of the fiber is void, the value() function
 	// is not available.
 

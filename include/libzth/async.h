@@ -281,6 +281,73 @@ TypedFiber<R>& operator<<(TypedFiber<R>& fiber, passOnExit const& m)
 }
 
 /*!
+ * \brief Automatic create a future for a fiber, when needed.
+ *
+ * By default, a fiber does not save its return value. When a fiber is assigned to this class, a
+ * future is created automatically.
+ */
+template <typename T>
+class AutoFuture : public SharedReference<Future<T> /**/> {
+public:
+	typedef SharedReference<Future<T> /**/> base;
+	typedef Future<T> Future_type;
+
+	~AutoFuture() noexcept is_default
+
+	constexpr14 AutoFuture() noexcept
+		: base()
+	{}
+
+	// cppcheck-suppress noExplicitConstructor
+	constexpr14 AutoFuture(AutoFuture const& af) noexcept
+		: base((base const&)af)
+	{}
+
+	// cppcheck-suppress noExplicitConstructor
+	constexpr14 AutoFuture(base const& p) noexcept
+		: base(p)
+	{}
+
+	// cppcheck-suppress noExplicitConstructor
+	constexpr14 AutoFuture(SharedPointer<Future<T> /**/> const& p) noexcept
+		: base(p)
+	{}
+
+	// cppcheck-suppress noExplicitConstructor
+	AutoFuture(TypedFiber<T>& fiber)
+	{
+		*this = fiber;
+	}
+
+	AutoFuture& operator=(TypedFiber<T>& fiber)
+	{
+		*this = AutoFuture(fiber.withFuture());
+		return *this;
+	}
+
+	AutoFuture& operator=(AutoFuture const& af) noexcept
+	{
+		this->base::operator=((base const&)af);
+		return *this;
+	}
+
+	bool valid() const noexcept
+	{
+		return this->get() && this->get().valid();
+	}
+
+	void wait()
+	{
+		this->get().wait();
+	}
+
+	std::exception_ptr exception() const noexcept
+	{
+		return this->get() ? this->get().exception() : nullptr;
+	}
+};
+
+/*!
  * \brief Forces the fiber to have a future that outlives the fiber.
  *
  * This is a manipulator that calls #zth::TypedFiber::withFuture().
@@ -300,57 +367,10 @@ TypedFiber<R>& operator<<(TypedFiber<R>& fiber, passOnExit const& m)
 struct asFuture : public FiberManipulator {};
 
 template <typename R>
-SharedReference<typename TypedFiber<R>::Future_type>
-operator<<(TypedFiber<R>& fiber, asFuture const&)
+AutoFuture<R> operator<<(TypedFiber<R>& fiber, asFuture const&)
 {
 	return fiber.withFuture();
 }
-
-/*!
- * \brief Automatic create a future for a fiber, when needed.
- *
- * By default, a fiber does not save its return value. When a fiber is assigned to this class, a
- * future is created automatically.
- */
-template <typename T>
-class AutoFuture : public SharedPointer<Future<T> /**/> {
-public:
-	typedef SharedPointer<Future<T> /**/> base;
-	typedef Future<T> Future_type;
-
-	~AutoFuture() noexcept is_default
-
-	constexpr14 AutoFuture() noexcept
-		: base()
-	{}
-
-	constexpr14 AutoFuture(AutoFuture const& af) noexcept
-		: base(af)
-	{}
-
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(base const& p) noexcept
-		: base(p)
-	{}
-
-	// cppcheck-suppress noExplicitConstructor
-	AutoFuture(TypedFiber<T>& fiber)
-	{
-		*this = fiber;
-	}
-
-	AutoFuture& operator=(TypedFiber<T>& fiber)
-	{
-		this->reset(fiber.withFuture().get());
-		return *this;
-	}
-
-	AutoFuture& operator=(AutoFuture const& af) noexcept
-	{
-		this->reset(af.get());
-		return *this;
-	}
-};
 
 
 
@@ -967,8 +987,7 @@ struct fiber_type_impl {
 			return *this;
 		}
 
-		SharedReference<typename factory::TypedFiber_type::Future_type>
-		operator<<(asFuture const&)
+		future operator<<(asFuture const&)
 		{
 			return _fiber << asFuture{};
 		}

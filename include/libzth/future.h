@@ -46,8 +46,24 @@ public:
 protected:
 	std_shared_future_base() noexcept = default;
 
+	explicit std_shared_future_base(SharedPointer<Future_type> const& future) noexcept
+		: m_future{future}
+	{}
+
 	explicit std_shared_future_base(SharedPointer<Future_type>&& future) noexcept
 		: m_future{std::move(future)}
+	{}
+
+	explicit std_shared_future_base(SharedReference<Future_type> const& future) noexcept
+		: m_future{future.valid() ? &future.get() : nullptr}
+	{}
+
+	explicit std_shared_future_base(SharedReference<Future_type>&& future) noexcept
+		: m_future{static_cast<SharedPointer<Future_type>&&>(future)}
+	{}
+
+	explicit std_shared_future_base(AutoFuture<value_type>&& future) noexcept
+		: m_future{static_cast<SharedPointer<Future_type>&&>(future)}
 	{}
 
 public:
@@ -100,13 +116,34 @@ template <typename T>
 class std_future_base : public impl::std_shared_future_base<T> {
 public:
 	using base = impl::std_shared_future_base<T>;
+	using value_type = typename base::value_type;
 
-protected:
-	std_future_base() noexcept = default;
+#  define ZTH_FUTURE_CTORS(future_class_type)                                    \
+	  using Future_type = typename base::Future_type;                        \
+                                                                                 \
+	  future_class_type() noexcept = default;                                \
+                                                                                 \
+	  future_class_type(zth::SharedPointer<Future_type> const& f) noexcept   \
+		  : base{f}                                                      \
+	  {}                                                                     \
+                                                                                 \
+	  future_class_type(zth::SharedPointer<Future_type>&& f) noexcept        \
+		  : base{std::move(f)}                                           \
+	  {}                                                                     \
+                                                                                 \
+	  future_class_type(zth::SharedReference<Future_type> const& f) noexcept \
+		  : base{f}                                                      \
+	  {}                                                                     \
+                                                                                 \
+	  future_class_type(zth::SharedReference<Future_type>&& f) noexcept      \
+		  : base{std::move(f)}                                           \
+	  {}                                                                     \
+                                                                                 \
+	  future_class_type(zth::AutoFuture<value_type>&& f) noexcept            \
+		  : base{std::move(f)}                                           \
+	  {}
 
-	explicit std_future_base(SharedPointer<typename base::Future_type> future) noexcept
-		: base{std::move(future)}
-	{}
+	ZTH_FUTURE_CTORS(explicit std_future_base)
 
 	std_future_base(std_future_base&& other) noexcept
 	{
@@ -114,7 +151,7 @@ protected:
 	}
 
 public:
-	std_future_base& operator=(std_future_base&& other)
+	std_future_base& operator=(std_future_base&& other) noexcept
 	{
 		this->m_future = std::move(other.m_future);
 		return *this;
@@ -123,7 +160,7 @@ public:
 	std_future_base(std_future_base const&) = delete;
 	std_future_base& operator=(std_future_base const&) = delete;
 
-	std::shared_future<zth::type<T>> share() const
+	std::shared_future<zth::type<T>> share() const noexcept
 	{
 		auto f = std::shared_future<zth::type<T>>(std::move(this->m_future));
 		return f;
@@ -223,15 +260,10 @@ template <typename T>
 class future<zth::type<T>> : public zth::impl::std_future_base<T> {
 	ZTH_CLASS_NEW_DELETE(future)
 public:
-	using value_type = T;
 	using base = zth::impl::std_future_base<T>;
+	using value_type = typename base::value_type;
 
-	future() noexcept = default;
-
-	// cppcheck-suppress noExplicitConstructor
-	future(zth::SharedPointer<typename base::Future_type> f) noexcept
-		: base{std::move(f)}
-	{}
+	ZTH_FUTURE_CTORS(future)
 
 	value_type get()
 	{
@@ -246,12 +278,7 @@ public:
 	using value_type = T&;
 	using base = zth::impl::std_future_base<T*>;
 
-	future() noexcept = default;
-
-	// cppcheck-suppress noExplicitConstructor
-	future(zth::SharedPointer<typename base::Future_type> f) noexcept
-		: base{std::move(f)}
-	{}
+	ZTH_FUTURE_CTORS(future)
 
 	value_type get()
 	{
@@ -263,21 +290,18 @@ template <>
 class future<zth::type<void>> : public zth::impl::std_future_base<void> {
 	ZTH_CLASS_NEW_DELETE(future)
 public:
-	using value_type = void;
 	using base = zth::impl::std_future_base<void>;
+	using value_type = void;
 
-	future() noexcept = default;
-
-	// cppcheck-suppress noExplicitConstructor
-	future(zth::SharedPointer<typename base::Future_type> f) noexcept
-		: base{std::move(f)}
-	{}
+	ZTH_FUTURE_CTORS(future)
 
 	void get()
 	{
 		wait();
 	}
 };
+
+#  undef ZTH_FUTURE_CTORS
 
 template <typename T>
 class shared_future<zth::type<T>> : public zth::impl::std_shared_future_base<T> {
@@ -391,12 +415,12 @@ template <typename Func, typename... Args>
 zth::future<zth::impl::invoke_result<Func, Args...>>
 async(zth::launch policy, Func&& f, Args&&... args)
 {
-	auto& fib = zth::fiber(std::forward<Func>(f), std::forward<Args>(args)...);
+	auto fib = zth::fiber(std::forward<Func>(f), std::forward<Args>(args)...);
 	switch(policy) {
 	case zth::launch::detached:
 		return {};
 	case zth::launch::awaitable:
-		return fib.withFuture();
+		return fib << zth::asFuture();
 	default:
 		zth_throw(std::invalid_argument("policy"));
 	}
