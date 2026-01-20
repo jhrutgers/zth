@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 			res = *f;
 		}
 	} catch(zth::errno_exception const& e) {
-		zth_dbg(thread, "main() caught exception with errno %d", e.error);
+		zth_dbg(thread, "main() caught exception with errno %d", e.code);
 		res = EXIT_FAILURE;
 	} catch(std::exception const& e) {
 		zth_dbg(thread, "main() caught exception: %s", e.what());

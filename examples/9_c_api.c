@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-// In constrast to C++, fiber entry function must have type void(void*).  There
+// In contrast to C++, fiber entry function must have type void(void*).  There
 // is no need to do zth_fiber() and friends, just use zth_fiber_create() to run
 // the fiber.
 void fiber(void* UNUSED_PAR(arg))

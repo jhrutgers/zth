@@ -129,11 +129,10 @@ static void zmq_fiber()
 
 	zmq_close(socket);
 }
-zth_fiber(zmq_fiber)
 
 TEST(Poller, Zmq)
 {
-	zmq_fiber_future f = zth_async zmq_fiber();
+	zth::fiber(zmq_fiber);
 
 	void* socket = zmq_socket(zth_zmq_context(), ZMQ_REQ);
 	ASSERT_EQ(zmq_connect(socket, "inproc://test_poller"), 0);

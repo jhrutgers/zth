@@ -153,6 +153,7 @@ public:
 	constexpr14 T& operator*() const noexcept
 	{
 		zth_assert(get());
+		// cppcheck-suppress nullPointerRedundantCheck
 		return *get();
 	}
 
@@ -194,6 +195,7 @@ public:
 		: m_object(p.m_object)
 	{}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr14 SharedReference(SharedPointer<T> const& p) noexcept
 		: m_object(p)
 	{}
@@ -212,6 +214,7 @@ public:
 	}
 
 #  if __cplusplus >= 201103L
+	// cppcheck-suppress noExplicitConstructor
 	constexpr14 SharedReference(SharedPointer<T>&& p) noexcept
 		: m_object(std::move(p))
 	{}
@@ -243,6 +246,11 @@ public:
 	{
 		zth_assert(valid());
 		return *m_object.get();
+	}
+
+	constexpr operator T&() const noexcept
+	{
+		return get();
 	}
 
 	constexpr14 decltype(*T()) operator*() const
@@ -482,7 +490,7 @@ public:
 protected:
 	typedef base::queue_type queue_type;
 
-	queue_type& queue(size_t q = 0) final
+	virtual queue_type& queue(size_t q) final
 	{
 		zth_assert(q < Size);
 		return m_queue[q];
@@ -990,6 +998,7 @@ class Optional<void> {
 public:
 	typedef void type;
 
+	// cppcheck-suppress noExplicitConstructor
 	Optional(bool set = false) noexcept
 		: m_set(set)
 	{}
@@ -1322,7 +1331,7 @@ public:
 
 	bool can_take() const noexcept
 	{
-		return valid((Listable*)&currentFiber());
+		return valid(static_cast<Listable*>(&currentFiber()));
 	}
 
 protected:
@@ -1334,7 +1343,7 @@ protected:
 public:
 	void wait()
 	{
-		wait((Listable*)&currentFiber());
+		wait(static_cast<Listable*>(&currentFiber()));
 	}
 
 protected:
@@ -1401,7 +1410,7 @@ public:
 
 	type take()
 	{
-		return take((Listable*)&zth::currentFiber());
+		return take(static_cast<Listable*>(&zth::currentFiber()));
 	}
 
 protected:

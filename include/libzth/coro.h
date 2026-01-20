@@ -273,7 +273,7 @@ public:
 	virtual ~promise_base() noexcept override = default;
 
 protected:
-	promise_base(cow_string const& name)
+	explicit promise_base(cow_string const& name)
 		: UniqueID{name}
 	{}
 };
@@ -284,7 +284,7 @@ public:
 	using promise_type = Promise;
 
 protected:
-	promise(cow_string const& name)
+	explicit promise(cow_string const& name)
 		: promise_base{name}
 	{}
 
@@ -609,6 +609,7 @@ public:
 		return task{static_cast<promise_type*>(this)};
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	decltype(auto) final_suspend() noexcept
 	{
 		struct impl {
@@ -745,7 +746,7 @@ public:
 	void wait(Listable& item, std::coroutine_handle<> waiter) noexcept
 	{
 		this->enqueue(item, this->Queue_Take).user() = waiter.address();
-		zth_dbg(coro, "[%s] Block coro %p", this->id_str(), (void*)waiter.address());
+		zth_dbg(coro, "[%s] Block coro %p", this->id_str(), waiter.address());
 	}
 
 	using base::wait;
@@ -816,7 +817,8 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 
 		bool await_ready() noexcept
 		{
-			return mailbox.abandoned() || mailbox.valid(nullptr)
+			return mailbox.abandoned()
+			       || mailbox.valid(typename Mailbox<T>::assigned_type{})
 			       || mailbox.owner().running();
 		}
 
@@ -1091,6 +1093,7 @@ public:
 		return this->await_transform(impl{*this});
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	decltype(auto) final_suspend() noexcept
 	{
 		struct impl {
@@ -1141,7 +1144,7 @@ public:
 
 	class iterator {
 	public:
-		iterator(generator_promise& p)
+		explicit iterator(generator_promise& p)
 			: m_promise{p}
 		{}
 
@@ -1184,7 +1187,7 @@ public:
 	{
 		if(!completed() && !valid())
 			generate();
-		return *this;
+		return iterator{*this};
 	}
 
 	end_type end() noexcept
