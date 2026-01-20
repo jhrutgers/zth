@@ -309,9 +309,31 @@ public:
 	{}
 
 	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(SharedPointer<Future<T> /**/> const& p) noexcept
+	constexpr14 AutoFuture(SharedPointer<Future_type> const& p) noexcept
 		: base(p)
 	{}
+
+#  if __cplusplus >= 201103L
+	constexpr14 AutoFuture(SharedPointer<Future_type>&& p) noexcept
+		: base(std::move(p))
+	{}
+
+	AutoFuture& operator=(SharedPointer<Future_type>&& p) noexcept
+	{
+		this->base::operator=(std::move(p));
+		return *this;
+	}
+
+	constexpr14 AutoFuture(SharedReference<Future_type>&& p) noexcept
+		: base(std::move(p))
+	{}
+
+	AutoFuture& operator=(SharedReference<Future_type>&& p) noexcept
+	{
+		this->base::operator=(std::move(p));
+		return *this;
+	}
+#  endif // C++11
 
 	// cppcheck-suppress noExplicitConstructor
 	AutoFuture(TypedFiber<T>& fiber)
@@ -328,6 +350,12 @@ public:
 	AutoFuture& operator=(AutoFuture const& af) noexcept
 	{
 		this->base::operator=((base const&)af);
+		return *this;
+	}
+
+	AutoFuture& operator=(SharedPointer<Future_type> const& af) noexcept
+	{
+		this->base::operator=(af);
 		return *this;
 	}
 

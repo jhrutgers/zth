@@ -45,7 +45,10 @@ public:
 		: m_count()
 	{}
 
-	virtual ~RefCounted() is_default
+	virtual ~RefCounted() noexcept
+	{
+		zth_assert(m_count == 0);
+	}
 
 	void used() noexcept
 	{
@@ -53,11 +56,19 @@ public:
 		m_count++;
 	}
 
-	void unused()
+	bool unused() noexcept
 	{
 		zth_assert(m_count > 0);
-		if(--m_count == 0)
-			cleanup();
+		if(--m_count > 0)
+			return false;
+
+		cleanup();
+		return true;
+	}
+
+	size_t refs() const noexcept
+	{
+		return m_count;
 	}
 
 protected:
@@ -123,6 +134,7 @@ public:
 
 	constexpr14 SharedPointer& operator=(SharedPointer&& p) noexcept
 	{
+		reset();
 		m_object = p.release();
 		return *this;
 	}
@@ -186,10 +198,7 @@ public:
 		: m_object(p)
 	{}
 
-	~SharedReference() noexcept
-	{
-		reset();
-	}
+	~SharedReference() noexcept is_default
 
 	void reset()
 	{
