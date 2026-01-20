@@ -9,6 +9,8 @@
 // is enforced for testing purposes. They should behave the same, but the C++11
 // implementation is more efficient.
 
+#define ZTH_ALLOW_DEPRECATED
+
 #include <zth>
 
 #include <gtest/gtest.h>
@@ -118,7 +120,7 @@ zth_fiber(fiber_iRi)
 TEST(FiberTest, iRi)
 {
 	int i = 5;
-	fiber_iRi_future f = zth_async fiber_iRi(i);
+	zth::fiber_future<int> f = zth_async fiber_iRi(i);
 	EXPECT_EQ(*f, 6);
 	EXPECT_EQ(i, 6);
 
@@ -143,7 +145,7 @@ TEST(FiberTest, viRd)
 {
 	int i = 6;
 	double d = 0.1;
-	fiber_viRd_future f = zth_async fiber_viRd(i, d);
+	zth::fiber_future<void> f = zth_async fiber_viRd(i, d);
 	f.wait();
 	EXPECT_DOUBLE_EQ(d, 0.6);
 
@@ -172,7 +174,7 @@ TEST(FiberTest, did)
 {
 	int i = 7;
 	double d = 0.1;
-	fiber_did_future f = zth_async fiber_did(i, d);
+	zth::fiber_future<decltype(fiber_did)> f = zth_async fiber_did(i, d);
 	EXPECT_DOUBLE_EQ(*f, 0.7);
 	EXPECT_DOUBLE_EQ(*zth::fiber(fiber_did, 2, 0.2), 0.4);
 	EXPECT_DOUBLE_EQ(*zth::fiber(&fiber_did, 3, 0.2), 0.6);
@@ -193,7 +195,7 @@ TEST(FiberTest, viRdf)
 	int i = 8;
 	double d = 0.1;
 	float f = 2.0f;
-	fiber_viRdf_future r = zth_async fiber_viRdf(i, d, f);
+	zth::fiber_future<void> r = zth::fiber(fiber_viRdf, i, d, f);
 	r.wait();
 	EXPECT_DOUBLE_EQ(d, 1.6);
 

@@ -66,6 +66,7 @@ protected:
 		: m_future{static_cast<SharedPointer<Future_type>&&>(std::move(future))}
 	{}
 
+	// cppcheck-suppress-macro noExplicitConstructor
 #  define ZTH_FUTURE_CTORS(future_class_type)                                    \
 	  using Future_type = typename base::Future_type;                        \
                                                                                  \
@@ -100,6 +101,7 @@ public:
 		return *this;
 	}
 
+	// cppcheck-suppress-macro noExplicitConstructor
 #  define ZTH_FUTURE_MOVE(future_class_type)                                               \
 	  future_class_type(future_class_type&& other) noexcept = default;                 \
                                                                                            \

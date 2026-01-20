@@ -100,7 +100,7 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 	} catch(...) {
 		deallocate(o);
 		zth_throw();
-	}
+	} // cppcheck-suppress missingReturn
 
 	// Should not get here.
 }
@@ -116,10 +116,9 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 	} catch(...) {
 		deallocate(o);
 		zth_throw();
-	}
+	} // cppcheck-suppress missingReturn
 
 	// Should not get here.
-	return nullptr;
 }
 
 #  if __cplusplus >= 201103L
@@ -134,10 +133,9 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 	} catch(...) {
 		deallocate(o);
 		zth_throw();
-	}
+	} // cppcheck-suppress missingReturn
 
 	// Should not get here.
-	return nullptr;
 }
 #  endif
 

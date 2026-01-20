@@ -56,6 +56,8 @@ class TypedFiber : public Fiber {
 public:
 	typedef R Return;
 	typedef Future<Return> Future_type;
+	typedef Return indirection_type;
+	typedef Return member_type;
 
 	constexpr TypedFiber()
 		: Fiber{&entry, this}
@@ -97,14 +99,28 @@ public:
 		return m_future;
 	}
 
-	typename Future_type::indirection_type operator*()
+	operator SharedPointer<Future_type> const&()
 	{
-		return withFuture()->operator*();
+		return withFuture();
 	}
 
-	typename Future_type::member_type operator->()
+	operator SharedReference<Future_type>()
 	{
-		return withFuture()->operator->();
+		return withFuture();
+	}
+
+	indirection_type operator*()
+	{
+		SharedPointer<Future_type> f = withFuture();
+		f->wait();
+		return *f;
+	}
+
+	member_type operator->()
+	{
+		SharedPointer<Future_type> f = withFuture();
+		f->wait();
+		return *f;
 	}
 
 protected:
@@ -113,15 +129,15 @@ protected:
 		if(unlikely(!that))
 			return;
 
-		TypedFiber& fiber = *static_cast<TypedFiber*>(that);
+		TypedFiber& f = *static_cast<TypedFiber*>(that);
 
 #  ifdef ZTH_FUTURE_EXCEPTION
 		try {
 #  endif // ZTH_FUTURE_EXCEPTION
-			fiber.entry_();
+			f.entry_();
 #  ifdef ZTH_FUTURE_EXCEPTION
 		} catch(...) {
-			fiber.setFuture(std::current_exception());
+			f.setFuture(std::current_exception());
 		}
 #  endif // ZTH_FUTURE_EXCEPTION
 	}
@@ -174,7 +190,7 @@ struct FiberManipulator {};
 struct setStackSize : public FiberManipulator {
 	size_t stack;
 
-	constexpr setStackSize(size_t s) noexcept
+	constexpr explicit setStackSize(size_t s) noexcept
 		: stack(s)
 	{}
 };
@@ -182,9 +198,14 @@ struct setStackSize : public FiberManipulator {
 template <typename R>
 TypedFiber<R>& operator<<(TypedFiber<R>& fiber, setStackSize const& m)
 {
-	int res = fiber.setStackSize(m.stack);
-	if(res)
-		zth_throw(errno_exception(res));
+	int res = 0;
+
+	if(m.stack) {
+		res = fiber.setStackSize(m.stack);
+		if(res)
+			zth_throw(errno_exception(res));
+	}
+
 	return fiber;
 }
 
@@ -314,20 +335,24 @@ public:
 	{}
 
 #  if __cplusplus >= 201103L
+	// cppcheck-suppress noExplicitConstructor
 	constexpr14 AutoFuture(SharedPointer<Future_type>&& p) noexcept
 		: base(std::move(p))
 	{}
 
+	// cppcheck-suppress duplInheritedMember
 	AutoFuture& operator=(SharedPointer<Future_type>&& p) noexcept
 	{
 		this->base::operator=(std::move(p));
 		return *this;
 	}
 
+	// cppcheck-suppress noExplicitConstructor
 	constexpr14 AutoFuture(SharedReference<Future_type>&& p) noexcept
 		: base(std::move(p))
 	{}
 
+	// cppcheck-suppress duplInheritedMember
 	AutoFuture& operator=(SharedReference<Future_type>&& p) noexcept
 	{
 		this->base::operator=(std::move(p));
@@ -335,7 +360,7 @@ public:
 	}
 #  endif // C++11
 
-	// cppcheck-suppress noExplicitConstructor
+	// cppcheck-suppress[noExplicitConstructor,constParameterReference]
 	AutoFuture(TypedFiber<T>& fiber)
 	{
 		*this = fiber;
@@ -359,9 +384,10 @@ public:
 		return *this;
 	}
 
+	// cppcheck-suppress duplInheritedMember
 	bool valid() const noexcept
 	{
-		return this->get() && this->get().valid();
+		return this->base::valid() && this->get().valid();
 	}
 
 	void wait()
@@ -371,7 +397,7 @@ public:
 
 	std::exception_ptr exception() const noexcept
 	{
-		return this->get() ? this->get().exception() : nullptr;
+		return this->base::valid() ? this->get().exception() : nullptr;
 	}
 };
 
@@ -489,6 +515,7 @@ public:
 	typedef TypedFiber<void> base;
 	typedef void (*Function)(A1);
 
+	// cppcheck-suppress uninitMemberVar
 	TypedFiber1(Function func, A1 a1)
 		: m_function(func)
 		, m_a1(a1)
@@ -542,6 +569,7 @@ public:
 	typedef TypedFiber<void> base;
 	typedef void (*Function)(A1, A2);
 
+	// cppcheck-suppress uninitMemberVar
 	TypedFiber2(Function func, A1 a1, A2 a2)
 		: m_function(func)
 		, m_a1(a1)
@@ -599,6 +627,7 @@ public:
 	typedef TypedFiber<void> base;
 	typedef void (*Function)(A1, A2, A3);
 
+	// cppcheck-suppress uninitMemberVar
 	TypedFiber3(Function func, A1 a1, A2 a2, A3 a3)
 		: m_function(func)
 		, m_a1(a1)
@@ -895,6 +924,11 @@ template <typename R, typename... Args>
 struct function_type_helper<R(Args...)> {
 	using type = R (*)(Args...);
 };
+
+template <typename R, typename... Args>
+struct function_type_helper<R (*&)(Args...)> {
+	using type = R (*)(Args...);
+};
 #  endif // C++11
 
 template <typename F>
@@ -984,16 +1018,17 @@ struct fiber_type_impl {
 		typedef typename factory::TypedFiber_type type;
 		type& _fiber;
 
+		// cppcheck-suppress noExplicitConstructor
 		fiber(typename factory::TypedFiber_type& f) noexcept
 			: _fiber(f)
 		{}
 
-		typename factory::TypedFiber_type::Future_type::indirection_type operator*()
+		typename factory::TypedFiber_type::indirection_type operator*()
 		{
 			return *_fiber;
 		}
 
-		typename factory::TypedFiber_type::Future_type::member_type operator->()
+		typename factory::TypedFiber_type::member_type operator->()
 		{
 			return _fiber.operator->();
 		}
@@ -1006,6 +1041,12 @@ struct fiber_type_impl {
 		operator future() const noexcept
 		{
 			return _fiber;
+		}
+
+		operator SharedPointer<typename factory::TypedFiber_type::Future_type>()
+			const noexcept
+		{
+			return _fiber.withFuture();
 		}
 
 		template <typename Manipulator>
@@ -1094,7 +1135,7 @@ typename fiber_type<F>::factory factory(F f, char const* name = nullptr)
 }
 #  endif // Pre-C++11
 
-#  if ZTH_TYPEDFIBER98 && __cplusplus < 201103L
+#  if ZTH_TYPEDFIBER98
 template <typename F>
 typename fiber_type<F>::fiber fiber(F f)
 {
@@ -1131,6 +1172,92 @@ typename fiber_type<F>::fiber fiber(F&& f, Args&&... args)
 
 
 ///////////////////////////////////////////////////////////////////////////////////
+// Simplify fiber future type access
+//
+
+namespace impl {
+
+template <typename T>
+struct is_function {
+	enum { value = 0 };
+};
+
+#  ifdef ZTH_FIBERTYPE98
+#  endif // ZTH_FIBERTYPE98
+
+#  if __cplusplus >= 201103L
+template <typename T, typename... Args>
+struct is_function<T(Args...)> {
+	enum { value = 1 };
+};
+
+template <typename T, typename... Args>
+struct is_function<T (*)(Args...)> {
+	enum { value = 1 };
+};
+
+template <typename T, typename... Args>
+struct is_function<T (&)(Args...)> {
+	enum { value = 1 };
+};
+#  endif // C++11
+
+template <typename T>
+struct has_call_operator {
+	typedef char yes;
+	typedef long no;
+
+	template <typename C>
+	static yes test(decltype(&C::operator())*);
+
+	template <typename>
+	static no test(...);
+
+	enum { value = sizeof(test<T>(nullptr)) == sizeof(yes) };
+};
+
+template <typename T>
+struct is_callable {
+	enum { value = impl::is_function<T>::value || impl::has_call_operator<T>::value };
+};
+
+template <typename T, bool = is_callable<T>::value>
+struct fiber_future_helper {
+	typedef typename fiber_type<T>::future type;
+};
+
+template <typename T>
+struct fiber_future_helper<T, false> {
+	typedef AutoFuture<T> type;
+};
+
+} // namespace impl
+
+#  ifdef ZTH_TYPEDFIBER98
+template <typename T>
+struct fiber_future : public impl::fiber_future_helper<T>::type {
+	typedef typename impl::fiber_future_helper<T>::type future_type;
+	typedef future_type base;
+	typedef typename future_type::Future_type::type return_type;
+
+	template <typename F>
+	fiber_future(F& f) noexcept
+		: base(static_cast<future_type const&>(f))
+	{}
+
+	template <typename F>
+	fiber_future(F const& f) noexcept
+		: base(static_cast<future_type const&>(f))
+	{}
+};
+#  else	 // !ZTH_TYPEDFIBER98
+template <typename T>
+using fiber_future = typename impl::fiber_future_helper<T>::type;
+#  endif // !ZTH_TYPEDFIBER98
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
 // zth_async macros
 //
 
@@ -1155,6 +1282,7 @@ namespace fibered {}
 #  define zth_fiber_define_1(storage, f)                                                    \
 	  namespace zth {                                                                   \
 	  namespace fibered {                                                               \
+	  /* ZTH_DEPRECATED("Use zth::fiber(f, args...) instead") */                        \
 	  storage typename ::zth::fiber_type<decltype(&::f)>::factory const                 \
 		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
 				  ? ZTH_STRINGIFY(f) "()"                                   \
@@ -1219,6 +1347,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 		zth::factory(f, name)(arg) << zth::setStackSize(stack);
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
+	} catch(zth::errno_exception const& e) {
+		return e.code;
 	} catch(...) {
 		return EAGAIN;
 	}

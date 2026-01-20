@@ -189,8 +189,9 @@ public:
 
 		user_type const& user() const noexcept
 		{
-			elem_type* elem = get();
+			elem_type const* elem = get();
 			zth_assert(elem);
+			// cppcheck-suppress nullPointerRedundantCheck
 			return elem->user;
 		}
 
@@ -198,6 +199,7 @@ public:
 		{
 			elem_type* elem = get();
 			zth_assert(elem);
+			// cppcheck-suppress nullPointerRedundantCheck
 			return elem->user;
 		}
 

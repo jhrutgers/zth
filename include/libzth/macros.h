@@ -235,6 +235,16 @@ ZTH_EXPORT void foo();
 #  define ZTH_ENABLE_ASAN
 #endif
 
+#if defined(ZTH_ALLOW_DEPRECATED)
+#  define ZTH_DEPRECATED(...)
+#elif defined(__cplusplus) && __cplusplus >= 201402L
+#  define ZTH_DEPRECATED(...) [[deprecated(__VA_ARGS__)]]
+#elif !defined(__cplusplus) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+#  define ZTH_DEPRECATED(...) [[deprecated(__VA_ARGS__)]]
+#else
+#  define ZTH_DEPRECATED(...) __attribute__((deprecated))
+#endif
+
 
 
 //////////////////////////////////////////////////

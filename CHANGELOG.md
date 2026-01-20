@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix support for newlib 4.4.0.
 - `Config::MinTimeslice` and `Config::TimesliceOverrunReportThreshold` return `struct timespec` for performance reasons.
 - Removed `async` keyword in favor of `zth_async`, as it conflicts with C++11 `<future>`.
+- Deprecated `zth_async` in favor of `zth::fiber` and `zth::async`.
 - Renamed `zth::fiber()` to `zth::factory()` and implement `zth::fiber()` to actually return a fiber.
 - Streamlined fiber type member functions.
 

@@ -40,10 +40,10 @@ struct coro_already_completed : public coro_invalid_state {};
  */
 struct errno_exception : public exception {
 	explicit errno_exception(int err) noexcept
-		: error(err)
+		: code(err)
 	{}
 
-	int error;
+	int code;
 };
 
 } // namespace zth
