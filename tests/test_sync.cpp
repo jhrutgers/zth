@@ -126,7 +126,7 @@ TEST(Sync, Future_C)
 
 	uintptr_t value = 0;
 	EXPECT_EQ(zth_future_get(&f, &value), 0);
-	EXPECT_EQ(value, 1);
+	EXPECT_EQ(value, 1U);
 	EXPECT_EQ(zth_future_destroy(&f), 0);
 }
 

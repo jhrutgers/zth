@@ -95,30 +95,30 @@ TEST(Future, fromSharedPointer)
 	// NOLINTBEGIN(clang-analyzer-cplusplus.NewDelete)
 	auto* f = new zth::Future<int>();
 	zth::SharedPointer<zth::Future<int>> sp{f};
-	EXPECT_EQ(f->refs(), 1);
+	EXPECT_EQ(f->refs(), 1U);
 
 	zth::SharedReference<zth::Future<int>> sr{sp};
 	zth::shared_future<int> stdsf{sp};
 	zth::future<int> stdf{sp};
 	EXPECT_TRUE(stdsf.valid());
 	EXPECT_TRUE(stdf.valid());
-	EXPECT_EQ(f->refs(), 4);
+	EXPECT_EQ(f->refs(), 4U);
 
 	f->set(1);
 	EXPECT_TRUE(sp->valid());
 	EXPECT_TRUE(sr.get().valid());
 	EXPECT_EQ(stdsf.get(), 1);
 	EXPECT_EQ(stdf.get(), 1);
-	EXPECT_EQ(f->refs(), 4);
+	EXPECT_EQ(f->refs(), 4U);
 
 	auto* f2 = new zth::Future<int>();
 	sp = f2;
-	EXPECT_EQ(f->refs(), 3);
-	EXPECT_EQ(f2->refs(), 1);
+	EXPECT_EQ(f->refs(), 3U);
+	EXPECT_EQ(f2->refs(), 1U);
 	sr = sp;
 	stdsf = sp;
-	EXPECT_EQ(f->refs(), 1);
-	EXPECT_EQ(f2->refs(), 3);
+	EXPECT_EQ(f->refs(), 1U);
+	EXPECT_EQ(f2->refs(), 3U);
 
 	f2->set(2);
 	EXPECT_EQ(stdsf.get(), 2);
@@ -151,20 +151,20 @@ TEST(Future, moveSharedPointer)
 	{
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::SharedReference<zth::Future<int>> sr{std::move(sp)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 	}
 
 	{
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::SharedReference<zth::Future<int>> sr;
 		sr = std::move(sp);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 	}
 
 	{
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::shared_future<int> stdsf{std::move(sp)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdsf;
 	}
 
@@ -172,14 +172,14 @@ TEST(Future, moveSharedPointer)
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::shared_future<int> stdsf;
 		stdsf = std::move(sp);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdsf;
 	}
 
 	{
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::future<int> stdf{std::move(sp)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdf;
 	}
 
@@ -187,7 +187,7 @@ TEST(Future, moveSharedPointer)
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::future<int> stdf;
 		stdf = std::move(sp);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdf;
 	}
 
@@ -202,20 +202,20 @@ TEST(Future, moveSharedReference)
 	{
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::SharedPointer<zth::Future<int>> sp{std::move(sr)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 	}
 
 	{
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::SharedPointer<zth::Future<int>> sp;
 		sp = std::move(sr);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 	}
 
 	{
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::shared_future<int> stdsf{std::move(sr)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdsf;
 	}
 
@@ -223,14 +223,14 @@ TEST(Future, moveSharedReference)
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::shared_future<int> stdsf;
 		stdsf = std::move(sr);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdsf;
 	}
 
 	{
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::future<int> stdf{std::move(sr)};
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdf;
 	}
 
@@ -238,7 +238,7 @@ TEST(Future, moveSharedReference)
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::future<int> stdf;
 		stdf = std::move(sr);
-		EXPECT_EQ(f->refs(), 2);
+		EXPECT_EQ(f->refs(), 2U);
 		(void)stdf;
 	}
 

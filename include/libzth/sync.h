@@ -81,24 +81,36 @@ private:
 	size_t m_count;
 };
 
-template <typename T>
-struct enable_when_void {};
+template <typename Impl, typename T>
+class SharedPointerOps {
+public:
+	constexpr14 T& operator*() const noexcept
+	{
+		zth_assert(impl().get());
+		// cppcheck-suppress nullPointerRedundantCheck
+		return *impl().get();
+	}
 
-template <>
-struct enable_when_void<void> {
-	typedef void type;
+	constexpr14 T* operator->() const noexcept
+	{
+		zth_assert(impl().get());
+		return impl().get();
+	}
+
+private:
+	Impl const& impl() const noexcept
+	{
+		return static_cast<Impl const&>(*this);
+	}
+};
+
+template <typename Impl>
+class SharedPointerOps<Impl, void> {
+public:
 };
 
 template <typename T>
-struct disable_when_void {
-	typedef void type;
-};
-
-template <>
-struct disable_when_void<void> {};
-
-template <typename T>
-class SharedPointer {
+class SharedPointer : public SharedPointerOps<SharedPointer<T>, T> {
 public:
 	typedef T type;
 
@@ -168,21 +180,6 @@ public:
 		return get();
 	}
 
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr14 type& operator*() const noexcept
-	{
-		zth_assert(get());
-		// cppcheck-suppress nullPointerRedundantCheck
-		return *get();
-	}
-
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr14 type* operator->() const noexcept
-	{
-		zth_assert(get());
-		return get();
-	}
-
 	constexpr14 type* release() noexcept
 	{
 		type* object = get();
@@ -199,11 +196,48 @@ private:
 	type* m_object;
 };
 
+template <typename Impl, typename T>
+class SharedReferenceOps {
+public:
+	constexpr14 T& get() const noexcept
+	{
+		zth_assert(impl().valid());
+		return *impl().m_object.get();
+	}
+
+	constexpr operator T&() const noexcept
+	{
+		return get();
+	}
+
+	constexpr14 decltype(*T()) operator*() const
+	{
+		return *get();
+	}
+
+	constexpr14 decltype(T().operator->()) operator->() const noexcept
+	{
+		return get().operator->();
+	}
+
+private:
+	Impl const& impl() const noexcept
+	{
+		return static_cast<Impl const&>(*this);
+	}
+};
+
+template <typename Impl>
+class SharedReferenceOps<Impl, void> {
+public:
+};
+
 template <typename T>
-class SharedReference {
+class SharedReference : public SharedReferenceOps<SharedReference<T>, T> {
 public:
 	typedef SharedPointer<T> SharedPointer_type;
 	typedef typename SharedPointer_type::type type;
+	friend class SharedReferenceOps<SharedReference<T>, T>;
 
 	constexpr14 SharedReference() noexcept
 		: m_object()
@@ -263,31 +297,6 @@ public:
 	constexpr14 operator SharedPointer_type() LREF_QUALIFIED noexcept
 	{
 		return m_object;
-	}
-
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr14 type& get() const noexcept
-	{
-		zth_assert(valid());
-		return *m_object.get();
-	}
-
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr operator type&() const noexcept
-	{
-		return get();
-	}
-
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr14 decltype(*type()) operator*() const
-	{
-		return *get();
-	}
-
-	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr14 decltype(type().operator->()) operator->() const noexcept
-	{
-		return get().operator->();
 	}
 
 	constexpr14 bool valid() const noexcept

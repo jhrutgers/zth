@@ -176,7 +176,7 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 		  zth_assert(sz % sizeof(T) == 0);                                                \
 		  return ::zth::allocate<T>(sz / sizeof(T));                                      \
 	  }                                                                                       \
-	  typedef typename zth::Config::Allocator<T>::type allocator_type;                        \
+	  typedef typename zth::Config::Allocator<T>::type allocator_type; /* NOLINT */           \
                                                                                                   \
   private:
 
