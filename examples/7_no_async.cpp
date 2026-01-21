@@ -32,8 +32,8 @@ int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	// You can also get a future with the fiber's return value.  If you
 	// don't use C++11 (or later), the types are a bit cumbersome.
 	typedef zth::fiber_type<decltype(foo)> foo_type;
-	foo_type::future future3 = zth::factory(foo, "foo(3)")(3).withFuture();
-	future3.wait();
+	foo_type::future future3 = zth::factory(foo, "foo(3)")(3);
+	*future3;
 
 	// If you want to split up the steps above, you can also do this:
 	foo_type::factory factory4 = zth::factory(foo);

@@ -64,11 +64,9 @@ TEST(Future, fromPointer)
 
 	zth::SharedPointer<zth::Future<int>> sp{f};
 	zth::SharedReference<zth::Future<int>> sr{f};
-	zth::AutoFuture<int> af{f};
 
 	EXPECT_FALSE(sp->valid());
 	EXPECT_FALSE(sr.get().valid());
-	EXPECT_FALSE(af.valid());
 
 	f->set(1);
 	EXPECT_TRUE(sp->valid());
@@ -77,8 +75,6 @@ TEST(Future, fromPointer)
 	EXPECT_TRUE(sr.get().valid());
 	EXPECT_EQ(sr.get().value(), 1);
 	EXPECT_EQ(*sr, 1);
-	EXPECT_TRUE(af.valid());
-	EXPECT_EQ(*af, 1);
 
 	zth::shared_future<int> stdsf;
 	EXPECT_FALSE(stdsf.valid());
@@ -102,30 +98,27 @@ TEST(Future, fromSharedPointer)
 	EXPECT_EQ(f->refs(), 1);
 
 	zth::SharedReference<zth::Future<int>> sr{sp};
-	zth::AutoFuture<int> af{sp};
 	zth::shared_future<int> stdsf{sp};
 	zth::future<int> stdf{sp};
 	EXPECT_TRUE(stdsf.valid());
 	EXPECT_TRUE(stdf.valid());
-	EXPECT_EQ(f->refs(), 5);
+	EXPECT_EQ(f->refs(), 4);
 
 	f->set(1);
 	EXPECT_TRUE(sp->valid());
 	EXPECT_TRUE(sr.get().valid());
-	EXPECT_TRUE(af.valid());
 	EXPECT_EQ(stdsf.get(), 1);
 	EXPECT_EQ(stdf.get(), 1);
-	EXPECT_EQ(f->refs(), 5);
+	EXPECT_EQ(f->refs(), 4);
 
 	auto* f2 = new zth::Future<int>();
 	sp = f2;
-	EXPECT_EQ(f->refs(), 4);
+	EXPECT_EQ(f->refs(), 3);
 	EXPECT_EQ(f2->refs(), 1);
 	sr = sp;
-	af = sp;
 	stdsf = sp;
 	EXPECT_EQ(f->refs(), 1);
-	EXPECT_EQ(f2->refs(), 4);
+	EXPECT_EQ(f2->refs(), 3);
 
 	f2->set(2);
 	EXPECT_EQ(stdsf.get(), 2);
@@ -138,7 +131,6 @@ TEST(Future, fromSharedReference)
 	zth::SharedReference<zth::Future<int>> sr{f};
 
 	zth::SharedPointer<zth::Future<int>> sp{sr};
-	zth::AutoFuture<int> af{sr};
 	zth::shared_future<int> stdsf{sr};
 	zth::future<int> stdf{sr};
 	EXPECT_TRUE(stdsf.valid());
@@ -147,27 +139,6 @@ TEST(Future, fromSharedReference)
 	f->set(1);
 	EXPECT_TRUE(sp->valid());
 	EXPECT_TRUE(sr.get().valid());
-	EXPECT_TRUE(af.valid());
-	EXPECT_EQ(stdsf.get(), 1);
-	EXPECT_EQ(stdf.get(), 1);
-}
-
-TEST(Future, fromAutoFuture)
-{
-	auto* f = new zth::Future<int>();
-	zth::AutoFuture<int> af{f};
-
-	zth::SharedPointer<zth::Future<int>> sp{af};
-	zth::SharedReference<zth::Future<int>> sr{af};
-	zth::shared_future<int> stdsf{af};
-	zth::future<int> stdf{af};
-	EXPECT_TRUE(stdsf.valid());
-	EXPECT_TRUE(stdf.valid());
-
-	f->set(1);
-	EXPECT_TRUE(sp->valid());
-	EXPECT_TRUE(sr.get().valid());
-	EXPECT_TRUE(af.valid());
 	EXPECT_EQ(stdsf.get(), 1);
 	EXPECT_EQ(stdf.get(), 1);
 }
@@ -187,19 +158,6 @@ TEST(Future, moveSharedPointer)
 		zth::SharedPointer<zth::Future<int>> sp{f};
 		zth::SharedReference<zth::Future<int>> sr;
 		sr = std::move(sp);
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::SharedPointer<zth::Future<int>> sp{f};
-		zth::AutoFuture<int> af{std::move(sp)};
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::SharedPointer<zth::Future<int>> sp{f};
-		zth::AutoFuture<int> af;
-		af = std::move(sp);
 		EXPECT_EQ(f->refs(), 2);
 	}
 
@@ -256,19 +214,6 @@ TEST(Future, moveSharedReference)
 
 	{
 		zth::SharedReference<zth::Future<int>> sr{f};
-		zth::AutoFuture<int> af{std::move(sr)};
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::SharedReference<zth::Future<int>> sr{f};
-		zth::AutoFuture<int> af;
-		af = std::move(sr);
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::shared_future<int> stdsf{std::move(sr)};
 		EXPECT_EQ(f->refs(), 2);
 		(void)stdsf;
@@ -293,71 +238,6 @@ TEST(Future, moveSharedReference)
 		zth::SharedReference<zth::Future<int>> sr{f};
 		zth::future<int> stdf;
 		stdf = std::move(sr);
-		EXPECT_EQ(f->refs(), 2);
-		(void)stdf;
-	}
-
-	EXPECT_TRUE(f->unused());
-}
-
-TEST(Future, moveAutoFuture)
-{
-	auto* f = new zth::Future<int>();
-	f->used();
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::SharedPointer<zth::Future<int>> sp{std::move(af)};
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::SharedPointer<zth::Future<int>> sp;
-		sp = std::move(af);
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::SharedReference<zth::Future<int>> sr{std::move(af)};
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::SharedReference<zth::Future<int>> sr;
-		sr = std::move(af);
-		EXPECT_EQ(f->refs(), 2);
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::shared_future<int> stdsf{std::move(af)};
-		EXPECT_EQ(f->refs(), 2);
-		(void)stdsf;
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::shared_future<int> stdsf;
-		stdsf = std::move(af);
-		EXPECT_EQ(f->refs(), 2);
-		(void)stdsf;
-	}
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::future<int> stdf{std::move(af)};
-		EXPECT_EQ(f->refs(), 2);
-		(void)stdf;
-	}
-
-
-	{
-		zth::AutoFuture<int> af{f};
-		zth::future<int> stdf;
-		stdf = std::move(af);
 		EXPECT_EQ(f->refs(), 2);
 		(void)stdf;
 	}

@@ -114,7 +114,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	printf("fddd is %s\n", fddd.valid() ? "valid" : "not valid yet");
 
 	// - suspend the current fiber and wait until the fiber has finished;
-	fddd.wait();
+	*fddd;
 
 	// - retrieve the returned value by the fiber. If the future is not
 	//   valid yet, value() will imply wait().
