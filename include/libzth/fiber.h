@@ -48,6 +48,7 @@ namespace zth {
  */
 class Fiber : public Listable, public UniqueID<Fiber> {
 	ZTH_CLASS_NEW_DELETE(Fiber)
+	ZTH_CLASS_NOCOPY(Fiber)
 public:
 	typedef void(FiberHook)(Fiber&);
 
@@ -91,7 +92,7 @@ public:
 		zth_dbg(fiber, "[%s] New fiber %p", id_str(), normptr());
 	}
 
-	virtual ~Fiber() override
+	virtual ~Fiber() noexcept override
 	{
 		for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
 			it->first(*this, it->second);

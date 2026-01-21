@@ -58,10 +58,10 @@ public:
 	typedef Future<Return> Future_type;
 
 	constexpr TypedFiber()
-		: Fiber{&entry, this}
+		: Fiber(&entry, this)
 	{}
 
-	virtual ~TypedFiber() override is_default
+	virtual ~TypedFiber() noexcept override is_default
 
 	void registerFuture(Future_type* future)
 	{
@@ -353,7 +353,7 @@ public:
 		: m_function(func)
 	{}
 
-	virtual ~TypedFiber0() final is_default
+	virtual ~TypedFiber0() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -378,7 +378,7 @@ public:
 		, m_a1(a1)
 	{}
 
-	virtual ~TypedFiber1() final is_default
+	virtual ~TypedFiber1() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -404,7 +404,7 @@ public:
 		, m_a1(a1)
 	{}
 
-	virtual ~TypedFiber1() final is_default
+	virtual ~TypedFiber1() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -431,7 +431,7 @@ public:
 		, m_a2(a2)
 	{}
 
-	virtual ~TypedFiber2() final is_default
+	virtual ~TypedFiber2() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -459,7 +459,7 @@ public:
 		, m_a2(a2)
 	{}
 
-	virtual ~TypedFiber2() final is_default
+	virtual ~TypedFiber2() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -488,7 +488,7 @@ public:
 		, m_a3(a3)
 	{}
 
-	virtual ~TypedFiber3() final is_default
+	virtual ~TypedFiber3() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -518,7 +518,7 @@ public:
 		, m_a3(a3)
 	{}
 
-	virtual ~TypedFiber3() final is_default
+	virtual ~TypedFiber3() noexcept final is_default
 
 protected:
 	virtual void entry_() final
@@ -1026,7 +1026,7 @@ struct fiber_type_impl {
 
 	future operator<<(asFuture const&)
 	{
-		return _fiber << asFuture{};
+		return _fiber << asFuture();
 	}
 };
 } // namespace impl
@@ -1218,7 +1218,7 @@ struct fiber_future_helper {
 
 template <typename T>
 struct fiber_future_helper<T, false> {
-	typedef SharedReference<Future<T>> type;
+	typedef SharedReference<Future<T> /**/> type;
 };
 
 } // namespace impl
@@ -1257,11 +1257,11 @@ namespace fibered {}
 
 } // namespace zth
 
-#  define zth_fiber_declare_1(f)                                              \
-	  namespace zth {                                                     \
-	  namespace fibered {                                                 \
-	  extern typename ::zth::fiber_type<decltype(&::f)>::factory const f; \
-	  }                                                                   \
+#  define zth_fiber_declare_1(f)                                     \
+	  namespace zth {                                            \
+	  namespace fibered {                                        \
+	  extern ::zth::fiber_type<decltype(&::f)>::factory const f; \
+	  }                                                          \
 	  }
 
 /*!
@@ -1275,13 +1275,13 @@ namespace fibered {}
 	  namespace zth {                                                                   \
 	  namespace fibered {                                                               \
 	  /* ZTH_DEPRECATED("Use zth::fiber(f, args...) instead") */                        \
-	  storage typename ::zth::fiber_type<decltype(&::f)>::factory const                 \
+	  storage ::zth::fiber_type<decltype(&::f)>::factory const                          \
 		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
 				  ? ZTH_STRINGIFY(f) "()"                                   \
 				  : nullptr); /* NOLINT */                                  \
 	  }                                                                                 \
 	  }                                                                                 \
-	  typedef typename ::zth::fiber_type<decltype(&::f)>::future f##_future;
+	  typedef ::zth::fiber_type<decltype(&::f)>::future f##_future;
 #  define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
 #  define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)
 

@@ -60,7 +60,10 @@ add_example(socks socks.cpp)
 add_example(daemon_pattern daemon_pattern.cpp)
 add_example(blinky blinky.cpp)
 
-if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES
+   AND CMAKE_CXX_STANDARD GREATER_EQUAL 14
+   AND CMAKE_CXX_STANDARD LESS 98
+)
 	add_example(measure measure.cpp)
 	set_property(TARGET measure PROPERTY CXX_STANDARD 14)
 endif()
@@ -70,10 +73,16 @@ if(UNIX)
 
 	# deprecated add_example(fsm fsm.cpp)
 
-	if("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+	if(CMAKE_CXX_STANDARD GREATER_EQUAL 98 OR CMAKE_CXX_STANDARD LESS 14)
+		# Skip example.
+	elseif("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND "${CMAKE_CXX_STANDARD}" STREQUAL
+								   ""
+	)
 		add_example(fsm14 fsm14.cpp)
 		set_property(TARGET fsm14 PROPERTY CXX_STANDARD 17)
-	elseif("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+	elseif("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND "${CMAKE_CXX_STANDARD}" STREQUAL
+								   ""
+	)
 		add_example(fsm14 fsm14.cpp)
 		set_property(TARGET fsm14 PROPERTY CXX_STANDARD 14)
 	endif()

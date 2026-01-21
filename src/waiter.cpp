@@ -17,7 +17,7 @@ Waiter::Waiter(Worker& worker)
 	, m_defaultPoller()
 {}
 
-Waiter::~Waiter()
+Waiter::~Waiter() noexcept
 {
 	delete m_defaultPoller;
 }

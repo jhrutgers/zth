@@ -73,7 +73,7 @@ error:
 		zth_abort("Cannot create Worker; %s", err(res).c_str());
 	}
 
-	virtual ~Worker() override
+	virtual ~Worker() noexcept override
 	{
 		zth_dbg(worker, "[%s] Destruct", id_str());
 

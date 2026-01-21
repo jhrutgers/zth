@@ -59,7 +59,7 @@ ZmqPoller::ZmqPoller()
 	this->setName("zth::ZmqPoller");
 }
 
-ZmqPoller::~ZmqPoller() is_default
+ZmqPoller::~ZmqPoller() noexcept is_default
 
 int ZmqPoller::init(Pollable const& p, zmq_pollitem_t& item) noexcept
 {
@@ -233,7 +233,7 @@ PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable
 }
 #endif
 
-PollerClient::~PollerClient() is_default
+PollerClient::~PollerClient() noexcept is_default
 
 void PollerClient::reserve(size_t more)
 {

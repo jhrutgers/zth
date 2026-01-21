@@ -190,7 +190,7 @@ public:
 	/*!
 	 * \brief Dtor.
 	 */
-	virtual ~PollerInterface() override is_default
+	virtual ~PollerInterface() noexcept override is_default
 
 	/*!
 	 * \brief Add a pollable object.
@@ -236,7 +236,7 @@ public:
  */
 class PollerClientBase : public PollerInterface {
 public:
-	virtual ~PollerClientBase() override is_default
+	virtual ~PollerClientBase() noexcept override is_default
 
 	/*!
 	 * \brief Result of #poll().
@@ -271,7 +271,7 @@ class PollerServerBase : public PollerInterface {
 public:
 	typedef PollerClientBase Client;
 
-	virtual ~PollerServerBase() override is_default
+	virtual ~PollerServerBase() noexcept override is_default
 
 	/*!
 	 * \brief Poll.
@@ -358,7 +358,7 @@ private:
 public:
 #  endif
 
-	virtual ~PollerServer() override
+	virtual ~PollerServer() noexcept override
 	{
 		// Call clear() in the subclass. The virtual deinit() will be called.
 		zth_assert(empty());
@@ -657,7 +657,7 @@ public:
 	typedef PollerServer<zmq_pollitem_t> base;
 
 	ZmqPoller();
-	virtual ~ZmqPoller() override;
+	virtual ~ZmqPoller() noexcept override;
 
 private:
 	virtual int init(Pollable const& p, zmq_pollitem_t& item) noexcept override;
@@ -747,7 +747,7 @@ public:
 	PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l);
 #  endif
 
-	virtual ~PollerClient() override;
+	virtual ~PollerClient() noexcept override;
 
 	virtual void reserve(size_t more) override;
 	virtual int add(Pollable& p) noexcept override;

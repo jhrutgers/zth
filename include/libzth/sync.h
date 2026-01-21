@@ -266,7 +266,7 @@ public:
 	}
 
 	template <typename U = type, typename = typename disable_when_void<U>::type>
-	constexpr type& get() const noexcept
+	constexpr14 type& get() const noexcept
 	{
 		zth_assert(valid());
 		return *m_object.get();
@@ -313,7 +313,7 @@ protected:
 #  endif
 
 public:
-	virtual ~SynchronizerBase() override
+	virtual ~SynchronizerBase() noexcept override
 	{
 		zth_dbg(sync, "[%s] Destruct", id_str());
 	}
@@ -409,7 +409,7 @@ protected:
 			, m_rang()
 		{}
 
-		virtual ~AlarmClock() override is_default
+		virtual ~AlarmClock() noexcept override is_default
 
 		virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override
 		{
@@ -546,7 +546,7 @@ public:
 	{}
 #  endif
 
-	virtual ~Mutex() override is_default
+	virtual ~Mutex() noexcept override is_default
 
 	void lock()
 	{
@@ -659,7 +659,7 @@ public:
 	{}
 #  endif
 
-	virtual ~Semaphore() override is_default
+	virtual ~Semaphore() noexcept override is_default
 
 	void acquire(count_type count = 1)
 	{
@@ -733,7 +733,7 @@ public:
 	{}
 #  endif
 
-	virtual ~Signal() override is_default
+	virtual ~Signal() noexcept override is_default
 
 	void wait()
 	{
@@ -1236,7 +1236,7 @@ public:
 	{}
 #  endif
 
-	virtual ~Future() override is_default
+	virtual ~Future() noexcept override is_default
 
 	bool valid() const noexcept
 	{
@@ -1523,7 +1523,7 @@ public:
 	{}
 #  endif
 
-	virtual ~Gate() override is_default
+	virtual ~Gate() noexcept override is_default
 
 	bool pass() noexcept
 	{
