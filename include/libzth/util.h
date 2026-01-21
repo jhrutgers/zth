@@ -705,7 +705,7 @@ inline string err(int e)
 class UniqueIDBase {
 protected:
 	virtual char const* id_str() const noexcept = 0;
-	virtual ~UniqueIDBase() is_default
+	virtual ~UniqueIDBase() noexcept is_default
 	friend cow_string str<UniqueIDBase const&>(UniqueIDBase const&);
 };
 
@@ -738,7 +738,7 @@ protected:
 	virtual uint64_t id_() const noexcept = 0;
 
 public:
-	virtual ~NamedUniqueID() override is_default
+	virtual ~NamedUniqueID() noexcept override is_default
 
 	string const& name() const noexcept
 	{
@@ -816,7 +816,7 @@ protected:
 	virtual uint64_t id_() const noexcept = 0;
 
 public:
-	virtual ~NamedUniqueID() override is_default
+	virtual ~NamedUniqueID() noexcept override is_default
 	string const& name() const noexcept
 	{
 		static string const null;
@@ -857,10 +857,11 @@ template <typename T, bool ThreadSafe = Config::EnableThreads>
 class UniqueID : public NamedUniqueID<> {
 #  if __cplusplus < 201103L
 	ZTH_CLASS_NOCOPY(UniqueID)
-#  else
+#  endif // Pre C++11
 public:
 	typedef NamedUniqueID<> base;
 
+#  if __cplusplus >= 201103L
 	UniqueID(UniqueID const&) = delete;
 	UniqueID& operator=(UniqueID const&) = delete;
 
@@ -877,7 +878,7 @@ public:
 		base::operator=(std::move(u));
 		return *this;
 	}
-#  endif
+#  endif // C++11
 public:
 	static uint64_t getID() noexcept
 	{
@@ -907,7 +908,7 @@ public:
 		, m_id(getID())
 	{}
 
-	virtual ~UniqueID() override is_default
+	virtual ~UniqueID() noexcept override is_default
 
 	void const* normptr() const noexcept
 	{

@@ -30,7 +30,7 @@ public:
 		: m_fiber()
 	{}
 
-	virtual ~Waitable() is_default
+	virtual ~Waitable() noexcept is_default
 
 	Fiber& fiber() const noexcept
 	{
@@ -71,7 +71,7 @@ public:
 		: m_timeout(timeout)
 	{}
 
-	virtual ~TimedWaitable() override is_default
+	virtual ~TimedWaitable() noexcept override is_default
 
 	Timestamp const& timeout() const noexcept
 	{
@@ -122,7 +122,7 @@ public:
 		setInterval(interval);
 	}
 
-	virtual ~PolledWaiting() override is_default
+	virtual ~PolledWaiting() noexcept override is_default
 
 	virtual bool poll(Timestamp const& now = Timestamp::now()) noexcept override
 	{
@@ -183,7 +183,7 @@ public:
 		: base(PolledMemberWaitingHelper<C>(that, f), interval)
 	{}
 
-	virtual ~PolledMemberWaiting() override is_default
+	virtual ~PolledMemberWaiting() noexcept override is_default
 };
 
 class PollerServerBase;
@@ -195,7 +195,7 @@ class Waiter : public Runnable {
 	ZTH_CLASS_NEW_DELETE(Waiter)
 public:
 	explicit Waiter(Worker& worker);
-	virtual ~Waiter() override;
+	virtual ~Waiter() noexcept override;
 
 	void wait(TimedWaitable& w);
 	void scheduleTask(TimedWaitable& w);
