@@ -82,8 +82,26 @@ private:
 };
 
 template <typename T>
+struct enable_when_void {};
+
+template <>
+struct enable_when_void<void> {
+	typedef void type;
+};
+
+template <typename T>
+struct disable_when_void {
+	typedef void type;
+};
+
+template <>
+struct disable_when_void<void> {};
+
+template <typename T>
 class SharedPointer {
 public:
+	typedef T type;
+
 	// cppcheck-suppress noExplicitConstructor
 	constexpr14 SharedPointer(T* object = nullptr) noexcept
 		: m_object(object)
@@ -140,32 +158,34 @@ public:
 	}
 #  endif
 
-	constexpr T* get() const noexcept
+	constexpr type* get() const noexcept
 	{
 		return m_object;
 	}
 
-	constexpr operator T*() const noexcept
+	constexpr operator type*() const noexcept
 	{
 		return get();
 	}
 
-	constexpr14 T& operator*() const noexcept
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr14 type& operator*() const noexcept
 	{
 		zth_assert(get());
 		// cppcheck-suppress nullPointerRedundantCheck
 		return *get();
 	}
 
-	constexpr14 T* operator->() const noexcept
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr14 type* operator->() const noexcept
 	{
 		zth_assert(get());
 		return get();
 	}
 
-	constexpr14 T* release() noexcept
+	constexpr14 type* release() noexcept
 	{
-		T* object = get();
+		type* object = get();
 		m_object = nullptr;
 		return object;
 	}
@@ -176,18 +196,21 @@ public:
 	}
 
 private:
-	T* m_object;
+	type* m_object;
 };
 
 template <typename T>
 class SharedReference {
 public:
+	typedef SharedPointer<T> SharedPointer_type;
+	typedef typename SharedPointer_type::type type;
+
 	constexpr14 SharedReference() noexcept
 		: m_object()
 	{}
 
 	// cppcheck-suppress noExplicitConstructor
-	constexpr14 SharedReference(T& object) noexcept
+	constexpr14 SharedReference(type& object) noexcept
 		: m_object(&object)
 	{}
 
@@ -196,7 +219,7 @@ public:
 	{}
 
 	// cppcheck-suppress noExplicitConstructor
-	constexpr14 SharedReference(SharedPointer<T> const& p) noexcept
+	constexpr14 SharedReference(SharedPointer_type const& p) noexcept
 		: m_object(p)
 	{}
 
@@ -215,7 +238,7 @@ public:
 
 #  if __cplusplus >= 201103L
 	// cppcheck-suppress noExplicitConstructor
-	constexpr14 SharedReference(SharedPointer<T>&& p) noexcept
+	constexpr14 SharedReference(SharedPointer_type&& p) noexcept
 		: m_object(std::move(p))
 	{}
 
@@ -231,34 +254,38 @@ public:
 		return *this;
 	}
 
-	constexpr14 operator SharedPointer<T>() && noexcept
+	constexpr14 operator SharedPointer<type>() && noexcept
 	{
 		return std::move(m_object);
 	}
 #  endif
 
-	constexpr14 operator SharedPointer<T>() LREF_QUALIFIED noexcept
+	constexpr14 operator SharedPointer_type() LREF_QUALIFIED noexcept
 	{
 		return m_object;
 	}
 
-	constexpr T& get() const noexcept
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr type& get() const noexcept
 	{
 		zth_assert(valid());
 		return *m_object.get();
 	}
 
-	constexpr operator T&() const noexcept
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr operator type&() const noexcept
 	{
 		return get();
 	}
 
-	constexpr14 decltype(*T()) operator*() const
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr14 decltype(*type()) operator*() const
 	{
 		return *get();
 	}
 
-	constexpr14 decltype(T().operator->()) operator->() const noexcept
+	template <typename U = type, typename = typename disable_when_void<U>::type>
+	constexpr14 decltype(type().operator->()) operator->() const noexcept
 	{
 		return get().operator->();
 	}
@@ -269,7 +296,7 @@ public:
 	}
 
 private:
-	SharedPointer<T> m_object;
+	SharedPointer_type m_object;
 };
 
 class SynchronizerBase : public RefCounted, public UniqueID<SynchronizerBase> {

@@ -56,8 +56,6 @@ class TypedFiber : public Fiber {
 public:
 	typedef R Return;
 	typedef Future<Return> Future_type;
-	typedef Return indirection_type;
-	typedef Return member_type;
 
 	constexpr TypedFiber()
 		: Fiber{&entry, this}
@@ -107,20 +105,6 @@ public:
 	operator SharedReference<Future_type>()
 	{
 		return withFuture();
-	}
-
-	indirection_type operator*()
-	{
-		SharedPointer<Future_type> f = withFuture();
-		f->wait();
-		return *f;
-	}
-
-	member_type operator->()
-	{
-		SharedPointer<Future_type> f = withFuture();
-		f->wait();
-		return *f;
 	}
 
 protected:
@@ -198,10 +182,8 @@ struct setStackSize : public FiberManipulator {
 template <typename R>
 TypedFiber<R>& operator<<(TypedFiber<R>& fiber, setStackSize const& m)
 {
-	int res = 0;
-
 	if(m.stack) {
-		res = fiber.setStackSize(m.stack);
+		int res = fiber.setStackSize(m.stack);
 		if(res)
 			zth_throw(errno_exception(res));
 	}
@@ -302,106 +284,6 @@ TypedFiber<R>& operator<<(TypedFiber<R>& fiber, passOnExit const& m)
 }
 
 /*!
- * \brief Automatic create a future for a fiber, when needed.
- *
- * By default, a fiber does not save its return value. When a fiber is assigned to this class, a
- * future is created automatically.
- */
-template <typename T>
-class AutoFuture : public SharedReference<Future<T> /**/> {
-public:
-	typedef SharedReference<Future<T> /**/> base;
-	typedef Future<T> Future_type;
-
-	~AutoFuture() noexcept is_default
-
-	constexpr14 AutoFuture() noexcept
-		: base()
-	{}
-
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(AutoFuture const& af) noexcept
-		: base((base const&)af)
-	{}
-
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(base const& p) noexcept
-		: base(p)
-	{}
-
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(SharedPointer<Future_type> const& p) noexcept
-		: base(p)
-	{}
-
-#  if __cplusplus >= 201103L
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(SharedPointer<Future_type>&& p) noexcept
-		: base(std::move(p))
-	{}
-
-	// cppcheck-suppress duplInheritedMember
-	AutoFuture& operator=(SharedPointer<Future_type>&& p) noexcept
-	{
-		this->base::operator=(std::move(p));
-		return *this;
-	}
-
-	// cppcheck-suppress noExplicitConstructor
-	constexpr14 AutoFuture(SharedReference<Future_type>&& p) noexcept
-		: base(std::move(p))
-	{}
-
-	// cppcheck-suppress duplInheritedMember
-	AutoFuture& operator=(SharedReference<Future_type>&& p) noexcept
-	{
-		this->base::operator=(std::move(p));
-		return *this;
-	}
-#  endif // C++11
-
-	// cppcheck-suppress[noExplicitConstructor,constParameterReference]
-	AutoFuture(TypedFiber<T>& fiber)
-	{
-		*this = fiber;
-	}
-
-	AutoFuture& operator=(TypedFiber<T>& fiber)
-	{
-		*this = AutoFuture(fiber.withFuture());
-		return *this;
-	}
-
-	AutoFuture& operator=(AutoFuture const& af) noexcept
-	{
-		this->base::operator=((base const&)af);
-		return *this;
-	}
-
-	AutoFuture& operator=(SharedPointer<Future_type> const& af) noexcept
-	{
-		this->base::operator=(af);
-		return *this;
-	}
-
-	// cppcheck-suppress duplInheritedMember
-	bool valid() const noexcept
-	{
-		return this->base::valid() && this->get().valid();
-	}
-
-	void wait()
-	{
-		this->get().wait();
-	}
-
-	std::exception_ptr exception() const noexcept
-	{
-		return this->base::valid() ? this->get().exception() : nullptr;
-	}
-};
-
-/*!
  * \brief Forces the fiber to have a future that outlives the fiber.
  *
  * This is a manipulator that calls #zth::TypedFiber::withFuture().
@@ -421,7 +303,8 @@ public:
 struct asFuture : public FiberManipulator {};
 
 template <typename R>
-AutoFuture<R> operator<<(TypedFiber<R>& fiber, asFuture const&)
+SharedReference<typename TypedFiber<R>::Future_type>
+operator<<(TypedFiber<R>& fiber, asFuture const&)
 {
 	return fiber.withFuture();
 }
@@ -748,33 +631,108 @@ private:
 // Define TypedFiberType to extract function type information to pick the right TypedFiberX class.
 //
 
-#  if __cplusplus >= 201103L
 template <typename F>
-struct remove_function_cvref {};
+struct remove_function_cvref {
+	typedef F type;
+};
 
-#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(fun) \
-	    template <typename R, typename... Args>    \
-	    struct remove_function_cvref<fun> {        \
-		    using type = R(Args...);           \
-	    };
+#  define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, PArgs, suffix, ...) \
+	  template <typename R, ##__VA_ARGS__>                          \
+	  struct remove_function_cvref<R P PArgs suffix> {              \
+		  typedef R(type) PArgs;                                \
+	  };
 
-REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R(Args...))
-REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R (*)(Args...))
-REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(R (&)(Args...))
+#  ifdef ZTH_FIBERTYPE98
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A0(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, (), suffix)
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A1(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, (A1), suffix, typename A1)
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A2(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, (A1, A2), suffix, typename A1, typename A2)
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A3(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(             \
+		    P, (A1, A2, A3), suffix, typename A1, typename A2, typename A3)
 
-#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(...)             \
-	    template <typename R, typename C, typename... Args>           \
-	    struct remove_function_cvref<R (C::*)(Args...) __VA_ARGS__> { \
-		    using type = R(Args...);                              \
-	    };
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A(P, suffix)  \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A0(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A1(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A2(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A3(P, suffix)
+#  else
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A(P, suffix)
+#  endif // ZTH_FIBERTYPE98
 
-#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(...)               \
-	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(__VA_ARGS__)          \
-	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const __VA_ARGS__)    \
-	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(volatile __VA_ARGS__) \
-	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const volatile __VA_ARGS__)
+#  if __cplusplus >= 201103L
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(P, suffix)   \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, (Args...), suffix, typename... Args)
+#  else
+#    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(P, suffix) \
+	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A(P, suffix)
+#  endif // C++11
+
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(, )
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((*), )
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((*&), )
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((&), )
+
+#  if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(, noexcept)
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((*), noexcept)
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((*&), noexcept)
+REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((&), noexcept)
+#  endif // __cpp_noexcept_function_type
+
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A0
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A1
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A2
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A3
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A
+#  undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS
+
+#  define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_(PArgs, cvref, ...) \
+	  template <typename R, typename C, ##__VA_ARGS__>                 \
+	  struct remove_function_cvref<R(C::*) PArgs cvref> {              \
+		  typedef R(type) PArgs;                                   \
+	  };
+
+#  ifdef ZTH_FIBERTYPE98
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A0(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_((), cvref)
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A1(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_((A1), cvref, typename A1)
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A2(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_((A1, A2), cvref, typename A1, typename A2)
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A3(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_(         \
+		    (A1, A2, A3), cvref, typename A1, typename A2, typename A3)
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A(cvref)  \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A0(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A1(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A2(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A3(cvref)
+#  else
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A(cvref)
+#  endif // ZTH_FIBERTYPE98
+
+#  if __cplusplus >= 201103L
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(cvref)   \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_((Args...), cvref, typename... Args)
+#  else
+#    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(cvref) \
+	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A(cvref)
+#  endif // C++11
+
+#  define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(...)               \
+	  REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(__VA_ARGS__)          \
+	  REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const __VA_ARGS__)    \
+	  REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(volatile __VA_ARGS__) \
+	  REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(const volatile __VA_ARGS__)
 
 REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV()
+#  if __cplusplus >= 201103L
 REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&)
 REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&&)
 
@@ -783,11 +741,18 @@ REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(noexcept)
 REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(& noexcept)
 REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV(&& noexcept)
 #    endif // __cpp_noexcept_function_type
+#  endif   // C++11
 
-#    undef REMOVE_FUNCTION_CVREF_SPECIALIZATIONS
-#    undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS
-#    undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A0
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A1
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A2
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A3
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS
+#  undef REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_CV
 
+#  if __cplusplus >= 201103L
 template <typename T>
 struct functor_operator_type {};
 
@@ -931,13 +896,18 @@ struct function_type_helper<R (*&)(Args...)> {
 };
 #  endif // C++11
 
+namespace impl {
+template <typename F>
+struct fiber_type_impl;
+} // namespace impl
+
 template <typename F>
 class TypedFiberFactory {
 public:
 	typedef typename function_type_helper<F>::type Function;
 	typedef typename TypedFiberType<Function>::returnType Return;
 	typedef typename TypedFiberType<Function>::fiberType TypedFiber_type;
-	typedef AutoFuture<Return> AutoFuture_type;
+	typedef SharedReference<typename TypedFiber_type::Future_type> Future;
 
 	constexpr TypedFiberFactory(Function function, char const* name) noexcept
 		: m_function(function)
@@ -957,22 +927,22 @@ public:
 	typedef typename TypedFiberType<Function>::a2Type A2;
 	typedef typename TypedFiberType<Function>::a3Type A3;
 
-	TypedFiber_type& operator()() const
+	impl::fiber_type_impl<F> operator()() const
 	{
 		return polish(*new TypedFiber_type(m_function));
 	}
 
-	TypedFiber_type& operator()(A1 a1) const
+	impl::fiber_type_impl<F> operator()(A1 a1) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1));
 	}
 
-	TypedFiber_type& operator()(A1 a1, A2 a2) const
+	impl::fiber_type_impl<F> operator()(A1 a1, A2 a2) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2));
 	}
 
-	TypedFiber_type& operator()(A1 a1, A2 a2, A3 a3) const
+	impl::fiber_type_impl<F> operator()(A1 a1, A2 a2, A3 a3) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 	}
@@ -980,7 +950,7 @@ public:
 
 #  if __cplusplus >= 201103L
 	template <typename... Args>
-	TypedFiber_type& operator()(Args&&... args) const
+	impl::fiber_type_impl<F> operator()(Args&&... args) const
 	{
 		return polish(*new TypedFiber_type{m_function, std::forward<Args>(args)...});
 	}
@@ -1012,55 +982,52 @@ template <typename F>
 struct fiber_type_impl {
 	typedef TypedFiberFactory<F> factory;
 	typedef typename factory::Function function;
-	typedef typename factory::AutoFuture_type future;
+	typedef typename factory::Future future;
+	typedef fiber_type_impl fiber;
 
-	struct fiber {
-		typedef typename factory::TypedFiber_type type;
-		type& _fiber;
+	typedef typename factory::TypedFiber_type TypedFiber_type;
+	TypedFiber_type& _fiber;
 
-		// cppcheck-suppress noExplicitConstructor
-		fiber(typename factory::TypedFiber_type& f) noexcept
-			: _fiber(f)
-		{}
+	// cppcheck-suppress noExplicitConstructor
+	fiber_type_impl(TypedFiber_type& f) noexcept
+		: _fiber(f)
+	{}
 
-		typename factory::TypedFiber_type::indirection_type operator*()
-		{
-			return *_fiber;
-		}
+	typename TypedFiber_type::Return operator*()
+	{
+		future f = _fiber.withFuture();
+		f.get().wait();
+		return *f;
+	}
 
-		typename factory::TypedFiber_type::member_type operator->()
-		{
-			return _fiber.operator->();
-		}
+	typename TypedFiber_type::Return operator->()
+	{
+		future f = _fiber.withFuture();
+		f.get().wait();
+		return *f;
+	}
 
-		operator type&() const noexcept
-		{
-			return _fiber;
-		}
+	operator TypedFiber_type&() const noexcept
+	{
+		return _fiber;
+	}
 
-		operator future() const noexcept
-		{
-			return _fiber;
-		}
+	operator future() const noexcept
+	{
+		return _fiber.withFuture();
+	}
 
-		operator SharedPointer<typename factory::TypedFiber_type::Future_type>()
-			const noexcept
-		{
-			return _fiber.withFuture();
-		}
+	template <typename Manipulator>
+	fiber& operator<<(Manipulator const& m)
+	{
+		_fiber << m;
+		return *this;
+	}
 
-		template <typename Manipulator>
-		fiber& operator<<(Manipulator const& m)
-		{
-			_fiber << m;
-			return *this;
-		}
-
-		future operator<<(asFuture const&)
-		{
-			return _fiber << asFuture{};
-		}
-	};
+	future operator<<(asFuture const&)
+	{
+		return _fiber << asFuture{};
+	}
 };
 } // namespace impl
 
@@ -1142,20 +1109,23 @@ typename fiber_type<F>::fiber fiber(F f)
 	return factory<F>(f)();
 }
 
-template <typename F, typename A1>
-typename fiber_type<F>::fiber fiber(F f, A1 a1)
+template <typename F>
+typename fiber_type<F>::fiber fiber(F f, typename TypedFiberType<F>::a1Type a1)
 {
 	return factory<F>(f)(a1);
 }
 
-template <typename F, typename A1, typename A2>
-typename fiber_type<F>::fiber fiber(F f, A1 a1, A2 a2)
+template <typename F>
+typename fiber_type<F>::fiber
+fiber(F f, typename TypedFiberType<F>::a1Type a1, typename TypedFiberType<F>::a2Type a2)
 {
 	return factory<F>(f)(a1, a2);
 }
 
-template <typename F, typename A1, typename A2, typename A3>
-typename fiber_type<F>::fiber fiber(F f, A1 a1, A2 a2, A3 a3)
+template <typename F>
+typename fiber_type<F>::fiber
+fiber(F f, typename TypedFiberType<F>::a1Type a1, typename TypedFiberType<F>::a2Type a2,
+      typename TypedFiberType<F>::a3Type a3)
 {
 	return factory<F>(f)(a1, a2, a3);
 }
@@ -1176,31 +1146,42 @@ typename fiber_type<F>::fiber fiber(F&& f, Args&&... args)
 //
 
 namespace impl {
-
-template <typename T>
-struct is_function {
+template <typename F>
+struct is_function_ {
 	enum { value = 0 };
 };
 
 #  ifdef ZTH_FIBERTYPE98
+template <typename R>
+struct is_function_<R()> {
+	enum { value = 1 };
+};
+template <typename R, typename A1>
+struct is_function_<R(A1)> {
+	enum { value = 1 };
+};
+template <typename R, typename A1, typename A2>
+struct is_function_<R(A1, A2)> {
+	enum { value = 1 };
+};
+template <typename R, typename A1, typename A2, typename A3>
+struct is_function_<R(A1, A2, A3)> {
+	enum { value = 1 };
+};
 #  endif // ZTH_FIBERTYPE98
 
 #  if __cplusplus >= 201103L
 template <typename T, typename... Args>
-struct is_function<T(Args...)> {
-	enum { value = 1 };
-};
-
-template <typename T, typename... Args>
-struct is_function<T (*)(Args...)> {
-	enum { value = 1 };
-};
-
-template <typename T, typename... Args>
-struct is_function<T (&)(Args...)> {
+struct is_function_<T(Args...)> {
 	enum { value = 1 };
 };
 #  endif // C++11
+} // namespace impl
+
+template <typename T>
+struct is_function {
+	enum { value = impl::is_function_<typename remove_function_cvref<T>::type>::value };
+};
 
 template <typename T>
 struct has_call_operator {
@@ -1218,17 +1199,26 @@ struct has_call_operator {
 
 template <typename T>
 struct is_callable {
-	enum { value = impl::is_function<T>::value || impl::has_call_operator<T>::value };
+	enum { value = is_function<T>::value || has_call_operator<T>::value };
 };
 
-template <typename T, bool = is_callable<T>::value>
+namespace impl {
+
+template <
+	typename T, bool =
+#  if __cplusplus >= 201103L
+			    is_callable<T>::value
+#  else
+			    is_function<T>::value
+#  endif // C++11
+	>
 struct fiber_future_helper {
 	typedef typename fiber_type<T>::future type;
 };
 
 template <typename T>
 struct fiber_future_helper<T, false> {
-	typedef AutoFuture<T> type;
+	typedef SharedReference<Future<T>> type;
 };
 
 } // namespace impl
@@ -1238,14 +1228,16 @@ template <typename T>
 struct fiber_future : public impl::fiber_future_helper<T>::type {
 	typedef typename impl::fiber_future_helper<T>::type future_type;
 	typedef future_type base;
-	typedef typename future_type::Future_type::type return_type;
+	typedef typename future_type::type return_type;
 
 	template <typename F>
+	// cppcheck-suppress noExplicitConstructor
 	fiber_future(F& f) noexcept
 		: base(static_cast<future_type const&>(f))
 	{}
 
 	template <typename F>
+	// cppcheck-suppress noExplicitConstructor
 	fiber_future(F const& f) noexcept
 		: base(static_cast<future_type const&>(f))
 	{}

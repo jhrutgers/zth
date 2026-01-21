@@ -62,10 +62,6 @@ protected:
 		: m_future{static_cast<SharedPointer<Future_type>&&>(std::move(future))}
 	{}
 
-	explicit std_shared_future_base(AutoFuture<value_type>&& future) noexcept
-		: m_future{static_cast<SharedPointer<Future_type>&&>(std::move(future))}
-	{}
-
 	// cppcheck-suppress-macro noExplicitConstructor
 #  define ZTH_FUTURE_CTORS(future_class_type)                                    \
 	  using Future_type = typename base::Future_type;                        \
@@ -95,12 +91,6 @@ public:
 		return *this;
 	}
 
-	std_shared_future_base& operator=(AutoFuture<value_type>&& other) noexcept
-	{
-		m_future = static_cast<SharedPointer<Future_type>&&>(std::move(other));
-		return *this;
-	}
-
 	// cppcheck-suppress-macro noExplicitConstructor
 #  define ZTH_FUTURE_MOVE(future_class_type)                                               \
 	  future_class_type(future_class_type&& other) noexcept = default;                 \
@@ -113,10 +103,6 @@ public:
 		  : base{std::move(f)}                                                     \
 	  {}                                                                               \
                                                                                            \
-	  future_class_type(zth::AutoFuture<value_type>&& f) noexcept                      \
-		  : base{std::move(f)}                                                     \
-	  {}                                                                               \
-                                                                                           \
 	  future_class_type& operator=(future_class_type&& other) noexcept = default;      \
                                                                                            \
 	  future_class_type& operator=(zth::SharedPointer<Future_type>&& other) noexcept   \
@@ -126,12 +112,6 @@ public:
 	  }                                                                                \
                                                                                            \
 	  future_class_type& operator=(zth::SharedReference<Future_type>&& other) noexcept \
-	  {                                                                                \
-		  this->base::operator=(std::move(other));                                 \
-		  return *this;                                                            \
-	  }                                                                                \
-                                                                                           \
-	  future_class_type& operator=(zth::AutoFuture<value_type>&& other) noexcept       \
 	  {                                                                                \
 		  this->base::operator=(std::move(other));                                 \
 		  return *this;                                                            \
