@@ -74,7 +74,7 @@ if(ZTH_USE_GTEST)
 	function(zth_add_test_binary TESTNAME)
 		add_executable(${TESTNAME} ${ARGN} test_main.cpp)
 		target_link_libraries(${TESTNAME} gtest libzth)
-		zth_clang_tidy(${TESTNAME})
+		zth_clang_tidy(${TESTNAME} -cert-err58-cpp)
 
 		set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 
@@ -102,7 +102,7 @@ if(ZTH_USE_GTEST)
 	if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 		zth_add_test(test_coro test_coro.cpp)
 		set_property(TARGET test_coro PROPERTY CXX_STANDARD 20)
-		zth_clang_tidy(test_coro)
+		zth_clang_tidy(test_coro -cert-err58-cpp)
 	endif()
 
 	zth_add_test_binary(test_fiber98 test_fiber98.cpp)
