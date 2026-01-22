@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deprecated `zth_async` in favor of `zth::fiber` and `zth::async`.
 - Renamed `zth::fiber()` to `zth::factory()` and implement `zth::fiber()` to actually return a fiber.
 - Streamlined fiber type member functions.
+- Removed deprecated old FSM implementation.
 
 
 

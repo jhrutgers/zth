@@ -23,7 +23,6 @@
 #include <libzth/coro.h>
 #include <libzth/exception.h>
 #include <libzth/fiber.h>
-#include <libzth/fsm.h>
 #include <libzth/fsm14.h>
 #include <libzth/future.h>
 #include <libzth/init.h>
