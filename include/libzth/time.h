@@ -623,7 +623,7 @@ public:
 
 	bool hasPassed() const noexcept
 	{
-		return now().isBefore(*this);
+		return isBefore(now());
 	}
 
 	constexpr bool operator==(Timestamp const& rhs) const noexcept
