@@ -8,123 +8,91 @@
 
 #include <cstdio>
 
-// zth_fiber() is used to allow using `zth_async' on a function to start a fiber
-// with the given function as entry point.  zth_fiber() generates some static
-// variables to implement this. So, don't use zth_fiber() in a header file, as
-// it will result in a linker complaining about multiple symbols. You can split
-// zth_fiber() in two parts: the declaration (zth_fiber_declare()) and
-// definition (zth_fiber_define()), like you do with most functions in headers
-// and source files.
-
-// The same applies in case there is a circular dependency between two function
-// calling each other as a fiber.  In that case, you can forward declare the
-// fiber using zth_fiber_declare(), just like you would do in a header file.
-
-// In case you have a header file that should make fibers visible, declare your
-// function as normal.
-void fiber_vv();
-
-// Then, use zth_fiber_declare() instead of zth_fiber() to generate everything
-// that is required such that other compilation units can do `zth_async
-// fiber_vv()'.
-zth_fiber_declare(fiber_vv)
-
-// In one .cpp file, zth_fiber_define() is required to implement the actual
-// fiber creation code.
-zth_fiber_define(fiber_vv)
-
-// And, of course, you need to implement the function itself in the .cpp file.
-void fiber_vv()
+// For C++11 and up, anything that can be invoked like a function (function pointers, lambda
+// functions, functors, std::function, etc.) can be used as fiber entry point.  For pre-C++11, only
+// function pointers are supported, with up to three arguments.
+static void print(char const* something)
 {
-	printf("fiber_vv()\n");
+	printf("%s\n", something);
 }
 
-// You can use function parameters of any type in the fiber entry function,
-// except for references (like an `int const&' parameter).  In the
-// implementation, the arguments are stored and given to the Fiber object.
-// Reference variables are const, and cannot be reassigned, so this is not
-// possible to save and forward arguments. If you do a pass-by-value, note that
-// the data might be copied multiple times by Zth before ending up in the fiber
-// entry. So, try to avoid to do pass-by-value of large structs (as is always
-// smart to avoid in all C/C++ code).
-void fiber_vi(int i)
+static void print_something()
 {
-	printf("fiber_vi(%d)\n", i);
+	zth::fiber(print, "something");
 }
 
-void fiber_vii(int x, int y)
+static int inc(int i)
 {
-	printf("fiber_vii(%d, %d)\n", x, y);
+	int res = i + 1;
+	printf("inc(%d) = %d\n", i, res);
+	return res;
 }
-// zth_fiber_declare(), zth_fiber_define() and zth_fiber() allow a list of
-// functions. This is identical to calling zth_fiber...() on every function
-// separately.
-zth_fiber(fiber_vi, fiber_vii)
+
+// When you use a reference or pointer argument, make sure the argument passed to the fiber is still
+// valid when the fiber runs. It may outlive the scope in which the fiber was created.
+static void add(int& a, int x, int y)
+{
+	a = x + y;
+	printf("%d = %d + %d\n", a, x, y);
+}
+
+struct Data {
+	double operand;
+	double result;
+};
 
 // Fibers can return data, like normal functions.
-double fiber_ddd(double a, double b)
+static Data* struct_add(Data* a, double b)
 {
-	double res = a + b;
-	printf("fiber_ddd(%g, %g) = %g\n", a, b, res);
-	return res;
+	a->result = a->operand + b;
+	printf("a->operand + b = %g\n", a->result);
+	return a;
 }
-zth_fiber(fiber_ddd)
-
-#if __cplusplus >= 201103L
-// The current implementation for pre-C++11 only support up to three arguments.
-// C++11 and higher support arbitrary number of arguments.
-double fiber_ddddi(double a, double b, double c, int d)
-{
-	double res = a * b + c - d;
-	printf("fiber_ddddi(%g, %g, %g, %d) = %g\n", a, b, c, d, res);
-	return res;
-}
-zth_fiber(fiber_ddddi)
-#endif
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	// `zth_async' is just like a function call, but its execution is
-	// postponed.  Note that the order in which the fibers get initialized
-	// or execute is not defined.
-	zth_async fiber_vv();
-	zth_async fiber_vi(42);
-	zth_async fiber_vii(3, 14);
+	// Note that the order in which the fibers get initialized or execute is not defined.
+	zth::fiber(print_something);
+	zth::fiber(print, "Hello, Fiber!");
 
-	// The fiber entry points are still available to be called directly.
-	// So, the following line just calls fiber_vv() right away. There is no
-	// side-effect on fiber_vv() as being marked as fiber entry point.
-	fiber_vv();
+	// If you would just start a fiber like this, you don't know when it completes.
+	zth::fiber(inc, 42);
 
-	// fiber_ddd() returns a value. If it would be started as below, the
-	// return value is just lost, just like what would happen if you would
-	// call fiber_ddd() as a normal function without using its return
-	// value.
-	zth_async fiber_ddd(1, 2);
+	// You probably want to wait for its result. You can do this by getting a future from the
+	// fiber. Just dereference the future object to get the value.
+	zth::fiber_future<int> finc = zth::fiber(inc, 100);
+	printf("100 incremented is %d\n", *finc);
 
-	// zth_fiber() also defines a <function>_future type, which allows
-	// synchronization between fibers. `zth_async' returns this type.
-	fiber_ddd_future fddd = zth_async fiber_ddd(3, 4);
+	// As we pass a local variable as reference argument to the fiber, we need to make sure that
+	// the fiber finishes before the variable goes out of scope.
+	int a = 0;
+	zth::fiber_future<> f_add = zth::fiber(add, a, 1, 2);
 
-	// Now, fddd is a (smart) pointer to a Future object. fddd is small and
-	// can safely be copied or passed using pass-by-value. It gives a few
-	// interesting functions:
-	// - poll whether the fiber has finished and the future becomes
-	//   therefore valid;
-	printf("fddd is %s\n", fddd.valid() ? "valid" : "not valid yet");
+	// Although the future type is void, we can still wait for the fiber to finish by
+	// dereferencing it.
+	*f_add;
 
-	// - suspend the current fiber and wait until the fiber has finished;
-	*fddd;
+	// You can also do this in one line:
+	*zth::fiber(add, a, 3, 4);
+	printf("Result of add is %d\n", a);
 
-	// - retrieve the returned value by the fiber. If the future is not
-	//   valid yet, value() will imply wait().
-	printf("fddd = %g\n", *fddd);
-	// In case the return type of the fiber is void, the value() function
-	// is not available.
+	Data data = {3.5};
+	printf("Result of struct_add is %g\n", zth::fiber(struct_add, &data, 2.5)->result);
 
 #if __cplusplus >= 201103L
-	// Arbitrary fiber argument number example.
-	zth_async fiber_ddddi(4, 5, 6, 7);
+	// For C++11 and up, lambda functions and functors can also be used as fiber entry points.
+	zth::fiber([](char const* msg) { printf("Lambda says: %s\n", msg); }, "Hello from lambda!");
+
+	struct Functor {
+		void operator()(int n)
+		{
+			printf("Functor called with %d\n", n);
+		}
+	};
+	zth::fiber(Functor(), 123);
+
+	std::function<void()> f = []() { printf("std::function called\n"); };
+	*zth::fiber(f);
 #endif
 
 	return 0;
