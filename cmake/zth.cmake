@@ -91,7 +91,6 @@ set(ZTH_HEADERS
     ${ZTH_SOURCE_DIR}/include/libzth/coro.h
     ${ZTH_SOURCE_DIR}/include/libzth/exception.h
     ${ZTH_SOURCE_DIR}/include/libzth/fiber.h
-    ${ZTH_SOURCE_DIR}/include/libzth/fsm.h
     ${ZTH_SOURCE_DIR}/include/libzth/fsm14.h
     ${ZTH_SOURCE_DIR}/include/libzth/init.h
     ${ZTH_SOURCE_DIR}/include/libzth/io.h

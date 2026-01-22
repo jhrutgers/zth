@@ -71,8 +71,6 @@ endif()
 if(UNIX)
 	add_example(work work.cpp)
 
-	# deprecated add_example(fsm fsm.cpp)
-
 	if(CMAKE_CXX_STANDARD GREATER_EQUAL 98 OR CMAKE_CXX_STANDARD LESS 14)
 		# Skip example.
 	elseif("cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND "${CMAKE_CXX_STANDARD}" STREQUAL
