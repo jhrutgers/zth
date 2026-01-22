@@ -642,7 +642,7 @@ struct remove_function_cvref {
 		  typedef R(type) PArgs;                                \
 	  };
 
-#  ifdef ZTH_FIBERTYPE98
+#  if ZTH_TYPEDFIBER98
 #    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A0(P, suffix) \
 	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_(P, (), suffix)
 #    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A1(P, suffix) \
@@ -660,7 +660,7 @@ struct remove_function_cvref {
 	    REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A3(P, suffix)
 #  else
 #    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS_A(P, suffix)
-#  endif // ZTH_FIBERTYPE98
+#  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
 #    define REMOVE_FUNCTION_CVREF_SPECIALIZATIONS(P, suffix)   \
@@ -697,7 +697,7 @@ REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((&), noexcept)
 		  typedef R(type) PArgs;                                   \
 	  };
 
-#  ifdef ZTH_FIBERTYPE98
+#  if ZTH_TYPEDFIBER98
 #    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A0(cvref) \
 	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_((), cvref)
 #    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A1(cvref) \
@@ -714,7 +714,7 @@ REMOVE_FUNCTION_CVREF_SPECIALIZATIONS((&), noexcept)
 	    REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A3(cvref)
 #  else
 #    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS_A(cvref)
-#  endif // ZTH_FIBERTYPE98
+#  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
 #    define REMOVE_FUNCTION_CVREF_MEMBER_SPECIALIZATIONS(cvref)   \
@@ -830,45 +830,53 @@ struct TypedFiberType {};
 #  endif // Pre C++11
 
 #  if ZTH_TYPEDFIBER98
-template <typename R>
-struct TypedFiberType<R (*)()> {
-	struct NoArg {};
-	typedef R returnType;
-	typedef TypedFiber0<R> fiberType;
-	typedef NoArg a1Type;
-	typedef NoArg a2Type;
-	typedef NoArg a3Type;
-};
+#    define ZTH_TYPEDFIBERTYPE_SPECIALIZATION(P)                         \
+	    template <typename R>                                        \
+	    struct TypedFiberType<R P()> {                               \
+		    struct NoArg {};                                     \
+		    typedef R returnType;                                \
+		    typedef TypedFiber0<R> fiberType;                    \
+		    typedef NoArg a1Type;                                \
+		    typedef NoArg a2Type;                                \
+		    typedef NoArg a3Type;                                \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1>                           \
+	    struct TypedFiberType<R P(A1)> {                             \
+		    struct NoArg {};                                     \
+		    typedef R returnType;                                \
+		    typedef TypedFiber1<R, A1> fiberType;                \
+		    typedef A1 a1Type;                                   \
+		    typedef NoArg a2Type;                                \
+		    typedef NoArg a3Type;                                \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1, typename A2>              \
+	    struct TypedFiberType<R P(A1, A2)> {                         \
+		    struct NoArg {};                                     \
+		    typedef R returnType;                                \
+		    typedef TypedFiber2<R, A1, A2> fiberType;            \
+		    typedef A1 a1Type;                                   \
+		    typedef A2 a2Type;                                   \
+		    typedef NoArg a3Type;                                \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1, typename A2, typename A3> \
+	    struct TypedFiberType<R P(A1, A2, A3)> {                     \
+		    struct NoArg {};                                     \
+		    typedef R returnType;                                \
+		    typedef TypedFiber3<R, A1, A2, A3> fiberType;        \
+		    typedef A1 a1Type;                                   \
+		    typedef A2 a2Type;                                   \
+		    typedef A3 a3Type;                                   \
+	    };
 
-template <typename R, typename A1>
-struct TypedFiberType<R (*)(A1)> {
-	struct NoArg {};
-	typedef R returnType;
-	typedef TypedFiber1<R, A1> fiberType;
-	typedef A1 a1Type;
-	typedef NoArg a2Type;
-	typedef NoArg a3Type;
-};
+ZTH_TYPEDFIBERTYPE_SPECIALIZATION()
+ZTH_TYPEDFIBERTYPE_SPECIALIZATION((*))
+ZTH_TYPEDFIBERTYPE_SPECIALIZATION((*&))
+ZTH_TYPEDFIBERTYPE_SPECIALIZATION((&))
 
-template <typename R, typename A1, typename A2>
-struct TypedFiberType<R (*)(A1, A2)> {
-	struct NoArg {};
-	typedef R returnType;
-	typedef TypedFiber2<R, A1, A2> fiberType;
-	typedef A1 a1Type;
-	typedef A2 a2Type;
-	typedef NoArg a3Type;
-};
-
-template <typename R, typename A1, typename A2, typename A3>
-struct TypedFiberType<R (*)(A1, A2, A3)> {
-	struct NoArg {};
-	typedef R returnType;
-	typedef TypedFiber3<R, A1, A2, A3> fiberType;
-	typedef A1 a1Type;
-	typedef A2 a2Type;
-	typedef A3 a3Type;
-};
+#    undef ZTH_TYPEDFIBERTYPE_SPECIALIZATION
 #  endif // ZTH_TYPEDFIBER98
 
 
@@ -884,6 +892,36 @@ struct function_type_helper {
 	typedef F type;
 };
 
+#  if ZTH_TYPEDFIBER98
+#    define FUNCTION_TYPE_HELPER_SPECIALIZATION(P)                       \
+	    template <typename R>                                        \
+	    struct function_type_helper<R P()> {                         \
+		    typedef R (*type)();                                 \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1>                           \
+	    struct function_type_helper<R P(A1)> {                       \
+		    typedef R (*type)(A1);                               \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1, typename A2>              \
+	    struct function_type_helper<R P(A1, A2)> {                   \
+		    typedef R (*type)(A1, A2);                           \
+	    };                                                           \
+                                                                         \
+	    template <typename R, typename A1, typename A2, typename A3> \
+	    struct function_type_helper<R P(A1, A2, A3)> {               \
+		    typedef R (*type)(A1, A2, A3);                       \
+	    };
+
+FUNCTION_TYPE_HELPER_SPECIALIZATION()
+FUNCTION_TYPE_HELPER_SPECIALIZATION((*))
+FUNCTION_TYPE_HELPER_SPECIALIZATION((*&))
+FUNCTION_TYPE_HELPER_SPECIALIZATION((&))
+
+#    undef FUNCTION_TYPE_HELPER_SPECIALIZATION
+#  endif // ZTH_TYPEDFIBER98
+
 #  if __cplusplus >= 201103L
 template <typename R, typename... Args>
 struct function_type_helper<R(Args...)> {
@@ -891,15 +929,23 @@ struct function_type_helper<R(Args...)> {
 };
 
 template <typename R, typename... Args>
+struct function_type_helper<R (*)(Args...)> {
+	using type = R (*)(Args...);
+};
+
+template <typename R, typename... Args>
 struct function_type_helper<R (*&)(Args...)> {
+	using type = R (*)(Args...);
+};
+
+template <typename R, typename... Args>
+struct function_type_helper<R (&)(Args...)> {
 	using type = R (*)(Args...);
 };
 #  endif // C++11
 
-namespace impl {
 template <typename F>
-struct fiber_type_impl;
-} // namespace impl
+struct fiber_type;
 
 template <typename F>
 class TypedFiberFactory {
@@ -927,22 +973,22 @@ public:
 	typedef typename TypedFiberType<Function>::a2Type A2;
 	typedef typename TypedFiberType<Function>::a3Type A3;
 
-	impl::fiber_type_impl<F> operator()() const
+	fiber_type<Function> operator()() const
 	{
 		return polish(*new TypedFiber_type(m_function));
 	}
 
-	impl::fiber_type_impl<F> operator()(A1 a1) const
+	fiber_type<Function> operator()(A1 a1) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1));
 	}
 
-	impl::fiber_type_impl<F> operator()(A1 a1, A2 a2) const
+	fiber_type<Function> operator()(A1 a1, A2 a2) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2));
 	}
 
-	impl::fiber_type_impl<F> operator()(A1 a1, A2 a2, A3 a3) const
+	fiber_type<Function> operator()(A1 a1, A2 a2, A3 a3) const
 	{
 		return polish(*new TypedFiber_type(m_function, a1, a2, a3));
 	}
@@ -950,7 +996,7 @@ public:
 
 #  if __cplusplus >= 201103L
 	template <typename... Args>
-	impl::fiber_type_impl<F> operator()(Args&&... args) const
+	fiber_type<Function> operator()(Args&&... args) const
 	{
 		return polish(*new TypedFiber_type{m_function, std::forward<Args>(args)...});
 	}
@@ -977,19 +1023,18 @@ private:
 // Provide a zth::fiber_type<F> API to get fiber information.
 //
 
-namespace impl {
 template <typename F>
-struct fiber_type_impl {
-	typedef TypedFiberFactory<F> factory;
+struct fiber_type {
+	typedef TypedFiberFactory<typename function_type_helper<F>::type> factory;
 	typedef typename factory::Function function;
 	typedef typename factory::Future future;
-	typedef fiber_type_impl fiber;
+	typedef fiber_type<function> fiber;
 
 	typedef typename factory::TypedFiber_type TypedFiber_type;
 	TypedFiber_type& _fiber;
 
 	// cppcheck-suppress noExplicitConstructor
-	fiber_type_impl(TypedFiber_type& f) noexcept
+	fiber_type(TypedFiber_type& f) noexcept
 		: _fiber(f)
 	{}
 
@@ -1029,35 +1074,6 @@ struct fiber_type_impl {
 		return _fiber << asFuture();
 	}
 };
-} // namespace impl
-
-#  if __cplusplus >= 201103L
-template <typename F>
-struct fiber_type : public impl::fiber_type_impl<F> {};
-
-template <typename R, typename... Args>
-struct fiber_type<R (*)(Args...)> : public impl::fiber_type_impl<R (*)(Args...)> {};
-
-template <typename R, typename... Args>
-struct fiber_type<R(Args...)> : public impl::fiber_type_impl<R (&)(Args...)> {};
-#  else	 // Pre C++11
-template <typename F>
-struct fiber_type {};
-#  endif // Pre C++11
-
-#  if ZTH_TYPEDFIBER98
-template <typename R>
-struct fiber_type<R (*)()> : public impl::fiber_type_impl<R (*)()> {};
-
-template <typename R, typename A1>
-struct fiber_type<R (*)(A1)> : public impl::fiber_type_impl<R (*)(A1)> {};
-
-template <typename R, typename A1, typename A2>
-struct fiber_type<R (*)(A1, A2)> : public impl::fiber_type_impl<R (*)(A1, A2)> {};
-
-template <typename R, typename A1, typename A2, typename A3>
-struct fiber_type<R (*)(A1, A2, A3)> : public impl::fiber_type_impl<R (*)(A1, A2, A3)> {};
-#  endif
 
 
 
@@ -1110,22 +1126,22 @@ typename fiber_type<F>::fiber fiber(F f)
 }
 
 template <typename F>
-typename fiber_type<F>::fiber fiber(F f, typename TypedFiberType<F>::a1Type a1)
+typename fiber_type<F>::fiber fiber(F f, typename fiber_type<F>::factory::A1 a1)
 {
 	return factory<F>(f)(a1);
 }
 
 template <typename F>
 typename fiber_type<F>::fiber
-fiber(F f, typename TypedFiberType<F>::a1Type a1, typename TypedFiberType<F>::a2Type a2)
+fiber(F f, typename fiber_type<F>::factory::A1 a1, typename fiber_type<F>::factory::A2 a2)
 {
 	return factory<F>(f)(a1, a2);
 }
 
 template <typename F>
 typename fiber_type<F>::fiber
-fiber(F f, typename TypedFiberType<F>::a1Type a1, typename TypedFiberType<F>::a2Type a2,
-      typename TypedFiberType<F>::a3Type a3)
+fiber(F f, typename fiber_type<F>::factory::A1 a1, typename fiber_type<F>::factory::A2 a2,
+      typename fiber_type<F>::factory::A3 a3)
 {
 	return factory<F>(f)(a1, a2, a3);
 }
@@ -1151,7 +1167,7 @@ struct is_function_ {
 	enum { value = 0 };
 };
 
-#  ifdef ZTH_FIBERTYPE98
+#  if ZTH_TYPEDFIBER98
 template <typename R>
 struct is_function_<R()> {
 	enum { value = 1 };
@@ -1168,7 +1184,7 @@ template <typename R, typename A1, typename A2, typename A3>
 struct is_function_<R(A1, A2, A3)> {
 	enum { value = 1 };
 };
-#  endif // ZTH_FIBERTYPE98
+#  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
 template <typename T, typename... Args>
@@ -1223,8 +1239,8 @@ struct fiber_future_helper<T, false> {
 
 } // namespace impl
 
-#  ifdef ZTH_TYPEDFIBER98
-template <typename T>
+#  if ZTH_TYPEDFIBER98
+template <typename T = void>
 struct fiber_future : public impl::fiber_future_helper<T>::type {
 	typedef typename impl::fiber_future_helper<T>::type future_type;
 	typedef future_type base;
@@ -1243,7 +1259,7 @@ struct fiber_future : public impl::fiber_future_helper<T>::type {
 	{}
 };
 #  else	 // !ZTH_TYPEDFIBER98
-template <typename T>
+template <typename T = void>
 using fiber_future = typename impl::fiber_future_helper<T>::type;
 #  endif // !ZTH_TYPEDFIBER98
 
@@ -1274,7 +1290,7 @@ namespace fibered {}
 #  define zth_fiber_define_1(storage, f)                                                    \
 	  namespace zth {                                                                   \
 	  namespace fibered {                                                               \
-	  /* ZTH_DEPRECATED("Use zth::fiber(f, args...) instead") */                        \
+	  ZTH_DEPRECATED("Use zth::fiber(f, args...) instead")                              \
 	  storage ::zth::fiber_type<decltype(&::f)>::factory const                          \
 		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
 				  ? ZTH_STRINGIFY(f) "()"                                   \
