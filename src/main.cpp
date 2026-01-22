@@ -12,9 +12,6 @@ __attribute__((weak)) int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(arg
 {
 	return 0;
 }
-#ifndef DOXYGEN
-zth_fiber_define_1(static, main_fiber);
-#endif
 
 /*!
  * \brief Initialization function to be called by the default-supplied \c
@@ -52,8 +49,8 @@ int main(int argc, char** argv)
 	int res = EXIT_SUCCESS;
 	try {
 		zth::Worker w;
-		main_fiber_future f =
-			zth_async main_fiber(argc, argv) << zth::setName(
+		zth::fiber_future<int> f =
+			zth::fiber(main_fiber, argc, argv) << zth::setName(
 				zth::Config::EnableDebugPrint || zth::Config::EnablePerfEvent
 						|| zth::Config::EnableStackWaterMark
 					? "main_fiber"
