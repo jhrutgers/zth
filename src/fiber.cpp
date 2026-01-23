@@ -20,20 +20,26 @@ int Runnable::run()
 	Worker* w = Worker::instance();
 	if(unlikely(!w))
 		return EAGAIN;
+	if(fiber())
+		return EALREADY;
 
 	Fiber* f = new Fiber(&Runnable::entry_, static_cast<void*>(this));
+
 	try {
 		int res = fiberHook(*f);
 		if(unlikely(res)) {
 			// Rollback.
+			m_fiber = nullptr;
 			delete f;
 			return res;
 		}
 	} catch(...) {
+		m_fiber = nullptr;
 		delete f;
 		zth_throw();
 	}
 
+	f->used();
 	w->add(f);
 	return 0;
 }

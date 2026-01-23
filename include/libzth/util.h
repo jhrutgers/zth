@@ -19,6 +19,11 @@
 
 #include <libzth/config.h>
 
+#if __cplusplus >= 201703L
+#  include <tuple>
+#  include <type_traits>
+#endif
+
 /*!
  * \brief Helper for #ZTH_STRINGIFY()
  * \private
@@ -936,6 +941,49 @@ private:
 template <typename T, bool ThreadSafe>
 uint64_t UniqueID<T, ThreadSafe>::m_nextId = 0;
 
+class RefCounted {
+	ZTH_CLASS_NOCOPY(RefCounted)
+public:
+	RefCounted() noexcept
+		: m_count()
+	{}
+
+	virtual ~RefCounted() noexcept
+	{
+		zth_assert(m_count == 0);
+	}
+
+	void used() noexcept
+	{
+		zth_assert(m_count < std::numeric_limits<size_t>::max());
+		m_count++;
+	}
+
+	bool unused() noexcept
+	{
+		zth_assert(m_count > 0);
+		if(--m_count > 0)
+			return false;
+
+		cleanup();
+		return true;
+	}
+
+	size_t refs() const noexcept
+	{
+		return m_count;
+	}
+
+protected:
+	virtual void cleanup() noexcept
+	{
+		delete this;
+	}
+
+private:
+	size_t m_count;
+};
+
 template <typename T, typename WhenTIsVoid>
 struct choose_type {
 	typedef T type;
@@ -1530,6 +1578,75 @@ template <uint64_t x>
 struct smallest_uint<x, smallest_uint_size<4> /**/> {
 	typedef uint32_t type;
 };
+
+
+#  if __cplusplus >= 201703L
+// Based on https://gist.github.com/utilForever/1a058050b8af3ef46b58bcfa01d5375d
+namespace impl {
+template <class T, class... TArgs>
+decltype(void(T{std::declval<TArgs>()...}), std::true_type{}) test_is_braces_constructible(int);
+
+template <class, class...>
+std::false_type test_is_braces_constructible(...);
+
+template <class T, class... TArgs>
+using is_braces_constructible = decltype(test_is_braces_constructible<T, TArgs...>(0));
+
+struct any_type {
+	template <class T>
+	// cppcheck-suppress noExplicitConstructor
+	constexpr operator T();
+};
+} // namespace impl
+
+template <class T>
+auto to_tuple(T&& object) noexcept
+{
+	using type = std::decay_t<T>;
+
+	// Repeat as required...
+	if constexpr(impl::is_braces_constructible<
+			     type, impl::any_type, impl::any_type, impl::any_type,
+			     impl::any_type>{}) {
+		auto&& [p1, p2, p3, p4] = std::forward<T>(object);
+		return std::make_tuple(p1, p2, p3, p4);
+	} else if constexpr(impl::is_braces_constructible<
+				    type, impl::any_type, impl::any_type, impl::any_type>{}) {
+		auto&& [p1, p2, p3] = std::forward<T>(object);
+		return std::make_tuple(p1, p2, p3);
+	} else if constexpr(impl::is_braces_constructible<type, impl::any_type, impl::any_type>{}) {
+		auto&& [p1, p2] = std::forward<T>(object);
+		return std::make_tuple(p1, p2);
+	} else if constexpr(impl::is_braces_constructible<type, impl::any_type>{}) {
+		auto&& [p1] = std::forward<T>(object);
+		return std::make_tuple(p1);
+	} else {
+		return std::make_tuple();
+	}
+}
+
+#    define ZTH_STRUCTURED_BINDING_FORWARDING(Class)                              \
+	    template <typename T>                                                 \
+	    struct std::tuple_size<Class<T>> : std::tuple_size<T> {};             \
+                                                                                  \
+	    template <size_t N, typename T>                                       \
+	    struct std::tuple_element<N, Class<T>> : std::tuple_element<N, T> {}; \
+                                                                                  \
+	    template <size_t N, typename T>                                       \
+	    decltype(auto) get(Class<T>& f) noexcept                              \
+	    {                                                                     \
+		    auto& x = to_tuple(f.value());                                \
+		    return get<N>(x);                                             \
+	    }
+#    define ZTH_STRUCTURED_BINDING_FORWARDING_NS(Class)   \
+	    } /* assume namespace zth */                  \
+	    ZTH_STRUCTURED_BINDING_FORWARDING(zth::Class) \
+	    namespace zth {
+#  else
+#    define ZTH_STRUCTURED_BINDING_FORWARDING(Class)
+#    define ZTH_STRUCTURED_BINDING_FORWARDING_NS(Class)
+#  endif // C++17
+
 
 } // namespace zth
 

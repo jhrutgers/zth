@@ -1008,7 +1008,7 @@ protected:
 		if(unlikely(m_name))
 			fiber.setName(m_name);
 
-		currentWorker().add(&fiber);
+		currentWorker().hatch(fiber);
 		return fiber;
 	}
 
@@ -1031,23 +1031,23 @@ struct fiber_type {
 	typedef fiber_type<function> fiber;
 
 	typedef typename factory::TypedFiber_type TypedFiber_type;
-	TypedFiber_type& _fiber;
+	SharedPointer<TypedFiber_type> _fiber;
 
 	// cppcheck-suppress noExplicitConstructor
 	fiber_type(TypedFiber_type& f) noexcept
-		: _fiber(f)
+		: _fiber(&f)
 	{}
 
 	typename TypedFiber_type::Return operator*()
 	{
-		future f = _fiber.withFuture();
+		future f = _fiber->withFuture();
 		f.get().wait();
 		return *f;
 	}
 
 	typename TypedFiber_type::Return operator->()
 	{
-		future f = _fiber.withFuture();
+		future f = _fiber->withFuture();
 		f.get().wait();
 		return *f;
 	}
@@ -1059,19 +1059,19 @@ struct fiber_type {
 
 	operator future() const noexcept
 	{
-		return _fiber.withFuture();
+		return _fiber->withFuture();
 	}
 
 	template <typename Manipulator>
 	fiber& operator<<(Manipulator const& m)
 	{
-		_fiber << m;
+		*_fiber << m;
 		return *this;
 	}
 
 	future operator<<(asFuture const&)
 	{
-		return _fiber << asFuture();
+		return *_fiber << asFuture();
 	}
 };
 
