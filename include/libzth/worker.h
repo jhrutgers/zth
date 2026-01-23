@@ -130,6 +130,7 @@ error:
 	Worker& operator<<(Fiber* fiber) noexcept
 	{
 		zth_assert(fiber);
+		// cppcheck-suppress nullPointerRedundantCheck
 		if(fiber->state() == Fiber::New)
 			hatch(*fiber);
 		else

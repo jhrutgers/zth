@@ -14,55 +14,76 @@ using namespace std;
 #  define drand48()	((double)rand() / (double)RAND_MAX)
 #endif
 
+static void nap_a_bit()
+{
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
+	zth::nap(drand48());
+}
+
 struct Sock {
 	enum Side { Left, Right };
 	Sock(int i, Side side)
-		: i(i)
-		, side(side)
-		, other()
-		, str(zth::format("%s sock %d", side == Left ? "left" : "right", i))
+		: str(zth::format("%s sock %d", side == Left ? "left" : "right", i))
 	{}
 
-	zth::Future<> done;
-	int i;
-	Side side;
-	Sock* other;
 	zth::string str;
 };
 
-struct Socks {
+struct Socks : public zth::RefCounted {
 	explicit Socks(int i)
 		: left(i, Sock::Left)
 		, right(i, Sock::Right)
 		, str(zth::format("socks %d", i))
-	{
-		left.other = &right;
-		right.other = &left;
-	}
+	{}
 
 	Sock left;
 	Sock right;
 	zth::string str;
 };
 
-void takeSocks(int count);
-Socks* wearSocks(Socks& socks);
-void washSock(Sock& sock);
-zth_fiber(takeSocks, wearSocks, washSock)
-
-void takeSocks(int count)
+static void washSock(Sock& sock)
 {
-	std::list<wearSocks_future> allSocks;
+	nap_a_bit();
+
+	printf("    Wash %s\n", sock.str.c_str());
+	nap_a_bit();
+
+	printf("    Iron %s\n", sock.str.c_str());
+	nap_a_bit();
+}
+
+static Socks* useSocks(Socks& socks)
+{
+	nap_a_bit();
+
+	printf("  Wear %s\n", socks.str.c_str());
+
+	// Done wearing, go wash both socks.
+	{
+		zth::join j(zth::fiber(washSock, socks.left), zth::fiber(washSock, socks.right));
+
+		nap_a_bit();
+		printf("  I don't do the dirty work for %s\n", socks.str.c_str());
+
+		// j is out of scope here, so this is the point where the join actually happens.
+	}
+
+	printf("  Fold %s\n", socks.str.c_str());
+	nap_a_bit();
+	return &socks;
+}
+
+static void takeSocks(int count)
+{
+	std::list<zth::fiber_future<Socks*> /**/> allSocks;
 
 	for(int i = 1; i <= count; i++) {
 		Socks* socks = new Socks(i);
+		socks->used();
 		printf("Take %s\n", socks->str.c_str());
 
-#if __cplusplus >= 201103L
-		allSocks.emplace_back(zth_async wearSocks(*socks));
-#else
-		allSocks.push_back(zth_async wearSocks(*socks));
-#endif
+		// Give the pair of socks to someone else to use.
+		allSocks.push_back(zth::fiber(useSocks, *socks));
 
 		zth::nap(0.5);
 	}
@@ -72,46 +93,11 @@ void takeSocks(int count)
 		// *it is a SharedReference<Future<Socks*> >
 		Socks* socks = **it;
 		printf("Store %s\n", socks->str.c_str());
-		delete socks;
+		socks->unused();
 	}
 }
 
-Socks* wearSocks(Socks& socks)
-{
-	// NOLINTNEXTLINE(concurrency-mt-unsafe)
-	zth::nap(drand48());
-	printf("Wear %s\n", socks.str.c_str());
-
-	// Done wearing, go wash both socks.
-	zth_async washSock(socks.left); // in parallel
-	washSock(socks.right);		// done right here and now
-
-	// Wait till the washing sequence has completed.
-	socks.left.done.wait();
-
-	printf("Fold %s\n", socks.str.c_str());
-	// NOLINTNEXTLINE(concurrency-mt-unsafe)
-	zth::nap(drand48());
-	return &socks;
-}
-
-void washSock(Sock& sock)
-{
-	// NOLINTNEXTLINE(concurrency-mt-unsafe)
-	zth::nap(drand48());
-
-	printf("Wash %s\n", sock.str.c_str());
-	// NOLINTNEXTLINE(concurrency-mt-unsafe)
-	zth::nap(drand48());
-
-	printf("Iron %s\n", sock.str.c_str());
-	// NOLINTNEXTLINE(concurrency-mt-unsafe)
-	zth::nap(drand48());
-
-	sock.done.set();
-}
-
-int main(int argc, char** argv)
+int main_fiber(int argc, char** argv)
 {
 	int count = 10;
 	if(argc > 1)
@@ -119,7 +105,7 @@ int main(int argc, char** argv)
 
 	// NOLINTNEXTLINE(concurrency-mt-unsafe)
 	srand48((long)time(nullptr));
-	zth::Worker w;
-	zth_async takeSocks(count);
-	w.run();
+
+	zth::fiber(takeSocks, count);
+	return 0;
 }

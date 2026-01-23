@@ -482,7 +482,6 @@
 					"4_sync",
 					"5_perf",
 					"6_stack",
-					"7_no_async",
 					"9_c_api",
 					"blinky",
 					"daemon_pattern",
