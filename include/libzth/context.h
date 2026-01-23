@@ -70,15 +70,17 @@ struct ContextAttr {
 	typedef void* EntryArg;
 	typedef void (*Entry)(EntryArg);
 
-	constexpr explicit ContextAttr(Entry entry_ = nullptr, EntryArg arg_ = EntryArg()) noexcept
-		: stackSize(Config::DefaultFiberStackSize)
-		, entry(entry_)
+	constexpr explicit ContextAttr(
+		Entry entry_ = nullptr, EntryArg arg_ = EntryArg(),
+		size_t stackSize_ = Config::DefaultFiberStackSize) noexcept
+		: entry(entry_)
 		, arg(arg_)
+		, stackSize(stackSize_)
 	{}
 
-	size_t stackSize;
 	Entry entry;
 	EntryArg arg;
+	size_t stackSize;
 };
 
 /*!
