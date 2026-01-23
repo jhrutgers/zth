@@ -1287,24 +1287,26 @@ fiber_future(F const&) -> fiber_future<typename F::factory::Return>;
 
 class join {
 public:
-	join() noexcept = default;
+	join() noexcept
+		: m_gate(1)
+	{}
 
 #  if ZTH_TYPEDFIBER98
 	explicit join(Fiber& f1)
-		: m_gate{2}
+		: m_gate(2)
 	{
 		f1 << passOnExit(m_gate);
 	}
 
 	explicit join(Fiber& f1, Fiber& f2)
-		: m_gate{3}
+		: m_gate(3)
 	{
 		f1 << passOnExit(m_gate);
 		f2 << passOnExit(m_gate);
 	}
 
 	explicit join(Fiber& f1, Fiber& f2, Fiber& f3)
-		: m_gate{4}
+		: m_gate(4)
 	{
 		f1 << passOnExit(m_gate);
 		f2 << passOnExit(m_gate);
@@ -1312,7 +1314,7 @@ public:
 	}
 
 	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4)
-		: m_gate{5}
+		: m_gate(5)
 	{
 		f1 << passOnExit(m_gate);
 		f2 << passOnExit(m_gate);
@@ -1321,7 +1323,7 @@ public:
 	}
 
 	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4, Fiber& f5)
-		: m_gate{6}
+		: m_gate(6)
 	{
 		f1 << passOnExit(m_gate);
 		f2 << passOnExit(m_gate);

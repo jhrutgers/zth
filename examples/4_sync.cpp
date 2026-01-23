@@ -16,7 +16,7 @@
 // with a mutex.
 
 static zth::Mutex mutex;
-static zth::Gate gate{4};
+static zth::Gate gate(4);
 
 static void fiber(int id)
 {
