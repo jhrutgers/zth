@@ -19,6 +19,7 @@
 #  include <libzth/worker.h>
 
 #  if __cplusplus >= 201103L
+#    include <initializer_list>
 #    include <tuple>
 #    include <type_traits>
 #  endif
@@ -268,18 +269,24 @@ public:
 		: gate(g)
 	{}
 
-	static void cleanup(Fiber& UNUSED_PAR(f), void* g)
+	static void atExit(Fiber& UNUSED_PAR(f), void* g) noexcept
 	{
-		reinterpret_cast<Gate*>(g)->pass();
+		static_cast<Gate*>(g)->pass();
 	}
 
 	Gate& gate;
 };
 
+static inline Fiber& operator<<(Fiber& fiber, passOnExit const& m)
+{
+	fiber.atExit(&passOnExit::atExit, static_cast<void*>(&m.gate));
+	return fiber;
+}
+
 template <typename R>
 TypedFiber<R>& operator<<(TypedFiber<R>& fiber, passOnExit const& m)
 {
-	fiber.addCleanup(&passOnExit::cleanup, static_cast<void*>(&m.gate));
+	static_cast<Fiber&>(fiber) << m;
 	return fiber;
 }
 
@@ -1054,7 +1061,12 @@ struct fiber_type {
 
 	operator TypedFiber_type&() const noexcept
 	{
-		return _fiber;
+		return *_fiber;
+	}
+
+	operator Fiber&() const noexcept
+	{
+		return *_fiber;
 	}
 
 	operator future() const noexcept
@@ -1262,6 +1274,88 @@ struct fiber_future : public impl::fiber_future_helper<T>::type {
 template <typename T = void>
 using fiber_future = typename impl::fiber_future_helper<T>::type;
 #  endif // !ZTH_TYPEDFIBER98
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Simple join
+//
+
+class join {
+public:
+	join() noexcept = default;
+
+#  if ZTH_TYPEDFIBER98
+	explicit join(Fiber& f1)
+		: m_gate{2}
+	{
+		f1 << passOnExit(m_gate);
+	}
+
+	explicit join(Fiber& f1, Fiber& f2)
+		: m_gate{3}
+	{
+		f1 << passOnExit(m_gate);
+		f2 << passOnExit(m_gate);
+	}
+
+	explicit join(Fiber& f1, Fiber& f2, Fiber& f3)
+		: m_gate{4}
+	{
+		f1 << passOnExit(m_gate);
+		f2 << passOnExit(m_gate);
+		f3 << passOnExit(m_gate);
+	}
+
+	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4)
+		: m_gate{5}
+	{
+		f1 << passOnExit(m_gate);
+		f2 << passOnExit(m_gate);
+		f3 << passOnExit(m_gate);
+		f4 << passOnExit(m_gate);
+	}
+
+	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4, Fiber& f5)
+		: m_gate{6}
+	{
+		f1 << passOnExit(m_gate);
+		f2 << passOnExit(m_gate);
+		f3 << passOnExit(m_gate);
+		f4 << passOnExit(m_gate);
+		f5 << passOnExit(m_gate);
+	}
+#  endif // ZTH_TYPEDFIBER98
+
+#  if __cplusplus >= 201103L
+	template <typename... Fibers>
+	explicit join(Fiber& f1, Fibers&&... fibers)
+		: m_gate{sizeof...(fibers) + 2U}
+	{
+		f1 << passOnExit(m_gate);
+
+		using dummy = int[];
+		(void)dummy{
+			0, (static_cast<Fiber&>(std::forward<Fibers>(fibers)) << passOnExit(m_gate),
+			    0)...};
+	}
+
+	explicit join(std::initializer_list<std::reference_wrapper<Fiber>> fibers)
+		: m_gate{fibers.size() + 1U}
+	{
+		for(auto const& f : fibers)
+			f.get() << passOnExit(m_gate);
+	}
+#  endif // C++11
+
+	~join()
+	{
+		m_gate.wait();
+	}
+
+private:
+	Gate m_gate;
+};
 
 
 

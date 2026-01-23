@@ -188,7 +188,7 @@ public:
 	}
 
 protected:
-	T value() const
+	decltype(auto) value() const
 	{
 		check_valid();
 		return m_future->value();
@@ -378,7 +378,7 @@ public:
 	ZTH_FUTURE_MOVE(shared_future)
 	ZTH_FUTURE_COPY(shared_future)
 
-	value_type get()
+	decltype(auto) get()
 	{
 		return base::value();
 	}
@@ -395,7 +395,7 @@ public:
 	ZTH_FUTURE_MOVE(shared_future)
 	ZTH_FUTURE_COPY(shared_future)
 
-	value_type get()
+	decltype(auto) get()
 	{
 		return *base::value();
 	}

@@ -94,8 +94,8 @@ public:
 
 	virtual ~Fiber() noexcept override
 	{
-		for(decltype(m_cleanup.begin()) it = m_cleanup.begin(); it != m_cleanup.end(); ++it)
-			it->first(*this, it->second);
+		m_exit.once(*this);
+		m_cleanup.once(*this);
 
 		if(state() > Uninitialized && state() < Dead)
 			kill();
@@ -167,9 +167,16 @@ public:
 		return m_totalTime;
 	}
 
-	void addCleanup(void (*f)(Fiber&, void*), void* arg)
+	typedef Hook<Fiber&> Hook_type;
+
+	void atExit(Hook_type::function_type f, Hook_type::arg_type arg = Hook_type::arg_type())
 	{
-		m_cleanup.push_back(std::make_pair(f, arg));
+		m_exit.add(f, arg);
+	}
+
+	void atCleanup(Hook_type::function_type f, Hook_type::arg_type arg = Hook_type::arg_type())
+	{
+		m_cleanup.add(f, arg);
 	}
 
 	int init(Timestamp const& now = Timestamp::now())
@@ -450,6 +457,8 @@ protected:
 		}
 
 		zth_dbg(fiber, "[%s] Exit", id_str());
+		m_exit.once(*this);
+
 		kill();
 	}
 
@@ -466,7 +475,8 @@ private:
 	Timestamp m_stateEnd;
 	TimeInterval m_timeslice;
 	TimeInterval m_dtMax;
-	list_type<std::pair<void (*)(Fiber&, void*), void*> /**/>::type m_cleanup;
+	Hook_type m_exit;
+	Hook_type m_cleanup;
 };
 
 /*!
@@ -513,12 +523,12 @@ public:
 protected:
 	virtual int fiberHook(Fiber& f)
 	{
-		f.addCleanup(&cleanup_, this);
+		f.atCleanup(&cleanup_, this);
 		m_fiber = &f;
 		return 0;
 	}
 
-	virtual void cleanup()
+	virtual void cleanup() noexcept
 	{
 		m_fiber = nullptr;
 	}
@@ -526,7 +536,7 @@ protected:
 	virtual void entry() = 0;
 
 private:
-	static void cleanup_(Fiber& UNUSED_PAR(f), void* that)
+	static void cleanup_(Fiber& UNUSED_PAR(f), void* that) noexcept
 	{
 		Runnable* r = static_cast<Runnable*>(that);
 		if(likely(r)) {

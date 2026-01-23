@@ -269,8 +269,6 @@ private:
 	SharedPointer_type m_object;
 };
 
-ZTH_STRUCTURED_BINDING_FORWARDING_NS(SharedReference)
-
 class SynchronizerBase : public RefCounted, public UniqueID<SynchronizerBase> {
 	ZTH_CLASS_NEW_DELETE(SynchronizerBase)
 protected:
@@ -903,7 +901,7 @@ public:
 	}
 
 #    if __cplusplus >= 201103L
-	type value() &&
+	type&& value() &&
 	{
 		zth_assert(valid());
 
@@ -932,7 +930,7 @@ public:
 	}
 
 #    if __cplusplus >= 201103L
-	type value() && noexcept
+	type&& value() && noexcept
 	{
 		zth_assert(valid());
 
@@ -1155,15 +1153,7 @@ public:
 		return m_value.value();
 	}
 
-#  if __cplusplus >= 201103L
-	type value() &&
-	{
-		wait();
-		return m_value.value();
-	}
-#  endif
-
-	indirection_type operator*()
+	indirection_type operator*() LREF_QUALIFIED
 	{
 		return value();
 	}
@@ -1172,6 +1162,19 @@ public:
 	{
 		return &value();
 	}
+
+#  if __cplusplus >= 201103L
+	type&& value() &&
+	{
+		wait();
+		return m_value.value();
+	}
+
+	type&& operator*() &&
+	{
+		return value();
+	}
+#  endif
 
 private:
 	void set_prepare() noexcept
