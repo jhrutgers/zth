@@ -78,7 +78,7 @@ public:
 		, m_stateNext(Ready)
 		, m_entry(entry)
 		, m_entryArg(arg)
-		, m_contextAttr(&fiberEntry, this)
+		, m_stackSize(Config::DefaultFiberStackSize)
 		, m_context()
 		, m_fls()
 		, m_timeslice(Config::MinTimeslice())
@@ -118,13 +118,13 @@ public:
 		if(state() != New)
 			return EPERM;
 
-		m_contextAttr.stackSize = size;
+		m_stackSize = size;
 		return 0;
 	}
 
 	size_t stackSize() const noexcept
 	{
-		return m_contextAttr.stackSize;
+		return m_stackSize;
 	}
 
 	size_t stackUsage() const
@@ -180,7 +180,9 @@ public:
 		zth_assert(!m_context);
 
 		zth_dbg(fiber, "[%s] Init", id_str());
-		int res = context_create(m_context, m_contextAttr);
+
+		ContextAttr attr(&fiberEntry, this, m_stackSize);
+		int res = context_create(m_context, attr);
 		if(res) {
 			// Oops.
 			kill();
@@ -456,7 +458,7 @@ private:
 	State m_stateNext;
 	Entry m_entry;
 	EntryArg m_entryArg;
-	ContextAttr m_contextAttr;
+	size_t m_stackSize;
 	Context* m_context;
 	void* m_fls;
 	TimeInterval m_totalTime;
