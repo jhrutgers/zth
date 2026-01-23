@@ -346,14 +346,13 @@ function(zth_clang_tidy target)
 
 	if(cxx_std)
 		set(DO_CLANG_TIDY "${DO_CLANG_TIDY}" "--extra-arg=-std=c++${cxx_std}")
+	endif()
 
-		if(cxx_std GREATER_EQUAL 20 AND cxx_std LESS 98)
-			# This check seems to give a lot of false positives in C++20 with
-			# coroutines.
-			list(APPEND CHECKS -clang-analyzer-core.uninitialized.UndefReturn
-			     -clang-analyzer-core.uninitialized.Branch
-			)
-		endif()
+	if("${cxx_std}" STREQUAL "" OR (cxx_std GREATER_EQUAL 20 AND cxx_std LESS 98))
+		# This check seems to give a lot of false positives in C++20 with coroutines.
+		list(APPEND CHECKS -clang-analyzer-core.uninitialized.UndefReturn
+		     -clang-analyzer-core.uninitialized.Branch
+		)
 	endif()
 
 	set(CHECKS_ARG "")

@@ -443,11 +443,18 @@ struct task_fiber {
 	}
 
 	template <typename M>
-	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber& operator<<(M const& m)
+	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber& operator<<(M const& m) &
 	{
 		zth_assert(!task.completed());
 		fiber << m;
 		return *this;
+	}
+
+	template <typename M>
+	requires(std::is_base_of_v<FiberManipulator, M>) task_fiber&& operator<<(M const& m) &&
+	{
+		*this << m;
+		return std::move(*this);
 	}
 
 	operator Fiber&() const noexcept
@@ -546,9 +553,9 @@ public:
 		return run();
 	}
 
-	decltype(auto) fiber()
+	decltype(auto) fiber(char const* name = "coro::fiber")
 	{
-		return task_fiber{*this, zth::fiber([](task t) { t.run(); }, *this)};
+		return task_fiber{*this, zth::factory([](task t) { t.run(); }, name)(*this)};
 	}
 
 	auto& operator co_await() noexcept
@@ -706,13 +713,10 @@ template <typename T>
 static inline decltype(auto) awaitable(Mailbox<T>& mailbox) noexcept;
 
 template <typename T>
-class Mailbox {};
-
-template <typename T>
-class Mailbox<std::reference_wrapper<T>> : public zth::Mailbox<std::reference_wrapper<T>> {
+class Mailbox : public zth::Mailbox<T> {
 	ZTH_CLASS_NEW_DELETE(Mailbox)
 public:
-	using base = zth::Mailbox<std::reference_wrapper<T>>;
+	using base = zth::Mailbox<T>;
 	using type = typename base::type;
 	using promise_type = generator_promise<T>;
 
@@ -776,9 +780,9 @@ protected:
 	virtual void wait(base::assigned_type assigned) override
 	{
 		while(!valid(assigned)) {
-			this->block((size_t)base::Queue_Take);
 			if(abandoned())
 				zth_throw(coro_already_completed{});
+			this->block((size_t)base::Queue_Take);
 		}
 	}
 
@@ -857,11 +861,18 @@ struct generator_fiber {
 	Fiber fiber;
 
 	template <typename M>
-	requires(std::is_base_of_v<FiberManipulator, M>) generator_fiber& operator<<(M const& m)
+	requires(std::is_base_of_v<FiberManipulator, M>) generator_fiber& operator<<(M const& m) &
 	{
 		zth_assert(!generator.completed());
 		fiber << m;
 		return *this;
+	}
+
+	template <typename M>
+	requires(std::is_base_of_v<FiberManipulator, M>) generator_fiber&& operator<<(M const& m) &&
+	{
+		*this << m;
+		return std::move(*this);
 	}
 
 	operator Fiber&() const noexcept
@@ -963,9 +974,10 @@ public:
 #  endif // ZTH_FUTURE_EXCEPTION
 	}
 
-	decltype(auto) fiber()
+	decltype(auto) fiber(char const* name = "coro::fiber")
 	{
-		return generator_fiber{*this, zth::fiber([](generator g) { g.run(); }, *this)};
+		return generator_fiber{
+			*this, zth::factory([](generator g) { g.run(); }, name)(*this)};
 	}
 
 	/////////////////////////////////////////////////////
@@ -1001,7 +1013,9 @@ template <typename T>
 class generator_promise final : public promise<generator_promise<T>> {
 public:
 	using yield_type = T;
-	using Mailbox_type = Mailbox<std::reference_wrapper<yield_type>>;
+	using Mailbox_type = Mailbox<std::conditional_t<
+		std::is_reference_v<yield_type>,
+		std::reference_wrapper<std::remove_reference_t<yield_type>>, yield_type>>;
 	using generator_type = generator<yield_type>;
 	using base = promise<generator_promise<yield_type>>;
 
@@ -1041,7 +1055,7 @@ public:
 		if(completed())
 			zth_throw(coro_already_completed{});
 
-		return m_mailbox.take().get();
+		return m_mailbox.take();
 	}
 
 	void generate()
@@ -1071,7 +1085,7 @@ public:
 	decltype(auto) yield_value(T_&& v) noexcept
 	{
 		zth_dbg(coro, "[%s] Yield", this->id_str());
-		m_mailbox.put(std::ref(v));
+		m_mailbox.put(std::forward<T_>(v));
 
 		struct impl {
 			generator_promise& self;
