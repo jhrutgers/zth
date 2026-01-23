@@ -21,7 +21,6 @@ static void job(int length)
 	zth::nap(0.1 * (double)length);
 	printf("job %d: finished  %d.%d s\n", job_id, length / 10, length % 10);
 }
-zth_fiber(job)
 
 #ifndef ZTH_OS_BAREMETAL
 static void handler(int /*sig*/)
@@ -101,7 +100,7 @@ static void employer()
 					totalScanned += (size_t)scanned;
 
 					// Start job.
-					zth_async job(work);
+					zth::fiber(job, work);
 					continue;
 				}
 				// fall-through

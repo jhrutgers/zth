@@ -47,7 +47,6 @@ void scheduling()
 	// the relation between fibers in the VCD.
 	zth::mnap(10);
 }
-zth_fiber(scheduling)
 
 void measure()
 {
@@ -87,7 +86,6 @@ void measure()
 	// length between the perf_mark()s in the VCD log string and compare it
 	// with the measured time interval.
 }
-zth_fiber(measure)
 
 void stack()
 {
@@ -100,14 +98,13 @@ void stack()
 	zth::Backtrace bt2;
 	bt2.printDelta(bt);
 }
-zth_fiber(stack)
 
 
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
-	zth_async scheduling();
-	zth_async measure();
-	zth_async stack();
+	zth::fiber(scheduling);
+	zth::fiber(measure);
+	zth::fiber(stack);
 	return 0;
 }

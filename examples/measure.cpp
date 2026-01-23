@@ -65,11 +65,10 @@ void testYieldFiber()
 	while(true)
 		zth::yield(nullptr, true);
 }
-zth_fiber(testYieldFiber)
 
 void testYieldInit()
 {
-	zth_async testYieldFiber();
+	zth::fiber(testYieldFiber);
 }
 
 void testYield()
@@ -86,12 +85,10 @@ void testYieldCleanup()
 }
 
 void testFiberCreateEntry() {}
-zth_fiber(testFiberCreateEntry)
 
 void testFiberCreate()
 {
-	testFiberCreateEntry_future f = zth_async testFiberCreateEntry();
-	*f;
+	*zth::fiber(testFiberCreateEntry);
 	zth::yield(nullptr, true); // Make sure to clean up old fibers.
 }
 

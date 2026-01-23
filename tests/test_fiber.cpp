@@ -408,3 +408,10 @@ TEST(FiberTest, functor)
 	std::function<int(int, int)> stdf = [](int a, int b) { return a + b; };
 	EXPECT_EQ(*zth::fiber(stdf, 7, 8), 15);
 }
+
+TEST(FiberTest, join)
+{
+	zth::join(zth::fiber([]() {}));
+	zth::join(zth::fiber([]() {}), zth::fiber([]() {}));
+	zth::join({zth::fiber([]() {}), zth::fiber([]() {}), zth::fiber([]() {})});
+}
