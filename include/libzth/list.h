@@ -749,6 +749,12 @@ public:
 #  endif
 		;
 
+	explicit Hookable(function_type f, arg_type a = arg_type(), Hookable* n = nullptr) noexcept
+		: func(f)
+		, arg(a)
+		, next(n)
+	{}
+
 	Hookable* operator()(type x) const noexcept
 	{
 		func(x, arg);

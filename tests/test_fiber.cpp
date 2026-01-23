@@ -112,7 +112,7 @@ zth_fiber(fiber_iRi)
 TEST(FiberTest, iRi)
 {
 	int i = 5;
-	zth::fiber_future<int> f = zth_async fiber_iRi(i);
+	zth::fiber_future f = zth_async fiber_iRi(i);
 	EXPECT_EQ(*f, 6);
 	EXPECT_EQ(i, 6);
 
@@ -181,7 +181,7 @@ TEST(FiberTest, viRdf)
 	int i = 8;
 	double d = 0.1;
 	float f = 2.0f;
-	zth::fiber_future<void> r = zth::fiber(fiber_viRdf, i, d, f);
+	zth::fiber_future r = zth::fiber(fiber_viRdf, i, d, f);
 	*r;
 	EXPECT_DOUBLE_EQ(d, 1.6);
 

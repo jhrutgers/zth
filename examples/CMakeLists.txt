@@ -20,6 +20,7 @@ function(add_example example)
 	target_link_libraries(${example} libzth)
 	zth_clang_tidy(
 		${example} -cppcoreguidelines-avoid-non-const-global-variables -cert-err58-cpp
+		-hicpp-use-emplace
 	)
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

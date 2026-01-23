@@ -1251,7 +1251,6 @@ struct fiber_future_helper<T, false> {
 
 } // namespace impl
 
-#  if ZTH_TYPEDFIBER98
 template <typename T = void>
 struct fiber_future : public impl::fiber_future_helper<T>::type {
 	typedef typename impl::fiber_future_helper<T>::type future_type;
@@ -1270,10 +1269,15 @@ struct fiber_future : public impl::fiber_future_helper<T>::type {
 		: base(static_cast<future_type const&>(f))
 	{}
 };
-#  else	 // !ZTH_TYPEDFIBER98
-template <typename T = void>
-using fiber_future = typename impl::fiber_future_helper<T>::type;
-#  endif // !ZTH_TYPEDFIBER98
+
+#  if __cplusplus >= 201703L
+// Deduction guides for fiber_future.
+template <typename F>
+fiber_future(F&) -> fiber_future<typename F::factory::Return>;
+
+template <typename F>
+fiber_future(F const&) -> fiber_future<typename F::factory::Return>;
+#  endif // C++17
 
 
 
