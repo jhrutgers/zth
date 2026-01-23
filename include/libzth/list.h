@@ -737,6 +737,117 @@ private:
 	size_t m_size;
 };
 
+template <typename T>
+class Hookable {
+	ZTH_CLASS_NEW_DELETE(Hookable)
+public:
+	typedef T type;
+	typedef void* arg_type;
+	typedef void (*function_type)(type, arg_type)
+#  if defined(__cpp_noexcept_function_type) && __cpp_noexcept_function_type >= 201510
+		noexcept
+#  endif
+		;
+
+	Hookable* operator()(type x) const noexcept
+	{
+		func(x, arg);
+		return next;
+	}
+
+	function_type func;
+	arg_type arg;
+	Hookable* next;
+};
+
+template <typename T>
+class Hook {
+	ZTH_CLASS_NEW_DELETE(Hook)
+	ZTH_CLASS_NOCOPY(Hook)
+public:
+	typedef T type;
+	typedef Hookable<type> hookable_type;
+	typedef typename hookable_type::function_type function_type;
+	typedef typename hookable_type::arg_type arg_type;
+
+	Hook() noexcept
+		: m_head()
+	{}
+
+	~Hook() noexcept
+	{
+		clear();
+	}
+
+	void add(function_type f, arg_type a = arg_type()) noexcept
+	{
+		m_head = new hookable_type(f, a, m_head);
+	}
+
+	void remove(arg_type a) noexcept
+	{
+		zth_assert(a);
+
+		if(!m_head) {
+			// Empty.
+		} else if(m_head->arg == a) {
+			// Drop head.
+			hookable_type* h = m_head;
+			m_head = h->next;
+			delete h;
+		} else {
+			// Drop from middle or end.
+			hookable_type* prev = m_head;
+			hookable_type* h = prev->next;
+			while(h) {
+				if(h->arg == a) {
+					// Got it.
+					prev->next = h->next;
+					delete h;
+					break;
+				}
+
+				prev = h;
+				h = h->next;
+			}
+		}
+	}
+
+	void operator()(type x) const noexcept
+	{
+		hookable_type const* h = m_head;
+		while(h)
+			h = (*h)(x);
+	}
+
+	void once(type x) noexcept
+	{
+		hookable_type* h = m_head;
+
+		while(h) {
+			hookable_type* next = (*h)(x);
+			delete h;
+			h = next;
+		}
+		m_head = nullptr;
+	}
+
+	void clear() noexcept
+	{
+		hookable_type* h = m_head;
+
+		while(h) {
+			hookable_type* next = h->next;
+			delete h;
+			h = next;
+		}
+		m_head = nullptr;
+	}
+
+private:
+	hookable_type* m_head;
+};
+
 } // namespace zth
 #endif // __cplusplus
 #endif // ZTH_LIST_H

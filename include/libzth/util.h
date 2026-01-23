@@ -19,7 +19,7 @@
 
 #include <libzth/config.h>
 
-#if __cplusplus >= 201703L
+#if defined(__cplusplus) && __cplusplus >= 201703L
 #  include <tuple>
 #  include <type_traits>
 #endif
@@ -1635,7 +1635,7 @@ auto to_tuple(T&& object) noexcept
 	    template <size_t N, typename T>                                       \
 	    decltype(auto) get(Class<T>& f) noexcept                              \
 	    {                                                                     \
-		    auto& x = to_tuple(f.value());                                \
+		    auto& x = to_tuple(*f);                                       \
 		    return get<N>(x);                                             \
 	    }
 #    define ZTH_STRUCTURED_BINDING_FORWARDING_NS(Class)   \
