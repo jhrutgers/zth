@@ -120,9 +120,21 @@ error:
 		dbgStats();
 	}
 
+	void hatch(Fiber& fiber) noexcept
+	{
+		zth_assert(fiber.state() == Fiber::New);
+		fiber.used();
+		add(&fiber);
+	}
+
 	Worker& operator<<(Fiber* fiber) noexcept
 	{
-		add(fiber);
+		zth_assert(fiber);
+		if(fiber->state() == Fiber::New)
+			hatch(*fiber);
+		else
+			add(fiber);
+
 		return *this;
 	}
 
@@ -251,8 +263,7 @@ reschedule:
 		// Remove from runnable queue
 		m_runnableQueue.erase(fiber);
 		zth_assert(&fiber != &m_workerFiber);
-		// NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDelete)
-		delete &fiber;
+		fiber.unused();
 
 		sigchld_check();
 	}

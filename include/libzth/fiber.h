@@ -46,7 +46,7 @@ namespace zth {
  * #zth::Fiber is owned by and part of a #zth::Worker's administration. For
  * example, a Fiber object is deleted by the Worker when it is dead.
  */
-class Fiber : public Listable, public UniqueID<Fiber> {
+class Fiber : public Listable, public UniqueID<Fiber>, public RefCounted {
 	ZTH_CLASS_NEW_DELETE(Fiber)
 	ZTH_CLASS_NOCOPY(Fiber)
 public:

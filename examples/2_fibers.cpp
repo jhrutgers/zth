@@ -93,6 +93,26 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 
 	std::function<void()> f = []() { printf("std::function called\n"); };
 	*zth::fiber(f);
+
+	// Note that zth::fiber() by default does not create a future. The next line is valid,
+	// though.  The returned object allows you to convert it to a future, but that is only safe
+	// if you are sure that the fiber has not yet completed.
+	auto fiber_object = zth::fiber([]() { return 42; });
+
+	// If you want a future, in combination with auto, use the asFuture manipulator.  Now, ff2
+	// is a std::fiber_future<...> object.
+	auto fiber_future = zth::fiber([]() { return 84; }) << zth::asFuture();
+#endif
+
+#if __cplusplus >= 201703L
+	// For C++17 and up, structured bindings are supported on futures.
+	auto [data_operand, data_result] = *zth::fiber(
+		[](Data& a, double d) {
+			a.result = a.operand + d;
+			return a;
+		},
+		data, 1.0);
+	printf("Structured binding: data_result = %g\n", data_result);
 #endif
 
 	return 0;

@@ -36,50 +36,11 @@
 #    define ZTH_FUTURE_EXCEPTION
 #  endif
 
+#  if __cplusplus >= 201703L
+#    include <tuple>
+#  endif
+
 namespace zth {
-
-class RefCounted {
-	ZTH_CLASS_NOCOPY(RefCounted)
-public:
-	RefCounted() noexcept
-		: m_count()
-	{}
-
-	virtual ~RefCounted() noexcept
-	{
-		zth_assert(m_count == 0);
-	}
-
-	void used() noexcept
-	{
-		zth_assert(m_count < std::numeric_limits<size_t>::max());
-		m_count++;
-	}
-
-	bool unused() noexcept
-	{
-		zth_assert(m_count > 0);
-		if(--m_count > 0)
-			return false;
-
-		cleanup();
-		return true;
-	}
-
-	size_t refs() const noexcept
-	{
-		return m_count;
-	}
-
-protected:
-	virtual void cleanup() noexcept
-	{
-		delete this;
-	}
-
-private:
-	size_t m_count;
-};
 
 template <typename Impl, typename T>
 class SharedPointerOps {
@@ -210,12 +171,12 @@ public:
 		return get();
 	}
 
-	constexpr14 decltype(*T()) operator*() const
+	constexpr14 decltype(**static_cast<T*>(nullptr)) operator*() const
 	{
 		return *get();
 	}
 
-	constexpr14 decltype(T().operator->()) operator->() const noexcept
+	constexpr14 decltype(static_cast<T*>(nullptr)->operator->()) operator->() const noexcept
 	{
 		return get().operator->();
 	}
@@ -307,6 +268,8 @@ public:
 private:
 	SharedPointer_type m_object;
 };
+
+ZTH_STRUCTURED_BINDING_FORWARDING_NS(SharedReference)
 
 class SynchronizerBase : public RefCounted, public UniqueID<SynchronizerBase> {
 	ZTH_CLASS_NEW_DELETE(SynchronizerBase)
@@ -1321,6 +1284,8 @@ private:
 private:
 	Optional<void> m_value;
 };
+
+ZTH_STRUCTURED_BINDING_FORWARDING_NS(Future)
 
 /*!
  * \brief Fiber-aware mailbox.
