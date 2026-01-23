@@ -15,13 +15,12 @@ static void fiber_d(zth::promise<int> p)
 {
 	p.set_value(42);
 }
-zth_fiber(fiber_d)
 
 TEST(Promise, d)
 {
 	zth::promise<int> p;
 	auto f = p.get_future();
-	zth_async fiber_d(std::move(p));
+	zth::fiber(fiber_d, std::move(p));
 
 	auto i = f.get();
 	EXPECT_EQ(i, 42);
@@ -31,13 +30,12 @@ static void fiber_exception(zth::promise<int> p)
 {
 	p.set_exception(std::make_exception_ptr(std::runtime_error("Test exception")));
 }
-zth_fiber(fiber_exception)
 
 TEST(Promise, exception)
 {
 	zth::promise<int> p;
 	auto f = p.get_future();
-	zth_async fiber_exception(std::move(p));
+	zth::fiber(fiber_exception, std::move(p));
 
 	EXPECT_THROW(f.get(), std::runtime_error);
 }

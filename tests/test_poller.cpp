@@ -62,14 +62,13 @@ static void read_fiber(int fd)
 	zth::io::read(fd, &buf, 1);
 	close(fd);
 }
-zth_fiber(read_fiber)
 
 TEST(Poller, FiberedPipeWrite)
 {
 	int pipefd[]{-1, -1};
 	ASSERT_EQ(pipe(pipefd), 0);
 
-	zth_async read_fiber(pipefd[0]);
+	zth::fiber(read_fiber, pipefd[0]);
 
 	zth::nap(100_ms);
 	EXPECT_EQ(zth::io::write(pipefd[1], "2", 1), 1);
@@ -83,14 +82,13 @@ static void write_fiber(int fd)
 	zth::io::write(fd, "3", 1);
 	close(fd);
 }
-zth_fiber(write_fiber)
 
 TEST(Poller, FiberedPipeRead)
 {
 	int pipefd[]{-1, -1};
 	ASSERT_EQ(pipe(pipefd), 0);
 
-	zth_async write_fiber(pipefd[1]);
+	zth::fiber(write_fiber, pipefd[1]);
 
 	char buf = 0;
 	EXPECT_EQ(zth::io::read(pipefd[0], &buf, 1), 1);
