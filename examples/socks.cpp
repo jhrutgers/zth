@@ -29,12 +29,19 @@ struct Sock {
 	zth::string str;
 };
 
-struct Socks : public zth::RefCounted {
+class Socks : public zth::RefCounted {
+	ZTH_CLASS_NOCOPY(Socks)
+public:
 	explicit Socks(int i)
 		: left(i, Sock::Left)
 		, right(i, Sock::Right)
 		, str(zth::format("socks %d", i))
 	{}
+
+	virtual ~Socks() noexcept override
+	{
+		printf("Release %s\n", str.c_str());
+	}
 
 	Sock left;
 	Sock right;

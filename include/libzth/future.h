@@ -188,10 +188,10 @@ public:
 	}
 
 protected:
-	decltype(auto) value() const
+	Future_type& value() const
 	{
 		check_valid();
-		return m_future->value();
+		return *m_future;
 	}
 
 	void check_valid() const
@@ -323,9 +323,9 @@ public:
 	future(future const&) = delete;
 	future& operator=(future const&) = delete;
 
-	value_type get()
+	value_type const& get()
 	{
-		return base::value();
+		return *base::value();
 	}
 };
 
@@ -342,9 +342,9 @@ public:
 	future(future const&) = delete;
 	future& operator=(future const&) = delete;
 
-	value_type get()
+	value_type& get()
 	{
-		return *base::value();
+		return **base::value();
 	}
 };
 
@@ -378,9 +378,9 @@ public:
 	ZTH_FUTURE_MOVE(shared_future)
 	ZTH_FUTURE_COPY(shared_future)
 
-	decltype(auto) get()
+	value_type const& get()
 	{
-		return base::value();
+		return *base::value();
 	}
 };
 
@@ -395,9 +395,9 @@ public:
 	ZTH_FUTURE_MOVE(shared_future)
 	ZTH_FUTURE_COPY(shared_future)
 
-	decltype(auto) get()
+	value_type& get()
 	{
-		return *base::value();
+		return **base::value();
 	}
 };
 
