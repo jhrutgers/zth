@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `std::promise` and `std::future` specializations to wrap `zth::Future`.
 - `std::async` specialization for fibers.
 - C++20 Coroutine support using `zth::coro::task<T>` and `zth::coro::generator<T>`.
+- `zth::join` and `zth::joiner` for easy fiber/future joins.
 
 ### Changed
 

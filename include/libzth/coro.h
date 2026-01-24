@@ -475,6 +475,13 @@ struct task_fiber {
 	}
 };
 
+template <typename T, typename F>
+static inline void joinable(task_fiber<T, F> const& tf, Gate& g, Hook<Gate&>& join) noexcept
+{
+	(void)join;
+	(Fiber&)tf << passOnExit(g);
+}
+
 template <typename T = void>
 class task {
 public:
@@ -884,6 +891,13 @@ struct generator_fiber {
 private:
 	void operator<<(asFuture const&);
 };
+
+template <typename G, typename F>
+static inline void joinable(generator_fiber<G, F> const& gf, Gate& g, Hook<Gate&>& join) noexcept
+{
+	(void)join;
+	(Fiber&)gf << passOnExit(g);
+}
 
 template <typename T>
 requires(!std::is_void_v<T>) class generator {
