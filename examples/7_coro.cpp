@@ -73,10 +73,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 		}
 	};
 	auto gen10 = count_to(10);
-	auto f1 = awaiters(gen10).fiber("f1");
-	auto f2 = awaiters(gen10).fiber("f2");
-	*f1;
-	*f2; // TODO: zth::join(f1, f2);
+	zth::join(awaiters(gen10).fiber("f1"), awaiters(gen10).fiber("f2"));
 
 	return 0;
 }

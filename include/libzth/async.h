@@ -1285,83 +1285,159 @@ fiber_future(F const&) -> fiber_future<typename F::factory::Return>;
 // Simple join
 //
 
-class join {
+static inline void joinable(Fiber& f, Gate& g, Hook<Gate&>& join) noexcept
+{
+	(void)join;
+	f << passOnExit(g);
+}
+
+template <typename F>
+static inline void joinable(typename fiber_type<F>::fiber& f, Gate& g, Hook<Gate&>& join) noexcept
+{
+	(void)join;
+	f << passOnExit(g);
+}
+
+template <typename T>
+static inline void joinable(Future<T>& f, Gate& g, Hook<Gate&>& join) noexcept
+{
+	(void)g;
+
+	struct impl {
+		static void cb(Gate& g_, void* f_) noexcept
+		{
+			Future<T>* f = static_cast<Future<T>*>(f_);
+			f->wait();
+			f->unused();
+			g_.pass();
+		}
+	};
+
+	f.used();
+	join.add(&impl::cb, (void*)&f);
+}
+
+template <typename T>
+static inline void
+joinable(SharedReference<Future<T> /**/> const& f, Gate& g, Hook<Gate&>& join) noexcept
+{
+	joinable(f.get(), g, join);
+}
+
+class joiner {
+	ZTH_CLASS_NOCOPY(joiner)
 public:
-	join() noexcept
+	joiner() noexcept
 		: m_gate(1)
 	{}
 
 #  if ZTH_TYPEDFIBER98
-	explicit join(Fiber& f1)
+	template <typename J0>
+	explicit joiner(J0& j0)
 		: m_gate(2)
 	{
-		f1 << passOnExit(m_gate);
+		joinable(j0, m_gate, m_join);
 	}
 
-	explicit join(Fiber& f1, Fiber& f2)
+	template <typename J0, typename J1>
+	explicit joiner(J0& j0, J1& j1)
 		: m_gate(3)
 	{
-		f1 << passOnExit(m_gate);
-		f2 << passOnExit(m_gate);
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
 	}
 
-	explicit join(Fiber& f1, Fiber& f2, Fiber& f3)
+	template <typename J0, typename J1, typename J2>
+	explicit joiner(J0& j0, J1& j1, J2& j2)
 		: m_gate(4)
 	{
-		f1 << passOnExit(m_gate);
-		f2 << passOnExit(m_gate);
-		f3 << passOnExit(m_gate);
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
 	}
 
-	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4)
+	template <typename J0, typename J1, typename J2, typename J3>
+	explicit joiner(J0& j0, J1& j1, J2& j2, J3& j3)
 		: m_gate(5)
 	{
-		f1 << passOnExit(m_gate);
-		f2 << passOnExit(m_gate);
-		f3 << passOnExit(m_gate);
-		f4 << passOnExit(m_gate);
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
+		joinable(j3, m_gate, m_join);
 	}
 
-	explicit join(Fiber& f1, Fiber& f2, Fiber& f3, Fiber& f4, Fiber& f5)
+	template <typename J0, typename J1, typename J2, typename J3, typename J4>
+	explicit joiner(J0& j0, J1& j1, J2& j2, J3& j3, J4& j4)
 		: m_gate(6)
 	{
-		f1 << passOnExit(m_gate);
-		f2 << passOnExit(m_gate);
-		f3 << passOnExit(m_gate);
-		f4 << passOnExit(m_gate);
-		f5 << passOnExit(m_gate);
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
+		joinable(j3, m_gate, m_join);
+		joinable(j4, m_gate, m_join);
 	}
 #  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
-	template <typename... Fibers>
-	explicit join(Fiber& f1, Fibers&&... fibers)
-		: m_gate{sizeof...(fibers) + 2U}
+	template <typename... J>
+	explicit joiner(J&&... j)
+		: m_gate{sizeof...(j) + 1U}
 	{
-		f1 << passOnExit(m_gate);
-
 		using dummy = int[];
-		(void)dummy{
-			0, (static_cast<Fiber&>(std::forward<Fibers>(fibers)) << passOnExit(m_gate),
-			    0)...};
-	}
-
-	explicit join(std::initializer_list<std::reference_wrapper<Fiber>> fibers)
-		: m_gate{fibers.size() + 1U}
-	{
-		for(auto const& f : fibers)
-			f.get() << passOnExit(m_gate);
+		(void)dummy{0, (joinable(std::forward<J>(j), m_gate, m_join), 0)...};
 	}
 #  endif // C++11
 
-	~join()
+	~joiner()
 	{
+		m_join.once(m_gate);
 		m_gate.wait();
 	}
 
 private:
 	Gate m_gate;
+	Hook<Gate&> m_join;
 };
+
+#  if ZTH_TYPEDFIBER98
+template <typename J0>
+static inline void join(J0& j0)
+{
+	joiner jn(j0);
+}
+
+template <typename J0, typename J1>
+static inline void join(J0& j0, J1& j1)
+{
+	joiner jn(j0, j1);
+}
+
+template <typename J0, typename J1, typename J2>
+static inline void join(J0& j0, J1& j1, J2& j2)
+{
+	joiner jn(j0, j1, j2);
+}
+
+template <typename J0, typename J1, typename J2, typename J3>
+static inline void join(J0& j0, J1& j1, J2& j2, J3& j3)
+{
+	joiner jn(j0, j1, j2, j3);
+}
+
+template <typename J0, typename J1, typename J2, typename J3, typename J4>
+static inline void join(J0& j0, J1& j1, J2& j2, J3& j3, J4& j4)
+{
+	joiner jn(j0, j1, j2, j3, j4);
+}
+#  endif
+
+#  if __cplusplus >= 201103L
+template <typename... J>
+static inline void join(J&&... j)
+{
+	joiner jn{std::forward<J>(j)...};
+}
+#  endif
 
 
 

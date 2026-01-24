@@ -413,5 +413,6 @@ TEST(FiberTest, join)
 {
 	zth::join(zth::fiber([]() {}));
 	zth::join(zth::fiber([]() {}), zth::fiber([]() {}));
-	zth::join({zth::fiber([]() {}), zth::fiber([]() {}), zth::fiber([]() {})});
+	zth::fiber_future<void> f1 = zth::fiber([]() {});
+	zth::join(zth::fiber([]() {}), zth::fiber([]() {}), zth::fiber([]() {}), f1);
 }
