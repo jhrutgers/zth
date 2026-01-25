@@ -1075,11 +1075,27 @@ struct fiber_type {
 	}
 
 	template <typename Manipulator>
-	fiber& operator<<(Manipulator const& m)
+	fiber& operator<<(Manipulator const& m) LREF_QUALIFIED
 	{
 		*_fiber << m;
 		return *this;
 	}
+
+	template <typename Manipulator>
+	fiber const& operator<<(Manipulator const& m) const
+	{
+		*_fiber << m;
+		return *this;
+	}
+
+#  if __cplusplus >= 201103L
+	template <typename Manipulator>
+	fiber&& operator<<(Manipulator const& m) &&
+	{
+		*_fiber << m;
+		return std::move(*this);
+	}
+#  endif // C++11
 
 	future operator<<(asFuture const&)
 	{
@@ -1292,7 +1308,7 @@ static inline void joinable(Fiber& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) no
 
 template <typename F>
 static inline void
-joinable(typename fiber_type<F>::fiber& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) noexcept
+joinable(typename fiber_type<F>::fiber const& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) noexcept
 {
 	f << passOnExit(g);
 }
@@ -1336,6 +1352,13 @@ public:
 		joinable(j0, m_gate, m_join);
 	}
 
+	template <typename J0>
+	explicit joiner(J0 const& j0)
+		: m_gate(2)
+	{
+		joinable(j0, m_gate, m_join);
+	}
+
 	template <typename J0, typename J1>
 	explicit joiner(J0& j0, J1& j1)
 		: m_gate(3)
@@ -1344,8 +1367,25 @@ public:
 		joinable(j1, m_gate, m_join);
 	}
 
+	template <typename J0, typename J1>
+	explicit joiner(J0 const& j0, J1 const& j1)
+		: m_gate(3)
+	{
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+	}
+
 	template <typename J0, typename J1, typename J2>
 	explicit joiner(J0& j0, J1& j1, J2& j2)
+		: m_gate(4)
+	{
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
+	}
+
+	template <typename J0, typename J1, typename J2>
+	explicit joiner(J0 const& j0, J1 const& j1, J2 const& j2)
 		: m_gate(4)
 	{
 		joinable(j0, m_gate, m_join);
@@ -1363,8 +1403,29 @@ public:
 		joinable(j3, m_gate, m_join);
 	}
 
+	template <typename J0, typename J1, typename J2, typename J3>
+	explicit joiner(J0 const& j0, J1 const& j1, J2 const& j2, J3 const& j3)
+		: m_gate(5)
+	{
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
+		joinable(j3, m_gate, m_join);
+	}
+
 	template <typename J0, typename J1, typename J2, typename J3, typename J4>
 	explicit joiner(J0& j0, J1& j1, J2& j2, J3& j3, J4& j4)
+		: m_gate(6)
+	{
+		joinable(j0, m_gate, m_join);
+		joinable(j1, m_gate, m_join);
+		joinable(j2, m_gate, m_join);
+		joinable(j3, m_gate, m_join);
+		joinable(j4, m_gate, m_join);
+	}
+
+	template <typename J0, typename J1, typename J2, typename J3, typename J4>
+	explicit joiner(J0 const& j0, J1 const& j1, J2 const& j2, J3 const& j3, J4 const& j4)
 		: m_gate(6)
 	{
 		joinable(j0, m_gate, m_join);

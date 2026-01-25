@@ -458,7 +458,7 @@ struct task_fiber {
 		return std::move(*this);
 	}
 
-	operator Fiber&() const noexcept
+	operator zth::Fiber&() const noexcept
 	{
 		zth_assert(!task.completed());
 		return fiber;
@@ -483,7 +483,7 @@ template <typename T, typename F>
 static inline void joinable(task_fiber<T, F> const& tf, Gate& g, Hook<Gate&>& join) noexcept
 {
 	(void)join;
-	(Fiber&)tf << passOnExit(g);
+	static_cast<zth::Fiber&>(tf) << passOnExit(g);
 }
 
 template <typename T = void>
@@ -886,7 +886,7 @@ struct generator_fiber {
 		return std::move(*this);
 	}
 
-	operator Fiber&() const noexcept
+	operator zth::Fiber&() const noexcept
 	{
 		zth_assert(!generator.completed());
 		return fiber;
@@ -903,7 +903,7 @@ template <typename G, typename F>
 static inline void joinable(generator_fiber<G, F> const& gf, Gate& g, Hook<Gate&>& join) noexcept
 {
 	(void)join;
-	(Fiber&)gf << passOnExit(g);
+	static_cast<zth::Fiber&>(gf) << passOnExit(g);
 }
 
 template <typename T>

@@ -224,10 +224,11 @@ TEST(Coro, Generator_fiber2fibers)
 	};
 
 	auto gg = g();
-	gg.fiber() << zth::setName("generator");
+	auto gg_fiber = gg.fiber() << zth::setName("generator");
 	auto f1 = consumer(gg).fiber() << zth::setName("f1");
 	auto f2 = consumer(gg).fiber() << zth::setName("f2");
-	zth::join(f1, f2);
+	zth::join(f1, f2, gg_fiber);
+
 	EXPECT_NE(*f1, 0);
 	EXPECT_NE(*f2, 0);
 	EXPECT_EQ(*f1 + *f2, 10);
