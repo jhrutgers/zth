@@ -25,7 +25,7 @@ namespace zth {
 #    define ZTH_MALLOC_INLINE inline
 #    define ZTH_MALLOC_ATTR(attr)
 #  else
-#    define ZTH_MALLOC_INLINE
+#    define ZTH_MALLOC_INLINE __attribute__((noinline))
 #    if !defined(__clang_analyzer__) && GCC_VERSION >= 110000L
 #      define ZTH_MALLOC_ATTR(attr) __attribute__(attr)
 #    else
@@ -63,7 +63,7 @@ static ZTH_MALLOC_INLINE void delete_alloc(T* p) noexcept
  */
 template <typename T>
 __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
-	(malloc((void (*)(T*, size_t))deallocate, 1),
+	(malloc((void (*)(T*, size_t) noexcept)deallocate, 1),
 	 alloc_size(1))) static ZTH_MALLOC_INLINE T* allocate(size_t n = 1)
 {
 	typename Config::Allocator<T>::type allocator;
@@ -80,7 +80,7 @@ __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
  */
 template <typename T>
 __attribute__((warn_unused_result)) ZTH_MALLOC_ATTR(
-	(malloc((void (*)(T*, size_t))deallocate, 1),
+	(malloc((void (*)(T*, size_t) noexcept)deallocate, 1),
 	 alloc_size(1))) static ZTH_MALLOC_INLINE T* allocate_noexcept(size_t n = 1) noexcept
 {
 	try {
@@ -96,8 +96,8 @@ __attribute__((warn_unused_result)) ZTH_MALLOC_ATTR(
 }
 
 template <typename T>
-__attribute__((warn_unused_result, returns_nonnull))
-ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc()
+__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
+	(malloc((void (*)(T*) noexcept)delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc()
 {
 	T* o = allocate<T>();
 	try {
@@ -112,8 +112,8 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T
 }
 
 template <typename T, typename Arg>
-__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
-	(malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg const& arg)
+__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR((malloc(
+	(void (*)(T*) noexcept)delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg const& arg)
 {
 	T* o = allocate<T>();
 	try {
@@ -129,8 +129,8 @@ __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
 
 #  if __cplusplus >= 201103L
 template <typename T, typename... Arg>
-__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
-	(malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg&&... arg)
+__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR((malloc(
+	(void (*)(T*) noexcept)delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg&&... arg)
 {
 	T* o = allocate<T>();
 	try {
@@ -156,34 +156,33 @@ __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
  * \ingroup zth_api_cpp_util
  */
 // cppcheck-suppress-macro duplInheritedMember
-#  define ZTH_CLASS_NEW_DELETE(T)                                                                 \
-  public:                                                                                         \
-	  static void operator delete(void* ptr) noexcept                                         \
-	  {                                                                                       \
-		  ::zth::deallocate<T>(static_cast<T*>(ptr));                                     \
-	  }                                                                                       \
-	  ZTH_MALLOC_ATTR((malloc((void (*)(void*))T::operator delete, 1), alloc_size(1)))        \
-	  __attribute__((warn_unused_result, returns_nonnull)) static void* operator new(         \
-		  std::size_t UNUSED_PAR(n))                                                      \
-	  {                                                                                       \
-		  zth_assert(n == sizeof(T));                                                     \
-		  return ::zth::allocate<T>();                                                    \
-	  }                                                                                       \
-	  static void operator delete[](void* ptr, size_t sz) noexcept                            \
-	  {                                                                                       \
-		  zth_assert(sz % sizeof(T) == 0);                                                \
-		  ::zth::deallocate<T>(static_cast<T*>(ptr), sz / sizeof(T));                     \
-	  }                                                                                       \
-	  ZTH_MALLOC_ATTR(                                                                        \
-		  (malloc((void (*)(void*, std::size_t))T::operator delete[], 1), alloc_size(1))) \
-	  __attribute__((warn_unused_result, returns_nonnull)) static void* operator new[](       \
-		  std::size_t sz)                                                                 \
-	  {                                                                                       \
-		  zth_assert(sz % sizeof(T) == 0);                                                \
-		  return ::zth::allocate<T>(sz / sizeof(T));                                      \
-	  }                                                                                       \
-	  typedef typename zth::Config::Allocator<T>::type allocator_type; /* NOLINT */           \
-                                                                                                  \
+#  define ZTH_CLASS_NEW_DELETE(T)                                                             \
+  public:                                                                                     \
+	  static ZTH_MALLOC_INLINE void operator delete(void* ptr) noexcept                   \
+	  {                                                                                   \
+		  ::zth::deallocate<T>(static_cast<T*>(ptr));                                 \
+	  }                                                                                   \
+	  ZTH_MALLOC_ATTR((malloc, alloc_size(1)))                                            \
+	  __attribute__((warn_unused_result, returns_nonnull)) static ZTH_MALLOC_INLINE void* \
+	  operator new(std::size_t UNUSED_PAR(n))                                             \
+	  {                                                                                   \
+		  zth_assert(n == sizeof(T));                                                 \
+		  return ::zth::allocate<T>();                                                \
+	  }                                                                                   \
+	  static ZTH_MALLOC_INLINE void operator delete[](void* ptr, size_t sz) noexcept      \
+	  {                                                                                   \
+		  zth_assert(sz % sizeof(T) == 0);                                            \
+		  ::zth::deallocate<T>(static_cast<T*>(ptr), sz / sizeof(T));                 \
+	  }                                                                                   \
+	  ZTH_MALLOC_ATTR((malloc, alloc_size(1)))                                            \
+	  __attribute__((warn_unused_result, returns_nonnull)) static ZTH_MALLOC_INLINE void* \
+	  operator new[](std::size_t sz)                                                      \
+	  {                                                                                   \
+		  zth_assert(sz % sizeof(T) == 0);                                            \
+		  return ::zth::allocate<T>(sz / sizeof(T));                                  \
+	  }                                                                                   \
+	  typedef typename zth::Config::Allocator<T>::type allocator_type; /* NOLINT */       \
+                                                                                              \
   private:
 
 /*!

@@ -780,7 +780,7 @@ public:
 					// No OS, no pid. And if newlib is used, don't try to format
 					// 64-bit ints.
 					format("%s #%u", name().empty() ? "Object" : name().c_str(),
-					       (unsigned int)id());
+					       (unsigned int)id_());
 #  else
 					format("%s #%u:%" PRIu64,
 					       name().empty() ? "Object" : name().c_str(),

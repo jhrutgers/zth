@@ -99,7 +99,7 @@ if(ZTH_USE_GTEST)
 		zth_config_test(${tests})
 	endfunction()
 
-	if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+	if(ZTH_HAVE_CORO)
 		zth_add_test(test_coro test_coro.cpp)
 		set_property(TARGET test_coro PROPERTY CXX_STANDARD 20)
 		zth_clang_tidy(test_coro -cert-err58-cpp)

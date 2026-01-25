@@ -67,7 +67,7 @@ static Socks* useSocks(Socks& socks)
 
 	// Done wearing, go wash both socks.
 	{
-		zth::join j(zth::fiber(washSock, socks.left), zth::fiber(washSock, socks.right));
+		zth::joiner j(zth::fiber(washSock, socks.left), zth::fiber(washSock, socks.right));
 
 		nap_a_bit();
 		printf("  I don't do the dirty work for %s\n", socks.str.c_str());
