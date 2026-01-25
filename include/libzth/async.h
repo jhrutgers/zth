@@ -1285,24 +1285,21 @@ fiber_future(F const&) -> fiber_future<typename F::factory::Return>;
 // Simple join
 //
 
-static inline void joinable(Fiber& f, Gate& g, Hook<Gate&>& join) noexcept
+static inline void joinable(Fiber& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) noexcept
 {
-	(void)join;
 	f << passOnExit(g);
 }
 
 template <typename F>
-static inline void joinable(typename fiber_type<F>::fiber& f, Gate& g, Hook<Gate&>& join) noexcept
+static inline void
+joinable(typename fiber_type<F>::fiber& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) noexcept
 {
-	(void)join;
 	f << passOnExit(g);
 }
 
 template <typename T>
-static inline void joinable(Future<T>& f, Gate& g, Hook<Gate&>& join) noexcept
+static inline void joinable(Future<T>& f, Gate& UNUSED_PAR(g), Hook<Gate&>& join) noexcept
 {
-	(void)g;
-
 	struct impl {
 		static void cb(Gate& g_, void* f_) noexcept
 		{
@@ -1314,7 +1311,7 @@ static inline void joinable(Future<T>& f, Gate& g, Hook<Gate&>& join) noexcept
 	};
 
 	f.used();
-	join.add(&impl::cb, (void*)&f);
+	join.add(&impl::cb, static_cast<void*>(&f));
 }
 
 template <typename T>
@@ -1532,7 +1529,9 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(zth::errno_exception const& e) {
+#  ifdef __cpp_exceptions
 		return e.code;
+#  endif
 	} catch(...) {
 		return EAGAIN;
 	}

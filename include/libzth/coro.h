@@ -259,14 +259,12 @@ promise_awaitable(Promise&, Awaitable&&) -> promise_awaitable<Promise, std::deca
 
 class promise_base : public RefCounted, public UniqueID<promise_base> {
 public:
-	static void operator delete(void* ptr, std::size_t n) noexcept
+	static ZTH_MALLOC_INLINE void operator delete(void* ptr, std::size_t n) noexcept
 	{
 		::zth::deallocate<char>(static_cast<char*>(ptr), n);
 	}
 
-	ZTH_MALLOC_ATTR(
-		(malloc((void (*)(void*, std::size_t))promise_base::operator delete, 1),
-		 alloc_size(1)))
+	ZTH_MALLOC_ATTR((malloc, alloc_size(1)))
 	__attribute__((returns_nonnull, warn_unused_result)) static void*
 	operator new(std::size_t n)
 	{

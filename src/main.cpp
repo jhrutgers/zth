@@ -64,12 +64,14 @@ int main(int argc, char** argv)
 		} else {
 			res = *f;
 		}
+#ifdef __cpp_exceptions
 	} catch(zth::errno_exception const& e) {
 		zth_dbg(thread, "main() caught exception with errno %d", e.code);
 		res = EXIT_FAILURE;
 	} catch(std::exception const& e) {
 		zth_dbg(thread, "main() caught exception: %s", e.what());
 		res = EXIT_FAILURE;
+#endif
 	} catch(...) {
 		zth_dbg(thread, "main() caught unknown exception");
 		res = EXIT_FAILURE;

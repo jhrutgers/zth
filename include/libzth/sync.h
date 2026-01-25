@@ -351,7 +351,8 @@ protected:
 	}
 
 	virtual void
-	wakeup(Listable& item, queue_type::user_type user, bool prio, size_t UNUSED_PAR(q)) noexcept
+	wakeup(Listable& item, queue_type::user_type UNUSED_PAR(user), bool prio,
+	       size_t UNUSED_PAR(q)) noexcept
 	{
 		// Synchronizer only handles Fibers. Other types could be implemented in a derived
 		// class based on the user parameter.
