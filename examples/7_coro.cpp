@@ -51,7 +51,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 
 	// You can also start the generator in a fiber...
 	auto generator = count_to(3);
-	generator.fiber("counter");
+	auto generator_fiber = generator.fiber("counter");
 
 	// ...and co_await values from it in another fiber.
 	auto awaiter = [](zth::coro::generator<int> g) -> zth::coro::task<> {
@@ -61,7 +61,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 			printf("  %d\n", x);
 		}
 	};
-	*awaiter(generator).fiber("awaiter");
+	zth::join(awaiter(generator).fiber("awaiter"), generator_fiber);
 
 	// ...or share a generated between two fibers. The generator coro is now executed within the
 	// fiber that does a co_await on it.
