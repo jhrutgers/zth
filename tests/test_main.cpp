@@ -10,8 +10,6 @@
 
 int main(int argc, char** argv)
 {
-	zth_preinit();
-
 	int res = 0;
 	testing::InitGoogleTest(&argc, argv);
 	try {
@@ -24,6 +22,5 @@ int main(int argc, char** argv)
 		std::terminate();
 	}
 
-	zth_postdeinit();
 	return res;
 }

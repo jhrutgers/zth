@@ -181,6 +181,7 @@ TEST(Coro, Generator_coro2fibers)
 			co_yield i;
 	};
 
+	// NOLINTNEXTLINE(performance-unnecessary-value-param)
 	auto consumer = [](zth::coro::generator<int> g) -> zth::coro::task<int> {
 		int sum = 0;
 		try {
@@ -211,6 +212,7 @@ TEST(Coro, Generator_fiber2fibers)
 			co_yield i;
 	};
 
+	// NOLINTNEXTLINE(performance-unnecessary-value-param)
 	auto consumer = [](zth::coro::generator<int> g) -> zth::coro::task<int> {
 		int sum = 0;
 		try {
@@ -225,6 +227,7 @@ TEST(Coro, Generator_fiber2fibers)
 	gg.fiber() << zth::setName("generator");
 	auto f1 = consumer(gg).fiber() << zth::setName("f1");
 	auto f2 = consumer(gg).fiber() << zth::setName("f2");
+	zth::join(f1, f2);
 	EXPECT_NE(*f1, 0);
 	EXPECT_NE(*f2, 0);
 	EXPECT_EQ(*f1 + *f2, 10);

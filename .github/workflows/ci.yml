@@ -34,6 +34,7 @@ jobs:
         uses: actions/checkout@v4
       - name: bootstrap
         run: |
+          sudo apt update
           sudo apt install -y gcc-${{matrix.gcc}} g++-${{matrix.gcc}}
           dist/ubuntu/bootstrap.sh
       - name: build Debug
@@ -62,7 +63,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/ubuntu/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/ubuntu/bootstrap.sh
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.cxx}} test
@@ -86,7 +89,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/ubuntu/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/ubuntu/bootstrap.sh
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
@@ -146,7 +151,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/qemu-arm-a15/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/qemu-arm-a15/bootstrap.sh
       - name: build Debug
         run: dist/qemu-arm-a15/build.sh Debug dev test
       - name: build Release
@@ -160,7 +167,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/qemu-arm-m3/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/qemu-arm-m3/bootstrap.sh
       - name: build Debug
         run: dist/qemu-arm-m3/build.sh Debug dev test
       - name: build Release
@@ -174,7 +183,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/mingw/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/mingw/bootstrap.sh
       - name: build Debug
         run: dist/mingw/build.sh Debug dev notest
       - name: build Release
@@ -190,7 +201,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/ubuntu/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/ubuntu/bootstrap.sh
       - name: build
         run: dist/ubuntu/build.sh Release -DZTH_DOCUMENTATION=ON
       - name: deploy
@@ -206,7 +219,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist/ubuntu/bootstrap.sh
+        run: |
+          sudo apt update
+          dist/ubuntu/bootstrap.sh
       - name: build
         run: dist/ubuntu/build.sh Release -DZTH_DOCUMENTATION=ON
 

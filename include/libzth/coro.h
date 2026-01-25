@@ -239,7 +239,7 @@ struct promise_awaitable {
 			return c ? c : h;
 		} else {
 			static_assert(
-				false,
+				(sizeof(Awaitable), false),
 				"await_suspend must return void, bool, or std::coroutine_handle<>");
 		}
 	}
@@ -253,6 +253,9 @@ struct promise_awaitable {
 		return awaitable.await_resume();
 	}
 };
+
+template <typename Promise, typename Awaitable>
+promise_awaitable(Promise&, Awaitable&&) -> promise_awaitable<Promise, std::decay_t<Awaitable>>;
 
 class promise_base : public RefCounted, public UniqueID<promise_base> {
 public:
@@ -474,6 +477,9 @@ struct task_fiber {
 		return task.future();
 	}
 };
+
+template <typename Task, typename Fiber>
+task_fiber(Task& t, Fiber&& f) -> task_fiber<Task, std::decay_t<Fiber>>;
 
 template <typename T, typename F>
 static inline void joinable(task_fiber<T, F> const& tf, Gate& g, Hook<Gate&>& join) noexcept
@@ -784,7 +790,7 @@ public:
 	}
 
 protected:
-	virtual void wait(base::assigned_type assigned) override
+	virtual void wait(typename base::assigned_type assigned) override
 	{
 		while(!valid(assigned)) {
 			if(abandoned())
@@ -793,7 +799,7 @@ protected:
 		}
 	}
 
-	virtual base::assigned_type
+	virtual typename base::assigned_type
 	wakeup(Listable& item, typename base::queue_type::user_type user,
 	       bool prio) noexcept override
 	{
@@ -891,6 +897,9 @@ struct generator_fiber {
 private:
 	void operator<<(asFuture const&);
 };
+
+template <typename Generator, typename Fiber>
+generator_fiber(Generator& g, Fiber&& f) -> generator_fiber<Generator, std::decay_t<Fiber>>;
 
 template <typename G, typename F>
 static inline void joinable(generator_fiber<G, F> const& gf, Gate& g, Hook<Gate&>& join) noexcept
