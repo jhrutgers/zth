@@ -55,7 +55,7 @@ public:
 		*this = std::move(l);
 	}
 
-	Listable& operator=(Listable&& l) noexcept
+	Listable& operator=(Listable&& UNUSED_PAR(l)) noexcept
 	{
 		// Cannot move while in a list.
 		zth_assert(!prev);

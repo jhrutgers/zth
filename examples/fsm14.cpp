@@ -301,7 +301,6 @@ static void trafficDetect(fsm::TrafficLight& fsm)
 	while(zth::io::read(0, &buf, 1) > 0)
 		fsm.input("traffic");
 }
-zth_fiber(trafficDetect)
 
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
@@ -327,7 +326,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	// This will create an zth::fsm::Fsm instance, initialize it, and
 	// return it.
 
-	zth_async trafficDetect(fsm);
+	zth::fiber(trafficDetect, fsm);
 
 	// Run the Fsm, until it hits the 'stop' action (but there is none in
 	// this example). You could pass a zth::Timestamp or zth::TimeInterval

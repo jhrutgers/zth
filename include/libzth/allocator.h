@@ -21,10 +21,16 @@
 
 namespace zth {
 
-#  ifndef __clang_analyzer__
-#    define ZTH_MALLOC_ATTR(attr) __attribute__(attr)
+#  ifdef NDEBUG
+#    define ZTH_MALLOC_INLINE inline
+#    define ZTH_MALLOC_ATTR(attr)
 #  else
-#    define ZTH_MALLOC_ATTR(attr) __attribute__((malloc))
+#    define ZTH_MALLOC_INLINE
+#    if !defined(__clang_analyzer__) && GCC_VERSION >= 110000L
+#      define ZTH_MALLOC_ATTR(attr) __attribute__(attr)
+#    else
+#      define ZTH_MALLOC_ATTR(attr) __attribute__((malloc))
+#    endif
 #  endif
 
 /*!
@@ -32,7 +38,7 @@ namespace zth {
  * \ingroup zth_api_cpp_util
  */
 template <typename T>
-static inline void deallocate(T* p, size_t n = 1) noexcept
+static ZTH_MALLOC_INLINE void deallocate(T* p, size_t n = 1) noexcept
 {
 	if(!p)
 		return;
@@ -42,7 +48,7 @@ static inline void deallocate(T* p, size_t n = 1) noexcept
 }
 
 template <typename T>
-static inline void delete_alloc(T* p) noexcept
+static ZTH_MALLOC_INLINE void delete_alloc(T* p) noexcept
 {
 	if(unlikely(!p))
 		return;
@@ -58,7 +64,7 @@ static inline void delete_alloc(T* p) noexcept
 template <typename T>
 __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
 	(malloc((void (*)(T*, size_t))deallocate, 1),
-	 alloc_size(1))) static inline T* allocate(size_t n = 1)
+	 alloc_size(1))) static ZTH_MALLOC_INLINE T* allocate(size_t n = 1)
 {
 	typename Config::Allocator<T>::type allocator;
 	return allocator.allocate(n);
@@ -75,7 +81,7 @@ __attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
 template <typename T>
 __attribute__((warn_unused_result)) ZTH_MALLOC_ATTR(
 	(malloc((void (*)(T*, size_t))deallocate, 1),
-	 alloc_size(1))) static inline T* allocate_noexcept(size_t n = 1) noexcept
+	 alloc_size(1))) static ZTH_MALLOC_INLINE T* allocate_noexcept(size_t n = 1) noexcept
 {
 	try {
 		return allocate<T>(n);
@@ -91,7 +97,7 @@ __attribute__((warn_unused_result)) ZTH_MALLOC_ATTR(
 
 template <typename T>
 __attribute__((warn_unused_result, returns_nonnull))
-ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc()
+ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc()
 {
 	T* o = allocate<T>();
 	try {
@@ -106,8 +112,8 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 }
 
 template <typename T, typename Arg>
-__attribute__((warn_unused_result, returns_nonnull))
-ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc(Arg const& arg)
+__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
+	(malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg const& arg)
 {
 	T* o = allocate<T>();
 	try {
@@ -123,8 +129,8 @@ ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc
 
 #  if __cplusplus >= 201103L
 template <typename T, typename... Arg>
-__attribute__((warn_unused_result, returns_nonnull))
-ZTH_MALLOC_ATTR((malloc((void (*)(T*))delete_alloc))) static inline T* new_alloc(Arg&&... arg)
+__attribute__((warn_unused_result, returns_nonnull)) ZTH_MALLOC_ATTR(
+	(malloc((void (*)(T*))delete_alloc))) static ZTH_MALLOC_INLINE T* new_alloc(Arg&&... arg)
 {
 	T* o = allocate<T>();
 	try {
