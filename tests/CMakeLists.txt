@@ -70,6 +70,15 @@ add_compile_options(
 	-Wconversion
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13
+   AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
+)
+	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+	add_compile_options(-Wno-restrict)
+endif()
+
 if(ZTH_USE_GTEST)
 	function(zth_add_test_binary TESTNAME)
 		add_executable(${TESTNAME} ${ARGN} test_main.cpp)
