@@ -16,6 +16,7 @@ This program will print:
 
 \verbatim
 Hello
+Wonderful
 World!!1
 \endverbatim
 */
@@ -33,17 +34,21 @@ World!!1
 This program will print:
 
 \verbatim
-fiber_vv()
-fddd is not valid yet
-fiber_ddd(3, 4) = 7
-fddd = 7
-fiber_ddd(1, 2) = 3
-fiber_vii(3, 14)
-fiber_vi(42)
-fiber_vv()
+Hello, Fiber!
+inc(42) = 43
+inc(100) = 101
+something
+100 incremented is 101
+3 = 1 + 2
+7 = 3 + 4
+Result of add is 7
+a->operand + b = 6
+Result of struct_add is 6
+Lambda says: Hello from lambda!
+Functor called with 123
+std::function called
+Structured binding: data_result = 4.5
 \endverbatim
-
-Note that the order of the last four lines is not deterministic.
 */
 
 
@@ -60,47 +65,63 @@ This program will print something like this (depending on the speed of your CPU)
 
 \verbatim
 Example 1: nice vs nicer
-Be nicer 0
 Be nice 0
+Be nicer 0.0
 Be nice 1
+Be nicer 0.1
 Be nice 2
+Be nicer 0.2
 Be nice 3
-Be nicer 1
+Be nicer 0.3
 Be nice 4
+Be nicer 0.4
 Be nice 5
+Be nicer 0.5
 Be nice 6
-Be nicer 2
+Be nicer 0.6
 Be nice 7
+Be nicer 0.7
 Be nice 8
+Be nicer 0.8
 Be nice 9
+Be nicer 0.9
 nice_fiber() done
-Be nicer 3
-Be nicer 4
-Be nicer 5
-Be nicer 6
-Be nicer 7
-Be nicer 8
-Be nicer 9
+Be nicer 1.0
+Be nicer 1.1
+Be nicer 1.2
+Be nicer 1.3
+Be nicer 1.4
+Be nicer 1.5
+Be nicer 1.6
+Be nicer 1.7
+<cut>
+Be nicer 9.3
+Be nicer 9.4
+Be nicer 9.5
+Be nicer 9.6
+Be nicer 9.7
+Be nicer 9.8
+Be nicer 9.9
 nicer_fiber() done
 
 Example 2: server-client
 Requesting 0
-Requesting 1
-Requesting 2
 Serving 0
+Requesting 1
 Serving 1
+Requesting 2
 Serving 2
 Requesting 3
-Requesting 4
-Requesting 5
 Serving 3
+Requesting 4
 Serving 4
+Requesting 5
 Serving 5
 Requesting 6
-Requesting 7
-Requesting 8
 Serving 6
+Requesting 7
 Serving 7
+Requesting 8
 Serving 8
 Requesting 9
 Serving 9
@@ -120,43 +141,70 @@ Serving 9
 This program will print something like this:
 
 \verbatim
-Other fiber
-fiber 3 outside of critical section
- { fiber 3 at start of critical section
-fiber 2 outside of critical section
 fiber 1 outside of critical section
-Other fiber
- } fiber 3 at end of critical section
- { fiber 2 at start of critical section
-Other fiber
+fiber 2 outside of critical section
 fiber 3 outside of critical section
- } fiber 2 at end of critical section
+Other fiber
+Other fiber
  { fiber 1 at start of critical section
 Other fiber
-fiber 2 outside of critical section
- } fiber 1 at end of critical section
- { fiber 3 at start of critical section
 Other fiber
+Other fiber
+ } fiber 1 at end of critical section
 fiber 1 outside of critical section
- } fiber 3 at end of critical section
+Other fiber
  { fiber 2 at start of critical section
 Other fiber
+Other fiber
+Other fiber
+ } fiber 2 at end of critical section
+fiber 2 outside of critical section
+Other fiber
+ { fiber 3 at start of critical section
+Other fiber
+Other fiber
+Other fiber
+ } fiber 3 at end of critical section
 fiber 3 outside of critical section
- } fiber 2 at end of critical section
+Other fiber
  { fiber 1 at start of critical section
 Other fiber
-fiber 2 outside of critical section
- } fiber 1 at end of critical section
- { fiber 3 at start of critical section
 Other fiber
+Other fiber
+ } fiber 1 at end of critical section
 fiber 1 outside of critical section
- } fiber 3 at end of critical section
+Other fiber
  { fiber 2 at start of critical section
 Other fiber
+Other fiber
+Other fiber
  } fiber 2 at end of critical section
+fiber 2 outside of critical section
+Other fiber
+ { fiber 3 at start of critical section
+Other fiber
+Other fiber
+Other fiber
+ } fiber 3 at end of critical section
+fiber 3 outside of critical section
+Other fiber
  { fiber 1 at start of critical section
 Other fiber
+Other fiber
+Other fiber
  } fiber 1 at end of critical section
+Other fiber
+ { fiber 2 at start of critical section
+Other fiber
+Other fiber
+Other fiber
+ } fiber 2 at end of critical section
+Other fiber
+ { fiber 3 at start of critical section
+Other fiber
+Other fiber
+Other fiber
+ } fiber 3 at end of critical section
 Other fiber
 \endverbatim
 */
@@ -186,12 +234,59 @@ Other fiber
 
 
 /////////////////////////////////////////////////////////////////////////////
+// 7_coro
+//
+
+/*!
+\example 7_coro.cpp
+\brief Coroutine example.
+
+This program will print:
+
+\verbatim
+Hello
+World!!1
+Back in hello(), world_result = 5
+Result from hello(): 10
+Counting to 5:
+  1
+  2
+  3
+  4
+  5
+Counting to 3 in fiber:
+  1
+  2
+  3
+f2: 1
+f1: 2
+f2: 3
+f1: 4
+f2: 5
+f1: 6
+f2: 7
+f1: 8
+f2: 9
+f1: 10
+\endverbatim
+*/
+
+
+
+/////////////////////////////////////////////////////////////////////////////
 // 9_c_api
 //
 
 /*!
 \example 9_c_api.c
 \brief C-API example.
+
+This program will print:
+
+\verbatim
+main_fiber()
+fiber()
+\endverbatim
 */
 
 
@@ -203,6 +298,61 @@ Other fiber
 /*!
 \example socks.cpp
 \brief More complex fiber and synchronization example.
+
+Invoked with command line argument 5, this will program will print something like:
+
+\verbatim
+Take socks 1
+  Wear socks 1
+  I don't do the dirty work for socks 1
+Take socks 2
+    Wash right sock 1
+    Wash left sock 1
+Take socks 3
+    Iron right sock 1
+  Wear socks 3
+  Wear socks 2
+    Wash right sock 3
+Take socks 4
+  I don't do the dirty work for socks 2
+    Wash right sock 2
+    Iron left sock 1
+    Iron right sock 3
+  I don't do the dirty work for socks 3
+Take socks 5
+    Wash left sock 3
+    Iron right sock 2
+    Wash left sock 2
+  Fold socks 1
+  Wear socks 4
+    Iron left sock 2
+    Iron left sock 3
+  I don't do the dirty work for socks 4
+Store socks 1
+Release socks 1
+  Wear socks 5
+  I don't do the dirty work for socks 5
+  Fold socks 2
+Store socks 2
+Release socks 2
+  Fold socks 3
+Store socks 3
+Release socks 3
+    Wash right sock 5
+    Wash left sock 5
+    Iron left sock 5
+    Wash left sock 4
+    Wash right sock 4
+    Iron right sock 4
+    Iron left sock 4
+    Iron right sock 5
+  Fold socks 4
+  Fold socks 5
+Store socks 4
+Release socks 4
+Store socks 5
+Release socks 5
+\endverbatim
 */
 
 
@@ -214,6 +364,45 @@ Other fiber
 /*!
 \example zmq.cpp
 \brief 0MQ integration
+
+This program will print:
+
+\verbatim
+zmq main fiber
+Connecting to hello world server...
+Sending Hello 10...
+Received Hello
+Received World 10
+Sending Hello 9...
+Received Hello
+Received World 9
+Sending Hello 8...
+Received Hello
+Received World 8
+Sending Hello 7...
+Received Hello
+Received World 7
+Sending Hello 6...
+Received Hello
+Received World 6
+Sending Hello 5...
+Received Hello
+Received World 5
+Sending Hello 4...
+Received Hello
+Received World 4
+Sending Hello 3...
+Received Hello
+Received World 3
+Sending Hello 2...
+Received Hello
+Received World 2
+Sending Hello 1...
+Received Hello
+Received World 1
+Stopping client...
+Stopping server...
+\endverbatim
 */
 
 
@@ -282,5 +471,59 @@ Zth 1.2.0-alpha g++-13.3.0 C++17 linux x86_64 draft threads ucontext
 [nap       ]  nap(100 ms)                         :  0.107'671'804'797 s    (2^ 4 iterations, total 1.72275 s)
 \endverbatim
 */
+
+
+/////////////////////////////////////////////////////////////////////////////
+// sock_factory
+//
+
+/*!
+\example sock_factory.cpp
+\brief More complex coroutine example.
+
+This program will print something like this:
+
+\verbatim
+Fiber factory: creating 7.42921 of fiber
+Fiber factory: creating 8.33466 of fiber
+Fiber factory: creating 4.19363 of fiber
+   Got 15.7639 of fiber, creating sock 1 (12.5)
+Fiber factory: creating 8.79472 of fiber
+   Waste collector: collected 3.26387 of waste (total 3.26387)
+Fiber factory: creating 6.06279 of fiber
+Fiber factory: creating 8.04504 of fiber
+   Got 10.2564 of fiber, creating sock 2 (5)
+   Waste collector: collected 5.25642 of waste (total 8.5203)
+Fiber factory: creating 2.31155 of fiber
+   Got 16.8398 of fiber, creating sock 3 (12.5)
+Fiber factory: creating 5.54631 of fiber
+   Waste collector: collected 4.33976 of waste (total 12.8601)
+Fiber factory: creating 3.57323 of fiber
+Fiber factory: creating 7.32052 of fiber
+   Got 5.88478 of fiber, creating sock 4 (5)
+   Waste collector: collected 0.884785 of waste (total 13.7448)
+Fiber factory: creating 5.92226 of fiber
+      Packing facility: packed set 1 with sock 1 (12.5), sock 3 (12.5), sock 2 (5), and sock 4 (5)
+   Got 12.8668 of fiber, creating sock 5 (12.5)
+Fiber factory: creating 4.20885 of fiber
+   Waste collector: collected 0.366831 of waste (total 14.1117)
+   Got 5.92226 of fiber, creating sock 6 (5)
+   Waste collector: collected 0.922256 of waste (total 15.0339)
+Fiber factory: creating 4.09638 of fiber
+Fiber factory: creating 8.35822 of fiber
+Fiber factory: creating 2.49278 of fiber
+   Got 12.5671 of fiber, creating sock 7 (12.5)
+Fiber factory: creating 9.02039 of fiber
+   Waste collector: collected 0.0670719 of waste (total 15.101)
+   Got 6.58916 of fiber, creating sock 8 (5)
+   Waste collector: collected 1.58916 of waste (total 16.6902)
+Fiber factory: creating 1.02409 of fiber
+      Packing facility: packed set 2 with sock 5 (12.5), sock 7 (12.5), sock 6 (5), and sock 8 (5)
+Fiber factory: creating 3.43832 of fiber
+Fiber factory: no more fiber to create
+\endverbatim
+*/
+
+
 
 // clang-format on

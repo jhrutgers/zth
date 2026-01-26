@@ -60,9 +60,9 @@ if(ZTH_HAVE_CORO)
 	set_property(TARGET 7_coro PROPERTY CXX_STANDARD 20)
 endif()
 add_example(9_c_api 9_c_api.c)
-add_example(socks socks.cpp)
-add_example(daemon_pattern daemon_pattern.cpp)
+
 add_example(blinky blinky.cpp)
+add_example(daemon_pattern daemon_pattern.cpp)
 
 if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES
    AND CMAKE_CXX_STANDARD GREATER_EQUAL 14
@@ -71,6 +71,13 @@ if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES
 	add_example(measure measure.cpp)
 	set_property(TARGET measure PROPERTY CXX_STANDARD 14)
 endif()
+
+if(ZTH_HAVE_CORO)
+	add_example(sock_factory sock_factory.cpp)
+	set_property(TARGET sock_factory PROPERTY CXX_STANDARD 20)
+endif()
+
+add_example(socks socks.cpp)
 
 if(UNIX)
 	add_example(work work.cpp)

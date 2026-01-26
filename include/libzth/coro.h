@@ -528,6 +528,13 @@ public:
 		return p ? p->id_str() : "coro::task";
 	}
 
+	void setName(string name) noexcept
+	{
+		auto* p = promise();
+		if(p)
+			p->setName(std::move(name));
+	}
+
 	bool completed() const noexcept
 	{
 		auto* p = promise();
@@ -572,8 +579,16 @@ public:
 		return run();
 	}
 
-	decltype(auto) fiber(char const* name = "coro::fiber")
+	decltype(auto) fiber(char const* name = nullptr)
 	{
+		if(!name) {
+			name = "coro::fiber";
+		} else {
+			auto* p = promise();
+			if(p)
+				p->setName(name);
+		}
+
 		return task_fiber{*this, zth::factory([](task t) { t.run(); }, name)(*this)};
 	}
 
@@ -757,7 +772,7 @@ public:
 
 	bool valid(std::coroutine_handle<> waiter) const noexcept
 	{
-		return waiter && base::valid(waiter.address());
+		return base::valid(waiter ? waiter.address() : typename base::assigned_type{});
 	}
 
 	using base::valid;
@@ -857,7 +872,7 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 				// The generator has completed. Can't resume.
 				zth_throw(coro_already_completed{});
 			} else {
-				// The generator runs in another fiber. Just supend our
+				// The generator runs in another fiber. Just suspend our
 				// fiber while waiting.
 				return mailbox.take();
 			}
@@ -931,6 +946,24 @@ public:
 	explicit generator(promise_type* p = nullptr) noexcept
 		: m_promise{p}
 	{}
+
+	promise_type* promise() const noexcept
+	{
+		return m_promise.get();
+	}
+
+	char const* id_str() const noexcept
+	{
+		auto* p = promise();
+		return p ? p->id_str() : "coro::generator";
+	}
+
+	void setName(string name) noexcept
+	{
+		auto* p = promise();
+		if(p)
+			p->setName(std::move(name));
+	}
 
 	bool completed() const noexcept
 	{
@@ -1007,8 +1040,16 @@ public:
 #  endif // ZTH_FUTURE_EXCEPTION
 	}
 
-	decltype(auto) fiber(char const* name = "coro::fiber")
+	decltype(auto) fiber(char const* name = nullptr)
 	{
+		if(!name) {
+			name = "coro::fiber";
+		} else {
+			auto* p = promise();
+			if(p)
+				p->setName(name);
+		}
+
 		return generator_fiber{
 			*this, zth::factory([](generator g) { g.run(); }, name)(*this)};
 	}
@@ -1199,32 +1240,42 @@ public:
 		return generator{this};
 	}
 
+	std::coroutine_handle<> waiter() const noexcept
+	{
+		std::array<std::coroutine_handle<>, sizeof...(T)> waiters = {waiter<T>()...};
+
+		for(size_t i = 0; i < sizeof...(T); ++i)
+			if(waiters[i])
+				return waiters[i];
+
+		return {};
+	}
+
+	template <typename U>
+	std::coroutine_handle<> waiter() const noexcept
+	{
+		return mailbox<U>().waiter();
+	}
+
 	template <typename T_>
 	decltype(auto) yield_value(T_&& v) noexcept
 	{
+		using M = typename find_type<T_, T...>::type;
 		zth_dbg(coro, "[%s] Yield", this->id_str());
-		mailbox<typename find_type<T_, T...>::type>().put(std::forward<T_>(v));
+		mailbox<M>().put(std::forward<T_>(v));
 
 		struct impl {
 			generator_promise& self;
 			bool await_ready() noexcept
 			{
-				return false;
+				return !self.template waiter<M>();
 			}
 
 			std::coroutine_handle<>
 			await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept
 			{
-				std::array<std::coroutine_handle<>, sizeof...(T)> waiters = {
-					std::get<zth::coro::impl::generator_Mailbox_type<T>>(
-						self.m_mailbox)
-						.waiter()...};
-
-				for(size_t i = 0; i < sizeof...(T); ++i)
-					if(waiters[i])
-						return waiters[i];
-
-				return std::noop_coroutine();
+				auto w = self.template waiter<M>();
+				return w ? w : std::noop_coroutine();
 			}
 
 			void await_resume() noexcept {}
@@ -1250,20 +1301,13 @@ public:
 				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
 				awaitable.await_suspend(h);
 
-				std::array<std::coroutine_handle<>, sizeof...(T)> waiters = {
-					std::get<zth::coro::impl::generator_Mailbox_type<T>>(
-						self.m_mailbox)
-						.waiter()...};
-
 				(void)(std::get<zth::coro::impl::generator_Mailbox_type<T>>(
 					       self.m_mailbox)
 					       .abandon(),
 				       ...);
 
-				for(auto const& w : waiters)
-					if(w)
-						return w;
-				return std::noop_coroutine();
+				auto w = self.waiter();
+				return w ? w : std::noop_coroutine();
 			}
 
 			decltype(auto) await_resume() noexcept
