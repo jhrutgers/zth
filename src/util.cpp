@@ -57,6 +57,9 @@ char const* banner() noexcept
 #else
 		" C++" ZTH_STRINGIFY(__cplusplus)
 #endif
+#ifndef __cpp_exceptions
+		" noexc"
+#endif
 #ifdef ZTH_OS_LINUX
 		" linux"
 #endif

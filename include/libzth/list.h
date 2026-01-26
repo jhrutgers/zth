@@ -138,6 +138,7 @@ public:
 		void next() noexcept
 		{
 			zth_assert((cyclic || !atEnd()) && m_start);
+			// NOLINTNEXTLINE(clang-analyzer-core.NullDereference)
 			m_current = unlikely(atBegin()) ? m_start->next : m_current->next;
 		}
 
