@@ -13,8 +13,8 @@
 // Coroutines are effectively functions that hold their state while they are suspended. They can be
 // shared between fibers.
 
-// There are two main coroutine types provided by Zth: zth::coro::task and zth::coro::generator.
-// A task is just something that runs till completion.
+// There are two main coroutine types provided by Zth: zth::coro::task<co_return_type> and
+// zth::coro::generator<co_yield_types...>.  A task is just something that runs till completion.
 static zth::coro::task<int> world()
 {
 	printf("World!!1\n");
@@ -31,7 +31,8 @@ static zth::coro::task<int> hello()
 	co_return world_result * 2;
 }
 
-// A generator is something that produces a sequence of values via co_yield.
+// A generator is something that produces a sequence of values via co_yield.  This example has only
+// one yielded type, but multiple types are supported, which are co_awaited independently for.
 static zth::coro::generator<int> count_to(int n)
 {
 	for(int i = 1; i <= n; i++)
