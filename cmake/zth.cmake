@@ -147,6 +147,16 @@ target_compile_options(
 		-fdata-sections
 		-Wlogical-op
 )
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13
+   AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
+)
+	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+	target_compile_options(libzth PRIVATE -Wno-restrict)
+endif()
+
 if(CMAKE_CROSSCOMPILING)
 	target_compile_options(libzth PRIVATE -fstack-usage)
 endif()
