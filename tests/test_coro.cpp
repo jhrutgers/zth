@@ -233,3 +233,28 @@ TEST(Coro, Generator_fiber2fibers)
 	EXPECT_NE(*f2, 0);
 	EXPECT_EQ(*f1 + *f2, 10);
 }
+
+TEST(Coro, MultiGenerator)
+{
+	auto g = []() -> zth::coro::generator<int, std::string> {
+		for(int i = 0; i < 5; i++)
+			co_yield i;
+
+		co_yield std::string{"hello"};
+		co_yield std::string{"world"};
+	};
+
+	auto consumer = [](zth::coro::generator<int, std::string> g) -> zth::coro::task<> {
+		for(int i = 0; i < 5; i++) {
+			int v = co_await g.as<int>();
+			EXPECT_EQ(v, i);
+		}
+
+		std::string s1 = co_await g.as<std::string>();
+		EXPECT_EQ(s1, "hello");
+		std::string s2 = co_await g.as<std::string>();
+		EXPECT_EQ(s2, "world");
+	};
+
+	consumer(g()).run();
+}
