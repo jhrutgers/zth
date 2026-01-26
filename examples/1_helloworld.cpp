@@ -13,6 +13,10 @@
 // This is a normal function, which we are going to use as a fiber entry point.
 void world()
 {
+	printf("Wonderful\n");
+	// Indicate that a context switch to another fiber may be executed here, although there are
+	// no other running fibers in this example.
+	zth::yield();
 	printf("World!!1\n");
 }
 
