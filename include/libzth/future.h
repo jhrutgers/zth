@@ -194,7 +194,8 @@ protected:
 		return *m_future;
 	}
 
-	void check_valid() const
+	// The inline attribute fixes a false-positive warning about null dereference in value().
+	__attribute__((always_inline)) inline void check_valid() const
 	{
 		if(!valid())
 			zth_throw(std::future_error(std::future_errc::no_state));
