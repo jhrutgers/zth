@@ -247,8 +247,8 @@ struct promise_awaitable {
 	decltype(auto) await_resume()
 	{
 		if(suspended) {
-			promise.running(true);
 			zth_dbg(coro, "[%s] Await resume", promise.id_str());
+			promise.running(true);
 		}
 		return awaitable.await_resume();
 	}
@@ -276,10 +276,30 @@ public:
 	virtual bool running() const noexcept = 0;
 	virtual std::coroutine_handle<> handle() noexcept = 0;
 
+	void markNested() noexcept
+	{
+		zth_assert(m_nested < std::numeric_limits<unsigned int>::max());
+		m_nested++;
+	}
+
+	void markUnnested() noexcept
+	{
+		zth_assert(m_nested > 0);
+		m_nested--;
+	}
+
+	bool nested() const noexcept
+	{
+		return m_nested;
+	}
+
 protected:
 	explicit promise_base(cow_string const& name)
 		: UniqueID{name}
 	{}
+
+private:
+	unsigned int m_nested = false;
 };
 
 template <typename Promise>
@@ -666,7 +686,12 @@ public:
 			{
 				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
 				awaitable.await_suspend(h);
-				return p.m_continuation ? p.m_continuation : std::noop_coroutine();
+
+				if(!p.m_continuation)
+					return std::noop_coroutine();
+
+				p.markUnnested();
+				return p.m_continuation;
 			}
 
 			decltype(auto) await_resume() noexcept
@@ -688,6 +713,7 @@ public:
 	{
 		zth_assert(!m_continuation || !cont || m_continuation == cont);
 		m_continuation = cont;
+		this->markNested();
 	}
 
 private:
@@ -860,6 +886,7 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 		{
 			waiter = h;
 			mailbox.wait(item, waiter);
+			mailbox.owner().markNested();
 			return mailbox.owner().handle();
 		}
 
@@ -1268,7 +1295,23 @@ public:
 			generator_promise& self;
 			bool await_ready() noexcept
 			{
-				return !self.template waiter<M>();
+				if(!self.nested()) {
+					// We may be invoked to generate a value, via an iterator,
+					// for example.  Return now, otherwise generate() will
+					// resume us again immediately.
+					return false;
+				}
+
+				// Check if the waiter is for our type.  Only suspend if we have a
+				// matching waiter, as the waiter should only be resumed when we
+				// actually yielded something to it.
+				auto w = self.template waiter<M>();
+				if(!w || !self.template mailbox<M>().valid(w))
+					return true;
+
+				// Resume the waiter.
+				self.markUnnested();
+				return false;
 			}
 
 			std::coroutine_handle<>
@@ -1301,10 +1344,9 @@ public:
 				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
 				awaitable.await_suspend(h);
 
-				(void)(std::get<zth::coro::impl::generator_Mailbox_type<T>>(
-					       self.m_mailbox)
-					       .abandon(),
-				       ...);
+				(void)(..., std::get<zth::coro::impl::generator_Mailbox_type<T>>(
+						    self.m_mailbox)
+						    .abandon());
 
 				auto w = self.waiter();
 				return w ? w : std::noop_coroutine();
@@ -1329,7 +1371,7 @@ public:
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_completed = true;
-		(void)(mailbox<T>().put(std::current_exception()), ...);
+		(void)(..., mailbox<T>().put(std::current_exception()));
 	}
 
 	/////////////////////////////////////////////////////
