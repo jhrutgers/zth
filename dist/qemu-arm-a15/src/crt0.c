@@ -78,6 +78,11 @@ void _exit(int __status)
 	abort();
 }
 
+__attribute__((used)) void _fini(void)
+{
+	abort();
+}
+
 int _kill(pid_t p, int sig)
 {
 	return 0;
