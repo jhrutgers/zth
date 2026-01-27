@@ -58,5 +58,11 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Exceptions are supported, though. These are just here for testing purposes to get the binary as
 # small as possible.
-set(ZTH_DISABLE_EXCEPTIONS ON)
-set(ZTH_DISABLE_RTTI ON)
+set(ZTH_DISABLE_EXCEPTIONS
+    ON
+    CACHE STRING "" FORCE
+)
+set(ZTH_DISABLE_RTTI
+    ON
+    CACHE STRING "" FORCE
+)
