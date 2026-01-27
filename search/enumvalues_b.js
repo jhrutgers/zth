@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ready_0',['Ready',['../classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa9fc149f98843c8cc665dabafa033f7de',1,'zth::Fiber']]],
-  ['running_1',['Running',['../classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fabd26ae2bb208a26d7a8bb31eeb8d5534',1,'zth::Fiber']]]
+  ['queue_5fput_0',['Queue_Put',['../classzth_1_1_mailbox.html#ab33b93815c4adf376ab650dd521f1a22ae65e457f5ba43885f722e1fec2d80a30',1,'zth::Mailbox']]],
+  ['queue_5ftake_1',['Queue_Take',['../classzth_1_1_mailbox.html#ab33b93815c4adf376ab650dd521f1a22a80f3c68ef24ec253a67dc2429f860b45',1,'zth::Mailbox']]]
 ];

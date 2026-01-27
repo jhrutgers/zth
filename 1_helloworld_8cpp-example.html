@@ -95,6 +95,7 @@ $(document).ready(function(){initNavTree('1_helloworld_8cpp-example.html',''); i
 <p>Basic Zth usage.</p>
 <p>Basic Zth usage.This program will print:</p>
 <pre class="fragment">Hello
+Wonderful
 World!!1
 </pre><div class="fragment"><div class="line"><span class="comment">/*</span></div>
 <div class="line"><span class="comment"> * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers</span></div>
@@ -111,50 +112,42 @@ World!!1
 <div class="line"><span class="comment">// This is a normal function, which we are going to use as a fiber entry point.</span></div>
 <div class="line"><span class="keywordtype">void</span> world()</div>
 <div class="line">{</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Wonderful\n&quot;</span>);</div>
+<div class="line">        <span class="comment">// Indicate that a context switch to another fiber may be executed here, although there are</span></div>
+<div class="line">        <span class="comment">// no other running fibers in this example.</span></div>
+<div class="line">        <a id="a0" name="a0"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">        printf(<span class="stringliteral">&quot;World!!1\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><span class="comment">// The zth_fiber() marks the given list of function as fiber entries and does</span></div>
-<div class="line"><span class="comment">// everything that is required to allow `zth_async world()&#39;.</span></div>
-<div class="line"><a id="a0" name="a0"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(world)</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> hello()</div>
 <div class="line">{</div>
-<div class="line">        <span class="comment">// The following line does not call the function world() directly, but</span></div>
-<div class="line">        <span class="comment">// creates a fiber and schedules it at the current Worker.  world()</span></div>
-<div class="line">        <span class="comment">// will now be executed asynchronously to hello().</span></div>
-<div class="line">        <a id="a1" name="a1"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> world();</div>
+<div class="line">        <span class="comment">// Create a new fiber, that calls `world()&#39;.</span></div>
+<div class="line">        <a id="a1" name="a1"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(world);</div>
 <div class="line"> </div>
-<div class="line">        <span class="comment">// Even though world() was started before the following print</span></div>
-<div class="line">        <span class="comment">// statement, &#39;Hello&#39; will always be printed first, as we did not yield</span></div>
-<div class="line">        <span class="comment">// the processor to any other fiber in between. So, the output is</span></div>
-<div class="line">        <span class="comment">// deterministic; the printf()s will not be reordered.</span></div>
+<div class="line">        <span class="comment">// Even though the world()-fiber was started before the following print statement, &#39;Hello&#39;</span></div>
+<div class="line">        <span class="comment">// will always be printed first, as we did not yield the processor to any other fiber in</span></div>
+<div class="line">        <span class="comment">// between. So, the output is deterministic; the printf()s will not be reordered.</span></div>
 <div class="line">        printf(<span class="stringliteral">&quot;Hello\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(hello)</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// main() is weakly defined by Zth. If not implemented by the program, Zth</span></div>
-<div class="line"><span class="comment">// supplies one that just starts a worker and schedules main_fiber() as the</span></div>
-<div class="line"><span class="comment">// only fiber. So, this is a convenient entry point of your fibered program.</span></div>
-<div class="line"><span class="comment">// If you have to do some pre-Zth initialization to be done, such as enabling</span></div>
-<div class="line"><span class="comment">// peripherals of an embedded system, override the weakly defined</span></div>
-<div class="line"><span class="comment">// zth_preinit(), which is by default doing nothing. It is called before any</span></div>
-<div class="line"><span class="comment">// Zth functionality is used.</span></div>
+<div class="line"><span class="comment">// main() is weakly defined by Zth. If not implemented by the program, Zth supplies one that just</span></div>
+<div class="line"><span class="comment">// starts a worker and schedules main_fiber() as the only fiber. So, this is a convenient entry</span></div>
+<div class="line"><span class="comment">// point of your fibered program.  If you have to do some pre-Zth initialization to be done, such as</span></div>
+<div class="line"><span class="comment">// enabling peripherals of an embedded system, override the weakly defined zth_preinit(), which is</span></div>
+<div class="line"><span class="comment">// by default doing nothing. It is called before any Zth functionality is used.</span></div>
 <div class="line"><span class="keywordtype">int</span> <a id="a2" name="a2"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
 <div class="line">{</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> hello();</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(hello);</div>
 <div class="line"> </div>
-<div class="line">        <span class="comment">// This is the exit code of the application.  Although the application</span></div>
-<div class="line">        <span class="comment">// has not finished, the hello fiber is still running, this value is</span></div>
-<div class="line">        <span class="comment">// saved and used at exit later on. If you have to return a non-zero</span></div>
-<div class="line">        <span class="comment">// value, depending on the state of your application, do not let the</span></div>
+<div class="line">        <span class="comment">// This is the exit code of the application.  Although the application has not finished, the</span></div>
+<div class="line">        <span class="comment">// hello fiber is still running, this value is saved and used at exit later on. If you have</span></div>
+<div class="line">        <span class="comment">// to return a non-zero value, depending on the state of your application, do not let the</span></div>
 <div class="line">        <span class="comment">// main fiber return yet.</span></div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="line"><span class="comment">// There is no need to call zth_fiber(main_fiber), as that is implicit for</span></div>
-<div class="line"><span class="comment">// main_fiber().</span></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga727bc20a95cfe9f95c19a5c0367a77dc"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=nullptr, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdoc">Allow a context switch.</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00454">worker.h:454</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

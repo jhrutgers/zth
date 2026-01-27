@@ -160,6 +160,10 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5" id="r_gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaaac895df320fd1b0cb430dba2f23d0a5">zth::ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *, size_t) noexcept) deallocate, 1), alloc_size(1))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *allocate(size_t n</td></tr>
+<tr class="memdesc:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for Config::Allocator::type::allocate().  <br /></td></tr>
+<tr class="separator:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga376be895ce62cae12c9bb2005a328f2a" id="r_ga376be895ce62cae12c9bb2005a328f2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a">zth::log_color</a> (int color, char const *fmt,...)</td></tr>
 <tr class="memdesc:ga376be895ce62cae12c9bb2005a328f2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string using an ANSI color code.  <br /></td></tr>
 <tr class="separator:ga376be895ce62cae12c9bb2005a328f2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,31 +206,36 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  <span class="keyword">public</span>:                                                                     \</div>
-<div class="line">          <span class="keyword">static</span> <span class="keywordtype">void</span>* <span class="keyword">operator</span> <span class="keyword">new</span>(std::size_t <a class="code hl_define" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(n))                \</div>
-<div class="line">          {                                                                   \</div>
-<div class="line">                  zth_assert(n == <span class="keyword">sizeof</span>(T));                                 \</div>
-<div class="line">                  return ::zth::allocate&lt;T&gt;();                                \</div>
-<div class="line">          }                                                                   \</div>
-<div class="line">          <span class="keyword">static</span> <span class="keywordtype">void</span> <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>* ptr)                              \</div>
-<div class="line">          {                                                                   \</div>
-<div class="line">                  ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr));                 \</div>
-<div class="line">          }                                                                   \</div>
-<div class="line">          <span class="keyword">static</span> <span class="keywordtype">void</span>* <span class="keyword">operator</span> <span class="keyword">new</span>[](std::size_t sz)                         \</div>
-<div class="line">          {                                                                   \</div>
-<div class="line">                  zth_assert(sz % <span class="keyword">sizeof</span>(T) == 0);                            \</div>
-<div class="line">                  return ::zth::allocate&lt;T&gt;(sz / <span class="keyword">sizeof</span>(T));                  \</div>
-<div class="line">          }                                                                   \</div>
-<div class="line">          <span class="keyword">static</span> <span class="keywordtype">void</span> <span class="keyword">operator</span> <span class="keyword">delete</span>[](<span class="keywordtype">void</span>* ptr, <span class="keywordtype">size_t</span> sz)                 \</div>
-<div class="line">          {                                                                   \</div>
-<div class="line">                  zth_assert(sz % <span class="keyword">sizeof</span>(T) == 0);                            \</div>
-<div class="line">                  ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr), sz / <span class="keyword">sizeof</span>(T)); \</div>
-<div class="line">          }                                                                   \</div>
-<div class="line">          <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code hl_struct" href="structzth_1_1_default_config_1_1_allocator.html">zth::Config::Allocator&lt;T&gt;::type</a> allocator_type;    \</div>
-<div class="line">                                                                              \</div>
+<b>Value:</b><div class="fragment"><div class="line">  <span class="keyword">public</span>:                                                                                     \</div>
+<div class="line">          <span class="keyword">static</span> <a class="code hl_define" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> <span class="keywordtype">void</span> <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>* ptr) <span class="keyword">noexcept</span>                   \</div>
+<div class="line">          {                                                                                   \</div>
+<div class="line">                  ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr));                                 \</div>
+<div class="line">          }                                                                                   \</div>
+<div class="line">          ZTH_MALLOC_ATTR((malloc, alloc_size(1)))                                            \</div>
+<div class="line">          __attribute__((warn_unused_result, returns_nonnull)) <span class="keyword">static</span> <a class="code hl_define" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> <span class="keywordtype">void</span>* \</div>
+<div class="line">          <span class="keyword">operator</span> <span class="keyword">new</span>(std::size_t <a class="code hl_define" href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a>(n))                                             \</div>
+<div class="line">          {                                                                                   \</div>
+<div class="line">                  zth_assert(n == <span class="keyword">sizeof</span>(T));                                                 \</div>
+<div class="line">                  return ::zth::allocate&lt;T&gt;();                                                \</div>
+<div class="line">          }                                                                                   \</div>
+<div class="line">          <span class="keyword">static</span> <a class="code hl_define" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> <span class="keywordtype">void</span> <span class="keyword">operator</span> <span class="keyword">delete</span>[](<span class="keywordtype">void</span>* ptr, <span class="keywordtype">size_t</span> sz) <span class="keyword">noexcept</span>      \</div>
+<div class="line">          {                                                                                   \</div>
+<div class="line">                  zth_assert(sz % <span class="keyword">sizeof</span>(T) == 0);                                            \</div>
+<div class="line">                  ::zth::deallocate&lt;T&gt;(<span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(ptr), sz / <span class="keyword">sizeof</span>(T));                 \</div>
+<div class="line">          }                                                                                   \</div>
+<div class="line">          ZTH_MALLOC_ATTR((malloc, alloc_size(1)))                                            \</div>
+<div class="line">          __attribute__((warn_unused_result, returns_nonnull)) <span class="keyword">static</span> <a class="code hl_define" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> <span class="keywordtype">void</span>* \</div>
+<div class="line">          <span class="keyword">operator</span> <span class="keyword">new</span>[](std::size_t sz)                                                      \</div>
+<div class="line">          {                                                                                   \</div>
+<div class="line">                  zth_assert(sz % <span class="keyword">sizeof</span>(T) == 0);                                            \</div>
+<div class="line">                  return ::zth::allocate&lt;T&gt;(sz / <span class="keyword">sizeof</span>(T));                                  \</div>
+<div class="line">          }                                                                                   \</div>
+<div class="line">          <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code hl_struct" href="structzth_1_1_default_config_1_1_allocator.html">zth::Config::Allocator&lt;T&gt;::type</a> allocator_type; <span class="comment">/* NOLINT */</span>       \</div>
+<div class="line">                                                                                              \</div>
 <div class="line">  <span class="keyword">private</span>:</div>
+<div class="ttc" id="aallocator_8h_html_ad62bdeb763758231092ecd4f8a1ee9ee"><div class="ttname"><a href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a></div><div class="ttdeci">#define ZTH_MALLOC_INLINE</div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00028">allocator.h:28</a></div></div>
 <div class="ttc" id="amacros_8h_html_af17ee1aea7e7e70c19dc325e02552ed0"><div class="ttname"><a href="macros_8h.html#af17ee1aea7e7e70c19dc325e02552ed0">UNUSED_PAR</a></div><div class="ttdeci">#define UNUSED_PAR(name)</div><div class="ttdef"><b>Definition</b> <a href="macros_8h_source.html#l00078">macros.h:78</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_1_1_allocator_html"><div class="ttname"><a href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator</a></div><div class="ttdoc">Allocator type.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00210">config.h:210</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_1_1_allocator_html"><div class="ttname"><a href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator</a></div><div class="ttdoc">Allocator type.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00215">config.h:215</a></div></div>
 </div><!-- fragment -->
 <p>Define new/delete operators for a class, which are allocator-aware. </p>
 <p>Put a call to this macro in the private section of your class definition. Additionally, make sure to have a virtual destructor to deallocate subclasses properly.</p>
@@ -237,7 +246,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00143">143</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00159">159</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
 
 </div>
 </div>
@@ -283,7 +292,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00189">189</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00194">194</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -411,7 +420,7 @@ Functions</h2></td></tr>
 
 <p>std::string type using Config::Allocator::type. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00310">310</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00315">315</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -454,7 +463,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a7">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00142">142</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00145">145</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -494,7 +503,7 @@ Functions</h2></td></tr>
 
 <p>Aborts the process after printing the given printf() formatted message.   </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00154">154</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00157">157</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -522,7 +531,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Prints a banner line with version and configuration information. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a22">measure.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a21">measure.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00037">37</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
@@ -566,7 +575,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a" title="Logs a given printf()-like formatted string using an ANSI color code.">zth::log_color()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00298">298</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00303">303</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -613,7 +622,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00272">272</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00277">277</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -652,7 +661,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string using an ANSI color code. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00233">233</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00236">236</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -693,7 +702,7 @@ Functions</h2></td></tr>
 <p>Logs a given printf()-like formatted string. </p>
 <p><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72" title="Prints the given printf()-like formatted string to stdout.">zth_logv()</a> is used for the actual logging. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40" title="Logs a given printf()-like formatted string using an ANSI color code.">zth::log_colorv()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00287">287</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00292">292</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -723,6 +732,28 @@ Functions</h2></td></tr>
 <p>Returns the version of Zth. </p>
 
 <p class="definition">Definition at line <a class="el" href="version_8h_source.html#l00065">65</a> of file <a class="el" href="version_8h_source.html">version.h</a>.</p>
+
+</div>
+</div>
+<a id="gaaac895df320fd1b0cb430dba2f23d0a5" name="gaaac895df320fd1b0cb430dba2f23d0a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaac895df320fd1b0cb430dba2f23d0a5">&#9670;&#160;</a></span>ZTH_MALLOC_ATTR()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">zth::ZTH_MALLOC_ATTR </td>
+          <td>(</td>
+          <td class="paramtype">(malloc((void(*)(T *, size_t) noexcept) deallocate, 1), alloc_size(1))&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Wrapper for Config::Allocator::type::allocate(). </p>
 
 </div>
 </div>

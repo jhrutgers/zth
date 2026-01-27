@@ -92,6 +92,7 @@ $(document).ready(function(){initNavTree('future_8h.html',''); initResizable(); 
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -128,6 +129,15 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacestd"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL namespace. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a4be7b81eb7d0c939065d25092433c776" id="r_a4be7b81eb7d0c939065d25092433c776"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="future_8h.html#a4be7b81eb7d0c939065d25092433c776">ZTH_FUTURE_CTORS</a>(future_class_type)</td></tr>
+<tr class="separator:a4be7b81eb7d0c939065d25092433c776"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed3b0ad5d6886fd221e8a0f4cfd5435c" id="r_aed3b0ad5d6886fd221e8a0f4cfd5435c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="future_8h.html#aed3b0ad5d6886fd221e8a0f4cfd5435c">ZTH_FUTURE_MOVE</a>(future_class_type)</td></tr>
+<tr class="separator:aed3b0ad5d6886fd221e8a0f4cfd5435c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a553320182616c52b79785061ea5e4577" id="r_a553320182616c52b79785061ea5e4577"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="future_8h.html#a553320182616c52b79785061ea5e4577">ZTH_FUTURE_COPY</a>(future_class_type)</td></tr>
+<tr class="separator:a553320182616c52b79785061ea5e4577"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:acbd4fbc514ce83426752a97814a35274" id="r_acbd4fbc514ce83426752a97814a35274"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -145,10 +155,11 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a783924c255ed65f164dde11543fe0106" id="r_a783924c255ed65f164dde11543fe0106"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a> { <a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119">zth::detached</a> = 1
-, <a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906">zth::awaitable</a> = 2
+<tr class="memitem:ga783924c255ed65f164dde11543fe0106" id="r_ga783924c255ed65f164dde11543fe0106"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">zth::launch</a> { <a class="el" href="group__zth__api__cpp__future.html#gga783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119">zth::launch::detached</a> = 1
+, <a class="el" href="group__zth__api__cpp__future.html#gga783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906">zth::launch::awaitable</a> = 2
  }</td></tr>
-<tr class="separator:a783924c255ed65f164dde11543fe0106"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ga783924c255ed65f164dde11543fe0106"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch policies for <a class="el" href="namespacestd.html#a8dccb8c8b643b0339a40cb3012b0b7f5">std::async</a> to start fibers instead of threads.  <a href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">More...</a><br /></td></tr>
+<tr class="separator:ga783924c255ed65f164dde11543fe0106"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -156,12 +167,125 @@ Functions</h2></td></tr>
 <tr class="memitem:a087305069a49ec6e1ec88bcb2615406d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a087305069a49ec6e1ec88bcb2615406d">zth::async</a> (Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a087305069a49ec6e1ec88bcb2615406d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58" id="r_acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
-<tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acae078684c45d1bb30c55db6d5bfeb58">zth::async</a> (<a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acae078684c45d1bb30c55db6d5bfeb58">zth::async</a> (<a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:acae078684c45d1bb30c55db6d5bfeb58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dccb8c8b643b0339a40cb3012b0b7f5" id="r_a8dccb8c8b643b0339a40cb3012b0b7f5"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
-<tr class="memitem:a8dccb8c8b643b0339a40cb3012b0b7f5"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacestd.html#a8dccb8c8b643b0339a40cb3012b0b7f5">std::async</a> (<a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a8dccb8c8b643b0339a40cb3012b0b7f5"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacestd.html#a8dccb8c8b643b0339a40cb3012b0b7f5">std::async</a> (<a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a8dccb8c8b643b0339a40cb3012b0b7f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a553320182616c52b79785061ea5e4577" name="a553320182616c52b79785061ea5e4577"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a553320182616c52b79785061ea5e4577">&#9670;&#160;</a></span>ZTH_FUTURE_COPY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_FUTURE_COPY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">future_class_type</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">          future_class_type(future_class_type <span class="keyword">const</span>&amp; other) <span class="keyword">noexcept</span> = <span class="keywordflow">default</span>;                 \</div>
+<div class="line">                                                                                                \</div>
+<div class="line">          future_class_type&amp; operator=(future_class_type <span class="keyword">const</span>&amp; other) <span class="keyword">noexcept</span> = <span class="keywordflow">default</span>;      \</div>
+<div class="line">                                                                                                \</div>
+<div class="line">          future_class_type&amp; operator=(<a class="code hl_class" href="classzth_1_1_shared_pointer.html">zth::SharedPointer&lt;Future_type&gt;</a> <span class="keyword">const</span>&amp; other) <span class="keyword">noexcept</span>   \</div>
+<div class="line">          {                                                                                     \</div>
+<div class="line">                  this-&gt;base::operator=(other);                                                 \</div>
+<div class="line">                  <span class="keywordflow">return</span> *<span class="keyword">this</span>;                                                                 \</div>
+<div class="line">          }                                                                                     \</div>
+<div class="line">                                                                                                \</div>
+<div class="line">          future_class_type&amp; operator=(<a class="code hl_class" href="classzth_1_1_shared_reference.html">zth::SharedReference&lt;Future_type&gt;</a> <span class="keyword">const</span>&amp; other) <span class="keyword">noexcept</span> \</div>
+<div class="line">          {                                                                                     \</div>
+<div class="line">                  this-&gt;base::operator=(other);                                                 \</div>
+<div class="line">                  <span class="keywordflow">return</span> *<span class="keyword">this</span>;                                                                 \</div>
+<div class="line">          }</div>
+<div class="ttc" id="aclasszth_1_1_shared_pointer_html"><div class="ttname"><a href="classzth_1_1_shared_pointer.html">zth::SharedPointer</a></div><div class="ttdef"><b>Definition</b> <a href="sync_8h_source.html#l00074">sync.h:74</a></div></div>
+<div class="ttc" id="aclasszth_1_1_shared_reference_html"><div class="ttname"><a href="classzth_1_1_shared_reference.html">zth::SharedReference</a></div><div class="ttdef"><b>Definition</b> <a href="sync_8h_source.html#l00197">sync.h:197</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00140">140</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+
+</div>
+</div>
+<a id="a4be7b81eb7d0c939065d25092433c776" name="a4be7b81eb7d0c939065d25092433c776"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4be7b81eb7d0c939065d25092433c776">&#9670;&#160;</a></span>ZTH_FUTURE_CTORS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_FUTURE_CTORS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">future_class_type</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">          <span class="keyword">using </span>Future_type = <span class="keyword">typename</span> base::Future_type;                        \</div>
+<div class="line">                                                                                 \</div>
+<div class="line">          future_class_type() noexcept = default;                                \</div>
+<div class="line">                                                                                 \</div>
+<div class="line">          future_class_type(<a class="code hl_namespace" href="namespacezth.html">zth</a>::SharedPointer&lt;Future_type&gt; const&amp; f) noexcept   \</div>
+<div class="line">                  : base{f}                                                      \</div>
+<div class="line">          {}                                                                     \</div>
+<div class="line">                                                                                 \</div>
+<div class="line">          future_class_type(<a class="code hl_class" href="classzth_1_1_shared_reference.html">zth::SharedReference&lt;Future_type&gt;</a> <span class="keyword">const</span>&amp; f) <span class="keyword">noexcept</span> \</div>
+<div class="line">                  : base{f}                                                      \</div>
+<div class="line">          {}</div>
+<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00022">allocator.h:22</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00072">72</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+
+</div>
+</div>
+<a id="aed3b0ad5d6886fd221e8a0f4cfd5435c" name="aed3b0ad5d6886fd221e8a0f4cfd5435c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed3b0ad5d6886fd221e8a0f4cfd5435c">&#9670;&#160;</a></span>ZTH_FUTURE_MOVE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_FUTURE_MOVE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">future_class_type</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">          future_class_type(future_class_type&amp;&amp; other) <span class="keyword">noexcept</span> = <span class="keywordflow">default</span>;                 \</div>
+<div class="line">                                                                                           \</div>
+<div class="line">          future_class_type(<a class="code hl_class" href="classzth_1_1_shared_pointer.html">zth::SharedPointer&lt;Future_type&gt;</a>&amp;&amp; f) <span class="keyword">noexcept</span>                  \</div>
+<div class="line">                  : base{std::move(f)}                                                     \</div>
+<div class="line">          {}                                                                               \</div>
+<div class="line">                                                                                           \</div>
+<div class="line">          future_class_type(<a class="code hl_class" href="classzth_1_1_shared_reference.html">zth::SharedReference&lt;Future_type&gt;</a>&amp;&amp; f) <span class="keyword">noexcept</span>                \</div>
+<div class="line">                  : base{std::move(f)}                                                     \</div>
+<div class="line">          {}                                                                               \</div>
+<div class="line">                                                                                           \</div>
+<div class="line">          future_class_type&amp; operator=(future_class_type&amp;&amp; other) <span class="keyword">noexcept</span> = <span class="keywordflow">default</span>;      \</div>
+<div class="line">                                                                                           \</div>
+<div class="line">          future_class_type&amp; operator=(<a class="code hl_class" href="classzth_1_1_shared_pointer.html">zth::SharedPointer&lt;Future_type&gt;</a>&amp;&amp; other) <span class="keyword">noexcept</span>   \</div>
+<div class="line">          {                                                                                \</div>
+<div class="line">                  this-&gt;base::operator=(std::move(other));                                 \</div>
+<div class="line">                  <span class="keywordflow">return</span> *<span class="keyword">this</span>;                                                            \</div>
+<div class="line">          }                                                                                \</div>
+<div class="line">                                                                                           \</div>
+<div class="line">          future_class_type&amp; operator=(<a class="code hl_class" href="classzth_1_1_shared_reference.html">zth::SharedReference&lt;Future_type&gt;</a>&amp;&amp; other) <span class="keyword">noexcept</span> \</div>
+<div class="line">          {                                                                                \</div>
+<div class="line">                  this-&gt;base::operator=(std::move(other));                                 \</div>
+<div class="line">                  <span class="keywordflow">return</span> *<span class="keyword">this</span>;                                                            \</div>
+<div class="line">          }</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00101">101</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

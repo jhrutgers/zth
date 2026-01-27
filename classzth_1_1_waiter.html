@@ -115,8 +115,8 @@ Inheritance diagram for zth::Waiter:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acc9a8c88bf782ff202b77d2a811025bc" id="r_acc9a8c88bf782ff202b77d2a811025bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html#acc9a8c88bf782ff202b77d2a811025bc">Waiter</a> (<a class="el" href="classzth_1_1_worker.html">Worker</a> &amp;worker)</td></tr>
 <tr class="separator:acc9a8c88bf782ff202b77d2a811025bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11e583c053c33d0168d7a6bae1a03eda" id="r_a11e583c053c33d0168d7a6bae1a03eda"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html#a11e583c053c33d0168d7a6bae1a03eda">~Waiter</a> () override</td></tr>
-<tr class="separator:a11e583c053c33d0168d7a6bae1a03eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3122bc9778464b5fd8e1ebb156463f33" id="r_a3122bc9778464b5fd8e1ebb156463f33"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html#a3122bc9778464b5fd8e1ebb156463f33">~Waiter</a> () noexcept override</td></tr>
+<tr class="separator:a3122bc9778464b5fd8e1ebb156463f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62a0a654a9bea7638c8ff58ac72a66b4" id="r_a62a0a654a9bea7638c8ff58ac72a66b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html#a62a0a654a9bea7638c8ff58ac72a66b4">wait</a> (<a class="el" href="classzth_1_1_timed_waitable.html">TimedWaitable</a> &amp;w)</td></tr>
 <tr class="separator:a62a0a654a9bea7638c8ff58ac72a66b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cfdf686ced38d77d1fdb210359b0d14" id="r_a2cfdf686ced38d77d1fdb210359b0d14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waiter.html#a2cfdf686ced38d77d1fdb210359b0d14">scheduleTask</a> (<a class="el" href="classzth_1_1_timed_waitable.html">TimedWaitable</a> &amp;w)</td></tr>
@@ -154,8 +154,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="inherit_header pro_methods_classzth_1_1_runnable"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classzth_1_1_runnable')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classzth_1_1_runnable.html">zth::Runnable</a></td></tr>
 <tr class="memitem:adb04fea6d29ce97aa87d25b80b98d00e inherit pro_methods_classzth_1_1_runnable" id="r_adb04fea6d29ce97aa87d25b80b98d00e"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#adb04fea6d29ce97aa87d25b80b98d00e">Runnable</a> () noexcept</td></tr>
 <tr class="separator:adb04fea6d29ce97aa87d25b80b98d00e inherit pro_methods_classzth_1_1_runnable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1b2ae115fa74502cd4d3be12570c5b1 inherit pro_methods_classzth_1_1_runnable" id="r_aa1b2ae115fa74502cd4d3be12570c5b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#aa1b2ae115fa74502cd4d3be12570c5b1">cleanup</a> ()</td></tr>
-<tr class="separator:aa1b2ae115fa74502cd4d3be12570c5b1 inherit pro_methods_classzth_1_1_runnable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a456103b444e8b90e418ecf19b0195a inherit pro_methods_classzth_1_1_runnable" id="r_a6a456103b444e8b90e418ecf19b0195a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html#a6a456103b444e8b90e418ecf19b0195a">cleanup</a> () noexcept</td></tr>
+<tr class="separator:a6a456103b444e8b90e418ecf19b0195a inherit pro_methods_classzth_1_1_runnable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A single fiber per <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a> that manages sleeping and blocked fibers. </p>
@@ -190,8 +190,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a11e583c053c33d0168d7a6bae1a03eda" name="a11e583c053c33d0168d7a6bae1a03eda"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11e583c053c33d0168d7a6bae1a03eda">&#9670;&#160;</a></span>~Waiter()</h2>
+<a id="a3122bc9778464b5fd8e1ebb156463f33" name="a3122bc9778464b5fd8e1ebb156463f33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3122bc9778464b5fd8e1ebb156463f33">&#9670;&#160;</a></span>~Waiter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -208,7 +208,7 @@ Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

@@ -4,7 +4,7 @@ var classzth_1_1impl_1_1std__promise__base =
     [ "value_type", "classzth_1_1impl_1_1std__promise__base.html#abbc2b1d8afd39da3bf2a4898e0555a2b", null ],
     [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html#a30faea4c0abbef39dc71216ee61fbd60", null ],
     [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html#a048f2b302f637d729995ea4de1df4d80", null ],
-    [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html#abec69d4713d8e7630bd83ee162de805e", null ],
+    [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html#a93e77247b82178dd24eec993d2e45655", null ],
     [ "std_promise_base", "classzth_1_1impl_1_1std__promise__base.html#a418727cb219ee15d1093e63e073c818d", null ],
     [ "check_not_satisfied", "classzth_1_1impl_1_1std__promise__base.html#a063280580767dff718c19c87ef1ca52f", null ],
     [ "check_valid", "classzth_1_1impl_1_1std__promise__base.html#a2079a310267690dfcbd4dc296934faf8", null ],

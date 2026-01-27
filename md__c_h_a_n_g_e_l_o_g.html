@@ -101,6 +101,8 @@ $(document).ready(function(){initNavTree('md__c_h_a_n_g_e_l_o_g.html',''); initR
 <li><code>std::chrono</code> conversions for <code><a class="el" href="classzth_1_1_timestamp.html" title="Convenient wrapper around struct timespec that contains an absolute timestamp.">zth::Timestamp</a></code> and <code><a class="el" href="classzth_1_1_time_interval.html" title="Convenient wrapper around struct timespec that contains a time interval.">zth::TimeInterval</a></code>.</li>
 <li><code>std::promise</code> and <code>std::future</code> specializations to wrap <code><a class="el" href="classzth_1_1_future.html" title="Fiber-aware future.">zth::Future</a></code>.</li>
 <li><code><a class="el" href="namespacestd.html#a8dccb8c8b643b0339a40cb3012b0b7f5">std::async</a></code> specialization for fibers.</li>
+<li>C++20 Coroutine support using <code><a class="el" href="classzth_1_1coro_1_1task.html" title="A coroutine task producing a single result value.">zth::coro::task</a>&lt;T&gt;</code> and <code><a class="el" href="classzth_1_1coro_1_1generator.html" title="A coroutine generator producing a sequence of values.">zth::coro::generator</a>&lt;T&gt;</code>.</li>
+<li><code>zth::join</code> and <code><a class="el" href="classzth_1_1joiner.html" title="RAII class to join fibers and futures on destruction.">zth::joiner</a></code> for easy fiber/future joins.</li>
 </ul>
 <h2>Changed</h2>
 <ul>
@@ -111,11 +113,15 @@ $(document).ready(function(){initNavTree('md__c_h_a_n_g_e_l_o_g.html',''); initR
 <li>Fix support for newlib 4.4.0.</li>
 <li><code>Config::MinTimeslice</code> and <code>Config::TimesliceOverrunReportThreshold</code> return <code>struct timespec</code> for performance reasons.</li>
 <li>Removed <code>async</code> keyword in favor of <code>zth_async</code>, as it conflicts with C++11 <code>&lt;future&gt;</code>.</li>
+<li>Deprecated <code>zth_async</code> in favor of <code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber</a></code> and <code><a class="el" href="namespacezth.html#a087305069a49ec6e1ec88bcb2615406d">zth::async</a></code>.</li>
+<li>Renamed <code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber()</a></code> to <code><a class="el" href="group__zth__api__cpp__fiber.html#ga69a3ec45db02cd8dfdcb74735d16efe5" title="Create a new fiber.">zth::factory()</a></code> and implement <code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber()</a></code> to actually return a fiber.</li>
+<li>Streamlined fiber type member functions.</li>
+<li>Removed deprecated old FSM implementation.</li>
 </ul>
 <h1><a href="https://github.com/jhrutgers/zth/releases/tag/v1.1.0">1.1.0</a> - 2022-10-18</h1>
 <h2>Added</h2>
 <ul>
-<li><code><a class="el" href="group__zth__api__cpp__fiber.html#gae82c6ec288066f4654c04590bc1dbc2b" title="Create a new fiber.">zth::fiber()</a></code> as alternative to <code><a class="el" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2" title="Prepare every given function to become a fiber by zth_async.">zth_fiber()</a></code> and friends with <code>async</code>.</li>
+<li><code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber()</a></code> as alternative to <code><a class="el" href="async_8h.html#a2cc783da6d70609272495ea174b0def2" title="Prepare every given function to become a fiber by zth_async.">zth_fiber()</a></code> and friends with <code>async</code>.</li>
 <li>Defining <code>async</code> can be prevented by defining <code>ZTH_NO_ASYNC_KEYWORD</code> before including <code>&lt;zth&gt;</code>. <code>zth_async</code> is always defined, with the original behavior of <code>async</code>.</li>
 <li>Make split <code><a class="el" href="classzth_1_1fsm_1_1_fsm.html" title="FSM base class.">zth::fsm::Fsm</a></code> into a <code>BasicFsm</code> and <code>Fsm</code>, of which the former does not need fiber and timestamps to run. As a result, the <code>BasicFsm</code> can be executed in an interrupt routine.</li>
 <li>Fix support for builds without exceptions and environmental variables to reduce library size.</li>

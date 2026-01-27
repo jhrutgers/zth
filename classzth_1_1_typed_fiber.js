@@ -1,15 +1,15 @@
 var classzth_1_1_typed_fiber =
 [
-    [ "Function", "classzth_1_1_typed_fiber.html#a797d29790673351230b26b7b176eb29f", null ],
-    [ "Future_type", "classzth_1_1_typed_fiber.html#a1a6a751687187396d441903b8b6f6004", null ],
-    [ "Return", "classzth_1_1_typed_fiber.html#aabb918f02b8ebe0cbd13065f7eb794bc", null ],
-    [ "TypedFiber", "classzth_1_1_typed_fiber.html#a0a3417d844a3279bd2cb7965cc965866", null ],
-    [ "~TypedFiber", "classzth_1_1_typed_fiber.html#aef03eca965b21983d547569e4fea49b7", null ],
-    [ "entry_", "classzth_1_1_typed_fiber.html#a472c367d310ebc7aa2c12f108a937b29", null ],
-    [ "function", "classzth_1_1_typed_fiber.html#afb2f0d75a68ba990578972cce7ee0827", null ],
-    [ "future", "classzth_1_1_typed_fiber.html#a18506b0a2a96f8de9a8ed7502afc6b5e", null ],
-    [ "registerFuture", "classzth_1_1_typed_fiber.html#ac45ce5da6f2a5212f7879518ece20963", null ],
-    [ "setFuture", "classzth_1_1_typed_fiber.html#af598d6086b3a6954b50262a82d6648ea", null ],
-    [ "setFuture", "classzth_1_1_typed_fiber.html#a5571c100d17b50dd383c5d5e8403d9d3", null ],
-    [ "withFuture", "classzth_1_1_typed_fiber.html#a0cec8ee0fe44c87d0f1d50bd80aa369f", null ]
+    [ "Future_type", "classzth_1_1_typed_fiber.html#a6f972735fffa4f57f4ce282e2b2c3cb8", null ],
+    [ "Return", "classzth_1_1_typed_fiber.html#a15ba6914794a9df531ed2c89f548dd7f", null ],
+    [ "TypedFiber", "classzth_1_1_typed_fiber.html#a85160bb09c5a98b0eeaf0e29946fa735", null ],
+    [ "~TypedFiber", "classzth_1_1_typed_fiber.html#a1a969abec6492b142f17340b7a0a0861", null ],
+    [ "entry_", "classzth_1_1_typed_fiber.html#a38472ebdc9467c8bf2aa312ffc6dba45", null ],
+    [ "future", "classzth_1_1_typed_fiber.html#a32f222a50e7fc8936144813477d6906f", null ],
+    [ "operator SharedPointer< Future_type > const &", "classzth_1_1_typed_fiber.html#ab4ca6e882ec1437a7e084eb39d531d22", null ],
+    [ "operator SharedReference< Future_type >", "classzth_1_1_typed_fiber.html#a4c083b630b70296b4ea1d157345d3ad3", null ],
+    [ "registerFuture", "classzth_1_1_typed_fiber.html#ad279ef72d06604a2749136c1f98a7b11", null ],
+    [ "setFuture", "classzth_1_1_typed_fiber.html#a209e5cc77c0041dd232cc9888e75241a", null ],
+    [ "setFuture", "classzth_1_1_typed_fiber.html#a8da3836ea914e31b898e5fc202e98d3a", null ],
+    [ "withFuture", "classzth_1_1_typed_fiber.html#a2859610ed3ab5f051a8fc6a3d4d2b20a", null ]
 ];

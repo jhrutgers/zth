@@ -102,11 +102,11 @@ $(document).ready(function(){initNavTree('namespacezth.html',''); initResizable(
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
+<tr class="memitem:namespacezth_1_1coro" id="r_namespacezth_1_1coro"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1coro.html">coro</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacezth_1_1fibered" id="r_namespacezth_1_1fibered"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1fibered.html">fibered</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacezth_1_1fsm" id="r_namespacezth_1_1fsm"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1fsm.html">fsm</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespacezth_1_1guards" id="r_namespacezth_1_1guards"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1guards.html">guards</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacezth_1_1impl" id="r_namespacezth_1_1impl"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth_1_1impl.html">impl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,7 +117,8 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_auto_future.html">AutoFuture</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1as_future.html">asFuture</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forces the fiber to have a future that outlives the fiber.  <a href="structzth_1_1as_future.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_backtrace.html">Backtrace</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save a backtrace.  <a href="classzth_1_1_backtrace.html#details">More...</a><br /></td></tr>
@@ -133,6 +134,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_context_attr.html">ContextAttr</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1coro__already__completed.html">coro_already_completed</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception thrown when a coroutine has already completed.  <a href="structzth_1_1coro__already__completed.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1coro__invalid__state.html">coro_invalid_state</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception thrown when an operation cannot be performed due to an invalid coroutine state.  <a href="structzth_1_1coro__invalid__state.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1cow__string.html">cow_string</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy-on-write string.  <a href="classzth_1_1cow__string.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,35 +147,51 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_env.html">Env</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1errno__exception.html">errno_exception</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for an errno.  <a href="structzth_1_1errno__exception.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_event_rate.html">EventRate</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure the rate of some event in Hz.  <a href="classzth_1_1_event_rate.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1exception.html">exception</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base exception class for Zth exceptions.  <a href="structzth_1_1exception.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html">Fiber</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The fiber.  <a href="classzth_1_1_fiber.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__already__dead.html">fiber_already_dead</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception thrown when an operation cannot be performed, as the fiber is already dead.  <a href="structzth_1_1fiber__already__dead.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__future.html">fiber_future</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The future returned by a fiber.  <a href="structzth_1_1fiber__future.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type_3_01_r_07_5_08_07_args_8_8_8_08_4.html">fiber_type&lt; R(*)(Args...)&gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_fiber_manipulator.html">FiberManipulator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1fiber__type__impl.html">fiber_type_impl</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1function__type__helper.html">function_type_helper</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber_manipulator.html">FiberManipulator</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1function__type__helper_3_01_r_07_6_08_07_args_8_8_8_08_4.html">function_type_helper&lt; R(&amp;)(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm.html">Fsm</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A Finite-state machine.  <a href="classzth_1_1_fsm.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1function__type__helper_3_01_r_07_5_6_08_07_args_8_8_8_08_4.html">function_type_helper&lt; R(*&amp;)(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm_callback.html">FsmCallback</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1function__type__helper_3_01_r_07_5_08_07_args_8_8_8_08_4.html">function_type_helper&lt; R(*)(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm_callback_3_01_state___00_01void_00_01_input___00_01_fsm_impl___01_4.html">FsmCallback&lt; State_, void, Input_, FsmImpl_ &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1function__type__helper_3_01_r_07_args_8_8_8_08_4.html">function_type_helper&lt; R(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm_compiler.html">FsmCompiler</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A compiler to turn an <a class="el" href="structzth_1_1_fsm_description.html" title="The description of a Fsm.">zth::FsmDescription</a> into something that can be used by <a class="el" href="classzth_1_1_fsm.html" title="A Finite-state machine.">zth::Fsm</a>.  <a href="classzth_1_1_fsm_compiler.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__operator__type.html">functor_operator_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_fsm_description.html">FsmDescription</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The description of a <a class="el" href="classzth_1_1_fsm.html" title="A Finite-state machine.">Fsm</a>.  <a href="structzth_1_1_fsm_description.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__operator__type_3_01_r_07_args_8_8_8_08_4.html">functor_operator_type&lt; R(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fsm_guard.html">FsmGuard</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A guard is evaluated, and when true, the corresponding transition is taken.  <a href="classzth_1_1_fsm_guard.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__traits.html">functor_traits</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__traits_3_01_r_07_6_08_07_args_8_8_8_08_4.html">functor_traits&lt; R(&amp;)(Args...)&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__traits_3_01_r_07_5_6_08_07_args_8_8_8_08_4.html">functor_traits&lt; R(*&amp;)(Args...)&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__traits_3_01_r_07_5_08_07_args_8_8_8_08_4.html">functor_traits&lt; R(*)(Args...)&gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1functor__traits_3_01_r_07_args_8_8_8_08_4.html">functor_traits&lt; R(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_future.html">Future</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware future.  <a href="classzth_1_1_future.html#details">More...</a><br /></td></tr>
@@ -177,6 +200,19 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_gate.html">Gate</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware barrier/gate.  <a href="classzth_1_1_gate.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1has__call__operator.html">has_call_operator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_hook.html">Hook</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_hookable.html">Hookable</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1is__callable.html">is_callable</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1is__function.html">is_function</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1joiner.html">joiner</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII class to join fibers and futures on destruction.  <a href="classzth_1_1joiner.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_list.html">List</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,6 +227,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_locked.html">Locked</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classzth_1_1_mutex.html" title="Fiber-aware mutex.">Mutex</a> RAII, that locks and unlocks the mutex automatically.  <a href="classzth_1_1_locked.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_mailbox.html">Mailbox</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware mailbox.  <a href="classzth_1_1_mailbox.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1map__type.html">map_type</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>std::map</code> type using Config::Allocator::type.  <a href="structzth_1_1map__type.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,8 +238,19 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_mutex.html">Mutex</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware mutex.  <a href="classzth_1_1_mutex.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1pass_on_exit.html">passOnExit</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the fiber pass the given gate upon exit.  <a href="classzth_1_1pass_on_exit.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html">NamedUniqueID</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d_3_01false_01_4.html">NamedUniqueID&lt; false &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1not__in__fiber.html">not_in_fiber</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception thrown when an operation cannot be performed as there is no fiber context.  <a href="structzth_1_1not__in__fiber.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_optional.html">Optional</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_optional_3_01void_01_4.html">Optional&lt; void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1pass_on_exit.html">passOnExit</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes the fiber pass the given gate upon exit.  <a href="structzth_1_1pass_on_exit.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_perf_event.html">PerfEvent</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An event to be processed by <a class="el" href="namespacezth.html#aa0a9cb2d2794cd2768a0b5fde149f179">perf_event()</a>.  <a href="structzth_1_1_perf_event.html#details">More...</a><br /></td></tr>
@@ -244,6 +294,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_register.html">Register</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper class to read/write (bitfields in) hardware registers.  <a href="structzth_1_1_register.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1remove__function__cvref.html">remove_function_cvref</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_runnable.html">Runnable</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An abstract class, that can be started as a fiber.  <a href="classzth_1_1_runnable.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -255,13 +307,23 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_sequence.html">Sequence</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1set_name.html">setName</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the name of a fiber returned by <a class="el" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d" title="Run a function as a new fiber.">zth_async</a>.  <a href="classzth_1_1set_name.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1set_name.html">setName</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the name of a fiber returned by <a class="el" href="async_8h.html#a121a5e39c7e4138aa09c2ce6ea7e213d" title="Run a function as a new fiber.">zth_async</a>.  <a href="structzth_1_1set_name.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1set_stack_size.html">setStackSize</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the stack size of a fiber returned by <a class="el" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d" title="Run a function as a new fiber.">zth_async</a>.  <a href="classzth_1_1set_stack_size.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1set_stack_size.html">setStackSize</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the stack size of a fiber returned by <a class="el" href="async_8h.html#a121a5e39c7e4138aa09c2ce6ea7e213d" title="Run a function as a new fiber.">zth_async</a>.  <a href="structzth_1_1set_stack_size.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_pointer.html">SharedPointer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_pointer_ops.html">SharedPointerOps</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_pointer_ops_3_01_impl_00_01void_01_4.html">SharedPointerOps&lt; Impl, void &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_reference.html">SharedReference</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_reference_ops.html">SharedReferenceOps</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_shared_reference_ops_3_01_impl_00_01void_01_4.html">SharedReferenceOps&lt; Impl, void &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_signal.html">Signal</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fiber-aware signal.  <a href="classzth_1_1_signal.html#details">More...</a><br /></td></tr>
@@ -282,7 +344,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_sorted_list.html">SortedList</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_stack.html">Stack</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structzth_1_1_stack.html" title="Stack information.">Stack</a> information.  <a href="structzth_1_1_stack.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_synchronizer.html">Synchronizer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_synchronizer_base.html">SynchronizerBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_thread_local_singleton.html">ThreadLocalSingleton</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton pattern, but only per-thread.  <a href="classzth_1_1_thread_local_singleton.html#details">More...</a><br /></td></tr>
@@ -298,16 +365,16 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1type.html">type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Typed fiber class.  <a href="classzth_1_1_typed_fiber.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber_factory.html">TypedFiberFactory</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber_n.html">TypedFiberN</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Actual fiber implementation for arbitrary function types and arguments.  <a href="classzth_1_1_typed_fiber_n.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber_n_3_01void_00_01_args_8_8_8_01_4.html">TypedFiberN&lt; void, Args... &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber_n_3_01_f_00_01void_00_01_args_01_4.html">TypedFiberN&lt; F, void, Args &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_typed_fiber_type.html">TypedFiberType</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_typed_fiber_type_3_01_r_07_5_08_07_args_8_8_8_08_4.html">TypedFiberType&lt; R(*)(Args...)&gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html">UniqueID</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps track of a process-wide unique ID within the type <code>T</code>.  <a href="classzth_1_1_unique_i_d.html#details">More...</a><br /></td></tr>
@@ -353,25 +420,60 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a783924c255ed65f164dde11543fe0106" id="r_a783924c255ed65f164dde11543fe0106"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">launch</a> { <a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119">detached</a> = 1
-, <a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906">awaitable</a> = 2
+<tr class="memitem:ga783924c255ed65f164dde11543fe0106" id="r_ga783924c255ed65f164dde11543fe0106"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">launch</a> { <a class="el" href="group__zth__api__cpp__future.html#gga783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119">launch::detached</a> = 1
+, <a class="el" href="group__zth__api__cpp__future.html#gga783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906">launch::awaitable</a> = 2
  }</td></tr>
-<tr class="separator:a783924c255ed65f164dde11543fe0106"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ga783924c255ed65f164dde11543fe0106"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch policies for <a class="el" href="namespacestd.html#a8dccb8c8b643b0339a40cb3012b0b7f5">std::async</a> to start fibers instead of threads.  <a href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">More...</a><br /></td></tr>
+<tr class="separator:ga783924c255ed65f164dde11543fe0106"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5" id="r_gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaaac895df320fd1b0cb430dba2f23d0a5">ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *, size_t) noexcept) deallocate, 1), alloc_size(1))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *allocate(size_t n</td></tr>
+<tr class="memdesc:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for Config::Allocator::type::allocate().  <br /></td></tr>
+<tr class="separator:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88dd81d79eeda25999124cff48d3c082" id="r_a88dd81d79eeda25999124cff48d3c082"><td class="memItemLeft" align="right" valign="top">Arg&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a88dd81d79eeda25999124cff48d3c082">ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *) noexcept) delete_alloc))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *new _alloc(Arg const &amp;arg)</td></tr>
+<tr class="separator:a88dd81d79eeda25999124cff48d3c082"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f212066a5515d7336599118b71ce22a" id="r_a6f212066a5515d7336599118b71ce22a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Arg&gt; </td></tr>
+<tr class="memitem:a6f212066a5515d7336599118b71ce22a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6f212066a5515d7336599118b71ce22a">ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *) noexcept) delete_alloc))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *new _alloc(Arg &amp;&amp;... arg)</td></tr>
+<tr class="separator:a6f212066a5515d7336599118b71ce22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86294f954615a81fd2d04244eabc0e04" id="r_a86294f954615a81fd2d04244eabc0e04"><td class="memTemplParams" colspan="2">template&lt;typename Traits , typename Allocator &gt; </td></tr>
 <tr class="memitem:a86294f954615a81fd2d04244eabc0e04"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">to_zth_string</a> (std::basic_string&lt; char, Traits, Allocator &gt; const &amp;s)</td></tr>
 <tr class="separator:a86294f954615a81fd2d04244eabc0e04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05bc469384dce6f6cc410c77dabefbe6" id="r_a05bc469384dce6f6cc410c77dabefbe6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">to_std_string</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;s)</td></tr>
 <tr class="separator:a05bc469384dce6f6cc410c77dabefbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a498dc6c2cb85eda35c0d97d04bedb741" id="r_a498dc6c2cb85eda35c0d97d04bedb741"><td class="memTemplParams" colspan="2">template&lt;typename R , typename F &gt; </td></tr>
-<tr class="memitem:a498dc6c2cb85eda35c0d97d04bedb741"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a498dc6c2cb85eda35c0d97d04bedb741">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;f, <a class="el" href="classzth_1_1_fiber_manipulator.html">FiberManipulator</a> const &amp;m)</td></tr>
-<tr class="separator:a498dc6c2cb85eda35c0d97d04bedb741"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae82c6ec288066f4654c04590bc1dbc2b" id="r_gae82c6ec288066f4654c04590bc1dbc2b"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
-<tr class="memitem:gae82c6ec288066f4654c04590bc1dbc2b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a>&lt; F &gt;::factory&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gae82c6ec288066f4654c04590bc1dbc2b">fiber</a> (F f, char const *name=nullptr)</td></tr>
-<tr class="memdesc:gae82c6ec288066f4654c04590bc1dbc2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new fiber.  <br /></td></tr>
-<tr class="separator:gae82c6ec288066f4654c04590bc1dbc2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc4285954c10cf8b22aaa457a5996944" id="r_afc4285954c10cf8b22aaa457a5996944"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
+<tr class="memitem:afc4285954c10cf8b22aaa457a5996944"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#afc4285954c10cf8b22aaa457a5996944">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;fiber, <a class="el" href="structzth_1_1set_stack_size.html">setStackSize</a> const &amp;m)</td></tr>
+<tr class="separator:afc4285954c10cf8b22aaa457a5996944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0887bd476e49aabd78058062e1f993eb" id="r_a0887bd476e49aabd78058062e1f993eb"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
+<tr class="memitem:a0887bd476e49aabd78058062e1f993eb"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0887bd476e49aabd78058062e1f993eb">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;fiber, <a class="el" href="structzth_1_1set_name.html">setName</a> const &amp;m)</td></tr>
+<tr class="separator:a0887bd476e49aabd78058062e1f993eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb725446af7afe9d4c8d14ebc7f33724" id="r_afb725446af7afe9d4c8d14ebc7f33724"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
+<tr class="memitem:afb725446af7afe9d4c8d14ebc7f33724"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#afb725446af7afe9d4c8d14ebc7f33724">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;fiber, <a class="el" href="structzth_1_1set_name.html">setName</a> &amp;&amp;m)</td></tr>
+<tr class="separator:afb725446af7afe9d4c8d14ebc7f33724"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e051a165e3d247f9b0e47eb0c9ad206" id="r_a6e051a165e3d247f9b0e47eb0c9ad206"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
+<tr class="memitem:a6e051a165e3d247f9b0e47eb0c9ad206"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6e051a165e3d247f9b0e47eb0c9ad206">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;fiber, <a class="el" href="structzth_1_1pass_on_exit.html">passOnExit</a> const &amp;m)</td></tr>
+<tr class="separator:a6e051a165e3d247f9b0e47eb0c9ad206"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cd53abecb411f36b601757b02985add" id="r_a8cd53abecb411f36b601757b02985add"><td class="memTemplParams" colspan="2">template&lt;typename R &gt; </td></tr>
+<tr class="memitem:a8cd53abecb411f36b601757b02985add"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_shared_reference.html">SharedReference</a>&lt; typename <a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt;::Future_type &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a8cd53abecb411f36b601757b02985add">operator&lt;&lt;</a> (<a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;fiber, <a class="el" href="structzth_1_1as_future.html">asFuture</a> const &amp;)</td></tr>
+<tr class="separator:a8cd53abecb411f36b601757b02985add"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69a3ec45db02cd8dfdcb74735d16efe5" id="r_ga69a3ec45db02cd8dfdcb74735d16efe5"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:ga69a3ec45db02cd8dfdcb74735d16efe5"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a>&lt; F &gt;::factory&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga69a3ec45db02cd8dfdcb74735d16efe5">factory</a> (F &amp;&amp;f, char const *name=nullptr)</td></tr>
+<tr class="memdesc:ga69a3ec45db02cd8dfdcb74735d16efe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new fiber.  <br /></td></tr>
+<tr class="separator:ga69a3ec45db02cd8dfdcb74735d16efe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aafe5ad9d55087f634818acd5202d2d" id="r_a9aafe5ad9d55087f634818acd5202d2d"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:a9aafe5ad9d55087f634818acd5202d2d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a>&lt; F &gt;::factory&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a9aafe5ad9d55087f634818acd5202d2d">factory</a> (F const &amp;f, char const *name=nullptr)</td></tr>
+<tr class="separator:a9aafe5ad9d55087f634818acd5202d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga726ffb960e201a580e3ee6c82bf3a5e1" id="r_ga726ffb960e201a580e3ee6c82bf3a5e1"><td class="memTemplParams" colspan="2">template&lt;typename F , typename... Args&gt; </td></tr>
+<tr class="memitem:ga726ffb960e201a580e3ee6c82bf3a5e1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a>&lt; F &gt;::fiber&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">fiber</a> (F &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:ga726ffb960e201a580e3ee6c82bf3a5e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and start a new fiber.  <br /></td></tr>
+<tr class="separator:ga726ffb960e201a580e3ee6c82bf3a5e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea5df8fdfdc1ba96f2cc36f8171b3a02" id="r_aea5df8fdfdc1ba96f2cc36f8171b3a02"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:aea5df8fdfdc1ba96f2cc36f8171b3a02"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aea5df8fdfdc1ba96f2cc36f8171b3a02">fiber_future</a> (F &amp;) -&gt; <a class="el" href="structzth_1_1fiber__future.html">fiber_future</a>&lt; typename F::factory::Return &gt;</td></tr>
+<tr class="separator:aea5df8fdfdc1ba96f2cc36f8171b3a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec4e562c8ce15a1062250ba52d98e619" id="r_aec4e562c8ce15a1062250ba52d98e619"><td class="memTemplParams" colspan="2">template&lt;typename F &gt; </td></tr>
+<tr class="memitem:aec4e562c8ce15a1062250ba52d98e619"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aec4e562c8ce15a1062250ba52d98e619">fiber_future</a> (F const &amp;) -&gt; <a class="el" href="structzth_1_1fiber__future.html">fiber_future</a>&lt; typename F::factory::Return &gt;</td></tr>
+<tr class="separator:aec4e562c8ce15a1062250ba52d98e619"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab92f04f131045e5fabf241250d6e14ff" id="r_ab92f04f131045e5fabf241250d6e14ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab92f04f131045e5fabf241250d6e14ff">config</a> (int env, bool whenUnset)</td></tr>
 <tr class="memdesc:ab92f04f131045e5fabf241250d6e14ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a given environment option is set.  <br /></td></tr>
 <tr class="separator:ab92f04f131045e5fabf241250d6e14ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -426,7 +528,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a087305069a49ec6e1ec88bcb2615406d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a087305069a49ec6e1ec88bcb2615406d">async</a> (Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a087305069a49ec6e1ec88bcb2615406d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58" id="r_acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplParams" colspan="2">template&lt;typename Func , typename... Args&gt; </td></tr>
-<tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acae078684c45d1bb30c55db6d5bfeb58">async</a> (<a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:acae078684c45d1bb30c55db6d5bfeb58"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#acae078684c45d1bb30c55db6d5bfeb58">async</a> (<a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">zth::launch</a> policy, Func &amp;&amp;f, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:acae078684c45d1bb30c55db6d5bfeb58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a447f951e1169d6fe43f618bce52e75f6" id="r_a447f951e1169d6fe43f618bce52e75f6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a447f951e1169d6fe43f618bce52e75f6">perf_init</a> ()</td></tr>
 <tr class="separator:a447f951e1169d6fe43f618bce52e75f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -548,6 +650,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2" id="r_a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a8148a20f2d8ae9a2fc79cc9643757de2">str&lt; long double &gt;</a> (long double value)</td></tr>
 <tr class="separator:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fc108c510936a120f6d5d2ad90d6f98" id="r_a9fc108c510936a120f6d5d2ad90d6f98"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a9fc108c510936a120f6d5d2ad90d6f98"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a9fc108c510936a120f6d5d2ad90d6f98">str&lt; void * &gt;</a> (void *value)</td></tr>
+<tr class="separator:a9fc108c510936a120f6d5d2ad90d6f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a088d2963f75280681ab7a239c7219fcc" id="r_a088d2963f75280681ab7a239c7219fcc"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a088d2963f75280681ab7a239c7219fcc"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a088d2963f75280681ab7a239c7219fcc">str&lt; string &amp;&amp; &gt;</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;value)</td></tr>
 <tr class="separator:a088d2963f75280681ab7a239c7219fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -557,6 +662,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91" id="r_aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">str&lt; UniqueIDBase const &amp; &gt;</a> (<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a475b48093813844a200783e4a68151" id="r_a0a475b48093813844a200783e4a68151"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a0a475b48093813844a200783e4a68151"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0a475b48093813844a200783e4a68151">to_tuple</a> (T &amp;&amp;object) noexcept</td></tr>
+<tr class="separator:a0a475b48093813844a200783e4a68151"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga061c3ba865e879bb557bc71880b71e09" id="r_ga061c3ba865e879bb557bc71880b71e09"><td class="memItemLeft" align="right" valign="top">constexpr char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga061c3ba865e879bb557bc71880b71e09">version</a> () noexcept</td></tr>
 <tr class="memdesc:ga061c3ba865e879bb557bc71880b71e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version of Zth.  <br /></td></tr>
 <tr class="separator:ga061c3ba865e879bb557bc71880b71e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -658,7 +766,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00034">34</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00040">40</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -692,7 +800,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00031">31</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00037">37</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -710,36 +818,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00037">37</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a783924c255ed65f164dde11543fe0106" name="a783924c255ed65f164dde11543fe0106"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a783924c255ed65f164dde11543fe0106">&#9670;&#160;</a></span>launch</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119" name="a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119"></a>detached&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906" name="a783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906"></a>awaitable&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00372">372</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00043">43</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +887,7 @@ template&lt;typename Func , typename... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00385">385</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00505">505</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -823,7 +902,7 @@ template&lt;typename Func , typename... Args&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">zth::future</a>&lt; <a class="el" href="namespacezth_1_1impl.html#af085e31dbb277403848dc2143b392319">zth::impl::invoke_result</a>&lt; Func, Args... &gt; &gt; zth::async </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacezth.html#a783924c255ed65f164dde11543fe0106">zth::launch</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__zth__api__cpp__future.html#ga783924c255ed65f164dde11543fe0106">zth::launch</a>&#160;</td>
           <td class="paramname"><em>policy</em>, </td>
         </tr>
         <tr>
@@ -846,7 +925,7 @@ template&lt;typename Func , typename... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00392">392</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00512">512</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -1078,7 +1157,7 @@ template&lt;typename Func , typename... Args&gt; </div>
 <p>Return the high water mark of the stack of the given context. </p>
 <p>This does not take any <a class="el" href="group__zth__api__cpp__stack.html#ga26f4f029d677997c8fcef2c8c70d227e" title="Call the function f using the new stack pointer.">zth::stack_switch()</a> calls into account. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00139">139</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cpp_source.html#l00128">128</a> of file <a class="el" href="context_8cpp_source.html">context.cpp</a>.</p>
 
 </div>
 </div>
@@ -1148,7 +1227,7 @@ template&lt;typename Func , typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00408">408</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00426">426</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -1180,7 +1259,79 @@ template&lt;typename Func , typename... Args&gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="measure_8cpp-example.html#a8">measure.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a0">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00675">675</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00686">686</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="a9aafe5ad9d55087f634818acd5202d2d" name="a9aafe5ad9d55087f634818acd5202d2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9aafe5ad9d55087f634818acd5202d2d">&#9670;&#160;</a></span>factory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structzth_1_1fiber__type.html">fiber_type</a>&lt; F &gt;::factory zth::factory </td>
+          <td>(</td>
+          <td class="paramtype">F const &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>name</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01137">1137</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
+<a id="aea5df8fdfdc1ba96f2cc36f8171b3a02" name="aea5df8fdfdc1ba96f2cc36f8171b3a02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea5df8fdfdc1ba96f2cc36f8171b3a02">&#9670;&#160;</a></span>fiber_future() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structzth_1_1fiber__future.html">zth::fiber_future</a> </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> -&gt;  <a class="el" href="structzth_1_1fiber__future.html">fiber_future</a>&lt; typename F::factory::Return &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aec4e562c8ce15a1062250ba52d98e619" name="aec4e562c8ce15a1062250ba52d98e619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec4e562c8ce15a1062250ba52d98e619">&#9670;&#160;</a></span>fiber_future() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structzth_1_1fiber__future.html">zth::fiber_future</a> </td>
+          <td>(</td>
+          <td class="paramtype">F const &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> -&gt;  <a class="el" href="structzth_1_1fiber__future.html">fiber_future</a>&lt; typename F::factory::Return &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1219,10 +1370,10 @@ template&lt;typename Func , typename... Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Format like <code>sprintf()</code>, but save the result in an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a6">5_perf.cpp</a>, <a class="el" href="measure_8cpp-example.html#a16">measure.cpp</a>, and <a class="el" href="socks_8cpp-example.html#a0">socks.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="4_sync_8cpp-example.html#a4">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a6">5_perf.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a15">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00478">478</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00483">483</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1254,7 +1405,7 @@ template&lt;typename Func , typename... Args&gt; </div>
 
 <p>Format like <code>vsprintf()</code>, but save the result in an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00251">251</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00254">254</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
@@ -1292,7 +1443,7 @@ template&lt;typename Func , typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00413">413</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00431">431</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -1321,28 +1472,60 @@ template&lt;typename Func , typename... Args&gt; </div>
 
 <p>Returns if the system supports ANSI colors. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00191">191</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8cpp_source.html#l00194">194</a> of file <a class="el" href="util_8cpp_source.html">util.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a498dc6c2cb85eda35c0d97d04bedb741" name="a498dc6c2cb85eda35c0d97d04bedb741"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a498dc6c2cb85eda35c0d97d04bedb741">&#9670;&#160;</a></span>operator&lt;&lt;()</h2>
+<a id="a8cd53abecb411f36b601757b02985add" name="a8cd53abecb411f36b601757b02985add"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cd53abecb411f36b601757b02985add">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename R , typename F &gt; </div>
+template&lt;typename R &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp; zth::operator&lt;&lt; </td>
+          <td class="memname"><a class="el" href="classzth_1_1_shared_reference.html">SharedReference</a>&lt; typename <a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt;::Future_type &gt; zth::operator&lt;&lt; </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R, F &gt; &amp;&#160;</td>
-          <td class="paramname"><em>f</em>, </td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fiber</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_fiber_manipulator.html">FiberManipulator</a> const &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="structzth_1_1as_future.html">asFuture</a> const &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00280">280</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
+<a id="a6e051a165e3d247f9b0e47eb0c9ad206" name="a6e051a165e3d247f9b0e47eb0c9ad206"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e051a165e3d247f9b0e47eb0c9ad206">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename R &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp; zth::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fiber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structzth_1_1pass_on_exit.html">passOnExit</a> const &amp;&#160;</td>
           <td class="paramname"><em>m</em>&#160;</td>
         </tr>
         <tr>
@@ -1353,7 +1536,103 @@ template&lt;typename R , typename F &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00834">834</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00280">280</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
+<a id="afb725446af7afe9d4c8d14ebc7f33724" name="afb725446af7afe9d4c8d14ebc7f33724"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb725446af7afe9d4c8d14ebc7f33724">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename R &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp; zth::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fiber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structzth_1_1set_name.html">setName</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01619">1619</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
+<a id="a0887bd476e49aabd78058062e1f993eb" name="a0887bd476e49aabd78058062e1f993eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0887bd476e49aabd78058062e1f993eb">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename R &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp; zth::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fiber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structzth_1_1set_name.html">setName</a> const &amp;&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01619">1619</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+
+</div>
+</div>
+<a id="afc4285954c10cf8b22aaa457a5996944" name="afc4285954c10cf8b22aaa457a5996944"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc4285954c10cf8b22aaa457a5996944">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename R &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp; zth::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_typed_fiber.html">TypedFiber</a>&lt; R &gt; &amp;&#160;</td>
+          <td class="paramname"><em>fiber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structzth_1_1set_stack_size.html">setStackSize</a> const &amp;&#160;</td>
+          <td class="paramname"><em>m</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01619">1619</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -1516,7 +1795,7 @@ template&lt;typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00471">471</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00489">489</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -1587,8 +1866,10 @@ template&lt;typename T &gt; </div>
 
 <p>Returns an <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code> representation of the given value. </p>
 <p>Specialize for your own types. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#a4">socks.cpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00492">492</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00497">497</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1618,7 +1899,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00498">498</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00503">503</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1648,7 +1929,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00647">647</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00652">652</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1678,7 +1959,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00638">638</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00643">643</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1708,7 +1989,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00540">540</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00545">545</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1738,7 +2019,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00568">568</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00573">573</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1768,7 +2049,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00656">656</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00661">661</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1798,7 +2079,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00597">597</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00602">602</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1828,7 +2109,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00522">522</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00527">527</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1858,7 +2139,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00504">504</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00509">509</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1888,7 +2169,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00666">666</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00677">677</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1948,7 +2229,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00705">705</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00716">716</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1978,7 +2259,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00513">513</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00518">518</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2008,7 +2289,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00546">546</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00551">551</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2038,7 +2319,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00583">583</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00588">588</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2068,7 +2349,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00611">611</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00616">616</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2098,7 +2379,37 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00531">531</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00536">536</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="a9fc108c510936a120f6d5d2ad90d6f98" name="a9fc108c510936a120f6d5d2ad90d6f98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fc108c510936a120f6d5d2ad90d6f98">&#9670;&#160;</a></span>str&lt; void * &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classzth_1_1cow__string.html">cow_string</a> <a class="el" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a>&lt; void * &gt; </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00670">670</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2125,7 +2436,7 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00463">463</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00481">481</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -2153,7 +2464,37 @@ template&lt;&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00203">203</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00223">223</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+
+</div>
+</div>
+<a id="a0a475b48093813844a200783e4a68151" name="a0a475b48093813844a200783e4a68151"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a475b48093813844a200783e4a68151">&#9670;&#160;</a></span>to_tuple()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto zth::to_tuple </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01601">1601</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -2175,7 +2516,7 @@ template&lt;typename Traits , typename Allocator &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00198">198</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00218">218</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
 
 </div>
 </div>
@@ -2235,6 +2576,64 @@ template&lt;typename Traits , typename Allocator &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00031">31</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6f212066a5515d7336599118b71ce22a" name="a6f212066a5515d7336599118b71ce22a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f212066a5515d7336599118b71ce22a">&#9670;&#160;</a></span>ZTH_MALLOC_ATTR() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... Arg&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">zth::ZTH_MALLOC_ATTR </td>
+          <td>(</td>
+          <td class="paramtype">(malloc((void(*)(T *) noexcept) delete_alloc))&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> &amp;&amp;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">new</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00132">132</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+
+</div>
+</div>
+<a id="a88dd81d79eeda25999124cff48d3c082" name="a88dd81d79eeda25999124cff48d3c082"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88dd81d79eeda25999124cff48d3c082">&#9670;&#160;</a></span>ZTH_MALLOC_ATTR() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Arg zth::ZTH_MALLOC_ATTR </td>
+          <td>(</td>
+          <td class="paramtype">(malloc((void(*)(T *) noexcept) delete_alloc))&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const &amp;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">new</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00115">115</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
 
 </div>
 </div>

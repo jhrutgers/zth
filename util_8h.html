@@ -100,6 +100,8 @@ $(document).ready(function(){initNavTree('util_8h.html',''); initResizable(); })
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="config_8h_source.html">libzth/config.h</a>&gt;</code><br />
+<code>#include &lt;tuple&gt;</code><br />
+<code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;assert.h&gt;</code><br />
 <code>#include &lt;stdarg.h&gt;</code><br />
 <code>#include &lt;cstdio&gt;</code><br />
@@ -123,8 +125,14 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html">zth::UniqueIDBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html">zth::NamedUniqueID&lt; Named &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d_3_01false_01_4.html">zth::NamedUniqueID&lt; false &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID&lt; T, ThreadSafe &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps track of a process-wide unique ID within the type <code>T</code>.  <a href="classzth_1_1_unique_i_d.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html">zth::RefCounted</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1choose__type.html">zth::choose_type&lt; T, WhenTIsVoid &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,6 +159,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_012_01_4_01_4.html">zth::smallest_uint&lt; x, smallest_uint_size&lt; 2 &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_014_01_4_01_4.html">zth::smallest_uint&lt; x, smallest_uint_size&lt; 4 &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1impl_1_1any__type.html">zth::impl::any_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -224,12 +234,19 @@ Macros</h2></td></tr>
 <tr class="separator:a68e25b27d7e03b3711eb1ac56ef4c1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7cc9064552d25659c36efeacc36936d" id="r_ad7cc9064552d25659c36efeacc36936d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#ad7cc9064552d25659c36efeacc36936d">ZTH_CLASS_NOCOPY</a>(Class)</td></tr>
 <tr class="separator:ad7cc9064552d25659c36efeacc36936d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc6b814d1041bbec4828d2399c0658bb" id="r_adc6b814d1041bbec4828d2399c0658bb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#adc6b814d1041bbec4828d2399c0658bb">ZTH_STRUCTURED_BINDING_FORWARDING</a>(Class)</td></tr>
+<tr class="separator:adc6b814d1041bbec4828d2399c0658bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52e12d7ddf980c1e5107cf09364c84ab" id="r_a52e12d7ddf980c1e5107cf09364c84ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a52e12d7ddf980c1e5107cf09364c84ab">ZTH_STRUCTURED_BINDING_FORWARDING_NS</a>(Class)</td></tr>
+<tr class="separator:a52e12d7ddf980c1e5107cf09364c84ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga7a210137c60a4a060f81aeb19a9394c0" id="r_ga7a210137c60a4a060f81aeb19a9394c0"><td class="memItemLeft" align="right" valign="top">typedef std::basic_string&lt; char, std::char_traits&lt; char &gt;, <a class="el" href="structzth_1_1_default_config_1_1_allocator.html">Config::Allocator</a>&lt; char &gt;::type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></td></tr>
 <tr class="memdesc:ga7a210137c60a4a060f81aeb19a9394c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::string type using Config::Allocator::type.  <br /></td></tr>
 <tr class="separator:ga7a210137c60a4a060f81aeb19a9394c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a396a64d6ed94c4b0d64a37161d2c12b4" id="r_a396a64d6ed94c4b0d64a37161d2c12b4"><td class="memTemplParams" colspan="2">template&lt;class T , class... TArgs&gt; </td></tr>
+<tr class="memitem:a396a64d6ed94c4b0d64a37161d2c12b4"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth_1_1impl.html#a396a64d6ed94c4b0d64a37161d2c12b4">zth::impl::is_braces_constructible</a> = decltype(<a class="el" href="namespacezth_1_1impl.html#af406f15e4d71d284b4560a4f1fbd2a6a">test_is_braces_constructible</a>&lt; T, TArgs... &gt;(0))</td></tr>
+<tr class="separator:a396a64d6ed94c4b0d64a37161d2c12b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -314,6 +331,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2" id="r_a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a8148a20f2d8ae9a2fc79cc9643757de2">zth::str&lt; long double &gt;</a> (long double value)</td></tr>
 <tr class="separator:a8148a20f2d8ae9a2fc79cc9643757de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fc108c510936a120f6d5d2ad90d6f98" id="r_a9fc108c510936a120f6d5d2ad90d6f98"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:a9fc108c510936a120f6d5d2ad90d6f98"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a9fc108c510936a120f6d5d2ad90d6f98">zth::str&lt; void * &gt;</a> (void *value)</td></tr>
+<tr class="separator:a9fc108c510936a120f6d5d2ad90d6f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a088d2963f75280681ab7a239c7219fcc" id="r_a088d2963f75280681ab7a239c7219fcc"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a088d2963f75280681ab7a239c7219fcc"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a088d2963f75280681ab7a239c7219fcc">zth::str&lt; string &amp;&amp; &gt;</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;value)</td></tr>
 <tr class="separator:a088d2963f75280681ab7a239c7219fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -323,6 +343,15 @@ Functions</h2></td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91" id="r_aae633d1ef760e2537c6fd5c38ef9af91"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1cow__string.html">cow_string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae633d1ef760e2537c6fd5c38ef9af91">zth::str&lt; UniqueIDBase const &amp; &gt;</a> (<a class="el" href="classzth_1_1_unique_i_d_base.html">UniqueIDBase</a> const &amp;value)</td></tr>
 <tr class="separator:aae633d1ef760e2537c6fd5c38ef9af91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af406f15e4d71d284b4560a4f1fbd2a6a" id="r_af406f15e4d71d284b4560a4f1fbd2a6a"><td class="memTemplParams" colspan="2">template&lt;class T , class... TArgs&gt; </td></tr>
+<tr class="memitem:af406f15e4d71d284b4560a4f1fbd2a6a"><td class="memTemplItemLeft" align="right" valign="top">decltype(void(T{std::declval&lt; TArgs &gt;()...}), std::true_type{})&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth_1_1impl.html#af406f15e4d71d284b4560a4f1fbd2a6a">zth::impl::test_is_braces_constructible</a> (int)</td></tr>
+<tr class="separator:af406f15e4d71d284b4560a4f1fbd2a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aeb65e73bbc33bffad06effebd3185b" id="r_a3aeb65e73bbc33bffad06effebd3185b"><td class="memTemplParams" colspan="2">template&lt;class , class... &gt; </td></tr>
+<tr class="memitem:a3aeb65e73bbc33bffad06effebd3185b"><td class="memTemplItemLeft" align="right" valign="top">std::false_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth_1_1impl.html#a3aeb65e73bbc33bffad06effebd3185b">zth::impl::test_is_braces_constructible</a> (...)</td></tr>
+<tr class="separator:a3aeb65e73bbc33bffad06effebd3185b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a475b48093813844a200783e4a68151" id="r_a0a475b48093813844a200783e4a68151"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a0a475b48093813844a200783e4a68151"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0a475b48093813844a200783e4a68151">zth::to_tuple</a> (T &amp;&amp;object) noexcept</td></tr>
+<tr class="separator:a0a475b48093813844a200783e4a68151"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4be59428e2559bcc589cdf4bbb4de588" id="r_ga4be59428e2559bcc589cdf4bbb4de588"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">zth_banner</a> ()</td></tr>
 <tr class="memdesc:ga4be59428e2559bcc589cdf4bbb4de588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.    <br /></td></tr>
 <tr class="separator:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -356,7 +385,7 @@ Functions</h2></td></tr>
 <p>Marks the given expression to likely be evaluated to true. </p>
 <p>This may help compiler optimization. </p><dl class="section return"><dt>Returns</dt><dd>the evaluated <code>expr</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00040">40</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00045">45</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -380,26 +409,26 @@ Functions</h2></td></tr>
 <div class="line">                  <a class="code hl_define" href="util_8h.html#a502e8594cf6a9ac7bf421c997c2e5fde">REVERSE_11</a>, <a class="code hl_define" href="util_8h.html#ae1787b6a1cb5b4ac2ef4be21d658c41b">REVERSE_10</a>, <a class="code hl_define" href="util_8h.html#a8821eb9be4c015186eb7e9e8d014502b">REVERSE_9</a>, <a class="code hl_define" href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a>, <a class="code hl_define" href="util_8h.html#a40b844674404f4f594752b87b6c0b383">REVERSE_7</a>, <a class="code hl_define" href="util_8h.html#a236f830fcbf52da66f52c87780250eae">REVERSE_6</a>, <a class="code hl_define" href="util_8h.html#ae30fd203b59990eee95b79aaa325f925">REVERSE_5</a>, \</div>
 <div class="line">                  <a class="code hl_define" href="util_8h.html#a05b7ad058c27be9a3d855f98ef278cae">REVERSE_4</a>, <a class="code hl_define" href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a>, <a class="code hl_define" href="util_8h.html#ad40bc9ddba053bdcdd95c33b91a71457">REVERSE_2</a>, <a class="code hl_define" href="util_8h.html#a7cc43b0c7a61f9d950275b918846d27b">REVERSE_1</a>, <a class="code hl_define" href="util_8h.html#a81a9fd73b1b81332b14a8b32ad34a9d1">REVERSE_0</a>)                         \</div>
 <div class="line">          (__VA_ARGS__)</div>
-<div class="ttc" id="autil_8h_html_a0171b1fd33d8d5921305f304ee155b58"><div class="ttname"><a href="util_8h.html#a0171b1fd33d8d5921305f304ee155b58">REVERSE_16</a></div><div class="ttdeci">#define REVERSE_16(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00132">util.h:132</a></div></div>
-<div class="ttc" id="autil_8h_html_a05b7ad058c27be9a3d855f98ef278cae"><div class="ttname"><a href="util_8h.html#a05b7ad058c27be9a3d855f98ef278cae">REVERSE_4</a></div><div class="ttdeci">#define REVERSE_4(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00120">util.h:120</a></div></div>
-<div class="ttc" id="autil_8h_html_a1755477f935397460b8bd17b87717245"><div class="ttname"><a href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a></div><div class="ttdeci">#define ZTH_GET_MACRO_ARGN( _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, NAME,...)</div><div class="ttdoc">Helper for FOREACH and REVERSE.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00065">util.h:65</a></div></div>
-<div class="ttc" id="autil_8h_html_a236f830fcbf52da66f52c87780250eae"><div class="ttname"><a href="util_8h.html#a236f830fcbf52da66f52c87780250eae">REVERSE_6</a></div><div class="ttdeci">#define REVERSE_6(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00122">util.h:122</a></div></div>
-<div class="ttc" id="autil_8h_html_a320be4d4bf62d454c448acf5b08d7941"><div class="ttname"><a href="util_8h.html#a320be4d4bf62d454c448acf5b08d7941">REVERSE_12</a></div><div class="ttdeci">#define REVERSE_12(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00128">util.h:128</a></div></div>
-<div class="ttc" id="autil_8h_html_a40b844674404f4f594752b87b6c0b383"><div class="ttname"><a href="util_8h.html#a40b844674404f4f594752b87b6c0b383">REVERSE_7</a></div><div class="ttdeci">#define REVERSE_7(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00123">util.h:123</a></div></div>
-<div class="ttc" id="autil_8h_html_a502e8594cf6a9ac7bf421c997c2e5fde"><div class="ttname"><a href="util_8h.html#a502e8594cf6a9ac7bf421c997c2e5fde">REVERSE_11</a></div><div class="ttdeci">#define REVERSE_11(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00127">util.h:127</a></div></div>
-<div class="ttc" id="autil_8h_html_a7cc43b0c7a61f9d950275b918846d27b"><div class="ttname"><a href="util_8h.html#a7cc43b0c7a61f9d950275b918846d27b">REVERSE_1</a></div><div class="ttdeci">#define REVERSE_1(a)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00117">util.h:117</a></div></div>
-<div class="ttc" id="autil_8h_html_a81a9fd73b1b81332b14a8b32ad34a9d1"><div class="ttname"><a href="util_8h.html#a81a9fd73b1b81332b14a8b32ad34a9d1">REVERSE_0</a></div><div class="ttdeci">#define REVERSE_0()</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00116">util.h:116</a></div></div>
-<div class="ttc" id="autil_8h_html_a8821eb9be4c015186eb7e9e8d014502b"><div class="ttname"><a href="util_8h.html#a8821eb9be4c015186eb7e9e8d014502b">REVERSE_9</a></div><div class="ttdeci">#define REVERSE_9(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00125">util.h:125</a></div></div>
-<div class="ttc" id="autil_8h_html_a939867d274cd1110632b1f332f83ca96"><div class="ttname"><a href="util_8h.html#a939867d274cd1110632b1f332f83ca96">REVERSE_15</a></div><div class="ttdeci">#define REVERSE_15(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00131">util.h:131</a></div></div>
-<div class="ttc" id="autil_8h_html_ab7bd7c951ee1a671de36e92d4a4c8499"><div class="ttname"><a href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a></div><div class="ttdeci">#define REVERSE_8(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00124">util.h:124</a></div></div>
-<div class="ttc" id="autil_8h_html_ad38cb9f497df0509879d200dc968c2da"><div class="ttname"><a href="util_8h.html#ad38cb9f497df0509879d200dc968c2da">REVERSE_14</a></div><div class="ttdeci">#define REVERSE_14(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00130">util.h:130</a></div></div>
-<div class="ttc" id="autil_8h_html_ad40bc9ddba053bdcdd95c33b91a71457"><div class="ttname"><a href="util_8h.html#ad40bc9ddba053bdcdd95c33b91a71457">REVERSE_2</a></div><div class="ttdeci">#define REVERSE_2(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00118">util.h:118</a></div></div>
-<div class="ttc" id="autil_8h_html_ae1787b6a1cb5b4ac2ef4be21d658c41b"><div class="ttname"><a href="util_8h.html#ae1787b6a1cb5b4ac2ef4be21d658c41b">REVERSE_10</a></div><div class="ttdeci">#define REVERSE_10(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00126">util.h:126</a></div></div>
-<div class="ttc" id="autil_8h_html_ae30fd203b59990eee95b79aaa325f925"><div class="ttname"><a href="util_8h.html#ae30fd203b59990eee95b79aaa325f925">REVERSE_5</a></div><div class="ttdeci">#define REVERSE_5(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00121">util.h:121</a></div></div>
-<div class="ttc" id="autil_8h_html_ae45ab3b0fcd80ab31bcae9bd5db8959d"><div class="ttname"><a href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a></div><div class="ttdeci">#define REVERSE_3(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00119">util.h:119</a></div></div>
-<div class="ttc" id="autil_8h_html_aea7157ff0c7d5b3894ab6aae9ac9d924"><div class="ttname"><a href="util_8h.html#aea7157ff0c7d5b3894ab6aae9ac9d924">REVERSE_13</a></div><div class="ttdeci">#define REVERSE_13(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00129">util.h:129</a></div></div>
+<div class="ttc" id="autil_8h_html_a0171b1fd33d8d5921305f304ee155b58"><div class="ttname"><a href="util_8h.html#a0171b1fd33d8d5921305f304ee155b58">REVERSE_16</a></div><div class="ttdeci">#define REVERSE_16(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00137">util.h:137</a></div></div>
+<div class="ttc" id="autil_8h_html_a05b7ad058c27be9a3d855f98ef278cae"><div class="ttname"><a href="util_8h.html#a05b7ad058c27be9a3d855f98ef278cae">REVERSE_4</a></div><div class="ttdeci">#define REVERSE_4(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00125">util.h:125</a></div></div>
+<div class="ttc" id="autil_8h_html_a1755477f935397460b8bd17b87717245"><div class="ttname"><a href="util_8h.html#a1755477f935397460b8bd17b87717245">ZTH_GET_MACRO_ARGN</a></div><div class="ttdeci">#define ZTH_GET_MACRO_ARGN( _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, NAME,...)</div><div class="ttdoc">Helper for FOREACH and REVERSE.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00070">util.h:70</a></div></div>
+<div class="ttc" id="autil_8h_html_a236f830fcbf52da66f52c87780250eae"><div class="ttname"><a href="util_8h.html#a236f830fcbf52da66f52c87780250eae">REVERSE_6</a></div><div class="ttdeci">#define REVERSE_6(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00127">util.h:127</a></div></div>
+<div class="ttc" id="autil_8h_html_a320be4d4bf62d454c448acf5b08d7941"><div class="ttname"><a href="util_8h.html#a320be4d4bf62d454c448acf5b08d7941">REVERSE_12</a></div><div class="ttdeci">#define REVERSE_12(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00133">util.h:133</a></div></div>
+<div class="ttc" id="autil_8h_html_a40b844674404f4f594752b87b6c0b383"><div class="ttname"><a href="util_8h.html#a40b844674404f4f594752b87b6c0b383">REVERSE_7</a></div><div class="ttdeci">#define REVERSE_7(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00128">util.h:128</a></div></div>
+<div class="ttc" id="autil_8h_html_a502e8594cf6a9ac7bf421c997c2e5fde"><div class="ttname"><a href="util_8h.html#a502e8594cf6a9ac7bf421c997c2e5fde">REVERSE_11</a></div><div class="ttdeci">#define REVERSE_11(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00132">util.h:132</a></div></div>
+<div class="ttc" id="autil_8h_html_a7cc43b0c7a61f9d950275b918846d27b"><div class="ttname"><a href="util_8h.html#a7cc43b0c7a61f9d950275b918846d27b">REVERSE_1</a></div><div class="ttdeci">#define REVERSE_1(a)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00122">util.h:122</a></div></div>
+<div class="ttc" id="autil_8h_html_a81a9fd73b1b81332b14a8b32ad34a9d1"><div class="ttname"><a href="util_8h.html#a81a9fd73b1b81332b14a8b32ad34a9d1">REVERSE_0</a></div><div class="ttdeci">#define REVERSE_0()</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00121">util.h:121</a></div></div>
+<div class="ttc" id="autil_8h_html_a8821eb9be4c015186eb7e9e8d014502b"><div class="ttname"><a href="util_8h.html#a8821eb9be4c015186eb7e9e8d014502b">REVERSE_9</a></div><div class="ttdeci">#define REVERSE_9(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00130">util.h:130</a></div></div>
+<div class="ttc" id="autil_8h_html_a939867d274cd1110632b1f332f83ca96"><div class="ttname"><a href="util_8h.html#a939867d274cd1110632b1f332f83ca96">REVERSE_15</a></div><div class="ttdeci">#define REVERSE_15(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00136">util.h:136</a></div></div>
+<div class="ttc" id="autil_8h_html_ab7bd7c951ee1a671de36e92d4a4c8499"><div class="ttname"><a href="util_8h.html#ab7bd7c951ee1a671de36e92d4a4c8499">REVERSE_8</a></div><div class="ttdeci">#define REVERSE_8(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00129">util.h:129</a></div></div>
+<div class="ttc" id="autil_8h_html_ad38cb9f497df0509879d200dc968c2da"><div class="ttname"><a href="util_8h.html#ad38cb9f497df0509879d200dc968c2da">REVERSE_14</a></div><div class="ttdeci">#define REVERSE_14(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00135">util.h:135</a></div></div>
+<div class="ttc" id="autil_8h_html_ad40bc9ddba053bdcdd95c33b91a71457"><div class="ttname"><a href="util_8h.html#ad40bc9ddba053bdcdd95c33b91a71457">REVERSE_2</a></div><div class="ttdeci">#define REVERSE_2(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00123">util.h:123</a></div></div>
+<div class="ttc" id="autil_8h_html_ae1787b6a1cb5b4ac2ef4be21d658c41b"><div class="ttname"><a href="util_8h.html#ae1787b6a1cb5b4ac2ef4be21d658c41b">REVERSE_10</a></div><div class="ttdeci">#define REVERSE_10(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00131">util.h:131</a></div></div>
+<div class="ttc" id="autil_8h_html_ae30fd203b59990eee95b79aaa325f925"><div class="ttname"><a href="util_8h.html#ae30fd203b59990eee95b79aaa325f925">REVERSE_5</a></div><div class="ttdeci">#define REVERSE_5(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00126">util.h:126</a></div></div>
+<div class="ttc" id="autil_8h_html_ae45ab3b0fcd80ab31bcae9bd5db8959d"><div class="ttname"><a href="util_8h.html#ae45ab3b0fcd80ab31bcae9bd5db8959d">REVERSE_3</a></div><div class="ttdeci">#define REVERSE_3(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00124">util.h:124</a></div></div>
+<div class="ttc" id="autil_8h_html_aea7157ff0c7d5b3894ab6aae9ac9d924"><div class="ttname"><a href="util_8h.html#aea7157ff0c7d5b3894ab6aae9ac9d924">REVERSE_13</a></div><div class="ttdeci">#define REVERSE_13(a,...)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00134">util.h:134</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00133">133</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00138">138</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -418,7 +447,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00116">116</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00121">121</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -438,7 +467,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00117">117</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00122">122</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -468,7 +497,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00126">126</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00131">131</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +527,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00127">127</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00132">132</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -528,7 +557,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00128">128</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00133">133</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -558,7 +587,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00129">129</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00134">134</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -588,7 +617,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00130">130</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00135">135</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -618,7 +647,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00131">131</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00136">136</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -648,7 +677,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00132">132</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00137">137</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -678,7 +707,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00118">118</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00123">123</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -708,7 +737,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00119">119</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00124">124</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -738,7 +767,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00120">120</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00125">125</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -768,7 +797,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00121">121</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00126">126</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -798,7 +827,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00122">122</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00127">127</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -828,7 +857,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00123">123</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00128">128</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -858,7 +887,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00124">124</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00129">129</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -888,7 +917,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00125">125</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00130">130</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -911,7 +940,7 @@ Functions</h2></td></tr>
 <p>Marks the given expression to likely be evaluated to true. </p>
 <p>This may help compiler optimization. </p><dl class="section return"><dt>Returns</dt><dd>the evaluated <code>expr</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00055">55</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00060">60</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -939,14 +968,14 @@ Functions</h2></td></tr>
 <div class="line">              } <span class="keywordflow">while</span>(<span class="keyword">false</span>)</div>
 <div class="ttc" id="astructzth_1_1_default_config_html_a532617cba9f4e05a10495dbad852b995"><div class="ttname"><a href="structzth_1_1_default_config.html#a532617cba9f4e05a10495dbad852b995">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static bool const EnableAssert</div><div class="ttdoc">When true, enable zth_assert().</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00064">config.h:64</a></div></div>
 <div class="ttc" id="astructzth_1_1_default_config_html_ae6008abfc038bb7185eabf0ecaa34476"><div class="ttname"><a href="structzth_1_1_default_config.html#ae6008abfc038bb7185eabf0ecaa34476">zth::DefaultConfig::EnableFullAssert</a></div><div class="ttdeci">static bool const EnableFullAssert</div><div class="ttdoc">Show failing expression in case of a failed assert.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00075">config.h:75</a></div></div>
-<div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00030">util.h:30</a></div></div>
-<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00055">util.h:55</a></div></div>
+<div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00035">util.h:35</a></div></div>
+<div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00060">util.h:60</a></div></div>
 </div><!-- fragment -->
 <p><code>assert()</code>, but better integrated in Zth. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="zmq_8cpp-example.html#a1">zmq.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="zmq_8cpp-example.html#a2">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00212">212</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00217">217</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -975,8 +1004,10 @@ Functions</h2></td></tr>
 <div class="line">                      delete; <span class="comment">/* NOLINT(misc-macro-parentheses,bugprone-macro-parentheses) \</span></div>
 <div class="line"><span class="comment">                               */</span>                                                          \</div>
 <div class="line">      private:</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00229">229</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+</div><!-- fragment --><dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#a2">socks.cpp</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00234">234</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -994,7 +1025,7 @@ Functions</h2></td></tr>
 
 <p>Prefix for every <a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7" title="Debug printf()-like function.">zth_dbg()</a> call. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00177">177</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00182">182</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1128,7 +1159,7 @@ Functions</h2></td></tr>
 
 <p>Helper for FOREACH and REVERSE. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00065">65</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00070">70</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1150,7 +1181,7 @@ Functions</h2></td></tr>
 
 <p>Converts the argument to a string literal. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00030">30</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00035">35</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1172,7 +1203,64 @@ Functions</h2></td></tr>
 
 <p>Helper for <a class="el" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df" title="Converts the argument to a string literal.">ZTH_STRINGIFY()</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00026">26</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00031">31</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="adc6b814d1041bbec4828d2399c0658bb" name="adc6b814d1041bbec4828d2399c0658bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc6b814d1041bbec4828d2399c0658bb">&#9670;&#160;</a></span>ZTH_STRUCTURED_BINDING_FORWARDING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_STRUCTURED_BINDING_FORWARDING</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Class</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">            <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;                                                 \</div>
+<div class="line">            <span class="keyword">struct </span>std::tuple_size&lt;Class&lt;T&gt;&gt; : std::tuple_size&lt;T&gt; {};             \</div>
+<div class="line">                                                                                  \</div>
+<div class="line">            <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> T&gt;                                       \</div>
+<div class="line">            <span class="keyword">struct </span>std::tuple_element&lt;N, Class&lt;T&gt;&gt; : std::tuple_element&lt;N, T&gt; {}; \</div>
+<div class="line">                                                                                  \</div>
+<div class="line">            <span class="keyword">template</span> &lt;<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> T&gt;                                       \</div>
+<div class="line">            decltype(<span class="keyword">auto</span>) get(Class&lt;T&gt;&amp; f) noexcept                              \</div>
+<div class="line">            {                                                                     \</div>
+<div class="line">                    <span class="keyword">auto</span>&amp; x = <a class="code hl_function" href="namespacezth.html#a0a475b48093813844a200783e4a68151">to_tuple</a>(*f);                                       \</div>
+<div class="line">                    <span class="keywordflow">return</span> get&lt;N&gt;(x);                                             \</div>
+<div class="line">            }</div>
+<div class="ttc" id="anamespacezth_html_a0a475b48093813844a200783e4a68151"><div class="ttname"><a href="namespacezth.html#a0a475b48093813844a200783e4a68151">zth::to_tuple</a></div><div class="ttdeci">auto to_tuple(T &amp;&amp;object) noexcept</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l01601">util.h:1601</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01626">1626</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="a52e12d7ddf980c1e5107cf09364c84ab" name="a52e12d7ddf980c1e5107cf09364c84ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52e12d7ddf980c1e5107cf09364c84ab">&#9670;&#160;</a></span>ZTH_STRUCTURED_BINDING_FORWARDING_NS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_STRUCTURED_BINDING_FORWARDING_NS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Class</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">            } <span class="comment">/* assume namespace zth */</span>                  \</div>
+<div class="line">            ZTH_STRUCTURED_BINDING_FORWARDING(zth::Class) \</div>
+<div class="line">            <span class="keyword">namespace </span><a class="code hl_namespace" href="namespacezth.html">zth</a> {</div>
+<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00022">allocator.h:22</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01639">1639</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>

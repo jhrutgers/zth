@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['regs_0',['regs',['../group__zth__api__cpp__regs.html',1,'']]]
+  ['stack_0',['stack',['../group__zth__api__cpp__stack.html',1,'stack'],['../group__zth__api__c__stack.html',1,'stack']]],
+  ['sync_1',['sync',['../group__zth__api__cpp__sync.html',1,'sync'],['../group__zth__api__c__sync.html',1,'sync']]]
 ];

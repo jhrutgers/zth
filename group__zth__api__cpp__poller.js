@@ -22,7 +22,7 @@ var group__zth__api__cpp__poller =
       [ "socket", "structzth_1_1_pollable_fd.html#a937b741cbfacfca114d62d63986550c0", null ]
     ] ],
     [ "zth::PollerInterface", "classzth_1_1_poller_interface.html", [
-      [ "~PollerInterface", "classzth_1_1_poller_interface.html#a398773e55d636f1d6bd8e93553d4f232", null ],
+      [ "~PollerInterface", "classzth_1_1_poller_interface.html#a395015e400fef73e058b91d0e90490f9", null ],
       [ "add", "classzth_1_1_poller_interface.html#a6e6b67672f2f33b085441f64167fca7f", null ],
       [ "add", "classzth_1_1_poller_interface.html#a2459df7cfdd587cbc216596c2dd9b749", null ],
       [ "empty", "classzth_1_1_poller_interface.html#aca84c99a6f166315f43a70fb1540601d", null ],
@@ -31,13 +31,13 @@ var group__zth__api__cpp__poller =
     ] ],
     [ "zth::PollerClientBase", "classzth_1_1_poller_client_base.html", [
       [ "Result", "classzth_1_1_poller_client_base.html#aeaa2e5123ce30dec5bcf0891cca96a73", null ],
-      [ "~PollerClientBase", "classzth_1_1_poller_client_base.html#aa014fb505f170293c5671d046bed1880", null ],
+      [ "~PollerClientBase", "classzth_1_1_poller_client_base.html#ae38c99d627513203b8adaa0d170f38f6", null ],
       [ "event", "classzth_1_1_poller_client_base.html#a7c3b74a31c683f4b1d468af0eb2b3512", null ],
       [ "poll", "classzth_1_1_poller_client_base.html#a263c690509cd29ad11ab22d03495e930", null ]
     ] ],
     [ "zth::PollerServerBase", "classzth_1_1_poller_server_base.html", [
       [ "Client", "classzth_1_1_poller_server_base.html#a3d8e5f7a82d31ea899729168e20805d9", null ],
-      [ "~PollerServerBase", "classzth_1_1_poller_server_base.html#a4a97da853ab1fc9cb013a43a07dd436b", null ],
+      [ "~PollerServerBase", "classzth_1_1_poller_server_base.html#a022153965943b7278b78c7c9411418a6", null ],
       [ "add", "classzth_1_1_poller_server_base.html#a6e6b67672f2f33b085441f64167fca7f", null ],
       [ "add", "classzth_1_1_poller_server_base.html#a61e405a58141dee9f5fd93ed491d6801", null ],
       [ "add", "classzth_1_1_poller_server_base.html#a2459df7cfdd587cbc216596c2dd9b749", null ],
@@ -54,7 +54,7 @@ var group__zth__api__cpp__poller =
       [ "PollerServer", "classzth_1_1_poller_server.html#a65160d408132a0579b5a664a0a855cf2", null ],
       [ "PollerServer", "classzth_1_1_poller_server.html#aaf9a6a20859f2c7f4f6cd83767afc6d5", null ],
       [ "PollerServer", "classzth_1_1_poller_server.html#a0c163054aaec171f289a9bb07dee7944", null ],
-      [ "~PollerServer", "classzth_1_1_poller_server.html#a11689e9717be9938141d20f691e122c1", null ],
+      [ "~PollerServer", "classzth_1_1_poller_server.html#a06214698693bd7045a77639b095e8a05", null ],
       [ "add", "classzth_1_1_poller_server.html#a4aa0735b09fb0f0f7cb3deb3790afc7f", null ],
       [ "add", "classzth_1_1_poller_server.html#ac0dd6d4768628577136c61a8c2d5b143", null ],
       [ "clear", "classzth_1_1_poller_server.html#ab177d07a41abee44420818d63ded668b", null ],
@@ -72,14 +72,14 @@ var group__zth__api__cpp__poller =
     [ "zth::ZmqPoller", "classzth_1_1_zmq_poller.html", [
       [ "base", "classzth_1_1_zmq_poller.html#abcd5230f241c292054e7f4c1c387079c", null ],
       [ "ZmqPoller", "classzth_1_1_zmq_poller.html#a1677d87a92ee146ba9214838643d93d0", null ],
-      [ "~ZmqPoller", "classzth_1_1_zmq_poller.html#ae080ff97e6ba953adb7c72f77f62ee3a", null ]
+      [ "~ZmqPoller", "classzth_1_1_zmq_poller.html#adcb2cf714c33443fb1586c6bc78bbc1b", null ]
     ] ],
     [ "zth::PollerClient", "classzth_1_1_poller_client.html", [
       [ "base", "classzth_1_1_poller_client.html#a5b500bf7847c78c974d9768d19be197d", null ],
       [ "Result", "classzth_1_1_poller_client.html#aeaa2e5123ce30dec5bcf0891cca96a73", null ],
       [ "PollerClient", "classzth_1_1_poller_client.html#a3273fbf5291d81bead3d07076d4e5eaf", null ],
       [ "PollerClient", "classzth_1_1_poller_client.html#ac728d7cfdf73741665621b0d028fe884", null ],
-      [ "~PollerClient", "classzth_1_1_poller_client.html#a143050782fa3f05eedb88380ebe6f315", null ],
+      [ "~PollerClient", "classzth_1_1_poller_client.html#a5b490b952879add4bfcb0cd522889242", null ],
       [ "add", "classzth_1_1_poller_client.html#a7fc1508f5d43c39be3f6e677ad8bc7b5", null ],
       [ "empty", "classzth_1_1_poller_client.html#a78d24220e0ebd3b781e72bdf9491a225", null ],
       [ "event", "classzth_1_1_poller_client.html#af6e4ce9675752885f91a9e8d7938fe5b", null ],

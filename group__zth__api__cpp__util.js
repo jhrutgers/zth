@@ -12,7 +12,7 @@ var group__zth__api__cpp__util =
     [ "zth::Runnable", "classzth_1_1_runnable.html", [
       [ "Runnable", "classzth_1_1_runnable.html#adb04fea6d29ce97aa87d25b80b98d00e", null ],
       [ "~Runnable", "classzth_1_1_runnable.html#ab4b93ad3d334fac1bd395c7501f08b7c", null ],
-      [ "cleanup", "classzth_1_1_runnable.html#aa1b2ae115fa74502cd4d3be12570c5b1", null ],
+      [ "cleanup", "classzth_1_1_runnable.html#a6a456103b444e8b90e418ecf19b0195a", null ],
       [ "entry", "classzth_1_1_runnable.html#aebdf1efa390ce8ff7dd0224ff598be44", null ],
       [ "fiber", "classzth_1_1_runnable.html#a1f3d2ef4fc741bd1a272201c5957ee8f", null ],
       [ "fiberHook", "classzth_1_1_runnable.html#a53e52412bdbfe1a4124e88db6108e3b6", null ],
@@ -21,21 +21,18 @@ var group__zth__api__cpp__util =
       [ "run", "classzth_1_1_runnable.html#a271c8712b982474d559dd49ec9634c1f", null ]
     ] ],
     [ "zth::UniqueID< T, ThreadSafe >", "classzth_1_1_unique_i_d.html", [
+      [ "base", "classzth_1_1_unique_i_d.html#a82751ddcd973480736013737250fe80a", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#a7ac4a67f5359177f9ced68b5c457aef3", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#aa5ca638fb2387e1b37340913e522eba2", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#ab203870f801f21b7f274abddbffe6adb", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#a7a744622e2676daa0fb8bd48526876c8", null ],
       [ "UniqueID", "classzth_1_1_unique_i_d.html#ab27aec11817ca38c22fe6136c8a64c29", null ],
-      [ "~UniqueID", "classzth_1_1_unique_i_d.html#aab72c0fa4b2bce8338b71adfb947901c", null ],
+      [ "~UniqueID", "classzth_1_1_unique_i_d.html#a01c324a31ce293772cf4d3776abb329e", null ],
       [ "id", "classzth_1_1_unique_i_d.html#a6b05d0f6b2279141000ed477e244a8f9", null ],
-      [ "id_str", "classzth_1_1_unique_i_d.html#a492ed9943c0c48f65d10ffa3488e052e", null ],
-      [ "name", "classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e", null ],
+      [ "id_", "classzth_1_1_unique_i_d.html#abc14ffd53a4d2a55b452762758628164", null ],
       [ "normptr", "classzth_1_1_unique_i_d.html#a10453b68babff6dd85ad155103f2f1ab", null ],
       [ "operator=", "classzth_1_1_unique_i_d.html#ac2982259042cd4ae5524046996e93822", null ],
-      [ "operator=", "classzth_1_1_unique_i_d.html#aea11de1c62e5d492f76f6e31ce987fa6", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#ae5aca08fcf3fbc33f00fbf163c30f58d", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#ad9b0a8b7bbbe9a19586125c2e3089a5b", null ],
-      [ "setName", "classzth_1_1_unique_i_d.html#a97a42d84ff0129fae786157e4be4821b", null ]
+      [ "operator=", "classzth_1_1_unique_i_d.html#aea11de1c62e5d492f76f6e31ce987fa6", null ]
     ] ],
     [ "zth::Singleton< T >", "classzth_1_1_singleton.html", [
       [ "singleton_type", "classzth_1_1_singleton.html#a0159315c3abb2c943fd6fc9571b59fa9", null ],
@@ -94,5 +91,6 @@ var group__zth__api__cpp__util =
     [ "zth::log_color", "group__zth__api__cpp__util.html#ga376be895ce62cae12c9bb2005a328f2a", null ],
     [ "zth::log_colorv", "group__zth__api__cpp__util.html#ga3de356c7dddb81fb19a95e5b8a2c5c40", null ],
     [ "zth::logv", "group__zth__api__cpp__util.html#gac71cc5442292ba8e2746dcaea59feeef", null ],
-    [ "zth::version", "group__zth__api__cpp__util.html#ga061c3ba865e879bb557bc71880b71e09", null ]
+    [ "zth::version", "group__zth__api__cpp__util.html#ga061c3ba865e879bb557bc71880b71e09", null ],
+    [ "zth::ZTH_MALLOC_ATTR", "group__zth__api__cpp__util.html#gaaac895df320fd1b0cb430dba2f23d0a5", null ]
 ];

@@ -93,8 +93,58 @@ $(document).ready(function(){initNavTree('socks_8cpp-example.html',''); initResi
 </div><!--header-->
 <div class="contents">
 <p>More complex fiber and synchronization example.</p>
-<p>More complex fiber and synchronization example.</p>
-<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<p>More complex fiber and synchronization example.Invoked with command line argument 5, this will program will print something like:</p>
+<pre class="fragment">Take socks 1
+  Wear socks 1
+  I don't do the dirty work for socks 1
+Take socks 2
+    Wash right sock 1
+    Wash left sock 1
+Take socks 3
+    Iron right sock 1
+  Wear socks 3
+  Wear socks 2
+    Wash right sock 3
+Take socks 4
+  I don't do the dirty work for socks 2
+    Wash right sock 2
+    Iron left sock 1
+    Iron right sock 3
+  I don't do the dirty work for socks 3
+Take socks 5
+    Wash left sock 3
+    Iron right sock 2
+    Wash left sock 2
+  Fold socks 1
+  Wear socks 4
+    Iron left sock 2
+    Iron left sock 3
+  I don't do the dirty work for socks 4
+Store socks 1
+Release socks 1
+  Wear socks 5
+  I don't do the dirty work for socks 5
+  Fold socks 2
+Store socks 2
+Release socks 2
+  Fold socks 3
+Store socks 3
+Release socks 3
+    Wash right sock 5
+    Wash left sock 5
+    Iron left sock 5
+    Wash left sock 4
+    Wash right sock 4
+    Iron right sock 4
+    Iron left sock 4
+    Iron right sock 5
+  Fold socks 4
+  Fold socks 5
+Store socks 4
+Release socks 4
+Store socks 5
+Release socks 5
+</pre><div class="fragment"><div class="line"><span class="comment">/*</span></div>
 <div class="line"><span class="comment"> * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers</span></div>
 <div class="line"><span class="comment"> *</span></div>
 <div class="line"><span class="comment"> * SPDX-License-Identifier: CC0-1.0</span></div>
@@ -110,127 +160,120 @@ $(document).ready(function(){initNavTree('socks_8cpp-example.html',''); initResi
 <div class="line"><span class="preprocessor">#  define drand48()     ((double)rand() / (double)RAND_MAX)</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> nap_a_bit()</div>
+<div class="line">{</div>
+<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
+<div class="line">        <a id="a0" name="a0"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
+<div class="line">}</div>
+<div class="line"> </div>
 <div class="line"><span class="keyword">struct </span>Sock {</div>
 <div class="line">        <span class="keyword">enum</span> Side { Left, Right };</div>
 <div class="line">        Sock(<span class="keywordtype">int</span> i, Side side)</div>
-<div class="line">                : i(i)</div>
-<div class="line">                , side(side)</div>
-<div class="line">                , other()</div>
-<div class="line">                , str(<a id="a0" name="a0"></a><a class="code hl_function" href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a>(<span class="stringliteral">&quot;%s sock %d&quot;</span>, side == Left ? <span class="stringliteral">&quot;left&quot;</span> : <span class="stringliteral">&quot;right&quot;</span>, i))</div>
+<div class="line">                : <a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>(<a class="code hl_namespace" href="namespacezth.html">zth</a>::<a class="code hl_function" href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">format</a>(<span class="stringliteral">&quot;%s sock %d&quot;</span>, side == Left ? <span class="stringliteral">&quot;left&quot;</span> : <span class="stringliteral">&quot;right&quot;</span>, i))</div>
 <div class="line">        {}</div>
 <div class="line"> </div>
-<div class="line">        <a id="_a1" name="_a1"></a><a class="code hl_class" href="classzth_1_1_future.html">zth::Future&lt;&gt;</a> done;</div>
-<div class="line">        <span class="keywordtype">int</span> i;</div>
-<div class="line">        Side side;</div>
-<div class="line">        Sock* other;</div>
-<div class="line">        <a class="code hl_typedef" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a> str;</div>
+<div class="line">        <a class="code hl_typedef" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a> <a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>;</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">struct </span>Socks {</div>
+<div class="line"><span class="keyword">class </span>Socks : <span class="keyword">public</span> <a id="_a1" name="_a1"></a><a class="code hl_class" href="classzth_1_1_ref_counted.html">zth::RefCounted</a> {</div>
+<div class="line">        <a id="a2" name="a2"></a><a class="code hl_define" href="util_8h.html#ad7cc9064552d25659c36efeacc36936d">ZTH_CLASS_NOCOPY</a>(Socks)</div>
+<div class="line"><span class="keyword">public</span>:</div>
 <div class="line">        <span class="keyword">explicit</span> Socks(<span class="keywordtype">int</span> i)</div>
 <div class="line">                : left(i, Sock::Left)</div>
 <div class="line">                , right(i, Sock::Right)</div>
-<div class="line">                , str(<a class="code hl_namespace" href="namespacezth.html">zth</a>::format(<span class="stringliteral">&quot;socks %d&quot;</span>, i))</div>
-<div class="line">        {</div>
-<div class="line">                left.other = &amp;right;</div>
-<div class="line">                right.other = &amp;left;</div>
+<div class="line">                , <a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>(<a class="code hl_namespace" href="namespacezth.html">zth</a>::<a class="code hl_function" href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">format</a>(<span class="stringliteral">&quot;socks %d&quot;</span>, i))</div>
+<div class="line">        {}</div>
+<div class="line"> </div>
+<div class="line">        <span class="keyword">virtual</span> ~Socks() noexcept<span class="keyword"> override</span></div>
+<div class="line"><span class="keyword">        </span>{</div>
+<div class="line">                printf(<span class="stringliteral">&quot;Release %s\n&quot;</span>, <a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>.<a id="a3" name="a3"></a><a class="code hl_function" href="classzth_1_1cow__string.html#a86337fa57e7b34c38d012082f04b3304">c_str</a>());</div>
 <div class="line">        }</div>
 <div class="line"> </div>
 <div class="line">        Sock left;</div>
 <div class="line">        Sock right;</div>
-<div class="line">        <a class="code hl_typedef" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a> <a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>;</div>
+<div class="line">        <a class="code hl_typedef" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a> <a id="a4" name="a4"></a><a class="code hl_function" href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">str</a>;</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> takeSocks(<span class="keywordtype">int</span> count);</div>
-<div class="line">Socks* wearSocks(Socks&amp; socks);</div>
-<div class="line"><span class="keywordtype">void</span> washSock(Sock&amp; sock);</div>
-<div class="line"><a id="a2" name="a2"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(takeSocks, wearSocks, washSock)</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> takeSocks(<span class="keywordtype">int</span> count)</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> washSock(Sock&amp; sock)</div>
 <div class="line">{</div>
-<div class="line">        std::list&lt;wearSocks_future&gt; allSocks;</div>
+<div class="line">        nap_a_bit();</div>
+<div class="line"> </div>
+<div class="line">        printf(<span class="stringliteral">&quot;    Wash %s\n&quot;</span>, sock.str.c_str());</div>
+<div class="line">        nap_a_bit();</div>
+<div class="line"> </div>
+<div class="line">        printf(<span class="stringliteral">&quot;    Iron %s\n&quot;</span>, sock.str.c_str());</div>
+<div class="line">        nap_a_bit();</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> Socks* useSocks(Socks&amp; socks)</div>
+<div class="line">{</div>
+<div class="line">        nap_a_bit();</div>
+<div class="line"> </div>
+<div class="line">        printf(<span class="stringliteral">&quot;  Wear %s\n&quot;</span>, socks.str.c_str());</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// Done wearing, go wash both socks.</span></div>
+<div class="line">        {</div>
+<div class="line">                <a id="_a5" name="_a5"></a><a class="code hl_class" href="classzth_1_1joiner.html">zth::joiner</a> j(<a id="a6" name="a6"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(washSock, socks.left), <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(washSock, socks.right));</div>
+<div class="line"> </div>
+<div class="line">                nap_a_bit();</div>
+<div class="line">                printf(<span class="stringliteral">&quot;  I don&#39;t do the dirty work for %s\n&quot;</span>, socks.str.c_str());</div>
+<div class="line"> </div>
+<div class="line">                <span class="comment">// j is out of scope here, so this is the point where the join actually happens.</span></div>
+<div class="line">        }</div>
+<div class="line"> </div>
+<div class="line">        printf(<span class="stringliteral">&quot;  Fold %s\n&quot;</span>, socks.str.c_str());</div>
+<div class="line">        nap_a_bit();</div>
+<div class="line">        <span class="keywordflow">return</span> &amp;socks;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> takeSocks(<span class="keywordtype">int</span> count)</div>
+<div class="line">{</div>
+<div class="line">        std::list&lt;zth::fiber_future&lt;Socks*&gt; &gt; allSocks;</div>
 <div class="line"> </div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 1; i &lt;= count; i++) {</div>
 <div class="line">                Socks* socks = <span class="keyword">new</span> Socks(i);</div>
+<div class="line">                socks-&gt;used();</div>
 <div class="line">                printf(<span class="stringliteral">&quot;Take %s\n&quot;</span>, socks-&gt;str.c_str());</div>
 <div class="line"> </div>
-<div class="line"><span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
-<div class="line">                allSocks.emplace_back(<a id="a3" name="a3"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> wearSocks(*socks));</div>
-<div class="line"><span class="preprocessor">#else</span></div>
-<div class="line">                allSocks.push_back(<a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> wearSocks(*socks));</div>
-<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">                <span class="comment">// Give the pair of socks to someone else to use.</span></div>
+<div class="line">                allSocks.push_back(<a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(useSocks, *socks));</div>
 <div class="line"> </div>
-<div class="line">                <a id="a4" name="a4"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(0.5);</div>
+<div class="line">                <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(0.5);</div>
 <div class="line">        }</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Store the socks in the same order as they were worn.</span></div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keyword">decltype</span>(allSocks.begin()) it = allSocks.begin(); it != allSocks.end(); ++it) {</div>
-<div class="line">                <span class="comment">// *it is a SharedPointer&lt;Future&lt;Socks*&gt; &gt;</span></div>
-<div class="line">                Socks* socks = (**it)-&gt;value();</div>
+<div class="line">                <span class="comment">// *it is a SharedReference&lt;Future&lt;Socks*&gt; &gt;</span></div>
+<div class="line">                Socks* socks = **it;</div>
 <div class="line">                printf(<span class="stringliteral">&quot;Store %s\n&quot;</span>, socks-&gt;str.c_str());</div>
-<div class="line">                <span class="keyword">delete</span> socks;</div>
+<div class="line">                socks-&gt;unused();</div>
 <div class="line">        }</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line">Socks* wearSocks(Socks&amp; socks)</div>
-<div class="line">{</div>
-<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
-<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Wear %s\n&quot;</span>, socks.str.c_str());</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// Done wearing, go wash both socks.</span></div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> washSock(socks.left); <span class="comment">// in parallel</span></div>
-<div class="line">        washSock(socks.right);          <span class="comment">// done right here and now</span></div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// Wait till the washing sequence has completed.</span></div>
-<div class="line">        socks.left.done.wait();</div>
-<div class="line"> </div>
-<div class="line">        printf(<span class="stringliteral">&quot;Fold %s\n&quot;</span>, socks.str.c_str());</div>
-<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
-<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
-<div class="line">        <span class="keywordflow">return</span> &amp;socks;</div>
-<div class="line">}</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> washSock(Sock&amp; sock)</div>
-<div class="line">{</div>
-<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
-<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
-<div class="line"> </div>
-<div class="line">        printf(<span class="stringliteral">&quot;Wash %s\n&quot;</span>, sock.str.c_str());</div>
-<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
-<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
-<div class="line"> </div>
-<div class="line">        printf(<span class="stringliteral">&quot;Iron %s\n&quot;</span>, sock.str.c_str());</div>
-<div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
-<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a>(drand48());</div>
-<div class="line"> </div>
-<div class="line">        sock.done.set();</div>
-<div class="line">}</div>
-<div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a id="a5" name="a5"></a><a class="code hl_function" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
+<div class="line"><span class="keywordtype">int</span> <a id="a7" name="a7"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordtype">int</span> count = 10;</div>
 <div class="line">        <span class="keywordflow">if</span>(argc &gt; 1)</div>
-<div class="line">                count = atoi(argv[1]);</div>
+<div class="line">                count = (int)strtol(argv[1], <span class="keyword">nullptr</span>, 0);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// NOLINTNEXTLINE(concurrency-mt-unsafe)</span></div>
 <div class="line">        srand48((<span class="keywordtype">long</span>)time(<span class="keyword">nullptr</span>));</div>
-<div class="line">        <a id="_a6" name="_a6"></a><a class="code hl_class" href="classzth_1_1_worker.html">zth::Worker</a> w;</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> takeSocks(count);</div>
-<div class="line">        w.<a id="a7" name="a7"></a><a class="code hl_function" href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">run</a>();</div>
+<div class="line"> </div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(takeSocks, count);</div>
+<div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclasszth_1_1_future_html"><div class="ttname"><a href="classzth_1_1_future.html">zth::Future</a></div><div class="ttdoc">Fiber-aware future.</div><div class="ttdef"><b>Definition</b> <a href="sync_8h_source.html#l00598">sync.h:598</a></div></div>
-<div class="ttc" id="aclasszth_1_1_worker_html"><div class="ttname"><a href="classzth_1_1_worker.html">zth::Worker</a></div><div class="ttdoc">The class that manages the fibers within this thread.</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00035">worker.h:35</a></div></div>
-<div class="ttc" id="aclasszth_1_1_worker_html_a527aca959b9c74845883a294fd1a0256"><div class="ttname"><a href="classzth_1_1_worker.html#a527aca959b9c74845883a294fd1a0256">zth::Worker::run</a></div><div class="ttdeci">void run(TimeInterval const &amp;duration=TimeInterval())</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00307">worker.h:307</a></div></div>
+<div class="ttc" id="aclasszth_1_1_ref_counted_html"><div class="ttname"><a href="classzth_1_1_ref_counted.html">zth::RefCounted</a></div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00942">util.h:942</a></div></div>
+<div class="ttc" id="aclasszth_1_1cow__string_html_a86337fa57e7b34c38d012082f04b3304"><div class="ttname"><a href="classzth_1_1cow__string.html#a86337fa57e7b34c38d012082f04b3304">zth::cow_string::c_str</a></div><div class="ttdeci">char const * c_str() const</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00396">util.h:396</a></div></div>
+<div class="ttc" id="aclasszth_1_1joiner_html"><div class="ttname"><a href="classzth_1_1joiner.html">zth::joiner</a></div><div class="ttdoc">RAII class to join fibers and futures on destruction.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01375">async.h:1375</a></div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga0c69f207354e0928b738da3388bdd913"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga0c69f207354e0928b738da3388bdd913">zth::nap</a></div><div class="ttdeci">void nap(Timestamp const &amp;sleepUntil)</div><div class="ttdoc">Sleep until the given time stamp.</div><div class="ttdef"><b>Definition</b> <a href="waiter_8h_source.html#l00274">waiter.h:274</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__util_html_ga7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdoc">std::string type using Config::Allocator::type.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00310">util.h:310</a></div></div>
-<div class="ttc" id="amain_8cpp_html_a3c04138a5bfe5d72780bb7e82a18e627"><div class="ttname"><a href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a></div><div class="ttdeci">int main(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00047">main.cpp:47</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__util_html_ga7a210137c60a4a060f81aeb19a9394c0"><div class="ttname"><a href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">zth::string</a></div><div class="ttdeci">std::basic_string&lt; char, std::char_traits&lt; char &gt;, Config::Allocator&lt; char &gt;::type &gt; string</div><div class="ttdoc">std::string type using Config::Allocator::type.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00315">util.h:315</a></div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace.</div></div>
 <div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00022">allocator.h:22</a></div></div>
-<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an zth::string representation of the given value.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00492">util.h:492</a></div></div>
-<div class="ttc" id="anamespacezth_html_aebc0ef1729604ae4282d5eabf3830c95"><div class="ttname"><a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a></div><div class="ttdeci">string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an zth::string.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00478">util.h:478</a></div></div>
+<div class="ttc" id="anamespacezth_html_a3d3d928f0db6f76bfd4d414d5ed2e2e8"><div class="ttname"><a href="namespacezth.html#a3d3d928f0db6f76bfd4d414d5ed2e2e8">zth::str</a></div><div class="ttdeci">cow_string str(T value)</div><div class="ttdoc">Returns an zth::string representation of the given value.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00497">util.h:497</a></div></div>
+<div class="ttc" id="anamespacezth_html_aebc0ef1729604ae4282d5eabf3830c95"><div class="ttname"><a href="namespacezth.html#aebc0ef1729604ae4282d5eabf3830c95">zth::format</a></div><div class="ttdeci">string format(char const *fmt,...)</div><div class="ttdoc">Format like sprintf(), but save the result in an zth::string.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00483">util.h:483</a></div></div>
+<div class="ttc" id="autil_8h_html_ad7cc9064552d25659c36efeacc36936d"><div class="ttname"><a href="util_8h.html#ad7cc9064552d25659c36efeacc36936d">ZTH_CLASS_NOCOPY</a></div><div class="ttdeci">#define ZTH_CLASS_NOCOPY(Class)</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00234">util.h:234</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

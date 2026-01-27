@@ -1,13 +1,11 @@
 var classzth_1_1_typed_fiber_factory =
 [
-    [ "A1", "classzth_1_1_typed_fiber_factory.html#a1634851e9ed497d1c4bc763327994e57", null ],
-    [ "A2", "classzth_1_1_typed_fiber_factory.html#a622ce5e8a1d2c2396ee8bfad59bafb5d", null ],
-    [ "A3", "classzth_1_1_typed_fiber_factory.html#aacd60259eb035e07c633340cd0e30def", null ],
-    [ "AutoFuture_type", "classzth_1_1_typed_fiber_factory.html#ac3cdb2353757637db59bc3d162129f41", null ],
-    [ "Function", "classzth_1_1_typed_fiber_factory.html#a397715e0ddac4272cfaea6efa04e5281", null ],
+    [ "Function", "classzth_1_1_typed_fiber_factory.html#a53f9712ef66cb67aae681d10e0198663", null ],
+    [ "Future", "classzth_1_1_typed_fiber_factory.html#ab03b381a6f8dad1c4c706858d065919a", null ],
     [ "Return", "classzth_1_1_typed_fiber_factory.html#a38a8252b82745c372332e5058bbab4f8", null ],
     [ "TypedFiber_type", "classzth_1_1_typed_fiber_factory.html#a0d5774fc9629f412b876d5f206a4e137", null ],
     [ "TypedFiberFactory", "classzth_1_1_typed_fiber_factory.html#aecb676c1c0d62ed8f04e606c4da7d735", null ],
-    [ "operator()", "classzth_1_1_typed_fiber_factory.html#aec9a0f15a5a3cc0dde6f14bf3116f3c2", null ],
+    [ "TypedFiberFactory", "classzth_1_1_typed_fiber_factory.html#ac17d4ebf8055f112b39eaf102d9fddd3", null ],
+    [ "operator()", "classzth_1_1_typed_fiber_factory.html#a86a5317869eef218228434ef7da1ebe8", null ],
     [ "polish", "classzth_1_1_typed_fiber_factory.html#af2cae071d3740b366bf491bbfb1056bb", null ]
 ];

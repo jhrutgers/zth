@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['shared_5ffuture_0',['shared_future',['../namespacezth.html#aa498c5a81ea2a044d047e2b724534c28',1,'zth']]],
-  ['singleton_5ftype_1',['singleton_type',['../classzth_1_1_singleton.html#a0159315c3abb2c943fd6fc9571b59fa9',1,'zth::Singleton::singleton_type'],['../classzth_1_1_thread_local_singleton.html#ad4930eeee5ac05807963cad72d315bc0',1,'zth::ThreadLocalSingleton::singleton_type']]],
-  ['state_2',['state',['../classzth_1_1_fsm.html#a76e80bd1aa2ca103f4ef562be8a0638d',1,'zth::Fsm::State'],['../group__zth__api__cpp__fsm14.html#ga2796b4c87af42f47292d489231430698',1,'zth::fsm::State']]],
-  ['stateaddr_3',['StateAddr',['../classzth_1_1_fsm.html#a655b7dc936abdf5cbde7f52b0e04f248',1,'zth::Fsm']]],
-  ['string_4',['string',['../group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0',1,'zth']]]
+  ['mailbox_5ftypes_0',['mailbox_types',['../classzth_1_1coro_1_1generator.html#af861735358d9499a4181db28105bbc35',1,'zth::coro::generator::Mailbox_types'],['../classzth_1_1coro_1_1generator__promise.html#ad30f0ecfa78adace2004fc9ca94b900b',1,'zth::coro::generator_promise::Mailbox_types']]],
+  ['member_5ftype_1',['member_type',['../classzth_1_1_future.html#a3de0f398a098d4f025d207405c988bac',1,'zth::Future::member_type'],['../classzth_1_1_future_3_01void_01_4.html#ae2bf141e67c52f780627c527550cdbc4',1,'zth::Future&lt; void &gt;::member_type']]]
 ];

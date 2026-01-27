@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['list_3c_20type_20_3e_0',['List&lt; type &gt;',['../classzth_1_1_listable.html#a5f8b8e8b70506bd78b05fd45d3e0352e',1,'zth::Listable']]]
+  ['context_0',['Context',['../classzth_1_1_worker.html#ac26c806e60ca4a0547680edb68f6e39b',1,'zth::Worker']]]
 ];

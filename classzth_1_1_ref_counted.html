@@ -91,27 +91,30 @@ $(document).ready(function(){initNavTree('classzth_1_1_ref_counted.html',''); in
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classzth_1_1_ref_counted-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">zth::RefCounted Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="sync_8h_source.html">sync.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="util_8h_source.html">util.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for zth::RefCounted:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classzth_1_1_ref_counted.png" usemap="#zth::RefCounted_map" alt=""/>
   <map id="zth::RefCounted_map" name="zth::RefCounted_map">
-<area href="classzth_1_1_synchronizer.html" alt="zth::Synchronizer" shape="rect" coords="0,56,119,80"/>
-<area href="classzth_1_1_future.html" alt="zth::Future&lt; T * &gt;" shape="rect" coords="129,112,248,136"/>
-<area href="classzth_1_1_future.html" alt="zth::Future&lt; T &gt;" shape="rect" coords="129,168,248,192"/>
-<area href="classzth_1_1_future.html" title="Fiber-aware future." alt="zth::Future&lt; T &gt;" shape="rect" coords="129,224,248,248"/>
-<area href="classzth_1_1_future_3_01void_01_4.html" alt="zth::Future&lt; void &gt;" shape="rect" coords="129,280,248,304"/>
-<area href="classzth_1_1_gate.html" title="Fiber-aware barrier/gate." alt="zth::Gate" shape="rect" coords="129,336,248,360"/>
-<area href="classzth_1_1_mutex.html" title="Fiber-aware mutex." alt="zth::Mutex" shape="rect" coords="129,392,248,416"/>
-<area href="classzth_1_1_semaphore.html" title="Fiber-aware semaphore." alt="zth::Semaphore" shape="rect" coords="129,448,248,472"/>
-<area href="classzth_1_1_signal.html" title="Fiber-aware signal." alt="zth::Signal" shape="rect" coords="129,504,248,528"/>
+<area href="classzth_1_1_fiber.html" title="The fiber." alt="zth::Fiber" shape="rect" coords="0,56,283,80"/>
+<area href="classzth_1_1_synchronizer_base.html" alt="zth::SynchronizerBase" shape="rect" coords="586,56,869,80"/>
+<area href="classzth_1_1coro_1_1promise__base.html" alt="zth::coro::promise_base" shape="rect" coords="1172,56,1455,80"/>
+<area href="classzth_1_1_typed_fiber.html" alt="zth::TypedFiber&lt; void &gt;" shape="rect" coords="293,112,576,136"/>
+<area href="classzth_1_1_typed_fiber.html" title="Typed fiber class." alt="zth::TypedFiber&lt; R &gt;" shape="rect" coords="293,168,576,192"/>
+<area href="classzth_1_1_synchronizer.html" alt="zth::Synchronizer&lt; 2 &gt;" shape="rect" coords="879,112,1162,136"/>
+<area href="classzth_1_1_synchronizer.html" alt="zth::Synchronizer&lt; Size &gt;" shape="rect" coords="879,168,1162,192"/>
+<area href="classzth_1_1coro_1_1promise.html" alt="zth::coro::promise&lt; generator_promise&lt; T... &gt; &gt;" shape="rect" coords="1465,112,1748,136"/>
+<area href="classzth_1_1coro_1_1promise.html" alt="zth::coro::promise&lt; task_promise&lt; void &gt; &gt;" shape="rect" coords="1465,168,1748,192"/>
+<area href="classzth_1_1coro_1_1promise.html" alt="zth::coro::promise&lt; task_promise&lt; T &gt; &gt;" shape="rect" coords="1465,224,1748,248"/>
+<area href="classzth_1_1coro_1_1promise.html" alt="zth::coro::promise&lt; Promise &gt;" shape="rect" coords="1465,280,1748,304"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -119,16 +122,25 @@ Inheritance diagram for zth::RefCounted:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a121c2911b34179ca50d51afe6833e8e3" id="r_a121c2911b34179ca50d51afe6833e8e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a121c2911b34179ca50d51afe6833e8e3">RefCounted</a> () noexcept</td></tr>
 <tr class="separator:a121c2911b34179ca50d51afe6833e8e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c70a650a251b667665056aa06127da6" id="r_a3c70a650a251b667665056aa06127da6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a3c70a650a251b667665056aa06127da6">~RefCounted</a> ()=default</td></tr>
-<tr class="separator:a3c70a650a251b667665056aa06127da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4092e923cf8664102aa8b81624d5211a" id="r_a4092e923cf8664102aa8b81624d5211a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a4092e923cf8664102aa8b81624d5211a">~RefCounted</a> () noexcept</td></tr>
+<tr class="separator:a4092e923cf8664102aa8b81624d5211a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb79bb67fd9dbc34b5dc226a2359fdb5" id="r_aeb79bb67fd9dbc34b5dc226a2359fdb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#aeb79bb67fd9dbc34b5dc226a2359fdb5">used</a> () noexcept</td></tr>
 <tr class="separator:aeb79bb67fd9dbc34b5dc226a2359fdb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a579d5d4632a89625b8567ec47ec1c997" id="r_a579d5d4632a89625b8567ec47ec1c997"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#a579d5d4632a89625b8567ec47ec1c997">unused</a> ()</td></tr>
-<tr class="separator:a579d5d4632a89625b8567ec47ec1c997"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0e2f40811a4cba8d4bec6121dba0238" id="r_af0e2f40811a4cba8d4bec6121dba0238"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#af0e2f40811a4cba8d4bec6121dba0238">unused</a> () noexcept</td></tr>
+<tr class="separator:af0e2f40811a4cba8d4bec6121dba0238"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3a1b26c15a61024fe6a548e939e4d89" id="r_ae3a1b26c15a61024fe6a548e939e4d89"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#ae3a1b26c15a61024fe6a548e939e4d89">refs</a> () const noexcept</td></tr>
+<tr class="separator:ae3a1b26c15a61024fe6a548e939e4d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ac6e012a361c54051b7365a01ec2bc481" id="r_ac6e012a361c54051b7365a01ec2bc481"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_ref_counted.html#ac6e012a361c54051b7365a01ec2bc481">cleanup</a> () noexcept</td></tr>
+<tr class="separator:ac6e012a361c54051b7365a01ec2bc481"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00041">41</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<div class="textblock"><dl class="section examples"><dt>Examples</dt><dd><a class="el" href="socks_8cpp-example.html#_a1">socks.cpp</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00942">942</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a121c2911b34179ca50d51afe6833e8e3" name="a121c2911b34179ca50d51afe6833e8e3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a121c2911b34179ca50d51afe6833e8e3">&#9670;&#160;</a></span>RefCounted()</h2>
@@ -153,12 +165,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00044">44</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00945">945</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
-<a id="a3c70a650a251b667665056aa06127da6" name="a3c70a650a251b667665056aa06127da6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c70a650a251b667665056aa06127da6">&#9670;&#160;</a></span>~RefCounted()</h2>
+<a id="a4092e923cf8664102aa8b81624d5211a" name="a4092e923cf8664102aa8b81624d5211a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4092e923cf8664102aa8b81624d5211a">&#9670;&#160;</a></span>~RefCounted()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,16 +187,18 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00949">949</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a579d5d4632a89625b8567ec47ec1c997" name="a579d5d4632a89625b8567ec47ec1c997"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a579d5d4632a89625b8567ec47ec1c997">&#9670;&#160;</a></span>unused()</h2>
+<a id="ac6e012a361c54051b7365a01ec2bc481" name="ac6e012a361c54051b7365a01ec2bc481"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6e012a361c54051b7365a01ec2bc481">&#9670;&#160;</a></span>cleanup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,7 +207,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void zth::RefCounted::unused </td>
+          <td class="memname">virtual void zth::RefCounted::cleanup </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -201,12 +215,66 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00056">56</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00976">976</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="ae3a1b26c15a61024fe6a548e939e4d89" name="ae3a1b26c15a61024fe6a548e939e4d89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3a1b26c15a61024fe6a548e939e4d89">&#9670;&#160;</a></span>refs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t zth::RefCounted::refs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00970">970</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="af0e2f40811a4cba8d4bec6121dba0238" name="af0e2f40811a4cba8d4bec6121dba0238"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0e2f40811a4cba8d4bec6121dba0238">&#9670;&#160;</a></span>unused()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool zth::RefCounted::unused </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00960">960</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -233,12 +301,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00050">50</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00954">954</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/libzth/<a class="el" href="sync_8h_source.html">sync.h</a></li>
+<li>include/libzth/<a class="el" href="util_8h_source.html">util.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

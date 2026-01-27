@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['libzth_0',['Zth (libzth)',['../index.html',1,'']]],
-  ['list_1',['Deprecated List',['../deprecated.html',1,'']]]
+  ['metal_20arm_0',['Using Zth on Bare-Metal ARM',['../md_dist_2qemu-arm-a15_2_r_e_a_d_m_e-_a_r_m.html',1,'']]]
 ];

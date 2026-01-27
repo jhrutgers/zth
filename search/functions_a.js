@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kill_0',['kill',['../classzth_1_1_fiber.html#aeb78174971fd2bc96fb2a3f6072c139d',1,'zth::Fiber']]]
+  ['joiner_0',['joiner',['../classzth_1_1joiner.html#a76cff981ce74b0f6bb9b1dc583c3d5c8',1,'zth::joiner::joiner() noexcept'],['../classzth_1_1joiner.html#a1bc82491626ceb33cd89f3c981029009',1,'zth::joiner::joiner(J &amp;&amp;... j)']]]
 ];

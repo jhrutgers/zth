@@ -90,8 +90,10 @@ $(document).ready(function(){initNavTree('classzth_1_1_unique_i_d.html',''); ini
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classzth_1_1_unique_i_d-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">zth::UniqueID&lt; T, ThreadSafe &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a> &raquo; <a class="el" href="group__zth__api__cpp__util.html">util</a></div></div></div>
 </div><!--header-->
@@ -107,10 +109,16 @@ Inheritance diagram for zth::UniqueID&lt; T, ThreadSafe &gt;:</div>
  <div class="center">
   <img src="classzth_1_1_unique_i_d.png" usemap="#zth::UniqueID_3C_20T_2C_20ThreadSafe_20_3E_map" alt=""/>
   <map id="zth::UniqueID_3C_20T_2C_20ThreadSafe_20_3E_map" name="zth::UniqueID_3C_20T_2C_20ThreadSafe_20_3E_map">
+<area href="classzth_1_1_named_unique_i_d.html" alt="zth::NamedUniqueID&lt; Named &gt;" shape="rect" coords="0,56,190,80"/>
 <area href="classzth_1_1_unique_i_d_base.html" alt="zth::UniqueIDBase" shape="rect" coords="0,0,190,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a82751ddcd973480736013737250fe80a" id="r_a82751ddcd973480736013737250fe80a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classzth_1_1_named_unique_i_d.html">NamedUniqueID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a82751ddcd973480736013737250fe80a">base</a></td></tr>
+<tr class="separator:a82751ddcd973480736013737250fe80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ac4a67f5359177f9ced68b5c457aef3" id="r_a7ac4a67f5359177f9ced68b5c457aef3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a7ac4a67f5359177f9ced68b5c457aef3">UniqueID</a> (<a class="el" href="classzth_1_1_unique_i_d.html">UniqueID</a> const &amp;)=delete</td></tr>
@@ -121,46 +129,77 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa5ca638fb2387e1b37340913e522eba2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2982259042cd4ae5524046996e93822" id="r_ac2982259042cd4ae5524046996e93822"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_unique_i_d.html">UniqueID</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ac2982259042cd4ae5524046996e93822">operator=</a> (<a class="el" href="classzth_1_1_unique_i_d.html">UniqueID</a> &amp;&amp;u) noexcept</td></tr>
 <tr class="separator:ac2982259042cd4ae5524046996e93822"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab203870f801f21b7f274abddbffe6adb" id="r_ab203870f801f21b7f274abddbffe6adb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ab203870f801f21b7f274abddbffe6adb">UniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>)</td></tr>
+<tr class="memitem:ab203870f801f21b7f274abddbffe6adb" id="r_ab203870f801f21b7f274abddbffe6adb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ab203870f801f21b7f274abddbffe6adb">UniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
 <tr class="separator:ab203870f801f21b7f274abddbffe6adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a744622e2676daa0fb8bd48526876c8" id="r_a7a744622e2676daa0fb8bd48526876c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a7a744622e2676daa0fb8bd48526876c8">UniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>)</td></tr>
+<tr class="memitem:a7a744622e2676daa0fb8bd48526876c8" id="r_a7a744622e2676daa0fb8bd48526876c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a7a744622e2676daa0fb8bd48526876c8">UniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
 <tr class="separator:a7a744622e2676daa0fb8bd48526876c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab27aec11817ca38c22fe6136c8a64c29" id="r_ab27aec11817ca38c22fe6136c8a64c29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ab27aec11817ca38c22fe6136c8a64c29">UniqueID</a> (char const *<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>=nullptr)</td></tr>
+<tr class="memitem:ab27aec11817ca38c22fe6136c8a64c29" id="r_ab27aec11817ca38c22fe6136c8a64c29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ab27aec11817ca38c22fe6136c8a64c29">UniqueID</a> (char const *<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>=nullptr)</td></tr>
 <tr class="separator:ab27aec11817ca38c22fe6136c8a64c29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab72c0fa4b2bce8338b71adfb947901c" id="r_aab72c0fa4b2bce8338b71adfb947901c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#aab72c0fa4b2bce8338b71adfb947901c">~UniqueID</a> () override=default</td></tr>
-<tr class="separator:aab72c0fa4b2bce8338b71adfb947901c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01c324a31ce293772cf4d3776abb329e" id="r_a01c324a31ce293772cf4d3776abb329e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a01c324a31ce293772cf4d3776abb329e">~UniqueID</a> () noexcept override=default</td></tr>
+<tr class="separator:a01c324a31ce293772cf4d3776abb329e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10453b68babff6dd85ad155103f2f1ab" id="r_a10453b68babff6dd85ad155103f2f1ab"><td class="memItemLeft" align="right" valign="top">void const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a10453b68babff6dd85ad155103f2f1ab">normptr</a> () const noexcept</td></tr>
 <tr class="separator:a10453b68babff6dd85ad155103f2f1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b05d0f6b2279141000ed477e244a8f9" id="r_a6b05d0f6b2279141000ed477e244a8f9"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a6b05d0f6b2279141000ed477e244a8f9">id</a> () const noexcept</td></tr>
 <tr class="separator:a6b05d0f6b2279141000ed477e244a8f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92a03b5ab402ff94b51f60a93431e47e" id="r_a92a03b5ab402ff94b51f60a93431e47e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a> () const noexcept</td></tr>
-<tr class="separator:a92a03b5ab402ff94b51f60a93431e47e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97a42d84ff0129fae786157e4be4821b" id="r_a97a42d84ff0129fae786157e4be4821b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a97a42d84ff0129fae786157e4be4821b">setName</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>)</td></tr>
-<tr class="separator:a97a42d84ff0129fae786157e4be4821b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5aca08fcf3fbc33f00fbf163c30f58d" id="r_ae5aca08fcf3fbc33f00fbf163c30f58d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ae5aca08fcf3fbc33f00fbf163c30f58d">setName</a> (char const *<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>)</td></tr>
-<tr class="separator:ae5aca08fcf3fbc33f00fbf163c30f58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9b0a8b7bbbe9a19586125c2e3089a5b" id="r_ad9b0a8b7bbbe9a19586125c2e3089a5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#ad9b0a8b7bbbe9a19586125c2e3089a5b">setName</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;<a class="el" href="classzth_1_1_unique_i_d.html#a92a03b5ab402ff94b51f60a93431e47e">name</a>)</td></tr>
-<tr class="separator:ad9b0a8b7bbbe9a19586125c2e3089a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a492ed9943c0c48f65d10ffa3488e052e" id="r_a492ed9943c0c48f65d10ffa3488e052e"><td class="memItemLeft" align="right" valign="top">virtual char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#a492ed9943c0c48f65d10ffa3488e052e">id_str</a> () const override</td></tr>
-<tr class="separator:a492ed9943c0c48f65d10ffa3488e052e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classzth_1_1_named_unique_i_d"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classzth_1_1_named_unique_i_d')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classzth_1_1_named_unique_i_d.html">zth::NamedUniqueID&lt; Named &gt;</a></td></tr>
+<tr class="memitem:a22f7cf8453892d2ccd5140b3abaf1424 inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_a22f7cf8453892d2ccd5140b3abaf1424"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#a22f7cf8453892d2ccd5140b3abaf1424">~NamedUniqueID</a> () noexcept override=default</td></tr>
+<tr class="separator:a22f7cf8453892d2ccd5140b3abaf1424 inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb024c3df3236786e62f4b3b0172dd3b inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_abb024c3df3236786e62f4b3b0172dd3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a> () const noexcept</td></tr>
+<tr class="separator:abb024c3df3236786e62f4b3b0172dd3b inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a762e681b5ed12889d6f4a128a504e4b3 inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_a762e681b5ed12889d6f4a128a504e4b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#a762e681b5ed12889d6f4a128a504e4b3">setName</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
+<tr class="separator:a762e681b5ed12889d6f4a128a504e4b3 inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adefd468fcfdda48caf44bfefffe33fc2 inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_adefd468fcfdda48caf44bfefffe33fc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#adefd468fcfdda48caf44bfefffe33fc2">setName</a> (char const *<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
+<tr class="separator:adefd468fcfdda48caf44bfefffe33fc2 inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac55900ba11a2263488ce1d4ae423689 inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_aac55900ba11a2263488ce1d4ae423689"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#aac55900ba11a2263488ce1d4ae423689">setName</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
+<tr class="separator:aac55900ba11a2263488ce1d4ae423689 inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3397dd1115a8c47624c83a1693c40e inherit pub_methods_classzth_1_1_named_unique_i_d" id="r_a4e3397dd1115a8c47624c83a1693c40e"><td class="memItemLeft" align="right" valign="top">virtual char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#a4e3397dd1115a8c47624c83a1693c40e">id_str</a> () const noexcept override</td></tr>
+<tr class="separator:a4e3397dd1115a8c47624c83a1693c40e inherit pub_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:adfdbcd7dd7133c865ecf4c9a3876cdc2" id="r_adfdbcd7dd7133c865ecf4c9a3876cdc2"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#adfdbcd7dd7133c865ecf4c9a3876cdc2">getID</a> () noexcept</td></tr>
 <tr class="separator:adfdbcd7dd7133c865ecf4c9a3876cdc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:abc14ffd53a4d2a55b452762758628164" id="r_abc14ffd53a4d2a55b452762758628164"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#abc14ffd53a4d2a55b452762758628164">id_</a> () const noexcept final</td></tr>
+<tr class="separator:abc14ffd53a4d2a55b452762758628164"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classzth_1_1_named_unique_i_d"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classzth_1_1_named_unique_i_d')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classzth_1_1_named_unique_i_d.html">zth::NamedUniqueID&lt; Named &gt;</a></td></tr>
+<tr class="memitem:ae84814cbc03ed4122cc017bd9761b904 inherit pro_methods_classzth_1_1_named_unique_i_d" id="r_ae84814cbc03ed4122cc017bd9761b904"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#ae84814cbc03ed4122cc017bd9761b904">NamedUniqueID</a> (char const *<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>=nullptr)</td></tr>
+<tr class="separator:ae84814cbc03ed4122cc017bd9761b904 inherit pro_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0ae6ec68f43686da3285c29f3b3fc9a inherit pro_methods_classzth_1_1_named_unique_i_d" id="r_ad0ae6ec68f43686da3285c29f3b3fc9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#ad0ae6ec68f43686da3285c29f3b3fc9a">NamedUniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
+<tr class="separator:ad0ae6ec68f43686da3285c29f3b3fc9a inherit pro_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d2e5bce6ebd9d89e4ca87c77c68c292 inherit pro_methods_classzth_1_1_named_unique_i_d" id="r_a7d2e5bce6ebd9d89e4ca87c77c68c292"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_named_unique_i_d.html#a7d2e5bce6ebd9d89e4ca87c77c68c292">NamedUniqueID</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;<a class="el" href="classzth_1_1_named_unique_i_d.html#abb024c3df3236786e62f4b3b0172dd3b">name</a>)</td></tr>
+<tr class="separator:a7d2e5bce6ebd9d89e4ca87c77c68c292 inherit pro_methods_classzth_1_1_named_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classzth_1_1_unique_i_d_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classzth_1_1_unique_i_d_base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classzth_1_1_unique_i_d_base.html">zth::UniqueIDBase</a></td></tr>
-<tr class="memitem:ae9b02e741b549c6cbcf3f8b3b31a8c1f inherit pro_methods_classzth_1_1_unique_i_d_base" id="r_ae9b02e741b549c6cbcf3f8b3b31a8c1f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#ae9b02e741b549c6cbcf3f8b3b31a8c1f">~UniqueIDBase</a> ()=default</td></tr>
-<tr class="separator:ae9b02e741b549c6cbcf3f8b3b31a8c1f inherit pro_methods_classzth_1_1_unique_i_d_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac416d0f5dcf6bdc5b6fe156bd43c0973 inherit pro_methods_classzth_1_1_unique_i_d_base" id="r_ac416d0f5dcf6bdc5b6fe156bd43c0973"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d_base.html#ac416d0f5dcf6bdc5b6fe156bd43c0973">~UniqueIDBase</a> () noexcept=default</td></tr>
+<tr class="separator:ac416d0f5dcf6bdc5b6fe156bd43c0973 inherit pro_methods_classzth_1_1_unique_i_d_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T, bool ThreadSafe = Config::EnableThreads&gt;<br />
 class zth::UniqueID&lt; T, ThreadSafe &gt;</div><p>Keeps track of a process-wide unique ID within the type <code>T</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00715">715</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00860">860</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a82751ddcd973480736013737250fe80a" name="a82751ddcd973480736013737250fe80a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82751ddcd973480736013737250fe80a">&#9670;&#160;</a></span>base</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classzth_1_1_named_unique_i_d.html">NamedUniqueID</a> <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::base</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00865">865</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7ac4a67f5359177f9ced68b5c457aef3" name="a7ac4a67f5359177f9ced68b5c457aef3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ac4a67f5359177f9ced68b5c457aef3">&#9670;&#160;</a></span>UniqueID() <span class="overload">[1/5]</span></h2>
 
@@ -215,7 +254,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00723">723</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00871">871</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -245,7 +284,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00752">752</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00897">897</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +314,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00758">758</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00903">903</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -305,12 +344,12 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00764">764</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00909">909</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
-<a id="aab72c0fa4b2bce8338b71adfb947901c" name="aab72c0fa4b2bce8338b71adfb947901c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab72c0fa4b2bce8338b71adfb947901c">&#9670;&#160;</a></span>~UniqueID()</h2>
+<a id="a01c324a31ce293772cf4d3776abb329e" name="a01c324a31ce293772cf4d3776abb329e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01c324a31ce293772cf4d3776abb329e">&#9670;&#160;</a></span>~UniqueID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -329,7 +368,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">default</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -362,7 +401,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00741">741</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00886">886</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -391,12 +430,12 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00778">778</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00921">921</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
-<a id="a492ed9943c0c48f65d10ffa3488e052e" name="a492ed9943c0c48f65d10ffa3488e052e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a492ed9943c0c48f65d10ffa3488e052e">&#9670;&#160;</a></span>id_str()</h2>
+<a id="abc14ffd53a4d2a55b452762758628164" name="abc14ffd53a4d2a55b452762758628164"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc14ffd53a4d2a55b452762758628164">&#9670;&#160;</a></span>id_()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -407,7 +446,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual char const  * <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::id_str </td>
+          <td class="memname">virtual uint64_t <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::id_ </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -415,43 +454,14 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">final</span><span class="mlabel">protected</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classzth_1_1_unique_i_d_base.html#a47bf30b36e5bf86bad25752448752ae3">zth::UniqueIDBase</a>.</p>
+<p>Implements <a class="el" href="classzth_1_1_named_unique_i_d.html#a353c4a0a95503e05677e7bd627a3623f">zth::NamedUniqueID&lt; Named &gt;</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00809">809</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
-
-</div>
-</div>
-<a id="a92a03b5ab402ff94b51f60a93431e47e" name="a92a03b5ab402ff94b51f60a93431e47e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92a03b5ab402ff94b51f60a93431e47e">&#9670;&#160;</a></span>name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const  &amp; <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::name </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00783">783</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00927">927</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -480,7 +490,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00773">773</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00916">916</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -510,7 +520,7 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00729">729</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00877">877</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -539,96 +549,6 @@ template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae5aca08fcf3fbc33f00fbf163c30f58d" name="ae5aca08fcf3fbc33f00fbf163c30f58d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5aca08fcf3fbc33f00fbf163c30f58d">&#9670;&#160;</a></span>setName() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::setName </td>
-          <td>(</td>
-          <td class="paramtype">char const *&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00793">793</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
-
-</div>
-</div>
-<a id="ad9b0a8b7bbbe9a19586125c2e3089a5b" name="ad9b0a8b7bbbe9a19586125c2e3089a5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9b0a8b7bbbe9a19586125c2e3089a5b">&#9670;&#160;</a></span>setName() <span class="overload">[2/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::setName </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> &amp;&amp;&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00801">801</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
-
-</div>
-</div>
-<a id="a97a42d84ff0129fae786157e4be4821b" name="a97a42d84ff0129fae786157e4be4821b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97a42d84ff0129fae786157e4be4821b">&#9670;&#160;</a></span>setName() <span class="overload">[3/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , bool ThreadSafe = Config::EnableThreads&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID</a>&lt; T, ThreadSafe &gt;::setName </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00788">788</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>

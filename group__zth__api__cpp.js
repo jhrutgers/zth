@@ -2,9 +2,10 @@ var group__zth__api__cpp =
 [
     [ "0MQ", "group__zth__api__cpp__zmq.html", "group__zth__api__cpp__zmq" ],
     [ "config", "group__zth__api__cpp__config.html", "group__zth__api__cpp__config" ],
+    [ "coro", "group__zth__api__cpp__coro.html", "group__zth__api__cpp__coro" ],
     [ "fiber", "group__zth__api__cpp__fiber.html", "group__zth__api__cpp__fiber" ],
-    [ "fsm", "group__zth__api__cpp__fsm.html", "group__zth__api__cpp__fsm" ],
-    [ "fsm (C++14)", "group__zth__api__cpp__fsm14.html", "group__zth__api__cpp__fsm14" ],
+    [ "fsm", "group__zth__api__cpp__fsm14.html", "group__zth__api__cpp__fsm14" ],
+    [ "future", "group__zth__api__cpp__future.html", "group__zth__api__cpp__future" ],
     [ "io", "group__zth__api__cpp__io.html", "group__zth__api__cpp__io" ],
     [ "perf", "group__zth__api__cpp__perf.html", "group__zth__api__cpp__perf" ],
     [ "poller", "group__zth__api__cpp__poller.html", "group__zth__api__cpp__poller" ],

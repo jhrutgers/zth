@@ -175,6 +175,24 @@ Functions</h2></td></tr>
 <tr class="memitem:ga6a8db20b4c7ed734e51c5245915cdff4" id="r_ga6a8db20b4c7ed734e51c5245915cdff4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#ga6a8db20b4c7ed734e51c5245915cdff4">zth_gate_wait</a> (<a class="el" href="structzth__gate__t.html">zth_gate_t</a> *gate) noexcept</td></tr>
 <tr class="memdesc:ga6a8db20b4c7ed734e51c5245915cdff4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for a gate.  <br /></td></tr>
 <tr class="separator:ga6a8db20b4c7ed734e51c5245915cdff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3e7764d21fe63c792cba46a2cd939330" id="r_ga3e7764d21fe63c792cba46a2cd939330"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#ga3e7764d21fe63c792cba46a2cd939330">zth_mailbox_init</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *mailbox) noexcept</td></tr>
+<tr class="memdesc:ga3e7764d21fe63c792cba46a2cd939330"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a mailbox.  <br /></td></tr>
+<tr class="separator:ga3e7764d21fe63c792cba46a2cd939330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadb612d47c6a8c21e524dce150c8db574" id="r_gadb612d47c6a8c21e524dce150c8db574"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#gadb612d47c6a8c21e524dce150c8db574">zth_mailbox_destroy</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *mailbox) noexcept</td></tr>
+<tr class="memdesc:gadb612d47c6a8c21e524dce150c8db574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys a mailbox.  <br /></td></tr>
+<tr class="separator:gadb612d47c6a8c21e524dce150c8db574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga11cfca9e47a7d1a59aa6717f31a157cb" id="r_ga11cfca9e47a7d1a59aa6717f31a157cb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#ga11cfca9e47a7d1a59aa6717f31a157cb">zth_mailbox_can_take</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *mailbox) noexcept</td></tr>
+<tr class="memdesc:ga11cfca9e47a7d1a59aa6717f31a157cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a mailbox contains data to take.  <br /></td></tr>
+<tr class="separator:ga11cfca9e47a7d1a59aa6717f31a157cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabc91116a8c36ee0d86f3fc40cd68fd2e" id="r_gabc91116a8c36ee0d86f3fc40cd68fd2e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#gabc91116a8c36ee0d86f3fc40cd68fd2e">zth_mailbox_can_put</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *mailbox) noexcept</td></tr>
+<tr class="memdesc:gabc91116a8c36ee0d86f3fc40cd68fd2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a mailbox is empty and can accept data.  <br /></td></tr>
+<tr class="separator:gabc91116a8c36ee0d86f3fc40cd68fd2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gace515199a5c50eea438ff9ee06170689" id="r_gace515199a5c50eea438ff9ee06170689"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#gace515199a5c50eea438ff9ee06170689">zth_mailbox_put</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *mailbox, uintptr_t value) noexcept</td></tr>
+<tr class="memdesc:gace515199a5c50eea438ff9ee06170689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts a value into the mailbox.  <br /></td></tr>
+<tr class="separator:gace515199a5c50eea438ff9ee06170689"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9aec018de6a5cf1df8e281f7ffd86c20" id="r_ga9aec018de6a5cf1df8e281f7ffd86c20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__sync.html#ga9aec018de6a5cf1df8e281f7ffd86c20">zth_mailbox_take</a> (<a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *__restrict__ mailbox, uintptr_t *__restrict__ value) noexcept</td></tr>
+<tr class="memdesc:ga9aec018de6a5cf1df8e281f7ffd86c20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for and return a mailbox's value.  <br /></td></tr>
+<tr class="separator:ga9aec018de6a5cf1df8e281f7ffd86c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -205,7 +223,7 @@ Functions</h2></td></tr>
 <p>Signals all fibers waiting for the condition. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_signal.html#a3108a00720e64b3d8b45450fa01b49c1">zth::Signal::signalAll()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01191">1191</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01799">1799</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -236,7 +254,7 @@ Functions</h2></td></tr>
 <p>Destroys a condition. </p>
 <p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_signal.html" title="Fiber-aware signal.">zth::Signal</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01159">1159</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01767">1767</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -267,7 +285,7 @@ Functions</h2></td></tr>
 <p>Initializes a condition. </p>
 <p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_signal.html" title="Fiber-aware signal.">zth::Signal</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01139">1139</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01747">1747</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -298,7 +316,7 @@ Functions</h2></td></tr>
 <p>Signals one fiber waiting for the condition. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_signal.html#a16165fbebc104cbabdd7be23c51f46bf">zth::Signal::signal()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01177">1177</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01785">1785</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -329,7 +347,7 @@ Functions</h2></td></tr>
 <p>Wait for a condition. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_signal.html#a966e6b814a7f1300d418268bffd6ced2">zth::Signal::wait()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01205">1205</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01813">1813</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +378,7 @@ Functions</h2></td></tr>
 <p>Destroys a future. </p>
 <p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_future.html" title="Fiber-aware future.">zth::Future</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01245">1245</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01853">1853</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -401,7 +419,7 @@ Functions</h2></td></tr>
 <p>Wait for and return a future's value. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_future.html#afb4a0858d275dc57921a59376c244df3">zth::Future::value()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01295">1295</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01903">1903</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -432,7 +450,7 @@ Functions</h2></td></tr>
 <p>Initializes a future. </p>
 <p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_future.html" title="Fiber-aware future.">zth::Future</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01225">1225</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01833">1833</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -471,9 +489,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets a future and signals all waiting fibers. </p>
-<p>This is a C-wrapper for <a class="el" href="classzth_1_1_future.html#a22bde7dae3cc6b39f1951484e80ec4ee">zth::Future::set()</a>. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_future.html#a3da8eea00995b3dfa756a83283bf00f9">zth::Future::set()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01276">1276</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01884">1884</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -504,7 +522,7 @@ Functions</h2></td></tr>
 <p>Checks if a future was already set. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_future.html#aa9870317240cec34f74403706e48fbba">zth::Future::valid()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01263">1263</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01871">1871</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -535,7 +553,7 @@ Functions</h2></td></tr>
 <p>Wait for a future. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_future.html#afec6fc5919a4a799bae108d945e40d02">zth::Future::wait()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01309">1309</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01917">1917</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -566,7 +584,7 @@ Functions</h2></td></tr>
 <p>Destroys a gate. </p>
 <p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_gate.html" title="Fiber-aware barrier/gate.">zth::Gate</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01351">1351</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01959">1959</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +626,7 @@ Functions</h2></td></tr>
 <p>If all participants call <a class="el" href="group__zth__api__c__sync.html#ga6a8db20b4c7ed734e51c5245915cdff4" title="Wait for a gate.">zth_gate_wait()</a>, the gate behaves the same as a <code>pthread_barrier_t</code> would.</p>
 <p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_gate.html" title="Fiber-aware barrier/gate.">zth::Gate</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01331">1331</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01939">1939</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -639,7 +657,7 @@ Functions</h2></td></tr>
 <p>Passes a gate. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_gate.html#ac954d5ff3d598dbf039b606047153227">zth::Gate::pass()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01369">1369</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01977">1977</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +688,213 @@ Functions</h2></td></tr>
 <p>Wait for a gate. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_gate.html#a811f63fc2e40c04df084dcc15ac7c7cc">zth::Gate::wait()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01382">1382</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01990">1990</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="gabc91116a8c36ee0d86f3fc40cd68fd2e" name="gabc91116a8c36ee0d86f3fc40cd68fd2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabc91116a8c36ee0d86f3fc40cd68fd2e">&#9670;&#160;</a></span>zth_mailbox_can_put()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_can_put </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *&#160;</td>
+          <td class="paramname"><em>mailbox</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if a mailbox is empty and can accept data. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_mailbox.html#a5547ca047cc0520881ccd2ccdfffb82e">zth::Mailbox::can_put()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02061">2061</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="ga11cfca9e47a7d1a59aa6717f31a157cb" name="ga11cfca9e47a7d1a59aa6717f31a157cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga11cfca9e47a7d1a59aa6717f31a157cb">&#9670;&#160;</a></span>zth_mailbox_can_take()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_can_take </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *&#160;</td>
+          <td class="paramname"><em>mailbox</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if a mailbox contains data to take. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_mailbox.html#a68b79342ea4bc59949efd70a7b71eb7d">zth::Mailbox::can_take()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02048">2048</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="gadb612d47c6a8c21e524dce150c8db574" name="gadb612d47c6a8c21e524dce150c8db574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadb612d47c6a8c21e524dce150c8db574">&#9670;&#160;</a></span>zth_mailbox_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *&#160;</td>
+          <td class="paramname"><em>mailbox</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Destroys a mailbox. </p>
+<p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_mailbox.html" title="Fiber-aware mailbox.">zth::Mailbox</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02030">2030</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="ga3e7764d21fe63c792cba46a2cd939330" name="ga3e7764d21fe63c792cba46a2cd939330"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3e7764d21fe63c792cba46a2cd939330">&#9670;&#160;</a></span>zth_mailbox_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *&#160;</td>
+          <td class="paramname"><em>mailbox</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes a mailbox. </p>
+<p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_mailbox.html" title="Fiber-aware mailbox.">zth::Mailbox</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02010">2010</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="gace515199a5c50eea438ff9ee06170689" name="gace515199a5c50eea438ff9ee06170689"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gace515199a5c50eea438ff9ee06170689">&#9670;&#160;</a></span>zth_mailbox_put()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_put </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *&#160;</td>
+          <td class="paramname"><em>mailbox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uintptr_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Puts a value into the mailbox. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_mailbox.html#a01bf91b65f24b42149db5bababed5c75">zth::Mailbox::put()</a>. It is blocking when there is already a value in the mailbox. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02075">2075</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+
+</div>
+</div>
+<a id="ga9aec018de6a5cf1df8e281f7ffd86c20" name="ga9aec018de6a5cf1df8e281f7ffd86c20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9aec018de6a5cf1df8e281f7ffd86c20">&#9670;&#160;</a></span>zth_mailbox_take()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int zth_mailbox_take </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__mailbox__t.html">zth_mailbox_t</a> *__restrict__&#160;</td>
+          <td class="paramname"><em>mailbox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uintptr_t *__restrict__&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Wait for and return a mailbox's value. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_mailbox.html#ac1ba359b4490ceaa9b68b74c831f2362">zth::Mailbox::take()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l02091">2091</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -701,7 +925,7 @@ Functions</h2></td></tr>
 <p>Destroys a mutex. </p>
 <p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_mutex.html" title="Fiber-aware mutex.">zth::Mutex</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00965">965</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01570">1570</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -732,7 +956,7 @@ Functions</h2></td></tr>
 <p>Initializes a mutex. </p>
 <p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_mutex.html" title="Fiber-aware mutex.">zth::Mutex</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00945">945</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01550">1550</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -763,7 +987,7 @@ Functions</h2></td></tr>
 <p>Locks a mutex. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_mutex.html#acbe80768e7addbab9bcc61bf47927b18">zth::Mutex::lock()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00983">983</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01588">1588</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -794,7 +1018,7 @@ Functions</h2></td></tr>
 <p>Try to lock a mutex. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_mutex.html#ae2ed28b8dc2efd18a4a65dbe1d4099e8">zth::Mutex::trylock()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l00997">997</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01602">1602</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -825,7 +1049,7 @@ Functions</h2></td></tr>
 <p>Unlock a mutex. </p>
 <p>This is a C-wrapper for <a class="el" href="classzth_1_1_mutex.html#af1ad6996618871dec6b1bb25686f8a8f">zth::Mutex::unlock()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01010">1010</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01615">1615</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -856,7 +1080,7 @@ Functions</h2></td></tr>
 <p>Destroys a semaphore. </p>
 <p>This is a C-wrapper to delete a <a class="el" href="classzth_1_1_semaphore.html" title="Fiber-aware semaphore.">zth::Semaphore</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01048">1048</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01656">1656</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -895,9 +1119,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the value of a semaphore. </p>
-<p>This is a C-wrapper for <a class="el" href="classzth_1_1_semaphore.html#ab89e952fbd76a111dc473545c22960f9">zth::Semaphore::value()</a>. </p>
+<p>This is a C-wrapper for <a class="el" href="classzth_1_1_semaphore.html#a4d32f4ea743c99c5b29c5ba7d5c5f42f">zth::Semaphore::value()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01067">1067</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01675">1675</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -938,7 +1162,7 @@ Functions</h2></td></tr>
 <p>Initializes a semaphore. </p>
 <p>This is a C-wrapper to create a new <a class="el" href="classzth_1_1_semaphore.html" title="Fiber-aware semaphore.">zth::Semaphore</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01028">1028</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01633">1633</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -969,7 +1193,7 @@ Functions</h2></td></tr>
 <p>Increments a semaphore. </p>
 <p>This is a C-wrapper for zth::Mutex::release() of 1. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01085">1085</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01693">1693</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -1000,7 +1224,7 @@ Functions</h2></td></tr>
 <p>Try to decrement a semaphore. </p>
 <p>This is a C-wrapper based on zth::Mutex::acquire(). </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01117">1117</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01725">1725</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>
@@ -1031,7 +1255,7 @@ Functions</h2></td></tr>
 <p>Decrements (or wait for) a semaphore. </p>
 <p>This is a C-wrapper for zth::Mutex::acquire() of 1. </p>
 
-<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01103">1103</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sync_8h_source.html#l01711">1711</a> of file <a class="el" href="sync_8h_source.html">sync.h</a>.</p>
 
 </div>
 </div>

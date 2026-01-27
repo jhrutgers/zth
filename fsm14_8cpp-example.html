@@ -167,7 +167,7 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="keywordflow">if</span>(!<a class="code hl_define" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
 <div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        (void)fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> red_()</div>
@@ -188,7 +188,7 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="keywordflow">if</span>(!<a class="code hl_define" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
 <div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        (void)fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> amber_()</div>
@@ -209,7 +209,7 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="keywordflow">if</span>(!<a class="code hl_define" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
 <div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        (void)fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> green_()</div>
@@ -230,7 +230,7 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="keywordflow">if</span>(!<a class="code hl_define" href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a>(EnableDebugPrint))</div>
 <div class="line">                printf(<span class="stringliteral">&quot;\n\x1b[11A&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">        fflush(<span class="keyword">nullptr</span>);</div>
+<div class="line">        (void)fflush(<span class="keyword">nullptr</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// The functions above are actions to be executed when a transition is taken.</span></div>
@@ -397,18 +397,17 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="keywordflow">while</span>(<a id="a4" name="a4"></a><a class="code hl_function" href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a>(0, &amp;buf, 1) &gt; 0)</div>
 <div class="line">                fsm.input(<span class="stringliteral">&quot;traffic&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a id="a5" name="a5"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(trafficDetect)</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a id="a6" name="a6"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
+<div class="line"><span class="keywordtype">int</span> <a id="a5" name="a5"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
 <div class="line">{</div>
 <div class="line">        <span class="comment">// Print the compiled transitions to stdout.</span></div>
 <div class="line">        fsm::transitions.dump();</div>
-<div class="line">        fflush(stdout);</div>
+<div class="line">        (void)fflush(stdout);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Print the FSM in plantuml format to stderr. You may pass it through</span></div>
 <div class="line">        <span class="comment">// `plantuml -p fsm.png` to render it.</span></div>
 <div class="line">        fsm::transitions.uml(stderr);</div>
-<div class="line">        fflush(stderr);</div>
+<div class="line">        (void)fflush(stderr);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Construct the Fsm. It is not a valid FSM, until...</span></div>
 <div class="line">        fsm::TrafficLight fsm;</div>
@@ -423,7 +422,7 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">        <span class="comment">// This will create an zth::fsm::Fsm instance, initialize it, and</span></div>
 <div class="line">        <span class="comment">// return it.</span></div>
 <div class="line"> </div>
-<div class="line">        <a id="a7" name="a7"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> trafficDetect(fsm);</div>
+<div class="line">        <a id="a6" name="a6"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(trafficDetect, fsm);</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Run the Fsm, until it hits the &#39;stop&#39; action (but there is none in</span></div>
 <div class="line">        <span class="comment">// this example). You could pass a zth::Timestamp or zth::TimeInterval</span></div>
@@ -434,13 +433,12 @@ $(document).ready(function(){initNavTree('fsm14_8cpp-example.html',''); initResi
 <div class="line">}</div>
 <div class="ttc" id="aclasszth_1_1_timestamp_html"><div class="ttname"><a href="classzth_1_1_timestamp.html">zth::Timestamp</a></div><div class="ttdoc">Convenient wrapper around struct timespec that contains an absolute timestamp.</div><div class="ttdef"><b>Definition</b> <a href="time_8h_source.html#l00568">time.h:568</a></div></div>
 <div class="ttc" id="aclasszth_1_1_timestamp_html_a0eb8e53a58a414abf6e44a83bb4dc133"><div class="ttname"><a href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">zth::Timestamp::now</a></div><div class="ttdeci">static Timestamp now()</div><div class="ttdef"><b>Definition</b> <a href="time_8h_source.html#l00595">time.h:595</a></div></div>
-<div class="ttc" id="aclasszth_1_1fsm_1_1_fsm_html"><div class="ttname"><a href="classzth_1_1fsm_1_1_fsm.html">zth::fsm::Fsm</a></div><div class="ttdoc">FSM base class.</div><div class="ttdef"><b>Definition</b> <a href="fsm14_8h_source.html#l01798">fsm14.h:1798</a></div></div>
+<div class="ttc" id="aclasszth_1_1fsm_1_1_fsm_html"><div class="ttname"><a href="classzth_1_1fsm_1_1_fsm.html">zth::fsm::Fsm</a></div><div class="ttdoc">FSM base class.</div><div class="ttdef"><b>Definition</b> <a href="fsm14_8h_source.html#l01799">fsm14.h:1799</a></div></div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__config_html_ga05849634b61cc2af248e038ee2cbea39"><div class="ttname"><a href="group__zth__api__cpp__config.html#ga05849634b61cc2af248e038ee2cbea39">zth_config</a></div><div class="ttdeci">#define zth_config(name)</div><div class="ttdoc">Checks if the given zth::Config field is enabled.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00044">config.h:44</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
 <div class="ttc" id="agroup__zth__api__cpp__io_html_ga1eee4d1bd134d3b8477197f8aa08d5de"><div class="ttname"><a href="group__zth__api__cpp__io.html#ga1eee4d1bd134d3b8477197f8aa08d5de">zth::io::read</a></div><div class="ttdeci">ssize_t read(int fd, void *buf, size_t count)</div><div class="ttdoc">Like normal read(), but forwards the poll() to the zth::Waiter in case it would block.</div><div class="ttdef"><b>Definition</b> <a href="io_8cpp_source.html#l00024">io.cpp:24</a></div></div>
-<div class="ttc" id="anamespacezth_1_1fsm_html"><div class="ttname"><a href="namespacezth_1_1fsm.html">zth::fsm</a></div><div class="ttdef"><b>Definition</b> <a href="fsm14_8h_source.html#l00033">fsm14.h:33</a></div></div>
+<div class="ttc" id="anamespacezth_1_1fsm_html"><div class="ttname"><a href="namespacezth_1_1fsm.html">zth::fsm</a></div><div class="ttdef"><b>Definition</b> <a href="fsm14_8h_source.html#l00034">fsm14.h:34</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

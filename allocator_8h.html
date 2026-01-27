@@ -127,18 +127,68 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ad62bdeb763758231092ecd4f8a1ee9ee" id="r_ad62bdeb763758231092ecd4f8a1ee9ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a>&#160;&#160;&#160;__attribute__((noinline))</td></tr>
+<tr class="separator:ad62bdeb763758231092ecd4f8a1ee9ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62b396011d84e883d941999c3ec645c4" id="r_a62b396011d84e883d941999c3ec645c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="allocator_8h.html#a62b396011d84e883d941999c3ec645c4">ZTH_MALLOC_ATTR</a>(attr)&#160;&#160;&#160;__attribute__((malloc))</td></tr>
+<tr class="separator:a62b396011d84e883d941999c3ec645c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa75b5ec35bbb8ea9d385ef9707dd80b4" id="r_gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaa75b5ec35bbb8ea9d385ef9707dd80b4">ZTH_CLASS_NEW_DELETE</a>(T)</td></tr>
 <tr class="memdesc:gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define new/delete operators for a class, which are allocator-aware.  <br /></td></tr>
 <tr class="separator:gaa75b5ec35bbb8ea9d385ef9707dd80b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5" id="r_gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gaaac895df320fd1b0cb430dba2f23d0a5">zth::ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *, size_t) noexcept) deallocate, 1), alloc_size(1))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *allocate(size_t n</td></tr>
+<tr class="memdesc:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrapper for Config::Allocator::type::allocate().  <br /></td></tr>
+<tr class="separator:gaaac895df320fd1b0cb430dba2f23d0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88dd81d79eeda25999124cff48d3c082" id="r_a88dd81d79eeda25999124cff48d3c082"><td class="memItemLeft" align="right" valign="top">Arg&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a88dd81d79eeda25999124cff48d3c082">zth::ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *) noexcept) delete_alloc))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *new _alloc(Arg const &amp;arg)</td></tr>
+<tr class="separator:a88dd81d79eeda25999124cff48d3c082"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f212066a5515d7336599118b71ce22a" id="r_a6f212066a5515d7336599118b71ce22a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Arg&gt; </td></tr>
+<tr class="memitem:a6f212066a5515d7336599118b71ce22a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6f212066a5515d7336599118b71ce22a">zth::ZTH_MALLOC_ATTR</a> ((malloc((void(*)(T *) noexcept) delete_alloc))) static <a class="el" href="allocator_8h.html#ad62bdeb763758231092ecd4f8a1ee9ee">ZTH_MALLOC_INLINE</a> T *new _alloc(Arg &amp;&amp;... arg)</td></tr>
+<tr class="separator:a6f212066a5515d7336599118b71ce22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86294f954615a81fd2d04244eabc0e04" id="r_a86294f954615a81fd2d04244eabc0e04"><td class="memTemplParams" colspan="2">template&lt;typename Traits , typename Allocator &gt; </td></tr>
 <tr class="memitem:a86294f954615a81fd2d04244eabc0e04"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a86294f954615a81fd2d04244eabc0e04">zth::to_zth_string</a> (std::basic_string&lt; char, Traits, Allocator &gt; const &amp;s)</td></tr>
 <tr class="separator:a86294f954615a81fd2d04244eabc0e04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05bc469384dce6f6cc410c77dabefbe6" id="r_a05bc469384dce6f6cc410c77dabefbe6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a05bc469384dce6f6cc410c77dabefbe6">zth::to_std_string</a> (<a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0">string</a> const &amp;s)</td></tr>
 <tr class="separator:a05bc469384dce6f6cc410c77dabefbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a62b396011d84e883d941999c3ec645c4" name="a62b396011d84e883d941999c3ec645c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62b396011d84e883d941999c3ec645c4">&#9670;&#160;</a></span>ZTH_MALLOC_ATTR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_MALLOC_ATTR</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">attr</td><td>)</td>
+          <td>&#160;&#160;&#160;__attribute__((malloc))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00032">32</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+
+</div>
+</div>
+<a id="ad62bdeb763758231092ecd4f8a1ee9ee" name="ad62bdeb763758231092ecd4f8a1ee9ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad62bdeb763758231092ecd4f8a1ee9ee">&#9670;&#160;</a></span>ZTH_MALLOC_INLINE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_MALLOC_INLINE&#160;&#160;&#160;__attribute__((noinline))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="allocator_8h_source.html#l00028">28</a> of file <a class="el" href="allocator_8h_source.html">allocator.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

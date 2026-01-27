@@ -106,7 +106,7 @@ Inheritance diagram for zth::Waitable:</div>
 <area href="classzth_1_1_timed_waitable.html" alt="zth::TimedWaitable" shape="rect" coords="337,56,664,80"/>
 <area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;" shape="rect" coords="0,112,327,136"/>
 <area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; F &gt;" shape="rect" coords="337,112,664,136"/>
-<area href="classzth_1_1_synchronizer_1_1_alarm_clock.html" alt="zth::Synchronizer::AlarmClock" shape="rect" coords="674,112,1001,136"/>
+<area href="classzth_1_1_synchronizer_base_1_1_alarm_clock.html" alt="zth::SynchronizerBase::AlarmClock" shape="rect" coords="674,112,1001,136"/>
 <area href="classzth_1_1_polled_member_waiting.html" alt="zth::PolledMemberWaiting&lt; C &gt;" shape="rect" coords="0,168,327,192"/>
   </map>
 </div></div>
@@ -115,8 +115,8 @@ Inheritance diagram for zth::Waitable:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6884ef1eba50bf039c48a01feee637fc" id="r_a6884ef1eba50bf039c48a01feee637fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a6884ef1eba50bf039c48a01feee637fc">Waitable</a> () noexcept</td></tr>
 <tr class="separator:a6884ef1eba50bf039c48a01feee637fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a637360e1bdfab0aca1321eb5c80e7f75" id="r_a637360e1bdfab0aca1321eb5c80e7f75"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a637360e1bdfab0aca1321eb5c80e7f75">~Waitable</a> ()=default</td></tr>
-<tr class="separator:a637360e1bdfab0aca1321eb5c80e7f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec11bbb37138307ff29b67ad0436d5de" id="r_aec11bbb37138307ff29b67ad0436d5de"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#aec11bbb37138307ff29b67ad0436d5de">~Waitable</a> () noexcept=default</td></tr>
+<tr class="separator:aec11bbb37138307ff29b67ad0436d5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbe99adc0bd8b81de2ce81885979993f" id="r_afbe99adc0bd8b81de2ce81885979993f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#afbe99adc0bd8b81de2ce81885979993f">fiber</a> () const noexcept</td></tr>
 <tr class="separator:afbe99adc0bd8b81de2ce81885979993f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af846f895a0af95e2f24d319db3634773" id="r_af846f895a0af95e2f24d319db3634773"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#af846f895a0af95e2f24d319db3634773">poll</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) noexcept=0</td></tr>
@@ -161,8 +161,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a637360e1bdfab0aca1321eb5c80e7f75" name="a637360e1bdfab0aca1321eb5c80e7f75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a637360e1bdfab0aca1321eb5c80e7f75">&#9670;&#160;</a></span>~Waitable()</h2>
+<a id="aec11bbb37138307ff29b67ad0436d5de" name="aec11bbb37138307ff29b67ad0436d5de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec11bbb37138307ff29b67ad0436d5de">&#9670;&#160;</a></span>~Waitable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,7 +179,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -265,7 +265,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classzth_1_1_synchronizer_1_1_alarm_clock.html#a19a8f55e4e2032c3fea7c468b143b901">zth::Synchronizer::AlarmClock</a>, <a class="el" href="classzth_1_1_timed_waitable.html#a27360262a2425148f076c99f7223847b">zth::TimedWaitable</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; F &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classzth_1_1_synchronizer_base_1_1_alarm_clock.html#a935c7454f12f96f3a6ce1372c4580ff6">zth::SynchronizerBase::AlarmClock</a>, <a class="el" href="classzth_1_1_timed_waitable.html#a27360262a2425148f076c99f7223847b">zth::TimedWaitable</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; F &gt;</a>.</p>
 
 </div>
 </div>

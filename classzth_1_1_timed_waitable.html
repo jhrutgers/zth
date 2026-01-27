@@ -105,10 +105,10 @@ Inheritance diagram for zth::TimedWaitable:</div>
   <img src="classzth_1_1_timed_waitable.png" usemap="#zth::TimedWaitable_map" alt=""/>
   <map id="zth::TimedWaitable_map" name="zth::TimedWaitable_map">
 <area href="classzth_1_1_waitable.html" alt="zth::Waitable" shape="rect" coords="168,0,495,24"/>
-<area href="classzth_1_1_listable.html" alt="zth::Listable&lt; TimedWaitable &gt;" shape="rect" coords="505,0,832,24"/>
+<area href="classzth_1_1_listable.html" alt="zth::Listable" shape="rect" coords="505,0,832,24"/>
 <area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;" shape="rect" coords="0,112,327,136"/>
 <area href="classzth_1_1_polled_waiting.html" alt="zth::PolledWaiting&lt; F &gt;" shape="rect" coords="337,112,664,136"/>
-<area href="classzth_1_1_synchronizer_1_1_alarm_clock.html" alt="zth::Synchronizer::AlarmClock" shape="rect" coords="674,112,1001,136"/>
+<area href="classzth_1_1_synchronizer_base_1_1_alarm_clock.html" alt="zth::SynchronizerBase::AlarmClock" shape="rect" coords="674,112,1001,136"/>
 <area href="classzth_1_1_polled_member_waiting.html" alt="zth::PolledMemberWaiting&lt; C &gt;" shape="rect" coords="0,168,327,192"/>
   </map>
 </div></div>
@@ -117,8 +117,8 @@ Inheritance diagram for zth::TimedWaitable:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7b164c72042091cf7240f5bae96e1244" id="r_a7b164c72042091cf7240f5bae96e1244"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html#a7b164c72042091cf7240f5bae96e1244">TimedWaitable</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;<a class="el" href="classzth_1_1_timed_waitable.html#a6003bfbff212232ad92cb6ccddceeb3e">timeout</a>=<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a>()) noexcept</td></tr>
 <tr class="separator:a7b164c72042091cf7240f5bae96e1244"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf366576da48fdabe51f34b87ca44d51" id="r_acf366576da48fdabe51f34b87ca44d51"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html#acf366576da48fdabe51f34b87ca44d51">~TimedWaitable</a> () override=default</td></tr>
-<tr class="separator:acf366576da48fdabe51f34b87ca44d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcead7a0e548feb077f1542ee548fc84" id="r_afcead7a0e548feb077f1542ee548fc84"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html#afcead7a0e548feb077f1542ee548fc84">~TimedWaitable</a> () noexcept override=default</td></tr>
+<tr class="separator:afcead7a0e548feb077f1542ee548fc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6003bfbff212232ad92cb6ccddceeb3e" id="r_a6003bfbff212232ad92cb6ccddceeb3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html#a6003bfbff212232ad92cb6ccddceeb3e">timeout</a> () const noexcept</td></tr>
 <tr class="separator:a6003bfbff212232ad92cb6ccddceeb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27360262a2425148f076c99f7223847b" id="r_a27360262a2425148f076c99f7223847b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_timed_waitable.html#a27360262a2425148f076c99f7223847b">poll</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) noexcept override</td></tr>
@@ -130,8 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="inherit_header pub_methods_classzth_1_1_waitable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classzth_1_1_waitable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classzth_1_1_waitable.html">zth::Waitable</a></td></tr>
 <tr class="memitem:a6884ef1eba50bf039c48a01feee637fc inherit pub_methods_classzth_1_1_waitable" id="r_a6884ef1eba50bf039c48a01feee637fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a6884ef1eba50bf039c48a01feee637fc">Waitable</a> () noexcept</td></tr>
 <tr class="separator:a6884ef1eba50bf039c48a01feee637fc inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a637360e1bdfab0aca1321eb5c80e7f75 inherit pub_methods_classzth_1_1_waitable" id="r_a637360e1bdfab0aca1321eb5c80e7f75"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a637360e1bdfab0aca1321eb5c80e7f75">~Waitable</a> ()=default</td></tr>
-<tr class="separator:a637360e1bdfab0aca1321eb5c80e7f75 inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec11bbb37138307ff29b67ad0436d5de inherit pub_methods_classzth_1_1_waitable" id="r_aec11bbb37138307ff29b67ad0436d5de"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#aec11bbb37138307ff29b67ad0436d5de">~Waitable</a> () noexcept=default</td></tr>
+<tr class="separator:aec11bbb37138307ff29b67ad0436d5de inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbe99adc0bd8b81de2ce81885979993f inherit pub_methods_classzth_1_1_waitable" id="r_afbe99adc0bd8b81de2ce81885979993f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#afbe99adc0bd8b81de2ce81885979993f">fiber</a> () const noexcept</td></tr>
 <tr class="separator:afbe99adc0bd8b81de2ce81885979993f inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cf9f222314470c0f53ffa352b897ad5 inherit pub_methods_classzth_1_1_waitable" id="r_a2cf9f222314470c0f53ffa352b897ad5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#a2cf9f222314470c0f53ffa352b897ad5">setFiber</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;<a class="el" href="classzth_1_1_waitable.html#afbe99adc0bd8b81de2ce81885979993f">fiber</a>) noexcept</td></tr>
@@ -140,21 +140,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad67deb9a3cbba853f02f03372511ab02 inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af58a46ce86b80584d868d16dbe418e24 inherit pub_methods_classzth_1_1_waitable" id="r_af58a46ce86b80584d868d16dbe418e24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_waitable.html#af58a46ce86b80584d868d16dbe418e24">hasFiber</a> () const noexcept</td></tr>
 <tr class="separator:af58a46ce86b80584d868d16dbe418e24 inherit pub_methods_classzth_1_1_waitable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classzth_1_1_listable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classzth_1_1_listable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classzth_1_1_listable.html">zth::Listable&lt; TimedWaitable &gt;</a></td></tr>
-<tr class="memitem:a47211854d684aba8eb0657622b448203 inherit pub_methods_classzth_1_1_listable" id="r_a47211854d684aba8eb0657622b448203"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a47211854d684aba8eb0657622b448203">Listable</a> () noexcept</td></tr>
-<tr class="separator:a47211854d684aba8eb0657622b448203 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8d51ffc8e6551eb5ac2dbcf59db5821 inherit pub_methods_classzth_1_1_listable" id="r_ab8d51ffc8e6551eb5ac2dbcf59db5821"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#ab8d51ffc8e6551eb5ac2dbcf59db5821">Listable</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> const &amp;e) noexcept</td></tr>
-<tr class="separator:ab8d51ffc8e6551eb5ac2dbcf59db5821 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeda188c0b835d73e3a7cc378ce31eb1c inherit pub_methods_classzth_1_1_listable" id="r_aeda188c0b835d73e3a7cc378ce31eb1c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#aeda188c0b835d73e3a7cc378ce31eb1c">Listable</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&amp;l) noexcept</td></tr>
-<tr class="separator:aeda188c0b835d73e3a7cc378ce31eb1c inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0619b4169f46a1fbf770a6245efb748 inherit pub_methods_classzth_1_1_listable" id="r_ad0619b4169f46a1fbf770a6245efb748"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#ad0619b4169f46a1fbf770a6245efb748">operator=</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> const &amp;rhs) noexcept</td></tr>
-<tr class="separator:ad0619b4169f46a1fbf770a6245efb748 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8803bd5ddf2d196cff9db97d639e3d46 inherit pub_methods_classzth_1_1_listable" id="r_a8803bd5ddf2d196cff9db97d639e3d46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a8803bd5ddf2d196cff9db97d639e3d46">operator=</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&amp;l) noexcept</td></tr>
-<tr class="separator:a8803bd5ddf2d196cff9db97d639e3d46 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecd1c861b670690f638d6e37b4ccd8b6 inherit pub_methods_classzth_1_1_listable" id="r_aecd1c861b670690f638d6e37b4ccd8b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html#a3c78f6330e3c8d72846ef54aa703aea6">type</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#aecd1c861b670690f638d6e37b4ccd8b6">listNext</a> () const noexcept</td></tr>
-<tr class="separator:aecd1c861b670690f638d6e37b4ccd8b6 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80ca54dd8360626a549c346ef14da7ce inherit pub_methods_classzth_1_1_listable" id="r_a80ca54dd8360626a549c346ef14da7ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html#a3c78f6330e3c8d72846ef54aa703aea6">type</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a80ca54dd8360626a549c346ef14da7ce">listPrev</a> () const noexcept</td></tr>
-<tr class="separator:a80ca54dd8360626a549c346ef14da7ce inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classzth_1_1_listable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classzth_1_1_listable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classzth_1_1_listable.html">zth::Listable</a></td></tr>
+<tr class="memitem:aa38576987321d9da4f92ec99fa53b927 inherit pub_methods_classzth_1_1_listable" id="r_aa38576987321d9da4f92ec99fa53b927"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#aa38576987321d9da4f92ec99fa53b927">Listable</a> () noexcept</td></tr>
+<tr class="separator:aa38576987321d9da4f92ec99fa53b927 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ee8d0ee8a1390373c1e83932236ed09 inherit pub_methods_classzth_1_1_listable" id="r_a4ee8d0ee8a1390373c1e83932236ed09"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a4ee8d0ee8a1390373c1e83932236ed09">Listable</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> const &amp;e) noexcept</td></tr>
+<tr class="separator:a4ee8d0ee8a1390373c1e83932236ed09 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2aed6af9db2493ca05b8d80bb30f944 inherit pub_methods_classzth_1_1_listable" id="r_ac2aed6af9db2493ca05b8d80bb30f944"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#ac2aed6af9db2493ca05b8d80bb30f944">operator=</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> const &amp;rhs) noexcept</td></tr>
+<tr class="separator:ac2aed6af9db2493ca05b8d80bb30f944 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c187a890c9b644d76d4004557118ca2 inherit pub_methods_classzth_1_1_listable" id="r_a0c187a890c9b644d76d4004557118ca2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a0c187a890c9b644d76d4004557118ca2">Listable</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&amp;l) noexcept</td></tr>
+<tr class="separator:a0c187a890c9b644d76d4004557118ca2 inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42a22affd3ebe79ce0671cba4deaf78c inherit pub_methods_classzth_1_1_listable" id="r_a42a22affd3ebe79ce0671cba4deaf78c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a42a22affd3ebe79ce0671cba4deaf78c">operator=</a> (<a class="el" href="classzth_1_1_listable.html">Listable</a> &amp;&amp;l) noexcept</td></tr>
+<tr class="separator:a42a22affd3ebe79ce0671cba4deaf78c inherit pub_methods_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -163,18 +159,9 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_types_classzth_1_1_listable"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classzth_1_1_listable')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classzth_1_1_listable.html">zth::Listable&lt; TimedWaitable &gt;</a></td></tr>
-<tr class="memitem:a3c78f6330e3c8d72846ef54aa703aea6 inherit pub_types_classzth_1_1_listable" id="r_a3c78f6330e3c8d72846ef54aa703aea6"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classzth_1_1_timed_waitable.html">TimedWaitable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a3c78f6330e3c8d72846ef54aa703aea6">type</a></td></tr>
-<tr class="separator:a3c78f6330e3c8d72846ef54aa703aea6 inherit pub_types_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_attribs_classzth_1_1_listable"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classzth_1_1_listable')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classzth_1_1_listable.html">zth::Listable&lt; TimedWaitable &gt;</a></td></tr>
-<tr class="memitem:aa584c17c3b1d5f0527ef2df1f18cb513 inherit pub_attribs_classzth_1_1_listable" id="r_aa584c17c3b1d5f0527ef2df1f18cb513"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#aa584c17c3b1d5f0527ef2df1f18cb513">prev</a></td></tr>
-<tr class="separator:aa584c17c3b1d5f0527ef2df1f18cb513 inherit pub_attribs_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a808618afdb030077c30c9e907b593e2f inherit pub_attribs_classzth_1_1_listable" id="r_a808618afdb030077c30c9e907b593e2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a808618afdb030077c30c9e907b593e2f">left</a></td></tr>
-<tr class="separator:a808618afdb030077c30c9e907b593e2f inherit pub_attribs_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ab258734c3a6bf01077383dcdbc3a2a inherit pub_attribs_classzth_1_1_listable" id="r_a5ab258734c3a6bf01077383dcdbc3a2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a5ab258734c3a6bf01077383dcdbc3a2a">next</a></td></tr>
-<tr class="separator:a5ab258734c3a6bf01077383dcdbc3a2a inherit pub_attribs_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a65506d30d7f4a05e342a9ddbc3e366 inherit pub_attribs_classzth_1_1_listable" id="r_a2a65506d30d7f4a05e342a9ddbc3e366"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classzth_1_1_listable.html">Listable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a2a65506d30d7f4a05e342a9ddbc3e366">right</a></td></tr>
-<tr class="separator:a2a65506d30d7f4a05e342a9ddbc3e366 inherit pub_attribs_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classzth_1_1_listable"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classzth_1_1_listable')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classzth_1_1_listable.html">zth::Listable</a></td></tr>
+<tr class="memitem:a8da916ffc880e52fab37fb8c43006bd5 inherit pub_types_classzth_1_1_listable" id="r_a8da916ffc880e52fab37fb8c43006bd5"><td class="memItemLeft" align="right" valign="top">typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_listable.html#a8da916ffc880e52fab37fb8c43006bd5">user_type</a></td></tr>
+<tr class="separator:a8da916ffc880e52fab37fb8c43006bd5 inherit pub_types_classzth_1_1_listable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
@@ -208,8 +195,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="acf366576da48fdabe51f34b87ca44d51" name="acf366576da48fdabe51f34b87ca44d51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf366576da48fdabe51f34b87ca44d51">&#9670;&#160;</a></span>~TimedWaitable()</h2>
+<a id="afcead7a0e548feb077f1542ee548fc84" name="afcead7a0e548feb077f1542ee548fc84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcead7a0e548feb077f1542ee548fc84">&#9670;&#160;</a></span>~TimedWaitable()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -226,7 +213,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">default</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -288,7 +275,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classzth_1_1_waitable.html#af846f895a0af95e2f24d319db3634773">zth::Waitable</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classzth_1_1_synchronizer_1_1_alarm_clock.html#a19a8f55e4e2032c3fea7c468b143b901">zth::Synchronizer::AlarmClock</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; F &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classzth_1_1_synchronizer_base_1_1_alarm_clock.html#a935c7454f12f96f3a6ce1372c4580ff6">zth::SynchronizerBase::AlarmClock</a>, <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; PolledMemberWaitingHelper&lt; C &gt; &gt;</a>, and <a class="el" href="classzth_1_1_polled_waiting.html#a1c7b6e2f757a08615c5cfcd4806a041d">zth::PolledWaiting&lt; F &gt;</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="waiter_8h_source.html#l00081">81</a> of file <a class="el" href="waiter_8h_source.html">waiter.h</a>.</p>
 

@@ -1,0 +1,46 @@
+var group__zth__api__cpp__coro =
+[
+    [ "zth::coro::task< T >", "classzth_1_1coro_1_1task.html", [
+      [ "Future_type", "classzth_1_1coro_1_1task.html#a6834abdf6ebfe27a258c95960a5de7f1", null ],
+      [ "promise_type", "classzth_1_1coro_1_1task.html#a898b92c984bd77a2300558cef844357d", null ],
+      [ "return_type", "classzth_1_1coro_1_1task.html#a1c52d87e392d1b270e739bd61f6c9596", null ],
+      [ "task", "classzth_1_1coro_1_1task.html#afb6d6291296c138fd2ca178cd0e5d302", null ],
+      [ "task", "classzth_1_1coro_1_1task.html#a209c2725a22bbea1095c49c025375271", null ],
+      [ "task", "classzth_1_1coro_1_1task.html#ab31ec4dcdbcf83532e1c7111bb414442", null ],
+      [ "task", "classzth_1_1coro_1_1task.html#a63d9f9d36efaeca3b4c33180ce14e521", null ],
+      [ "await_ready", "classzth_1_1coro_1_1task.html#a9ecb984115f171a623cae987d47be3ff", null ],
+      [ "await_resume", "classzth_1_1coro_1_1task.html#a0f45399fa54924d04097da1c49721575", null ],
+      [ "await_suspend", "classzth_1_1coro_1_1task.html#a934ce1899f8c146483093c65bea8a7e6", null ],
+      [ "completed", "classzth_1_1coro_1_1task.html#ae11b9f19ad2bb9f46b6c5d44fd94b89b", null ],
+      [ "fiber", "classzth_1_1coro_1_1task.html#ab4845c925a8d90bc471fc3c3128ccc2f", null ],
+      [ "future", "classzth_1_1coro_1_1task.html#ac399e5c60b59e4199c50674d73b3ecd1", null ],
+      [ "id_str", "classzth_1_1coro_1_1task.html#a22a028f0c88b3c5e34450801dc2e79a1", null ],
+      [ "operator co_await", "classzth_1_1coro_1_1task.html#a37f39756cdf3949515e02956dbbdac5b", null ],
+      [ "operator()", "classzth_1_1coro_1_1task.html#a650a706e679a741f97e8391f9cabbf1a", null ],
+      [ "promise", "classzth_1_1coro_1_1task.html#a83befefeb1d4888a009bdc9084f88e32", null ],
+      [ "result", "classzth_1_1coro_1_1task.html#a591eff6bbfebe8965ec079c361788572", null ],
+      [ "run", "classzth_1_1coro_1_1task.html#a68eefb065cb1286a1b853596635a2d29", null ],
+      [ "setName", "classzth_1_1coro_1_1task.html#a27c00158b8f0becb48782da100d6c37e", null ]
+    ] ],
+    [ "zth::coro::generator< T >", "classzth_1_1coro_1_1generator.html", [
+      [ "Mailbox_types", "classzth_1_1coro_1_1generator.html#af861735358d9499a4181db28105bbc35", null ],
+      [ "promise_type", "classzth_1_1coro_1_1generator.html#adf5e789a1a86de769de2333b0e039df5", null ],
+      [ "generator", "classzth_1_1coro_1_1generator.html#a81b8eb1c04376b02861ae3f1d4c73400", null ],
+      [ "generator", "classzth_1_1coro_1_1generator.html#ab27d221504e233f2f98dedb4cdff1ae5", null ],
+      [ "generator", "classzth_1_1coro_1_1generator.html#ae57726817404fba34b926e5d534c5ac7", null ],
+      [ "generator", "classzth_1_1coro_1_1generator.html#adb715dd259990c2e6c1fb66d4122869e", null ],
+      [ "as", "classzth_1_1coro_1_1generator.html#a706f09e29fd976e68607ac5fe49e551b", null ],
+      [ "begin", "classzth_1_1coro_1_1generator.html#a1ae49e111167e8fa174b970e1bd0dece", null ],
+      [ "completed", "classzth_1_1coro_1_1generator.html#aacfa4a3337d3d46ed5e5f01a13c5ebbe", null ],
+      [ "end", "classzth_1_1coro_1_1generator.html#ac7b6251ac54e78f02f768df2f4bdd861", null ],
+      [ "fiber", "classzth_1_1coro_1_1generator.html#a120eade114be4553934b259d84d9088e", null ],
+      [ "generate", "classzth_1_1coro_1_1generator.html#a4b69c149f5fa9c88ab611aafcb9b45cc", null ],
+      [ "id_str", "classzth_1_1coro_1_1generator.html#a885fa96fc6e8d979e77a78e43b132ecd", null ],
+      [ "mailbox", "classzth_1_1coro_1_1generator.html#a911d5a4a7863cc774e56553dc72e8d1c", null ],
+      [ "promise", "classzth_1_1coro_1_1generator.html#afbd28c1197f42d8bfa76ccddc1e64b89", null ],
+      [ "run", "classzth_1_1coro_1_1generator.html#a21bdaec9194068982b62eba656d7f066", null ],
+      [ "setName", "classzth_1_1coro_1_1generator.html#a5391ce49e08447f8bce8048c326c6821", null ],
+      [ "valid", "classzth_1_1coro_1_1generator.html#ab34dd9773190b93460b062e10fdac596", null ],
+      [ "value", "classzth_1_1coro_1_1generator.html#a8b1db406cdd06812a4d28aff37dcc3d3", null ]
+    ] ]
+];

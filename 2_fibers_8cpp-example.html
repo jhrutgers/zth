@@ -94,16 +94,21 @@ $(document).ready(function(){initNavTree('2_fibers_8cpp-example.html',''); initR
 <div class="contents">
 <p>Fiber creation.</p>
 <p>Fiber creation.This program will print:</p>
-<pre class="fragment">fiber_vv()
-fddd is not valid yet
-fiber_ddd(3, 4) = 7
-fddd = 7
-fiber_ddd(1, 2) = 3
-fiber_vii(3, 14)
-fiber_vi(42)
-fiber_vv()
-</pre><p>Note that the order of the last four lines is not deterministic.</p>
-<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<pre class="fragment">Hello, Fiber!
+inc(42) = 43
+inc(100) = 101
+something
+100 incremented is 101
+3 = 1 + 2
+7 = 3 + 4
+Result of add is 7
+a-&gt;operand + b = 6
+Result of struct_add is 6
+Lambda says: Hello from lambda!
+Functor called with 123
+std::function called
+Structured binding: data_result = 4.5
+</pre><div class="fragment"><div class="line"><span class="comment">/*</span></div>
 <div class="line"><span class="comment"> * SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers</span></div>
 <div class="line"><span class="comment"> *</span></div>
 <div class="line"><span class="comment"> * SPDX-License-Identifier: CC0-1.0</span></div>
@@ -113,132 +118,120 @@ fiber_vv()
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// zth_fiber() is used to allow using `zth_async&#39; on a function to start a fiber</span></div>
-<div class="line"><span class="comment">// with the given function as entry point.  zth_fiber() generates some static</span></div>
-<div class="line"><span class="comment">// variables to implement this. So, don&#39;t use zth_fiber() in a header file, as</span></div>
-<div class="line"><span class="comment">// it will result in a linker complaining about multiple symbols. You can split</span></div>
-<div class="line"><span class="comment">// zth_fiber() in two parts: the declaration (zth_fiber_declare()) and</span></div>
-<div class="line"><span class="comment">// definition (zth_fiber_define()), like you do with most functions in headers</span></div>
-<div class="line"><span class="comment">// and source files.</span></div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// The same applies in case there is a circular dependency between two function</span></div>
-<div class="line"><span class="comment">// calling each other as a fiber.  In that case, you can forward declare the</span></div>
-<div class="line"><span class="comment">// fiber using zth_fiber_declare(), just like you would do in a header file.</span></div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// In case you have a header file that should make fibers visible, declare your</span></div>
-<div class="line"><span class="comment">// function as normal.</span></div>
-<div class="line"><span class="keywordtype">void</span> fiber_vv();</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// Then, use zth_fiber_declare() instead of zth_fiber() to generate everything</span></div>
-<div class="line"><span class="comment">// that is required such that other compilation units can do `zth_async</span></div>
-<div class="line"><span class="comment">// fiber_vv()&#39;.</span></div>
-<div class="line"><a id="a0" name="a0"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d">zth_fiber_declare</a>(fiber_vv)</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// In one .cpp file, zth_fiber_define() is required to implement the actual</span></div>
-<div class="line"><span class="comment">// fiber creation code.</span></div>
-<div class="line"><a id="a1" name="a1"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2603bf564dbfe29105402410f898bcde">zth_fiber_define</a>(fiber_vv)</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// And, of course, you need to implement the function itself in the .cpp file.</span></div>
-<div class="line"><span class="keywordtype">void</span> fiber_vv()</div>
+<div class="line"><span class="comment">// For C++11 and up, anything that can be invoked like a function (function pointers, lambda</span></div>
+<div class="line"><span class="comment">// functions, functors, std::function, etc.) can be used as fiber entry point.  For pre-C++11, only</span></div>
+<div class="line"><span class="comment">// function pointers are supported, with up to three arguments.</span></div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> print(<span class="keywordtype">char</span> <span class="keyword">const</span>* something)</div>
 <div class="line">{</div>
-<div class="line">        printf(<span class="stringliteral">&quot;fiber_vv()\n&quot;</span>);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;%s\n&quot;</span>, something);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// You can use function parameters of any type in the fiber entry function,</span></div>
-<div class="line"><span class="comment">// except for references (like an `int const&amp;&#39; parameter).  In the</span></div>
-<div class="line"><span class="comment">// implementation, the arguments are stored and given to the Fiber object.</span></div>
-<div class="line"><span class="comment">// Reference variables are const, and cannot be reassigned, so this is not</span></div>
-<div class="line"><span class="comment">// possible to save and forward arguments. If you do a pass-by-value, note that</span></div>
-<div class="line"><span class="comment">// the data might be copied multiple times by Zth before ending up in the fiber</span></div>
-<div class="line"><span class="comment">// entry. So, try to avoid to do pass-by-value of large structs (as is always</span></div>
-<div class="line"><span class="comment">// smart to avoid in all C/C++ code).</span></div>
-<div class="line"><span class="keywordtype">void</span> fiber_vi(<span class="keywordtype">int</span> i)</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> print_something()</div>
 <div class="line">{</div>
-<div class="line">        printf(<span class="stringliteral">&quot;fiber_vi(%d)\n&quot;</span>, i);</div>
+<div class="line">        <a id="a0" name="a0"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(print, <span class="stringliteral">&quot;something&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> fiber_vii(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y)</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">int</span> inc(<span class="keywordtype">int</span> i)</div>
 <div class="line">{</div>
-<div class="line">        printf(<span class="stringliteral">&quot;fiber_vii(%d, %d)\n&quot;</span>, x, y);</div>
+<div class="line">        <span class="keywordtype">int</span> res = i + 1;</div>
+<div class="line">        printf(<span class="stringliteral">&quot;inc(%d) = %d\n&quot;</span>, i, res);</div>
+<div class="line">        <span class="keywordflow">return</span> res;</div>
 <div class="line">}</div>
-<div class="line"><span class="comment">// zth_fiber_declare(), zth_fiber_define() and zth_fiber() allow a list of</span></div>
-<div class="line"><span class="comment">// functions. This is identical to calling zth_fiber...() on every function</span></div>
-<div class="line"><span class="comment">// separately.</span></div>
-<div class="line"><a id="a2" name="a2"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(fiber_vi, fiber_vii)</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// When you use a reference or pointer argument, make sure the argument passed to the fiber is still</span></div>
+<div class="line"><span class="comment">// valid when the fiber runs. It may outlive the scope in which the fiber was created.</span></div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> add(<span class="keywordtype">int</span>&amp; a, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y)</div>
+<div class="line">{</div>
+<div class="line">        a = x + y;</div>
+<div class="line">        printf(<span class="stringliteral">&quot;%d = %d + %d\n&quot;</span>, a, x, y);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">struct </span>Data {</div>
+<div class="line">        <span class="keywordtype">double</span> operand;</div>
+<div class="line">        <span class="keywordtype">double</span> result;</div>
+<div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Fibers can return data, like normal functions.</span></div>
-<div class="line"><span class="keywordtype">double</span> fiber_ddd(<span class="keywordtype">double</span> a, <span class="keywordtype">double</span> b)</div>
+<div class="line"><span class="keyword">static</span> Data* struct_add(Data* a, <span class="keywordtype">double</span> b)</div>
 <div class="line">{</div>
-<div class="line">        <span class="keywordtype">double</span> res = a + b;</div>
-<div class="line">        printf(<span class="stringliteral">&quot;fiber_ddd(%g, %g) = %g\n&quot;</span>, a, b, res);</div>
-<div class="line">        <span class="keywordflow">return</span> res;</div>
+<div class="line">        a-&gt;result = a-&gt;operand + b;</div>
+<div class="line">        printf(<span class="stringliteral">&quot;a-&gt;operand + b = %g\n&quot;</span>, a-&gt;result);</div>
+<div class="line">        <span class="keywordflow">return</span> a;</div>
 <div class="line">}</div>
-<div class="line"><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(fiber_ddd)</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> <a id="a1" name="a1"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
+<div class="line">{</div>
+<div class="line">        <span class="comment">// Note that the order in which the fibers get initialized or execute is not defined.</span></div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(print_something);</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(print, <span class="stringliteral">&quot;Hello, Fiber!&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// If you would just start a fiber like this, you don&#39;t know when it completes.</span></div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(inc, 42);</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// You probably want to wait for its result. You can do this by getting a future from the</span></div>
+<div class="line">        <span class="comment">// fiber. Just dereference the future object to get the value.</span></div>
+<div class="line">        <a id="_a2" name="_a2"></a><a class="code hl_struct" href="structzth_1_1fiber__future.html">zth::fiber_future&lt;int&gt;</a> finc = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(inc, 100);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;100 incremented is %d\n&quot;</span>, *finc);</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// As we pass a local variable as reference argument to the fiber, we need to make sure that</span></div>
+<div class="line">        <span class="comment">// the fiber finishes before the variable goes out of scope.</span></div>
+<div class="line">        <span class="keywordtype">int</span> a = 0;</div>
+<div class="line">        <a class="code hl_struct" href="structzth_1_1fiber__future.html">zth::fiber_future&lt;&gt;</a> f_add = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(add, a, 1, 2);</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// Although the future type is void, we can still wait for the fiber to finish by</span></div>
+<div class="line">        <span class="comment">// dereferencing it.</span></div>
+<div class="line">        *f_add;</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// You can also do this in one line:</span></div>
+<div class="line">        *<a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(add, a, 3, 4);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Result of add is %d\n&quot;</span>, a);</div>
+<div class="line"> </div>
+<div class="line">        Data data = {3.5};</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Result of struct_add is %g\n&quot;</span>, <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(struct_add, &amp;data, 2.5)-&gt;result);</div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
-<div class="line"><span class="comment">// The current implementation for pre-C++11 only support up to three arguments.</span></div>
-<div class="line"><span class="comment">// C++11 and higher support arbitrary number of arguments.</span></div>
-<div class="line"><span class="keywordtype">double</span> fiber_ddddi(<span class="keywordtype">double</span> a, <span class="keywordtype">double</span> b, <span class="keywordtype">double</span> c, <span class="keywordtype">int</span> d)</div>
-<div class="line">{</div>
-<div class="line">        <span class="keywordtype">double</span> res = a * b + c - d;</div>
-<div class="line">        printf(<span class="stringliteral">&quot;fiber_ddddi(%g, %g, %g, %d) = %g\n&quot;</span>, a, b, c, d, res);</div>
-<div class="line">        <span class="keywordflow">return</span> res;</div>
-<div class="line">}</div>
-<div class="line"><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(fiber_ddddi)</div>
+<div class="line">        <span class="comment">// For C++11 and up, lambda functions and functors can also be used as fiber entry points.</span></div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>([](<span class="keywordtype">char</span> <span class="keyword">const</span>* msg) { printf(<span class="stringliteral">&quot;Lambda says: %s\n&quot;</span>, msg); }, <span class="stringliteral">&quot;Hello from lambda!&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">        <span class="keyword">struct </span>Functor {</div>
+<div class="line">                <span class="keywordtype">void</span> operator()(<span class="keywordtype">int</span> n)</div>
+<div class="line">                {</div>
+<div class="line">                        printf(<span class="stringliteral">&quot;Functor called with %d\n&quot;</span>, n);</div>
+<div class="line">                }</div>
+<div class="line">        };</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(Functor(), 123);</div>
+<div class="line"> </div>
+<div class="line">        std::function&lt;void()&gt; f = []() { printf(<span class="stringliteral">&quot;std::function called\n&quot;</span>); };</div>
+<div class="line">        *<a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(f);</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// Note that zth::fiber() by default does not create a future. The next line is valid,</span></div>
+<div class="line">        <span class="comment">// though.  The returned object allows you to convert it to a future, but that is only safe</span></div>
+<div class="line">        <span class="comment">// if you are sure that the fiber has not yet completed.</span></div>
+<div class="line">        <span class="keyword">auto</span> fiber_object = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>([]() { <span class="keywordflow">return</span> 42; });</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// If you want a future, in combination with auto, use the asFuture manipulator.  Now, ff2</span></div>
+<div class="line">        <span class="comment">// is a std::fiber_future&lt;...&gt; object.</span></div>
+<div class="line">        <span class="keyword">auto</span> <a class="code hl_function" href="namespacezth.html#aea5df8fdfdc1ba96f2cc36f8171b3a02">fiber_future</a> = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>([]() { <span class="keywordflow">return</span> 84; }) &lt;&lt; <a id="_a3" name="_a3"></a><a class="code hl_struct" href="structzth_1_1as_future.html">zth::asFuture</a>();</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a id="a3" name="a3"></a><a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> <span class="comment">/*argc*/</span>, <span class="keywordtype">char</span>** <span class="comment">/*argv*/</span>)</div>
-<div class="line">{</div>
-<div class="line">        <span class="comment">// `zth_async&#39; is just like a function call, but its execution is</span></div>
-<div class="line">        <span class="comment">// postponed.  Note that the order in which the fibers get initialized</span></div>
-<div class="line">        <span class="comment">// or execute is not defined.</span></div>
-<div class="line">        <a id="a4" name="a4"></a><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vv();</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vi(42);</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_vii(3, 14);</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// The fiber entry points are still available to be called directly.</span></div>
-<div class="line">        <span class="comment">// So, the following line just calls fiber_vv() right away. There is no</span></div>
-<div class="line">        <span class="comment">// side-effect on fiber_vv() as being marked as fiber entry point.</span></div>
-<div class="line">        fiber_vv();</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// fiber_ddd() returns a value. If it would be started as below, the</span></div>
-<div class="line">        <span class="comment">// return value is just lost, just like what would happen if you would</span></div>
-<div class="line">        <span class="comment">// call fiber_ddd() as a normal function without using its return</span></div>
-<div class="line">        <span class="comment">// value.</span></div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddd(1, 2);</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// zth_fiber() also defines a &lt;function&gt;_future type, which allows</span></div>
-<div class="line">        <span class="comment">// synchronization between fibers. `zth_async&#39; returns this type.</span></div>
-<div class="line">        fiber_ddd_future fddd = <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddd(3, 4);</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// Now, fddd is a (smart) pointer to a Future object. fddd is small and</span></div>
-<div class="line">        <span class="comment">// can safely be copied or passed using pass-by-value. It gives a few</span></div>
-<div class="line">        <span class="comment">// interesting functions:</span></div>
-<div class="line">        <span class="comment">// - poll whether the fiber has finished and the future becomes</span></div>
-<div class="line">        <span class="comment">//   therefore valid;</span></div>
-<div class="line">        printf(<span class="stringliteral">&quot;fddd is %s\n&quot;</span>, fddd-&gt;valid() ? <span class="stringliteral">&quot;valid&quot;</span> : <span class="stringliteral">&quot;not valid yet&quot;</span>);</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// - suspend the current fiber and wait until the fiber has finished;</span></div>
-<div class="line">        fddd-&gt;wait();</div>
-<div class="line"> </div>
-<div class="line">        <span class="comment">// - retrieve the returned value by the fiber. If the future is not</span></div>
-<div class="line">        <span class="comment">//   valid yet, value() will imply wait().</span></div>
-<div class="line">        printf(<span class="stringliteral">&quot;fddd = %g\n&quot;</span>, fddd-&gt;value());</div>
-<div class="line">        <span class="comment">// In case the return type of the fiber is void, the value() function</span></div>
-<div class="line">        <span class="comment">// is not available.</span></div>
-<div class="line"> </div>
-<div class="line"><span class="preprocessor">#if __cplusplus &gt;= 201103L</span></div>
-<div class="line">        <span class="comment">// Arbitrary fiber argument number example.</span></div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> fiber_ddddi(4, 5, 6, 7);</div>
+<div class="line"><span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
+<div class="line">        <span class="comment">// For C++17 and up, structured bindings are supported on futures.</span></div>
+<div class="line">        <span class="keyword">auto</span> [data_operand, data_result] = *<a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(</div>
+<div class="line">                [](Data&amp; a, <span class="keywordtype">double</span> d) {</div>
+<div class="line">                        a.result = a.operand + d;</div>
+<div class="line">                        <span class="keywordflow">return</span> a;</div>
+<div class="line">                },</div>
+<div class="line">                data, 1.0);</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Structured binding: data_result = %g\n&quot;</span>, data_result);</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"> </div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2603bf564dbfe29105402410f898bcde"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2603bf564dbfe29105402410f898bcde">zth_fiber_define</a></div><div class="ttdeci">#define zth_fiber_define(...)</div><div class="ttdoc">Do the definition part of zth_fiber() (to be used in a .cpp file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00799">async.h:799</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_gaa75c9c194e3894b31f044e0e9d3a8c1d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#gaa75c9c194e3894b31f044e0e9d3a8c1d">zth_fiber_declare</a></div><div class="ttdeci">#define zth_fiber_declare(...)</div><div class="ttdoc">Do the declaration part of zth_fiber() (to be used in an .h file).</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00779">async.h:779</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
+<div class="ttc" id="anamespacezth_html_aea5df8fdfdc1ba96f2cc36f8171b3a02"><div class="ttname"><a href="namespacezth.html#aea5df8fdfdc1ba96f2cc36f8171b3a02">zth::fiber_future</a></div><div class="ttdeci">fiber_future(F &amp;) -&gt; fiber_future&lt; typename F::factory::Return &gt;</div></div>
+<div class="ttc" id="astructzth_1_1as_future_html"><div class="ttname"><a href="structzth_1_1as_future.html">zth::asFuture</a></div><div class="ttdoc">Forces the fiber to have a future that outlives the fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00310">async.h:310</a></div></div>
+<div class="ttc" id="astructzth_1_1fiber__future_html"><div class="ttname"><a href="structzth_1_1fiber__future.html">zth::fiber_future</a></div><div class="ttdoc">The future returned by a fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01292">async.h:1292</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,7 +1,8 @@
 var classzth_1_1_typed_fiber_n =
 [
-    [ "base", "classzth_1_1_typed_fiber_n.html#a6264d2922a2d029665b486c2b7986974", null ],
-    [ "TypedFiberN", "classzth_1_1_typed_fiber_n.html#a7cb319118aa74cf5bfbcea2487969c1e", null ],
-    [ "~TypedFiberN", "classzth_1_1_typed_fiber_n.html#a18b90962230306b0e22eadaaac2aa45c", null ],
-    [ "entry_", "classzth_1_1_typed_fiber_n.html#ac3fc1766f5a06eb420c246a3fa09b955", null ]
+    [ "base", "classzth_1_1_typed_fiber_n.html#a435553458b6732e52352455401cb1833", null ],
+    [ "Function", "classzth_1_1_typed_fiber_n.html#ab70f9059b619ca44a6e1dc4e1c92a5fd", null ],
+    [ "TypedFiberN", "classzth_1_1_typed_fiber_n.html#aefbf1f434ef01150c39bc85c7fc39fa3", null ],
+    [ "~TypedFiberN", "classzth_1_1_typed_fiber_n.html#a6e972c411dc6a225b5917e520d763e0e", null ],
+    [ "entry_", "classzth_1_1_typed_fiber_n.html#a580f60e58c5510af9aec4df766efc642", null ]
 ];

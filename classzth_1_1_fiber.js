@@ -3,6 +3,7 @@ var classzth_1_1_fiber =
     [ "Entry", "classzth_1_1_fiber.html#a48e87df46636d2a8b91158fcb49f7035", null ],
     [ "EntryArg", "classzth_1_1_fiber.html#ad8917ebf1c5365dc01118954520a5bf4", null ],
     [ "FiberHook", "classzth_1_1_fiber.html#a31eb99197dffacb3886b7bc20be3db4a", null ],
+    [ "Hook_type", "classzth_1_1_fiber.html#a56a75a432d4cbbac76ada81499b8678e", null ],
     [ "State", "classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28f", [
       [ "Uninitialized", "classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fac9c7958593a28512cc22a445dcb06649", null ],
       [ "New", "classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa8c48c3ee41262fe01b57b93f937760cb", null ],
@@ -13,10 +14,10 @@ var classzth_1_1_fiber =
       [ "Dead", "classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa6f357465066e85f1fe878b1a808b2334", null ]
     ] ],
     [ "Fiber", "classzth_1_1_fiber.html#ac3fed6cd0dd9d8f4cffc007645e8efe0", null ],
-    [ "~Fiber", "classzth_1_1_fiber.html#abf21985bf5049a6a552c25a634d50854", null ],
-    [ "addCleanup", "classzth_1_1_fiber.html#addd14e42b758c8ac750eaf7c2b8fb42f", null ],
+    [ "~Fiber", "classzth_1_1_fiber.html#a3107323e8499d989b133e7ca1aaa6d1c", null ],
     [ "allowYield", "classzth_1_1_fiber.html#a4f23c3dc932f21024665f5902fbc9046", null ],
-    [ "changedName", "classzth_1_1_fiber.html#a511fc1c4278f65fcb79a3d94072f9219", null ],
+    [ "atCleanup", "classzth_1_1_fiber.html#a3148b02a07ea3baca7af07cb4b71b3cd", null ],
+    [ "atExit", "classzth_1_1_fiber.html#a5d9054718a1967f6111ddf028f7922f8", null ],
     [ "context", "classzth_1_1_fiber.html#a07b21742c0ba4009c5130da23f7db940", null ],
     [ "fiberEntry_", "classzth_1_1_fiber.html#a90c02fb107f1e15ee1691b7556a57d9e", null ],
     [ "fls", "classzth_1_1_fiber.html#afa1214c6a2e5235e8ff1f77e539c1e6d", null ],

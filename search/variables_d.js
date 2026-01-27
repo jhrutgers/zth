@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['r_0',['r',['../structzth_1_1impl_1_1_function_i_o_n.html#a51d2206c54f534d60dbac2331a4bcfd2',1,'zth::impl::FunctionION']]],
-  ['revents_1',['revents',['../structzth_1_1_pollable.html#ad9d9ae350b7bacb476447e943b6b0242',1,'zth::Pollable']]],
-  ['right_2',['right',['../classzth_1_1_listable.html#a2a65506d30d7f4a05e342a9ddbc3e366',1,'zth::Listable']]]
+  ['operator_2a_0',['operator*',['../classzth_1_1_shared_reference_ops.html#a94c4a5b0d1a631ebfbd83930b06b5712',1,'zth::SharedReferenceOps']]],
+  ['operator_2d_3e_1',['operator-&gt;',['../classzth_1_1_shared_reference_ops.html#aa4071e2f04cf2ac125ba01cfe6d18490',1,'zth::SharedReferenceOps']]]
 ];

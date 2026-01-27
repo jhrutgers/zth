@@ -16,5 +16,7 @@ var searchData=
   ['contextattr_13',['ContextAttr',['../structzth_1_1_context_attr.html',1,'zth']]],
   ['contextbase_14',['ContextBase',['../classzth_1_1impl_1_1_context_base.html',1,'zth::impl']]],
   ['contextbase_3c_20context_20_3e_15',['ContextBase&lt; Context &gt;',['../classzth_1_1impl_1_1_context_base.html',1,'zth::impl']]],
-  ['cow_5fstring_16',['cow_string',['../classzth_1_1cow__string.html',1,'zth']]]
+  ['coro_5falready_5fcompleted_16',['coro_already_completed',['../structzth_1_1coro__already__completed.html',1,'zth']]],
+  ['coro_5finvalid_5fstate_17',['coro_invalid_state',['../structzth_1_1coro__invalid__state.html',1,'zth']]],
+  ['cow_5fstring_18',['cow_string',['../classzth_1_1cow__string.html',1,'zth']]]
 ];

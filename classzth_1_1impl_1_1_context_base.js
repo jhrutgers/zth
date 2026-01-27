@@ -1,6 +1,5 @@
 var classzth_1_1impl_1_1_context_base =
 [
-    [ "Stack", "structzth_1_1impl_1_1_context_base_1_1_stack.html", "structzth_1_1impl_1_1_context_base_1_1_stack" ],
     [ "ContextBase", "classzth_1_1impl_1_1_context_base.html#aef558e6ff8778ce3cd6b4bb6cfe50f05", null ],
     [ "~ContextBase", "classzth_1_1impl_1_1_context_base.html#a19c62fcb3e6bbca37f04a6c26b5a4c14", null ],
     [ "alive", "classzth_1_1impl_1_1_context_base.html#ae49e1b21f22606d3d2edc26a96db3061", null ],

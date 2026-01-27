@@ -103,35 +103,37 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>Usage of dynamic memory is minimized (only during fiber creation and cleanup), and it allocator-aware.</li>
 <li>Support for <a href="https://github.com/google/sanitizers">ASan, LSan, UBSan</a>, and <a href="https://valgrind.org/">Valgrind</a>.</li>
 </ul>
-<p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using the <code>zth_async</code> keyword:</p>
+<p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using <code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber()</a></code>:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> world()</div>
 <div class="line">{</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Wonderful\n&quot;</span>);</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a>();</div>
 <div class="line">        printf(<span class="stringliteral">&quot;World!!1\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(world)</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> hello()</div>
 <div class="line">{</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> world();</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(world);</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Hello\n&quot;</span>);</div>
 <div class="line">}</div>
-<div class="line"><a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a>(hello)</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> <a class="code hl_function" href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div>
 <div class="line">{</div>
-<div class="line">        <a class="code hl_define" href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a> hello();</div>
+<div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(hello);</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga121a5e39c7e4138aa09c2ce6ea7e213d"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga121a5e39c7e4138aa09c2ce6ea7e213d">zth_async</a></div><div class="ttdeci">#define zth_async</div><div class="ttdoc">Run a function as a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00828">async.h:828</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga2cc783da6d70609272495ea174b0def2"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga2cc783da6d70609272495ea174b0def2">zth_fiber</a></div><div class="ttdeci">#define zth_fiber(...)</div><div class="ttdoc">Prepare every given function to become a fiber by zth_async.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l00806">async.h:806</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga727bc20a95cfe9f95c19a5c0367a77dc"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=nullptr, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdoc">Allow a context switch.</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00454">worker.h:454</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --><p>Notable other features include:</p>
 <ul>
-<li>Finite State Machine implementation, which allows defining state transitions in an eDSL, and easily transfers a fiber into a fiber-aware FSM, properly handling polling timed guards.</li>
+<li>C++20 Coroutine support, to run, share, and <code>co_await</code> a coro between fibers.</li>
+<li>ARM support with automatic MPU configuration to check stack overflows.</li>
+<li>Finite State Machine implementation, which allows defining state transitions in an eDSL, and easily transforms into a fiber-aware FSM, properly handling polling timed guards.</li>
 <li>Extensible Poller framework, which allows <code>poll()</code>-like calls by fibers to be forwarded to a single poller server, which can be user-defined for custom pollable types.</li>
 <li>Inter-fiber signaling, such as a mutex, semaphore, signal, and future.</li>
 </ul>
@@ -145,14 +147,8 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </ul>
 <p>Check out the <code>dist</code> directory for example targets.</p>
 <h2>How to build</h2>
-<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. This does effectively:</p>
-<div class="fragment"><div class="line">mkdir build</div>
-<div class="line">cd build</div>
-<div class="line">cmake ../../..</div>
-<div class="line">cmake --build .</div>
-</div><!-- fragment --><p>By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>, or do something like:</p>
-<div class="fragment"><div class="line">cmake ../../.. -D CMAKE_BUILD_TYPE=Debug</div>
-</div><!-- fragment --><p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
+<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>. VS Code configuration is available too.</p>
+<p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
 <h3>How to integrate in your project</h3>
 <p>Configure Zth options as required, like this:</p>
 <div class="fragment"><div class="line">set(ZTH_THREADS OFF CACHE BOOL &quot;Disable threads&quot; FORCE)</div>

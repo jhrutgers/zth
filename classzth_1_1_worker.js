@@ -2,14 +2,15 @@ var classzth_1_1_worker =
 [
     [ "Load_type", "classzth_1_1_worker.html#a31f2074180825060f84a0a96470d7e60", null ],
     [ "Worker", "classzth_1_1_worker.html#a986afdcdef9e9dbca7fcbec6cd4026a2", null ],
-    [ "~Worker", "classzth_1_1_worker.html#aacb609cdd5d2f31980935a4e35f32de9", null ],
-    [ "add", "classzth_1_1_worker.html#ab3524151aeccf7d1a40001c252d2bc93", null ],
+    [ "~Worker", "classzth_1_1_worker.html#ac0b9aeda15178fbaa0f438ddc364de69", null ],
+    [ "add", "classzth_1_1_worker.html#a7507d339422bb9e6962873dc8ccd230f", null ],
     [ "cleanup", "classzth_1_1_worker.html#a7f110c974413be8ca3bfed0ab2f55115", null ],
     [ "contextSwitchDisable", "classzth_1_1_worker.html#a199b875598608007b9926332d671893f", null ],
     [ "contextSwitchEnable", "classzth_1_1_worker.html#a7a8fb039dfeb184b12a9a285d64cb7cd", null ],
     [ "contextSwitchEnabled", "classzth_1_1_worker.html#a8c2bc72f29781751f0501d7911616037", null ],
     [ "currentFiber", "classzth_1_1_worker.html#a6cd0f8ecc57151765260f70c7b954261", null ],
     [ "dbgStats", "classzth_1_1_worker.html#a1fb2f5338b683aa07defbcbd6428bfa9", null ],
+    [ "hatch", "classzth_1_1_worker.html#a3b06f646a5f0565875a2e21f2be859d1", null ],
     [ "isInWorkerContext", "classzth_1_1_worker.html#aa0efe52ce53636a430eeac04179409a7", null ],
     [ "load", "classzth_1_1_worker.html#a39aecc11bef87c8c32073bc1ce3c80ae", null ],
     [ "load", "classzth_1_1_worker.html#a613ad5c13ff4da0f0c9a0c4cf85bc122", null ],
@@ -21,5 +22,7 @@ var classzth_1_1_worker =
     [ "schedule", "classzth_1_1_worker.html#a752d10fb8ee901470d14d31eb54a708d", null ],
     [ "suspend", "classzth_1_1_worker.html#a83e8d2eaeb4c559358aeeb89d317ede9", null ],
     [ "waiter", "classzth_1_1_worker.html#a6cc612b9aba1143d96db88dc4df17723", null ],
+    [ "workerStack", "classzth_1_1_worker.html#a5ec57cda50034f0250162b7410949974", null ],
+    [ "Context", "classzth_1_1_worker.html#ac26c806e60ca4a0547680edb68f6e39b", null ],
     [ "worker_global_init", "classzth_1_1_worker.html#a2ce9b915665078d9d49f866be74d9b27", null ]
 ];

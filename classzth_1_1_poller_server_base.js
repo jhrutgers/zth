@@ -1,7 +1,7 @@
 var classzth_1_1_poller_server_base =
 [
     [ "Client", "classzth_1_1_poller_server_base.html#a3d8e5f7a82d31ea899729168e20805d9", null ],
-    [ "~PollerServerBase", "classzth_1_1_poller_server_base.html#a4a97da853ab1fc9cb013a43a07dd436b", null ],
+    [ "~PollerServerBase", "classzth_1_1_poller_server_base.html#a022153965943b7278b78c7c9411418a6", null ],
     [ "add", "classzth_1_1_poller_server_base.html#a6e6b67672f2f33b085441f64167fca7f", null ],
     [ "add", "classzth_1_1_poller_server_base.html#a61e405a58141dee9f5fd93ed491d6801", null ],
     [ "add", "classzth_1_1_poller_server_base.html#a2459df7cfdd587cbc216596c2dd9b749", null ],

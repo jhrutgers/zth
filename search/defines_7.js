@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['likely_0',['likely',['../util_8h.html#aa0672ea7123854cc5f51902a06c473fb',1,'util.h']]],
-  ['lref_5fqualified_1',['LREF_QUALIFIED',['../macros_8h.html#aa6a85894eeb4da52b3246f67465d9897',1,'macros.h']]]
+  ['map_5fstack_0',['MAP_STACK',['../context_2context_8h.html#a06c706c6cc07f13a3d0e1252e923ec69',1,'context.h']]]
 ];

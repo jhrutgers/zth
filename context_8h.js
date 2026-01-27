@@ -1,6 +1,7 @@
 var context_8h =
 [
     [ "zth::ContextAttr", "structzth_1_1_context_attr.html", "structzth_1_1_context_attr" ],
+    [ "zth::Stack", "structzth_1_1_stack.html", "structzth_1_1_stack" ],
     [ "zth::impl::Packed< T >", "structzth_1_1impl_1_1_packed.html", "structzth_1_1impl_1_1_packed" ],
     [ "zth::impl::Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4" ],
     [ "zth::impl::Arguments< A >", "structzth_1_1impl_1_1_arguments.html", "structzth_1_1impl_1_1_arguments" ],

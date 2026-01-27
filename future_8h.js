@@ -4,13 +4,16 @@ var future_8h =
     [ "zth::impl::std_shared_future_base< T >", "classzth_1_1impl_1_1std__shared__future__base.html", "classzth_1_1impl_1_1std__shared__future__base" ],
     [ "zth::impl::std_future_base< T >", "classzth_1_1impl_1_1std__future__base.html", "classzth_1_1impl_1_1std__future__base" ],
     [ "zth::impl::std_promise_base< T >", "classzth_1_1impl_1_1std__promise__base.html", "classzth_1_1impl_1_1std__promise__base" ],
+    [ "ZTH_FUTURE_COPY", "future_8h.html#a553320182616c52b79785061ea5e4577", null ],
+    [ "ZTH_FUTURE_CTORS", "future_8h.html#a4be7b81eb7d0c939065d25092433c776", null ],
+    [ "ZTH_FUTURE_MOVE", "future_8h.html#aed3b0ad5d6886fd221e8a0f4cfd5435c", null ],
     [ "future", "future_8h.html#a279948c52cec7c5d76897490d0a0f0d8", null ],
     [ "invoke_result", "future_8h.html#af085e31dbb277403848dc2143b392319", null ],
     [ "promise", "future_8h.html#acbd4fbc514ce83426752a97814a35274", null ],
     [ "shared_future", "future_8h.html#aa498c5a81ea2a044d047e2b724534c28", null ],
-    [ "launch", "future_8h.html#a783924c255ed65f164dde11543fe0106", [
-      [ "detached", "future_8h.html#a783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119", null ],
-      [ "awaitable", "future_8h.html#a783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906", null ]
+    [ "launch", "future_8h.html#ga783924c255ed65f164dde11543fe0106", [
+      [ "detached", "future_8h.html#gga783924c255ed65f164dde11543fe0106ab0398fd2e0c78072a48131f810266119", null ],
+      [ "awaitable", "future_8h.html#gga783924c255ed65f164dde11543fe0106a585e42503e56277507dfe85198419906", null ]
     ] ],
     [ "async", "future_8h.html#a087305069a49ec6e1ec88bcb2615406d", null ],
     [ "async", "future_8h.html#acae078684c45d1bb30c55db6d5bfeb58", null ],

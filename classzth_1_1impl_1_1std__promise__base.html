@@ -124,7 +124,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af0ee07a26a76e14dbe3aefbf96f3278d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3587d7419f6c579ebb2bca51267241da" id="r_a3587d7419f6c579ebb2bca51267241da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a3587d7419f6c579ebb2bca51267241da">set_value</a> ()</td></tr>
 <tr class="separator:a3587d7419f6c579ebb2bca51267241da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dcec2e49aeca3331f8209c13b409297" id="r_a7dcec2e49aeca3331f8209c13b409297"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a7dcec2e49aeca3331f8209c13b409297">set_exception</a> (std::exception_ptr exception)</td></tr>
+<tr class="memitem:a7dcec2e49aeca3331f8209c13b409297" id="r_a7dcec2e49aeca3331f8209c13b409297"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a7dcec2e49aeca3331f8209c13b409297">set_exception</a> (std::exception_ptr <a class="el" href="structzth_1_1exception.html">exception</a>)</td></tr>
 <tr class="separator:a7dcec2e49aeca3331f8209c13b409297"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -133,8 +133,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a30faea4c0abbef39dc71216ee61fbd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a048f2b302f637d729995ea4de1df4d80" id="r_a048f2b302f637d729995ea4de1df4d80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a048f2b302f637d729995ea4de1df4d80">std_promise_base</a> (<a class="el" href="classzth_1_1_shared_pointer.html">SharedPointer</a>&lt; <a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a478bda977e207497f443a43fae6a6770">Future_type</a> &gt; <a class="el" href="namespacezth.html#a279948c52cec7c5d76897490d0a0f0d8">future</a>) noexcept</td></tr>
 <tr class="separator:a048f2b302f637d729995ea4de1df4d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abec69d4713d8e7630bd83ee162de805e" id="r_abec69d4713d8e7630bd83ee162de805e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#abec69d4713d8e7630bd83ee162de805e">std_promise_base</a> (<a class="el" href="classzth_1_1impl_1_1std__promise__base.html">std_promise_base</a> &amp;&amp;other) noexcept</td></tr>
-<tr class="separator:abec69d4713d8e7630bd83ee162de805e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93e77247b82178dd24eec993d2e45655" id="r_a93e77247b82178dd24eec993d2e45655"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a93e77247b82178dd24eec993d2e45655">std_promise_base</a> (<a class="el" href="classzth_1_1impl_1_1std__promise__base.html">std_promise_base</a> &amp;&amp;other) noexcept=default</td></tr>
+<tr class="separator:a93e77247b82178dd24eec993d2e45655"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2079a310267690dfcbd4dc296934faf8" id="r_a2079a310267690dfcbd4dc296934faf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a2079a310267690dfcbd4dc296934faf8">check_valid</a> () const</td></tr>
 <tr class="separator:a2079a310267690dfcbd4dc296934faf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a063280580767dff718c19c87ef1ca52f" id="r_a063280580767dff718c19c87ef1ca52f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1impl_1_1std__promise__base.html#a063280580767dff718c19c87ef1ca52f">check_not_satisfied</a> () const</td></tr>
@@ -143,7 +143,7 @@ Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 class zth::impl::std_promise_base&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00134">134</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00235">235</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a478bda977e207497f443a43fae6a6770" name="a478bda977e207497f443a43fae6a6770"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a478bda977e207497f443a43fae6a6770">&#9670;&#160;</a></span>Future_type</h2>
@@ -159,7 +159,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00137">137</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00238">238</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -177,7 +177,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00136">136</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00237">237</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +207,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00140">140</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00241">241</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -237,12 +237,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00144">144</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00245">245</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
-<a id="abec69d4713d8e7630bd83ee162de805e" name="abec69d4713d8e7630bd83ee162de805e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abec69d4713d8e7630bd83ee162de805e">&#9670;&#160;</a></span>std_promise_base() <span class="overload">[3/4]</span></h2>
+<a id="a93e77247b82178dd24eec993d2e45655" name="a93e77247b82178dd24eec993d2e45655"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93e77247b82178dd24eec993d2e45655">&#9670;&#160;</a></span>std_promise_base() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -262,12 +262,10 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">default</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00148">148</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -325,7 +323,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00205">205</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00303">303</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -354,7 +352,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00199">199</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00297">297</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -383,7 +381,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00168">168</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00266">266</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -413,7 +411,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00154">154</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00252">252</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -471,7 +469,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00192">192</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00290">290</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -500,7 +498,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00186">186</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00284">284</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -532,7 +530,7 @@ template&lt;typename U &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00180">180</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00278">278</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>
@@ -562,7 +560,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00163">163</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="future_8h_source.html#l00261">261</a> of file <a class="el" href="future_8h_source.html">future.h</a>.</p>
 
 </div>
 </div>

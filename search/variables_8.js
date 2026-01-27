@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['is_5fsteady_0',['is_steady',['../structzth_1_1monotonic__clock.html#a6d5f7972af1738738546b3ae56de1f44',1,'zth::monotonic_clock']]]
+  ['hookdead_0',['hookDead',['../classzth_1_1_fiber.html#a1c228db91e427e6e97be97a97250b551',1,'zth::Fiber']]],
+  ['hooknew_1',['hookNew',['../classzth_1_1_fiber.html#ac459dbb82752dddf410832e327eea419',1,'zth::Fiber']]]
 ];
