@@ -13,12 +13,12 @@
 
 static zth::coro::generator<float> fiber_factory(float supply)
 {
-	std::random_device rd;
-	std::mt19937 gen{rd()};
+	// NOLINTNEXTLINE
+	std::mt19937 gen{(unsigned)time(nullptr)};
 	std::uniform_real_distribution<float> distrib{1, 10};
 
 	while(supply > 0) {
-		float x = distrib(gen);
+		float x = std::min(supply, distrib(gen));
 		printf("Fiber factory: creating %g of fiber\n", (double)x);
 		co_yield x;
 		supply -= x;
@@ -61,14 +61,22 @@ packing_socks(zth::coro::generator<Sock, float> big, zth::coro::generator<Sock, 
 {
 	int sets = 0;
 
-	while(true) {
-		Sock big_left = co_await big.as<Sock>();
-		Sock big_right = co_await big.as<Sock>();
-		Sock small_left = co_await small.as<Sock>();
-		Sock small_right = co_await small.as<Sock>();
-		printf("      Packing facility: packed set %d with %s, %s, %s, and %s\n", ++sets,
-		       big_left.str.c_str(), big_right.str.c_str(), small_left.str.c_str(),
-		       small_right.str.c_str());
+	try {
+		while(true) {
+			Sock big_left = co_await big.as<Sock>();
+			Sock big_right = co_await big.as<Sock>();
+			Sock small_left = co_await small.as<Sock>();
+			Sock small_right = co_await small.as<Sock>();
+			printf("      Packing facility: packed set %d with %s, %s, %s, and %s\n",
+			       ++sets, big_left.str.c_str(), big_right.str.c_str(),
+			       small_left.str.c_str(), small_right.str.c_str());
+		}
+	} catch(zth::coro_already_completed const&) {
+		// Dispose socks in the pipeline.
+		if(big.valid<Sock>())
+			big.value<Sock>();
+		if(small.valid<Sock>())
+			small.value<Sock>();
 	}
 
 	co_return sets;

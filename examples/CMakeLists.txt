@@ -72,7 +72,7 @@ if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES
 	set_property(TARGET measure PROPERTY CXX_STANDARD 14)
 endif()
 
-if(ZTH_HAVE_CORO)
+if(ZTH_HAVE_CORO AND NOT ZTH_DISABLE_EXCEPTIONS)
 	add_example(sock_factory sock_factory.cpp)
 	set_property(TARGET sock_factory PROPERTY CXX_STANDARD 20)
 endif()
