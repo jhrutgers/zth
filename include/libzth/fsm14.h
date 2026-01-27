@@ -7,8 +7,9 @@
  */
 
 /*!
- * \defgroup zth_api_cpp_fsm14 fsm (C++14)
- * \brief A fiber-aware FSM implementation, with concise eDSL and constexpr compatible.
+ * \defgroup zth_api_cpp_fsm14 fsm
+ * \brief A fiber-aware FSM implementation for C++14 and later, with concise eDSL and constexpr
+ *        compatible.
  * \see \ref fsm14.cpp
  * \ingroup zth_api_cpp
  */

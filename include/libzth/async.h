@@ -1176,6 +1176,18 @@ fiber(F f, typename fiber_type<F>::factory::A1 a1, typename fiber_type<F>::facto
 #  endif // ZTH_TYPEDFIBER98
 
 #  if __cplusplus >= 201103L
+/*!
+ * \brief Create and start a new fiber.
+ * \param f Function/lambda/functor to be executed in the fiber.
+ * \param args Arguments to be passed to \p f.
+ *
+ * This function creates and starts a new fiber in one step. It is equivalent to:
+ * \code
+ * auto f = zth::factory(func)(args...);
+ * \endcode
+ *
+ * \ingroup zth_api_cpp_fiber
+ */
 template <typename F, typename... Args>
 typename fiber_type<F>::fiber fiber(F&& f, Args&&... args)
 {
@@ -1267,6 +1279,15 @@ struct fiber_future_helper<T, false> {
 
 } // namespace impl
 
+/*!
+ * \brief The future returned by a fiber.
+ *
+ * When a fiber, created with #zth::fiber() or #zth::factory(), is passed to this class, a future is
+ * automatically assigned to the fiber result.
+ *
+ * \see zth::asFuture
+ * \ingroup zth_api_cpp_fiber
+ */
 template <typename T = void>
 struct fiber_future : public impl::fiber_future_helper<T>::type {
 	typedef typename impl::fiber_future_helper<T>::type future_type;
@@ -1337,6 +1358,20 @@ joinable(SharedReference<Future<T> /**/> const& f, Gate& g, Hook<Gate&>& join) n
 	joinable(f.get(), g, join);
 }
 
+/*!
+ * \brief RAII class to join fibers and futures on destruction.
+ *
+ * Usage:
+ * \code
+ * {
+ * 	zth::joiner j(zth::fiber(...), ...);
+ * 	// do work
+ * 	// When j goes out of scope, all fibers and futures are joined.
+ * }
+ * \endcode
+ *
+ * \ingroup zth_api_cpp_fiber
+ */
 class joiner {
 	ZTH_CLASS_NOCOPY(joiner)
 public:
@@ -1490,6 +1525,10 @@ static inline void join(J0& j0, J1& j1, J2& j2, J3& j3, J4& j4)
 #  endif
 
 #  if __cplusplus >= 201103L
+/*!
+ * \brief Join multiple fibers and futures.
+ * \ingroup zth_api_cpp_fiber
+ */
 template <typename... J>
 static inline void join(J&&... j)
 {
@@ -1516,7 +1555,6 @@ namespace fibered {}
 
 /*!
  * \brief Do the declaration part of #zth_fiber() (to be used in an .h file).
- * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
 #  define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
@@ -1537,14 +1575,12 @@ namespace fibered {}
 
 /*!
  * \brief Do the definition part of #zth_fiber() (to be used in a .cpp file).
- * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
 #  define zth_fiber_define(...) FOREACH(zth_fiber_define_extern_1, ##__VA_ARGS__)
 
 /*!
  * \brief Prepare every given function to become a fiber by #zth_async.
- * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
 #  define zth_fiber(...) FOREACH(zth_fiber_define_static_1, ##__VA_ARGS__)
@@ -1566,7 +1602,6 @@ namespace fibered {}
  * }
  * \endcode
  *
- * \ingroup zth_api_cpp_fiber
  * \hideinitializer
  */
 #  define zth_async ::zth::fibered::
