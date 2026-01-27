@@ -6,6 +6,12 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+/*!
+ * \defgroup zth_api_cpp_future future
+ * \brief \c std::future and \c std::promise wrappers that are fiber-aware.
+ * \ingroup zth_api_cpp
+ */
+
 #if defined(__cplusplus) && __cplusplus >= 201103L
 
 #  include <libzth/macros.h>
@@ -474,7 +480,16 @@ public:
 //
 
 namespace zth {
-enum class launch { detached = 1, awaitable = 2 };
+
+/*!
+ * \brief Launch policies for std::async to start fibers instead of threads.
+ * \see std::async
+ * \ingroup zth_api_cpp_future
+ */
+enum class launch {
+	detached = 1,  //!< \brief Start fiber, without a future to await.
+	awaitable = 2, //!< \brief Start fiber, returning a future to await.
+};
 
 namespace impl {
 #  if __cplusplus < 201703L

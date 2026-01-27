@@ -6,6 +6,12 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+/*!
+ * \defgroup zth_api_cpp_coro coro
+ * \brief C++20 coroutine support for fibers.
+ * \ingroup zth_api_cpp
+ */
+
 #if defined(__cplusplus) && __cplusplus >= 202002L
 #  define ZTH_HAVE_CORO
 #endif
@@ -500,6 +506,11 @@ static inline void joinable(task_fiber<T, F> const& tf, Gate& g, Hook<Gate&>& jo
 	static_cast<zth::Fiber&>(tf) << passOnExit(g);
 }
 
+/*!
+ * \brief A coroutine task producing a single result value.
+ * \tparam T The return type of the coroutine. Use \c void for no return value.
+ * \ingroup zth_api_cpp_coro
+ */
 template <typename T = void>
 class task {
 public:
@@ -703,9 +714,6 @@ template <typename T>
 class Mailbox;
 
 template <typename T>
-static inline decltype(auto) awaitable(Mailbox<T>& mailbox) noexcept;
-
-template <typename T>
 class Mailbox : public zth::Mailbox<T> {
 	ZTH_CLASS_NEW_DELETE(Mailbox)
 public:
@@ -718,8 +726,6 @@ public:
 	{}
 
 	virtual ~Mailbox() noexcept override = default;
-
-	friend decltype(auto) awaitable<T>(Mailbox<T>& mailbox) noexcept;
 
 	promise_base& owner() const noexcept
 	{
@@ -800,7 +806,7 @@ private:
 };
 
 template <typename T>
-static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
+static inline decltype(auto) awaitable(zth::coro::Mailbox<T>& mb) noexcept
 {
 	struct impl {
 		Mailbox<T>& mailbox;
@@ -888,6 +894,12 @@ static inline void joinable(generator_fiber<G, F> const& gf, Gate& g, Hook<Gate&
 template <typename... T>
 class generator_promise;
 
+/*!
+ * \brief A coroutine generator producing a sequence of values.
+ * \tparam T The yield types of the generator. At least one type must be specified, and
+ *           \c void is not allowed.
+ * \ingroup zth_api_cpp_coro
+ */
 template <typename... T>
 requires(sizeof...(T) >= 1, (!std::is_void_v<T> && ...)) class generator {
 public:
