@@ -166,15 +166,15 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32)
 endif()
 
 if(ZTH_DISABLE_EXCEPTIONS)
-	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>-fno-exceptions>)
+	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>)
 endif()
 
 if(ZTH_DISABLE_RTTI)
-	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>-fno-rtti>)
+	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 endif()
 
 if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
-	target_compile_options(libzth PRIVATE -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
+	target_compile_options(libzth PUBLIC -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
 endif()
 
 if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
