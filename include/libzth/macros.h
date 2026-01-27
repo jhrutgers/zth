@@ -223,14 +223,6 @@ ZTH_EXPORT void foo();
 #  endif
 #endif
 
-#if defined(__cplusplus) && !defined(__cpp_exceptions)
-#  define try		 if(true)
-#  define catch(...)	 if(false)
-#  define zth_throw(...) std::terminate()
-#else
-#  define zth_throw(...) throw __VA_ARGS__
-#endif
-
 #if defined(__SANITIZE_ADDRESS__) && !defined(ZTH_ENABLE_ASAN)
 #  define ZTH_ENABLE_ASAN
 #endif
@@ -336,6 +328,10 @@ ZTH_EXPORT void foo();
 #  ifndef ZTH_FORMAT_LIMITED
 #    define ZTH_FORMAT_LIMITED 1
 #  endif
+#  ifdef __NEWLIB_NANO__
+#    undef ZTH_HAVE_EXCEPTIONS
+#    define ZTH_HAVE_EXCEPTIONS 0
+#  endif
 #else
 #  error Unsupported OS.
 #endif
@@ -346,6 +342,29 @@ ZTH_EXPORT void foo();
 
 #if !ZTH_THREADS
 #  undef ZTH_HAVE_PTHREAD
+#endif
+
+
+
+//////////////////////////////////////////////////
+// Exception support
+//
+
+#if defined(__cplusplus) && defined(__cpp_exceptions)
+#  ifndef ZTH_HAVE_EXCEPTIONS
+#    define ZTH_HAVE_EXCEPTIONS 1
+#  endif
+#else
+#  undef ZTH_HAVE_EXCEPTIONS
+#  define ZTH_HAVE_EXCEPTIONS 0
+#endif
+
+#if !ZTH_HAVE_EXCEPTIONS
+#  define try		 if(true)
+#  define catch(...)	 if(false)
+#  define zth_throw(...) std::terminate()
+#else
+#  define zth_throw(...) throw __VA_ARGS__
 #endif
 
 

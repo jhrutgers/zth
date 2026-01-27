@@ -31,7 +31,7 @@
 #    include <valgrind/memcheck.h>
 #  endif
 
-#  if __cplusplus >= 201103L && defined(__cpp_exceptions)
+#  if __cplusplus >= 201103L && ZTH_HAVE_EXCEPTIONS
 #    include <exception>
 #    define ZTH_FUTURE_EXCEPTION
 #  endif

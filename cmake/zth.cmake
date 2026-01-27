@@ -166,7 +166,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32)
 endif()
 
 if(ZTH_DISABLE_EXCEPTIONS)
-	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>)
+	target_compile_options(libzth PUBLIC -fno-exceptions)
 endif()
 
 if(ZTH_DISABLE_RTTI)

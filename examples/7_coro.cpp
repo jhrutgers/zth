@@ -64,7 +64,7 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	};
 	zth::join(awaiter(generator).fiber("awaiter"), generator_fiber);
 
-#ifdef __cpp_exceptions
+#if ZTH_HAVE_EXCEPTIONS
 	// ...or share a generator between two fibers. The generator coro is now executed within the
 	// fiber that does a co_await on it. When a generator is co_awaited that does not exist
 	// (anymore), a zth::coro_already_completed exception is thrown.
