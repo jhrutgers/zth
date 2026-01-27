@@ -276,21 +276,22 @@ public:
 	virtual bool running() const noexcept = 0;
 	virtual std::coroutine_handle<> handle() noexcept = 0;
 
-	void markNested() noexcept
+	std::coroutine_handle<> continuation() noexcept
 	{
-		zth_assert(m_nested < std::numeric_limits<unsigned int>::max());
-		m_nested++;
+		auto c = m_continuation;
+		set_continuation();
+		return c ? c : std::noop_coroutine();
 	}
 
-	void markUnnested() noexcept
+	bool has_continuation() const noexcept
 	{
-		zth_assert(m_nested > 0);
-		m_nested--;
+		return static_cast<bool>(m_continuation);
 	}
 
-	bool nested() const noexcept
+	void set_continuation(std::coroutine_handle<> cont = {}) noexcept
 	{
-		return m_nested;
+		zth_assert(!m_continuation || !cont || m_continuation == cont);
+		m_continuation = cont;
 	}
 
 protected:
@@ -299,7 +300,7 @@ protected:
 	{}
 
 private:
-	unsigned int m_nested = false;
+	std::coroutine_handle<> m_continuation;
 };
 
 template <typename Promise>
@@ -360,9 +361,10 @@ public:
 				return false;
 			}
 
-			void await_suspend(std::coroutine_handle<>) noexcept
+			std::coroutine_handle<> await_suspend(std::coroutine_handle<>) noexcept
 			{
 				p.running(false);
+				return p.continuation();
 			}
 
 			void await_resume() noexcept {}
@@ -382,23 +384,7 @@ public:
 
 	virtual bool running() const noexcept final
 	{
-		return m_running;
-	}
-
-	void resume()
-	{
-		if(running())
-			// Runs in another fiber.
-			return;
-
-		auto h = handle();
-		zth_assert(h);
-
-		if(h.done())
-			return;
-
-		zth_dbg(coro, "[%s] Resume", id_str());
-		h();
+		return m_running || this->has_continuation();
 	}
 
 	void run()
@@ -575,15 +561,6 @@ public:
 		return *future();
 	}
 
-	void resume()
-	{
-		auto* p = promise();
-		if(!p)
-			return;
-
-		p->resume();
-	}
-
 	decltype(auto) run()
 	{
 		auto* p = promise();
@@ -670,55 +647,14 @@ public:
 		return task{static_cast<promise_type*>(this)};
 	}
 
-	// cppcheck-suppress duplInheritedMember
-	decltype(auto) final_suspend() noexcept
-	{
-		struct impl {
-			promise_type& p;
-			decltype(std::declval<base>().final_suspend()) awaitable;
-
-			bool await_ready() noexcept
-			{
-				return awaitable.await_ready();
-			}
-
-			std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
-			{
-				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
-				awaitable.await_suspend(h);
-
-				if(!p.m_continuation)
-					return std::noop_coroutine();
-
-				p.markUnnested();
-				return p.m_continuation;
-			}
-
-			decltype(auto) await_resume() noexcept
-			{
-				return awaitable.await_resume();
-			}
-		};
-
-		return impl{this->self(), base::final_suspend()};
-	}
-
 	void unhandled_exception() noexcept
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_future.set(std::current_exception());
 	}
 
-	void set_continuation(std::coroutine_handle<> cont) noexcept
-	{
-		zth_assert(!m_continuation || !cont || m_continuation == cont);
-		m_continuation = cont;
-		this->markNested();
-	}
-
 private:
 	Future_type m_future;
-	std::coroutine_handle<> m_continuation;
 };
 
 template <typename T>
@@ -823,8 +759,8 @@ public:
 
 	void abandon()
 	{
-		m_owner = nullptr;
 		this->unblockAll(base::Queue_Take);
+		m_owner = nullptr;
 	}
 
 	bool abandoned() const noexcept
@@ -854,6 +790,7 @@ protected:
 
 		zth_dbg(coro, "[%s] Unblock coro %s", this->id_str(), str(user).c_str());
 		m_waiter = std::coroutine_handle<>::from_address(user);
+		owner().set_continuation(m_waiter);
 		return user;
 	}
 
@@ -886,7 +823,6 @@ static inline decltype(auto) awaitable(Mailbox<T>& mb) noexcept
 		{
 			waiter = h;
 			mailbox.wait(item, waiter);
-			mailbox.owner().markNested();
 			return mailbox.owner().handle();
 		}
 
@@ -1031,22 +967,14 @@ public:
 		return p->template value<U>();
 	}
 
-	void resume()
-	{
-		auto* p = m_promise.get();
-		if(!p)
-			return;
-
-		p->resume();
-	}
-
+	template <typename U = typename promise_type::first_yield_type>
 	void generate()
 	{
 		auto* p = m_promise.get();
 		if(!p)
 			zth_throw(coro_already_completed{});
 
-		p->generate();
+		p->template generate<U>();
 	}
 
 	void run()
@@ -1257,8 +1185,11 @@ public:
 		zth_assert(h && !h.done());
 
 		zth_dbg(coro, "[%s] Generate", this->id_str());
-		while(!mailbox<U>().valid() && !completed())
+		while(!mailbox<U>().valid() && !completed()) {
+			// Always return at the next yield.
+			this->set_continuation(std::noop_coroutine());
 			h();
+		}
 	}
 
 	auto get_return_object() noexcept
@@ -1293,32 +1224,21 @@ public:
 
 		struct impl {
 			generator_promise& self;
+
+			char const* id_str() const noexcept
+			{
+				return "yield";
+			}
+
 			bool await_ready() noexcept
 			{
-				if(!self.nested()) {
-					// We may be invoked to generate a value, via an iterator,
-					// for example.  Return now, otherwise generate() will
-					// resume us again immediately.
-					return false;
-				}
-
-				// Check if the waiter is for our type.  Only suspend if we have a
-				// matching waiter, as the waiter should only be resumed when we
-				// actually yielded something to it.
-				auto w = self.template waiter<M>();
-				if(!w || !self.template mailbox<M>().valid(w))
-					return true;
-
-				// Resume the waiter.
-				self.markUnnested();
-				return false;
+				return !self.has_continuation();
 			}
 
 			std::coroutine_handle<>
 			await_suspend(std::coroutine_handle<> UNUSED_PAR(h)) noexcept
 			{
-				auto w = self.template waiter<M>();
-				return w ? w : std::noop_coroutine();
+				return self.continuation();
 			}
 
 			void await_resume() noexcept {}
@@ -1341,15 +1261,11 @@ public:
 
 			std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept
 			{
-				static_assert(std::is_void_v<decltype(awaitable.await_suspend(h))>);
-				awaitable.await_suspend(h);
-
 				(void)(..., std::get<zth::coro::impl::generator_Mailbox_type<T>>(
 						    self.m_mailbox)
 						    .abandon());
 
-				auto w = self.waiter();
-				return w ? w : std::noop_coroutine();
+				return awaitable.await_suspend(h);
 			}
 
 			decltype(auto) await_resume() noexcept
@@ -1371,7 +1287,6 @@ public:
 	{
 		zth_dbg(coro, "[%s] Exit with exception", this->id_str());
 		m_completed = true;
-		(void)(..., mailbox<T>().put(std::current_exception()));
 	}
 
 	/////////////////////////////////////////////////////

@@ -55,3 +55,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+# Exceptions are supported, though. These are just here for testing purposes to get the binary as
+# small as possible.
+set(ZTH_DISABLE_EXCEPTIONS ON)
+set(ZTH_DISABLE_RTTI ON)
