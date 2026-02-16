@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [Unreleased](https://github.com/jhrutgers/zth/compare/v1.1.0...HEAD)
+## [Unreleased](https://github.com/jhrutgers/zth/compare/v2.0.0...HEAD)
+
+### Added
+
+...
+
+
+
+## [2.0.0] - 2026-02-16
 
 ### Added
 
@@ -31,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `zth::fiber()` to `zth::factory()` and implement `zth::fiber()` to actually return a fiber.
 - Streamlined fiber type member functions.
 - Removed deprecated old FSM implementation.
+
+[2.0.0]: https://github.com/jhrutgers/zth/releases/tag/v2.0.0
 
 
 
