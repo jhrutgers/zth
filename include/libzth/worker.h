@@ -224,6 +224,8 @@ reschedule:
 			switch(res) {
 			case 0:
 				// Ok, just returned to this fiber. Continue execution.
+				if(likely(m_currentFiber))
+					m_currentFiber->checkCancelled();
 				return true;
 			case EAGAIN:
 				// Switching to the same fiber.

@@ -21,6 +21,7 @@
 #  include <libzth/allocator.h>
 #  include <libzth/config.h>
 #  include <libzth/context.h>
+#  include <libzth/exception.h>
 #  include <libzth/init.h>
 #  include <libzth/list.h>
 #  include <libzth/perf.h>
@@ -66,7 +67,7 @@ public:
 	 */
 	static FiberHook* hookDead;
 
-	enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Dead };
+	enum State { Uninitialized = 0, New, Ready, Running, Waiting, Suspended, Cancel, Dead };
 
 	typedef ContextAttr::EntryArg EntryArg;
 	typedef void (*Entry)(EntryArg);
@@ -218,6 +219,7 @@ again:
 				hookNew(*this);
 			goto again;
 
+		case Cancel:
 		case Ready: {
 			zth_assert(&from != this);
 
@@ -286,6 +288,44 @@ again:
 		setState(Dead);
 	}
 
+	void cancel()
+	{
+		if(state() == Cancel)
+			return;
+
+		zth_dbg(fiber, "[%s] Cancel", id_str());
+
+		Fiber* f = nullptr;
+		getContext(nullptr, &f);
+		if(state() != Dead)
+			setState(Cancel);
+
+		if(f == this) {
+			cancelled();
+			return;
+		}
+	}
+
+	void checkCancelled()
+	{
+		zth_assert(&currentFiber() == this);
+		if(unlikely(state() == Cancel))
+			cancelled();
+	}
+
+protected:
+	void cancelled()
+	{
+		zth_dbg(fiber, "[%s] Cancelled", id_str());
+#  ifdef __cpp_exceptions
+		zth_throw(zth::cancelled());
+#  else
+		kill();
+		yield();
+#  endif
+	}
+
+public:
 	void nap(Timestamp const& sleepUntil = Timestamp::null()) noexcept
 	{
 		switch(state()) {
@@ -308,6 +348,7 @@ again:
 			zth_dbg(fiber, "[%s] Schedule sleep after resume", id_str());
 			m_stateNext = Waiting;
 			break;
+		case Cancel:
 		case Waiting:
 		case Uninitialized:
 		case Dead:
@@ -332,6 +373,7 @@ again:
 			case Ready:
 			case Running:
 			case Waiting:
+			case Cancel:
 			case Dead:
 			default:
 				zth_dbg(fiber, "[%s] Wakeup", id_str());
@@ -357,6 +399,7 @@ again:
 			// fall-through
 		case Suspended:
 		case Uninitialized:
+		case Cancel:
 		case Dead:
 		default:
 			// Ignore.
@@ -404,6 +447,9 @@ again:
 			break;
 		case Suspended:
 			res += " Suspended";
+			break;
+		case Cancel:
+			res += " Cancel";
 			break;
 		case Dead:
 			res += " Dead";

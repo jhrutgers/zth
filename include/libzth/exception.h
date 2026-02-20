@@ -46,6 +46,11 @@ struct errno_exception : public exception {
 	int code;
 };
 
+/*!
+ * \brief Exception thrown when a fiber is cancelled.
+ */
+struct cancelled : public exception {};
+
 } // namespace zth
 
 #endif // __cplusplus

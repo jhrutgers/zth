@@ -1059,19 +1059,39 @@ struct fiber_type {
 		return *f;
 	}
 
-	operator TypedFiber_type&() const noexcept
+	TypedFiber_type& getFiber() const noexcept
 	{
 		return *_fiber;
+	}
+
+	operator TypedFiber_type&() const noexcept
+	{
+		return getFiber();
 	}
 
 	operator Fiber&() const noexcept
 	{
-		return *_fiber;
+		return getFiber();
+	}
+
+	future getFuture() const noexcept
+	{
+		return _fiber->withFuture();
 	}
 
 	operator future() const noexcept
 	{
-		return _fiber->withFuture();
+		return getFuture();
+	}
+
+	void kill() noexcept
+	{
+		_fiber->kill();
+	}
+
+	void cancel()
+	{
+		_fiber->cancel();
 	}
 
 	template <typename Manipulator>
