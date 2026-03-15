@@ -243,16 +243,21 @@ again:
 
 			// Hand over to this.
 			m_startRun = now;
-			setState(Running, now);
+			if(likely(state() != Cancel))
+				setState(Running, now);
 			m_stateEnd = now + m_timeslice;
 
 			zth_dbg(fiber, "Switch from %s to %s after %s", from.id_str(), id_str(),
 				dt.str().c_str());
 			context_switch(from.context(), context());
 
-			// Ok, got back.
-			// Warning! This fiber might already be dead and destructed at this point!
-			// Only return here!
+			// Ok, got back to the *from* fiber.
+			// Warning! The *this* fiber might already be dead and destructed at this
+			// point!
+
+			if(unlikely(from.state() == Cancel))
+				from.cancelled();
+
 			return 0;
 		}
 
@@ -295,21 +300,11 @@ again:
 
 		zth_dbg(fiber, "[%s] Cancel", id_str());
 
-		Fiber* f = nullptr;
-		getContext(nullptr, &f);
+		bool running = state() == Running;
 		if(state() != Dead)
 			setState(Cancel);
 
-		if(f == this) {
-			cancelled();
-			return;
-		}
-	}
-
-	void checkCancelled()
-	{
-		zth_assert(&currentFiber() == this);
-		if(unlikely(state() == Cancel))
+		if(running)
 			cancelled();
 	}
 

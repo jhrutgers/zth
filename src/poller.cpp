@@ -301,7 +301,11 @@ PollerClient::Result const& PollerClient::poll(int timeout_ms) noexcept
 		// Wait for the event callback.
 		zth_dbg(io, "[%s] hand-off to server", id_str());
 		m_wait.setFiber(currentFiber());
-		suspend();
+		try {
+			suspend();
+		} catch(...) {
+			errno = EINTR;
+		}
 	} else {
 		zth_dbg(io, "[%s] hand-off to server with timeout", id_str());
 		m_wait = TimedWaitable(

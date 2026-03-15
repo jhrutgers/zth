@@ -71,6 +71,9 @@ int main(int argc, char** argv)
 	} catch(std::exception const& e) {
 		zth_dbg(thread, "main() caught exception: %s", e.what());
 		res = EXIT_FAILURE;
+	} catch(zth::exception const& e) {
+		zth_dbg(thread, "main() caught zth::exception");
+		res = EXIT_FAILURE;
 #endif
 	} catch(...) {
 		zth_dbg(thread, "main() caught unknown exception");
