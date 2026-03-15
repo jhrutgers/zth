@@ -178,7 +178,12 @@ void context_entry(zth::Context* context) noexcept
 
 	// Fiber has quit. Switch to another one.
 	context->die();
-	zth::yield();
+
+	try {
+		zth::yield();
+	} catch(...) { // NOLINT(bugprone-empty-catch)
+		       // Ignore.
+	}
 
 	// We should never get here, otherwise the fiber wasn't dead...
 	zth_abort("Returned to finished context");
