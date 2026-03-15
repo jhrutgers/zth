@@ -186,16 +186,51 @@ public:
 
 #  if __cplusplus >= 201103L
 	// cppcheck-suppress noExplicitConstructor
-	TimeInterval(std::chrono::nanoseconds ns)
+	template <typename Rep>
+	TimeInterval(std::chrono::duration<Rep, std::nano> ns)
 	{
 		*this = from_ns(ns.count());
 	}
+
+	// cppcheck-suppress noExplicitConstructor
+	template <typename Rep>
+	TimeInterval(std::chrono::duration<Rep, std::micro> us)
+	{
+		*this = from_us(us.count());
+	}
+
+	// cppcheck-suppress noExplicitConstructor
+	template <typename Rep>
+	TimeInterval(std::chrono::duration<Rep, std::milli> ms)
+	{
+		*this = from_ms(ms.count());
+	}
+
+	// cppcheck-suppress noExplicitConstructor
+	template <typename Rep>
+	TimeInterval(std::chrono::duration<Rep, std::ratio<1>> s)
+	{
+		*this = from_s(s.count());
+	}
+
+	// cppcheck-suppress noExplicitConstructor
+	template <typename Rep, typename Period>
+	TimeInterval(std::chrono::duration<Rep, Period> d)
+		: TimeInterval{std::chrono::duration_cast<std::chrono::nanoseconds>(d)}
+	{}
 
 	operator std::chrono::nanoseconds() const
 	{
 		return std::chrono::nanoseconds(
 			(std::chrono::nanoseconds::rep)m_t.tv_sec * BILLION
 			+ (std::chrono::nanoseconds::rep)m_t.tv_nsec);
+	}
+
+	template <typename Rep, typename Period>
+	operator std::chrono::duration<Rep, Period>() const
+	{
+		return std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(
+			(std::chrono::nanoseconds) * this);
 	}
 #  endif // C++11
 
