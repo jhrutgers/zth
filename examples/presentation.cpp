@@ -6,10 +6,13 @@
 
 #include <zth>
 
+#include <random>
+
 static_assert(__cplusplus >= 202002L, "This example requires C++20 or later.");
 static_assert(ZTH_HAVE_EXCEPTIONS, "This example requires exception support.");
 
-static float random_material()
+/*! \brief Generate a random amount of strand within [1, 10]. */
+static float some_strand()
 {
 	// NOLINTNEXTLINE
 	static std::mt19937 gen{(unsigned)time(nullptr)};
@@ -24,38 +27,40 @@ static float random_material()
 #include <limits>
 #include <list>
 #include <mutex>
-#include <random>
 #include <thread>
 
 static std::mutex mtx;
-static std::list<float> fiber_supply;
+static std::list<float> strand_supply;
 
-static void threaded_produce_fiber(int count)
+/*! \brief A thread producing \p count pieces of strand. */
+static void threaded_produce_strand(int count)
 {
 	for(int i = 0; i < count; i++) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-		float x = random_material();
-		printf("Threaded fiber producer: creating %g of fiber\n", (double)x);
+		float x = some_strand();
+		printf("Threaded producer: creating %g of strand\n", (double)x);
 		std::lock_guard<std::mutex> lock{mtx};
-		fiber_supply.push_back(x);
+		strand_supply.push_back(x);
 	}
 }
 
-static void threaded_consume_fiber(std::stop_token stoken)
+/*! \brief A thread consuming pieces of strand. */
+static void threaded_consume_strand(std::stop_token const& stoken, float& rope)
 {
 	while(!stoken.stop_requested()) {
 		float x = std::numeric_limits<float>::quiet_NaN();
 		{
 			std::lock_guard<std::mutex> lock{mtx};
-			if(!fiber_supply.empty()) {
-				x = fiber_supply.front();
-				fiber_supply.pop_front();
+			if(!strand_supply.empty()) {
+				x = strand_supply.front();
+				strand_supply.pop_front();
 			}
 		}
 
 		if(!std::isnan(x)) {
-			printf("Threaded fiber consumer: consuming %g of fiber\n", (double)x);
+			printf("Threaded consumer: consuming %g of strand\n", (double)x);
+			rope += x * 0.5F;
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		} else {
 			std::this_thread::sleep_for(std::chrono::milliseconds(150));
@@ -65,93 +70,104 @@ static void threaded_consume_fiber(std::stop_token stoken)
 
 static void threaded_example()
 {
-	std::thread producer{threaded_produce_fiber, 100};
-	std::jthread consumer{threaded_consume_fiber};
+	float rope = 0.0F;
+	std::thread producer{threaded_produce_strand, 100};
+	std::jthread consumer{threaded_consume_strand, std::ref(rope)};
 	producer.join();
 	consumer.request_stop();
 	consumer.join();
+	printf("Threads produced %g of rope.\n", (double)rope);
 }
 
 
 
 // Fibered example
 
-static void fibered_produce_fiber(int count)
+/*! \brief A fiber producing \p count pieces of strand. */
+static void fibered_produce_strand(int count)
 {
 	for(int i = 0; i < count; i++) {
 		zth::nap(std::chrono::milliseconds(100));
 
-		float x = random_material();
-		printf("Fibered fiber producer: creating %g of fiber\n", (double)x);
-		fiber_supply.push_back(x);
+		float x = some_strand();
+		printf("Fibered producer: creating %g of strand\n", (double)x);
+		strand_supply.push_back(x);
 	}
 }
 
-static void fibered_consume_fiber()
+/*! \brief A fiber consuming pieces of strand. */
+static void fibered_consume_strand(float& rope)
 {
 	while(true) {
-		if(fiber_supply.empty()) {
+		if(strand_supply.empty()) {
 			zth::nap(std::chrono::milliseconds(150));
 			continue;
 		}
 
-		float x = fiber_supply.front();
-		fiber_supply.pop_front();
+		float x = strand_supply.front();
+		strand_supply.pop_front();
 
-		printf("Fibered fiber consumer: consuming %g of fiber\n", (double)x);
+		printf("Fibered consumer: consuming %g of strand\n", (double)x);
+		rope += x * 0.5F;
 		zth::nap(std::chrono::milliseconds(50));
 	}
 }
 
 static void fibered_example()
 {
-	auto producerFiber = zth::fiber(fibered_produce_fiber, 100);
-	auto consumerFiber = zth::fiber(fibered_consume_fiber);
+	float rope = 0.0F;
+	auto producerFiber = zth::fiber(fibered_produce_strand, 100);
+	auto consumerFiber = zth::fiber(fibered_consume_strand, rope);
 	*producerFiber;
 	consumerFiber.cancel();
-	*consumerFiber;
+	printf("Fibers produced %g of rope.\n", (double)rope);
 }
 
 
 
 // Coro example
 
-static zth::coro::generator<float> coro_produce_fiber(int count)
+/*! \brief A generator producing \p count pieces of strand. */
+static zth::coro::generator<float> coro_produce_strand(int count)
 {
 	for(int i = 0; i < count; i++) {
-		float x = random_material();
-		printf("Coro fiber producer: creating %g of fiber\n", (double)x);
+		float x = some_strand();
+		printf("Coro producer: creating %g of strand\n", (double)x);
 		co_yield x;
 	}
 }
 
-static zth::coro::task<> coro_consume_fiber(zth::coro::generator<float> producer)
+/*! \brief A task consuming pieces of strand. */
+static zth::coro::task<float> coro_consume_strand(zth::coro::generator<float> producer)
 {
-	while(true) {
-		float x = co_await producer;
+	float rope = 0.0F;
 
-		printf("Coro fiber consumer: consuming %g of fiber\n", (double)x);
-		zth::nap(std::chrono::milliseconds(50));
+	try {
+		while(true) {
+			float x = co_await producer;
+
+			printf("Coro consumer: consuming %g of strand\n", (double)x);
+			rope += x * 0.5F;
+			zth::nap(std::chrono::milliseconds(50));
+		}
+	} catch(const zth::coro_already_completed&) {
+		co_return rope;
 	}
 }
 
 static void coro_example()
 {
-	auto producer = coro_produce_fiber(100);
-	auto consumer = coro_consume_fiber(producer);
-
-	try {
-		consumer.run();
-	} catch(const zth::coro_already_completed&) {
-		// Done.
-	}
+	auto producer = coro_produce_strand(100);
+	auto consumer = coro_consume_strand(producer);
+	float x = consumer.run();
+	printf("Coroutines produced %g of rope.\n", (double)x);
 }
 
 
 
 // Main
 
-int main()
+int main_fiber(int argc [[maybe_unused]], char** argv [[maybe_unused]])
 {
 	printf("Running threaded example...\n");
 	threaded_example();
