@@ -60,7 +60,7 @@ static void threaded_consume_strand(std::stop_token const& stoken, float& rope)
 
 		if(!std::isnan(x)) {
 			printf("Threaded consumer: consuming %g of strand\n", (double)x);
-			rope += x * 0.5F;
+			rope += x * 0.1F;
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		} else {
 			std::this_thread::sleep_for(std::chrono::milliseconds(150));
@@ -99,16 +99,14 @@ static void fibered_produce_strand(int count)
 static void fibered_consume_strand(float& rope)
 {
 	while(true) {
-		if(strand_supply.empty()) {
+		while(strand_supply.empty())
 			zth::nap(std::chrono::milliseconds(150));
-			continue;
-		}
 
 		float x = strand_supply.front();
 		strand_supply.pop_front();
 
 		printf("Fibered consumer: consuming %g of strand\n", (double)x);
-		rope += x * 0.5F;
+		rope += x * 0.1F;
 		zth::nap(std::chrono::milliseconds(50));
 	}
 }
@@ -147,10 +145,10 @@ static zth::coro::task<float> coro_consume_strand(zth::coro::generator<float> pr
 			float x = co_await producer;
 
 			printf("Coro consumer: consuming %g of strand\n", (double)x);
-			rope += x * 0.5F;
+			rope += x * 0.1F;
 			zth::nap(std::chrono::milliseconds(50));
 		}
-	} catch(const zth::coro_already_completed&) {
+	} catch(zth::coro_already_completed const&) {
 		co_return rope;
 	}
 }
