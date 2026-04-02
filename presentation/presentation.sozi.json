@@ -1190,9 +1190,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 42.983112465645384,
+          "clipXOffset": 16.293225832055978,
           "clipYOffset": -1.1476537080590468,
-          "clipWidthFactor": 0.2885783718104496,
+          "clipWidthFactor": 0.5819078763896306,
           "clipHeightFactor": 0.9179265658747301
         },
         "layer5": {
@@ -1508,9 +1508,9 @@
           "opacity": 1,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 42.983112465645384,
+          "clipXOffset": 34.87348709836569,
           "clipYOffset": -1.1476537080590468,
-          "clipWidthFactor": 0.2885783718104496,
+          "clipWidthFactor": 0.354204794324123,
           "clipHeightFactor": 0.9179265658747301
         },
         "layer5": {
@@ -1826,9 +1826,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 42.983112465645384,
+          "clipXOffset": 20.819121896515973,
           "clipYOffset": -1.1476537080590468,
-          "clipWidthFactor": 0.2885783718104496,
+          "clipWidthFactor": 0.5060068490344615,
           "clipHeightFactor": 0.9179265658747301
         },
         "layer5": {
@@ -2144,9 +2144,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 41.10407954778442,
+          "clipXOffset": 20.611201877575557,
           "clipYOffset": -0.8814544608748452,
-          "clipWidthFactor": 0.28979343863912516,
+          "clipWidthFactor": 0.48963603921275806,
           "clipHeightFactor": 0.937365010799136
         },
         "layer5": {
@@ -2462,9 +2462,9 @@
           "opacity": 1,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 41.10407954778442,
+          "clipXOffset": 16.535806428791858,
           "clipYOffset": -0.8814544608748452,
-          "clipWidthFactor": 0.28979343863912516,
+          "clipWidthFactor": 0.581163748670462,
           "clipHeightFactor": 0.937365010799136
         },
         "layer5": {
@@ -2780,9 +2780,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 41.10407954778442,
+          "clipXOffset": 22.721979702391167,
           "clipYOffset": -0.8814544608748452,
-          "clipWidthFactor": 0.28979343863912516,
+          "clipWidthFactor": 0.45540616413101515,
           "clipHeightFactor": 0.937365010799136
         },
         "layer5": {
@@ -3098,9 +3098,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 38.291245775171674,
+          "clipXOffset": 23.55812304207728,
           "clipYOffset": -1.2830777081832694,
-          "clipWidthFactor": 0.33931243562202895,
+          "clipWidthFactor": 0.47611051274893423,
           "clipHeightFactor": 0.9578833693304536
         },
         "layer5": {
@@ -3416,9 +3416,9 @@
           "opacity": 1,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 38.291245775171674,
+          "clipXOffset": 23.195239510530154,
           "clipYOffset": -1.2830777081832694,
-          "clipWidthFactor": 0.33931243562202895,
+          "clipWidthFactor": 0.4808875413049436,
           "clipHeightFactor": 0.9578833693304536
         },
         "layer5": {
@@ -3734,9 +3734,9 @@
           "opacity": 0,
           "angle": 0,
           "clipped": true,
-          "clipXOffset": 38.291245775171674,
+          "clipXOffset": 25.2854740731545,
           "clipYOffset": -1.2830777081832694,
-          "clipWidthFactor": 0.33931243562202895,
+          "clipWidthFactor": 0.4546138842468921,
           "clipHeightFactor": 0.9578833693304536
         },
         "layer5": {
@@ -3846,7 +3846,7 @@
     "frame3903"
   ],
   "selectedLayers": [
-    "layer4"
+    "layer6"
   ],
   "editableLayers": [
     "layer1",
