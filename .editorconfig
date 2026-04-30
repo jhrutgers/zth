@@ -23,6 +23,10 @@ indent_size = 2
 trim_trailing_whitespace = false
 charset = utf-8-bom
 
+[*.rs]
+indent_style = space
+indent_size = 4
+
 [*.diff]
 trim_trailing_whitespace = false
 end_of_line = unset
