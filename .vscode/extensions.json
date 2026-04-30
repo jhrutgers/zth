@@ -1,13 +1,15 @@
 {
-	"recommendations": [
-		"editorconfig.editorconfig",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.cpptools",
-		"xaver.clang-format",
-		"cheshirekow.cmake-format",
-		"streetsidesoftware.code-spell-checker",
-		"discretegames.f5anything",
-		"ms-vscode.cmake-tools",
-		"spadin.memento-inputs"
-	]
+        "recommendations": [
+                "editorconfig.editorconfig",
+                "ms-vscode.cmake-tools",
+                "ms-vscode.cpptools",
+                "xaver.clang-format",
+                "cheshirekow.cmake-format",
+                "streetsidesoftware.code-spell-checker",
+                "discretegames.f5anything",
+                "ms-vscode.cmake-tools",
+                "spadin.memento-inputs",
+                "rust-lang.rust-analyzer",
+                "vadimcn.vscode-lldb"
+        ]
 }
