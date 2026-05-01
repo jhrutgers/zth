@@ -8,6 +8,9 @@ mod ffi {
     }
 }
 
+/// Yields execution from the current fiber to the scheduler.
+///
+/// This is a direct wrapper around the C API `zth_yield()`.
 pub fn yield_now() {
     unsafe {
         ffi::zth_yield();

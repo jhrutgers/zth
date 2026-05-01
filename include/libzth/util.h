@@ -251,19 +251,34 @@ zth_logv(char const* fmt, va_list arg);
 #  endif
 
 #  include <libzth/zmq.h>
+#endif // __cplusplus
+
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT __attribute__((noreturn)) void
+zth_assert_handler(char const* file, int line, char const* expr);
 
 namespace zth {
+ZTH_EXPORT ZTH_INLINE __attribute__((noreturn)) void
+assert_handler(char const* file, int line, char const* expr)
+{
+	zth_assert_handler(file, line, expr);
+}
+} // namespace zth
+#else
+ZTH_EXPORT __attribute__((noreturn)) void
+zth_assert_handler(char const* file, int line, char const* expr);
+#endif
 
-ZTH_EXPORT char const* banner() noexcept;
+#ifdef __cplusplus
+namespace zth {
+
+ZTH_EXPORT __attribute__((returns_nonnull)) char const* banner() noexcept;
 
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void
 abort(char const* fmt, ...) noexcept;
 
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0), noreturn)) void
 abortv(char const* fmt, va_list args) noexcept;
-
-ZTH_EXPORT __attribute__((noreturn)) void
-assert_handler(char const* file, int line, char const* expr);
 
 ZTH_EXPORT bool log_supports_ansi_colors() noexcept;
 
@@ -1658,12 +1673,12 @@ auto to_tuple(T&& object) noexcept
  * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_banner()
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((returns_nonnull)) char const* zth_banner()
 {
-	zth::banner();
+	return zth::banner();
 }
 #else
-ZTH_EXPORT void zth_banner();
+ZTH_EXPORT __attribute__((returns_nonnull)) char const* zth_banner();
 #endif
 
 /*!
@@ -1671,8 +1686,10 @@ ZTH_EXPORT void zth_banner();
  * \details This is a C-wrapper for zth::abort().
  * \ingroup zth_api_c_util
  */
-ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void
+EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2), noreturn)) void
 zth_abort(char const* fmt, ...);
+
+EXTERN_C ZTH_EXPORT __attribute__((noreturn)) void zth_terminate();
 
 /*!
  * \copydoc zth::log_color()
@@ -1694,6 +1711,22 @@ zth_log_color(int color, char const* fmt, ...);
 #endif
 
 /*!
+ * \copydoc zth::log_colorv()
+ * \details This is a C-wrapper for zth::log_colorv().
+ * \ingroup zth_api_c_util
+ */
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void
+zth_log_colorv(int color, char const* fmt, va_list args)
+{
+	zth::log_colorv(color, fmt, args);
+}
+#else
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) void
+zth_log_colorv(int color, char const* fmt, va_list args);
+#endif
+
+/*!
  * \copydoc zth::log()
  * \details This is a C-wrapper for zth::log().
  * \ingroup zth_api_c_util
@@ -1710,6 +1743,38 @@ zth_log(char const* fmt, ...)
 #else
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...);
 #endif
+
+#if !defined(__clang_analyzer__) && GCC_VERSION >= 110000L
+#  define ZTH_ERR_ATTR __attribute__((malloc(free), warn_unused_result))
+#else
+#  define ZTH_ERR_ATTR __attribute__((malloc, warn_unused_result))
+#endif
+#ifdef __cplusplus
+#  include <cstring>
+#endif
+/*!
+ * \copydoc zth::err()
+ *
+ * The returned string is allocated on the heap. After use, pass it to \c free().
+ *
+ * This is a C-wrapper for zth::err().
+ *
+ * \ingroup zth_api_c_util
+ */
+#ifdef __cplusplus
+EXTERN_C ZTH_EXPORT ZTH_ERR_ATTR ZTH_INLINE char* zth_err(int e)
+{
+	zth::string s = zth::err(e);
+	char* p = (char*)malloc(s.size() + 1);
+	if(!p)
+		return nullptr;
+	memcpy(p, s.c_str(), s.size() + 1);
+	return p;
+}
+#else
+ZTH_EXPORT ZTH_ERR_ATTR char* zth_err(int e);
+#endif
+#undef ZTH_ERR_ATTR
 
 #ifdef ZTH_OS_BAREMETAL
 // newlib probably doesn't have these. Provide some default implementation for

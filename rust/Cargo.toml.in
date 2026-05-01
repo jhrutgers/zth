@@ -11,4 +11,4 @@ license = "MPL-2.0"
 links = "zth"
 
 [lib]
-path = "src/lib.rs"
+path = "src/zth.rs"

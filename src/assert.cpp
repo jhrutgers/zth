@@ -8,21 +8,6 @@
 
 #include <cassert>
 
-namespace zth {
-
-#ifndef ZTH_OS_WINDOWS
-__attribute__((weak))
-#endif
-void assert_handler(char const* file, int line, char const* expr)
-{
-	if(Config::EnableFullAssert)
-		abort("assertion failed at %s:%d: %s", file ? file : "?", line, expr ? expr : "?");
-	else
-		abort("assertion failed at %s:%d", file ? file : "?", line);
-}
-
-} // namespace zth
-
 #ifdef ZTH_OS_MACOS
 void __assert_rtn(const char* func, const char* file, unsigned int line, const char* exp)
 {

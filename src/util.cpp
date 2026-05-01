@@ -31,7 +31,7 @@ using namespace std;
 namespace zth {
 
 /*!
- * \brief Prints a banner line with version and configuration information.
+ * \brief Returns a banner line with version and configuration information.
  * \ingroup zth_api_cpp_util
  */
 char const* banner() noexcept
@@ -167,7 +167,7 @@ void abortv(char const* fmt, va_list args) noexcept
 		Backtrace().print();
 	}
 
-	std::terminate();
+	zth_terminate();
 }
 
 #ifndef ZTH_OS_BAREMETAL

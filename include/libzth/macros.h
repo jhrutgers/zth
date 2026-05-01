@@ -362,7 +362,7 @@ ZTH_EXPORT void foo();
 #if !ZTH_HAVE_EXCEPTIONS
 #  define try		 if(true)
 #  define catch(...)	 if(false)
-#  define zth_throw(...) std::terminate()
+#  define zth_throw(...) zth_terminate()
 #else
 #  define zth_throw(...) throw __VA_ARGS__
 #endif

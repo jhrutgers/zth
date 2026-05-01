@@ -91,5 +91,11 @@ fn main() {
         "cargo:rerun-if-changed={}",
         include_dir.join("zth.h").display()
     );
+    for library in ["libzth.a", "libzth.so"] {
+        let library = lib_dir.join(library);
+        if library.exists() {
+            println!("cargo:rerun-if-changed={}", library.display());
+        }
+    }
     println!("cargo:rerun-if-changed={}", cmake_cache.display());
 }
