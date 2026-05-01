@@ -590,6 +590,18 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[
 	return zth::execvp(file, arg);
 }
 
+/*!
+ * \brief \copybrief zth::currentFiber()
+ * \details This is a C-wrapper for zth::currentFiber().
+ * \ingroup zth_api_c_fiber
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE zth_fiber_t zth_current_fiber() noexcept
+{
+	zth::Worker const& w = zth::currentWorker();
+	zth::Fiber* f = w.currentFiber();
+	return f ? f->handle() : nullptr;
+}
+
 #else // !__cplusplus
 
 #  include <time.h>
@@ -603,6 +615,8 @@ ZTH_EXPORT int zth_worker_destroy();
 
 ZTH_EXPORT int zth_startWorkerThread(void (*f)(), size_t stack, char const* name);
 ZTH_EXPORT int zth_execvp(char const* file, char* const arg[]);
+
+ZTH_EXPORT zth_fiber_t zth_current_fiber();
 
 #endif // __cplusplus
 #endif // ZTH_WORKER_H

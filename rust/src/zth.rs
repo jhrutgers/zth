@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: MPL-2.0
 
 mod r#async;
+mod fiber;
 mod util;
 mod worker;
 
 use std::ffi::{c_char, c_int};
 use std::fmt;
 
+pub use fiber::Fiber;
 pub use r#async::fiber;
 pub use r#async::fiber_with;
 pub use r#async::FiberEntry;
@@ -17,7 +19,8 @@ pub use util::banner;
 pub use util::err;
 pub use util::log;
 pub use util::log_color;
-pub use worker::yield_now;
+pub use worker::may_yield;
+pub use worker::out_of_work;
 
 /// Error returned by Zth C API wrappers.
 ///

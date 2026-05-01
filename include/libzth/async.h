@@ -1084,6 +1084,11 @@ struct fiber_type {
 		return getFuture();
 	}
 
+	zth_fiber_t handle() const noexcept
+	{
+		return getFiber().handle();
+	}
+
 	void kill() noexcept
 	{
 		_fiber->kill();
@@ -1637,11 +1642,17 @@ namespace fibered {}
  * \ingroup zth_api_c_fiber
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
-	void (*f)(void*), void* arg = nullptr, size_t stack = 0,
+	zth_fiber_t* h, void (*f)(void*), void* arg = nullptr, size_t stack = 0,
 	char const* name = nullptr) noexcept
 {
+	if(h)
+		*h = nullptr;
+
 	try {
-		zth::factory(f, name)(arg) << zth::setStackSize(stack);
+		zth::fiber_type<void(void*)>::fiber fiber = zth::factory(f, name)(arg);
+		fiber << zth::setStackSize(stack);
+		if(h)
+			*h = fiber.handle();
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(zth::errno_exception const& e) {
@@ -1658,7 +1669,8 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 
 #  include <stddef.h>
 
-ZTH_EXPORT int zth_fiber_create(void (*f)(void*), void* arg, size_t stack, char const* name);
+ZTH_EXPORT int
+zth_fiber_create(zth_fiber_t* h, void (*f)(void*), void* arg, size_t stack, char const* name);
 
 #endif // !__cplusplus
 #endif // ZTH_ASYNC_H

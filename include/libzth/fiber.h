@@ -17,6 +17,12 @@
 
 #include <libzth/macros.h>
 
+/*!
+ * \brief Opaque fiber handle type.
+ * \ingroup zth_api_c_fiber
+ */
+typedef void const* zth_fiber_t;
+
 #ifdef __cplusplus
 #  include <libzth/allocator.h>
 #  include <libzth/config.h>
@@ -112,6 +118,16 @@ public:
 		zth_dbg(fiber, "[%s] Destructed. Stack usage: 0x%x of 0x%x, total CPU: %s",
 			id_str(), (unsigned int)stackUsage_, (unsigned int)stackSize_,
 			m_totalTime.str().c_str());
+	}
+
+	zth_fiber_t handle() const noexcept
+	{
+		return (void const*)this; // NOLINT
+	}
+
+	static Fiber* fromHandle(zth_fiber_t h) noexcept
+	{
+		return (Fiber*)h; // NOLINT
 	}
 
 	int setStackSize(size_t size) noexcept
