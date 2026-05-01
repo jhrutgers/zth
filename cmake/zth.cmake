@@ -80,7 +80,9 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/waiter.cpp
 	${ZTH_SOURCE_DIR}/src/worker.cpp
 	${ZTH_SOURCE_DIR}/src/zmq.cpp
+	${ZTH_SOURCE_DIR}/src/zth_assert_handler.cpp
 	${ZTH_SOURCE_DIR}/src/zth_logv.cpp
+	${ZTH_SOURCE_DIR}/src/zth_terminate.cpp
 )
 
 set(ZTH_HEADERS

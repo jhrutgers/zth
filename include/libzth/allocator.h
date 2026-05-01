@@ -88,7 +88,7 @@ __attribute__((warn_unused_result)) ZTH_MALLOC_ATTR(
 	} catch(std::bad_alloc const&) {
 		return nullptr;
 	} catch(...) {
-		std::terminate();
+		zth_terminate();
 	}
 
 	// Should not get here.

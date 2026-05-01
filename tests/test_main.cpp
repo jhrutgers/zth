@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 		w.run();
 		res = *f;
 	} catch(...) {
-		std::terminate();
+		zth_terminate();
 	}
 
 	return res;
