@@ -38,10 +38,57 @@ __attribute__((weak)) int zth_postdeinit()
 	return 0;
 }
 
-#ifndef ZTH_OS_WINDOWS
-__attribute__((weak))
+/*!
+ * \brief Start Zth given the given fiber function.
+ *
+ * It can be used instead of #zth_main() or #main().
+ * In contrast, this function does not call #zth_preinit() and #zth_postinit().
+ *
+ * \return 0 when finished the fiber successfully, otherwise an errno
+ */
+int zth_run(int(fiber)(void*), void* arg)
+{
+	int res = 0;
+	try {
+		if(zth::Worker::instance())
+			return EINVAL;
+
+		zth::Worker w;
+		zth::fiber_future<int> f = zth::fiber(fiber, arg);
+		w.run();
+
+		if(!f.get().valid()) {
+			zth_dbg(thread, "zth_run() fiber did not exit normally");
+			res = EFAULT;
+		} else {
+			res = *f;
+		}
+#ifdef __cpp_exceptions
+	} catch(zth::errno_exception const& e) {
+		zth_dbg(thread, "zth_run() caught exception with errno %d", e.code);
+		res = e.code;
+	} catch(std::exception const& e) {
+		zth_dbg(thread, "zth_run() caught exception: %s", e.what());
+		res = EFAULT;
+	} catch(zth::exception const& e) {
+		zth_dbg(thread, "zth_run() caught zth::exception");
+		res = EFAULT;
 #endif
-int main(int argc, char** argv)
+	} catch(...) {
+		zth_dbg(thread, "zth_run() caught unknown exception");
+		res = EFAULT;
+	}
+
+	return res;
+}
+
+/*!
+ * \brief Default main function that runs #main_fiber.
+ *
+ * Unless \c main() is defined in the application, this function is called by the default-provided
+ * weak \c main().
+ */
+int zth_main(int argc, char** argv)
 {
 	zth_preinit();
 	zth_dbg(thread, "main()");
@@ -88,4 +135,12 @@ int main(int argc, char** argv)
 		res = res_post;
 
 	return res;
+}
+
+#ifndef ZTH_OS_WINDOWS
+__attribute__((weak))
+#endif
+int main(int argc, char** argv)
+{
+	return zth_main(argc, argv);
 }

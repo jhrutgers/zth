@@ -21,6 +21,6 @@ int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	printf("main_fiber()\n");
 	// Start a new fiber, with arg=NULL, default stack, and no name.
-	zth_fiber_create(fiber, NULL, 0, NULL);
+	zth_fiber_create(NULL, fiber, NULL, 0, NULL);
 	return 0;
 }

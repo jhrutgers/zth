@@ -4,6 +4,7 @@
 
 use std::ffi::{c_void, CStr, CString};
 
+use crate::fiber::Fiber;
 use crate::Error;
 
 mod ffi {
@@ -11,6 +12,7 @@ mod ffi {
 
     extern "C" {
         pub fn zth_fiber_create(
+            h: *mut *const c_void,
             f: extern "C" fn(*mut c_void),
             arg: *mut c_void,
             stack: usize,
@@ -104,16 +106,23 @@ where
     start.entry.call(start.args);
 }
 
-fn fiber_impl<F, Args>(entry: F, args: Args, stack: usize, name: Option<&CStr>) -> Result<(), Error>
+fn fiber_impl<F, Args>(
+    entry: F,
+    args: Args,
+    stack: usize,
+    name: Option<&CStr>,
+) -> Result<Fiber, Error>
 where
     F: FiberEntry<Args> + 'static,
     Args: 'static,
 {
     let start = Box::new(FiberStart { entry, args });
     let start_ptr = Box::into_raw(start);
+    let mut h = Fiber::null();
 
     let rc = unsafe {
         ffi::zth_fiber_create(
+            h.to_handle_ptr(),
             fiber_start_trampoline::<F, Args>,
             start_ptr.cast::<c_void>(),
             stack,
@@ -122,7 +131,7 @@ where
     };
 
     if rc == 0 {
-        Ok(())
+        Ok(h)
     } else {
         unsafe {
             drop(Box::from_raw(start_ptr));
@@ -134,7 +143,7 @@ where
 /// Spawns a new fiber using default options.
 ///
 /// Equivalent to calling [`fiber_with`] with `FiberOptions::default()`.
-pub fn fiber<F, Args>(entry: F, args: Args) -> Result<(), Error>
+pub fn fiber<F, Args>(entry: F, args: Args) -> Result<Fiber, Error>
 where
     F: FiberEntry<Args> + 'static,
     Args: 'static,
@@ -146,7 +155,7 @@ where
 ///
 /// `entry` and `args` are moved into heap storage and executed by Zth when
 /// the scheduled fiber starts.
-pub fn fiber_with<F, Args>(entry: F, args: Args, options: FiberOptions) -> Result<(), Error>
+pub fn fiber_with<F, Args>(entry: F, args: Args, options: FiberOptions) -> Result<Fiber, Error>
 where
     F: FiberEntry<Args> + 'static,
     Args: 'static,
