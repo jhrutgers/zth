@@ -8,11 +8,12 @@ use crate::fiber::Fiber;
 use crate::Error;
 
 mod ffi {
+    use crate::fiber::Fiber;
     use std::ffi::{c_char, c_int, c_void};
 
     extern "C" {
         pub fn zth_fiber_create(
-            h: *mut *const c_void,
+            h: *mut Fiber,
             f: extern "C" fn(*mut c_void),
             arg: *mut c_void,
             stack: usize,
@@ -63,9 +64,9 @@ impl_fiber_entry_tuple!(A0, A1, A2, A3, A4, A5);
 impl_fiber_entry_tuple!(A0, A1, A2, A3, A4, A5, A6);
 impl_fiber_entry_tuple!(A0, A1, A2, A3, A4, A5, A6, A7);
 
-struct FiberStart<F, Args> {
-    entry: F,
-    args: Args,
+pub(crate) struct FiberStart<F, Args> {
+    pub entry: F,
+    pub args: Args,
 }
 
 /// Optional configuration for spawning a fiber.
@@ -98,7 +99,7 @@ impl FiberOptions {
     }
 }
 
-extern "C" fn fiber_start_trampoline<F, Args>(arg: *mut c_void)
+pub(crate) extern "C" fn fiber_start_trampoline<F, Args>(arg: *mut c_void)
 where
     F: FiberEntry<Args>,
 {
@@ -122,7 +123,7 @@ where
 
     let rc = unsafe {
         ffi::zth_fiber_create(
-            h.to_handle_ptr(),
+            h.to_ptr(),
             fiber_start_trampoline::<F, Args>,
             start_ptr.cast::<c_void>(),
             stack,

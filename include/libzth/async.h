@@ -1646,7 +1646,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 	char const* name = nullptr) noexcept
 {
 	if(h)
-		*h = nullptr;
+		h->p = nullptr;
 
 	try {
 		zth::fiber_type<void(void*)>::fiber fiber = zth::factory(f, name)(arg);

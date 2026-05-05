@@ -46,7 +46,7 @@ __attribute__((weak)) int zth_postdeinit()
  *
  * \return 0 when finished the fiber successfully, otherwise an errno
  */
-int zth_run(int(fiber)(void*), void* arg)
+int zth_run(void(fiber)(void*), void* arg)
 {
 	int res = 0;
 	try {
@@ -54,14 +54,12 @@ int zth_run(int(fiber)(void*), void* arg)
 			return EINVAL;
 
 		zth::Worker w;
-		zth::fiber_future<int> f = zth::fiber(fiber, arg);
+		zth::fiber_future<void> f = zth::fiber(fiber, arg);
 		w.run();
 
 		if(!f.get().valid()) {
 			zth_dbg(thread, "zth_run() fiber did not exit normally");
 			res = EFAULT;
-		} else {
-			res = *f;
 		}
 #ifdef __cpp_exceptions
 	} catch(zth::errno_exception const& e) {

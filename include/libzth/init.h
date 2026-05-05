@@ -26,7 +26,7 @@ extern struct zth_init_entry* zth_init_tail;
 EXTERN_C ZTH_EXPORT void zth_init();
 EXTERN_C ZTH_EXPORT void zth_preinit();
 EXTERN_C ZTH_EXPORT int zth_postdeinit();
-EXTERN_C ZTH_EXPORT int zth_run(int(fiber)(void*), void* arg);
+EXTERN_C ZTH_EXPORT int zth_run(void(fiber)(void*), void* arg);
 EXTERN_C ZTH_EXPORT int zth_main(int argc, char** argv);
 
 #ifdef __cplusplus
