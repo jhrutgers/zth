@@ -597,9 +597,16 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_execvp(char const* file, char* const arg[
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE zth_fiber_t zth_current_fiber() noexcept
 {
-	zth::Worker const& w = zth::currentWorker();
-	zth::Fiber* f = w.currentFiber();
-	return f ? f->handle() : nullptr;
+	zth_fiber_t res = {};
+	zth::Worker const* w = zth::Worker::instance();
+	if(!w)
+		return res;
+
+	zth::Fiber* f = w->currentFiber();
+	if(!f)
+		return res;
+
+	return f->handle();
 }
 
 #else // !__cplusplus

@@ -21,7 +21,9 @@
  * \brief Opaque fiber handle type.
  * \ingroup zth_api_c_fiber
  */
-typedef void const* zth_fiber_t;
+typedef struct {
+	void* p;
+} zth_fiber_t;
 
 #ifdef __cplusplus
 #  include <libzth/allocator.h>
@@ -122,12 +124,13 @@ public:
 
 	zth_fiber_t handle() const noexcept
 	{
-		return (void const*)this; // NOLINT
+		zth_fiber_t h = {(void*)this}; // NOLINT
+		return h;
 	}
 
-	static Fiber* fromHandle(zth_fiber_t h) noexcept
+	static Fiber* fromHandle(zth_fiber_t const& h) noexcept
 	{
-		return (Fiber*)h; // NOLINT
+		return (Fiber*)h.p; // NOLINT
 	}
 
 	int setStackSize(size_t size) noexcept
