@@ -2,99 +2,337 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::ffi::c_void;
+use std::any::TypeId;
+use std::cell::Cell;
+use std::cell::UnsafeCell;
+use std::ffi::{c_int, c_void};
+use std::fmt;
+use std::hash::{Hash, Hasher};
+use std::marker::PhantomData;
+use std::mem;
+use std::rc::Rc;
 
 mod ffi {
-    use super::Future;
+    use super::FutureRaw;
     use std::ffi::c_int;
 
     extern "C" {
-        pub fn zth_future_init(future: *mut Future) -> c_int;
-        pub fn zth_future_destroy(future: *mut Future) -> c_int;
-        pub fn zth_future_valid(future: *mut Future) -> c_int;
-        pub fn zth_future_set(future: *mut Future, value: usize) -> c_int;
-        pub fn zth_future_get(future: *mut Future, value: *mut usize) -> c_int;
-        pub fn zth_future_wait(future: *mut Future) -> c_int;
+        pub fn zth_future_init(future: *mut FutureRaw) -> c_int;
+        pub fn zth_future_destroy(future: *mut FutureRaw) -> c_int;
+        pub fn zth_future_valid(future: *mut FutureRaw) -> c_int;
+        pub fn zth_future_set(future: *mut FutureRaw, value: usize) -> c_int;
+        pub fn zth_future_get(future: *mut FutureRaw, value: *mut usize) -> c_int;
+        pub fn zth_future_wait(future: *mut FutureRaw) -> c_int;
     }
-}
-
-#[derive(Debug, PartialEq, Eq, Hash)]
-#[repr(C)]
-pub struct Future {
-    p: *const c_void,
 }
 
 use crate::Error;
 
-impl Future {
-    pub fn new() -> Result<Self, Error> {
-        let mut h = Self::null();
-        let rc = unsafe { ffi::zth_future_init(h.to_ptr()) };
+pub(crate) trait Synchronizer: Sized {
+    type Raw;
 
-        if rc == 0 {
-            Ok(h)
-        } else {
-            Err(Error(rc))
-        }
+    fn from_raw(raw: Self::Raw) -> Self;
+    fn raw_ptr(&self) -> *mut Self::Raw;
+    unsafe fn ffi_destroy(raw: *mut Self::Raw) -> c_int;
+    fn raw_null() -> Self::Raw;
+    fn raw_is_null(raw: *const Self::Raw) -> bool;
+    unsafe fn raw_clear(raw: *mut Self::Raw);
+
+    fn null() -> Self {
+        Self::from_raw(Self::raw_null())
     }
 
-    pub fn to_ptr(&mut self) -> *mut Future {
-        self
+    fn is_null(&self) -> bool {
+        Self::raw_is_null(self.raw_ptr().cast_const())
     }
 
-    pub fn null() -> Self {
-        Self {
-            p: std::ptr::null(),
-        }
-    }
-
-    pub fn is_null(&self) -> bool {
-        self.p.is_null()
-    }
-
-    pub fn valid(&mut self) -> bool {
-        unsafe { ffi::zth_future_valid(self.to_ptr()) == 0 }
-    }
-
-    pub fn set(&mut self, value: usize) -> Result<(), Error> {
-        let rc = unsafe { ffi::zth_future_set(self.to_ptr(), value) };
-        if rc == 0 {
-            Ok(())
-        } else {
-            Err(Error(rc))
-        }
-    }
-
-    pub fn get(&mut self) -> Result<usize, Error> {
-        let mut value: usize = 0;
-        let rc = unsafe { ffi::zth_future_get(self.to_ptr(), &mut value) };
-        if rc == 0 {
-            Ok(value)
-        } else {
-            Err(Error(rc))
-        }
-    }
-
-    pub fn wait(&mut self) -> Result<(), Error> {
-        let rc = unsafe { ffi::zth_future_wait(self.to_ptr()) };
-        if rc == 0 {
-            Ok(())
-        } else {
-            Err(Error(rc))
-        }
-    }
-}
-
-impl Drop for Future {
-    fn drop(&mut self) {
+    fn destroy_in_drop(&mut self) {
         if self.is_null() {
             return;
         }
 
         unsafe {
-            let _ = ffi::zth_future_destroy(self.to_ptr());
+            let raw = self.raw_ptr();
+            let _ = Self::ffi_destroy(raw);
+            Self::raw_clear(raw);
+        }
+    }
+
+    fn as_result<T>(rc: c_int, ok: T) -> Result<T, Error> {
+        if rc == 0 {
+            Ok(ok)
+        } else {
+            Err(Error(rc))
+        }
+    }
+}
+
+macro_rules! define_synchronizer_type {
+    (@impl
+        type $type_name:ident $(<$($gen:ident),+>)?
+        $(where $($where:tt)+)?
+        raw $raw_name:ident,
+        destroy $ffi_destroy:path,
+        marker $marker_ty:ty
+    ) => {
+        #[derive(Debug)]
+        #[repr(C)]
+        pub(crate) struct $raw_name {
+            p: *mut c_void,
         }
 
-        self.p = std::ptr::null();
+        pub struct $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            raw: UnsafeCell<$raw_name>,
+            _type_marker: PhantomData<$marker_ty>,
+            _not_send_sync: PhantomData<Rc<()>>,
+        }
+
+        impl $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            fn handle(&self) -> *mut c_void {
+                unsafe { (*self.raw.get()).p }
+            }
+        }
+
+        impl $(<$($gen),+>)? Synchronizer for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            type Raw = $raw_name;
+
+            fn from_raw(raw: Self::Raw) -> Self {
+                Self {
+                    raw: UnsafeCell::new(raw),
+                    _type_marker: PhantomData,
+                    _not_send_sync: PhantomData,
+                }
+            }
+
+            fn raw_ptr(&self) -> *mut Self::Raw {
+                self.raw.get()
+            }
+
+            unsafe fn ffi_destroy(raw: *mut Self::Raw) -> c_int {
+                $ffi_destroy(raw)
+            }
+
+            fn raw_null() -> Self::Raw {
+                Self::Raw {
+                    p: std::ptr::null_mut(),
+                }
+            }
+
+            fn raw_is_null(raw: *const Self::Raw) -> bool {
+                unsafe { (*raw).p.is_null() }
+            }
+
+            unsafe fn raw_clear(raw: *mut Self::Raw) {
+                (*raw).p = std::ptr::null_mut();
+            }
+        }
+
+        impl $(<$($gen),+>)? fmt::Debug for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                f.debug_struct(stringify!($type_name))
+                    .field("p", &self.handle())
+                    .finish()
+            }
+        }
+
+        impl $(<$($gen),+>)? PartialEq for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            fn eq(&self, other: &Self) -> bool {
+                self.handle() == other.handle()
+            }
+        }
+
+        impl $(<$($gen),+>)? Eq for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {}
+
+        impl $(<$($gen),+>)? Hash for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            fn hash<H: Hasher>(&self, state: &mut H) {
+                self.handle().hash(state);
+            }
+        }
+
+        impl $(<$($gen),+>)? Drop for $type_name $(<$($gen),+>)?
+        $(where $($where)+)?
+        {
+            fn drop(&mut self) {
+                self.destroy_in_drop();
+            }
+        }
+    };
+
+    ($type_name:ident, $raw_name:ident, $ffi_destroy:path) => {
+        define_synchronizer_type!(
+            @impl
+            type $type_name
+            raw $raw_name,
+            destroy $ffi_destroy,
+            marker ()
+        );
+    };
+
+    ($type_name:ident<$($gen:ident),+>, $raw_name:ident, $ffi_destroy:path) => {
+        define_synchronizer_type!(
+            @impl
+            type $type_name<$($gen),+>
+            raw $raw_name,
+            destroy $ffi_destroy,
+            marker ($($gen,)+)
+        );
+    };
+
+    ($type_name:ident<$($gen:ident),+> where $($where:tt)+, $raw_name:ident, $ffi_destroy:path) => {
+        define_synchronizer_type!(
+            @impl
+            type $type_name<$($gen),+>
+            where $($where)+
+            raw $raw_name,
+            destroy $ffi_destroy,
+            marker ($($gen,)+)
+        );
+    };
+}
+
+// Usage examples:
+// define_synchronizer_type!(Future, FutureRaw, ffi::zth_future_destroy);
+// define_synchronizer_type!(FutureValue<T>, FutureValueRaw, ffi::zth_future_destroy);
+// define_synchronizer_type!(FutureValue<T> where T: 'static, FutureValueRaw, ffi::zth_future_destroy);
+
+define_synchronizer_type!(RawFuture, FutureRaw, ffi::zth_future_destroy);
+
+impl RawFuture {
+    pub fn new() -> Result<Self, Error> {
+        let h = Self::null();
+        Self::as_result(unsafe { ffi::zth_future_init(h.raw_ptr()) }, h)
+    }
+
+    pub fn valid(&self) -> bool {
+        unsafe { ffi::zth_future_valid(self.raw_ptr()) == 0 }
+    }
+
+    pub fn set(&self, value: usize) -> Result<(), Error> {
+        Self::as_result(unsafe { ffi::zth_future_set(self.raw_ptr(), value) }, ())
+    }
+
+    pub fn get(&self) -> Result<usize, Error> {
+        let mut value: usize = 0;
+        Self::as_result(
+            unsafe { ffi::zth_future_get(self.raw_ptr(), &mut value) },
+            value,
+        )
+    }
+
+    pub fn wait(&self) -> Result<(), Error> {
+        Self::as_result(unsafe { ffi::zth_future_wait(self.raw_ptr()) }, ())
+    }
+}
+
+/// Typed future wrapper.
+///
+/// - For `T = usize`, values are stored directly in the native future.
+/// - For any other `T`, values are boxed and the box pointer is stored as a
+///   `usize` in the native future.
+pub struct Future<T = usize>
+where
+    T: 'static,
+{
+    raw: RawFuture,
+    taken: Cell<bool>,
+    _marker: PhantomData<T>,
+}
+
+impl<T> Future<T>
+where
+    T: 'static,
+{
+    fn is_usize_mode() -> bool {
+        TypeId::of::<T>() == TypeId::of::<usize>()
+    }
+
+    fn encode_value(value: T) -> usize {
+        if Self::is_usize_mode() {
+            debug_assert_eq!(mem::size_of::<T>(), mem::size_of::<usize>());
+            let raw = unsafe { mem::transmute_copy::<T, usize>(&value) };
+            mem::forget(value);
+            raw
+        } else {
+            Box::into_raw(Box::new(value)) as usize
+        }
+    }
+
+    fn decode_value(raw: usize) -> T {
+        if Self::is_usize_mode() {
+            debug_assert_eq!(mem::size_of::<T>(), mem::size_of::<usize>());
+            unsafe { mem::transmute_copy::<usize, T>(&raw) }
+        } else {
+            let ptr = raw as *mut T;
+            debug_assert!(!ptr.is_null());
+            unsafe { *Box::from_raw(ptr) }
+        }
+    }
+
+    pub fn new() -> Result<Self, Error> {
+        Ok(Self {
+            raw: RawFuture::new()?,
+            taken: Cell::new(false),
+            _marker: PhantomData,
+        })
+    }
+
+    pub fn valid(&self) -> bool {
+        self.raw.valid()
+    }
+
+    pub fn wait(&self) -> Result<(), Error> {
+        self.raw.wait()
+    }
+
+    pub fn set(&self, value: T) -> Result<(), Error> {
+        let encoded = Self::encode_value(value);
+        match self.raw.set(encoded) {
+            Ok(()) => Ok(()),
+            Err(e) => {
+                if !Self::is_usize_mode() {
+                    let ptr = encoded as *mut T;
+                    unsafe { drop(Box::from_raw(ptr)) };
+                }
+                Err(e)
+            }
+        }
+    }
+
+    pub fn get(&self) -> Result<T, Error> {
+        if !Self::is_usize_mode() && self.taken.replace(true) {
+            return Err(Error::from_raw_os_error(22));
+        }
+
+        self.raw.get().map(Self::decode_value)
+    }
+}
+
+impl<T> Drop for Future<T>
+where
+    T: 'static,
+{
+    fn drop(&mut self) {
+        if !Self::is_usize_mode() && self.raw.valid() && !self.taken.get() {
+            if let Ok(raw) = self.raw.get() {
+                let ptr = raw as *mut T;
+                if !ptr.is_null() {
+                    unsafe { drop(Box::from_raw(ptr)) };
+                }
+            }
+        }
     }
 }

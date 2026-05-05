@@ -4,6 +4,8 @@
 
 mod r#async;
 mod fiber;
+mod init;
+mod sync;
 mod util;
 mod worker;
 
@@ -11,10 +13,12 @@ use std::ffi::{c_char, c_int};
 use std::fmt;
 
 pub use fiber::Fiber;
+pub use init::run;
 pub use r#async::fiber;
 pub use r#async::fiber_with;
 pub use r#async::FiberEntry;
 pub use r#async::FiberOptions;
+pub use sync::Future;
 pub use util::banner;
 pub use util::err;
 pub use util::log;
