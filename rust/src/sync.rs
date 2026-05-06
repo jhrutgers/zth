@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::any::TypeId;
-use std::cell::Cell;
-use std::cell::UnsafeCell;
+use std::cell::{Cell, UnsafeCell};
 use std::ffi::{c_int, c_void};
 use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::marker::PhantomData;
 use std::mem;
+use std::mem::{ManuallyDrop, MaybeUninit};
 use std::rc::Rc;
 
 mod ffi {
@@ -240,9 +239,10 @@ impl RawFuture {
 
 /// Typed future wrapper.
 ///
-/// - For `T = usize`, values are stored directly in the native future.
-/// - For any other `T`, values are boxed and the box pointer is stored as a
-///   `usize` in the native future.
+/// - For values with size and alignment that fit in a `usize`, bytes are
+///   stored directly in the native future.
+/// - For larger values, a boxed pointer is stored as `usize` in the native
+///   future.
 pub struct Future<T = usize>
 where
     T: 'static,
@@ -257,15 +257,28 @@ where
     T: 'static,
 {
     fn is_usize_mode() -> bool {
-        TypeId::of::<T>() == TypeId::of::<usize>()
+        mem::size_of::<T>() <= mem::size_of::<usize>()
+            && mem::align_of::<T>() <= mem::align_of::<usize>()
+    }
+
+    fn requires_take_guard() -> bool {
+        // Box-backed values and inline values with drop glue must only be
+        // decoded once to avoid duplicate ownership.
+        !Self::is_usize_mode() || mem::needs_drop::<T>()
     }
 
     fn encode_value(value: T) -> usize {
         if Self::is_usize_mode() {
-            debug_assert_eq!(mem::size_of::<T>(), mem::size_of::<usize>());
-            let raw = unsafe { mem::transmute_copy::<T, usize>(&value) };
-            mem::forget(value);
-            raw
+            let value = ManuallyDrop::new(value);
+            let mut raw = MaybeUninit::<usize>::zeroed();
+            unsafe {
+                std::ptr::copy_nonoverlapping(
+                    (&*value as *const T).cast::<u8>(),
+                    raw.as_mut_ptr().cast::<u8>(),
+                    mem::size_of::<T>(),
+                );
+                raw.assume_init()
+            }
         } else {
             Box::into_raw(Box::new(value)) as usize
         }
@@ -273,8 +286,15 @@ where
 
     fn decode_value(raw: usize) -> T {
         if Self::is_usize_mode() {
-            debug_assert_eq!(mem::size_of::<T>(), mem::size_of::<usize>());
-            unsafe { mem::transmute_copy::<usize, T>(&raw) }
+            let mut value = MaybeUninit::<T>::uninit();
+            unsafe {
+                std::ptr::copy_nonoverlapping(
+                    (&raw as *const usize).cast::<u8>(),
+                    value.as_mut_ptr().cast::<u8>(),
+                    mem::size_of::<T>(),
+                );
+                value.assume_init()
+            }
         } else {
             let ptr = raw as *mut T;
             debug_assert!(!ptr.is_null());
@@ -306,6 +326,8 @@ where
                 if !Self::is_usize_mode() {
                     let ptr = encoded as *mut T;
                     unsafe { drop(Box::from_raw(ptr)) };
+                } else if mem::needs_drop::<T>() {
+                    drop(Self::decode_value(encoded));
                 }
                 Err(e)
             }
@@ -313,7 +335,7 @@ where
     }
 
     pub fn get(&self) -> Result<T, Error> {
-        if !Self::is_usize_mode() && self.taken.replace(true) {
+        if Self::requires_take_guard() && self.taken.replace(true) {
             return Err(Error::from_raw_os_error(22));
         }
 
@@ -326,12 +348,9 @@ where
     T: 'static,
 {
     fn drop(&mut self) {
-        if !Self::is_usize_mode() && self.raw.valid() && !self.taken.get() {
+        if Self::requires_take_guard() && self.raw.valid() && !self.taken.get() {
             if let Ok(raw) = self.raw.get() {
-                let ptr = raw as *mut T;
-                if !ptr.is_null() {
-                    unsafe { drop(Box::from_raw(ptr)) };
-                }
+                drop(Self::decode_value(raw));
             }
         }
     }

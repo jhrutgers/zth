@@ -28,7 +28,11 @@ where
 
     unsafe { ffi::zth_preinit() }
 
-    let start = Box::new(FiberStart { entry, args });
+    let start = Box::new(FiberStart {
+        entry,
+        args,
+        future: None,
+    });
     let start_ptr = Box::into_raw(start);
 
     let rc = unsafe {
