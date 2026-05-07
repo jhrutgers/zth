@@ -479,8 +479,8 @@ private:
 /*!
  * \brief Measure the rate of some event in Hz.
  *
- * It counts events in bins, all with a contructor-provided (window) duration.
- * When the count reaches about one per bin, there is significat jitter on the
+ * It counts events in bins, all with a constructor-provided (window) duration.
+ * When the count reaches about one per bin, there is significant jitter on the
  * rate measurement.  When the count is higher, the jitter is +/- 1 for a
  * stable event rate.
  *

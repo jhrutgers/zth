@@ -124,6 +124,7 @@ public:
 
 	zth_fiber_t handle() const noexcept
 	{
+		// cppcheck-suppress cstyleCast
 		zth_fiber_t h = {(void*)this}; // NOLINT
 		return h;
 	}

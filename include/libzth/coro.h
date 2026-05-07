@@ -564,6 +564,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		return p->future();
 	}
 
@@ -578,6 +579,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		p->run();
 		return result();
 	}
@@ -953,6 +955,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		return p->template mailbox<U>();
 	}
 
@@ -976,6 +979,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		return p->template value<U>();
 	}
 
@@ -986,6 +990,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		p->template generate<U>();
 	}
 
@@ -995,6 +1000,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		p->run();
 
 		if(!completed())
@@ -1031,6 +1037,7 @@ public:
 		if(!p)
 			zth_throw(coro_already_completed{});
 
+		// cppcheck-suppress nullPointerRedundantCheck
 		return p->begin();
 	}
 
