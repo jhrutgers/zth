@@ -602,7 +602,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE zth_fiber_t zth_current_fiber() noexcept
 	if(!w)
 		return res;
 
-	zth::Fiber* f = w->currentFiber();
+	zth::Fiber const* f = w->currentFiber();
 	if(!f)
 		return res;
 

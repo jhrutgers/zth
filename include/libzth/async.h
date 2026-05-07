@@ -8,12 +8,13 @@
 
 #include <libzth/macros.h>
 
+#include <libzth/fiber.h>
+
 #ifdef __cplusplus
 
 #  include <libzth/allocator.h>
 #  include <libzth/config.h>
 #  include <libzth/exception.h>
-#  include <libzth/fiber.h>
 #  include <libzth/sync.h>
 #  include <libzth/util.h>
 #  include <libzth/worker.h>
@@ -1649,10 +1650,10 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_fiber_create(
 		h->p = nullptr;
 
 	try {
-		zth::fiber_type<void(void*)>::fiber fiber = zth::factory(f, name)(arg);
-		fiber << zth::setStackSize(stack);
+		zth::fiber_type<void(void*)>::fiber fib = zth::factory(f, name)(arg);
+		fib << zth::setStackSize(stack);
 		if(h)
-			*h = fiber.handle();
+			*h = fib.handle();
 	} catch(std::bad_alloc const&) {
 		return ENOMEM;
 	} catch(zth::errno_exception const& e) {

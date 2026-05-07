@@ -1765,7 +1765,8 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char cons
 EXTERN_C ZTH_EXPORT ZTH_ERR_ATTR ZTH_INLINE char* zth_err(int e)
 {
 	zth::string s = zth::err(e);
-	char* p = (char*)malloc(s.size() + 1);
+	// cppcheck-suppress cstyleCast
+	char* p = (char*)malloc(s.size() + 1); // NOLINT
 	if(!p)
 		return nullptr;
 	memcpy(p, s.c_str(), s.size() + 1);

@@ -185,36 +185,36 @@ public:
 	}
 
 #  if __cplusplus >= 201103L
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Rep>
+	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(std::chrono::duration<Rep, std::nano> ns)
 	{
 		*this = from_ns(ns.count());
 	}
 
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Rep>
+	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(std::chrono::duration<Rep, std::micro> us)
 	{
 		*this = from_us(us.count());
 	}
 
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Rep>
+	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(std::chrono::duration<Rep, std::milli> ms)
 	{
 		*this = from_ms(ms.count());
 	}
 
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Rep>
+	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(std::chrono::duration<Rep, std::ratio<1>> s)
 	{
 		*this = from_s(s.count());
 	}
 
-	// cppcheck-suppress noExplicitConstructor
 	template <typename Rep, typename Period>
+	// cppcheck-suppress noExplicitConstructor
 	TimeInterval(std::chrono::duration<Rep, Period> d)
 		: TimeInterval{std::chrono::duration_cast<std::chrono::nanoseconds>(d)}
 	{}

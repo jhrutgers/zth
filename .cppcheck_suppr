@@ -1,5 +1,6 @@
 missingIncludeSystem:*
 constParameterCallback:*
+missingReturn:*
 
 unmatchedSuppression:src/context.cpp
 

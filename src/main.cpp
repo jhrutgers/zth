@@ -42,7 +42,7 @@ __attribute__((weak)) int zth_postdeinit()
  * \brief Start Zth given the given fiber function.
  *
  * It can be used instead of #zth_main() or #main().
- * In contrast, this function does not call #zth_preinit() and #zth_postinit().
+ * In contrast, this function does not call #zth_preinit() and #zth_postdeinit().
  *
  * \return 0 when finished the fiber successfully, otherwise an errno
  */
