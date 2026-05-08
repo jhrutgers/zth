@@ -55,7 +55,11 @@ struct DefaultConfig {
 	/*! \brief This is a debug build when set to \c true. */
 	static bool const Debug =
 #  ifndef NDEBUG
+#    ifdef ZTH_CONFIG_DEBUG
+		ZTH_CONFIG_DEBUG;
+#    else
 		true;
+#    endif
 #  else
 		false;
 #  endif
@@ -63,7 +67,11 @@ struct DefaultConfig {
 	/*! \brief When \c true, enable #zth_assert(). */
 	static bool const EnableAssert =
 #  ifndef NDEBUG
-		Debug;
+		Debug
+#    ifdef ZTH_CONFIG_ENABLE_ASSERT
+		&& ZTH_CONFIG_ENABLE_ASSERT
+#    endif
+		;
 #  else
 		false;
 #  endif
@@ -73,11 +81,13 @@ struct DefaultConfig {
 	 * \details Disable to reduce binary size.
 	 */
 	static bool const EnableFullAssert =
-#  ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_CONFIG_ENABLE_FULL_ASSERT
+		EnableAssert && ZTH_CONFIG_ENABLE_FULL_ASSERT;
+#  elif defined(ZTH_OS_BAREMETAL)
 		// Assume we are a bit short on memory.
 		false;
 #  else
-		EnableAssert;
+			EnableAssert;
 #  endif
 
 	/*! \brief Add (Worker) thread support when \c true. */
@@ -107,16 +117,23 @@ struct DefaultConfig {
 	 * The output is only actually printed when #EnableDebugPrint is \c true.
 	 */
 	static bool const SupportDebugPrint =
-#  ifdef ZTH_OS_BAREMETAL
+#  ifdef ZTH_CONFIG_SUPPORT_DEBUG_PRINT
+		Debug && ZTH_CONFIG_SUPPORT_DEBUG_PRINT;
+#  elif defined(ZTH_OS_BAREMETAL)
 		// Without OS, there is no environment to enable debugging when
 		// it is not enabled right away.
 		Debug && EnableDebugPrint;
 #  else
-		Debug;
+			Debug;
 #  endif
 
 	/*! \brief Enable colored output. */
-	static bool const EnableColorLog = true;
+	static bool const EnableColorLog =
+#  ifdef ZTH_CONFIG_ENABLE_COLOR_LOG
+		ZTH_CONFIG_ENABLE_COLOR_LOG;
+#  else
+		true;
+#  endif
 
 	/*!
 	 * \brief ANSI color used by #zth_dbg().
@@ -137,32 +154,83 @@ struct DefaultConfig {
 	static int const Print_coro = 13;   // bright magenta
 
 	/*! \brief Default fiber stack size in bytes. */
-	static size_t const DefaultFiberStackSize = 0x20000;
+	static size_t const DefaultFiberStackSize =
+#  ifdef ZTH_CONFIG_DEFAULT_FIBER_STACK_SIZE
+		ZTH_CONFIG_DEFAULT_FIBER_STACK_SIZE;
+#  elif defined(ZTH_OS_BAREMETAL)
+		0x2000;
+#  else
+		0x20000;
+#  endif
+
 	/*! \brief When \c true, enable stack guards. */
-	static bool const EnableStackGuard = Debug;
+	static bool const EnableStackGuard =
+#  ifdef ZTH_CONFIG_ENABLE_STACK_GUARD
+		ZTH_CONFIG_ENABLE_STACK_GUARD;
+#  else
+		Debug;
+#  endif
+
 	/*! \brief When \c true, enable stack watermark to detect maximum stack usage. */
-	static bool const EnableStackWaterMark = Debug;
+	static bool const EnableStackWaterMark =
+#  ifdef ZTH_CONFIG_ENABLE_STACK_WATER_MARK
+		ZTH_CONFIG_ENABLE_STACK_WATER_MARK;
+#  else
+		Debug;
+#  endif
+
 	/*! \brief Take POSIX signal into account when doing a context switch. */
-	static bool const ContextSignals = false;
+	static bool const ContextSignals =
+#  if defined(ZTH_CONFIG_CONTEXT_SIGNALS) && !defined(ZTH_OS_BAREMETAL)
+		ZTH_CONFIG_CONTEXT_SIGNALS;
+#  else
+		false;
+#  endif
 
 	/*! \brief Minimum time slice before zth::yield() actually yields. */
 	constexpr static struct timespec MinTimeslice()
 	{
-		ZTH_CONSTEXPR_RETURN(struct timespec, 0, 100000)
+#  ifdef ZTH_CONFIG_MIN_TIMESLICE
+#    define ZTH_CONFIG_MIN_TIMESLICE_ ZTH_CONFIG_MIN_TIMESLICE
+#  else
+#    define ZTH_CONFIG_MIN_TIMESLICE_ 100000
+#  endif
+		ZTH_CONSTEXPR_RETURN(struct timespec, 0, ZTH_CONFIG_MIN_TIMESLICE_)
+#  undef ZTH_CONFIG_MIN_TIMESLICE_
 	}
 	/*! \brief Print an overrun reported when this timeslice is exceeded. */
 	constexpr static struct timespec TimesliceOverrunReportThreshold()
 	{
-		ZTH_CONSTEXPR_RETURN(struct timespec, 0, 10000000)
+#  ifdef ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD
+#    define ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_ \
+	    ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD
+#  else
+#    define ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_ 10000000
+#  endif
+		ZTH_CONSTEXPR_RETURN(
+			struct timespec, 0, ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_)
+#  undef ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_
 	}
 
 	/*! \brief Check time slice overrun at every context switch. */
-	static bool const CheckTimesliceOverrun = Debug;
+	static bool const CheckTimesliceOverrun =
+#  ifdef ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN
+		ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN;
+#  else
+		Debug;
+#  endif
+
 	/*! \brief Save names for all #zth::Synchronizer instances. */
 	static bool const NamedSynchronizer = SupportDebugPrint && Print_sync > 0;
 
 	/*! \brief Buffer size for perf events. */
-	static size_t const PerfEventBufferSize = 128;
+	static size_t const PerfEventBufferSize =
+#  ifdef ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE
+		ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE;
+#  else
+		128;
+#  endif
+
 	/*! \brief Threshold when to force writing out VCD buffer. */
 	static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
 	/*! \brief VCD file buffer in bytes. */
@@ -174,15 +242,23 @@ struct DefaultConfig {
 	static bool const EnablePerfEvent =
 #  ifdef ZTH_OS_BAREMETAL
 		// No environment, so only enable when we are actually saving it.
-		DoPerfEvent;
+		DoPerfEvent &&
+#  endif
+#  ifdef ZTH_CONFIG_ENABLE_PERF_EVENT
+		ZTH_CONFIG_ENABLE_PERF_EVENT;
 #  else
 		true;
 #  endif
 	/*! \brief Also record syscalls by perf. */
-	static bool const PerfSyscall = true;
+	static bool const PerfSyscall =
+#  ifdef ZTH_CONFIG_PERF_SYSCALL
+		ZTH_CONFIG_PERF_SYSCALL;
+#  else
+		true;
+#  endif
 
 	/*! \brief Use named FSM guards/actions. */
-	static bool const NamedFsm = Debug || (EnableDebugPrint && Print_fsm > 0);
+	static bool const NamedFsm = Debug || (SupportDebugPrint && Print_fsm > 0);
 
 	/*! \brief Use named objects. */
 	static bool const NamedObjects =
@@ -199,6 +275,14 @@ struct DefaultConfig {
 	/*! \brief Use limited formatting specifiers. */
 	static bool const UseLimitedFormatSpecifiers =
 #  if defined(ZTH_FORMAT_LIMITED) && ZTH_FORMAT_LIMITED
+		true;
+#  else
+		false;
+#  endif
+
+	/*! \brief Indicate if exceptions are supported. */
+	static bool const EnableExceptions =
+#  ifdef __cpp_exceptions
 		true;
 #  else
 		false;
@@ -222,4 +306,72 @@ struct DefaultConfig {
 #include "zth_config.h"
 
 #undef ZTH_CONSTEXPR_RETURN
+
+#ifdef __cplusplus
+namespace zth {
+
+struct Check {
+	enum {
+		Config_Debug,
+		Config_EnableAssert,
+		Config_EnableFullAssert,
+		Config_EnableThreads,
+		Config_SupportDebugPrint,
+		Config_EnableColorLog,
+		Config_DefaultFiberStackSize,
+		Config_EnableStackGuard,
+		Config_EnableStackWaterMark,
+		Config_ContextSignals,
+		Config_CheckTimesliceOverrun,
+		Config_PerfEventBufferSize,
+		Config_EnablePerfEvent,
+		Config_PerfSyscall,
+		Config_UseZMQ,
+		Config_UseLimitedFormatSpecifiers,
+		Config_EnableExceptions,
+	};
+};
+
+void checkConfig(int check /* one if Check::Config_... */, size_t value);
+
+static inline void checkConfig()
+{
+	static bool checked;
+	if(checked)
+		return;
+
+#  define ZTH_CHECK(x) checkConfig(Check::Config_##x, (size_t)Config::x);
+
+	ZTH_CHECK(Debug)
+	ZTH_CHECK(EnableAssert)
+	ZTH_CHECK(EnableFullAssert)
+	ZTH_CHECK(EnableThreads)
+	ZTH_CHECK(SupportDebugPrint)
+	ZTH_CHECK(EnableColorLog)
+	ZTH_CHECK(DefaultFiberStackSize)
+	ZTH_CHECK(EnableStackGuard)
+	ZTH_CHECK(EnableStackWaterMark)
+	ZTH_CHECK(ContextSignals)
+	ZTH_CHECK(CheckTimesliceOverrun)
+	ZTH_CHECK(PerfEventBufferSize)
+	ZTH_CHECK(EnablePerfEvent)
+	ZTH_CHECK(PerfSyscall)
+	ZTH_CHECK(UseZMQ)
+	ZTH_CHECK(UseLimitedFormatSpecifiers)
+	ZTH_CHECK(EnableExceptions)
+
+#  undef ZTH_CHECK
+
+#  ifdef __cpp_exceptions
+	static_assert(Config::EnableExceptions);
+#  else
+	static_assert(!Config::EnableExceptions);
+#  endif
+
+	checked = true;
+}
+
+} // namespace zth
+#endif // __cplusplus
+
 #endif // ZTH_CONFIG_H

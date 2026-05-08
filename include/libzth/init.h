@@ -12,10 +12,7 @@
 
 struct zth_init_entry {
 #ifdef __cplusplus
-	zth_init_entry(void (*f_)(void), zth_init_entry const* next_) noexcept
-		: f(f_)
-		, next(next_)
-	{}
+	zth_init_entry(void (*f_)(void), zth_init_entry const* next_) noexcept;
 #endif // C++
 	void (*f)(void);
 	struct zth_init_entry const* next;
@@ -34,18 +31,12 @@ EXTERN_C ZTH_EXPORT int zth_main(int argc, char** argv);
 /*!
  * \brief Mark the given function \c f to be invoked during static initialization.
  */
-#    define ZTH_INIT_CALL_(f, ...)                              \
-	    struct f##__init : public zth_init_entry {          \
-		    f##__init() noexcept                        \
-			    : zth_init_entry(&exec, nullptr)    \
-		    {                                           \
-			    if(zth_init_tail)                   \
-				    zth_init_tail->next = this; \
-			    zth_init_tail = this;               \
-			    if(!zth_init_head)                  \
-				    zth_init_head = this;       \
-		    }                                           \
-		    static void exec() { __VA_ARGS__ };         \
+#    define ZTH_INIT_CALL_(f, ...)                           \
+	    struct f##__init : public zth_init_entry {       \
+		    f##__init() noexcept                     \
+			    : zth_init_entry(&exec, nullptr) \
+		    {}                                       \
+		    static void exec() { __VA_ARGS__ };      \
 	    };
 #    define ZTH_INIT_CALL(f)        \
 	    ZTH_INIT_CALL_(f, f();) \

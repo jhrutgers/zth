@@ -1138,7 +1138,8 @@ struct fiber_type {
 namespace impl {
 static inline char const* fiber_name(char const* name)
 {
-	return (Config::EnableDebugPrint || Config::EnablePerfEvent || Config::EnableStackWaterMark)
+	return (zth_config(EnableDebugPrint) || Config::EnablePerfEvent
+		|| Config::EnableStackWaterMark)
 		       ? name
 		       : nullptr;
 }
@@ -1585,16 +1586,16 @@ namespace fibered {}
  */
 #  define zth_fiber_declare(...) FOREACH(zth_fiber_declare_1, ##__VA_ARGS__)
 
-#  define zth_fiber_define_1(storage, f)                                                    \
-	  namespace zth {                                                                   \
-	  namespace fibered {                                                               \
-	  ZTH_DEPRECATED("Use zth::fiber(f, args...) instead")                              \
-	  storage ::zth::fiber_type<decltype(&::f)>::factory const                          \
-		  f(&::f, ::zth::Config::EnableDebugPrint || ::zth::Config::EnablePerfEvent \
-				  ? ZTH_STRINGIFY(f) "()"                                   \
-				  : nullptr); /* NOLINT */                                  \
-	  }                                                                                 \
-	  }                                                                                 \
+#  define zth_fiber_define_1(storage, f)                                                     \
+	  namespace zth {                                                                    \
+	  namespace fibered {                                                                \
+	  ZTH_DEPRECATED("Use zth::fiber(f, args...) instead")                               \
+	  storage ::zth::fiber_type<decltype(&::f)>::factory const                           \
+		  f(&::f, ::zth::Config::SupportDebugPrint || ::zth::Config::EnablePerfEvent \
+				  ? ZTH_STRINGIFY(f) "()"                                    \
+				  : nullptr); /* NOLINT */                                   \
+	  }                                                                                  \
+	  }                                                                                  \
 	  typedef ::zth::fiber_type<decltype(&::f)>::future f##_future;
 #  define zth_fiber_define_extern_1(f) zth_fiber_define_1(extern, f)
 #  define zth_fiber_define_static_1(f) zth_fiber_define_1(static constexpr, f)

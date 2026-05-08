@@ -37,4 +37,13 @@
 #include <libzth/worker.h>
 #include <libzth/zmq.h>
 
+#ifdef __cplusplus
+#  ifndef ZTH_INLINE_EMIT
+namespace zth {
+ZTH_INIT_CALL_(checkConfig, checkConfig();)
+static inline checkConfig__init const checkConfig__init_;
+} // namespace zth
+#  endif // !ZTH_INLINE_EMIT
+#endif	 // __cplusplus
+
 #endif // ZTH_H
