@@ -96,7 +96,7 @@ int zth_main(int argc, char** argv)
 		zth::Worker w;
 		zth::fiber_future<int> f =
 			zth::fiber(main_fiber, argc, argv) << zth::setName(
-				zth::Config::EnableDebugPrint || zth::Config::EnablePerfEvent
+				zth_config(EnableDebugPrint) || zth::Config::EnablePerfEvent
 						|| zth::Config::EnableStackWaterMark
 					? "main_fiber"
 					: nullptr);

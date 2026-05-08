@@ -61,4 +61,53 @@ bool config(int env, bool whenUnset)
 	}
 }
 
+/*!
+ * \brief Check if a given Config field is the same as the given value.
+ *
+ * This allows checking if the config flags passed to Zth during compilation matches those when
+ * using the compiled library.
+ */
+void checkConfig(int check, size_t value)
+{
+	bool ok = false;
+	char const* name = nullptr;
+
+#define ZTH_CHECK(x)                             \
+	case Check::Config_##x:                  \
+		ok = (size_t)Config::x == value; \
+		if(Config::EnableFullAssert)     \
+			name = "" #x;            \
+		break;
+
+	switch(check) {
+		ZTH_CHECK(Debug)
+		ZTH_CHECK(EnableAssert)
+		ZTH_CHECK(EnableFullAssert)
+		ZTH_CHECK(EnableThreads)
+		ZTH_CHECK(SupportDebugPrint)
+		ZTH_CHECK(EnableColorLog)
+		ZTH_CHECK(DefaultFiberStackSize)
+		ZTH_CHECK(EnableStackGuard)
+		ZTH_CHECK(EnableStackWaterMark)
+		ZTH_CHECK(ContextSignals)
+		ZTH_CHECK(CheckTimesliceOverrun)
+		ZTH_CHECK(PerfEventBufferSize)
+		ZTH_CHECK(EnablePerfEvent)
+		ZTH_CHECK(PerfSyscall)
+		ZTH_CHECK(UseZMQ)
+		ZTH_CHECK(UseLimitedFormatSpecifiers)
+		ZTH_CHECK(EnableExceptions)
+	default:;
+	}
+
+#undef ZTH_CHECK
+
+	if(!ok) {
+		if(Config::EnableFullAssert && name)
+			abort("Config check %s failed", name);
+		else
+			abort("Config check %d failed", check);
+	}
+}
+
 } // namespace zth

@@ -14,6 +14,17 @@ struct zth_init_entry const* zth_init_head = nullptr;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 struct zth_init_entry* zth_init_tail = nullptr;
 
+zth_init_entry::zth_init_entry(void (*f_)(void), zth_init_entry const* next_) noexcept
+	: f(f_)
+	, next(next_)
+{
+	if(zth_init_tail)
+		zth_init_tail->next = this;
+	zth_init_tail = this;
+	if(!zth_init_head)
+		zth_init_head = this;
+}
+
 /*!
  * \brief Perform one-time global initialization of the Zth library.
  *
