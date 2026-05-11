@@ -24,8 +24,12 @@ function(add_rust_example name)
 	endif()
 
 	if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-		set(RUST_PROFILE)
-		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/debug)
+		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/${ZTH_RUST_TARGET}/debug)
+	else()
+		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/${ZTH_RUST_TARGET}/release)
+	endif()
+
+	if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CMAKE_CROSSCOMPILING)
 		add_launch_json_entry(
 			"
 			\"type\": \"cppdbg\",
@@ -41,8 +45,6 @@ function(add_rust_example name)
 			]"
 		)
 	else()
-		set(RUST_PROFILE "--release")
-		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/release)
 		add_launch_json_entry(
 			"
 			\"type\": \"f5anything\",
@@ -55,7 +57,7 @@ function(add_rust_example name)
 
 	add_custom_target(
 		rust-${name} ALL
-		COMMAND "${CARGO_EXE}" build -p "${name}" ${RUST_PROFILE}
+		COMMAND "${CARGO_EXE}" build -p "${name}" ${ZTH_RUST_PROFILE}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		COMMENT "Build Rust ${name} example"
 	)

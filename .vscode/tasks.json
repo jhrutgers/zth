@@ -9,7 +9,7 @@
 				"command": "${workspaceFolder}/dist/macos/bootstrap.sh"
 			},
 			"linux": {
-				"command": "${workspaceFolder}/dist/ubuntu/bootstrap.sh"
+				"command": "${workspaceFolder}/dist/ubuntu/bootstrap.sh ${input:bootstrapRust}"
 			},
 			"windows": {
 				"command": "${workspaceFolder}\\dist\\win32\\bootstrap.cmd"
@@ -24,7 +24,7 @@
 			"label": "bootstrap-mingw",
 			"detail": "Install system dependencies for building with MinGW",
 			"type": "shell",
-			"command": "${workspaceFolder}/dist/mingw/bootstrap.sh",
+			"command": "${workspaceFolder}/dist/mingw/bootstrap.sh ${input:bootstrapRust}",
 			"windows": {
 				"command": "echo Not supported on Windows & exit /b 1"
 			},
@@ -443,6 +443,22 @@
 	],
 	"inputs": [
 		{
+			"id": "bootstrapRust",
+			"type": "pickString",
+			"description": "Bootstrap Rust support?",
+			"options": [
+				{
+					"label": "yes",
+					"value": "-r"
+				},
+				{
+					"label": "no",
+					"value": ""
+				},
+			],
+			"default": "-r",
+		},
+		{
 			"id": "buildtype",
 			"type": "command",
 			"command": "memento.pickString",
@@ -491,7 +507,11 @@
 					"measure",
 					"socks",
 					"work",
-					"zmq"
+					"zmq",
+					"rust/debug/hello",
+					"rust/release/hello",
+					"rust/debug/futures",
+					"rust/release/futures",
 				]
 			}
 		}
