@@ -21,6 +21,7 @@ The main benefits of Zth are:
   allocator-aware.
 - Support for [ASan, LSan, UBSan](https://github.com/google/sanitizers), and
   [Valgrind](https://valgrind.org/).
+- Rust API wrapper.
 
 Working with fibers is very easy. The `examples/1_helloworld` example starts two fibers by using
 `zth::fiber()`:
@@ -123,6 +124,20 @@ checked once, so dynamically changing the variables after startup has no effect 
 	When set to 1, check at every context switch if the timeslice was overrun significantly.
 	Only the longest overrun is reported.  Enabled by default in the debug build, not available
 	in release builds.
+
+## Rust
+
+A Rust API wrapper crate is added to allow Zth run fibers written in Rust.  It uses the existing C
+API, but adds convenient wrappers for argument and return types, for example, to match the C++
+interface.
+
+As Rust as low overhead and is feasible to use on embedded targets, it is a good approach to
+implement safety-critical portions of the application. As microcontrollers have a large C/C++
+ecosystem, Zth allows easily embedding safe Rust code in such an application.
+
+You may pick other (pure) Rust run-time systems to do async/concurrent applications on embedded
+targets, but I needed (probably for some more time in the future) a C/C++ framework. Therefore this
+Rust extension to Zth.
 
 ## Related
 
