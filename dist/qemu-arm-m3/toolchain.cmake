@@ -66,3 +66,5 @@ set(ZTH_DISABLE_RTTI
     ON
     CACHE STRING "" FORCE
 )
+
+set(ZTH_RUST_TARGET thumbv7em-none-eabi)
