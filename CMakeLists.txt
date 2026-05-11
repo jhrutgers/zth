@@ -187,6 +187,31 @@ else()
 	set(ZTH_HAVE_CORO OFF)
 endif()
 
+find_program(
+	CARGO_EXE
+	NAMES "cargo"
+	DOC "Path to cargo executable"
+)
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+	set(ZTH_RUST_PROFILE)
+else()
+	set(ZTH_RUST_PROFILE "--release")
+endif()
+
+if(MINGW OR WIN32)
+	set(ZTH_RUST_TARGET x86_64-pc-windows-gnu)
+elseif(UNIX)
+	set(ZTH_RUST_TARGET x86_64-unknown-linux-gnu)
+else(CARGO_EXE)
+	message(WARNING "Found Cargo, but the platform is unsupported. Disabled Rust support.")
+	set(CARGO_EXE)
+endif()
+
+if(CARGO_EXE)
+	message(STATUS "Enabled Rust for ${ZTH_RUST_TARGET}")
+endif()
+
 option(ZTH_REGEN_LAUNCH_JSON "Regenerate launch.json" OFF)
 if(NOT EXISTS ${ZTH_SOURCE_DIR}/.vscode/launch.json OR ZTH_REGEN_LAUNCH_JSON)
 	set(ZTH_GEN_LAUNCH_JSON ON)

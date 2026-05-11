@@ -4,3 +4,4 @@
 
 [build]
 target-dir = "@CMAKE_CURRENT_BINARY_DIR@"
+target = "@ZTH_RUST_TARGET@"

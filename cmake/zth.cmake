@@ -92,6 +92,7 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/init.cpp
 	${ZTH_SOURCE_DIR}/src/inline.cpp
 	${ZTH_SOURCE_DIR}/src/io.cpp
+	${ZTH_SOURCE_DIR}/src/main_fiber.cpp
 	${ZTH_SOURCE_DIR}/src/main.cpp
 	${ZTH_SOURCE_DIR}/src/perf.cpp
 	${ZTH_SOURCE_DIR}/src/poller.cpp
@@ -102,6 +103,8 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/zmq.cpp
 	${ZTH_SOURCE_DIR}/src/zth_assert_handler.cpp
 	${ZTH_SOURCE_DIR}/src/zth_logv.cpp
+	${ZTH_SOURCE_DIR}/src/zth_preinit.cpp
+	${ZTH_SOURCE_DIR}/src/zth_postdeinit.cpp
 	${ZTH_SOURCE_DIR}/src/zth_terminate.cpp
 )
 

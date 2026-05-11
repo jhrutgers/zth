@@ -91,7 +91,12 @@ fn default_dist_target() -> &'static str {
     }
 }
 
-fn use_libzth(include_dir: &PathBuf, lib_dir: &PathBuf, config_file: &PathBuf) {
+fn use_libzth(
+    include_dir: &PathBuf,
+    lib_dir: &PathBuf,
+    install_dir: &PathBuf,
+    config_file: &PathBuf,
+) {
     assert!(
         include_dir.exists(),
         "Zth headers not found; set ZTH_REPO or ZTH_INSTALL"
@@ -115,6 +120,9 @@ fn use_libzth(include_dir: &PathBuf, lib_dir: &PathBuf, config_file: &PathBuf) {
 
     println!("cargo:metadata=include={}", include_dir.display());
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
+    if install_dir.exists() {
+        println!("cargo:rustc-link-search=native={}", install_dir.display());
+    }
 
     if cmake_file_has_option(config_file, "ZTH_ENABLE_ASAN")
         || cmake_file_linked(config_file, "-fsanitize=address")
@@ -186,8 +194,9 @@ fn build_from_repo(repo: &PathBuf, dist: &str) {
     let include_dir = repo.join("include");
     let build_dir = repo.join("dist").join(dist).join("build");
     let lib_dir = build_dir.clone();
+    let install_dir = build_dir.join("deploy/lib");
     let config_file = build_dir.join("CMakeCache.txt");
-    use_libzth(&include_dir, &lib_dir, &config_file);
+    use_libzth(&include_dir, &lib_dir, &install_dir, &config_file);
 }
 
 fn build_from_install(prefix: &PathBuf) {
@@ -213,7 +222,7 @@ fn build_from_install(prefix: &PathBuf) {
     ])
     .unwrap_or_else(|| prefix.join("libzth/cmake/libzth.cmake"));
 
-    use_libzth(&include_dir, &lib_dir, &config_file);
+    use_libzth(&include_dir, &lib_dir, &lib_dir, &config_file);
 }
 
 fn main() {

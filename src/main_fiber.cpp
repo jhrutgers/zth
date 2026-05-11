@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-#include <libzth/init.h>
+#include <libzth/fiber.h>
 
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
 #endif
-int main(int argc, char** argv)
+int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
-	return zth_main(argc, argv);
+	return 0;
 }
