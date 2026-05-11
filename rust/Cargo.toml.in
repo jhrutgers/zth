@@ -15,7 +15,7 @@ keywords = ["fiber", "ffi"]
 categories = ["api-bindings", "asynchronous", "concurrency"]
 repository = "https://github.com/jhrutgers/zth"
 homepage = "https://github.com/jhrutgers/zth"
-exclude = ["Cargo.toml.in"]
+exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo"]
 
 [build-dependencies]
 regex = "1"

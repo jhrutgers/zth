@@ -2,6 +2,5 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-/.cargo/config.toml
-/target
-/Cargo.lock
+[build]
+target-dir = "@CMAKE_CURRENT_BINARY_DIR@"
