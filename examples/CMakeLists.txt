@@ -103,3 +103,5 @@ endif()
 if(ZTH_HAVE_LIBZMQ)
 	add_example(zmq zmq.cpp)
 endif()
+
+add_subdirectory(rust)

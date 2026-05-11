@@ -196,33 +196,33 @@ endif()
 
 set_property(GLOBAL PROPERTY ZTH_LAUNCH_JSON "")
 
-function(add_launch_json TARGET)
+function(add_launch_json_entry kv)
 	get_property(_launch GLOBAL PROPERTY ZTH_LAUNCH_JSON)
+	set_property(
+		GLOBAL
+		PROPERTY ZTH_LAUNCH_JSON "${_launch}
+		{${kv}
+		},"
+	)
+endfunction()
+
+function(add_launch_json TARGET)
 	if(MINGW)
 		# Install before starting in VSCode.
-		set_property(
-			GLOBAL
-			PROPERTY
-				ZTH_LAUNCH_JSON
-				"${_launch}
-		{
+		add_launch_json_entry(
+			"
 			\"type\": \"f5anything\",
 			\"request\": \"launch\",
 			\"name\": \"${TARGET}\",
-			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\",
-		},"
+			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\","
 		)
 	elseif(
 		CMAKE_BUILD_TYPE STREQUAL "Debug"
 		OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
 		AND NOT CMAKE_CROSSCOMPILING
 	)
-		set_property(
-			GLOBAL
-			PROPERTY
-				ZTH_LAUNCH_JSON
-				"${_launch}
-		{
+		add_launch_json_entry(
+			"
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
 			\"name\": \"${TARGET}\",
@@ -233,16 +233,11 @@ function(add_launch_json TARGET)
 					\"name\": \"ASAN_OPTIONS\",
 					\"value\": \"detect_leaks=0\"
 				}
-			]
-		},"
+			]"
 		)
 	elseif(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
-		set_property(
-			GLOBAL
-			PROPERTY
-				ZTH_LAUNCH_JSON
-				"${_launch}
-		{
+		add_launch_json_entry(
+			"
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
 			\"name\": \"${TARGET}\",
@@ -253,20 +248,16 @@ function(add_launch_json TARGET)
 			\"MIMode\": \"gdb\",
 			\"stopAtEntry\": true,
 			\"preLaunchTask\": \"run-${ZTH_DIST}\"
-		},"
+		"
 		)
 	else()
-		set_property(
-			GLOBAL
-			PROPERTY
-				ZTH_LAUNCH_JSON
-				"${_launch}
-		{
+		add_launch_json_entry(
+			"
 			\"type\": \"f5anything\",
 			\"request\": \"launch\",
 			\"name\": \"${TARGET}\",
 			\"command\": \"$<TARGET_FILE:${TARGET}>\",
-		},"
+		"
 		)
 	endif()
 endfunction()
@@ -307,6 +298,8 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0"
 		add_subdirectory(tests)
 	endif()
 endif()
+
+add_subdirectory(rust)
 
 find_package(Doxygen)
 option(ZTH_DOCUMENTATION "Create the HTML based API documentation (requires Doxygen)"
