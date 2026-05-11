@@ -12,3 +12,6 @@ links = "zth"
 
 [lib]
 path = "src/zth.rs"
+
+[build-dependencies]
+regex = "1"

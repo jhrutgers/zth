@@ -21,7 +21,6 @@ option(ZTH_ENABLE_VALGRIND "Enable valgrind support" OFF)
 option(ZTH_CLANG_TIDY "Run clang-tidy" OFF)
 option(ZTH_DISABLE_EXCEPTIONS "Disable exceptions to reduce code size" OFF)
 option(ZTH_DISABLE_RTTI "Disable RTTI, to reduce code size" OFF)
-option(ZTH_CONFIG_ENABLE_DEBUG_PRINT "Enable debug print statements" OFF)
 
 if(ZTH_HAVE_LIBZMQ
    OR NOT CMAKE_CROSSCOMPILING
@@ -33,6 +32,27 @@ else()
 	set(ZTH_THREADS_DEFAULT OFF)
 endif()
 option(ZTH_THREADS "Make libzth thread-aware" ${ZTH_THREADS_DEFAULT})
+
+# You can also set the following options, to override the corresponding zth::Config fields.  Unset
+# or leave empty to use the default values.
+#
+# * ZTH_CONFIG_DEBUG. Is only used when not NDEBUG.
+# * ZTH_CONFIG_ENABLE_ASSERT. Requires zth::Config::Debug.
+# * ZTH_CONFIG_ENABLE_FULL_ASSERT. Requires zth::Config::EnableAssert.
+# * ZTH_CONFIG_ENABLE_DEBUG_PRINT. Requires zth::Config::SupportDebugPrint. Can also be overridden
+#   in environment.
+# * ZTH_CONFIG_SUPPORT_DEBUG_PRINT. Requires zth::Config::Debug.
+# * ZTH_CONFIG_ENABLE_COLOR_LOG.
+# * ZTH_CONFIG_DEFAULT_FIBER_STACK_SIZE. In bytes.
+# * ZTH_CONFIG_ENABLE_STACK_GUARD.
+# * ZTH_CONFIG_ENABLE_STACK_WATER_MARK.
+# * ZTH_CONFIG_CONTEXT_SIGNALS.
+# * ZTH_CONFIG_MIN_TIMESLICE. In nanoseconds.
+# * ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD. In nanoseconds.
+# * ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN. Can also be overridden in environment.
+# * ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE. In number of entries.
+# * ZTH_CONFIG_ENABLE_PERF_EVENT.
+# * ZTH_CONFIG_PERF_SYSCALL. Can also be override in environment.
 
 # ##################################################################################################
 # libzth
@@ -175,9 +195,41 @@ if(ZTH_DISABLE_RTTI)
 	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 endif()
 
-if(ZTH_CONFIG_ENABLE_DEBUG_PRINT)
-	target_compile_options(libzth PUBLIC -DZTH_CONFIG_ENABLE_DEBUG_PRINT=1)
-endif()
+set(ZTH_CONFIG_OVERRIDES
+    ZTH_CONFIG_DEBUG
+    ZTH_CONFIG_ENABLE_ASSERT
+    ZTH_CONFIG_ENABLE_FULL_ASSERT
+    ZTH_CONFIG_ENABLE_DEBUG_PRINT
+    ZTH_CONFIG_SUPPORT_DEBUG_PRINT
+    ZTH_CONFIG_ENABLE_COLOR_LOG
+    ZTH_CONFIG_DEFAULT_FIBER_STACK_SIZE
+    ZTH_CONFIG_ENABLE_STACK_GUARD
+    ZTH_CONFIG_ENABLE_STACK_WATER_MARK
+    ZTH_CONFIG_CONTEXT_SIGNALS
+    ZTH_CONFIG_MIN_TIMESLICE
+    ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD
+    ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN
+    ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE
+    ZTH_CONFIG_ENABLE_PERF_EVENT
+    ZTH_CONFIG_PERF_SYSCALL
+)
+foreach(f IN LISTS ZTH_CONFIG_OVERRIDES)
+	set(x "${${f}}")
+
+	if("${x}" STREQUAL "")
+		continue()
+	endif()
+
+	string(TOUPPER "${x}" x_upper)
+	if("${x_upper}" STREQUAL "ON")
+		set(x 1)
+	endif()
+	if("${x_upper}" STREQUAL "OFF")
+		set(x 0)
+	endif()
+
+	target_compile_options(libzth PUBLIC -D${f}=${x})
+endforeach()
 
 if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 	# You want this when using C++20 coroutines, even in Debug builds.
