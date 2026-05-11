@@ -2,6 +2,39 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+//! Rust bindings for Zth.
+//!
+//! This crate exposes the core Zth primitives for running fibers.
+//!
+//! # Quick Start
+//!
+//! ```no_run
+//! fn fiber2() {
+//!     // Do work.
+//!     zth::may_yield();
+//!     // Do more work.
+//! }
+//!
+//! fn fiber() {
+//!     zth::fiber(fiber2, ());
+//! }
+//!
+//! fn main() -> Result<(), zth::Error> {
+//!     // Start a worker and execute fiber().
+//!     zth::run(fiber, ())
+//! }
+//! ```
+//!
+//! # Native Library Discovery
+//!
+//! The crate links against native `libzth` and discovers it through
+//! `build.rs`.
+//!
+//! Common setup:
+//! - Set `ZTH_INSTALL` to an installed prefix containing Zth headers/libs.
+//! - Set `ZTH_REPO` to a Zth repository root (uses `dist/<target>/build`), if not detected automatically.
+//! - Optionally set `ZTH_DIST` to override target dir selection.
+
 mod r#async;
 mod fiber;
 mod init;
