@@ -9,9 +9,13 @@ edition = "2021"
 description = "Rust bindings for Zth"
 license = "MPL-2.0"
 links = "zth"
-
-[lib]
-path = "src/zth.rs"
+documentation = "https://jhrutgers.github.io/zth/"
+readme = "README.md"
+keywords = ["fiber", "ffi"]
+categories = ["api-bindings", "asynchronous", "concurrency"]
+repository = "https://github.com/jhrutgers/zth"
+homepage = "https://github.com/jhrutgers/zth"
+exclude = ["Cargo.toml.in"]
 
 [build-dependencies]
 regex = "1"

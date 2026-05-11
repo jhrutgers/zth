@@ -116,29 +116,6 @@ fn use_libzth(include_dir: &PathBuf, lib_dir: &PathBuf, config_file: &PathBuf) {
     println!("cargo:metadata=include={}", include_dir.display());
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
 
-    if lib_dir.join("libzth.so").exists() {
-        println!("cargo:rustc-link-lib=dylib=zth");
-    } else {
-        println!("cargo:rustc-link-lib=static=zth");
-    }
-
-    let target_env = env::var("CARGO_CFG_TARGET_OS");
-    let target = target_env.as_deref();
-    if target == Ok("windows") {
-        println!("cargo:rustc-link-lib=dylib=stdc++");
-        println!("cargo:rustc-link-lib=dylib=pthread");
-    }
-    if target == Ok("linux") || target == Ok("macos") {
-        println!("cargo:rustc-link-lib=dylib=stdc++");
-        println!("cargo:rustc-link-lib=dylib=pthread");
-        println!("cargo:rustc-link-lib=dylib=dl");
-    }
-    if target == Ok("linux") {
-        println!("cargo:rustc-link-lib=dylib=rt");
-    }
-
-    // TODO: bare metal
-
     if cmake_file_has_option(config_file, "ZTH_ENABLE_ASAN")
         || cmake_file_linked(config_file, "-fsanitize=address")
     {
@@ -168,6 +145,29 @@ fn use_libzth(include_dir: &PathBuf, lib_dir: &PathBuf, config_file: &PathBuf) {
     {
         println!("cargo:rustc-link-lib=dylib=unwind");
     }
+
+    if lib_dir.join("libzth.so").exists() {
+        println!("cargo:rustc-link-lib=dylib=zth");
+    } else {
+        println!("cargo:rustc-link-lib=static=zth");
+    }
+
+    let target_env = env::var("CARGO_CFG_TARGET_OS");
+    let target = target_env.as_deref();
+    if target == Ok("windows") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+        println!("cargo:rustc-link-lib=dylib=pthread");
+    }
+    if target == Ok("linux") || target == Ok("macos") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+        println!("cargo:rustc-link-lib=dylib=pthread");
+        println!("cargo:rustc-link-lib=dylib=dl");
+    }
+    if target == Ok("linux") {
+        println!("cargo:rustc-link-lib=dylib=rt");
+    }
+
+    // TODO: bare metal
 
     println!(
         "cargo:rerun-if-changed={}",

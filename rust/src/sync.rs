@@ -355,3 +355,41 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Future;
+
+    #[test]
+    fn inline_values_round_trip() {
+        assert!(Future::<u32>::is_usize_mode());
+        assert!(!Future::<u32>::requires_take_guard());
+
+        let encoded = Future::<u32>::encode_value(0x1234_5678);
+        let decoded = Future::<u32>::decode_value(encoded);
+
+        assert_eq!(decoded, 0x1234_5678);
+    }
+
+    #[test]
+    fn bool_round_trip() {
+        assert!(Future::<bool>::is_usize_mode());
+        assert!(!Future::<bool>::requires_take_guard());
+
+        let encoded = Future::<bool>::encode_value(true);
+        let decoded = Future::<bool>::decode_value(encoded);
+
+        assert!(decoded);
+    }
+
+    #[test]
+    fn boxed_values_round_trip() {
+        assert!(!Future::<String>::is_usize_mode());
+        assert!(Future::<String>::requires_take_guard());
+
+        let encoded = Future::<String>::encode_value("zth".to_string());
+        let decoded = Future::<String>::decode_value(encoded);
+
+        assert_eq!(decoded, "zth");
+    }
+}

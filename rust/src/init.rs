@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
 use std::ffi::c_void;
+use std::rc::Rc;
 
 use crate::r#async::{fiber_start_trampoline, FiberStart};
 use crate::Error;
 use crate::Fiber;
 use crate::FiberEntry;
+use crate::Future;
 
 mod ffi {
     use std::ffi::{c_int, c_void};
@@ -19,7 +21,7 @@ mod ffi {
     }
 }
 
-pub fn run<F, Args>(entry: F, args: Args) -> Result<(), Error>
+pub fn run<F, Args>(entry: F, args: Args) -> Result<F::Output, Error>
 where
     F: FiberEntry<Args> + 'static,
     Args: 'static,
@@ -28,10 +30,12 @@ where
 
     unsafe { ffi::zth_preinit() }
 
+    let f = Rc::new(Future::<F::Output>::new()?);
+
     let start = Box::new(FiberStart {
         entry,
         args,
-        future: None,
+        future: Some(f.clone()),
     });
     let start_ptr = Box::into_raw(start);
 
@@ -45,7 +49,7 @@ where
     unsafe { ffi::zth_postdeinit() };
 
     if rc == 0 {
-        Ok(())
+        Ok(f.get()?)
     } else {
         unsafe {
             drop(Box::from_raw(start_ptr));
