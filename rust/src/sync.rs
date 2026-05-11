@@ -2,18 +2,31 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::cell::{Cell, UnsafeCell};
-use std::ffi::{c_int, c_void};
-use std::fmt;
-use std::hash::{Hash, Hasher};
-use std::marker::PhantomData;
-use std::mem;
-use std::mem::{ManuallyDrop, MaybeUninit};
-use std::rc::Rc;
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+#[cfg(all(zth_hosted_std, test))]
+use alloc::string::{String, ToString};
+use core::cell::{Cell, UnsafeCell};
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::debug_assert;
+use core::ffi::{c_int, c_void};
+use core::fmt;
+use core::fmt::Debug;
+use core::hash::{Hash, Hasher};
+use core::marker::PhantomData;
+use core::mem;
+use core::mem::{ManuallyDrop, MaybeUninit};
+use core::ops::Drop;
+use core::prelude::rust_2021::derive;
+use core::ptr;
+use core::result::Result;
+use core::result::Result::{Err, Ok};
+use core::stringify;
 
 mod ffi {
     use super::FutureRaw;
-    use std::ffi::c_int;
+    use core::ffi::c_int;
 
     extern "C" {
         pub fn zth_future_init(future: *mut FutureRaw) -> c_int;
@@ -27,7 +40,7 @@ mod ffi {
 
 use crate::Error;
 
-pub(crate) trait Synchronizer: Sized {
+pub(crate) trait Synchronizer: core::marker::Sized {
     type Raw;
 
     fn from_raw(raw: Self::Raw) -> Self;
@@ -119,7 +132,7 @@ macro_rules! define_synchronizer_type {
 
             fn raw_null() -> Self::Raw {
                 Self::Raw {
-                    p: std::ptr::null_mut(),
+                    p: ptr::null_mut(),
                 }
             }
 
@@ -128,7 +141,7 @@ macro_rules! define_synchronizer_type {
             }
 
             unsafe fn raw_clear(raw: *mut Self::Raw) {
-                (*raw).p = std::ptr::null_mut();
+                (*raw).p = ptr::null_mut();
             }
         }
 
@@ -272,7 +285,7 @@ where
             let value = ManuallyDrop::new(value);
             let mut raw = MaybeUninit::<usize>::zeroed();
             unsafe {
-                std::ptr::copy_nonoverlapping(
+                ptr::copy_nonoverlapping(
                     (&*value as *const T).cast::<u8>(),
                     raw.as_mut_ptr().cast::<u8>(),
                     mem::size_of::<T>(),
@@ -288,7 +301,7 @@ where
         if Self::is_usize_mode() {
             let mut value = MaybeUninit::<T>::uninit();
             unsafe {
-                std::ptr::copy_nonoverlapping(
+                ptr::copy_nonoverlapping(
                     (&raw as *const usize).cast::<u8>(),
                     value.as_mut_ptr().cast::<u8>(),
                     mem::size_of::<T>(),
@@ -325,9 +338,9 @@ where
             Err(e) => {
                 if !Self::is_usize_mode() {
                     let ptr = encoded as *mut T;
-                    unsafe { drop(Box::from_raw(ptr)) };
+                    unsafe { core::mem::drop(Box::from_raw(ptr)) };
                 } else if mem::needs_drop::<T>() {
-                    drop(Self::decode_value(encoded));
+                    core::mem::drop(Self::decode_value(encoded));
                 }
                 Err(e)
             }
@@ -343,20 +356,20 @@ where
     }
 }
 
-impl<T> Drop for Future<T>
+impl<T> core::ops::Drop for Future<T>
 where
     T: 'static,
 {
     fn drop(&mut self) {
         if Self::requires_take_guard() && self.raw.valid() && !self.taken.get() {
             if let Ok(raw) = self.raw.get() {
-                drop(Self::decode_value(raw));
+                core::mem::drop(Self::decode_value(raw));
             }
         }
     }
 }
 
-#[cfg(test)]
+#[cfg(all(zth_hosted_std, test))]
 mod tests {
     use super::Future;
 

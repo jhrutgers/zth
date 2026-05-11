@@ -2,11 +2,20 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::ffi::{c_char, c_int, c_void, CStr, CString};
-use std::fmt::Arguments;
+use alloc::ffi::CString;
+use alloc::format;
+use alloc::string::String;
+use core::assert;
+use core::convert::Into;
+#[cfg(zth_hosted_std)]
+use core::ffi::{c_char, c_int};
+use core::ffi::{c_void, CStr};
+use core::fmt::Arguments;
+use core::panic;
+use core::ptr;
 
 mod ffi {
-    use std::ffi::{c_char, c_int, c_void};
+    use core::ffi::{c_char, c_int, c_void};
 
     extern "C" {
         pub fn zth_banner() -> *const c_char;
@@ -17,6 +26,7 @@ mod ffi {
 }
 
 extern "C" {
+    #[cfg(zth_hosted_std)]
     fn vasprintf(strp: *mut *mut c_char, fmt: *const c_char, ap: *mut c_void) -> c_int;
     fn free(ptr: *mut c_void);
 }
@@ -31,6 +41,7 @@ extern "C" {
 /// - `fmt` must point to a valid NUL-terminated C format string.
 /// - `arg` must be a valid `va_list` matching `fmt` for the active C ABI.
 /// - Both pointers must remain valid for the duration of the call.
+#[cfg(zth_hosted_std)]
 #[no_mangle]
 pub unsafe extern "C" fn zth_logv(fmt: *const c_char, arg: *mut c_void) {
     if fmt.is_null() {
@@ -43,7 +54,7 @@ pub unsafe extern "C" fn zth_logv(fmt: *const c_char, arg: *mut c_void) {
         return;
     }
 
-    let mut rendered: *mut c_char = std::ptr::null_mut();
+    let mut rendered: *mut c_char = ptr::null_mut();
     let rc = vasprintf(&mut rendered, fmt, arg);
     if rc >= 0 && !rendered.is_null() {
         let line = CStr::from_ptr(rendered).to_string_lossy();
@@ -71,16 +82,14 @@ pub fn banner() -> String {
 /// Use this function with [`format_args!`] or call [`log!`] for ergonomic
 /// `format!`-style invocation.
 pub fn log(args: Arguments<'_>) {
-    let rendered = std::fmt::format(args);
+    let rendered = alloc::fmt::format(args);
     let rendered_c = CString::new(rendered).unwrap_or_else(|_| {
         CString::new("invalid Rust log message: contains interior NUL")
             .expect("static fallback log message must not contain NUL")
     });
 
     unsafe {
-        // Pass a fully rendered message; zth_logv() handles null va_list by
-        // printing fmt directly.
-        ffi::zth_logv(rendered_c.as_ptr(), std::ptr::null_mut());
+        ffi::zth_logv(rendered_c.as_ptr(), ptr::null_mut());
     }
 }
 
@@ -97,16 +106,14 @@ macro_rules! log {
 /// Use this function with [`format_args!`] or call [`log!`] for ergonomic
 /// `format!`-style invocation.
 pub fn log_color(color: u8, args: Arguments<'_>) {
-    let rendered = std::fmt::format(args);
+    let rendered = alloc::fmt::format(args);
     let rendered_c = CString::new(rendered).unwrap_or_else(|_| {
         CString::new("invalid Rust log message: contains interior NUL")
             .expect("static fallback log message must not contain NUL")
     });
 
     unsafe {
-        // Pass a fully rendered message; zth_logv() handles null va_list by
-        // printing fmt directly.
-        ffi::zth_log_colorv(color.into(), rendered_c.as_ptr(), std::ptr::null_mut());
+        ffi::zth_log_colorv(color.into(), rendered_c.as_ptr(), ptr::null_mut());
     }
 }
 

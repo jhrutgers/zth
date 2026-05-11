@@ -2,11 +2,23 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+use alloc::rc::Rc;
+use core::clone::Clone;
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::default::Default;
+use core::ffi::c_void;
+use core::fmt;
+use core::fmt::Debug;
+use core::hash::{Hash, Hasher};
+use core::marker::Copy;
+use core::option::Option;
+use core::option::Option::None;
+use core::prelude::rust_2021::derive;
+use core::ptr;
+use core::result::Result;
+
 use crate::sync::Future;
-use std::ffi::c_void;
-use std::fmt;
-use std::hash::{Hash, Hasher};
-use std::rc::Rc;
 
 mod ffi {
     use super::FiberRaw;
@@ -45,9 +57,7 @@ impl<T> Fiber<T> {
     /// Returns an invalid Fiber object.
     pub fn null() -> Self {
         Self {
-            raw: FiberRaw {
-                p: std::ptr::null(),
-            },
+            raw: FiberRaw { p: ptr::null() },
             future: None,
         }
     }
@@ -78,7 +88,7 @@ impl Fiber<()> {
 }
 
 impl<T> fmt::Debug for Fiber<T> {
-    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         self.raw.fmt(formatter)
     }
 }
@@ -103,8 +113,8 @@ impl<T> Hash for Fiber<T> {
     }
 }
 
-impl<T> std::fmt::Display for Fiber<T> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:x}", self.handle().addr())
+impl<T> fmt::Display for Fiber<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        core::write!(f, "{:x}", self.handle().addr())
     }
 }

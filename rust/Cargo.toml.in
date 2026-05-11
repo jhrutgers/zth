@@ -17,5 +17,9 @@ repository = "https://github.com/jhrutgers/zth"
 homepage = "https://github.com/jhrutgers/zth"
 exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo"]
 
+[features]
+default = ["std"]
+std = []
+
 [build-dependencies]
 regex = "1"

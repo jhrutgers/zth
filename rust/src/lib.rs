@@ -35,6 +35,10 @@
 //! - Set `ZTH_REPO` to a Zth repository root (uses `dist/<target>/build`), if not detected automatically.
 //! - Optionally set `ZTH_DIST` to override target dir selection.
 
+#![cfg_attr(not(zth_hosted_std), no_std)]
+
+extern crate alloc;
+
 mod r#async;
 mod fiber;
 mod init;
@@ -42,8 +46,14 @@ mod sync;
 mod util;
 mod worker;
 
-use std::ffi::{c_char, c_int};
-use std::fmt;
+use core::clone::Clone;
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::ffi::{c_char, c_int};
+use core::fmt;
+use core::fmt::Debug;
+use core::marker::Copy;
+use core::prelude::rust_2021::derive;
 
 pub use fiber::Fiber;
 pub use init::run;
@@ -82,6 +92,7 @@ impl fmt::Display for Error {
     }
 }
 
+#[cfg(zth_hosted_std)]
 impl std::error::Error for Error {}
 
 /// Signature of the `%main_fiber` entry point used by Zth's default `main()`.

@@ -2,8 +2,21 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::ffi::{c_void, CStr, CString};
-use std::rc::Rc;
+use alloc::boxed::Box;
+use alloc::ffi::CString;
+use alloc::rc::Rc;
+use core::clone::Clone;
+use core::convert::AsRef;
+use core::default::Default;
+use core::ffi::{c_void, CStr};
+use core::fmt::Debug;
+use core::ops::FnOnce;
+use core::option::Option;
+use core::option::Option::{None, Some};
+use core::prelude::rust_2021::derive;
+use core::ptr;
+use core::result::Result;
+use core::result::Result::{Err, Ok};
 
 use crate::fiber::Fiber;
 use crate::sync::Future;
@@ -11,7 +24,7 @@ use crate::Error;
 
 mod ffi {
     use crate::fiber::FiberRaw;
-    use std::ffi::{c_char, c_int, c_void};
+    use core::ffi::{c_char, c_int, c_void};
 
     extern "C" {
         pub fn zth_fiber_create(
@@ -163,7 +176,7 @@ where
             fiber_start_trampoline::<F, Args>,
             start_ptr.cast::<c_void>(),
             stack,
-            name.map_or(std::ptr::null(), CStr::as_ptr),
+            name.map_or(ptr::null(), CStr::as_ptr),
         )
     };
 
@@ -171,7 +184,7 @@ where
         Ok(h)
     } else {
         unsafe {
-            drop(Box::from_raw(start_ptr));
+            core::mem::drop(Box::from_raw(start_ptr));
         }
         Err(Error(rc))
     }

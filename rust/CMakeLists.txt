@@ -6,11 +6,11 @@ configure_file(
 	.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY ESCAPE_QUOTES
 )
 
-if(NOT CARGO_EXE)
+if(NOT ZTH_ENABLE_RUST)
 	return()
 endif()
 
-if(ZTH_TESTS)
+if(ZTH_TESTS AND NOT CMAKE_CROSSCOMPILING)
 	add_test(
 		NAME rust
 		COMMAND "${CARGO_EXE}" test ${ZTH_RUST_PROFILE}

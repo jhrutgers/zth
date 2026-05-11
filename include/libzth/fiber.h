@@ -46,6 +46,9 @@ typedef struct {
 
 namespace zth {
 
+// See libzth/worker.h
+void outOfWork();
+
 /*!
  * \brief The fiber.
  *
@@ -336,7 +339,7 @@ protected:
 		zth_throw(zth::cancelled());
 #  else
 		kill();
-		yield();
+		outOfWork();
 #  endif
 	}
 
