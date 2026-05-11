@@ -55,7 +55,7 @@
 			"label": "bootstrap-qemu-arm-m3",
 			"detail": "Install system dependencies for building with QEMU ARM Cortex-M3",
 			"type": "shell",
-			"command": "${workspaceFolder}/dist/qemu-arm-m3/bootstrap.sh",
+			"command": "${workspaceFolder}/dist/qemu-arm-m3/bootstrap.sh ${input:bootstrapRust}",
 			"osx": {
 				"command": "echo Not supported on macOS && exit 1"
 			},
