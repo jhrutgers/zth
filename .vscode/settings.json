@@ -34,6 +34,8 @@
 	"python.defaultInterpreterPath": "${workspaceFolder}/dist/venv/bin/python3",
 	"rust-analyzer.hover.documentation.enable": true,
 	"rust-analyzer.hover.actions.enable": true,
+	"rust-analyzer.cargo.allTargets": false,
+	"rust-analyzer.check.allTargets": false,
 	"rust-analyzer.cargo.buildScripts.enable": true,
 	"rust-analyzer.linkedProjects": [
 		"${workspaceFolder}/rust/Cargo.toml",

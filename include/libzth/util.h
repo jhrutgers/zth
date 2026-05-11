@@ -1762,7 +1762,7 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char cons
  * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
-EXTERN_C ZTH_EXPORT ZTH_ERR_ATTR ZTH_INLINE char* zth_err(int e)
+EXTERN_C ZTH_EXPORT __attribute__((warn_unused_result)) ZTH_INLINE char* zth_err(int e)
 {
 	zth::string s = zth::err(e);
 	// cppcheck-suppress cstyleCast

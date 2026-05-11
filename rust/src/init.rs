@@ -2,8 +2,14 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use std::ffi::c_void;
-use std::rc::Rc;
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+use core::assert;
+use core::clone::Clone;
+use core::ffi::c_void;
+use core::option::Option::Some;
+use core::result::Result;
+use core::result::Result::{Err, Ok};
 
 use crate::r#async::{fiber_start_trampoline, FiberStart};
 use crate::Error;
@@ -12,7 +18,7 @@ use crate::FiberEntry;
 use crate::Future;
 
 mod ffi {
-    use std::ffi::{c_int, c_void};
+    use core::ffi::{c_int, c_void};
 
     extern "C" {
         pub fn zth_preinit();
@@ -52,7 +58,7 @@ where
         Ok(f.get()?)
     } else {
         unsafe {
-            drop(Box::from_raw(start_ptr));
+            core::mem::drop(Box::from_raw(start_ptr));
         }
         Err(Error(rc))
     }

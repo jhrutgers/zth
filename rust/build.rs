@@ -251,6 +251,13 @@ fn main() {
     println!("cargo:rerun-if-env-changed=ZTH_INSTALL");
     println!("cargo:rerun-if-env-changed=ZTH_DIST");
 
+    println!("cargo:rustc-check-cfg=cfg(zth_hosted_std)");
+    let hosted_std = env::var_os("CARGO_FEATURE_STD").is_some()
+        && env::var("CARGO_CFG_TARGET_OS").as_deref() != Ok("none");
+    if hosted_std {
+        println!("cargo:rustc-cfg=zth_hosted_std");
+    }
+
     let dist = env::var("ZTH_DIST").unwrap_or_else(|_| default_dist_target().to_string());
 
     if let Some(path) = env_path("ZTH_REPO") {
