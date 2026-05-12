@@ -2,21 +2,27 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-configure_file(
-	.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY ESCAPE_QUOTES
-)
+set(ZTH_RUST_LINK_FLAGS "")
+separate_arguments(_zth_rust_link_args NATIVE_COMMAND "${CMAKE_EXE_LINKER_FLAGS}")
+foreach(arg IN LISTS _zth_rust_link_args)
+	string(APPEND ZTH_RUST_LINK_FLAGS "\n  \"-C\", \"link-arg=${arg}\",")
+endforeach()
 
-find_program(
-	CARGO_EXE
-	NAMES "cargo"
-	DOC "Path to cargo executable"
-)
+configure_file(.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY)
 
-if(NOT CARGO_EXE)
+if(NOT ZTH_ENABLE_RUST)
 	return()
 endif()
 
 function(add_rust_example name)
+	set(cargo_args build -p "${name}" -q)
+	if(ZTH_RUST_PROFILE)
+		list(APPEND cargo_args ${ZTH_RUST_PROFILE})
+	endif()
+	if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Generic")
+		list(APPEND cargo_args --no-default-features --features bare-metal)
+	endif()
+
 	if(WIN32)
 		set(output_file "${name}.exe")
 	else()
@@ -57,12 +63,12 @@ function(add_rust_example name)
 
 	add_custom_target(
 		rust-${name} ALL
-		COMMAND "${CARGO_EXE}" build -p "${name}" ${ZTH_RUST_PROFILE}
+		COMMAND "${CMAKE_COMMAND}" -E env --unset=ZTH_INSTALL "ZTH_REPO=${ZTH_SOURCE_DIR}"
+			"ZTH_DIST=${ZTH_DIST}" "${CARGO_EXE}" ${cargo_args}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		DEPENDS libzth
 		COMMENT "Build Rust ${name} example"
 	)
-
-	add_dependencies(rust-${name} libzth)
 
 	install(
 		PROGRAMS ${output_dir}/${output_file}

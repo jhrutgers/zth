@@ -11,7 +11,6 @@ use core::convert::Into;
 use core::ffi::{c_char, c_int};
 use core::ffi::{c_void, CStr};
 use core::fmt::Arguments;
-use core::panic;
 use core::ptr;
 
 mod ffi {
@@ -22,6 +21,8 @@ mod ffi {
         pub fn zth_logv(fmt: *const c_char, ap: *mut c_void);
         pub fn zth_log_colorv(color: c_int, fmt: *const c_char, ap: *mut c_void);
         pub fn zth_err(e: c_int) -> *mut c_char;
+        #[cfg(all(not(zth_hosted_std), feature = "panic-handler"))]
+        pub fn zth_terminate();
     }
 }
 
@@ -97,7 +98,7 @@ pub fn log(args: Arguments<'_>) {
 #[macro_export]
 macro_rules! log {
     ($($arg:tt)*) => {
-        $crate::log(format_args!($($arg)*))
+        $crate::log(::core::format_args!($($arg)*))
     };
 }
 
@@ -126,9 +127,19 @@ macro_rules! log_color {
 }
 
 /// Redirect Zth termination to Rust panic!.
+#[cfg(zth_hosted_std)]
 #[no_mangle]
 pub unsafe extern "C" fn zth_terminate() {
-    panic!("Zth terminated");
+    core::panic!("Zth terminated");
+}
+
+#[cfg(all(not(zth_hosted_std), feature = "panic-handler"))]
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo<'_>) -> ! {
+    unsafe {
+        ffi::zth_terminate();
+    }
+    loop {}
 }
 
 /// Convert an Zth error code into a string.

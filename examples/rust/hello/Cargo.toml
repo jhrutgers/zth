@@ -7,5 +7,10 @@ name = "hello"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["std"]
+std = ["zth/std"]
+bare-metal = ["zth/bare-metal"]
+
 [dependencies]
-zth = { path = "../../../rust" }
+zth = { path = "../../../rust", default-features = false }
