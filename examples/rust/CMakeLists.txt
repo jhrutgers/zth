@@ -8,7 +8,7 @@ foreach(arg IN LISTS _zth_rust_link_args)
 	string(APPEND ZTH_RUST_LINK_FLAGS "\n  \"-Clink-arg=${arg}\",")
 endforeach()
 
-configure_file(.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY)
+zth_repo_config(.cargo/config.toml)
 
 if(NOT ZTH_ENABLE_RUST)
 	return()

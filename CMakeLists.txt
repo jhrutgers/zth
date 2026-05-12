@@ -207,6 +207,12 @@ if("${ZTH_RUST_TARGET}" STREQUAL "")
 	endif()
 endif()
 
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Generic")
+	set(ZTH_RUST_ANALYZER_FEATURES "\"bare-metal\"")
+else()
+	set(ZTH_RUST_ANALYZER_FEATURES "\"std\"")
+endif()
+
 set(ZTH_ENABLE_RUST OFF)
 if(CARGO_EXE)
 	if("${ZTH_RUST_TARGET}" STREQUAL "")
@@ -219,12 +225,24 @@ if(CARGO_EXE)
 	endif()
 endif()
 
-option(ZTH_REGEN_LAUNCH_JSON "Regenerate launch.json" OFF)
-if(NOT EXISTS ${ZTH_SOURCE_DIR}/.vscode/launch.json OR ZTH_REGEN_LAUNCH_JSON)
+option(ZTH_REGEN_REPO_CONFIG "Regenerate configuration files in source tree" OFF)
+if(NOT EXISTS ${ZTH_SOURCE_DIR}/.vscode/launch.json OR ZTH_REGEN_REPO_CONFIG)
 	set(ZTH_GEN_LAUNCH_JSON ON)
 else()
 	set(ZTH_GEN_LAUNCH_JSON OFF)
 endif()
+
+function(zth_repo_config file)
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
+		file(REAL_PATH file "${file}")
+	else()
+		get_filename_component(file "${file}" ABSOLUTE)
+	endif()
+
+	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file}")
+		configure_file("${file}.in" "${file}" @ONLY ${ARGN})
+	endif()
+endfunction()
 
 set_property(GLOBAL PROPERTY ZTH_LAUNCH_JSON "")
 
@@ -495,8 +513,10 @@ if(ZTH_GEN_LAUNCH_JSON)
 		CONTENT "${ZTH_LAUNCH_JSON}"
 	)
 
-	set(ZTH_REGEN_LAUNCH_JSON
+	set(ZTH_REGEN_REPO_CONFIG
 	    OFF
 	    CACHE INTERNAL "" FORCE
 	)
+
+	zth_repo_config(.vscode/settings.json)
 endif()

@@ -68,7 +68,7 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DCMAKE_CXX_STANDARD=23 -DCMAKE_C_STANDARD=23";;
 		clean)
 			do_clean=1
-			cmake_opts="${cmake_opts} -DZTH_REGEN_LAUNCH_JSON=ON"
+			cmake_opts="${cmake_opts} -DZTH_REGEN_REPO_CONFIG=ON"
 			;;
 		conf)
 			do_build=0;;
