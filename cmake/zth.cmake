@@ -8,6 +8,10 @@ endif()
 
 cmake_policy(VERSION 3.10)
 
+include(CheckIncludeFileCXX)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
 # ##################################################################################################
 # Options
 #
@@ -151,8 +155,10 @@ if(ZTH_CONTEXT)
 endif()
 
 target_include_directories(
-	libzth PUBLIC $<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
-		      $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
+	libzth
+	PUBLIC $<BUILD_INTERFACE:${ZTH_PREPEND_INCLUDE_DIRECTORIES}>
+	       $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include ${ZTH_SOURCE_DIR}/include>
+	       $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>
 )
 
 target_compile_options(
@@ -259,7 +265,7 @@ install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
 
 configure_package_config_file(
-	cmake/ZthConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
+	${ZTH_SOURCE_DIR}/cmake/ZthConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
 	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
 )
 
