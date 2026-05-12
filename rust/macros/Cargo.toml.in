@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2019-2026 Jochem Rutgers
+#
+# SPDX-License-Identifier: CC0-1.0
+
+[package]
+name = "zth_macros"
+version = "@ZTH_VERSION@"
+edition = "2021"
+license = "MPL-2.0"
+description = "Procedural macros for Zth Rust bindings"
+repository = "https://github.com/jhrutgers/zth"
+homepage = "https://github.com/jhrutgers/zth"
+keywords = ["fiber", "ffi", "proc-macro"]
+categories = ["api-bindings", "asynchronous", "concurrency"]
+readme = "../README.md"
+
+exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full"] }

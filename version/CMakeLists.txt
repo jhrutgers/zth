@@ -28,7 +28,3 @@ configure_file(
 	${ZTH_SOURCE_DIR}/include/libzth/version.h.in ${ZTH_SOURCE_DIR}/include/libzth/version.h
 	@ONLY ESCAPE_QUOTES
 )
-
-configure_file(
-	${ZTH_SOURCE_DIR}/rust/Cargo.toml.in ${ZTH_SOURCE_DIR}/rust/Cargo.toml @ONLY ESCAPE_QUOTES
-)

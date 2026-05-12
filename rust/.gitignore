@@ -5,4 +5,4 @@
 /.cargo/config.toml
 /target/
 /Cargo.lock
-/Cargo.toml
+Cargo.toml

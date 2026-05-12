@@ -15,11 +15,17 @@ keywords = ["fiber", "ffi"]
 categories = ["api-bindings", "asynchronous", "concurrency"]
 repository = "https://github.com/jhrutgers/zth"
 homepage = "https://github.com/jhrutgers/zth"
-exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo"]
+exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo", "macros/Cargo.toml.in"]
 
 [features]
 default = ["std"]
 std = []
+bare-metal = ["panic-handler", "allocator"]
+panic-handler = []
+allocator = []
+
+[dependencies]
+zth_macros = { version = "@ZTH_VERSION@" }
 
 [build-dependencies]
 regex = "1"
