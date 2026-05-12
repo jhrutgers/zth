@@ -25,7 +25,7 @@ function(add_example example)
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 		# Don't use the CRT's version which calls WinMain for a GUI, but use zth's weak
-		# main(), if the use does not specify one.
+		# main(), if the user does not specify one.
 		target_link_libraries(${example} -Wl,-umain)
 		target_link_libraries(${example} -Wl,-uzth_logv)
 	endif()
@@ -43,7 +43,7 @@ function(add_example example)
 	endif()
 
 	install(TARGETS ${example} RUNTIME DESTINATION bin)
-	add_launch_json(${example})
+	add_launch_json(TARGET ${example})
 endfunction()
 
 add_example(1_helloworld 1_helloworld.cpp)

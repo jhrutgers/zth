@@ -12,7 +12,7 @@ if(CMAKE_VERSION VERSION_GREATER "3.12")
 	# Allow the target_link_libraries() below.
 	cmake_policy(SET CMP0079 NEW)
 endif()
-target_link_libraries(libzth INTERFACE arm-bsp)
+target_link_libraries(libzth PUBLIC arm-bsp)
 
 install(
 	TARGETS arm-bsp

@@ -5,7 +5,7 @@
 set(ZTH_RUST_LINK_FLAGS "")
 separate_arguments(_zth_rust_link_args NATIVE_COMMAND "${CMAKE_EXE_LINKER_FLAGS}")
 foreach(arg IN LISTS _zth_rust_link_args)
-	string(APPEND ZTH_RUST_LINK_FLAGS "\n  \"-C\", \"link-arg=${arg}\",")
+	string(APPEND ZTH_RUST_LINK_FLAGS "\n  \"-Clink-arg=${arg}\",")
 endforeach()
 
 configure_file(.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY)
@@ -15,7 +15,7 @@ if(NOT ZTH_ENABLE_RUST)
 endif()
 
 function(add_rust_example name)
-	set(cargo_args build -p "${name}" -q)
+	set(cargo_args rustc -p "${name}" -q)
 	if(ZTH_RUST_PROFILE)
 		list(APPEND cargo_args ${ZTH_RUST_PROFILE})
 	endif()
@@ -30,41 +30,33 @@ function(add_rust_example name)
 	endif()
 
 	if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/${ZTH_RUST_TARGET}/debug)
+		set(output_subdir debug)
 	else()
-		set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/${ZTH_RUST_TARGET}/release)
+		set(output_subdir release)
 	endif()
+	set(output_dir ${CMAKE_CURRENT_BINARY_DIR}/${ZTH_RUST_TARGET}/${output_subdir})
+	set(output_clone ${CMAKE_CURRENT_BINARY_DIR}/${output_subdir}/${output_file})
 
-	if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND NOT CMAKE_CROSSCOMPILING)
-		add_launch_json_entry(
-			"
-			\"type\": \"cppdbg\",
-			\"request\": \"launch\",
-			\"name\": \"${name} (Rust)\",
-			\"program\": \"${output_dir}/${output_file}\",
-			\"cwd\": \"${output_dir}\",
-			\"environment\": [
-				{
-					\"name\": \"ASAN_OPTIONS\",
-					\"value\": \"detect_leaks=0\"
-				}
-			]"
-		)
+	add_launch_json(
+		NAME "${name} (Rust)" BINARY "${output_dir}/${output_file}" WORKING_DIRECTORY
+		"${output_dir}"
+	)
+
+	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+		set(post_build COMMAND "${CMAKE_SIZE}" "${output_clone}")
+		set(map_file "${output_dir}/${name}.map")
+		list(APPEND cargo_args -- -C "link-arg=-Wl,-Map=${map_file}")
 	else()
-		add_launch_json_entry(
-			"
-			\"type\": \"f5anything\",
-			\"request\": \"launch\",
-			\"name\": \"${name} (Rust)\",
-			\"command\": \"${output_dir}/${output_file}\",
-		"
-		)
+		set(post_build)
+		set(map_file "")
 	endif()
 
 	add_custom_target(
 		rust-${name} ALL
 		COMMAND "${CMAKE_COMMAND}" -E env --unset=ZTH_INSTALL "ZTH_REPO=${ZTH_SOURCE_DIR}"
 			"ZTH_DIST=${ZTH_DIST}" "${CARGO_EXE}" ${cargo_args}
+		COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${output_dir}/${output_file}"
+			"${output_clone}" ${post_build}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		DEPENDS libzth
 		COMMENT "Build Rust ${name} example"
