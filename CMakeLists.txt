@@ -238,58 +238,110 @@ function(add_launch_json_entry kv)
 	)
 endfunction()
 
-function(add_launch_json TARGET)
-	if(MINGW)
-		# Install before starting in VSCode.
-		add_launch_json_entry(
-			"
+function(add_launch_json_run name command cwd)
+	add_launch_json_entry(
+		"
 			\"type\": \"f5anything\",
 			\"request\": \"launch\",
-			\"name\": \"${TARGET}\",
-			\"command\": \"${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${TARGET}>\","
-		)
-	elseif(
-		CMAKE_BUILD_TYPE STREQUAL "Debug"
-		OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
-		AND NOT CMAKE_CROSSCOMPILING
+			\"name\": \"${name}\",
+			\"command\": \"${command}\",
+		"
 	)
-		add_launch_json_entry(
-			"
+endfunction()
+
+function(add_launch_json_dbg name binary cwd)
+	add_launch_json_entry(
+		"
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
-			\"name\": \"${TARGET}\",
-			\"program\": \"$<TARGET_FILE:${TARGET}>\",
-			\"cwd\": \"$<TARGET_FILE_DIR:${TARGET}>\",
+			\"name\": \"${name}\",
+			\"program\": \"${binary}\",
+			\"cwd\": \"${cwd}\",
 			\"environment\": [
 				{
 					\"name\": \"ASAN_OPTIONS\",
 					\"value\": \"detect_leaks=0\"
 				}
 			]"
-		)
-	elseif(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
-		add_launch_json_entry(
-			"
+	)
+endfunction()
+
+function(add_launch_json_qemu name binary cwd)
+	add_launch_json_entry(
+		"
 			\"type\": \"cppdbg\",
 			\"request\": \"launch\",
-			\"name\": \"${TARGET}\",
-			\"program\": \"$<TARGET_FILE:${TARGET}>\",
-			\"cwd\": \"$<TARGET_FILE_DIR:${TARGET}>\",
+			\"name\": \"${name}\",
+			\"program\": \"${binary}\",
+			\"cwd\": \"${cwd}\",
 			\"miDebuggerPath\": \"gdb-multiarch\",
 			\"miDebuggerServerAddress\": \"localhost:1234\",
 			\"MIMode\": \"gdb\",
 			\"stopAtEntry\": true,
 			\"preLaunchTask\": \"run-${ZTH_DIST}\"
 		"
+	)
+endfunction()
+
+function(add_launch_json)
+	cmake_parse_arguments(LAUNCH "" "TARGET;NAME;BINARY;WORKING_DIRECTORY" "" ${ARGN})
+
+	if(NOT "${LAUNCH_TARGET}" STREQUAL "")
+		if("${LAUNCH_NAME}" STREQUAL "")
+			set(LAUNCH_NAME "${LAUNCH_TARGET}")
+		endif()
+
+		if("${LAUNCH_BINARY}" STREQUAL "")
+			if(MINGW)
+				# Install before starting in VSCode.
+				set(LAUNCH_BINARY
+				    "${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${LAUNCH_TARGET}>"
+				)
+			else()
+				set(LAUNCH_BINARY "$<TARGET_FILE:${LAUNCH_TARGET}>")
+			endif()
+		endif()
+
+		if("${LAUNCH_WORKING_DIRECTORY}" STREQUAL "")
+			if(MINGW)
+				set(LAUNCH_WORKING_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
+			else()
+				set(LAUNCH_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${LAUNCH_TARGET}>")
+			endif()
+		endif()
+	endif()
+
+	if("${LAUNCH_NAME}" STREQUAL "")
+		message(FATAL_ERROR "Missing NAME")
+	endif()
+
+	if("${LAUNCH_BINARY}" STREQUAL "")
+		message(FATAL_ERROR "Missing BINARY")
+	endif()
+
+	if("${LAUNCH_WORKING_DIRECTORY}" STREQUAL "")
+		set(LAUNCH_WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
+	endif()
+
+	if(MINGW)
+		add_launch_json_run(
+			"${LAUNCH_NAME}" "${LAUNCH_BINARY}" "${LAUNCH_WORKING_DIRECTORY}"
+		)
+	elseif(
+		CMAKE_BUILD_TYPE STREQUAL "Debug"
+		OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
+		AND NOT CMAKE_CROSSCOMPILING
+	)
+		add_launch_json_dbg(
+			"${LAUNCH_NAME}" "${LAUNCH_BINARY}" "${LAUNCH_WORKING_DIRECTORY}"
+		)
+	elseif(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+		add_launch_json_qemu(
+			"${LAUNCH_NAME}" "${LAUNCH_BINARY}" "${LAUNCH_WORKING_DIRECTORY}"
 		)
 	else()
-		add_launch_json_entry(
-			"
-			\"type\": \"f5anything\",
-			\"request\": \"launch\",
-			\"name\": \"${TARGET}\",
-			\"command\": \"$<TARGET_FILE:${TARGET}>\",
-		"
+		add_launch_json_run(
+			"${LAUNCH_NAME}" "${LAUNCH_BINARY}" "${LAUNCH_WORKING_DIRECTORY}"
 		)
 	endif()
 endfunction()

@@ -95,7 +95,7 @@ if(ZTH_USE_GTEST)
 			install(TARGETS ${TESTNAME} DESTINATION bin)
 		endif()
 
-		add_launch_json(${TESTNAME})
+		add_launch_json(TARGET ${TESTNAME})
 	endfunction()
 
 	function(zth_add_test TESTNAME)

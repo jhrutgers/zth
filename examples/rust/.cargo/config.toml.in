@@ -10,6 +10,9 @@ target = "@ZTH_RUST_TARGET@"
 ZTH_REPO = "@ZTH_SOURCE_DIR@"
 ZTH_DIST = "@ZTH_DIST@"
 
+[patch.crates-io]
+zth_macros = { path = "@PROJECT_SOURCE_DIR@/rust/macros" }
+
 [target.@ZTH_RUST_TARGET@]
 linker = "@CMAKE_CXX_COMPILER@"
 rustflags = [@ZTH_RUST_LINK_FLAGS@]

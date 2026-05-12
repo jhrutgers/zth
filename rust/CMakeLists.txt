@@ -30,5 +30,6 @@ add_custom_target(
 		"${CMAKE_CURRENT_SOURCE_DIR}/macros/Cargo.toml" --no-verify
 	COMMAND "${CARGO_EXE}" package -q --manifest-path "${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml"
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	DEPENDS libzth
 	COMMENT "Generate Rust crate package output files"
 )
