@@ -2,15 +2,9 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-configure_file(
-	.cargo/config.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/.cargo/config.toml @ONLY ESCAPE_QUOTES
-)
-
-configure_file(Cargo.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml @ONLY ESCAPE_QUOTES)
-
-configure_file(
-	macros/Cargo.toml.in ${CMAKE_CURRENT_SOURCE_DIR}/macros/Cargo.toml @ONLY ESCAPE_QUOTES
-)
+zth_repo_config(.cargo/config.toml)
+zth_repo_config(Cargo.toml)
+zth_repo_config(macros/Cargo.toml)
 
 if(NOT ZTH_ENABLE_RUST)
 	return()
