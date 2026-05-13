@@ -48,6 +48,7 @@ jobs:
         run: |
           rm -rf dist/ubuntu/build
           dist/ubuntu/build.sh Release ${{matrix.zmq}} test
+          examples/hello-project/test.sh
 
   build-ubuntu-cxx:
     strategy:
