@@ -1,6 +1,7 @@
 missingIncludeSystem:*
 constParameterCallback:*
 missingReturn:*
+functionStatic:*
 
 unmatchedSuppression:src/context.cpp
 
@@ -15,3 +16,5 @@ unusedStructMember:examples/socks.cpp
 
 unmatchedSuppression:include/libzth/context.h
 badBitmaskCheck:include/libzth/context/context.h
+
+*:include/libzth/coro.h

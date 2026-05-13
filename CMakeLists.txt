@@ -142,6 +142,8 @@ set(ZTH_SOURCE_DIR
     CACHE STRING "libzth source directory" FORCE
 )
 
+file(TO_CMAKE_PATH "${ZTH_DIST_DIR}" ZTH_DIST_DIR)
+
 if(NOT PYTHON_EXECUTABLE)
 	if(WIN32 AND NOT CMAKE_CROSSCOMPILING)
 		set(PYTHON_EXECUTABLE "${ZTH_SOURCE_DIR}/dist/venv/Scripts/python.exe")
@@ -233,14 +235,18 @@ else()
 endif()
 
 function(zth_repo_config file)
+	file(TO_NATIVE_PATH "${file}.in" file_in)
+
 	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
-		file(REAL_PATH "${file}" file)
+		file(REAL_PATH "${file_in}" file_in)
 	else()
-		get_filename_component(file "${file}" ABSOLUTE)
+		get_filename_component(file_in "${file_in}" ABSOLUTE)
 	endif()
 
-	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file}")
-		configure_file("${file}.in" "${file}" @ONLY ${ARGN})
+	string(REGEX REPLACE "\.in$" "" file_out "${file_in}")
+
+	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file_out}")
+		configure_file("${file_in}" "${file_out}" @ONLY ${ARGN})
 	endif()
 endfunction()
 
@@ -466,7 +472,7 @@ if(CPPCHECK_CMD)
 			-UZTH_ENABLE_ASAN -UZTH_ENABLE_LSAN -UZTH_ENABLE_UBSAN -DZTH_HAVE_PTHREAD
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
-			tests/test_fsm17.cpp
+			tests/test_fsm17.cpp -i examples/rust/build -i examples/hello-project/build*
 			# --check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM
@@ -517,9 +523,9 @@ if(ZTH_GEN_LAUNCH_JSON)
 	    OFF
 	    CACHE INTERNAL "" FORCE
 	)
-
-	zth_repo_config(.vscode/settings.json)
 endif()
+
+zth_repo_config(.vscode/settings.json)
 
 option(ZTH_ENABLE_CPACK "Enable CPack packaging" ON)
 

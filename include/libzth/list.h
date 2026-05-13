@@ -42,6 +42,7 @@ public:
 		, user()
 	{}
 
+	// cppcheck-suppress operatorEqVarError
 	Listable& operator=(Listable const& UNUSED_PAR(rhs)) noexcept
 	{
 		if(Config::EnableAssert)
@@ -55,6 +56,7 @@ public:
 		*this = std::move(l);
 	}
 
+	// cppcheck-suppress operatorEqVarError
 	Listable& operator=(Listable&& UNUSED_PAR(l)) noexcept
 	{
 		// Cannot move while in a list.

@@ -52,6 +52,8 @@ if errorlevel 1 goto error
 python -m pip install -r dist\common\requirements.txt
 if errorlevel 1 goto error
 
+where rustc 2> NUL | cmd /e /v /q /c"set/p.=&&echo rustc: ^!.^!"
+
 :done
 popd
 exit /b 0

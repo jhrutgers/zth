@@ -588,8 +588,9 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-		this->setFuture(m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
-			std::get<S>(m_args))...));
+		this->setFuture(m_function(
+			move_or_ref<typename std::tuple_element<S, Args>::type>(
+				std::get<S>(m_args))...));
 	}
 
 private:
@@ -622,8 +623,9 @@ private:
 	template <size_t... S>
 	void entry__(Sequence<S...>)
 	{
-		m_function(move_or_ref<typename std::tuple_element<S, Args>::type>(
-			std::get<S>(m_args))...);
+		m_function(
+			move_or_ref<typename std::tuple_element<S, Args>::type>(
+				std::get<S>(m_args))...);
 		this->setFuture();
 	}
 
@@ -1349,6 +1351,7 @@ fiber_future(F const&) -> fiber_future<typename F::factory::Return>;
 // Simple join
 //
 
+// cppcheck-suppress constParameterReference
 static inline void joinable(Fiber& f, Gate& g, Hook<Gate&>& UNUSED_PAR(join)) noexcept
 {
 	f << passOnExit(g);
