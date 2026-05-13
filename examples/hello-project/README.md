@@ -12,3 +12,5 @@ cmake ..
 cmake --build .
 ./hello-project
 ```
+
+The script `test.sh` shows how to use Zth with a pre-installed library and built from sources.

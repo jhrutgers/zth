@@ -62,6 +62,10 @@ option(ZTH_THREADS "Make libzth thread-aware" ${ZTH_THREADS_DEFAULT})
 # libzth
 #
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+	set(CMAKE_BUILD_TYPE Release)
+endif()
+
 if(NOT ZTH_SOURCE_DIR)
 	get_filename_component(ZTH_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 	set(ZTH_SOURCE_DIR
@@ -120,6 +124,7 @@ set(ZTH_HEADERS
     ${ZTH_SOURCE_DIR}/include/libzth/coro.h
     ${ZTH_SOURCE_DIR}/include/libzth/exception.h
     ${ZTH_SOURCE_DIR}/include/libzth/fiber.h
+    ${ZTH_SOURCE_DIR}/include/libzth/future.h
     ${ZTH_SOURCE_DIR}/include/libzth/fsm14.h
     ${ZTH_SOURCE_DIR}/include/libzth/init.h
     ${ZTH_SOURCE_DIR}/include/libzth/io.h
@@ -252,8 +257,10 @@ install(
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
 )
 
-install(FILES include/zth include/zth.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-set(ZTH_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/zth_config.h)
+install(FILES ${ZTH_SOURCE_DIR}/include/zth ${ZTH_SOURCE_DIR}/include/zth.h
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+set(ZTH_CONFIG_FILE ${ZTH_SOURCE_DIR}/include/zth_config.h)
 foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
 	if(EXISTS ${d}/zth_config.h)
 		set(ZTH_CONFIG_FILE ${d}/zth_config.h)
