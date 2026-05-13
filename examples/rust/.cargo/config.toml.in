@@ -15,4 +15,4 @@ zth_macros = { path = "@PROJECT_SOURCE_DIR@/rust/macros" }
 
 [target.@ZTH_RUST_TARGET@]
 linker = "@CMAKE_CXX_COMPILER@"
-rustflags = [@ZTH_RUST_LINK_FLAGS@]
+rustflags = [@ZTH_RUST_FLAGS@]

@@ -7,6 +7,7 @@ for ARM, and show that the M3 is supported.
 To run an example:
 
 1. Run `./bootstrap.sh` once to install all dependencies.
+   If you also want to build the Rust examples, run `bootstrap.sh -r`.
 2. Run `./build.sh` to build the project. By default, it builds a `Release`.
    Specify the `CMAKE_BUILD_TYPE` by providing it as first argument to
    `./build.sh`.  For example, set to `Debug` to get debug prints.  All
