@@ -234,7 +234,7 @@ endif()
 
 function(zth_repo_config file)
 	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
-		file(REAL_PATH file "${file}")
+		file(REAL_PATH "${file}" file)
 	else()
 		get_filename_component(file "${file}" ABSOLUTE)
 	endif()

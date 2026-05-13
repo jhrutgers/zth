@@ -46,7 +46,7 @@ set(CMAKE_ASM${ASM_DIALECT}_FLAGS_INIT
     CACHE STRING "" FORCE
 )
 set(CMAKE_EXE_LINKER_FLAGS
-    "${arm_cpuflags} -Wl,--gc-sections --specs=nano.specs -Wl,--no-wchar-size-warning -T ${ZTH_DIST_DIR}/src/arm.ld -nostartfiles -L${CMAKE_CURRENT_BINARY_DIR}/dist/qemu-arm-m3 -lc -lstdc++ -lsupc++ -fno-use-cxa-atexit -Wl,--whole-archive -larm-bsp -Wl,--no-whole-archive"
+    "${arm_cpuflags} -Wl,--gc-sections --specs=nano.specs -Wl,--no-wchar-size-warning -T ${ZTH_DIST_DIR}/src/arm.ld -nostartfiles -L${CMAKE_CURRENT_BINARY_DIR}/dist/qemu-arm-m3 -fno-use-cxa-atexit -Wl,--whole-archive -larm-bsp -Wl,--no-whole-archive -lstdc++ -lsupc++ -lc -lgcc"
     CACHE INTERNAL ""
 )
 

@@ -14,6 +14,7 @@ probably supplied to you by the manufacturer of your board.
 To get the stuff running, do this:
 
 1. Run `bootstrap.sh`.
+   If you also want to build the Rust examples, run `bootstrap.sh -r`.
 2. Run `build.sh`. Optionally, provide the `CMAKE_BUILD_TYPE` as first command
    line argument.  It will use `arm-none-eabi-g++` to cross-compile the Zth
    library and examples.  Additionally, a BSP library is built, using `crt0.c`

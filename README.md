@@ -76,9 +76,10 @@ Check out the `dist` directory for example targets.
 ## How to build
 
 To install all build dependencies, run `dist/<platform>/bootstrap` (as Administrator under Windows).
-Next, run `dist/<platform>/build` to build the library and all examples.  By default, release builds
-are generated. To do debug builds, pass `Debug` as command line argument to `dist/<platform>/build`.
-VS Code configuration is available too.
+If you also want to build the Rust examples, pass the flag `-r` to the bootstrap script.  Next, run
+`dist/<platform>/build` to build the library and all examples.  By default, release builds are
+generated. To do debug builds, pass `Debug` as command line argument to `dist/<platform>/build`.  VS
+Code configuration is available too.
 
 After building, check out the `doxygen/html` directory for
 [documentation](https://jhrutgers.github.io/zth).

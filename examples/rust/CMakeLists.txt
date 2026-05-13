@@ -5,7 +5,7 @@
 set(ZTH_RUST_LINK_FLAGS "")
 separate_arguments(_zth_rust_link_args NATIVE_COMMAND "${CMAKE_EXE_LINKER_FLAGS}")
 foreach(arg IN LISTS _zth_rust_link_args)
-	string(APPEND ZTH_RUST_LINK_FLAGS "\n  \"-Clink-arg=${arg}\",")
+	string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
 endforeach()
 
 zth_repo_config(.cargo/config.toml)
