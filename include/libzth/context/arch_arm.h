@@ -360,7 +360,7 @@ public:
 		env_[get_lr_offset() - 1U] = (uintptr_t)sp;
 	}
 
-	// cppcheck-suppress duplInheritedMember
+	// cppcheck-suppress[duplInheritedMember,constParameterPointer]
 	static void set_pc(jmp_buf& env, void* pc) noexcept
 	{
 		// NOLINTNEXTLINE

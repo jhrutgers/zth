@@ -218,6 +218,7 @@ PollerClient::PollerClient()
 #if __cplusplus >= 201103L
 PollerClient::PollerClient(std::initializer_list<std::reference_wrapper<Pollable>> l)
 {
+	// cppcheck-suppress internalError
 	errno = add(l);
 
 #  ifdef __cpp_exceptions

@@ -25,9 +25,18 @@ if "%~2" == "conf" (
 
 :build
 pushd build
+
+set generator=
+where /q ninja > NUL 2> NUL && set "generator=-G Ninja"
+
 set "repo=%here%\..\.."
 set "repo=%repo:\=/%"
-for /f "tokens=%offset%*" %%x in ("%*") do cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% "-GMinGW Makefiles" -DZTH_DIST=win32 -DZTH_DIST_DIR="%here%\." %%y ..\..\..
+for /f "tokens=%offset%*" %%x in ("%*") do (
+	cmake -DCMAKE_MODULE_PATH="%repo%/dist/common" -DCMAKE_BUILD_TYPE=%build_type% ^
+		"-GMinGW Makefiles" -DZTH_DIST=win32 -DZTH_DIST_DIR="%here%\." %generator% ^
+		-DZTH_REGEN_REPO_CONFIG=ON ^
+		%%y ..\..\..
+)
 if errorlevel 1 goto error_popd
 if "%do_build%" == "0" goto done
 

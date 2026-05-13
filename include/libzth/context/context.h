@@ -151,6 +151,7 @@ public:
 		// Apply guards.
 		impl().valgrindRegister();
 
+		// cppcheck-suppress knownConditionTrueFalse
 		if(unlikely((res = impl().stackGuardInit()))) {
 			// Uh, oh...
 			impl().deallocStack(m_stack);

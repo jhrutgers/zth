@@ -7,19 +7,57 @@ rem SPDX-License-Identifier: MPL-2.0
 set here=%~dp0
 pushd "%here%"
 
-rem Usage: bootstrap.cmd [-f]
+rem Usage: bootstrap.cmd [-f] [-r]
 rem
 rem Without -f, nothing is done when the dependencies are already fulfilled.
 rem When -f is provided, choco is used to install the dependencies.
+rem When -r is provided, Rust dependencies are installed too.
 
-if "%1" == "-f" goto do_bootstrap
+set force_bootstrap=0
+set do_rust=0
+
+:parse_args
+if "%~1" == "" goto args_done
+if /I "%~1" == "-f" (
+	set force_bootstrap=1
+	shift
+	goto parse_args
+)
+if /I "%~1" == "-r" (
+	set do_rust=1
+	shift
+	goto parse_args
+)
+if /I "%~1" == "-h" goto usage
+if /I "%~1" == "--help" goto usage
+echo Unknown option: %~1
+goto usage_error
+
+:args_done
+
+if "%force_bootstrap%" == "1" goto do_bootstrap
+if "%do_rust%" == "1" goto do_bootstrap
 
 call env.cmd
 if errorlevel 1 goto do_bootstrap
 echo.
 echo Your installation seems OK; skipping bootstrap.
 echo To force installing the dependencies anyway, provide the -f flag to %0.
+echo To install Rust too, provide the -r flag to %0.
 goto done
+
+:usage
+echo Usage: %~nx0 [OPTIONS]
+echo.
+echo OPTIONS:
+echo   -h        Show this help message and exit
+echo   -f        Force dependency installation with Chocolatey
+echo   -r        Install Rust toolchain and dependencies too
+goto done
+
+:usage_error
+echo.
+goto error
 
 :do_bootstrap
 
@@ -46,6 +84,17 @@ goto error
 :have_choco
 
 choco install -y --no-progress git cmake make mingw llvm cppcheck
+if errorlevel 1 goto error
+
+if "%do_rust%" == "0" goto done
+
+choco install -y --no-progress rustup.install
+if errorlevel 1 goto error
+
+rustup component add clippy rustfmt rust-src rust-docs
+if errorlevel 1 goto error
+
+rustup target add x86_64-pc-windows-gnu
 if errorlevel 1 goto error
 
 :done

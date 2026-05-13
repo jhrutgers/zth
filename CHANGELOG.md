@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Fiber::cancel()` such that a runner fiber is terminated via throwing `zth::cancelled`.
+- Rust API bindings and examples.
 
 
 
