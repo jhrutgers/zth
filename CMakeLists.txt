@@ -520,3 +520,7 @@ if(ZTH_GEN_LAUNCH_JSON)
 
 	zth_repo_config(.vscode/settings.json)
 endif()
+
+if(NOT ZTH_CPACK_INCLUDED AND NOT TARGET package)
+	add_custom_target(package DEPENDS all)
+endif()

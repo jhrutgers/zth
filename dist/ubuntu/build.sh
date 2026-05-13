@@ -14,4 +14,9 @@ pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)" > /dev
 cmake_opts=
 . ../common/build.sh
 
+if [[ ${do_build} == 1 ]]; then
+	cd build
+	cmake --build . --target package -j`nproc`
+fi
+
 popd > /dev/null

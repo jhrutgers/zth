@@ -15,6 +15,13 @@ if(Zth_FOUND)
 else()
 	message(STATUS "Using Zth repository; building from source")
 
+	# Add setting ZTH_... options and overrides here.
+	set(ZTH_DISABLE_EXCEPTIONS
+	    ON
+	    CACHE INTERNAL "" FORCE
+	)
+	set(ZTH_CONFIG_DEBUG OFF)
+
 	# Assuming you have Zth checked out as a git submodule, include the zth.cmake file by
 	# specifying the path directly.
 	include(../../cmake/zth.cmake)
