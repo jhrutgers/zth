@@ -8,8 +8,17 @@
 
 #include <cstdio>
 
+#include <cassert>
+
 int main_fiber(int /*argc*/, char** /*argv*/)
 {
+	puts(zth::banner());
 	printf("Hello again\n");
+
+	// This should be defined in the CMakeLists.txt.
+	assert(!zth::Config::Debug);
+	assert(!zth::Config::EnableExceptions);
+	zth::checkConfig();
+
 	return 0;
 }

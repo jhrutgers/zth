@@ -18,7 +18,7 @@ pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)" > /dev
 # This builds the project using the repository.
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX="$(realpath ../install)"
+cmake .. -DCMAKE_INSTALL_PREFIX="$(realpath ../install)" -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ./hello-project
 
@@ -29,6 +29,6 @@ cd ..
 # This builds the project using the installed version.
 mkdir build-installed
 cd build-installed
-cmake .. -DCMAKE_PREFIX_PATH="$(realpath ../install)"
+cmake .. -DCMAKE_PREFIX_PATH="$(realpath ../install)" -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ./hello-project

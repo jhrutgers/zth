@@ -282,7 +282,7 @@ struct DefaultConfig {
 
 	/*! \brief Indicate if exceptions are supported. */
 	static bool const EnableExceptions =
-#  ifdef __cpp_exceptions
+#  if defined(__cpp_exceptions) && !defined(ZTH_DISABLE_EXCEPTIONS)
 		true;
 #  else
 		false;

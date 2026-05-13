@@ -101,7 +101,7 @@ char const* banner() noexcept
 #ifdef ZTH_ARM_USE_PSP
 		" psp"
 #endif
-#ifdef _DEBUG
+#if defined(_DEBUG) && (!defined(ZTH_CONFIG_DEBUG) || ZTH_CONFIG_DEBUG)
 		" debug"
 #endif
 #ifdef ZTH_DRAFT_API

@@ -235,7 +235,7 @@
 			"detail": "Install all built targets.",
 			"type": "shell",
 			"dependsOn": "build-all",
-			"command": "cmake --build . --target install",
+			"command": "cmake --build . --target install package",
 			"osx": {
 				"options": {
 					"cwd": "${workspaceFolder}/dist/macos/build"
