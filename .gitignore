@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
+/build
 /doxygen/
 *.swp
 *.swo
