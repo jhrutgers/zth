@@ -521,6 +521,71 @@ if(ZTH_GEN_LAUNCH_JSON)
 	zth_repo_config(.vscode/settings.json)
 endif()
 
-if(NOT ZTH_CPACK_INCLUDED AND NOT TARGET package)
-	add_custom_target(package DEPENDS all)
+option(ZTH_ENABLE_CPACK "Enable CPack packaging" ON)
+
+if(ZTH_ENABLE_CPACK)
+	set(CPACK_PACKAGE_NAME "zth")
+	set(CPACK_PACKAGE_VENDOR "Jochem Rutgers")
+	set(CPACK_PACKAGE_CONTACT "Jochem Rutgers")
+	set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/jhrutgers/zth")
+	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cooperative multitasking library")
+	set(CPACK_RESOURCE_FILE_LICENSE "${ZTH_SOURCE_DIR}/LICENSE")
+
+	if(ZTH_DIST_DIR AND EXISTS ${ZTH_DIST_DIR}/README.md)
+		set(CPACK_RESOURCE_FILE_README "${ZTH_DIST_DIR}/README.md")
+	endif()
+
+	set(CPACK_PACKAGE_VERSION "${ZTH_VERSION}")
+
+	if("${ZTH_DIST}" STREQUAL "ubuntu")
+		set(CPACK_GENERATOR "DEB")
+		set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+		set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
+		set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+		set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+		set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
+		set(_zth_debian_version "${ZTH_VERSION_BASE}")
+		if(NOT "${ZTH_VERSION_SUFFIX}" STREQUAL "")
+			set(_zth_debian_suffix "${ZTH_VERSION_SUFFIX}")
+			string(REGEX REPLACE "^-" "~" _zth_debian_suffix "${_zth_debian_suffix}")
+			string(REGEX REPLACE "[^A-Za-z0-9.+:~]+" "" _zth_debian_suffix
+					     "${_zth_debian_suffix}"
+			)
+			string(APPEND _zth_debian_version "${_zth_debian_suffix}")
+		endif()
+		set(CPACK_PACKAGE_VERSION "${_zth_debian_version}")
+
+		find_program(DPKG_CMD dpkg)
+		if(DPKG_CMD)
+			execute_process(
+				COMMAND ${DPKG_CMD} --print-architecture
+				OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+				OUTPUT_STRIP_TRAILING_WHITESPACE
+			)
+		endif()
+	elseif(
+		"${ZTH_DIST}" STREQUAL "mingw"
+		OR "${ZTH_DIST}" STREQUAL "win32"
+		OR WIN32
+	)
+		find_program(MAKENSIS_EXE makensis)
+		if(MAKENSIS_EXE)
+			set(CPACK_GENERATOR "NSIS")
+		else()
+			set(CPACK_GENERATOR "ZIP")
+		endif()
+	elseif("${ZTH_DIST}" STREQUAL "macos" OR APPLE)
+		if(APPLE)
+			set(CPACK_GENERATOR "DragNDrop")
+		else()
+			set(CPACK_GENERATOR "TGZ")
+		endif()
+	else()
+		set(CPACK_GENERATOR "TGZ")
+	endif()
+
+	include(CPack)
+elseif(NOT TARGET package)
+	add_custom_target(package DEPENDS install)
 endif()
