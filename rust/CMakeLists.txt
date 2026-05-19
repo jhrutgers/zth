@@ -27,3 +27,19 @@ add_custom_target(
 	DEPENDS libzth
 	COMMENT "Generate Rust crate package output files"
 )
+
+add_custom_target(
+	rust-doc
+	COMMAND "${CMAKE_COMMAND}" -E make_directory "${ZTH_SOURCE_DIR}/doxygen/html/rust"
+	COMMAND
+		"${CARGO_EXE}" doc --no-deps --manifest-path
+		"${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml" --target-dir
+		"${CMAKE_CURRENT_BINARY_DIR}/rustdoc"
+	COMMAND
+		"${CMAKE_COMMAND}" -E copy_directory
+		"${CMAKE_CURRENT_BINARY_DIR}/rustdoc/${ZTH_RUST_TARGET}/doc"
+		"${ZTH_SOURCE_DIR}/doxygen/html/rust"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	DEPENDS libzth
+	COMMENT "Generate Rust HTML API documentation in doxygen/html/rust"
+)

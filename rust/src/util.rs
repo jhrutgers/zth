@@ -80,7 +80,7 @@ pub fn banner() -> String {
 
 /// Logs a pre-formatted message through Zth's logging backend.
 ///
-/// Use this function with [`format_args!`] or call [`log!`] for ergonomic
+/// Use this function with [`format_args!`] or call the `log!` macro for ergonomic
 /// `format!`-style invocation.
 pub fn log(args: Arguments<'_>) {
     let rendered = alloc::fmt::format(args);
@@ -104,7 +104,7 @@ macro_rules! log {
 
 /// Logs a pre-formatted message through Zth's logging backend with a color.
 ///
-/// Use this function with [`format_args!`] or call [`log!`] for ergonomic
+/// Use this function with [`format_args!`] or call the `log_color!` macro for ergonomic
 /// `format!`-style invocation.
 pub fn log_color(color: u8, args: Arguments<'_>) {
     let rendered = alloc::fmt::format(args);

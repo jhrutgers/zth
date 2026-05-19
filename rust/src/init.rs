@@ -27,6 +27,7 @@ mod ffi {
     }
 }
 
+/// Start a worker and execute the given entry point as main fiber.
 pub fn run<F, Args>(entry: F, args: Args) -> Result<F::Output, Error>
 where
     F: FiberEntry<Args> + 'static,

@@ -128,9 +128,9 @@ checked once, so dynamically changing the variables after startup has no effect 
 
 ## Rust
 
-A Rust API wrapper crate is added to allow Zth run fibers written in Rust.  It uses the existing C
-API, but adds convenient wrappers for argument and return types, for example, to match the C++
-interface.
+A [Rust API wrapper crate](https://jhrutgers.github.io/zth/rust/zth/index.html) is added to allow
+Zth run fibers written in Rust.  It uses the existing C API, but adds convenient wrappers for
+argument and return types, for example, to match the C++ interface.
 
 As Rust as low overhead and is feasible to use on embedded targets, it is a good approach to
 implement safety-critical portions of the application. As microcontrollers have a large C/C++

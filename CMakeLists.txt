@@ -435,6 +435,10 @@ if(ZTH_DOCUMENTATION)
 		COMMENT "Creating ZIP archive of API documentation"
 	)
 
+	if(TARGET rust-doc)
+		add_dependencies(doc rust-doc)
+	endif()
+
 	install(
 		FILES ${CMAKE_CURRENT_BINARY_DIR}/doc.zip
 		DESTINATION ${CMAKE_INSTALL_DOCDIR}

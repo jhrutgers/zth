@@ -2,6 +2,25 @@
 
 Rust bindings for [Zth](https://github.com/jhrutgers/zth).
 
+## Quick start
+
+```no_run
+fn fiber2() {
+  // Do work.
+  zth::may_yield();
+  // Do more work.
+}
+
+fn fiber() {
+  zth::fiber(fiber2, ());
+}
+
+fn main() -> Result<(), zth::Error> {
+  // Start a worker and execute fiber().
+  zth::run(fiber, ())
+}
+```
+
 ## Native setup
 
 This crate links with native `libzth` via `build.rs`.
