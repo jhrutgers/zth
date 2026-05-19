@@ -10,6 +10,10 @@
  * \defgroup zth_api_cpp_time time
  * \ingroup zth_api_cpp
  */
+/*!
+ * \defgroup zth_api_c_time time
+ * \ingroup zth_api_c
+ */
 
 #include <libzth/macros.h>
 
@@ -45,6 +49,18 @@ clock_nanosleep(int clk_id, int flags, struct timespec const* request, struct ti
 #  endif
 
 namespace zth {
+
+/*!
+ * \brief Returns the current timestamp.
+ *
+ * This is a monotonic clock, with unspecified start point.
+ * It is based on \c clock_gettime(CLOCK_MONOTONIC,...) .
+ */
+ZTH_EXPORT inline void now(struct timespec& ts)
+{
+	int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &ts);
+	zth_assert(res == 0);
+}
 
 class Timestamp;
 
@@ -588,8 +604,7 @@ struct monotonic_clock {
 	static time_point now() noexcept
 	{
 		struct timespec ts;
-		int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &ts);
-		zth_assert(res == 0);
+		zth::now(ts);
 		return time_point{
 			duration((rep)ts.tv_sec * TimeInterval::BILLION + (rep)ts.tv_nsec)};
 	}
@@ -630,8 +645,7 @@ public:
 	static Timestamp now()
 	{
 		Timestamp t;
-		int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &t.m_t);
-		zth_assert(res == 0);
+		zth::now(t.m_t);
 		zth_assert(!t.isNull());
 		return t;
 	}
@@ -788,6 +802,39 @@ extern Timestamp const startTime;
 #  endif
 
 } // namespace zth
+
+/*!
+ * \copydoc zth::now()
+ * \details This is a C-wrapper for zth::now().
+ * \ingroup zth_api_c_time
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_now(struct timespec* ts)
+{
+	if(ts)
+		zth::now(*ts);
+}
+
+/*!
+ * \copydoc zth::now()
+ * \details This is a C-wrapper for zth::now(), with fixed typed s/ns fields.
+ * \ingroup zth_api_c_time
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_now2(uint64_t* s, uint32_t* ns)
+{
+	struct timespec ts {};
+	zth_now(&ts);
+	if(s)
+		*s = (uint64_t)ts.tv_sec;
+	if(ns)
+		*ns = (uint32_t)ts.tv_nsec;
+}
+
+#else // !__cplusplus
+
+#  include <sys/time.h>
+
+ZTH_EXPORT void zth_now(struct timespec const* ts);
+ZTH_EXPORT void zth_now2(uint64_t* s, uint32_t* ns);
 
 #endif // __cplusplus
 #endif // ZTH_TIME_H
