@@ -14,6 +14,11 @@
  * \defgroup zth_api_c C API
  * \brief C interface to Zth.
  */
+/*!
+ * \defgroup zth_api_rust Rust API
+ * \brief Rust wrapper for Zth.
+ * \see <a href="rust/zth/index.html">Rust documentation</a>
+ */
 
 #include <libzth/macros.h>
 

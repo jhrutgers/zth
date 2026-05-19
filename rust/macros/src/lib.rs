@@ -45,6 +45,10 @@ fn rename_user_fn(mut input: ItemFn) -> (ItemFn, syn::Ident) {
     (input, renamed)
 }
 
+/// Use the annotated function as `main()` entry point of the application.
+///
+/// Also use `#![no_main]` in your application. This gives a consistent entry point, regardless of
+/// whether the `std` feature is used or not.
 #[proc_macro_attribute]
 pub fn main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
@@ -78,6 +82,10 @@ pub fn main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     expanded.into()
 }
 
+/// Use the annotated function as main fiber of the application.
+///
+/// Also use `#![no_main]` in your application. It provides a `main()` function, that uses
+/// `zth::run` to execute the given fiber function.
 #[proc_macro_attribute]
 pub fn main_fiber(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);
