@@ -25,7 +25,7 @@ use core::result::Result::{Err, Ok};
 use core::stringify;
 
 mod ffi {
-    use super::FutureRaw;
+    use super::{FutureRaw, MutexRaw};
     use core::ffi::c_int;
 
     extern "C" {
@@ -35,6 +35,12 @@ mod ffi {
         pub fn zth_future_set(future: *mut FutureRaw, value: usize) -> c_int;
         pub fn zth_future_get(future: *mut FutureRaw, value: *mut usize) -> c_int;
         pub fn zth_future_wait(future: *mut FutureRaw) -> c_int;
+
+        pub fn zth_mutex_init(mutex: *mut MutexRaw) -> c_int;
+        pub fn zth_mutex_destroy(mutex: *mut MutexRaw) -> c_int;
+        pub fn zth_mutex_lock(mutex: *mut MutexRaw) -> c_int;
+        pub fn zth_mutex_trylock(mutex: *mut MutexRaw) -> c_int;
+        pub fn zth_mutex_unlock(mutex: *mut MutexRaw) -> c_int;
     }
 }
 
@@ -404,5 +410,62 @@ mod tests {
         let decoded = Future::<String>::decode_value(encoded);
 
         assert_eq!(decoded, "zth");
+    }
+}
+
+define_synchronizer_type!(Mutex, MutexRaw, ffi::zth_mutex_destroy);
+
+/// Fiber-aware mutex with RAII guard semantics.
+///
+/// This wrapper behaves similarly to Rust's standard mutex API:
+/// - [`lock`](Self::lock) blocks until the lock is acquired and returns a guard.
+/// - [`try_lock`](Self::try_lock) returns `Ok(None)` when lock is busy.
+/// - The lock is released when the guard is dropped.
+impl Mutex {
+    const EBUSY: c_int = 16;
+
+    pub fn new() -> Result<Self, Error> {
+        let h = Self::null();
+        Self::as_result(unsafe { ffi::zth_mutex_init(h.raw_ptr()) }, h)
+    }
+
+    fn lock_ffi(&self) -> Result<(), Error> {
+        Self::as_result(unsafe { ffi::zth_mutex_lock(self.raw_ptr()) }, ())
+    }
+
+    fn try_lock_ffi(&self) -> Result<bool, Error> {
+        match unsafe { ffi::zth_mutex_trylock(self.raw_ptr()) } {
+            0 => Ok(true),
+            rc if rc == Self::EBUSY => Ok(false),
+            rc => Err(Error::from_raw_os_error(rc)),
+        }
+    }
+
+    fn unlock_ffi(&self) -> Result<(), Error> {
+        Self::as_result(unsafe { ffi::zth_mutex_unlock(self.raw_ptr()) }, ())
+    }
+
+    pub fn lock(&self) -> Result<MutexGuard<'_>, Error> {
+        self.lock_ffi()?;
+        Ok(MutexGuard { mutex: self })
+    }
+
+    pub fn try_lock(&self) -> Result<Option<MutexGuard<'_>>, Error> {
+        if self.try_lock_ffi()? {
+            Ok(Some(MutexGuard { mutex: self }))
+        } else {
+            Ok(None)
+        }
+    }
+}
+
+pub struct MutexGuard<'a> {
+    mutex: &'a Mutex,
+}
+
+impl Drop for MutexGuard<'_> {
+    fn drop(&mut self) {
+        let rc = self.mutex.unlock_ffi();
+        debug_assert!(rc.is_ok());
     }
 }

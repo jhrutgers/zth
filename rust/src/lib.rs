@@ -32,6 +32,8 @@ pub use r#async::fiber_with;
 pub use r#async::FiberEntry;
 pub use r#async::FiberOptions;
 pub use sync::Future;
+pub use sync::Mutex;
+pub use sync::MutexGuard;
 pub use time::now;
 pub use util::banner;
 pub use util::err;
