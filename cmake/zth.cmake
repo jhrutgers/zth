@@ -106,6 +106,7 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/poller.cpp
 	${ZTH_SOURCE_DIR}/src/time.cpp
 	${ZTH_SOURCE_DIR}/src/util.cpp
+	${ZTH_SOURCE_DIR}/src/vcd.cpp
 	${ZTH_SOURCE_DIR}/src/waiter.cpp
 	${ZTH_SOURCE_DIR}/src/worker.cpp
 	${ZTH_SOURCE_DIR}/src/zmq.cpp

@@ -227,8 +227,10 @@ struct DefaultConfig {
 	static size_t const PerfEventBufferSize =
 #  ifdef ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE
 		ZTH_CONFIG_PERF_EVENT_BUFFER_SIZE;
+#  elif defined(ZTH_OS_BAREMETAL)
+		0x400;
 #  else
-		128;
+		0x1000;
 #  endif
 
 	/*! \brief Threshold when to force writing out VCD buffer. */

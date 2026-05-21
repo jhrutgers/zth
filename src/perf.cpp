@@ -44,6 +44,7 @@
 
 namespace zth {
 
+#if 0 // NOLINT
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ZTH_TLS_DEFINE(perf_eventBuffer_type*, perf_eventBuffer, nullptr)
 
@@ -341,12 +342,12 @@ write_error:
 			goto rollback;
 		}
 
-#ifdef ZTH_OS_WINDOWS
+#  ifdef ZTH_OS_WINDOWS
 		// tmpfile() on WIN32 is broken
 		m_vcdd = fopen("zth.vcdd", "w+");
-#else
+#  else
 		m_vcdd = tmpfile();
-#endif
+#  endif
 		if(!(m_vcdd)) {
 			(void)fprintf(
 				stderr, "Cannot open temporary VCD data file; %s\n",
@@ -357,13 +358,13 @@ write_error:
 		{
 			time_t now = -1;
 			if(time(&now) != -1) {
-#if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
+#  if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
 				char dateBuf[128];
 				char const* strnow = ctime_r(&now, dateBuf);
-#else
+#  else
 				// Possibly not thread-safe.
 				char const* strnow = ctime(&now);
-#endif
+#  endif
 				if(strnow)
 					if(fprintf(m_vcd, "$date %s$end\n", strnow) < 0)
 						goto write_error;
@@ -515,6 +516,7 @@ void perf_flushEventBuffer() noexcept
 		perf_deinit();
 	}
 }
+#endif
 
 extern "C" void context_entry(Context* context);
 

@@ -16,6 +16,7 @@
 #  include <exception>
 #  include <list>
 #  include <map>
+#  include <set>
 #  include <string>
 #  include <vector>
 
@@ -203,6 +204,15 @@ struct map_type {
 	typedef std::map<
 		Key, T, Compare, typename Config::Allocator<std::pair<const Key, T> /**/>::type>
 		type;
+};
+
+/*!
+ * \brief \c std::map type using Config::Allocator::type.
+ * \ingroup zth_api_cpp_util
+ */
+template <typename Key, typename Compare = std::less<Key> /**/>
+struct set_type {
+	typedef std::set<Key, Compare, typename Config::Allocator<Key>::type> type;
 };
 
 /*!
