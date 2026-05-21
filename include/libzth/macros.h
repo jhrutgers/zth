@@ -49,12 +49,13 @@
 #    endif
 #  endif
 #  if ZTH_THREADS
-#    define ZTH_TLS_DECLARE(type, var)	    extern __thread type var;
-#    define ZTH_TLS_DEFINE(type, var, init) __thread type var = init;
-#    define ZTH_TLS_STATIC(type, var, init) static __thread type var = init;
-#    define ZTH_TLS_MEMBER(type, var)	    static __thread type var;
-#    define ZTH_TLS_SET(var, value)	    var = value
-#    define ZTH_TLS_GET(var)		    var
+#    define ZTH_TLS_DECLARE(type, var)	      extern __thread type var;
+#    define ZTH_TLS_DEFINE(type, var, init)   __thread type var = init;
+#    define ZTH_TLS_STATIC(type, var, init)   static __thread type var = init;
+#    define ZTH_TLS_STATIC_DEFAULT(type, var) static __thread type var;
+#    define ZTH_TLS_MEMBER(type, var)	      static __thread type var;
+#    define ZTH_TLS_SET(var, value)	      var = value
+#    define ZTH_TLS_GET(var)		      var
 #  endif
 #  ifndef _GNU_SOURCE
 #    define _GNU_SOURCE
@@ -95,13 +96,14 @@
 
 #ifndef ZTH_TLS_DECLARE
 #  undef ZTH_THREADS
-#  define ZTH_THREADS			  0
-#  define ZTH_TLS_DECLARE(type, var)	  extern type var;
-#  define ZTH_TLS_DEFINE(type, var, init) type var = init;
-#  define ZTH_TLS_STATIC(type, var, init) static type var = init;
-#  define ZTH_TLS_MEMBER(type, var)	  static type var;
-#  define ZTH_TLS_SET(var, value)	  var = value
-#  define ZTH_TLS_GET(var)		  var
+#  define ZTH_THREADS			    0
+#  define ZTH_TLS_DECLARE(type, var)	    extern type var;
+#  define ZTH_TLS_DEFINE(type, var, init)   type var = init;
+#  define ZTH_TLS_STATIC(type, var, init)   static type var = init;
+#  define ZTH_TLS_STATIC_DEFAULT(type, var) static type var;
+#  define ZTH_TLS_MEMBER(type, var)	    static type var;
+#  define ZTH_TLS_SET(var, value)	    var = value
+#  define ZTH_TLS_GET(var)		    var
 #endif
 
 #ifndef ZTH_ATTR_PRINTF

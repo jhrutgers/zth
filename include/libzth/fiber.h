@@ -112,8 +112,6 @@ public:
 		if(state() > Uninitialized && state() < Dead)
 			kill();
 
-		zth_perf_event(*this);
-
 		setState(Uninitialized);
 		zth_assert(!fls());
 		size_t stackSize_ __attribute__((unused)) = this->stackSize();
@@ -254,7 +252,7 @@ again:
 				from.setState(Ready, now);
 
 			if(unlikely(zth_config(CheckTimesliceOverrun) && from.m_dtMax < dt)) {
-				perf_mark("timeslice overrun reported");
+				zth_perf_mark("timeslice overrun reported");
 				from.m_dtMax = dt;
 				log_color(
 					Config::Print_perf,
@@ -483,6 +481,9 @@ private:
 	virtual void changedName(string const& name) override
 	{
 		zth_dbg(fiber, "[%s] Renamed to %s", id_str(), name.c_str());
+
+		if(Config::EnablePerfEvent)
+			perf_fiber(*this);
 	}
 
 protected:
@@ -493,7 +494,8 @@ protected:
 
 		m_state = state;
 
-		zth_perf_event(*this, m_state, t);
+		if(Config::EnablePerfEvent)
+			perf_fiber_state(*this, m_state, t);
 
 		if(state == Dead && hookDead)
 			hookDead(*this);

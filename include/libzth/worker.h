@@ -59,10 +59,12 @@ public:
 		if((res = m_workerFiber.init()))
 			goto error;
 
-		if((res = perf_init()))
-			goto error;
+		if(Config::EnablePerfEvent) {
+			if((res = perf_init()))
+				goto error;
 
-		zth_perf_event(m_workerFiber);
+			perf_fiber(m_workerFiber);
+		}
 
 		if((res = waiter().run()))
 			goto error;
@@ -87,7 +89,9 @@ error:
 			cleanup(m_runnableQueue.front());
 		}
 
-		perf_deinit();
+		if(Config::EnablePerfEvent)
+			perf_deinit();
+
 		context_deinit();
 	}
 
