@@ -4,5 +4,6 @@
 
 callgrind.out.*
 zth.vcd
+zth.perf
 zth.*.vcd
-/zth.vcdd
+zth.*.perf

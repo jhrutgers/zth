@@ -373,32 +373,35 @@ inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp())
 		zth_perf_event(currentFiberID(), syscall, t.isNull() ? Timestamp::now() : t);
 }
 #  else
-ZTH_EXPORT void perf_start(zth_perf_done_callback_t* f = nullptr);
-ZTH_EXPORT void perf_stop();
-ZTH_EXPORT void perf_mark(char const* marker, Timestamp const& t = Timestamp());
+ZTH_EXPORT void perf_start(zth_perf_done_callback_t* f = nullptr) noexcept;
+ZTH_EXPORT void perf_stop() noexcept;
+ZTH_EXPORT void perf_mark(char const* marker, Timestamp const& t = Timestamp()) noexcept;
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void
-perf_logv(char const* fmt, va_list args, Timestamp const& t = Timestamp());
-ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void perf_log(char const* fmt, ...);
+perf_logv(char const* fmt, va_list args, Timestamp const& t = Timestamp()) noexcept;
+ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void
+perf_log(char const* fmt, ...) noexcept;
 ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) void
-perf_log(Timestamp const& t, char const* fmt, ...);
-ZTH_EXPORT void perf_dump(zth_perf_dump_callback_t* f);
-ZTH_EXPORT void perf_async_handle(zth_perf_async_handle_t* handle);
-ZTH_EXPORT void perf_mark_async(char const* marker, zth_perf_async_handle_t* handle);
-ZTH_EXPORT void perf_run(zth_perf_dump_callback_t* f);
-ZTH_EXPORT void perf_abort();
-ZTH_EXPORT void perf_run_dump(char const* path = nullptr);
+perf_log(Timestamp const& t, char const* fmt, ...) noexcept;
+ZTH_EXPORT void perf_dump(zth_perf_dump_callback_t* f) noexcept;
+ZTH_EXPORT void perf_async_handle(zth_perf_async_handle_t* handle) noexcept;
+ZTH_EXPORT void perf_mark_async(char const* marker, zth_perf_async_handle_t* handle) noexcept;
+ZTH_EXPORT void perf_run(zth_perf_dump_callback_t* f) noexcept;
+ZTH_EXPORT void perf_abort() noexcept;
+ZTH_EXPORT void perf_run_dump(char const* path = nullptr) noexcept;
+ZTH_EXPORT int perf_vcd(char const* perf = nullptr, char const* vcd = nullptr) noexcept;
+ZTH_EXPORT int perf_vcdf(FILE* perf, FILE* vcd) noexcept;
 
 /*!
  * \brief Put a syscall into the perf output.
  */
-inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp())
+inline void perf_syscall(char const* syscall, Timestamp const& t = Timestamp()) noexcept
 {
 	if(Config::EnablePerfEvent && zth_config(PerfSyscall))
 		perf_mark(syscall, t);
 }
 
-void perf_fiber(Fiber& f);
-void perf_fiber_state(Fiber& f, int state = -1, Timestamp const& t = Timestamp());
+void perf_fiber(Fiber& f) noexcept;
+void perf_fiber_state(Fiber& f, int state = -1, Timestamp const& t = Timestamp()) noexcept;
 #  endif
 
 /*!
@@ -606,45 +609,65 @@ private:
 
 } // namespace zth
 
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_start(zth_perf_done_callback_t* f = nullptr)
+/*!
+ * \copydoc zth::perf_start()
+ * \details This is a C-wrapper for zth::perf_start().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_start(zth_perf_done_callback_t* f = nullptr) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_start(f);
 }
 
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_stop()
+/*!
+ * \copydoc zth::perf_stop()
+ * \details This is a C-wrapper for zth::perf_stop().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_stop() noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_stop();
 }
 
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_run(zth_perf_dump_callback_t* f)
+/*!
+ * \copydoc zth::perf_run()
+ * \details This is a C-wrapper for zth::perf_run().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_run(zth_perf_dump_callback_t* f) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_run(f);
 }
 
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_abort()
+/*!
+ * \copydoc zth::perf_abort()
+ * \details This is a C-wrapper for zth::perf_abort().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_abort() noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_abort();
 }
 
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_mark_(char const* marker)
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_mark_(char const* marker) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_mark(marker);
 }
 
 EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void
-zth_perf_logv_(char const* fmt, va_list args)
+zth_perf_logv_(char const* fmt, va_list args) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_logv(fmt, args);
 }
 
 EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void
-zth_perf_log_(char const* fmt, ...)
+zth_perf_log_(char const* fmt, ...) noexcept
 {
 	if(!zth::Config::EnablePerfEvent)
 		return;
@@ -660,7 +683,7 @@ zth_perf_log_(char const* fmt, ...)
  * \details This is a C-wrapper for zth::perf_dump().
  * \ingroup zth_api_c_perf
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_dump(zth_perf_dump_callback_t* f)
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_dump(zth_perf_dump_callback_t* f) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_dump(f);
@@ -671,17 +694,44 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_dump(zth_perf_dump_callback_t* f)
  * \details This is a C-wrapper for zth::perf_async_handle().
  * \ingroup zth_api_c_perf
  */
-EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_async_handle(zth_perf_async_handle_t* handle)
+EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_perf_async_handle(zth_perf_async_handle_t* handle) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_async_handle(handle);
 }
 
 EXTERN_C ZTH_EXPORT ZTH_INLINE void
-zth_perf_mark_async_(char const* marker, zth_perf_async_handle_t* handle)
+zth_perf_mark_async_(char const* marker, zth_perf_async_handle_t* handle) noexcept
 {
 	if(zth::Config::EnablePerfEvent)
 		zth::perf_mark_async(marker, handle);
+}
+
+/*!
+ * \copydoc zth::perf_vcd()
+ * \details This is a C-wrapper for zth::perf_vcd().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int
+zth_perf_vcd(char const* perf = nullptr, char const* vcd = nullptr) noexcept
+{
+	if(!zth::Config::EnablePerfEvent)
+		return ENOSYS;
+
+	return zth::perf_vcd(perf, vcd);
+}
+
+/*!
+ * \copydoc zth::perf_vcdf()
+ * \details This is a C-wrapper for zth::perf_vcdf().
+ * \ingroup zth_api_c_perf
+ */
+EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_perf_vcdf(FILE* perf, FILE* vcd) noexcept
+{
+	if(!zth::Config::EnablePerfEvent)
+		return ENOSYS;
+
+	return zth::perf_vcdf(perf, vcd);
 }
 
 #else // !__cplusplus
@@ -699,6 +749,8 @@ ZTH_EXPORT void zth_perf_async_handle(zth_perf_async_handle_t* handle);
 ZTH_EXPORT void zth_perf_mark_async_(char const* marker, zth_perf_async_handle_t* handle);
 ZTH_EXPORT void zth_perf_run(zth_perf_dump_callback_t* f);
 ZTH_EXPORT void zth_perf_abort();
+ZTH_EXPORT int zth_perf_vcd(char const* perf, char const* vcd);
+ZTH_EXPORT int zth_perf_vcdf(FILE* perf, FILE* vcd);
 
 #endif // __cplusplus
 

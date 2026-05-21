@@ -4,6 +4,7 @@
 
 Checks: >
   bugprone-*,
+  -bugprone-assignment-in-if-condition,
   -bugprone-easily-swappable-parameters,
   -bugprone-macro-parentheses,
   -bugprone-reserved-identifier, # Should be fixed.

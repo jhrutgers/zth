@@ -230,13 +230,11 @@ struct DefaultConfig {
 #  elif defined(ZTH_OS_BAREMETAL)
 		0x400;
 #  else
-		0x1000;
+		0x4000;
 #  endif
 
-	/*! \brief Threshold when to force writing out VCD buffer. */
-	static size_t const PerfEventBufferThresholdToTriggerVCDWrite = PerfEventBufferSize / 2;
-	/*! \brief VCD file buffer in bytes. */
-	static size_t const PerfVCDFileBuffer = 0x1000;
+	/*! \brief Minimum remaining space before perf event collection is stopped. */
+	static size_t const PerfEventBufferSpare = std::min<size_t>(PerfEventBufferSize / 2, 32);
 
 	/*! \brief Record and output perf events. */
 	static bool const DoPerfEvent = false;
