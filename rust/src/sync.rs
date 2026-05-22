@@ -4,8 +4,6 @@
 
 use alloc::boxed::Box;
 use alloc::rc::Rc;
-#[cfg(all(zth_hosted_std, test))]
-use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 use core::cell::{Cell, UnsafeCell};
 use core::cmp::Eq;
@@ -402,6 +400,11 @@ impl<T> Future<T>
 where
     T: 'static,
 {
+    #[cfg(all(zth_hosted_std, test))]
+    fn is_usize_mode() -> bool {
+        UintptrValueCodec::<T>::is_usize_mode()
+    }
+
     fn requires_take_guard() -> bool {
         UintptrValueCodec::<T>::requires_take_guard()
     }

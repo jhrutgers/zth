@@ -984,7 +984,7 @@ public:
 		return 0;
 	}
 
-	virtual int handleFiber(uint64_t fiber, char* name, size_t size)
+	virtual int handleFiber(uint64_t fiber, char const* name, size_t size)
 	{
 		(void)fiber;
 		(void)name;
@@ -1305,18 +1305,19 @@ public:
 		return 0;
 	}
 
-	virtual int handleFiber(uint64_t fiber, char* name, size_t size) override
+	virtual int handleFiber(uint64_t fiber, char const* name, size_t size) override
 	{
-		for(char* p = name; p < name + size; ++p) {
-			if(*p < 33 || *p > 126)
-				*p = '_';
-		}
-
 		FibersMap::iterator it = m_fibers.find(fiber);
 		if(it != m_fibers.end())
 			it->second = string(name, size);
 		else
-			m_fibers.insert(std::make_pair(fiber, string(name, size)));
+			it = m_fibers.insert(std::make_pair(fiber, string(name, size))).first;
+
+		string& s = it->second;
+		for(size_t i = 0; i < s.size(); ++i) {
+			if(s[i] < 33 || s[i] > 126)
+				s[i] = '_';
+		}
 
 		return 0;
 	}
