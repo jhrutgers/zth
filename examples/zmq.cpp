@@ -23,7 +23,8 @@ static int check(int res)
 void server()
 {
 	void* responder = zth_zmq_socket(ZMQ_REP);
-	int rc __attribute__((unused)) = zmq_bind(responder, "inproc://hello");
+	int rc = zmq_bind(responder, "inproc://hello");
+	(void)rc;
 	zth_assert(!rc);
 
 	while(true) {

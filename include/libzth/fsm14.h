@@ -1857,15 +1857,15 @@ public:
 				// Return now, but we could continue anyway.
 				return p;
 
-			auto now = Timestamp::now();
-			if(now > until)
+			auto t_now = Timestamp::now();
+			if(t_now > until)
 				return p;
 
 			if(p)
 				continue;
 
-			auto p_end = now + p;
-			m_trigger.wait(std::min(p_end, until), now);
+			auto p_end = t_now + p;
+			m_trigger.wait(std::min(p_end, until), t_now);
 		}
 	}
 

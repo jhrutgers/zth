@@ -476,7 +476,8 @@ if(CPPCHECK_CMD)
 			-UZTH_ENABLE_ASAN -UZTH_ENABLE_LSAN -UZTH_ENABLE_UBSAN -DZTH_HAVE_PTHREAD
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
-			tests/test_fsm17.cpp -i examples/rust/build -i examples/hello-project/build*
+			tests/test_fsm17.cpp -i examples/rust/build -i examples/hello-project/build
+			-i examples/hello-project/build-installed
 			# --check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM

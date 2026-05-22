@@ -15,6 +15,10 @@
 #include <set>
 #include <unistd.h>
 
+#ifndef ZTH_OS_BAREMETAL
+#  define ZTH_VCD_USE_FILE_IO
+#endif
+
 namespace zth {
 
 
@@ -82,7 +86,7 @@ public:
 		m_size = 0;
 
 		if(m_buffer) {
-			deallocate<char>((char*)m_buffer, capacity());
+			deallocate<char>(const_cast<char*>(m_buffer), capacity());
 			m_buffer = nullptr;
 		}
 	}
@@ -127,19 +131,19 @@ public:
 			return nullptr;
 		}
 
-		size_t end =
+		size_t pend =
 #if GCC_VERSION < 40802L
 			__sync_add_and_fetch(&m_size, s);
 #else
 			__atomic_add_fetch(&m_size, s, __ATOMIC_RELAXED);
 #endif
 
-		size_t start = end - s;
-		char volatile* p = &m_buffer[start];
+		size_t pstart = pend - s;
+		char volatile* p = &m_buffer[pstart];
 
-		if(unlikely(end >= capacity())) {
+		if(unlikely(pend >= capacity())) {
 			// Hit a race. Terminate the buffer.
-			if(start < capacity())
+			if(pstart < capacity())
 				*p = 0;
 
 			p = nullptr;
@@ -159,7 +163,7 @@ public:
 			// Without threads, an IRQ can still do async append, but that will always
 			// complete before the main context can resume again. So, it is not possible
 			// to see a partially filled buffer in that case.
-			memset((void*)m_buffer, 0, capacity());
+			memset(const_cast<char*>(m_buffer), 0, capacity());
 		}
 
 		m_known.clear();
@@ -325,20 +329,23 @@ void perf_time(Timestamp const& t)
 	if(!perf_buffer)
 		return;
 
-	Timestamp now;
-	Timestamp const& t_ = t.isNull() ? (now = Timestamp::now()) : t;
+	Timestamp t_now;
+	Timestamp const& t_ = t.isNull() ? (t_now = Timestamp::now()) : t;
 
 	struct timespec const& ts = t_.ts();
 	leb128_buf_t s;
 	size_t s_len = leb128_encode(s, (uint64_t)ts.tv_sec);
+
+	zth_assert(ts.tv_nsec < TimeInterval::BILLION);
 	leb128_buf_t ns;
 	size_t ns_len = leb128_encode(ns, (uint64_t)ts.tv_nsec);
+
 	char volatile* p = perf_buffer->reserve(s_len + ns_len + 1);
 	if(!p)
 		return;
 
-	memcpy((void*)(p + 1), s, s_len);
-	memcpy((void*)(p + 1 + s_len), ns, ns_len);
+	memcpy(const_cast<char*>(p + 1), s, s_len);
+	memcpy(const_cast<char*>(p + 1 + s_len), ns, ns_len);
 	*p = PerfEventTime;
 	perf_buffer->t(t_);
 }
@@ -351,8 +358,8 @@ void perf_dt(Timestamp const& t)
 	if(!perf_buffer)
 		return;
 
-	Timestamp now;
-	Timestamp const& t_ = t.isNull() ? (now = Timestamp::now()) : t;
+	Timestamp t_now;
+	Timestamp const& t_ = t.isNull() ? (t_now = Timestamp::now()) : t;
 
 	Timestamp const& t0 = perf_buffer->t();
 	TimeInterval d = t_ - t0;
@@ -366,6 +373,8 @@ void perf_dt(Timestamp const& t)
 		return;
 	}
 
+	zth_assert(d.ts().tv_nsec < TimeInterval::BILLION);
+
 	leb128_buf_t buf;
 	size_t len = leb128_encode(buf, (uint64_t)d.ts().tv_nsec);
 
@@ -373,7 +382,7 @@ void perf_dt(Timestamp const& t)
 	if(!p)
 		return;
 
-	memcpy((void*)(p + 1), buf, len);
+	memcpy(const_cast<char*>(p + 1), buf, len);
 	*p = PerfEventTimeDelta;
 	perf_buffer->t(t_);
 }
@@ -401,14 +410,14 @@ void perf_async_handle(zth_perf_async_handle_t* handle) noexcept
 	if(!handle)
 		return;
 
-	handle->p = (void*)perf_buffer;
+	handle->p = static_cast<void*>(perf_buffer);
 }
 
 /*!
- * \brief Async-/thread-safe #perf_mark().
+ * \brief Async-/thread-safe #zth::perf_mark().
  *
- * This function performs #perf_mark() on another thread's perf event buffer, of which its handle is
- * retrieved by the owner thread using #perf_async_handle().
+ * This function performs #zth::perf_mark() on another thread's perf event buffer, of which its
+ * handle is retrieved by the owner thread using #zth::perf_async_handle().
  *
  * \ingroup zth_api_cpp_perf
  */
@@ -423,7 +432,7 @@ void perf_mark_async(char const* marker, zth_perf_async_handle_t* handle) noexce
 		return;
 
 	// NOLINTNEXTLINE(bugprone-multi-level-implicit-pointer-conversion)
-	memcpy((void*)(p + 1), (void*)&marker, sizeof(marker));
+	memcpy(const_cast<char*>(p + 1), &marker, sizeof(marker));
 	*p = PerfEventMarker;
 }
 
@@ -475,7 +484,7 @@ void perf_logv(char const* fmt, va_list args, Timestamp const& t) noexcept
 	if(!p)
 		return;
 
-	int len2 = vsnprintf((char*)p + 1, (size_t)len + 1U, fmt, args);
+	int len2 = vsnprintf(const_cast<char*>(p + 1), (size_t)len + 1U, fmt, args);
 	zth_assert(len == len2);
 	(void)len2;
 
@@ -505,8 +514,8 @@ void perf_fiber(Fiber& f) noexcept
 	if(!p)
 		return;
 
-	memcpy((char*)p + 1, id, id_len);
-	memcpy((char*)p + 1 + id_len, name, name_len);
+	memcpy(const_cast<char*>(p + 1), id, id_len);
+	memcpy(const_cast<char*>(p + 1 + id_len), name, name_len);
 	p[0] = PerfEventFiber;
 
 	perf_fiber_state(f);
@@ -533,7 +542,7 @@ void perf_fiber_state(Fiber& f, int state, Timestamp const& t) noexcept
 	if(!p)
 		return;
 
-	memcpy((char*)p + 1, id, id_len);
+	memcpy(const_cast<char*>(p + 1), id, id_len);
 	p[0] = PerfEventFiberState;
 	if(state < 0)
 		state = (int)f.state();
@@ -553,9 +562,9 @@ void perf_fiber_state(Fiber& f, int state, Timestamp const& t) noexcept
  *
  * Typical workflow:
  *
- * - Call #perf_start() when event collection is required.
- * - Wait till the callback to #perf_start() is invoked.
- * - Call #perf_dump() to convert the buffer to be sent to the PC.
+ * - Call #zth::perf_start() when event collection is required.
+ * - Wait till the callback to #zth::perf_start() is invoked.
+ * - Call #zth::perf_dump() to convert the buffer to be sent to the PC.
  * - On the PC (offline), process the buffer into VCD.
  *
  * \ingroup zth_api_cpp_perf
@@ -593,8 +602,9 @@ void perf_dump(zth_perf_dump_callback_t* f) noexcept
 		}
 		case PerfEventMarker: {
 			// Convert the passed pointer to an actual string.
-			// NOLINTNEXTLINE
-			char const* __attribute__((aligned(1)))* s = (char const**)(void*)(p + 1);
+			char const* const __attribute__((aligned(1)))* s =
+				reinterpret_cast<char const* const __attribute__((aligned(1)))*>(
+					p + 1);
 			size_t len = strlen(*s);
 			char e = PerfEventLog;
 			f(&e, 1);
@@ -639,19 +649,19 @@ static void perf_continue()
 	zth_perf_dump_callback_t* f = perf_buffer->dump_callback();
 	zth_assert(f);
 
-	Timestamp now = Timestamp::now();
+	Timestamp t_now = Timestamp::now();
 	char id = PerfEventTime;
 	f(&id, 1);
 
 	leb128_buf_t buf;
-	f(buf, leb128_encode(buf, (uint64_t)now.ts().tv_sec));
-	f(buf, leb128_encode(buf, (uint64_t)now.ts().tv_nsec));
+	f(buf, leb128_encode(buf, (uint64_t)t_now.ts().tv_sec));
+	f(buf, leb128_encode(buf, (uint64_t)t_now.ts().tv_nsec));
+
+	perf_dump(f);
 
 	id = PerfEventLog;
 	f(&id, 1);
 	f("perf_dump", 10);
-
-	perf_dump(f);
 
 	if(perf_buffer->done_callback() == perf_continue)
 		perf_start(perf_continue);
@@ -664,11 +674,11 @@ static void perf_continue()
  *
  * - Make sure Config::DoPerfEvent is set (optionally via environment).
  * - Call perf_run().
- * - When the buffer is full, the callback function is called, as if #perf_dump() was invoked.
+ * - When the buffer is full, the callback function is called, as if #zth::perf_dump() was invoked.
  * - The buffer is cleared and recording is resumed automatically.
  *
- * This gives a continuous flow of #perf_dump() callbacks, with data later/offline to be converted
- * to VCD.
+ * This gives a continuous flow of #zth::perf_dump() callbacks, with data later/offline to be
+ * converted to VCD.
  *
  * \ingroup zth_api_cpp_perf
  */
@@ -678,15 +688,13 @@ void perf_run(zth_perf_dump_callback_t* f) noexcept
 		return;
 	if(!f)
 		return;
-	if(!zth_config(DoPerfEvent))
-		return;
 
 	perf_buffer->dump_callback(f);
 	perf_start(perf_continue);
 }
 
 /*!
- * \brief Abort a #perf_run().
+ * \brief Abort a #zth::perf_run().
  * \ingroup zth_api_cpp_perf
  */
 void perf_abort() noexcept
@@ -700,6 +708,14 @@ void perf_abort() noexcept
 	if(f)
 		f();
 }
+
+#ifndef ZTH_VCD_USE_FILE_IO
+void perf_run_dump(char const* path) noexcept
+{
+	(void)path;
+}
+
+#else  // ZTH_VCD_USE_FILE_IO
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ZTH_TLS_STATIC(FILE*, perf_dump_file, nullptr)
@@ -722,7 +738,7 @@ static void perf_run_dump_callback(void const* buf, size_t len)
 }
 
 /*!
- * \brief Like #perf_run(), but dump the contents to file immediately.
+ * \brief Like #zth::perf_run(), but dump the contents to file immediately.
  * \ingroup zth_api_cpp_perf
  */
 void perf_run_dump(char const* path) noexcept
@@ -758,6 +774,7 @@ void perf_run_dump(char const* path) noexcept
 	zth_dbg(perf, "[%s] Perf dump to %s", currentWorker().id_str(), path);
 	perf_run(perf_run_dump_callback);
 }
+#endif // ZTH_VCD_USE_FILE_IO
 
 /*!
  * \brief Initializes the per-thread perf event buffer.
@@ -789,8 +806,10 @@ void perf_deinit()
 		return;
 
 	bool running = perf_buffer->running();
+	(void)running;
 	perf_abort();
 
+#ifdef ZTH_VCD_USE_FILE_IO
 	if(running && zth_config(DoPerfEvent)) {
 		zth_dbg(perf, "[%s] Generate VCD", currentWorker().id_str());
 		int res = perf_vcd();
@@ -798,6 +817,7 @@ void perf_deinit()
 			zth_dbg(perf, "[%s] Cannot generate VCD; %s", currentWorker().id_str(),
 				err(res).c_str());
 	}
+#endif // ZTH_VCD_USE_FILE_IO
 
 	perf_buffer->release();
 	perf_buffer->deinit();
@@ -811,6 +831,24 @@ void perf_deinit()
 ////////////////////////////////////////////////////////////////
 // VCD conversion
 //
+
+#ifndef ZTH_VCD_USE_FILE_IO
+// As there is no file system, we cannot generate VCD files. So, just return ENOSYS.
+
+int perf_vcd(char const* perf, char const* vcd) noexcept
+{
+	(void)perf;
+	(void)vcd;
+	return ENOSYS;
+}
+int perf_vcdf(FILE* perf, FILE* vcd) noexcept
+{
+	(void)perf;
+	(void)vcd;
+	return ENOSYS;
+}
+
+#else // Implement VCD conversion using file I/O.
 
 /*!
  * \brief Convert a perf file into VCD.
@@ -830,6 +868,9 @@ int perf_vcd(char const* perf, char const* vcd) noexcept
 		fperf = perf_dump_file;
 		if(!fperf)
 			return EINVAL;
+
+		if(fflush(fperf))
+			return errno;
 
 		fperf_reuse = true;
 	} else {
@@ -856,7 +897,14 @@ int perf_vcd(char const* perf, char const* vcd) noexcept
 
 				svcd.append(".vcd");
 			} else {
-				svcd = "zth.vcd";
+				Worker const* w = Worker::instance();
+				if(w) {
+					svcd =
+						format("zth.%u-%u.vcd", (unsigned)getpid(),
+						       (unsigned)w->id());
+				} else {
+					svcd = format("zth.%u.vcd", (unsigned)getpid());
+				}
 			}
 
 			fvcd = fopen(svcd.c_str(), "w");
@@ -887,8 +935,11 @@ cleanup:
 		}
 	}
 
-	if(fvcd)
-		(void)fclose(fvcd);
+	if(fvcd) {
+		if(fclose(fvcd))
+			if(res == 0)
+				res = errno;
+	}
 
 	return res;
 }
@@ -1001,12 +1052,46 @@ protected:
 		return m_fiber;
 	}
 
+	__attribute__((format(ZTH_ATTR_PRINTF, 2, 3))) int write(char const* fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		int res = writev(fmt, args);
+		va_end(args);
+		return res;
+	}
+
+	__attribute__((format(ZTH_ATTR_PRINTF, 2, 0))) int writev(char const* fmt, va_list args)
+	{
+		int res = vfprintf(vcd(), fmt, args);
+		if(res > 0)
+			return 0;
+
+#  ifdef ZTH_OS_POSIX
+		return errno;
+#  else
+		return EIO;
+#  endif
+	}
+
 private:
+	int read(FILE* f, void* buf, size_t size)
+	{
+		size_t res = fread(buf, size, 1, f);
+		if(res == 1)
+			return 0;
+#  ifdef ZTH_OS_POSIX
+		if(ferror(f))
+			return errno;
+#  endif
+		return EIO;
+	}
+
 	int parseFile(FILE* f)
 	{
-		int res = 0;
 		while(!feof(f)) {
-			if((res = parseEntry(f)))
+			int res = parseEntry(f);
+			if(res)
 				return res;
 		}
 		return 0;
@@ -1014,15 +1099,16 @@ private:
 
 	int parseEntry(FILE* f)
 	{
+		// cppcheck-suppress unreadVariable
 		int res = 0;
-		char t = 0;
-		if((res = parseType(f, t)))
-			return res;
+		char type = 0;
+		if((res = parseType(f, type)))
+			return feof(f) ? 0 : res;
 
-		switch(t) {
+		switch(type) {
 		case PerfEventTerminate:
 			if(fseek(f, 0, SEEK_END))
-				return EIO;
+				return errno;
 			break;
 		case PerfEventTime:
 			if((res = parseTime(f)))
@@ -1054,17 +1140,22 @@ private:
 
 	int parseType(FILE* f, char& x)
 	{
-		return fread(&x, sizeof(x), 1, f) == 1 ? 0 : EIO;
+		return read(f, &x, sizeof(x));
 	}
 
 	int parseLeb128(FILE* f, uint64_t& x)
 	{
+		int i = 0;
 		x = 0;
 		unsigned char c = 0x80U;
 		while(c & 0x80U) {
-			if(fread(&c, 1, 1, f) != 1)
-				return EIO;
-			x = (uint64_t)((x << 7) | (c & 0x7FU));
+			int res = read(f, &c, 1);
+			if(res)
+				return res;
+			if(i >= 64)
+				return EOVERFLOW;
+			x |= (uint64_t)(c & 0x7FU) << i;
+			i += 7;
 		}
 		return 0;
 	}
@@ -1081,7 +1172,7 @@ private:
 
 		if((res = parseLeb128(f, x)))
 			return res;
-		if(x > std::numeric_limits<long>::max())
+		if(x >= TimeInterval::BILLION)
 			return EOVERFLOW;
 		ts.tv_nsec = (long)x;
 		m_t = ts;
@@ -1091,12 +1182,13 @@ private:
 
 	int parseTimeDelta(FILE* f)
 	{
+		// cppcheck-suppress unreadVariable
 		int res = 0;
 		uint64_t ns = 0;
 
 		if((res = parseLeb128(f, ns)))
 			return res;
-		if(ns > std::numeric_limits<long>::max())
+		if(ns >= TimeInterval::BILLION)
 			return EOVERFLOW;
 
 		m_t += TimeInterval(0, (long)ns);
@@ -1107,8 +1199,9 @@ private:
 	{
 		char c = 0;
 		while(true) {
-			if(fread(&c, 1, 1, f) != 1)
-				return EIO;
+			int res = read(f, &c, 1);
+			if(res)
+				return res;
 			if(c == '\0')
 				return 0;
 			s.append(1, c);
@@ -1117,9 +1210,9 @@ private:
 
 	int parseLog(FILE* f)
 	{
-		int res = 0;
 		string s;
-		if((res = parseString(f, s)))
+		int res = parseString(f, s);
+		if(res)
 			return res;
 
 		return handleLog(s.c_str());
@@ -1145,8 +1238,8 @@ private:
 			return res;
 
 		unsigned char state = 0;
-		if(fread(&state, 1, 1, f) != 1)
-			return EIO;
+		if((res = read(f, &state, 1)))
+			return res;
 
 		return handleFiberState((int)state);
 	}
@@ -1160,6 +1253,9 @@ private:
 
 class VCDHeaderGenerator final : public VCDGenerator {
 	ZTH_CLASS_NOCOPY(VCDHeaderGenerator)
+
+	typedef map_type<uint64_t, string>::type FibersMap;
+
 public:
 	explicit VCDHeaderGenerator(FILE* vcd)
 		: VCDGenerator(vcd)
@@ -1169,75 +1265,83 @@ public:
 
 	virtual int start() override
 	{
-		time_t now = -1;
-		if(time(&now) != -1) {
-#if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
+		int res = 0;
+		time_t t_now = -1;
+		if(time(&t_now) != -1) {
+#  if defined(ZTH_OS_LINUX) || defined(ZTH_OS_MAC)
 			char dateBuf[128];
-			char const* strnow = ctime_r(&now, dateBuf);
-#else
+			char const* strnow = ctime_r(&t_now, dateBuf);
+#  else
 			// Possibly not thread-safe.
-			char const* strnow = ctime(&now);
-#endif
+			char const* strnow = ctime(&t_now);
+#  endif
+			size_t len = strnow ? strlen(strnow) : 0;
+			while(len > 0 && (strnow[len - 1] == '\n' || strnow[len - 1] == '\r'))
+				len--;
 			if(strnow)
-				if(fprintf(vcd(), "$date %s$end\n", strnow) < 0)
-					return EIO;
+				if((res = write("$date %.*s $end\n", (int)len, strnow)))
+					return res;
 		}
 
-		if(fprintf(vcd(),
-			   "$version %s $end\n$timescale 1 ns $end\n$scope module top $end\n",
-			   banner())
-		   < 0)
-			return EIO;
+		if((res = write(
+			    "$version %s $end\n$timescale 1 ns $end\n$scope module top $end\n",
+			    banner())))
+			return res;
 
 		return 0;
 	}
 
 	virtual int end() override
 	{
-		if(fprintf(vcd(), "$upscope $end\n$enddefinitions $end\n") < 0)
-			return EIO;
+		int res = 0;
+
+		for(FibersMap::iterator it = m_fibers.begin(); it != m_fibers.end(); ++it)
+			if((res = outputFiber(it->first, it->second)))
+				return res;
+
+		if((res = write("$upscope $end\n$enddefinitions $end\n")))
+			return res;
 
 		return 0;
 	}
 
 	virtual int handleFiber(uint64_t fiber, char* name, size_t size) override
 	{
-		if(m_fibers.find(fiber) != m_fibers.end())
-			// Already handled.
-			return 0;
-
-		if(*name) {
-			for(char* p = name; p < name + size; ++p) {
-				if(*p < 33 || *p > 126)
-					*p = '_';
-			}
-
-			string const& id = vcdId(fiber);
-			if(fprintf(vcd(),
-				   "$var wire 1 %s \\#%s_%s $end\n$var real 0 %s! "
-				   "\\#%s_%s/log $end\n",
-				   id.c_str(), str(fiber).c_str(), name, id.c_str(),
-				   str(fiber).c_str(), name)
-			   <= 0) {
-				return EIO;
-			}
-		} else {
-			string const& id = vcdId(fiber);
-			if(fprintf(vcd(),
-				   "$var wire 1 %s \\#%s_Fiber $end\n$var real 0 "
-				   "%s! \\#%s_Fiber_log $end\n",
-				   id.c_str(), str(fiber).c_str(), id.c_str(), str(fiber).c_str())
-			   <= 0) {
-				return EIO;
-			}
+		for(char* p = name; p < name + size; ++p) {
+			if(*p < 33 || *p > 126)
+				*p = '_';
 		}
 
-		m_fibers.insert(fiber);
+		FibersMap::iterator it = m_fibers.find(fiber);
+		if(it != m_fibers.end())
+			it->second = string(name, size);
+		else
+			m_fibers.insert(std::make_pair(fiber, string(name, size)));
+
 		return 0;
 	}
 
 private:
-	set_type<uint64_t>::type m_fibers;
+	int outputFiber(uint64_t fiber, string const& name)
+	{
+		string const& id = vcdId(fiber);
+
+		if(!name.empty()) {
+			return write(
+				"$var wire 1 %s \\#%s_%s $end\n$var real 0 %s! "
+				"\\#%s_%s/log $end\n",
+				id.c_str(), str(fiber).c_str(), name.c_str(), id.c_str(),
+				str(fiber).c_str(), name.c_str());
+		} else {
+			return write(
+				"$var wire 1 %s \\#%s_Fiber $end\n$var real 0 "
+				"%s! \\#%s_Fiber_log $end\n",
+				id.c_str(), str(fiber).c_str(), id.c_str(), str(fiber).c_str());
+		}
+	}
+
+private:
+	FibersMap m_fibers;
 };
 
 class VCDDataGenerator final : public VCDGenerator {
@@ -1251,10 +1355,11 @@ public:
 
 	virtual int handleLog(char const* log) override
 	{
-		if(fprintf(vcd(), "#%s%09u\ns", str(t().ts().tv_sec).c_str(),
-			   (unsigned)t().ts().tv_nsec)
-		   <= 0) {
-			return EIO;
+		int res = 0;
+		if((res =
+			    write("#%s%09u\ns", str(t().ts().tv_sec).c_str(),
+				  (unsigned)t().ts().tv_nsec))) {
+			return res;
 		}
 
 		char const* chunkStart = log;
@@ -1262,10 +1367,10 @@ public:
 		int len = 0;
 		while(chunkEnd[1]) {
 			if(*chunkEnd < 33 || *chunkEnd > 126) {
-				if(fprintf(vcd(), "%.*s\\x%02x", len, chunkStart,
-					   (unsigned)(unsigned char)*chunkEnd)
-				   < 0) {
-					return EIO;
+				if((res =
+					    write("%.*s\\x%02x", len, chunkStart,
+						  (unsigned)(unsigned char)*chunkEnd))) {
+					return res;
 				}
 				chunkStart = chunkEnd = chunkEnd + 1;
 				len = 0;
@@ -1275,9 +1380,9 @@ public:
 			}
 		}
 
-		if(fprintf(vcd(), "%s %s!\n", chunkStart, vcdId(fiber()).c_str()) <= 0) {
-			return EIO;
-		}
+		if((res = write("%s %s!\n", chunkStart, vcdId(fiber()).c_str())))
+			return res;
+
 		return 0;
 	}
 
@@ -1311,10 +1416,11 @@ public:
 
 		static_assert(sizeof(unsigned) >= 4, "");
 
-		if(fprintf(vcd(), "#%s%09u\n%c%s\n", str(t().ts().tv_sec).c_str(),
-			   (unsigned)t().ts().tv_nsec, x, vcdId(fiber()).c_str())
-		   <= 0) {
-			return EIO;
+		int res = 0;
+		if((res =
+			    write("#%s%09u\n%c%s\n", str(t().ts().tv_sec).c_str(),
+				  (unsigned)t().ts().tv_nsec, x, vcdId(fiber()).c_str()))) {
+			return res;
 		}
 
 		if(doCleanup)
@@ -1332,6 +1438,9 @@ public:
  */
 int perf_vcdf(FILE* perf, FILE* vcd) noexcept
 {
+	if(Config::UseLimitedFormatSpecifiers)
+		return ENOSYS;
+
 	if(!perf || !vcd)
 		return EINVAL;
 
@@ -1353,5 +1462,6 @@ int perf_vcdf(FILE* perf, FILE* vcd) noexcept
 	(void)fsetpos(perf, &perf_pos);
 	return res;
 }
+#endif // VCD output support
 
 } // namespace zth
