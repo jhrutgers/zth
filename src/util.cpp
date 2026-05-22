@@ -7,6 +7,7 @@
 #include <libzth/macros.h>
 
 #include <libzth/allocator.h>
+#include <libzth/backtrace.h>
 #include <libzth/init.h>
 #include <libzth/perf.h>
 #include <libzth/util.h>

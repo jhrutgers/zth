@@ -9,8 +9,7 @@
 /*!
  * \defgroup zth_api_cpp_perf perf
  *
- * This module allows generating a VCD file (in the current working directory),
- * which tracks scheduling behavior of the application.
+ * This module allows generating a VCD file which tracks scheduling behavior of the application.
  *
  * \ingroup zth_api_cpp
  */
@@ -47,61 +46,6 @@ int perf_init();
 void perf_deinit();
 
 class Fiber;
-
-UniqueID<Fiber> const& currentFiberID() noexcept;
-
-/*!
- * \brief Save a backtrace.
- * \ingroup zth_api_cpp_perf
- */
-class Backtrace {
-	ZTH_CLASS_NEW_DELETE(Backtrace)
-public:
-	typedef vector_type<void*>::type bt_type;
-
-	explicit Backtrace(size_t skip = 0, size_t maxDepth = 128);
-	Fiber* fiber() const noexcept
-	{
-		return m_fiber;
-	}
-
-	uint64_t fiberId() const noexcept
-	{
-		return m_fiberId;
-	}
-
-	bt_type const& bt() const noexcept
-	{
-		return m_bt;
-	}
-
-	bool truncated() const noexcept
-	{
-		return m_truncated;
-	}
-
-	Timestamp const& t0() const noexcept
-	{
-		return m_t0;
-	}
-
-	Timestamp const& t1() const noexcept
-	{
-		return m_t1;
-	}
-
-	void printPartial(size_t start, ssize_t end = -1, int color = -1) const;
-	void print(int color = -1) const;
-	void printDelta(Backtrace const& other, int color = -1) const;
-
-private:
-	Timestamp m_t0;
-	Timestamp m_t1;
-	Fiber* m_fiber;
-	uint64_t m_fiberId;
-	bt_type m_bt;
-	bool m_truncated;
-};
 
 ZTH_EXPORT void perf_start(zth_perf_done_callback_t* f = nullptr) noexcept;
 ZTH_EXPORT void perf_stop() noexcept;
