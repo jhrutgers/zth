@@ -27,6 +27,7 @@ typedef struct {
 
 #ifdef __cplusplus
 #  include <libzth/allocator.h>
+#  include <libzth/backtrace.h>
 #  include <libzth/config.h>
 #  include <libzth/context.h>
 #  include <libzth/exception.h>

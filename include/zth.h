@@ -24,6 +24,7 @@
 
 #include <libzth/allocator.h>
 #include <libzth/async.h>
+#include <libzth/backtrace.h>
 #include <libzth/config.h>
 #include <libzth/coro.h>
 #include <libzth/exception.h>

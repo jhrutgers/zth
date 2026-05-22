@@ -90,6 +90,16 @@ struct DefaultConfig {
 			EnableAssert;
 #  endif
 
+	/*!
+	 * \brief Enable backtrace support.
+	 */
+	static bool const EnableBacktrace =
+#  ifdef ZTH_CONFIG_ENABLE_BACKTRACE
+		ZTH_CONFIG_ENABLE_BACKTRACE;
+#  else
+		true;
+#  endif
+
 	/*! \brief Add (Worker) thread support when \c true. */
 	static bool const EnableThreads =
 #  if ZTH_THREADS

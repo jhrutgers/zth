@@ -43,6 +43,7 @@ option(ZTH_THREADS "Make libzth thread-aware" ${ZTH_THREADS_DEFAULT})
 # * ZTH_CONFIG_DEBUG. Is only used when not NDEBUG.
 # * ZTH_CONFIG_ENABLE_ASSERT. Requires zth::Config::Debug.
 # * ZTH_CONFIG_ENABLE_FULL_ASSERT. Requires zth::Config::EnableAssert.
+# * ZTH_CONFIG_ENABLE_BACKTRACE.
 # * ZTH_CONFIG_ENABLE_DEBUG_PRINT. Requires zth::Config::SupportDebugPrint. Can also be overridden
 #   in environment.
 # * ZTH_CONFIG_SUPPORT_DEBUG_PRINT. Requires zth::Config::Debug.
@@ -214,6 +215,7 @@ set(ZTH_CONFIG_OVERRIDES
     ZTH_CONFIG_DEBUG
     ZTH_CONFIG_ENABLE_ASSERT
     ZTH_CONFIG_ENABLE_FULL_ASSERT
+    ZTH_CONFIG_ENABLE_BACKTRACE
     ZTH_CONFIG_ENABLE_DEBUG_PRINT
     ZTH_CONFIG_SUPPORT_DEBUG_PRINT
     ZTH_CONFIG_ENABLE_COLOR_LOG
