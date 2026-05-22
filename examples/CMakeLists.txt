@@ -76,8 +76,10 @@ if(ZTH_HAVE_CORO AND NOT ZTH_DISABLE_EXCEPTIONS)
 	add_example(sock_factory sock_factory.cpp)
 	set_property(TARGET sock_factory PROPERTY CXX_STANDARD 20)
 
-	add_example(presentation presentation.cpp)
-	set_property(TARGET presentation PROPERTY CXX_STANDARD 20)
+	if(NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+		add_example(presentation presentation.cpp)
+		set_property(TARGET presentation PROPERTY CXX_STANDARD 20)
+	endif()
 endif()
 
 add_example(socks socks.cpp)

@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y gcc-${{matrix.gcc}} g++-${{matrix.gcc}}
-          dist/ubuntu/bootstrap.sh
+          dist/ubuntu/bootstrap.sh -r
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
@@ -66,7 +66,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/ubuntu/bootstrap.sh
+          dist/ubuntu/bootstrap.sh -r
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.cxx}} test
@@ -92,7 +92,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/ubuntu/bootstrap.sh
+          dist/ubuntu/bootstrap.sh -r
       - name: build Debug
         run: |
           dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
@@ -115,7 +115,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: bootstrap
-        run: dist\win32\bootstrap.cmd
+        run: dist\win32\bootstrap.cmd -r
       - name: build Debug
         run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF"
       - name: test
@@ -138,7 +138,7 @@ jobs:
         run: |
           # Workaround for linker bug in XCode 14.0
           sudo xcode-select --switch /Library/Developer/CommandLineTools
-          dist/macos/bootstrap.sh
+          dist/macos/bootstrap.sh -r
       - name: build Debug
         run: dist/macos/build.sh Debug test
       - name: build Release
@@ -154,7 +154,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/qemu-arm-a15/bootstrap.sh
+          dist/qemu-arm-a15/bootstrap.sh -r
       - name: build Debug
         run: dist/qemu-arm-a15/build.sh Debug dev test
       - name: build Release
@@ -170,7 +170,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/qemu-arm-m3/bootstrap.sh
+          dist/qemu-arm-m3/bootstrap.sh -r
       - name: build Debug
         run: dist/qemu-arm-m3/build.sh Debug dev test
       - name: build Release
@@ -186,7 +186,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/mingw/bootstrap.sh
+          dist/mingw/bootstrap.sh -r
       - name: build Debug
         run: dist/mingw/build.sh Debug dev notest
       - name: build Release
@@ -204,7 +204,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/ubuntu/bootstrap.sh
+          dist/ubuntu/bootstrap.sh -r
       - name: build
         run: dist/ubuntu/build.sh Release -DZTH_DOCUMENTATION=ON
       - name: deploy
@@ -222,7 +222,7 @@ jobs:
       - name: bootstrap
         run: |
           sudo apt update
-          dist/ubuntu/bootstrap.sh
+          dist/ubuntu/bootstrap.sh -r
       - name: build
         run: dist/ubuntu/build.sh Release -DZTH_DOCUMENTATION=ON
 
