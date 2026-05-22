@@ -822,7 +822,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_now(struct timespec* ts)
  */
 EXTERN_C ZTH_EXPORT ZTH_INLINE void zth_now2(uint64_t* s, uint32_t* ns)
 {
-	struct timespec ts {};
+	struct timespec ts = {};
 	zth_now(&ts);
 	if(s)
 		*s = (uint64_t)ts.tv_sec;

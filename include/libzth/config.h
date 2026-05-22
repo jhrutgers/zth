@@ -244,7 +244,8 @@ struct DefaultConfig {
 #  endif
 
 	/*! \brief Minimum remaining space before perf event collection is stopped. */
-	static size_t const PerfEventBufferSpare = std::min<size_t>(PerfEventBufferSize / 2, 32);
+	static size_t const PerfEventBufferSpare =
+		PerfEventBufferSize > 64 ? PerfEventBufferSize / 2 : 32;
 
 	/*!
 	 * \brief Record and output perf events to file automatically.

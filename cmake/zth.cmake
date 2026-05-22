@@ -95,6 +95,7 @@ include(${ZTH_SOURCE_DIR}/version/CMakeLists.txt)
 add_library(
 	libzth
 	${ZTH_SOURCE_DIR}/src/assert.cpp
+	${ZTH_SOURCE_DIR}/src/backtrace.cpp
 	${ZTH_SOURCE_DIR}/src/config.cpp
 	${ZTH_SOURCE_DIR}/src/context.cpp
 	${ZTH_SOURCE_DIR}/src/fiber.cpp
@@ -107,7 +108,6 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/poller.cpp
 	${ZTH_SOURCE_DIR}/src/time.cpp
 	${ZTH_SOURCE_DIR}/src/util.cpp
-	${ZTH_SOURCE_DIR}/src/vcd.cpp
 	${ZTH_SOURCE_DIR}/src/waiter.cpp
 	${ZTH_SOURCE_DIR}/src/worker.cpp
 	${ZTH_SOURCE_DIR}/src/zmq.cpp
