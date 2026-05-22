@@ -339,7 +339,8 @@ public:
 	// cppcheck-suppress duplInheritedMember
 	static void** sp(Stack const& stack) noexcept
 	{
-		int dummy __attribute__((unused)) = 0;
+		int dummy = 0;
+		(void)dummy;
 		zth_assert(Impl::stackGrowsDown(&dummy));
 		// sp must be dword aligned
 		return (void**)((uintptr_t)(stack.p + stack.size - sizeof(void*)) & ~(uintptr_t)7);

@@ -34,9 +34,9 @@ void Waiter::wait(TimedWaitable& w)
 	if(unlikely(!fiber || fiber->state() != Fiber::Running))
 		return;
 
-	Timestamp now = Timestamp::now();
-	if(unlikely(w.poll(now))) {
-		yield(nullptr, false, now);
+	Timestamp t_now = Timestamp::now();
+	if(unlikely(w.poll(t_now))) {
+		yield(nullptr, false, t_now);
 		return;
 	}
 
@@ -151,13 +151,13 @@ void Waiter::entry()
 	fiber()->setName(format("zth::Waiter of %s", m_worker.id_str()));
 
 	while(true) {
-		Timestamp now = Timestamp::now();
-		m_worker.load().stop(now);
+		Timestamp t_now = Timestamp::now();
+		m_worker.load().stop(t_now);
 
-		while(!m_waiting.empty() && m_waiting.front().timeout() < now) {
+		while(!m_waiting.empty() && m_waiting.front().timeout() < t_now) {
 			TimedWaitable& w = m_waiting.front();
 			m_waiting.erase(w);
-			if(w.poll(now)) {
+			if(w.poll(t_now)) {
 				if(w.hasFiber()) {
 					w.fiber().wakeup();
 					m_worker.add(&w.fiber(), true);
@@ -177,7 +177,7 @@ void Waiter::entry()
 
 		bool doRealSleep = false;
 
-		m_worker.load().start(now);
+		m_worker.load().start(t_now);
 
 		if(m_waiting.empty() && !polling()) {
 			// No fiber is waiting. suspend() till anyone is going to nap().
@@ -188,7 +188,7 @@ void Waiter::entry()
 			// runnable fiber. Do a real sleep, until something interesting happens in
 			// the system.
 			doRealSleep = true;
-			m_worker.load().stop(now);
+			m_worker.load().stop(t_now);
 		}
 
 		Timestamp const* end = nullptr;

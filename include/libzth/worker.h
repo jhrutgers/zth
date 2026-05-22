@@ -60,6 +60,7 @@ public:
 			goto error;
 
 		if(Config::EnablePerfEvent) {
+			// cppcheck-suppress knownConditionTrueFalse
 			if((res = perf_init()))
 				goto error;
 

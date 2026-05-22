@@ -213,7 +213,7 @@ zth_logv(char const* fmt, va_list arg);
  * \def zth_assert(expr)
  * \brief \c assert(), but better integrated in Zth.
  */
-#    ifndef NDEBUG
+#    if !defined(NDEBUG) && !defined(CPPCHECK)
 #      define zth_assert(expr)                                                              \
 	      do { /* NOLINT(cppcoreguidelines-avoid-do-while) */                           \
 		      if(unlikely(::zth::Config::EnableAssert && !(expr)))                  \

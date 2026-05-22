@@ -236,16 +236,24 @@ struct DefaultConfig {
 	/*! \brief Minimum remaining space before perf event collection is stopped. */
 	static size_t const PerfEventBufferSpare = std::min<size_t>(PerfEventBufferSize / 2, 32);
 
-	/*! \brief Record and output perf events. */
+	/*!
+	 * \brief Record and output perf events to file automatically.
+	 *
+	 * Default to \c false, but can be overridden by \c ZTH_CONFIG_DO_PERF_EVENT environment
+	 * variable.
+	 *
+	 * This only works for targets with a filesystem. The file can be overridden using
+	 * \c ZTH_PERF_FILE environment variable. On targets without filesystem, call #perf_dump()
+	 * manually.
+	 */
 	static bool const DoPerfEvent = false;
+
 	/*! \brief Enable (but not necessarily record) perf. */
 	static bool const EnablePerfEvent =
-#  ifdef ZTH_OS_BAREMETAL
-		// No environment, so only enable when we are actually saving it.
-		DoPerfEvent &&
-#  endif
 #  ifdef ZTH_CONFIG_ENABLE_PERF_EVENT
 		ZTH_CONFIG_ENABLE_PERF_EVENT;
+#  elif defined(ZTH_OS_BAREMETAL)
+		false;
 #  else
 		true;
 #  endif

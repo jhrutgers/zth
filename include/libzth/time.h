@@ -58,7 +58,8 @@ namespace zth {
  */
 ZTH_EXPORT inline void now(struct timespec& ts)
 {
-	int res __attribute__((unused)) = clock_gettime(CLOCK_MONOTONIC, &ts);
+	int res = clock_gettime(CLOCK_MONOTONIC, &ts);
+	(void)res;
 	zth_assert(res == 0);
 }
 

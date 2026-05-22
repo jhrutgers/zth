@@ -8,8 +8,8 @@
 
 // To generate VCD output, run this example like:
 //   ZTH_CONFIG_DO_PERF_EVENT=1 examples/5_perf
-// Play around by setting ZTH_CONFIG_ENABLE_DEBUG_PRINT=[01] or running the
-// Debug or Release build.
+//
+// Play around by setting ZTH_CONFIG_ENABLE_DEBUG_PRINT=[01] or running the Debug or Release build.
 
 static void do_work(int amount)
 {
@@ -20,46 +20,40 @@ static void do_work(int amount)
 
 void scheduling()
 {
-	// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled,
-	// which includes generating a VCD file.  This VCD file shows every
-	// fiber in the system and indicates the state of every fiber at every
-	// instance in time.  This allows you to investigate the scheduling
-	// behavior of fibers.  The state of every fiber is indicated in IEEE
-	// 1164 std_logic format, using the following values:
+	// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled, which includes
+	// generating a VCD file.  This VCD file shows every fiber in the system and indicates the
+	// state of every fiber at every instance in time.  This allows you to investigate the
+	// scheduling behavior of fibers.  The state of every fiber is indicated in IEEE 1164
+	// std_logic format, using the following values:
+
 	// - U (undefined): the fiber has not been created yet
-	// - L (low): the fiber has been created, but not initialized
-	//   (zth::Fiber::New state)
-	// - 0: the fiber is ready (zth::Fiber::Ready state), but not actually
-	//   using the CPU
-	// - 1: the fiber is currently running, which can be only one fiber per
-	//   zth::Worker.
-	// - W (weak): the fiber is blocked (zth::Fiber::Waiting)
-	//   (sleeping/poll/blocking read/etc.)
+	// - L (low): the fiber has been created, but not initialized (zth::Fiber::New state)
+	// - 0: the fiber is ready (zth::Fiber::Ready state), but not actually using the CPU
+	// - 1: the fiber is currently running, which can be only one fiber per zth::Worker.
+	// - W (weak): the fiber is blocked (zth::Fiber::Waiting) (sleeping/poll/blocking read/etc.)
 	// - Z (high impedance): the fiber is suspended (zth::Fiber::Suspended)
 	// - X (unknown): the fiber is dead (zth::Fiber::Dead), but not cleaned up
-	// - - (don't care): the fiber has been cleaned up, which also indicates
-	//   that the zth::Fiber object has been deleted.
+	// - - (don't care): the fiber has been cleaned up, which also indicates that the zth::Fiber
+	//   object has been deleted.
 
 	// The VCD file will show for this fiber the following sequence:
 	//   U L 1 W 0 1 X -
-	// The Waiter (usually fiber #3) manages the mnap of below.  Open the
-	// generated VCD file, using gtkwave, for example.  Try to understand
-	// the relation between fibers in the VCD.
+	//
+	// The Waiter (usually fiber #3) manages the mnap of below.  Open the generated VCD file,
+	// using gtkwave, for example.  Try to understand the relation between fibers in the VCD.
 	zth::mnap(10);
 }
 
 void measure()
 {
-	// This example measures the duration of a task. There are several
-	// helpful functions for this.  First, take a time stamp.
-	// zth::Timestamp::now() is (supposed to be) fast and is used
-	// everywhere, so go ahead and safe t0.
+	// This example measures the duration of a task. There are several helpful functions for
+	// this.  First, take a time stamp.  zth::Timestamp::now() is (supposed to be) fast and is
+	// used everywhere, so go ahead and safe t0.
 	zth::Timestamp t0 = zth::Timestamp::now();
 
-	// perf_mark() allow you to put very efficiently a marker (which must
-	// be a C string literal) in the VCD log at the current time. We are
-	// going to use this to double check our measurements in the VCD file.
-	// This is like printf()-debugging, but with accurate timing
+	// perf_mark() allow you to put very efficiently a marker (which must be a C string literal)
+	// in the VCD log at the current time. We are going to use this to double check our
+	// measurements in the VCD file.  This is like printf()-debugging, but with accurate timing
 	// information.
 	zth::perf_mark("do_work(1)");
 
@@ -69,8 +63,8 @@ void measure()
 	// Set another marker.
 	zth::perf_mark("do_work(1) done");
 
-	// Compute time difference. This is not completely fair, as this
-	// includes running perf_mark() twice.
+	// Compute time difference. This is not completely fair, as this includes running
+	// perf_mark() twice.
 	zth::TimeInterval dt = zth::Timestamp::now() - t0;
 
 	// Let us format some log string.
@@ -80,11 +74,10 @@ void measure()
 	// ...and to stdout.
 	printf("%s\n", log.c_str());
 
-	// Open the generated VCD file.  Every fiber has two 'signals': the
-	// schedule state of the fiber, and a string with logs.  The
-	// perf_mark() and perf_log() should show up there.  Try to measure the
-	// length between the perf_mark()s in the VCD log string and compare it
-	// with the measured time interval.
+	// Open the generated VCD file.  Every fiber has two 'signals': the schedule state of the
+	// fiber, and a string with logs.  The perf_mark() and perf_log() should show up there.  Try
+	// to measure the length between the perf_mark()s in the VCD log string and compare it with
+	// the measured time interval.
 }
 
 void stack()
@@ -108,3 +101,14 @@ int main_fiber(int /*argc*/, char** /*argv*/)
 	zth::fiber(stack);
 	return 0;
 }
+
+// For target that do not have filesystem support, the default configuration is to not generate VCD
+// output, but you can still call zth::perf_start()/zth::perf_stop()/zth::perf_dump() or
+// zth::perf_rum() manually. This allows overriding where to write the dump data to. For example,
+// you can write the dump data to a serial port. Afterwards, use zth::perf_vcd() to convert the dump
+// data to VCD format.
+//
+// The dump buffer size is limited. It may influence the performance too much to dump continuously.
+// So, you may have some trigger, call zth::perf_start(), and only copy the data to the PC once when
+// the buffer is full.  This gives you a accurate VCD snapshot of a specific time window, for
+// debugging purposes.
