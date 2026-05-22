@@ -370,6 +370,39 @@ if(NOT CMAKE_CROSSCOMPILING
 	target_link_options(libzth INTERFACE -rdynamic)
 endif()
 
+if(NOT CMAKE_CROSSCOMPILING
+   OR WIN32
+   OR UNIX
+   OR APPLE
+   OR (NOT CMAKE_SYSTEM_NAME STREQUAL Generic
+       AND NOT ("${ZTH_CONFIG_ENABLE_PERF_EVENT}" STREQUAL "0" OR "${ZTH_CONFIG_ENABLE_PERF_EVENT}"
+								  STREQUAL "OFF"))
+)
+	add_executable(zth-vcd ${ZTH_SOURCE_DIR}/src/zth-vcd.cpp)
+	target_link_libraries(zth-vcd PRIVATE libzth)
+
+	target_compile_options(
+		zth-vcd
+		PRIVATE -Wall
+			-Wextra
+			-Werror
+			-Wdouble-promotion
+			-Wformat=2
+			-Wundef
+			-Wconversion
+			-Wshadow
+			-Wswitch-default
+			-Wswitch-enum
+			-Wfloat-equal
+			-ffunction-sections
+			-fdata-sections
+			-Wlogical-op
+	)
+	target_link_options(zth-vcd PRIVATE -Wl,--gc-sections)
+
+	install(TARGETS zth-vcd DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
+
 if(ZTH_CLANG_TIDY)
 	find_program(
 		CLANG_EXE
