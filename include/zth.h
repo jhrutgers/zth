@@ -47,7 +47,7 @@
 #  ifndef ZTH_INLINE_EMIT
 namespace zth {
 ZTH_INIT_CALL_(checkConfig, checkConfig();)
-static inline checkConfig__init const checkConfig__init_;
+static checkConfig__init const checkConfig__init_;
 } // namespace zth
 #  endif // !ZTH_INLINE_EMIT
 #endif	 // __cplusplus

@@ -18,7 +18,8 @@
 			"defines": [
 				"${env:defines}",
 				"ZTH_HAVE_LIBZMQ",
-				"ZTH_ENABLE_ASAN"
+				"ZTH_ENABLE_ASAN",
+				"ZTH_HAVE_LIBUNWIND"
 			],
 			"compilerPath": "/usr/bin/g++",
 			"cStandard": "c17",

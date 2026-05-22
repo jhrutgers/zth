@@ -6,41 +6,207 @@
 
 #define UNW_LOCAL_ONLY
 
-#include <libzth/macros.h>
+#include <libzth/backtrace.h>
 
-#include <libzth/allocator.h>
-
-#ifdef ZTH_OS_MAC
-#  ifndef _BSD_SOURCE
-#    define _BSD_SOURCE
-#  endif
-#endif
-
-#include <libzth/perf.h>
+#include <libzth/context.h>
 #include <libzth/worker.h>
 
-#if __cplusplus < 201103L
-#  include <inttypes.h>
-#else
-#  include <cinttypes>
-#endif
-
-#include <cstdlib>
-#include <fcntl.h>
-#include <map>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
-#  include <cxxabi.h>
-#  include <dlfcn.h>
-#  include <execinfo.h>
-#endif
-
 #ifdef ZTH_HAVE_LIBUNWIND
-#  include <libunwind.h>
+#  define ZTH_BT_LIBUNWIND
+#elif defined(ZTH_OS_MAC) && defined(ZTH_ARCH_ARM64)
+// macOS on ARM64 does not seem to support backtrace() in combination with ucontext.
+#  define ZTH_BT_NONE
+#elif defined(ZTH_OS_POSIX)
+#  define ZTH_BT_BACKTRACE
+#else
+#  define ZTH_BT_NONE
 #endif
+
+extern "C" void context_entry(zth::Context* context);
+
+
+
+///////////////////////////////////////////////////////////////////
+// Implement with libunwind
+//
+
+#ifdef ZTH_BT_LIBUNWIND
+#  include <libunwind.h>
+
+static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
+{
+	bt.bt().clear();
+
+	unw_context_t uc;
+
+	if(unw_getcontext(&uc))
+		return;
+
+	unw_cursor_t cursor;
+	unw_init_local(&cursor, &uc);
+	size_t depth = 0;
+	for(size_t i = 0; i < skip && unw_step(&cursor) > 0; i++)
+		;
+
+	unw_proc_info_t pip;
+
+	while(unw_step(&cursor) > 0 && depth < maxDepth) {
+		// cppcheck-suppress knownConditionTrueFalse
+		if(depth == 0) {
+			unw_word_t sp = 0;
+			unw_get_reg(&cursor, UNW_REG_SP, &sp);
+		}
+
+		unw_word_t ip = 0;
+		unw_get_reg(&cursor, UNW_REG_IP, &ip);
+		bt.bt().push_back(reinterpret_cast<void*>(ip));
+
+		if(unw_get_proc_info(&cursor, &pip) == 0
+		   && pip.start_ip == reinterpret_cast<unw_word_t>(&context_entry))
+			// Stop here, as we might get segfaults when passing the context_entry
+			// functions.
+			break;
+	}
+
+	bt.truncated(depth == maxDepth);
+}
+#endif // ZTH_BT_LIBUNWIND
+
+
+
+///////////////////////////////////////////////////////////////////
+// Implement with backtrace()
+//
+
+#ifdef ZTH_BT_BACKTRACE
+#  include <execinfo.h>
+
+static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
+{
+	zth::impl::Backtrace::bt_type& b = bt.bt();
+
+	b.resize(maxDepth);
+	b.resize((size_t)backtrace(b.data(), (int)maxDepth));
+	//  NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+	bt.truncated(b.size() == maxDepth);
+
+	size_t dst = 0;
+	size_t src = skip;
+
+	for(; src < b.size(); src++, dst++) {
+		b[dst] = b[src];
+		if(!b[dst] || b[dst] == reinterpret_cast<void*>(&context_entry))
+			break;
+	}
+
+	b.resize(dst);
+}
+#endif // ZTH_BT_BACKTRACE
+
+
+///////////////////////////////////////////////////////////////////
+// No support
+//
+
+#ifdef ZTH_BT_NONE
+static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
+{
+	(void)skip;
+	(void)maxDepth;
+	bt.truncated(true);
+}
+#endif // ZTH_BT_NONE
+
+
+////////////////////////////////////////////////////////////////////
+// Backtrace wrapper
+//
+
+namespace zth {
+namespace impl {
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+Backtrace::Backtrace(size_t skip, size_t maxDepth) noexcept
+	: m_t0(Timestamp::now())
+	, m_fiber()
+	, m_fiberId()
+	, m_truncated()
+{
+	Worker const* worker = Worker::instance();
+	m_fiber = worker ? worker->currentFiber() : nullptr;
+	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+	m_fiberId = m_fiber ? m_fiber->id() : 0;
+
+	try {
+		bt_capture(*this, skip, maxDepth);
+	} catch(...) {
+		bt().clear();
+		truncated(true);
+	}
+
+	m_t1 = Timestamp::now();
+}
+
+void Backtrace::printPartial(size_t start, ssize_t end = -1, int color = -1) const
+{
+	(void)start;
+	(void)end;
+	(void)color;
+}
+
+void Backtrace::print(int color = -1) const
+{
+	(void)color;
+}
+
+void Backtrace::printDelta(Backtrace const& other, int color = -1) const
+{
+	(void)other;
+	(void)color;
+}
+
+} // namespace impl
+} // namespace zth
+
+#if 0 // NOLINT
+
+#  define UNW_LOCAL_ONLY
+
+#  include <libzth/macros.h>
+
+#  include <libzth/allocator.h>
+
+#  ifdef ZTH_OS_MAC
+#    ifndef _BSD_SOURCE
+#      define _BSD_SOURCE
+#    endif
+#  endif
+
+#  include <libzth/perf.h>
+#  include <libzth/worker.h>
+
+#  if __cplusplus < 201103L
+#    include <inttypes.h>
+#  else
+#    include <cinttypes>
+#  endif
+
+#  include <cstdlib>
+#  include <fcntl.h>
+#  include <map>
+#  include <sys/stat.h>
+#  include <sys/types.h>
+#  include <unistd.h>
+
+#  if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
+#    include <cxxabi.h>
+#    include <dlfcn.h>
+#    include <execinfo.h>
+#  endif
+
+#  ifdef ZTH_HAVE_LIBUNWIND
+#    include <libunwind.h>
+#  endif
 
 namespace zth {
 
@@ -58,7 +224,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	// NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_fiberId = m_fiber ? m_fiber->id() : 0;
 
-#ifdef ZTH_HAVE_LIBUNWIND
+#  ifdef ZTH_HAVE_LIBUNWIND
 	unw_context_t uc;
 
 	if(unw_getcontext(&uc))
@@ -91,15 +257,15 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 	}
 
 	m_truncated = depth == maxDepth;
-#elif defined(ZTH_OS_MAC) && defined(ZTH_ARCH_ARM64)
+#  elif defined(ZTH_OS_MAC) && defined(ZTH_ARCH_ARM64)
 	// macOS on ARM64 does not seem to support backtrace() in combination with ucontext.
 	m_truncated = true;
-#elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
+#  elif !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	m_bt.resize(maxDepth);
 	m_bt.resize((size_t)backtrace(m_bt.data(), (int)maxDepth));
 	//  NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
 	m_truncated = m_bt.size() == maxDepth;
-#endif
+#  endif
 
 	m_t1 = Timestamp::now();
 }
@@ -107,7 +273,7 @@ Backtrace::Backtrace(size_t UNUSED_PAR(skip), size_t UNUSED_PAR(maxDepth))
 void Backtrace::printPartial(
 	size_t UNUSED_PAR(start), ssize_t UNUSED_PAR(end), int UNUSED_PAR(color)) const
 {
-#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
+#  if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	if(bt().empty())
 		return;
 	if(end < 0) {
@@ -118,7 +284,7 @@ void Backtrace::printPartial(
 	if(start > (size_t)end)
 		return;
 
-#  ifdef ZTH_OS_MAC
+#    ifdef ZTH_OS_MAC
 	FILE* atosf = nullptr;
 	if(Config::Debug) {
 		char atos[256];
@@ -128,21 +294,21 @@ void Backtrace::printPartial(
 			atosf = popen(atos, "w");
 		}
 	}
-#  endif
+#    endif
 
 	char** syms =
-#  ifdef ZTH_OS_MAC
+#    ifdef ZTH_OS_MAC
 		!atosf ? nullptr :
-#  endif
+#    endif
 		       backtrace_symbols(&bt()[start], (int)((size_t)end - start + 1));
 
 	for(size_t i = start; i <= (size_t)end; i++) {
-#  ifdef ZTH_OS_MAC
+#    ifdef ZTH_OS_MAC
 		if(atosf) {
 			fprintf(atosf, "%p\n", bt()[i]);
 			continue;
 		}
-#  endif
+#    endif
 
 		Dl_info info;
 		if(dladdr(bt()[i], &info)) {
@@ -150,14 +316,14 @@ void Backtrace::printPartial(
 			char* demangled =
 				abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
 			if(status == 0 && demangled) {
-#  ifdef ZTH_OS_MAC
+#    ifdef ZTH_OS_MAC
 				log_color(
 					color, "%s%-3zd 0x%0*" PRIxPTR " %s + %" PRIuPTR "\n",
 					color >= 0 ? ZTH_DBG_PREFIX : "", i, (int)sizeof(void*) * 2,
 					reinterpret_cast<uintptr_t>(bt()[i]), demangled,
 					reinterpret_cast<uintptr_t>(bt()[i])
 						- reinterpret_cast<uintptr_t>(info.dli_saddr));
-#  else
+#    else
 				log_color(
 					color, "%s%-3zd %s(%s+0x%" PRIxPTR ") [0x%" PRIxPTR "]\n",
 					color >= 0 ? ZTH_DBG_PREFIX : "", i, info.dli_fname,
@@ -165,7 +331,7 @@ void Backtrace::printPartial(
 					reinterpret_cast<uintptr_t>(bt()[i])
 						- reinterpret_cast<uintptr_t>(info.dli_saddr),
 					reinterpret_cast<uintptr_t>(bt()[i]));
-#  endif
+#    endif
 
 				free(demangled); // NOLINT
 				continue;
@@ -186,16 +352,16 @@ void Backtrace::printPartial(
 	if(syms)
 		free(syms); // NOLINT
 
-#  ifdef ZTH_OS_MAC
+#    ifdef ZTH_OS_MAC
 	if(atosf)
 		pclose(atosf);
+#    endif
 #  endif
-#endif
 }
 
 void Backtrace::print(int UNUSED_PAR(color)) const
 {
-#if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
+#  if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 	log_color(
 		color, "%sBacktrace of fiber %p #%" PRIu64 ":\n", color >= 0 ? ZTH_DBG_PREFIX : "",
 		m_fiber, m_fiberId);
@@ -206,7 +372,7 @@ void Backtrace::print(int UNUSED_PAR(color)) const
 		log_color(color, "%s<truncated>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
 	else
 		log_color(color, "%s<end>\n", color >= 0 ? ZTH_DBG_PREFIX : "");
-#endif
+#  endif
 }
 
 void Backtrace::printDelta(Backtrace const& other, int color) const
@@ -254,3 +420,5 @@ void Backtrace::printDelta(Backtrace const& other, int color) const
 }
 
 } // namespace zth
+
+#endif

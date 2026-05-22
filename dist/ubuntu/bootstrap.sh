@@ -38,7 +38,7 @@ shift $((OPTIND - 1))
 set -x
 
 sudo apt install -y build-essential cmake doxygen git-core python3 python3-pip python3-venv \
-	clang-format clang clang-tidy cppcheck dpkg-dev fakeroot file libzmq3-dev
+	clang-format clang clang-tidy cppcheck dpkg-dev fakeroot file libzmq3-dev libunwind-dev
 
 [[ ! -z ${CXX:-} ]] || which g++ > /dev/null || sudo apt install -y g++-multilib gdb-multiarch
 [[ ! -z ${CC:-} ]] || which gcc > /dev/null || sudo apt install -y gcc-multilib gdb-multiarch

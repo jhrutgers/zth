@@ -20,10 +20,73 @@ namespace zth {
 
 class Fiber;
 
-UniqueID<Fiber> const& currentFiberID() noexcept;
+namespace impl {
+
+class NoBacktrace {
+	ZTH_CLASS_NEW_DELETE(NoBacktrace)
+public:
+	typedef void* bt_type;
+
+	explicit NoBacktrace(size_t skip = 0, size_t maxDepth = 128) noexcept
+	{
+		(void)skip;
+		(void)maxDepth;
+	}
+
+	Fiber* fiber() const noexcept
+	{
+		return nullptr;
+	}
+
+	uint64_t fiberId() const noexcept
+	{
+		return 0;
+	}
+
+	bt_type bt() const noexcept
+	{
+		return nullptr;
+	}
+
+	bool truncated() const noexcept
+	{
+		return true;
+	}
+
+	Timestamp t0() const noexcept
+	{
+		return Timestamp();
+	}
+
+	Timestamp t1() const noexcept
+	{
+		return Timestamp();
+	}
+
+	void printPartial(size_t start, ssize_t end = -1, int color = -1) const
+	{
+		(void)start;
+		(void)end;
+		(void)color;
+	}
+
+	void print(int color = -1) const
+	{
+		(void)color;
+	}
+
+	void printDelta(Backtrace const& other, int color = -1) const
+	{
+		(void)other;
+		(void)color;
+	}
+};
 
 /*!
  * \brief Save a backtrace.
+ *
+ * Use the type #zth::Backtrace instead.
+ *
  * \ingroup zth_api_cpp_util
  */
 class Backtrace {
@@ -31,7 +94,8 @@ class Backtrace {
 public:
 	typedef vector_type<void*>::type bt_type;
 
-	explicit Backtrace(size_t skip = 0, size_t maxDepth = 128);
+	explicit Backtrace(size_t skip = 0, size_t maxDepth = 128) noexcept;
+
 	Fiber* fiber() const noexcept
 	{
 		return m_fiber;
@@ -47,9 +111,19 @@ public:
 		return m_bt;
 	}
 
+	bt_type& bt() noexcept
+	{
+		return m_bt;
+	}
+
 	bool truncated() const noexcept
 	{
 		return m_truncated;
+	}
+
+	void truncated(bool set) noexcept
+	{
+		m_truncated = set;
 	}
 
 	Timestamp const& t0() const noexcept
@@ -74,6 +148,24 @@ private:
 	bt_type m_bt;
 	bool m_truncated;
 };
+
+template <bool Enable = Config::EnableBacktrace>
+struct PickBacktrace {
+	typedef Backtrace type;
+};
+
+template <>
+struct PickBacktrace<false> {
+	typedef NoBacktrace type;
+};
+
+} // namespace impl
+
+/*!
+ * \brief Save a backtrace.
+ * \ingroup zth_api_cpp_util
+ */
+typedef impl::PickBacktrace<>::type Backtrace;
 
 } // namespace zth
 #endif // __cplusplus
