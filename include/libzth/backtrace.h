@@ -75,7 +75,7 @@ public:
 		(void)color;
 	}
 
-	void printDelta(Backtrace const& other, int color = -1) const
+	void printDelta(NoBacktrace const& other, int color = -1) const
 	{
 		(void)other;
 		(void)color;

@@ -19,7 +19,10 @@
 				"${env:defines}",
 				"ZTH_HAVE_LIBZMQ",
 				"ZTH_ENABLE_ASAN",
-				"ZTH_HAVE_LIBUNWIND"
+				"ZTH_HAVE_LIBUNWIND",
+				"ZTH_HAVE_DL",
+				"ZTH_HAVE_EXECINFO",
+				"ZTH_HAVE_LIBBACKTRACE"
 			],
 			"compilerPath": "/usr/bin/g++",
 			"cStandard": "c17",
