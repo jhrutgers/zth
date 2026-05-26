@@ -211,6 +211,20 @@ if(ZTH_DISABLE_RTTI)
 	target_compile_options(libzth PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 endif()
 
+if(ZTH_CONFIG_ENABLE_BACKTRACE)
+	# Ok.
+elseif("${ZTH_CONFIG_ENABLE_BACKTRACE}" STREQUAL "")
+	if(CMAKE_BUILD_TYPE STREQUAL "Release")
+		# Don't enable.
+	elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+		set(ZTH_CONFIG_ENABLE_BACKTRACE OFF)
+	else()
+		set(ZTH_CONFIG_ENABLE_BACKTRACE ON)
+	endif()
+else()
+	set(ZTH_CONFIG_ENABLE_BACKTRACE OFF)
+endif()
+
 set(ZTH_CONFIG_OVERRIDES
     ZTH_CONFIG_DEBUG
     ZTH_CONFIG_ENABLE_ASSERT
@@ -288,14 +302,6 @@ if(ZTH_HAVE_LIBZMQ)
 	target_link_libraries(libzth PUBLIC libzmq)
 endif()
 
-if(NOT APPLE)
-	check_include_file_cxx("libunwind.h" ZTH_HAVE_LIBUNWIND)
-	if(ZTH_HAVE_LIBUNWIND)
-		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBUNWIND)
-		target_link_libraries(libzth INTERFACE unwind)
-	endif()
-endif()
-
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(libzth PUBLIC -DNDEBUG)
 endif()
@@ -322,13 +328,7 @@ if(UNIX OR MINGW)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-	target_link_libraries(libzth INTERFACE rt)
-endif()
-
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-	if(NOT CMAKE_SYSTEM_NAME STREQUAL Generic)
-		target_link_libraries(libzth INTERFACE dl)
-	endif()
+	target_link_libraries(libzth PUBLIC rt)
 endif()
 
 if(NOT COMMAND target_link_options)
@@ -336,6 +336,38 @@ if(NOT COMMAND target_link_options)
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ARGN}")
 		set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ARGN}")
 	endmacro()
+endif()
+
+if(ZTH_CONFIG_ENABLE_BACKTRACE)
+	if(NOT APPLE)
+		check_include_file_cxx("libunwind.h" ZTH_HAVE_LIBUNWIND)
+		if(ZTH_HAVE_LIBUNWIND)
+			target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBUNWIND)
+			target_link_libraries(libzth PUBLIC unwind)
+		endif()
+	endif()
+
+	check_include_file_cxx("backtrace.h" ZTH_HAVE_LIBBACKTRACE)
+	if(ZTH_HAVE_LIBBACKTRACE)
+		target_link_libraries(libzth PUBLIC backtrace)
+		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBBACKTRACE)
+	endif()
+
+	check_include_file_cxx("execinfo.h" ZTH_HAVE_EXECINFO)
+	if(ZTH_HAVE_EXECINFO)
+		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_EXECINFO)
+	endif()
+
+	check_include_file_cxx("dlfcn.h" ZTH_HAVE_DL)
+	if(ZTH_HAVE_DL)
+		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_DL)
+		target_link_libraries(libzth PUBLIC dl)
+		if(NOT ZTH_HAVE_LIBBACKTRACE AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+			target_link_options(libzth INTERFACE -rdynamic)
+		endif()
+	endif()
+
+	target_compile_options(libzth PUBLIC -fno-omit-frame-pointer -funwind-tables)
 endif()
 
 if(ZTH_ENABLE_ASAN)
@@ -362,14 +394,6 @@ if(NOT ZTH_ENABLE_ASAN
    AND ZTH_ENABLE_VALGRIND
 )
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_VALGRIND)
-endif()
-
-if(NOT CMAKE_CROSSCOMPILING
-   AND CMAKE_BUILD_TYPE STREQUAL "Debug"
-   AND NOT MINGW
-)
-	# Improve backtraces.
-	target_link_options(libzth INTERFACE -rdynamic)
 endif()
 
 if(NOT CMAKE_CROSSCOMPILING
