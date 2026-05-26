@@ -367,6 +367,10 @@ if(ZTH_CONFIG_ENABLE_BACKTRACE)
 		endif()
 	endif()
 
+	if(WIN32)
+		target_link_libraries(libzth PUBLIC dbghelp)
+	endif()
+
 	target_compile_options(libzth PUBLIC -fno-omit-frame-pointer -funwind-tables)
 endif()
 

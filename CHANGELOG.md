@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fiber::cancel()` such that a runner fiber is terminated via throwing `zth::cancelled`.
 - Rust API bindings and examples.
 
+### Changed
+
+- Split `perf_*` data collection from VCD file generation, allowing to extract the dump data for
+  later VCD conversion.  This allows VCD generation from a bare-metal perf dump.
+- Cleanup backtraces.
+
 
 
 ## [2.0.0] - 2026-02-16

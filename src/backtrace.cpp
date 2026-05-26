@@ -11,7 +11,9 @@
 #include <libzth/context.h>
 #include <libzth/worker.h>
 
-#ifdef ZTH_HAVE_LIBUNWIND
+#ifdef ZTH_OS_WINDOWS
+#  define ZTH_BT_WIN32
+#elif defined(ZTH_HAVE_LIBUNWIND)
 #  define ZTH_BT_LIBUNWIND
 #elif defined(ZTH_OS_MAC) && defined(ZTH_ARCH_ARM64)
 // macOS on ARM64 does not seem to support backtrace() in combination with ucontext.
@@ -24,6 +26,8 @@
 
 #ifdef ZTH_BT_NONE
 #  define ZTH_BT_PRINT_NONE
+#elif defined(ZTH_BT_WIN32)
+#  define ZTH_BT_PRINT_WIN32
 #elif defined(ZTH_HAVE_LIBBACKTRACE) && !defined(CLANG_TIDY)
 #  define ZTH_BT_PRINT_LIBBACKTRACE
 #elif defined(ZTH_HAVE_DL)
@@ -34,7 +38,96 @@
 #  define ZTH_BT_PRINT_ADDR
 #endif
 
+#ifndef ZTH_BT_PRINT_NONE
+#  if(defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_POSIX)) \
+	  && (!defined(ZTH_THREADS) || __cplusplus >= 201103L)
+#    define ZTH_BT_ADDR2LINE
+#  endif
+#endif
+
 extern "C" void context_entry(zth::Context* context);
+
+
+
+///////////////////////////////////////////////////////////////////
+// Implement using Windows API
+//
+
+#ifdef ZTH_BT_WIN32
+#  include <windows.h>
+
+#  include <dbghelp.h>
+
+static bool bt_win32_sym_init()
+{
+	static bool sym_init = false;
+	if(sym_init)
+		return true;
+
+	HANDLE process = GetCurrentProcess();
+	SymSetOptions(
+		SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME
+		| SYMOPT_FAIL_CRITICAL_ERRORS);
+
+	if(SymInitialize(process, nullptr, TRUE) == TRUE) {
+		sym_init = true;
+		return true;
+	}
+
+	// DbgHelp was likely initialized elsewhere in-process already.
+	if(GetLastError() == ERROR_INVALID_PARAMETER) {
+		sym_init = true;
+		return true;
+	}
+
+	return false;
+}
+
+static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
+{
+	bt.bt().clear();
+
+	HANDLE process = GetCurrentProcess();
+	if(!bt_win32_sym_init()) {
+		bt.truncated(true);
+		return;
+	}
+
+	CONTEXT context = {};
+	RtlCaptureContext(&context);
+
+	STACKFRAME64 stackFrame = {};
+#  if defined(ZTH_ARCH_X86_64)
+	DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+	stackFrame.AddrPC.Offset = context.Rip;
+	stackFrame.AddrFrame.Offset = context.Rbp;
+	stackFrame.AddrStack.Offset = context.Rsp;
+#  elif defined(ZTH_ARCH_X86)
+	DWORD machineType = IMAGE_FILE_MACHINE_I386;
+	stackFrame.AddrPC.Offset = context.Eip;
+	stackFrame.AddrFrame.Offset = context.Ebp;
+	stackFrame.AddrStack.Offset = context.Esp;
+#  else
+#    error Unsupported architecture.
+#  endif
+	stackFrame.AddrPC.Mode = AddrModeFlat;
+	stackFrame.AddrFrame.Mode = AddrModeFlat;
+	stackFrame.AddrStack.Mode = AddrModeFlat;
+
+	size_t depth = 0;
+	while(depth < maxDepth
+	      && StackWalk64(
+		      machineType, process, GetCurrentThread(), &stackFrame, &context, nullptr,
+		      SymFunctionTableAccess64, SymGetModuleBase64, nullptr)) {
+		if(depth >= skip)
+			bt.bt().push_back((void*)stackFrame.AddrPC.Offset);
+		if(!stackFrame.AddrFrame.Offset
+		   || stackFrame.AddrPC.Offset == reinterpret_cast<DWORD64>(&context_entry))
+			break;
+		depth++;
+	}
+}
+#endif // ZTH_BT_WIN32
 
 
 
@@ -71,7 +164,7 @@ static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
 
 		unw_word_t ip = 0;
 		unw_get_reg(&cursor, UNW_REG_IP, &ip);
-		bt.bt().push_back(reinterpret_cast<void*>(ip));
+		bt.bt().push_back(reinterpret_cast<void*>(ip)); // NOLINT
 
 		if(unw_get_proc_info(&cursor, &pip) == 0
 		   && pip.start_ip == reinterpret_cast<unw_word_t>(&context_entry))
@@ -117,7 +210,7 @@ static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
 
 
 ///////////////////////////////////////////////////////////////////
-// No support
+// No support for capturing backtraces.
 //
 
 #ifdef ZTH_BT_NONE
@@ -235,10 +328,131 @@ static void bt_print_dl(size_t index, void const* addr, int color)
 
 
 ///////////////////////////////////////////////////////////////////
+// Use addr2line to print symbols
+//
+
+#ifdef ZTH_BT_ADDR2LINE
+#  if __cplusplus >= 201103L
+#    include <mutex>
+#  endif
+
+#  define ADDR2LINE_BUF_SIZE 1024
+
+static size_t bt_addr2line_get(FILE* f, char (&buf)[ADDR2LINE_BUF_SIZE])
+{
+	if(fgets(buf, sizeof(buf), f)) {
+		size_t len = strlen(buf);
+		while(len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r'))
+			buf[--len] = '\0';
+		return len;
+	} else {
+		buf[0] = '\0';
+		return 0;
+	}
+}
+
+static void bt_print_addr2line_print(
+	size_t index, void const* addr, char const* file, char const* func, int color)
+{
+	zth::log_color(
+		color, "%s%-3lu [%p] (%s) %s\n", color >= 0 ? ZTH_DBG_PREFIX : "",
+		(unsigned long)index, addr, file && *file ? file : "??",
+		func && *func && strcmp(func, "?") != 0 ? func : "??");
+}
+
+static void bt_print_addr2line_unsafe(size_t index, void const* addr, int color)
+{
+	static std::map<void const*, std::pair<std::string, std::string>> cache;
+	auto it = cache.find(addr);
+	if(it != cache.end()) {
+		bt_print_addr2line_print(
+			index, addr, it->second.first.c_str(), it->second.second.c_str(), color);
+		return;
+	}
+
+	uintptr_t pc = reinterpret_cast<uintptr_t>(addr);
+	uintptr_t base = 0;
+	char module[512] = {};
+
+#  ifdef ZTH_OS_WINDOWS
+	HMODULE hmod = nullptr;
+	if(GetModuleHandleExA(
+		   GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
+			   | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		   reinterpret_cast<LPCSTR>(addr), &hmod)
+	   && hmod) {
+		base = reinterpret_cast<uintptr_t>(hmod);
+		(void)GetModuleFileNameA(hmod, module, (DWORD)sizeof(module));
+	}
+#  elif defined(ZTH_HAVE_DL)
+	Dl_info info = {};
+	if(dladdr(addr, &info) && info.dli_fbase && info.dli_fname) {
+		base = reinterpret_cast<uintptr_t>(info.dli_fbase);
+		(void)snprintf(module, sizeof(module), "%s", info.dli_fname);
+	}
+#  endif
+
+	if(module[0] == '\0') {
+		(void)snprintf(module, sizeof(module), "/proc/%u/exe", (unsigned)getpid());
+	}
+
+	uintptr_t rel = pc;
+	if(base && pc >= base)
+		rel = pc - base;
+
+	char cmd[1024];
+	(void)snprintf(
+		cmd, sizeof(cmd), "addr2line -e \"%s\" -C -f 0x%llx", module,
+		(unsigned long long)rel);
+
+	FILE* f = popen(cmd, "r"); // NOLINT
+	if(!f) {
+		bt_print_dl(index, addr, color);
+		return;
+	}
+
+	static char func[ADDR2LINE_BUF_SIZE];
+	static char file[ADDR2LINE_BUF_SIZE];
+	bt_addr2line_get(f, func);
+	bt_addr2line_get(f, file);
+
+	if((func[0] != '\0' && func[0] != '?') || (file[0] != '\0' && file[0] != '?')) {
+		cache[addr] = std::make_pair(std::string(file), std::string(func));
+		bt_print_addr2line_print(index, addr, file, func, color);
+	} else {
+		bt_print_dl(index, addr, color);
+	}
+
+	pclose(f);
+}
+
+static __attribute__((unused)) void bt_print_addr2line(size_t index, void const* addr, int color)
+{
+	if(zth::Config::EnableThreads) {
+#  if __cplusplus < 201103L
+		// No mutex support.
+		return;
+#  else	 // C++11
+	 // addr2line is not thread-safe, so we need to serialize calls to it.
+		static std::mutex mtx;
+		std::lock_guard<std::mutex> lock(mtx);
+		bt_print_addr2line_unsafe(index, addr, color);
+#  endif // < C++11
+	} else {
+		bt_print_addr2line_unsafe(index, addr, color);
+	}
+}
+#else
+#  define bt_print_addr2line bt_print_dl
+#endif
+
+
+
+///////////////////////////////////////////////////////////////////
 // Print symbols with libbacktrace
 //
 
-#ifdef ZTH_BT_PRINT_LIBBACKTRACE
+#if defined(ZTH_HAVE_LIBBACKTRACE) && !defined(CLANG_TIDY)
 #  include <backtrace.h>
 // NOLINTNEXTLINE(readability-duplicate-include)
 #  include <cxxabi.h>
@@ -273,7 +487,7 @@ bt_print_cb(void* data, uintptr_t pc, const char* filename, int lineno, const ch
 	return 0;
 }
 
-static void bt_print(size_t index, void const* addr, int color)
+static void bt_print_libbacktrace(size_t index, void const* addr, int color)
 {
 	static backtrace_state* const BT_STATE_ERROR = (backtrace_state*)-1;
 
@@ -285,7 +499,7 @@ static void bt_print(size_t index, void const* addr, int color)
 	}
 
 	if(bt_state == BT_STATE_ERROR) {
-		bt_print_symbols(index, addr, color);
+		bt_print_addr2line(index, addr, color);
 		return;
 	}
 
@@ -293,10 +507,61 @@ static void bt_print(size_t index, void const* addr, int color)
 	if(backtrace_pcinfo(
 		   bt_state, reinterpret_cast<uintptr_t>(addr), bt_print_cb, nullptr, &data)
 	   || !data.ok)
-		bt_print_dl(index, addr, color);
+		bt_print_addr2line(index, addr, color);
 }
+#else
+#  define bt_print_libbacktrace bt_print_addr2line
+#endif // ZTH_HAVE_LIBBACKTRACE
+
+#ifdef ZTH_BT_PRINT_LIBBACKTRACE
+#  define bt_print bt_print_libbacktrace
 #endif // ZTH_BT_PRINT_LIBBACKTRACE
 
+
+
+///////////////////////////////////////////////////////////////////
+// Print symbols with Windows API
+//
+
+#ifdef ZTH_BT_PRINT_WIN32
+static void bt_print(size_t index, void const* addr, int color)
+{
+	HANDLE process = GetCurrentProcess();
+	if(!bt_win32_sym_init()) {
+		bt_print_libbacktrace(index, addr, color);
+		return;
+	}
+
+	unsigned char sym_buf[sizeof(SYMBOL_INFO) + MAX_SYM_NAME] = {};
+	SYMBOL_INFO* sym = reinterpret_cast<SYMBOL_INFO*>(sym_buf);
+	sym->SizeOfStruct = sizeof(SYMBOL_INFO);
+	sym->MaxNameLen = MAX_SYM_NAME;
+
+	DWORD64 addr64 = reinterpret_cast<DWORD64>(addr);
+	DWORD64 sym_displacement = 0;
+	if(!SymFromAddr(process, addr64, &sym_displacement, sym)) {
+		bt_print_libbacktrace(index, addr, color);
+		return;
+	}
+
+	IMAGEHLP_LINE64 line = {};
+	line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+	DWORD line_displacement = 0;
+	if(SymGetLineFromAddr64(process, addr64, &line_displacement, &line)) {
+		char const* name = (sym->NameLen > 0 && sym->Name[0]) ? sym->Name : "??";
+		zth::log_color(
+			color, "%s%-3lu [%p] (%s:%lu) %s+0x%llx\n",
+			color >= 0 ? ZTH_DBG_PREFIX : "", (unsigned long)index, addr,
+			line.FileName ? line.FileName : "??", (unsigned long)line.LineNumber, name,
+			(unsigned long long)sym_displacement);
+	} else {
+		char const* name = (sym->NameLen > 0 && sym->Name[0]) ? sym->Name : "??";
+		zth::log_color(
+			color, "%s%-3lu [%p] %s+0x%llx\n", color >= 0 ? ZTH_DBG_PREFIX : "",
+			(unsigned long)index, addr, name, (unsigned long long)sym_displacement);
+	}
+}
+#endif // ZTH_BT_PRINT_WIN32
 
 
 ////////////////////////////////////////////////////////////////////
@@ -378,6 +643,16 @@ void Backtrace::printDelta(Backtrace const& other, int color) const
 	}
 
 	TimeInterval dt = t0() - other.t1();
+
+	if(bt().empty() && other.bt().empty()) {
+		log_color(
+			color,
+			"%sExecution from fiber %p #%s snapshot to %p #%s snapshot took %s\n",
+			color >= 0 ? ZTH_DBG_PREFIX : "", other.m_fiber,
+			str(other.m_fiberId).c_str(), m_fiber, str(m_fiberId).c_str(),
+			dt.str().c_str());
+		return;
+	}
 
 	if(other.fiberId() != fiberId() || other.truncated() || truncated()) {
 		log_color(color, "%sExecuted from:\n", color >= 0 ? ZTH_DBG_PREFIX : "");
