@@ -15,6 +15,10 @@
 #  include <mach/mach_time.h>
 #endif
 
+#ifdef ZTH_OS_WINDOWS
+#  include <windows.h>
+#endif
+
 #ifdef ZTH_OS_MAC
 
 #  ifdef ZTH_CUSTOM_CLOCK_GETTIME
@@ -150,6 +154,65 @@ int clock_nanosleep(
 
 	// NOLINTNEXTLINE
 	return nanosleep(&t, (struct timespec*)remain) ? errno : 0;
+}
+
+static int clock_gettime_res(int e)
+{
+	if(!e)
+		return 0;
+	errno = e;
+	return -1;
+}
+
+// By overriding clock_nanosleep(), we also have to implement clock_getres() and clock_gettime() to
+// prevent the object file to be pulled in from the pthread library anyway.
+extern "C" int clock_getres(clockid_t clock_id, struct timespec* res)
+{
+	if(unlikely(!res))
+		return clock_gettime_res(EINVAL);
+	if(unlikely(clock_id != CLOCK_MONOTONIC))
+		return clock_gettime_res(EINVAL);
+
+	constexpr int POW10_9 = 1000000000;
+	LARGE_INTEGER pf;
+
+	if(QueryPerformanceFrequency(&pf) == 0)
+		return clock_gettime_res(EINVAL);
+
+	res->tv_sec = 0;
+	res->tv_nsec = (int)((POW10_9 + (pf.QuadPart >> 1)) / pf.QuadPart);
+	if(res->tv_nsec < 1)
+		res->tv_nsec = 1;
+
+	return 0;
+}
+
+extern "C" int clock_gettime(int clk_id, struct timespec* tp)
+{
+	if(unlikely(!tp))
+		return clock_gettime_res(EINVAL);
+	if(unlikely(clk_id != CLOCK_MONOTONIC))
+		return clock_gettime_res(EINVAL);
+
+	constexpr int POW10_9 = 1000000000;
+	LARGE_INTEGER pf = {};
+	LARGE_INTEGER pc = {};
+
+	if(QueryPerformanceFrequency(&pf) == 0)
+		return clock_gettime_res(EINVAL);
+
+	if(QueryPerformanceCounter(&pc) == 0)
+		return clock_gettime_res(EINVAL);
+
+	tp->tv_sec = pc.QuadPart / pf.QuadPart;
+	tp->tv_nsec =
+		(int)(((pc.QuadPart % pf.QuadPart) * POW10_9 + (pf.QuadPart >> 1)) / pf.QuadPart);
+	if(tp->tv_nsec >= POW10_9) {
+		tp->tv_sec++;
+		tp->tv_nsec -= POW10_9;
+	}
+
+	return 0;
 }
 #endif
 
