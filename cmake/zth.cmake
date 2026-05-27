@@ -371,7 +371,7 @@ if(ZTH_CONFIG_ENABLE_BACKTRACE)
 		target_link_libraries(libzth PUBLIC dbghelp)
 	endif()
 
-	target_compile_options(libzth PUBLIC -fno-omit-frame-pointer -funwind-tables)
+	target_compile_options(libzth PUBLIC -fno-omit-frame-pointer)
 endif()
 
 if(ZTH_ENABLE_ASAN)
