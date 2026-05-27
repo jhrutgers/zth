@@ -166,7 +166,15 @@ static int clock_gettime_res(int e)
 
 // By overriding clock_nanosleep(), we also have to implement clock_getres() and clock_gettime() to
 // prevent the object file to be pulled in from the pthread library anyway.
-extern "C" int clock_getres(clockid_t clock_id, struct timespec* res)
+#  ifdef WINPTHREADS_TIME_BITS
+#    if WINPTHREADS_TIME_BITS == 32
+int clock_getres32(clockid_t clock_id, struct _timespec32* res)
+#    else  // 64-bit time_t
+int clock_getres64(clockid_t clock_id, struct _timespec64* res)
+#    endif // 64-bit time_t
+#  else
+int clock_getres(clockid_t clock_id, struct timespec* res)
+#  endif
 {
 	if(unlikely(!res))
 		return clock_gettime_res(EINVAL);
@@ -187,7 +195,15 @@ extern "C" int clock_getres(clockid_t clock_id, struct timespec* res)
 	return 0;
 }
 
-extern "C" int clock_gettime(int clk_id, struct timespec* tp)
+#  ifdef WINPTHREADS_TIME_BITS
+#    if WINPTHREADS_TIME_BITS == 32
+int clock_gettime(clockid_t clk_id, struct _timespec32* tp)
+#    else  // 64-bit time_t
+int clock_gettime(clockid_t clk_id, struct _timespec64* tp)
+#    endif // 64-bit time_t
+#  else
+int clock_gettime(clockid_t clk_id, struct timespec* tp)
+#  endif
 {
 	if(unlikely(!tp))
 		return clock_gettime_res(EINVAL);

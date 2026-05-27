@@ -67,6 +67,11 @@ function(add_rust_example name)
 		DESTINATION bin
 		RENAME rust-${output_file}
 	)
+
+	set(ZTH_RUST_${name}_FILE
+	    "${output_clone}"
+	    CACHE INTERNAL ""
+	)
 endfunction()
 
 add_rust_example(hello)
