@@ -230,6 +230,22 @@ int clock_gettime(clockid_t clk_id, struct timespec* tp)
 
 	return 0;
 }
+
+#  ifdef WINPTHREADS_TIME_BITS
+#    if WINPTHREADS_TIME_BITS == 32
+int clock_settime32(clockid_t clock_id, const struct _timespec32* tp)
+#    else  // 64-bit time_t
+int clock_settime64(clockid_t clock_id, const struct _timespec64* tp)
+#    endif // 64-bit time_t
+#  else
+int clock_settime(clockid_t clock_id, const struct timespec* tp)
+#  endif
+{
+	(void)clock_id;
+	(void)tp;
+	errno = ENOSYS;
+	return -1;
+}
 #endif
 
 #ifdef ZTH_OS_BAREMETAL

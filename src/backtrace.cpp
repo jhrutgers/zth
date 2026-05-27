@@ -11,7 +11,9 @@
 #include <libzth/context.h>
 #include <libzth/worker.h>
 
-#ifdef ZTH_OS_WINDOWS
+#if defined(ZTH_CONFIG_ENABLE_BACKTRACE) && !ZTH_CONFIG_ENABLE_BACKTRACE
+#  define ZTH_BT_NONE
+#elif defined(ZTH_OS_WINDOWS)
 #  define ZTH_BT_WIN32
 #elif defined(ZTH_HAVE_LIBUNWIND)
 #  define ZTH_BT_LIBUNWIND
