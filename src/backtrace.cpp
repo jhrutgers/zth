@@ -297,7 +297,7 @@ static __attribute__((unused)) void bt_print_symbols(size_t index, void const* a
 #  include <cxxabi.h>
 #  include <dlfcn.h>
 
-static void bt_print_dl(size_t index, void const* addr, int color)
+static __attribute__((unused)) void bt_print_dl(size_t index, void const* addr, int color)
 {
 	Dl_info info = {};
 	if(!dladdr(addr, &info))
