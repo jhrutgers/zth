@@ -22,7 +22,8 @@
 				"ZTH_HAVE_LIBUNWIND",
 				"ZTH_HAVE_DL",
 				"ZTH_HAVE_EXECINFO",
-				"ZTH_HAVE_LIBBACKTRACE"
+				"ZTH_HAVE_LIBBACKTRACE",
+				"ZTH_CONFIG_ENABLE_BACKTRACE=1"
 			],
 			"compilerPath": "/usr/bin/g++",
 			"cStandard": "c17",
