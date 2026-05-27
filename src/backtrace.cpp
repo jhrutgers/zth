@@ -335,95 +335,552 @@ static void bt_print_dl(size_t index, void const* addr, int color)
 #  if __cplusplus >= 201103L
 #    include <mutex>
 #  endif
+#  if defined(ZTH_OS_POSIX)
+#    include <csignal>
+#    include <sys/types.h>
+#    include <sys/wait.h>
+#    include <unistd.h>
+#  endif
 
 #  define ADDR2LINE_BUF_SIZE 1024
-
-static size_t bt_addr2line_get(FILE* f, char (&buf)[ADDR2LINE_BUF_SIZE])
-{
-	if(fgets(buf, sizeof(buf), f)) {
-		size_t len = strlen(buf);
-		while(len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r'))
-			buf[--len] = '\0';
-		return len;
-	} else {
-		buf[0] = '\0';
-		return 0;
-	}
-}
 
 static void bt_print_addr2line_print(
 	size_t index, void const* addr, char const* file, char const* func, int color)
 {
+	bool has_func = func && *func && func[0] != '?';
 	zth::log_color(
 		color, "%s%-3lu [%p] (%s) %s\n", color >= 0 ? ZTH_DBG_PREFIX : "",
-		(unsigned long)index, addr, file && *file ? file : "??",
-		func && *func && strcmp(func, "?") != 0 ? func : "??");
+		(unsigned long)index, addr, file && *file ? file : "??", has_func ? func : "??");
 }
 
-static void bt_print_addr2line_unsafe(size_t index, void const* addr, int color)
+static bool bt_addr2line_has_symbol(char const* func, char const* file)
 {
-	static std::map<void const*, std::pair<std::string, std::string>> cache;
-	auto it = cache.find(addr);
-	if(it != cache.end()) {
-		bt_print_addr2line_print(
-			index, addr, it->second.first.c_str(), it->second.second.c_str(), color);
-		return;
+	bool has_func = func && *func && func[0] != '?';
+	bool has_file = file && *file && file[0] != '?';
+	return has_func || has_file;
+}
+
+struct bt_addr2line_module_info {
+	uintptr_t base;
+	uintptr_t runtime_base;
+	uintptr_t preferred_base;
+	zth::string module;
+
+	bt_addr2line_module_info()
+		: base(0)
+		, runtime_base(0)
+		, preferred_base(0)
+	{}
+};
+
+struct bt_addr2line_process {
+	bool started;
+#  if defined(ZTH_OS_WINDOWS)
+	HANDLE process;
+	HANDLE stdin_write;
+	HANDLE stdout_read;
+#  else
+	pid_t pid;
+	int stdin_write;
+	int stdout_read;
+#  endif
+
+	bt_addr2line_process()
+		: started(false)
+#  if defined(ZTH_OS_WINDOWS)
+		, process(nullptr)
+		, stdin_write(nullptr)
+		, stdout_read(nullptr)
+#  else
+		, pid(-1)
+		, stdin_write(-1)
+		, stdout_read(-1)
+#  endif
+	{}
+};
+
+typedef zth::map_type<zth::string, bt_addr2line_process>::type bt_addr2line_process_map;
+typedef zth::map_type<uintptr_t, bt_addr2line_module_info>::type bt_addr2line_module_map;
+typedef zth::map_type<void const*, std::pair<zth::string, zth::string>>::type
+	bt_addr2line_symbol_map;
+
+#  if defined(ZTH_OS_WINDOWS)
+static void
+bt_addr2line_close_child_handles(HANDLE out_read, HANDLE out_write, HANDLE in_read, HANDLE in_write)
+{
+	if(out_read)
+		CloseHandle(out_read);
+	if(out_write)
+		CloseHandle(out_write);
+	if(in_read)
+		CloseHandle(in_read);
+	if(in_write)
+		CloseHandle(in_write);
+}
+
+static void bt_addr2line_stop(bt_addr2line_process& proc)
+{
+	if(proc.stdin_write) {
+		CloseHandle(proc.stdin_write);
+		proc.stdin_write = nullptr;
+	}
+	if(proc.stdout_read) {
+		CloseHandle(proc.stdout_read);
+		proc.stdout_read = nullptr;
+	}
+	if(proc.process) {
+		CloseHandle(proc.process);
+		proc.process = nullptr;
+	}
+	proc.started = false;
+}
+
+static bool bt_addr2line_start(char const* module, bt_addr2line_process& proc)
+{
+	char temp_path[MAX_PATH] = {};
+	char const* windows_cwd = "C:\\";
+	DWORD temp_len = GetTempPathA((DWORD)sizeof(temp_path), temp_path);
+	if(temp_len > 0 && temp_len < sizeof(temp_path))
+		windows_cwd = temp_path;
+
+	SECURITY_ATTRIBUTES sa = {};
+	sa.nLength = sizeof(sa);
+	sa.bInheritHandle = TRUE;
+
+	HANDLE child_stdout_read = nullptr;
+	HANDLE child_stdout_write = nullptr;
+	if(!CreatePipe(&child_stdout_read, &child_stdout_write, &sa, 0))
+		return false;
+	if(!SetHandleInformation(child_stdout_read, HANDLE_FLAG_INHERIT, 0)) {
+		bt_addr2line_close_child_handles(
+			child_stdout_read, child_stdout_write, nullptr, nullptr);
+		return false;
 	}
 
-	uintptr_t pc = reinterpret_cast<uintptr_t>(addr);
-	uintptr_t base = 0;
-	char module[512] = {};
+	HANDLE child_stdin_read = nullptr;
+	HANDLE child_stdin_write = nullptr;
+	if(!CreatePipe(&child_stdin_read, &child_stdin_write, &sa, 0)) {
+		bt_addr2line_close_child_handles(
+			child_stdout_read, child_stdout_write, nullptr, nullptr);
+		return false;
+	}
+	if(!SetHandleInformation(child_stdin_write, HANDLE_FLAG_INHERIT, 0)) {
+		bt_addr2line_close_child_handles(
+			child_stdout_read, child_stdout_write, child_stdin_read, child_stdin_write);
+		return false;
+	}
+
+	STARTUPINFOA si = {};
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESTDHANDLES;
+	si.hStdInput = child_stdin_read;
+	si.hStdOutput = child_stdout_write;
+	si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+
+	PROCESS_INFORMATION pi = {};
+	zth::string cmd = zth::string("addr2line -e \"") + module + "\" -C -f";
+	bool started = CreateProcessA(
+			       nullptr, const_cast<char*>(cmd.c_str()), nullptr, nullptr, TRUE,
+			       CREATE_NO_WINDOW, nullptr, windows_cwd, &si, &pi)
+		       == TRUE;
+
+	if(!started) {
+		zth::string shell_cmd = zth::string("cmd.exe /c ") + cmd;
+		started = CreateProcessA(
+				  nullptr, const_cast<char*>(shell_cmd.c_str()), nullptr, nullptr,
+				  TRUE, CREATE_NO_WINDOW, nullptr, windows_cwd, &si, &pi)
+			  == TRUE;
+	}
+
+	if(!started) {
+		bt_addr2line_close_child_handles(
+			child_stdout_read, child_stdout_write, child_stdin_read, child_stdin_write);
+		return false;
+	}
+
+	CloseHandle(pi.hThread);
+	CloseHandle(child_stdout_write);
+	CloseHandle(child_stdin_read);
+
+	proc.process = pi.hProcess;
+	proc.stdin_write = child_stdin_write;
+	proc.stdout_read = child_stdout_read;
+	proc.started = true;
+	return true;
+}
+
+static bool bt_addr2line_write_all(bt_addr2line_process& proc, char const* data, size_t len)
+{
+	DWORD total = 0;
+	while(total < (DWORD)len) {
+		DWORD written = 0;
+		if(!WriteFile(
+			   proc.stdin_write, data + total, (DWORD)(len - total), &written, nullptr)
+		   || written == 0)
+			return false;
+		total += written;
+	}
+	return true;
+}
+
+static bool bt_addr2line_read_line(bt_addr2line_process& proc, char (&buf)[ADDR2LINE_BUF_SIZE])
+{
+	size_t len = 0;
+	while(len + 1 < sizeof(buf)) {
+		char ch = '\0';
+		DWORD read = 0;
+		if(!ReadFile(proc.stdout_read, &ch, 1, &read, nullptr) || read == 0)
+			break;
+		if(ch == '\n' || ch == '\r') {
+			if(len == 0)
+				continue;
+			break;
+		}
+		buf[len++] = ch;
+	}
+	buf[len] = '\0';
+	return len > 0;
+}
+#  else	 // !ZTH_OS_WINDOWS
+static void bt_addr2line_stop(bt_addr2line_process& proc)
+{
+	if(proc.stdin_write >= 0) {
+		close(proc.stdin_write);
+		proc.stdin_write = -1;
+	}
+	if(proc.stdout_read >= 0) {
+		close(proc.stdout_read);
+		proc.stdout_read = -1;
+	}
+	if(proc.pid > 0) {
+		int status = 0;
+		(void)waitpid(proc.pid, &status, WNOHANG);
+		proc.pid = -1;
+	}
+	proc.started = false;
+}
+
+static bool bt_addr2line_start(char const* module, bt_addr2line_process& proc)
+{
+	int in_pipe[2] = {-1, -1};
+	int out_pipe[2] = {-1, -1};
+	if(pipe(in_pipe) || pipe(out_pipe)) {
+		if(in_pipe[0] >= 0)
+			close(in_pipe[0]);
+		if(in_pipe[1] >= 0)
+			close(in_pipe[1]);
+		if(out_pipe[0] >= 0)
+			close(out_pipe[0]);
+		if(out_pipe[1] >= 0)
+			close(out_pipe[1]);
+		return false;
+	}
+
+	pid_t pid = fork();
+	if(pid == 0) {
+		dup2(in_pipe[0], STDIN_FILENO);
+		dup2(out_pipe[1], STDOUT_FILENO);
+		close(in_pipe[0]);
+		close(in_pipe[1]);
+		close(out_pipe[0]);
+		close(out_pipe[1]);
+		execlp("addr2line", "addr2line", "-e", module, "-C", "-f", (char*)nullptr);
+		_exit(127);
+	}
+
+	close(in_pipe[0]);
+	close(out_pipe[1]);
+
+	if(pid < 0) {
+		close(in_pipe[1]);
+		close(out_pipe[0]);
+		return false;
+	}
+
+	proc.pid = pid;
+	proc.stdin_write = in_pipe[1];
+	proc.stdout_read = out_pipe[0];
+	proc.started = true;
+	return true;
+}
+
+static bool bt_addr2line_write_all(bt_addr2line_process& proc, char const* data, size_t len)
+{
+	while(len > 0) {
+		ssize_t written = write(proc.stdin_write, data, len);
+		if(written <= 0)
+			return false;
+		data += written;
+		len -= (size_t)written;
+	}
+	return true;
+}
+
+static bool bt_addr2line_read_line(bt_addr2line_process& proc, char (&buf)[ADDR2LINE_BUF_SIZE])
+{
+	size_t len = 0;
+	while(len + 1 < sizeof(buf)) {
+		char ch = '\0';
+		ssize_t r = read(proc.stdout_read, &ch, 1);
+		if(r <= 0)
+			break;
+		if(ch == '\n' || ch == '\r') {
+			if(len == 0)
+				continue;
+			break;
+		}
+		buf[len++] = ch;
+	}
+	buf[len] = '\0';
+	return len > 0;
+}
+#  endif // !ZTH_OS_WINDOWS
+
+static bool bt_addr2line_query(
+	char const* module, uintptr_t rel, char (&func)[ADDR2LINE_BUF_SIZE],
+	char (&file)[ADDR2LINE_BUF_SIZE])
+{
+	static bt_addr2line_process_map processes;
+	bt_addr2line_process& proc = processes[zth::string(module)];
+
+	if(!proc.started && !bt_addr2line_start(module, proc))
+		return false;
+
+	char query[64];
+	int query_len = snprintf(query, sizeof(query), "0x%llx\n", (unsigned long long)rel);
+	if(query_len <= 0)
+		return false;
+
+	if(!bt_addr2line_write_all(proc, query, (size_t)query_len)
+	   || !bt_addr2line_read_line(proc, func) || !bt_addr2line_read_line(proc, file)) {
+		bt_addr2line_stop(proc);
+		if(!bt_addr2line_start(module, proc))
+			return false;
+		if(!bt_addr2line_write_all(proc, query, (size_t)query_len)
+		   || !bt_addr2line_read_line(proc, func) || !bt_addr2line_read_line(proc, file)) {
+			bt_addr2line_stop(proc);
+			return false;
+		}
+	}
+
+	return true;
+}
 
 #  ifdef ZTH_OS_WINDOWS
+static bool bt_get_preferred_base_from_file(HMODULE hmod, uintptr_t& preferred_base)
+{
+	preferred_base = 0;
+
+	wchar_t module_path[MAX_PATH] = {};
+	if(!GetModuleFileNameW(
+		   hmod, module_path, (DWORD)(sizeof(module_path) / sizeof(module_path[0]))))
+		return false;
+
+	HANDLE file = CreateFileW(
+		module_path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_DELETE, nullptr,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if(file == INVALID_HANDLE_VALUE)
+		return false;
+
+	IMAGE_DOS_HEADER dos = {};
+	DWORD bytes = 0;
+	if(!ReadFile(file, &dos, sizeof(dos), &bytes, nullptr) || bytes != sizeof(dos)
+	   || dos.e_magic != IMAGE_DOS_SIGNATURE) {
+		CloseHandle(file);
+		return false;
+	}
+
+	LARGE_INTEGER li = {};
+	li.QuadPart = dos.e_lfanew;
+	if(!SetFilePointerEx(file, li, nullptr, FILE_BEGIN)) {
+		CloseHandle(file);
+		return false;
+	}
+
+	DWORD signature = 0;
+	if(!ReadFile(file, &signature, sizeof(signature), &bytes, nullptr)
+	   || bytes != sizeof(signature) || signature != IMAGE_NT_SIGNATURE) {
+		CloseHandle(file);
+		return false;
+	}
+
+	IMAGE_FILE_HEADER file_header = {};
+	if(!ReadFile(file, &file_header, sizeof(file_header), &bytes, nullptr)
+	   || bytes != sizeof(file_header)) {
+		CloseHandle(file);
+		return false;
+	}
+
+	LARGE_INTEGER opt_header_pos = {};
+	if(!SetFilePointerEx(file, {}, &opt_header_pos, FILE_CURRENT)) {
+		CloseHandle(file);
+		return false;
+	}
+
+	WORD magic = 0;
+	if(!ReadFile(file, &magic, sizeof(magic), &bytes, nullptr) || bytes != sizeof(magic)) {
+		CloseHandle(file);
+		return false;
+	}
+
+	if(file_header.SizeOfOptionalHeader == 0) {
+		CloseHandle(file);
+		return false;
+	}
+
+	if(magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC) {
+		IMAGE_OPTIONAL_HEADER64 opt = {};
+		if(!SetFilePointerEx(file, opt_header_pos, nullptr, FILE_BEGIN)
+		   || !ReadFile(file, &opt, sizeof(opt), &bytes, nullptr) || bytes != sizeof(opt)) {
+			CloseHandle(file);
+			return false;
+		}
+		preferred_base = (uintptr_t)opt.ImageBase;
+	} else if(magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC) {
+		IMAGE_OPTIONAL_HEADER32 opt = {};
+		if(!SetFilePointerEx(file, opt_header_pos, nullptr, FILE_BEGIN)
+		   || !ReadFile(file, &opt, sizeof(opt), &bytes, nullptr) || bytes != sizeof(opt)) {
+			CloseHandle(file);
+			return false;
+		}
+		preferred_base = (uintptr_t)opt.ImageBase;
+	} else {
+		CloseHandle(file);
+		return false;
+	}
+
+	CloseHandle(file);
+	return preferred_base != 0;
+}
+
+static void bt_addr2line_resolve_module(void const* addr, bt_addr2line_module_info& info)
+{
+	static bt_addr2line_module_map module_cache;
+
+	info.base = 0;
+	info.runtime_base = 0;
+	info.preferred_base = 0;
+	info.module.clear();
+
 	HMODULE hmod = nullptr;
 	if(GetModuleHandleExA(
 		   GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
 			   | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
 		   reinterpret_cast<LPCSTR>(addr), &hmod)
 	   && hmod) {
-		base = reinterpret_cast<uintptr_t>(hmod);
-		(void)GetModuleFileNameA(hmod, module, (DWORD)sizeof(module));
+		uintptr_t runtime_base = reinterpret_cast<uintptr_t>(hmod);
+		bt_addr2line_module_map::iterator it = module_cache.find(runtime_base);
+		if(it != module_cache.end()) {
+			info = it->second;
+			return;
+		}
+
+		info.runtime_base = runtime_base;
+		info.base = runtime_base;
+		(void)bt_get_preferred_base_from_file(hmod, info.preferred_base);
+		if(!info.preferred_base) {
+			if(PIMAGE_NT_HEADERS nt = ImageNtHeader(hmod))
+				info.preferred_base =
+					static_cast<uintptr_t>(nt->OptionalHeader.ImageBase);
+		}
+		info.module.resize(MAX_PATH);
+		info.module.resize(
+			GetModuleFileNameA(hmod, info.module.data(), (DWORD)info.module.size()));
+		module_cache[runtime_base] = info;
+		return;
 	}
-#  elif defined(ZTH_HAVE_DL)
-	Dl_info info = {};
-	if(dladdr(addr, &info) && info.dli_fbase && info.dli_fname) {
-		base = reinterpret_cast<uintptr_t>(info.dli_fbase);
-		(void)snprintf(module, sizeof(module), "%s", info.dli_fname);
+
+	if(info.module.empty()) {
+		info.module.resize(MAX_PATH);
+		info.module.resize(
+			GetModuleFileNameA(nullptr, info.module.data(), (DWORD)info.module.size()));
 	}
-#  endif
+}
 
-	if(module[0] == '\0') {
-		(void)snprintf(module, sizeof(module), "/proc/%u/exe", (unsigned)getpid());
+static uintptr_t bt_addr2line_relocate_pc(uintptr_t pc, bt_addr2line_module_info const& info)
+{
+	if(info.runtime_base && info.preferred_base && pc >= info.runtime_base)
+		return pc - info.runtime_base + info.preferred_base;
+	if(info.base && pc >= info.base)
+		return pc - info.base;
+	return pc;
+}
+#  else // !ZTH_OS_WINDOWS
+static void bt_addr2line_resolve_module(void const* addr, bt_addr2line_module_info& info)
+{
+	info.base = 0;
+	info.runtime_base = 0;
+	info.preferred_base = 0;
+	info.module.clear();
+
+#    ifdef ZTH_HAVE_DL
+	static bt_addr2line_module_map module_cache;
+
+	Dl_info dl_info = {};
+	if(dladdr(addr, &dl_info) && dl_info.dli_fbase && dl_info.dli_fname) {
+		uintptr_t base = reinterpret_cast<uintptr_t>(dl_info.dli_fbase);
+		bt_addr2line_module_map::iterator it = module_cache.find(base);
+		if(it != module_cache.end()) {
+			info = it->second;
+			return;
+		}
+
+		info.base = base;
+		info.module = dl_info.dli_fname;
+		module_cache[base] = info;
+		return;
+	}
+#    endif // ZTH_HAVE_DL
+
+#    ifdef ZTH_OS_POSIX
+	if(info.module.empty())
+		info.module = zth::format("/proc/%u/exe", (unsigned)getpid());
+#    endif // ZTH_OS_POSIX
+}
+
+static uintptr_t bt_addr2line_relocate_pc(uintptr_t pc, bt_addr2line_module_info const& info)
+{
+	if(info.base && pc >= info.base)
+		return pc - info.base;
+	return pc;
+}
+#  endif   // !ZTH_OS_WINDOWS
+
+static void bt_print_addr2line_unsafe(size_t index, void const* addr, int color)
+{
+	static bt_addr2line_symbol_map cache;
+	bt_addr2line_symbol_map::iterator it = cache.find(addr);
+	if(it != cache.end()) {
+		if(bt_addr2line_has_symbol(it->second.second.c_str(), it->second.first.c_str())) {
+			bt_print_addr2line_print(
+				index, addr, it->second.first.c_str(), it->second.second.c_str(),
+				color);
+		} else {
+			bt_print_dl(index, addr, color);
+		}
+		return;
 	}
 
-	uintptr_t rel = pc;
-	if(base && pc >= base)
-		rel = pc - base;
+	uintptr_t pc = reinterpret_cast<uintptr_t>(addr);
+	bt_addr2line_module_info info = {};
+	bt_addr2line_resolve_module(addr, info);
+	uintptr_t rel = bt_addr2line_relocate_pc(pc, info);
 
-	char cmd[1024];
-	(void)snprintf(
-		cmd, sizeof(cmd), "addr2line -e \"%s\" -C -f 0x%llx", module,
-		(unsigned long long)rel);
-
-	FILE* f = popen(cmd, "r"); // NOLINT
-	if(!f) {
+	static char func[ADDR2LINE_BUF_SIZE];
+	static char file[ADDR2LINE_BUF_SIZE];
+	if(!bt_addr2line_query(info.module.c_str(), rel, func, file)) {
+		cache[addr] = std::make_pair(zth::string(), zth::string());
 		bt_print_dl(index, addr, color);
 		return;
 	}
 
-	static char func[ADDR2LINE_BUF_SIZE];
-	static char file[ADDR2LINE_BUF_SIZE];
-	bt_addr2line_get(f, func);
-	bt_addr2line_get(f, file);
-
-	if((func[0] != '\0' && func[0] != '?') || (file[0] != '\0' && file[0] != '?')) {
-		cache[addr] = std::make_pair(std::string(file), std::string(func));
+	if(bt_addr2line_has_symbol(func, file)) {
+		cache[addr] = std::make_pair(zth::string(file), zth::string(func));
 		bt_print_addr2line_print(index, addr, file, func, color);
 	} else {
+		cache[addr] = std::make_pair(zth::string(), zth::string());
 		bt_print_dl(index, addr, color);
 	}
-
-	pclose(f);
 }
 
 static __attribute__((unused)) void bt_print_addr2line(size_t index, void const* addr, int color)
@@ -433,7 +890,8 @@ static __attribute__((unused)) void bt_print_addr2line(size_t index, void const*
 		// No mutex support.
 		return;
 #  else	 // C++11
-	 // addr2line is not thread-safe, so we need to serialize calls to it.
+
+		// addr2line is not thread-safe, so we need to serialize calls to it.
 		static std::mutex mtx;
 		std::lock_guard<std::mutex> lock(mtx);
 		bt_print_addr2line_unsafe(index, addr, color);
