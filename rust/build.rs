@@ -129,6 +129,18 @@ fn use_libzth(
         println!("cargo:rustc-link-search=native={}", install_dir.display());
     }
 
+    if cmake_file_has_option(config_file, "ZTH_ENABLE_ASAN")
+        || cmake_file_linked(config_file, "-fsanitize=address")
+    {
+        println!("cargo:rustc-link-lib=dylib=asan");
+    }
+
+    if cmake_file_has_option(config_file, "ZTH_ENABLE_LSAN")
+        || cmake_file_linked(config_file, "-fsanitize=leak")
+    {
+        println!("cargo:rustc-link-lib=dylib=lsan");
+    }
+
     if cmake_file_has_option(config_file, "ZTH_HAVE_LIBZMQ")
         || cmake_file_linked(config_file, "libzmq")
     {
@@ -157,6 +169,7 @@ fn use_libzth(
     let target = target_env.as_deref();
     if target == Ok("windows") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
+        println!("cargo:rustc-link-lib=dylib=dbghelp");
     }
     if target == Ok("linux") || target == Ok("macos") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
@@ -165,18 +178,6 @@ fn use_libzth(
     }
     if target == Ok("linux") {
         println!("cargo:rustc-link-lib=dylib=rt");
-    }
-
-    if cmake_file_has_option(config_file, "ZTH_ENABLE_ASAN")
-        || cmake_file_linked(config_file, "-fsanitize=address")
-    {
-        println!("cargo:rustc-link-lib=dylib=asan");
-    }
-
-    if cmake_file_has_option(config_file, "ZTH_ENABLE_LSAN")
-        || cmake_file_linked(config_file, "-fsanitize=leak")
-    {
-        println!("cargo:rustc-link-lib=dylib=lsan");
     }
 
     if cmake_file_has_option(config_file, "ZTH_ENABLE_UBSAN")

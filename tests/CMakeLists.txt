@@ -183,34 +183,54 @@ else()
 endif()
 
 macro(zth_test_example EXAMPLE)
-	if(can_run)
-		if(NOT run_wrapper)
-			if(VALGRIND_EXE
-			   AND NOT ZTH_ENABLE_ASAN
-			   AND ZTH_ENABLE_VALGRIND
-			)
-				# TODO: add --error-exitcode=1, but needs some investigation on
-				# current (false?) errors
-				add_test(
-					NAME ${EXAMPLE}-valgrind
-					COMMAND
-						${CMAKE_COMMAND} -E env
-						ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${VALGRIND_EXE}
-						--leak-check=full $<TARGET_FILE:${EXAMPLE}> ${ARGN}
-					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-				)
-			endif()
-		endif()
-
-		add_test(
-			NAME ${EXAMPLE}-run
-			COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0
-				${run_wrapper} $<TARGET_FILE:${EXAMPLE}> ${ARGN}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		)
-
-		zth_config_test(${EXAMPLE}-run)
+	if(NOT can_run)
+		return()
 	endif()
+
+	if(NOT run_wrapper)
+		if(VALGRIND_EXE
+		   AND NOT ZTH_ENABLE_ASAN
+		   AND ZTH_ENABLE_VALGRIND
+		)
+			# TODO: add --error-exitcode=1, but needs some investigation on current
+			# (false?) errors
+			add_test(
+				NAME ${EXAMPLE}-valgrind
+				COMMAND
+					${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0
+					${VALGRIND_EXE} --leak-check=full $<TARGET_FILE:${EXAMPLE}>
+					${ARGN}
+				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+			)
+		endif()
+	endif()
+
+	add_test(
+		NAME ${EXAMPLE}-run
+		COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${run_wrapper}
+			$<TARGET_FILE:${EXAMPLE}> ${ARGN}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	)
+
+	zth_config_test(${EXAMPLE}-run)
+endmacro()
+
+macro(zth_rust_example EXAMPLE)
+	if("${ZTH_RUST_${EXAMPLE}_FILE}" STREQUAL "")
+		return()
+	endif()
+	if(NOT can_run)
+		return()
+	endif()
+
+	add_test(
+		NAME rust-${EXAMPLE}-run
+		COMMAND ${CMAKE_COMMAND} -E env ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 ${run_wrapper}
+			"${ZTH_RUST_${EXAMPLE}_FILE}" ${ARGN}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	)
+
+	zth_config_test(rust-${EXAMPLE}-run)
 endmacro()
 
 zth_test_example(1_helloworld)
@@ -231,3 +251,6 @@ zth_test_example(socks)
 if(ZTH_HAVE_LIBZMQ)
 	zth_test_example(zmq 3)
 endif()
+
+zth_rust_example(hello)
+zth_rust_example(futures)
