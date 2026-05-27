@@ -6,6 +6,8 @@
 
 #include <libzth/util.h>
 
+#include <exception>
+
 /*!
  * \brief Terminate immediately.
  *

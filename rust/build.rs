@@ -47,6 +47,7 @@ fn cmake_file_has_option(file: &Path, option: &str) -> bool {
     };
 
     let cache_prefix = format!("{option}:BOOL=");
+    let flag_prefix = format!("{option}:INTERNAL=");
     let set_prefix = format!("set({option}");
 
     contents.lines().any(|line| {
@@ -58,6 +59,10 @@ fn cmake_file_has_option(file: &Path, option: &str) -> bool {
         let trimmed = line.trim();
 
         if let Some(value) = trimmed.strip_prefix(&cache_prefix) {
+            return value == "ON" || value == "1";
+        }
+
+        if let Some(value) = trimmed.strip_prefix(&flag_prefix) {
             return value == "ON" || value == "1";
         }
 
@@ -152,6 +157,12 @@ fn use_libzth(
         || cmake_file_linked(config_file, "unwind")
     {
         println!("cargo:rustc-link-lib=dylib=unwind");
+    }
+
+    if cmake_file_has_option(config_file, "ZTH_HAVE_LIBBACKTRACE")
+        || cmake_file_linked(config_file, "backtrace")
+    {
+        println!("cargo:rustc-link-lib=dylib=backtrace");
     }
 
     if lib_dir.join("libzth.so").exists() {

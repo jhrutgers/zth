@@ -833,6 +833,7 @@ static void bt_addr2line_resolve_module(void const* addr, bt_addr2line_module_in
 #    endif // ZTH_HAVE_DL
 
 #    ifdef ZTH_OS_POSIX
+	// cppcheck-suppress knownConditionTrueFalse
 	if(info.module.empty())
 		info.module = zth::format("/proc/%u/exe", (unsigned)getpid());
 #    endif // ZTH_OS_POSIX
@@ -1064,7 +1065,7 @@ void Backtrace::printPartial(size_t start, ssize_t end, int color) const
 		return;
 
 	for(size_t i = start; i <= (size_t)end; i++) {
-		void* addr = bt()[i];
+		void const* addr = bt()[i];
 		if(!addr)
 			break;
 

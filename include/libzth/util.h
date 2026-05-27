@@ -1745,6 +1745,9 @@ ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char cons
 #endif
 
 #if !defined(__clang_analyzer__) && GCC_VERSION >= 110000L
+#  ifndef __cplusplus
+#    include <stdlib.h>
+#  endif
 #  define ZTH_ERR_ATTR __attribute__((malloc(free), warn_unused_result))
 #else
 #  define ZTH_ERR_ATTR __attribute__((malloc, warn_unused_result))
