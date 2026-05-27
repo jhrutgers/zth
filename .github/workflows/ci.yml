@@ -31,7 +31,7 @@ jobs:
       CXX: g++-${{matrix.gcc}}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -62,7 +62,7 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -88,7 +88,7 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -113,7 +113,7 @@ jobs:
         zmq: [ON, OFF]
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: dist\win32\bootstrap.cmd -r
       - name: build Debug
@@ -133,7 +133,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           # Workaround for linker bug in XCode 14.0
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -182,7 +182,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
@@ -218,7 +218,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: bootstrap
         run: |
           sudo apt update
