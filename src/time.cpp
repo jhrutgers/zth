@@ -34,8 +34,10 @@ ZTH_INIT_CALL(clock_global_init)
 
 int clock_gettime(int clk_id, struct timespec* res)
 {
-	if(unlikely(!res))
-		return EFAULT;
+	if(unlikely(!res)) {
+		errno = EFAULT;
+		return -1;
+	}
 
 	zth_assert(clk_id == CLOCK_MONOTONIC);
 	uint64_t c = (mach_absolute_time() - mach_clock_start);
@@ -70,9 +72,8 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 		return EINVAL;
 
 	struct timespec now;
-	int res = clock_gettime(CLOCK_MONOTONIC, &now);
-	if(unlikely(res))
-		return res;
+	if(unlikely(clock_gettime(CLOCK_MONOTONIC, &now)))
+		return errno;
 
 	if(now.tv_sec > request->tv_sec)
 		// No need to sleep.
@@ -95,8 +96,8 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 
 	if(remain) {
 		struct timespec intr;
-		if((res = clock_gettime(CLOCK_MONOTONIC, &intr)))
-			return res;
+		if(clock_gettime(CLOCK_MONOTONIC, &intr))
+			return errno;
 
 		remain->tv_sec = intr.tv_sec - now.tv_sec;
 		remain->tv_nsec = intr.tv_nsec - now.tv_nsec;
@@ -107,144 +108,6 @@ int clock_nanosleep(int clk_id, int flags, struct timespec const* request, struc
 	}
 
 	return EINTR;
-}
-#endif
-
-#ifdef ZTH_OS_WINDOWS
-// When using gcc and MinGW, clock_nanosleep() only accepts CLOCK_REALTIME, but we use
-// CLOCK_MONOTONIC.
-#  ifdef WINPTHREADS_TIME_BITS
-// The newer MinGW redirects clock_nanosleep() to either clock_nanosleep32() or
-// clock_nanosleep64().
-#    if WINPTHREADS_TIME_BITS == 32
-int clock_nanosleep32(
-	clockid_t clock_id, int flags, const struct _timespec32* request,
-	struct _timespec32* remain)
-#    else  // 64-bit time_t
-int clock_nanosleep64(
-	clockid_t clock_id, int flags, const struct _timespec64* request,
-	struct _timespec64* remain)
-#    endif // 64-bit time_t
-#  else
-int clock_nanosleep(
-	clockid_t clock_id, int flags, const struct timespec* request, struct timespec* remain)
-#  endif
-{
-	if(unlikely(!request))
-		return EFAULT;
-	if(unlikely(clock_id != CLOCK_MONOTONIC || flags != TIMER_ABSTIME))
-		return EINVAL;
-
-	struct timespec t;
-	int res = clock_gettime(CLOCK_MONOTONIC, &t);
-	if(unlikely(res))
-		return res;
-
-	if(t.tv_sec > request->tv_sec)
-		return 0;
-	if(t.tv_sec == request->tv_sec && t.tv_nsec > request->tv_nsec)
-		return 0;
-
-	t.tv_sec = request->tv_sec - t.tv_sec;
-	t.tv_nsec = request->tv_nsec - t.tv_nsec;
-	if(t.tv_nsec < 0) {
-		t.tv_nsec += 1000000000L;
-		t.tv_sec--;
-	}
-
-	// NOLINTNEXTLINE
-	return nanosleep(&t, (struct timespec*)remain) ? errno : 0;
-}
-
-static int clock_gettime_res(int e)
-{
-	if(!e)
-		return 0;
-	errno = e;
-	return -1;
-}
-
-// By overriding clock_nanosleep(), we also have to implement clock_getres() and clock_gettime() to
-// prevent the object file to be pulled in from the pthread library anyway.
-#  ifdef WINPTHREADS_TIME_BITS
-#    if WINPTHREADS_TIME_BITS == 32
-int clock_getres32(clockid_t clock_id, struct _timespec32* res)
-#    else  // 64-bit time_t
-int clock_getres64(clockid_t clock_id, struct _timespec64* res)
-#    endif // 64-bit time_t
-#  else
-int clock_getres(clockid_t clock_id, struct timespec* res)
-#  endif
-{
-	if(unlikely(!res))
-		return clock_gettime_res(EINVAL);
-	if(unlikely(clock_id != CLOCK_MONOTONIC))
-		return clock_gettime_res(EINVAL);
-
-	constexpr int POW10_9 = 1000000000;
-	LARGE_INTEGER pf;
-
-	if(QueryPerformanceFrequency(&pf) == 0)
-		return clock_gettime_res(EINVAL);
-
-	res->tv_sec = 0;
-	res->tv_nsec = (int)((POW10_9 + (pf.QuadPart >> 1)) / pf.QuadPart);
-	if(res->tv_nsec < 1)
-		res->tv_nsec = 1;
-
-	return 0;
-}
-
-#  ifdef WINPTHREADS_TIME_BITS
-#    if WINPTHREADS_TIME_BITS == 32
-int clock_gettime(clockid_t clk_id, struct _timespec32* tp)
-#    else  // 64-bit time_t
-int clock_gettime(clockid_t clk_id, struct _timespec64* tp)
-#    endif // 64-bit time_t
-#  else
-int clock_gettime(clockid_t clk_id, struct timespec* tp)
-#  endif
-{
-	if(unlikely(!tp))
-		return clock_gettime_res(EINVAL);
-	if(unlikely(clk_id != CLOCK_MONOTONIC))
-		return clock_gettime_res(EINVAL);
-
-	constexpr int POW10_9 = 1000000000;
-	LARGE_INTEGER pf = {};
-	LARGE_INTEGER pc = {};
-
-	if(QueryPerformanceFrequency(&pf) == 0)
-		return clock_gettime_res(EINVAL);
-
-	if(QueryPerformanceCounter(&pc) == 0)
-		return clock_gettime_res(EINVAL);
-
-	tp->tv_sec = pc.QuadPart / pf.QuadPart;
-	tp->tv_nsec =
-		(int)(((pc.QuadPart % pf.QuadPart) * POW10_9 + (pf.QuadPart >> 1)) / pf.QuadPart);
-	if(tp->tv_nsec >= POW10_9) {
-		tp->tv_sec++;
-		tp->tv_nsec -= POW10_9;
-	}
-
-	return 0;
-}
-
-#  ifdef WINPTHREADS_TIME_BITS
-#    if WINPTHREADS_TIME_BITS == 32
-int clock_settime32(clockid_t clock_id, const struct _timespec32* tp)
-#    else  // 64-bit time_t
-int clock_settime64(clockid_t clock_id, const struct _timespec64* tp)
-#    endif // 64-bit time_t
-#  else
-int clock_settime(clockid_t clock_id, const struct timespec* tp)
-#  endif
-{
-	(void)clock_id;
-	(void)tp;
-	errno = ENOSYS;
-	return -1;
 }
 #endif
 
@@ -263,9 +126,8 @@ __attribute__((weak)) int clock_nanosleep(
 
 	while(true) {
 		struct timespec now;
-		int res = clock_gettime(CLOCK_MONOTONIC, &now);
-		if(unlikely(res))
-			return res;
+		if(unlikely(clock_gettime(CLOCK_MONOTONIC, &now)))
+			return errno;
 		else if(now.tv_sec > request->tv_sec)
 			return 0;
 		else if(now.tv_sec == request->tv_sec && now.tv_nsec >= request->tv_nsec)
@@ -274,6 +136,45 @@ __attribute__((weak)) int clock_nanosleep(
 	}
 }
 #endif
+
+namespace zth {
+int realsleep(struct timespec const& ts)
+{
+#ifdef ZTH_OS_WINDOWS
+	while(true) {
+		struct timespec t;
+		if(unlikely(clock_gettime(CLOCK_MONOTONIC, &t)))
+			return errno;
+
+		if(t.tv_sec > ts.tv_sec)
+			return 0;
+		if(t.tv_sec == ts.tv_sec && t.tv_nsec > ts.tv_nsec)
+			return 0;
+
+		t.tv_sec = ts.tv_sec - t.tv_sec;
+		t.tv_nsec = ts.tv_nsec - t.tv_nsec;
+		if(t.tv_nsec < 0) {
+			t.tv_nsec += 1000000000L;
+			t.tv_sec--;
+		}
+
+		// NOLINTNEXTLINE
+		switch(nanosleep(&t, nullptr) ? errno : 0) {
+		case 0:
+			return 0;
+		case EINTR:
+			// Interrupted, try again.
+			continue;
+		default:
+			return errno;
+		}
+	}
+#else
+	return clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &ts, nullptr) ? errno : 0;
+#endif
+}
+
+} // namespace zth
 
 #ifdef ZTH_OS_MAC
 namespace zth {

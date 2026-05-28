@@ -140,10 +140,14 @@ static uint64_t volatile systicks_ns = 1;
 
 int clock_gettime(int clk_id, struct timespec* res)
 {
-	if(!res)
-		return EFAULT;
-	if(clk_id != CLOCK_MONOTONIC)
-		return EINVAL;
+	if(!res) {
+		errno = EFAULT;
+		return -1;
+	}
+	if(clk_id != CLOCK_MONOTONIC) {
+		errno = EINVAL;
+		return -1;
+	}
 
 	unsigned int freq, cntlow, cnthigh;
 	__asm__("mrc p15, 0, %0, c14, c0, 0\n"

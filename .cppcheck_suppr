@@ -2,6 +2,13 @@ missingIncludeSystem:*
 constParameterCallback:*
 missingReturn:*
 
+functionStatic:include/libzth/backtrace.h
+functionStatic:include/libzth/context/arch_arm.h
+functionStatic:include/libzth/context/context.h
+functionStatic:include/libzth/list.h
+functionStatic:include/libzth/util.h
+functionStatic:include/libzth/sync.h
+
 unmatchedSuppression:src/context.cpp
 
 negativeContainerIndex:examples/measure.cpp

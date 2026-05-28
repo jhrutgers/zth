@@ -1075,7 +1075,7 @@ protected:
 	}
 
 private:
-	int read(FILE* f, void* buf, size_t size)
+	static int read(FILE* f, void* buf, size_t size)
 	{
 		size_t res = fread(buf, size, 1, f);
 		if(res == 1)
@@ -1138,12 +1138,12 @@ private:
 		return 0;
 	}
 
-	int parseType(FILE* f, char& x)
+	static int parseType(FILE* f, char& x)
 	{
 		return read(f, &x, sizeof(x));
 	}
 
-	int parseLeb128(FILE* f, uint64_t& x)
+	static int parseLeb128(FILE* f, uint64_t& x)
 	{
 		int i = 0;
 		x = 0;
@@ -1195,7 +1195,7 @@ private:
 		return 0;
 	}
 
-	int parseString(FILE* f, string& s)
+	static int parseString(FILE* f, string& s)
 	{
 		char c = 0;
 		while(true) {
