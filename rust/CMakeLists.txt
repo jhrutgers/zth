@@ -16,6 +16,8 @@ if(ZTH_TESTS AND NOT CMAKE_CROSSCOMPILING)
 		COMMAND "${CARGO_EXE}" test ${ZTH_RUST_PROFILE}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
+
+	zth_config_test(rust)
 endif()
 
 add_custom_target(
