@@ -240,7 +240,7 @@ void Waiter::entry()
 				perf_fiber_state(*fiber(), Fiber::Waiting);
 			}
 
-			clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &end->ts(), nullptr);
+			realsleep(end->ts());
 
 			if(Config::EnablePerfEvent) {
 				perf_fiber_state(*fiber());

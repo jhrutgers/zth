@@ -63,6 +63,16 @@ ZTH_EXPORT inline void now(struct timespec& ts)
 	zth_assert(res == 0);
 }
 
+/*!
+ * \brief Sleeps the current thread.
+ *
+ * This is a wrapper for \c clock_nanosleep(CLOCK_MONOTONIC,TIMER_ABSTIME,...) .  It may be
+ * interrupted early.  For fibers, use #zth::nap() instead.
+ *
+ * \return 0 on success, otherwise an \c errno
+ */
+ZTH_EXPORT int realsleep(struct timespec const& ts);
+
 class Timestamp;
 
 /*!

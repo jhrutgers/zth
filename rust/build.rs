@@ -272,6 +272,9 @@ fn main() {
     println!("cargo:rerun-if-env-changed=ZTH_REPO");
     println!("cargo:rerun-if-env-changed=ZTH_INSTALL");
     println!("cargo:rerun-if-env-changed=ZTH_DIST");
+    // Add linker trace flag to debug why clock.o is pulled in
+    println!("cargo:rustc-link-arg=-Wl,--trace");
+    println!("cargo:rustc-link-arg=-Wl,--verbose");
 
     println!("cargo:rustc-check-cfg=cfg(zth_hosted_std)");
     let hosted_std = env::var_os("CARGO_FEATURE_STD").is_some()

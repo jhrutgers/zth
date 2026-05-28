@@ -118,10 +118,14 @@ int _write(int file, char* ptr, int len)
 
 int clock_gettime(int clk_id, struct timespec* res)
 {
-	if(!res)
-		return EFAULT;
-	if(clk_id != CLOCK_MONOTONIC)
-		return EINVAL;
+	if(!res) {
+		errno = EFAULT;
+		return -1;
+	}
+	if(clk_id != CLOCK_MONOTONIC) {
+		errno = EINVAL;
+		return -1;
+	}
 
 	// The CYCCNT register is not implemented in Qemu's Cortex-M3.  We use
 	// TIM2 for at. It runs at 1 GHz. At this speed, it would overflow
