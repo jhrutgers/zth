@@ -29,3 +29,4 @@ zth_macros = { version = "@ZTH_VERSION@" }
 
 [build-dependencies]
 regex = "1"
+pkg-config = "0.3"

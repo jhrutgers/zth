@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+use pkg_config;
 use regex::Regex;
 use std::env;
 use std::fs;
@@ -151,7 +152,11 @@ fn use_libzth(
     if cmake_file_has_option(config_file, "ZTH_HAVE_LIBZMQ")
         || cmake_file_linked(config_file, "libzmq")
     {
-        println!("cargo:rustc-link-lib=dylib=zmq");
+        // Use pkg-config to find zmq and emit correct link flags.
+        if pkg_config::Config::new().probe("libzmq").is_err() {
+            // Fallback if pkg-config is not available
+            println!("cargo:rustc-link-lib=dylib=zmq");
+        }
     }
 
     if cmake_file_has_option(config_file, "ZTH_HAVE_LIBUNWIND")

@@ -227,7 +227,7 @@ if(CARGO_EXE)
 		message(STATUS "Found Cargo, but the platform is unsupported. "
 			       "Disabled Rust support. Set ZTH_RUST_TARGET to override."
 		)
-	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12 AND ZTH_ENABLE_ASAN)
+	elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.4 AND ZTH_ENABLE_ASAN)
 		message(STATUS "Rust support is not compatible with ASan on older compilers. "
 			       "Disabled Rust support. Set ZTH_ENABLE_ASAN=OFF to override."
 		)
