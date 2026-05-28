@@ -5,6 +5,30 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(not(zth_hosted_std), no_std)]
 
+// --- Sanitizer initialization ---
+#[doc(hidden)]
+#[cfg(any(zth_sanitize_address, zth_sanitize_leak, zth_sanitize_undefined))]
+#[used]
+#[cfg_attr(
+    any(target_os = "linux", target_os = "macos"),
+    link_section = ".init_array"
+)]
+#[cfg_attr(target_os = "windows", link_section = ".CRT$XCU")]
+static ZTH_SANITIZER_INIT: extern "C" fn() = {
+    extern "C" fn sanitizer_init() {
+        unsafe {
+            #[cfg(zth_sanitize_address)]
+            {
+                extern "C" {
+                    fn __asan_init();
+                }
+                __asan_init();
+            }
+        }
+    }
+    sanitizer_init
+};
+
 extern crate alloc;
 
 mod allocator;

@@ -231,7 +231,7 @@ static void bt_capture(zth::impl::Backtrace& bt, size_t skip, size_t maxDepth)
 //
 
 #ifdef ZTH_BT_PRINT_NONE
-static void bt_print(size_t index, void const* addr, int color)
+static __attribute__((unused)) void bt_print(size_t index, void const* addr, int color)
 {
 	(void)index;
 	(void)addr;
@@ -262,7 +262,7 @@ static __attribute__((unused)) void bt_print_addr(size_t index, void const* addr
 // Print basic symbols
 //
 
-#ifdef ZTH_HAVE_EXECINFO
+#if defined(ZTH_HAVE_EXECINFO) && !defined(ZTH_BT_PRINT_NONE)
 // NOLINTNEXTLINE(readability-duplicate-include)
 #  include <execinfo.h>
 
@@ -295,7 +295,7 @@ static __attribute__((unused)) void bt_print_symbols(size_t index, void const* a
 // Print symbols with dladdr()
 //
 
-#ifdef ZTH_HAVE_DL
+#if defined(ZTH_HAVE_DL) && !defined(ZTH_BT_PRINT_NONE)
 #  include <cxxabi.h>
 #  include <dlfcn.h>
 
@@ -333,7 +333,7 @@ static __attribute__((unused)) void bt_print_dl(size_t index, void const* addr, 
 // Use addr2line to print symbols
 //
 
-#ifdef ZTH_BT_ADDR2LINE
+#if defined(ZTH_BT_ADDR2LINE) && !defined(ZTH_BT_PRINT_NONE)
 #  if __cplusplus >= 201103L
 #    include <mutex>
 #  endif
@@ -903,9 +903,9 @@ static __attribute__((unused)) void bt_print_addr2line(size_t index, void const*
 		bt_print_addr2line_unsafe(index, addr, color);
 	}
 }
-#else
+#else // !ZTH_BT_ADDR2LINE
 #  define bt_print_addr2line bt_print_dl
-#endif
+#endif // ZTH_BT_ADDR2LINE
 
 
 
@@ -913,7 +913,7 @@ static __attribute__((unused)) void bt_print_addr2line(size_t index, void const*
 // Print symbols with libbacktrace
 //
 
-#if defined(ZTH_HAVE_LIBBACKTRACE) && !defined(CLANG_TIDY)
+#if defined(ZTH_HAVE_LIBBACKTRACE) && !defined(CLANG_TIDY) && !defined(ZTH_BT_PRINT_NONE)
 #  include <backtrace.h>
 // NOLINTNEXTLINE(readability-duplicate-include)
 #  include <cxxabi.h>
@@ -970,9 +970,9 @@ static void bt_print_libbacktrace(size_t index, void const* addr, int color)
 	   || !data.ok)
 		bt_print_addr2line(index, addr, color);
 }
-#else
+#else // !ZTH_HAVE_LIBBACKTRACE
 #  define bt_print_libbacktrace bt_print_addr2line
-#endif // ZTH_HAVE_LIBBACKTRACE
+#endif // !ZTH_HAVE_LIBBACKTRACE
 
 #ifdef ZTH_BT_PRINT_LIBBACKTRACE
 #  define bt_print bt_print_libbacktrace

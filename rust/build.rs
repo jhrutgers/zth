@@ -129,16 +129,23 @@ fn use_libzth(
         println!("cargo:rustc-link-search=native={}", install_dir.display());
     }
 
+    println!("cargo:rustc-check-cfg=cfg(zth_sanitize_address)");
+    println!("cargo:rustc-check-cfg=cfg(zth_sanitize_leak)");
+    println!("cargo:rustc-check-cfg=cfg(zth_sanitize_undefined)");
+
+    let mut sanitizer_features = Vec::new();
     if cmake_file_has_option(config_file, "ZTH_ENABLE_ASAN")
         || cmake_file_linked(config_file, "-fsanitize=address")
     {
         println!("cargo:rustc-link-lib=dylib=asan");
+        sanitizer_features.push("zth_sanitize_address");
     }
 
     if cmake_file_has_option(config_file, "ZTH_ENABLE_LSAN")
         || cmake_file_linked(config_file, "-fsanitize=leak")
     {
         println!("cargo:rustc-link-lib=dylib=lsan");
+        sanitizer_features.push("zth_sanitize_leak");
     }
 
     if cmake_file_has_option(config_file, "ZTH_HAVE_LIBZMQ")
@@ -184,6 +191,12 @@ fn use_libzth(
         || cmake_file_linked(config_file, "-fsanitize=undefined")
     {
         println!("cargo:rustc-link-lib=dylib=ubsan");
+        sanitizer_features.push("zth_sanitize_undefined");
+    }
+
+    // Emit sanitizer features for conditional compilation
+    for feature in sanitizer_features {
+        println!("cargo:rustc-cfg={}", feature);
     }
 
     println!(
