@@ -432,7 +432,12 @@ if(NOT CMAKE_CROSSCOMPILING
 			-fdata-sections
 			-Wlogical-op
 	)
-	target_link_options(zth-vcd PRIVATE -Wl,--gc-sections)
+
+	if(APPLE)
+		target_link_options(zth-vcd PRIVATE -Wl,-dead_strip)
+	else()
+		target_link_options(zth-vcd PRIVATE -Wl,--gc-sections)
+	endif()
 
 	install(TARGETS zth-vcd DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
