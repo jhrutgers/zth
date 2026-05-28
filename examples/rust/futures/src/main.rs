@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![no_main]
+#![cfg_attr(not(feature = "std"), no_main)]
 
 #[cfg(not(feature = "std"))]
 use core::result::Result;

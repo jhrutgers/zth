@@ -121,6 +121,7 @@ add_library(
 set(ZTH_HEADERS
     ${ZTH_SOURCE_DIR}/include/libzth/allocator.h
     ${ZTH_SOURCE_DIR}/include/libzth/async.h
+    ${ZTH_SOURCE_DIR}/include/libzth/backtrace.h
     ${ZTH_SOURCE_DIR}/include/libzth/config.h
     ${ZTH_SOURCE_DIR}/include/libzth/context.h
     ${ZTH_SOURCE_DIR}/include/libzth/coro.h
@@ -347,10 +348,13 @@ if(ZTH_CONFIG_ENABLE_BACKTRACE)
 		endif()
 	endif()
 
-	check_include_file_cxx("backtrace.h" ZTH_HAVE_LIBBACKTRACE)
-	if(ZTH_HAVE_LIBBACKTRACE)
-		target_link_libraries(libzth PUBLIC backtrace)
-		target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBBACKTRACE)
+	# GCC 9 seems to have issues with libbacktrace.
+	if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+		check_include_file_cxx("backtrace.h" ZTH_HAVE_LIBBACKTRACE)
+		if(ZTH_HAVE_LIBBACKTRACE)
+			target_link_libraries(libzth PUBLIC backtrace)
+			target_compile_definitions(libzth PRIVATE -DZTH_HAVE_LIBBACKTRACE)
+		endif()
 	endif()
 
 	check_include_file_cxx("execinfo.h" ZTH_HAVE_EXECINFO)

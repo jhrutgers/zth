@@ -61,7 +61,7 @@ pub fn main(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let expanded = quote! {
         #user_fn
 
-        #[cfg(zth_hosted_std)]
+        #[cfg(any(feature = "std", not(target_os = "none")))]
         fn main() {
             let __zth_rc: ::core::ffi::c_int = zth::__private::to_exit_code(#user_name());
             if __zth_rc != 0 {
@@ -69,7 +69,7 @@ pub fn main(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         }
 
-        #[cfg(not(zth_hosted_std))]
+        #[cfg(any(not(feature = "std"), target_os = "none"))]
         #[unsafe(no_mangle)]
         pub extern "C" fn main(
             _argc: ::core::ffi::c_int,
@@ -98,6 +98,16 @@ pub fn main_fiber(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let expanded = quote! {
         #user_fn
 
+        #[cfg(any(feature = "std", not(target_os = "none")))]
+        fn main() {
+            ::std::process::exit(
+            match zth::run(#user_name, ()) {
+                ::core::result::Result::Ok(value) => zth::__private::to_exit_code(value),
+                ::core::result::Result::Err(error) => 2,
+            })
+        }
+
+        #[cfg(any(not(feature = "std"), target_os = "none"))]
         #[unsafe(no_mangle)]
         pub extern "C" fn main(
             _argc: ::core::ffi::c_int,
