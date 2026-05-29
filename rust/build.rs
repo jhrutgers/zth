@@ -118,7 +118,8 @@ fn use_libzth(
     );
     assert!(
         lib_dir.join("libzth.a").exists()
-            || bin_dir.join("libzth.so").exists()
+            || lib_dir.join("libzth.so").exists()
+            || lib_dir.join("libzth.dylib").exists()
             || bin_dir.join("libzth.dll").exists(),
         "libzth not found; set ZTH_REPO or ZTH_INSTALL"
     );
@@ -177,11 +178,11 @@ fn use_libzth(
     let target_env = env::var("CARGO_CFG_TARGET_OS");
     let target = target_env.as_deref();
 
-    if target == Ok("linux") && bin_dir.join("libzth.so").exists() {
+    if target == Ok("linux") && lib_dir.join("libzth.so").exists() {
         println!("cargo:rustc-link-lib=dylib=zth");
     } else if target == Ok("windows") && bin_dir.join("libzth.dll").exists() {
         println!("cargo:rustc-link-lib=dylib=zth");
-    } else if target == Ok("macos") && bin_dir.join("libzth.dylib").exists() {
+    } else if target == Ok("macos") && lib_dir.join("libzth.dylib").exists() {
         println!("cargo:rustc-link-lib=dylib=zth");
     } else {
         println!("cargo:rustc-link-lib=static=zth");

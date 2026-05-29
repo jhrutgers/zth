@@ -64,6 +64,13 @@ else()
 	set(ZTH_DEV_OPTION OFF)
 endif()
 
+if(APPLE)
+	set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+elseif(UNIX)
+	set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+endif()
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 option(ZTH_DRAFT_API "Enable draft API" ON)
 if(ZTH_DRAFT_API)
 	message(STATUS "Enable Zth draft API")
@@ -96,7 +103,7 @@ option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" ${ZTH_SAN_DEFAULT})
 
-set(ZTH_SHARED_LIB_DEFAULT ON)
+set(ZTH_SHARED_LIB_DEFAULT OFF)
 
 if(APPLE)
 	list(APPEND CMAKE_INSTALL_RPATH "@executable_path/../lib")
@@ -242,7 +249,10 @@ if(CARGO_EXE AND RUSTC_EXE)
 	endif()
 endif()
 
-if(APPLE AND RUSTC_EXE AND ZTH_ENABLE_RUST)
+if(APPLE
+   AND RUSTC_EXE
+   AND ZTH_ENABLE_RUST
+)
 	execute_process(
 		COMMAND "${RUSTC_EXE}" --target ${ZTH_RUST_TARGET} --print=deployment-target
 		OUTPUT_VARIABLE RUSTC_DEPLOYMENT_TARGET
@@ -250,8 +260,14 @@ if(APPLE AND RUSTC_EXE AND ZTH_ENABLE_RUST)
 	)
 
 	if(RUSTC_DEPLOYMENT_TARGET)
-		message(STATUS "Targeting macOS ${RUSTC_DEPLOYMENT_TARGET} to match Rust's deployment target")
-		set(CMAKE_OSX_DEPLOYMENT_TARGET "${RUSTC_DEPLOYMENT_TARGET}" CACHE STRING "" FORCE)
+		message(
+			STATUS
+				"Targeting macOS ${RUSTC_DEPLOYMENT_TARGET} to match Rust's deployment target"
+		)
+		set(CMAKE_OSX_DEPLOYMENT_TARGET
+		    "${RUSTC_DEPLOYMENT_TARGET}"
+		    CACHE STRING "" FORCE
+		)
 	endif()
 
 	set(ZTH_SHARED_LIB_DEFAULT ON)
@@ -274,7 +290,9 @@ if(CMAKE_HOST_WIN32)
 	file(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}\\${CMAKE_INSTALL_BINDIR}" _install_dir)
 	set(ENV_PATH "${_bin_dir};${_install_dir};$ENV{PATH}")
 else()
-	set(ENV_PATH "${CMAKE_BINARY_DIR}:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
+	set(ENV_PATH
+	    "${CMAKE_BINARY_DIR}:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}"
+	)
 endif()
 string(REPLACE "\\" "\\\\" ENV_PATH_ESC_BS "${ENV_PATH}")
 string(REPLACE ";" "\\;" ENV_PATH_ESC_BSSC "${ENV_PATH_ESC_BS}")
@@ -290,7 +308,10 @@ function(zth_repo_config file)
 
 	string(REGEX REPLACE "\.in$" "" file_out "${file_in}")
 
-	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file_out}" OR "${file_in}" IS_NEWER_THAN "${file_out}")
+	if(ZTH_REGEN_REPO_CONFIG
+	   OR NOT EXISTS "${file_out}"
+	   OR "${file_in}" IS_NEWER_THAN "${file_out}"
+	)
 		configure_file("${file_in}" "${file_out}" @ONLY ${ARGN})
 	endif()
 endfunction()
@@ -520,7 +541,6 @@ if(CPPCHECK_CMD)
 			# --xml
 			-I include src examples tests -i tests/test_fsm14.cpp -i
 			tests/test_fsm17.cpp -i examples/rust/build -i examples/hello-project/build
-			-i examples/hello-project/build-installed
 			# --check-config
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		VERBATIM

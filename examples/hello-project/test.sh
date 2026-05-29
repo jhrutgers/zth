@@ -12,13 +12,13 @@ pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)" > /dev
 
 # Cleanup for testing
 [[ ! -e build ]] || rm -rf build
-[[ ! -e install ]] || rm -rf install
-[[ ! -e build-installed ]] || rm -rf build-installed
-
-# This builds the project using the repository.
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX="$(realpath ../install)" -DCMAKE_BUILD_TYPE=Debug
+
+# This builds the project using the repository.
+mkdir build-static
+cd build-static
+cmake ../.. -DCMAKE_INSTALL_PREFIX="$(realpath ../install-static)" -DCMAKE_BUILD_TYPE=Debug -DZTH_SHARED_LIB=OFF
 cmake --build .
 ./hello-project
 
@@ -27,8 +27,29 @@ cmake --build . --target install
 cd ..
 
 # This builds the project using the installed version.
-mkdir build-installed
-cd build-installed
-cmake .. -DCMAKE_PREFIX_PATH="$(realpath ../install)" -DCMAKE_BUILD_TYPE=Debug
+mkdir build-static-installed
+cd build-static-installed
+cmake ../.. -DCMAKE_PREFIX_PATH="$(realpath ../install-static)" -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ./hello-project
+
+# Again, but now with a shared library.
+cd ..
+mkdir build-shared
+cd build-shared
+cmake ../.. -DCMAKE_INSTALL_PREFIX="$(realpath ../install-shared)" -DCMAKE_BUILD_TYPE=Debug -DZTH_SHARED_LIB=ON
+cmake --build .
+./hello-project
+
+# Install the project to a temporary location.
+cmake --build . --target install
+cd ..
+
+# This builds the project using the installed version.
+mkdir build-shared-installed
+cd build-shared-installed
+cmake ../.. -DCMAKE_PREFIX_PATH="$(realpath ../install-shared)" -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+./hello-project
+
+popd > /dev/null
