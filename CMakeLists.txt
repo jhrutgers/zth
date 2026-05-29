@@ -264,9 +264,8 @@ if(APPLE
 			STATUS
 				"Targeting macOS ${RUSTC_DEPLOYMENT_TARGET} to match Rust's deployment target"
 		)
-		set(CMAKE_OSX_DEPLOYMENT_TARGET
-		    "${RUSTC_DEPLOYMENT_TARGET}"
-		    CACHE STRING "" FORCE
+		string(REPLACE "MACOSX_DEPLOYMENT_TARGET=" "" CMAKE_OSX_DEPLOYMENT_TARGET
+			       "${RUSTC_DEPLOYMENT_TARGET}"
 		)
 	endif()
 
