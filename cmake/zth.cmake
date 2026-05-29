@@ -16,6 +16,7 @@ include(CMakePackageConfigHelpers)
 # Options
 #
 
+option(ZTH_SHARED_LIB "Build libzth as a shared library" OFF)
 option(ZTH_DRAFT_API "Enable draft API" OFF)
 option(ZTH_HAVE_LIBZMQ "Use libzmq" OFF)
 option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" OFF)
@@ -92,8 +93,16 @@ endif()
 
 include(${ZTH_SOURCE_DIR}/version/CMakeLists.txt)
 
+set(ZTH_ADD_LIBRARY_OPTIONS)
+if(ZTH_SHARED_LIB)
+	list(APPEND ZTH_ADD_LIBRARY_OPTIONS SHARED)
+else()
+	list(APPEND ZTH_ADD_LIBRARY_OPTIONS STATIC)
+endif()
+
 add_library(
 	libzth
+	${ZTH_ADD_LIBRARY_OPTIONS}
 	${ZTH_SOURCE_DIR}/src/assert.cpp
 	${ZTH_SOURCE_DIR}/src/backtrace.cpp
 	${ZTH_SOURCE_DIR}/src/config.cpp
@@ -268,9 +277,15 @@ if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 	target_compile_options(libzth PUBLIC -foptimize-sibling-calls)
 endif()
 
+if(APPLE AND ZTH_SHARED_LIB)
+	target_link_libraries(libzth PRIVATE -static-libstdc++)
+	set_target_properties(libzth PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
 install(
 	TARGETS libzth
 	EXPORT libzth
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
 )
@@ -311,6 +326,12 @@ if(ZTH_THREADS)
 	target_compile_options(libzth PUBLIC -DZTH_THREADS=1)
 else()
 	target_compile_options(libzth PUBLIC -DZTH_THREADS=0)
+endif()
+
+if(ZTH_SHARED_LIB)
+	target_compile_definitions(libzth PUBLIC -DZTH_SHARED_LIB=1)
+else()
+	target_compile_definitions(libzth PUBLIC -DZTH_SHARED_LIB=0)
 endif()
 
 if(UNIX OR MINGW)

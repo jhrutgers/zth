@@ -70,6 +70,9 @@ char const* banner() noexcept
 #ifdef ZTH_OS_BAREMETAL
 		" baremetal"
 #endif
+#if ZTH_SHARED_LIB
+		" shared"
+#endif
 #ifdef _NEWLIB_VERSION
 		" newlib" _NEWLIB_VERSION
 #endif

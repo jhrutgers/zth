@@ -100,6 +100,7 @@ fn default_dist_target() -> &'static str {
 fn use_libzth(
     include_dir: &PathBuf,
     lib_dir: &PathBuf,
+    bin_dir: &PathBuf,
     install_dir: &PathBuf,
     config_file: &PathBuf,
 ) {
@@ -116,7 +117,9 @@ fn use_libzth(
         "libzth not found; set ZTH_REPO or ZTH_INSTALL"
     );
     assert!(
-        lib_dir.join("libzth.a").exists() || lib_dir.join("libzth.so").exists(),
+        lib_dir.join("libzth.a").exists()
+            || bin_dir.join("libzth.so").exists()
+            || bin_dir.join("libzth.dll").exists(),
         "libzth not found; set ZTH_REPO or ZTH_INSTALL"
     );
     assert!(
@@ -171,14 +174,19 @@ fn use_libzth(
         println!("cargo:rustc-link-lib=dylib=backtrace");
     }
 
-    if lib_dir.join("libzth.so").exists() {
+    let target_env = env::var("CARGO_CFG_TARGET_OS");
+    let target = target_env.as_deref();
+
+    if target == Ok("linux") && bin_dir.join("libzth.so").exists() {
+        println!("cargo:rustc-link-lib=dylib=zth");
+    } else if target == Ok("windows") && bin_dir.join("libzth.dll").exists() {
+        println!("cargo:rustc-link-lib=dylib=zth");
+    } else if target == Ok("macos") && bin_dir.join("libzth.dylib").exists() {
         println!("cargo:rustc-link-lib=dylib=zth");
     } else {
         println!("cargo:rustc-link-lib=static=zth");
     }
 
-    let target_env = env::var("CARGO_CFG_TARGET_OS");
-    let target = target_env.as_deref();
     if target == Ok("windows") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
         println!("cargo:rustc-link-lib=dylib=dbghelp");
@@ -224,9 +232,10 @@ fn build_from_repo(repo: &PathBuf, dist: &str) {
     let include_dir = repo.join("include");
     let build_dir = repo.join("dist").join(dist).join("build");
     let lib_dir = build_dir.clone();
+    let bin_dir = build_dir.clone();
     let install_dir = build_dir.join("deploy/lib");
     let config_file = build_dir.join("CMakeCache.txt");
-    use_libzth(&include_dir, &lib_dir, &install_dir, &config_file);
+    use_libzth(&include_dir, &lib_dir, &bin_dir, &install_dir, &config_file);
 }
 
 fn build_from_install(prefix: &PathBuf) {
@@ -252,7 +261,9 @@ fn build_from_install(prefix: &PathBuf) {
     ])
     .unwrap_or_else(|| prefix.join("libzth/cmake/libzth.cmake"));
 
-    use_libzth(&include_dir, &lib_dir, &lib_dir, &config_file);
+    let bin_dir = prefix.join("bin");
+
+    use_libzth(&include_dir, &lib_dir, &bin_dir, &lib_dir, &config_file);
 }
 
 fn main() {
