@@ -73,13 +73,13 @@ function(add_rust_example name)
 		RENAME rust-${output_file}
 	)
 
-	if(UNIX)
-		set(chrpath
-		    "chrpath -r \"$ORIGIN/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
-		)
-	elseif(APPLE)
+	if(APPLE)
 		set(chrpath
 		    "install_name_tool -rpath \"${CMAKE_BINARY_DIR}\" \"@executable_path/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
+		)
+	elseif(UNIX)
+		set(chrpath
+		    "chrpath -r \"$ORIGIN/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
 		)
 	endif()
 
