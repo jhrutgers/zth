@@ -96,6 +96,8 @@ option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_LSAN "Build with Leak Sanitizer" ${ZTH_SAN_DEFAULT})
 option(ZTH_ENABLE_UBSAN "Build with Undefined Behavior Sanitizer" ${ZTH_SAN_DEFAULT})
 
+set(ZTH_SHARED_LIB_DEFAULT ON)
+
 if(APPLE)
 	list(APPEND CMAKE_INSTALL_RPATH "@executable_path/../lib")
 	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.8")
@@ -174,9 +176,6 @@ option(ZTH_CONFIG_ENABLE_DEBUG_PRINT "Enable debug print statements"
        ${ZTH_CONFIG_ENABLE_DEBUG_PRINT_DEFAULT}
 )
 
-list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
-include(zth)
-
 if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11)
    OR NOT "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES
 )
@@ -193,6 +192,12 @@ find_program(
 	CARGO_EXE
 	NAMES "cargo"
 	DOC "Path to cargo executable"
+)
+
+find_program(
+	RUSTC_EXE
+	NAMES "rustc"
+	DOC "Path to rustc executable"
 )
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
@@ -222,7 +227,7 @@ else()
 endif()
 
 set(ZTH_ENABLE_RUST OFF)
-if(CARGO_EXE)
+if(CARGO_EXE AND RUSTC_EXE)
 	if("${ZTH_RUST_TARGET}" STREQUAL "")
 		message(STATUS "Found Cargo, but the platform is unsupported. "
 			       "Disabled Rust support. Set ZTH_RUST_TARGET to override."
@@ -237,6 +242,26 @@ if(CARGO_EXE)
 	endif()
 endif()
 
+if(APPLE AND RUSTC_EXE AND ZTH_ENABLE_RUST)
+	execute_process(
+		COMMAND "${RUSTC_EXE}" --target ${ZTH_RUST_TARGET} --print=deployment-target
+		OUTPUT_VARIABLE RUSTC_DEPLOYMENT_TARGET
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+	)
+
+	if(RUSTC_DEPLOYMENT_TARGET)
+		message(STATUS "Targeting macOS ${RUSTC_DEPLOYMENT_TARGET} to match Rust's deployment target")
+		set(CMAKE_OSX_DEPLOYMENT_TARGET "${RUSTC_DEPLOYMENT_TARGET}" CACHE STRING "" FORCE)
+	endif()
+
+	set(ZTH_SHARED_LIB_DEFAULT ON)
+endif()
+
+option(ZTH_SHARED_LIB "Build libzth as a shared library" ${ZTH_SHARED_LIB_DEFAULT})
+
+list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
+include(zth)
+
 option(ZTH_REGEN_REPO_CONFIG "Regenerate configuration files in source tree" OFF)
 if(NOT EXISTS ${ZTH_SOURCE_DIR}/.vscode/launch.json OR ZTH_REGEN_REPO_CONFIG)
 	set(ZTH_GEN_LAUNCH_JSON ON)
@@ -245,10 +270,11 @@ else()
 endif()
 
 if(CMAKE_HOST_WIN32)
-	file(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}\\${CMAKE_INSTALL_BINDIR}" ENV_PATH)
-	set(ENV_PATH "${ENV_PATH};$ENV{PATH}")
+	file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}" _bin_dir)
+	file(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}\\${CMAKE_INSTALL_BINDIR}" _install_dir)
+	set(ENV_PATH "${_bin_dir};${_install_dir};$ENV{PATH}")
 else()
-	set(ENV_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
+	set(ENV_PATH "${CMAKE_BINARY_DIR}:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
 endif()
 string(REPLACE "\\" "\\\\" ENV_PATH_ESC_BS "${ENV_PATH}")
 string(REPLACE ";" "\\;" ENV_PATH_ESC_BSSC "${ENV_PATH_ESC_BS}")
