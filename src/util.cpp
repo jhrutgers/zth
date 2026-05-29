@@ -240,9 +240,9 @@ void log_colorv(int color, char const* fmt, va_list args)
 		Config::EnableColorLog && log_supports_ansi_colors() && isatty(fileno(stdout));
 
 	if(do_color && color > 0)
-		log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
+		zth::log("\x1b[%d%sm", (color % 8) + 30, color >= 8 ? ";1" : "");
 
-	logv(fmt, args);
+	zth::logv(fmt, args);
 
 	if(do_color && color > 0)
 		zth::log("\x1b[0m");

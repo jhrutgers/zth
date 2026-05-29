@@ -68,6 +68,7 @@ pub use util::banner;
 pub use util::err;
 pub use util::log;
 pub use util::log_color;
+pub use util::print;
 pub use worker::may_yield;
 pub use worker::out_of_work;
 pub use worker::sleep;

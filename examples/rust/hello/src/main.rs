@@ -9,7 +9,7 @@
 use core::result::Result;
 
 fn hello_fiber() {
-    zth::log!("Hello from a fiber!\n");
+    zth::print!("Hello from a fiber!\n");
 }
 
 #[zth::main_fiber]

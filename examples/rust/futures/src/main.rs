@@ -14,7 +14,7 @@ use alloc::rc::Rc;
 
 fn producer_fiber() -> usize {
     zth::may_yield();
-    zth::log!("Producer: computing value...\n");
+    zth::print!("Producer: computing value...\n");
     // Force a yield here.
     zth::out_of_work();
 
@@ -22,12 +22,12 @@ fn producer_fiber() -> usize {
 }
 
 fn consumer_fiber(producer_value: Rc<zth::Future<usize>>) {
-    zth::log!("Consumer: waiting for producer...\n");
+    zth::print!("Consumer: waiting for producer...\n");
     producer_value
         .wait()
         .expect("failed waiting for producer value");
     let value = producer_value.get().expect("failed reading producer value");
-    zth::log!("Consumer: got value {}\n", value);
+    zth::print!("Consumer: got value {}\n", value);
 }
 
 #[zth::main_fiber]
