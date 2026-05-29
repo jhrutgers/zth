@@ -40,7 +40,13 @@
 	"rust-analyzer.cargo.features": [
 		@ZTH_RUST_ANALYZER_FEATURES@
 	],
+	"rust-analyzer.cargo.extraEnv": {
+		"PATH": "@ENV_PATH_ESC_BS@"
+	},
 	"rust-analyzer.cargo.buildScripts.enable": true,
+	"rust-analyzer.runnables.extraEnv": {
+		"PATH": "@ENV_PATH_ESC_BS@"
+	},
 	"rust-analyzer.linkedProjects": [
 		"${workspaceFolder}/rust/Cargo.toml",
 		"${workspaceFolder}/examples/rust/Cargo.toml"
