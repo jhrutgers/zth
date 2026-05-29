@@ -21,11 +21,17 @@ if(ZTH_TESTS AND NOT CMAKE_CROSSCOMPILING)
 	zth_config_test(rust)
 endif()
 
+set(cargo_features)
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Generic")
+	list(APPEND cargo_features --no-default-features --features bare-metal)
+endif()
+
 add_custom_target(
 	rust-package ALL
 	COMMAND "${CARGO_EXE}" package -q --manifest-path
 		"${CMAKE_CURRENT_SOURCE_DIR}/macros/Cargo.toml" --no-verify
 	COMMAND "${CARGO_EXE}" package -q --manifest-path "${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml"
+		${cargo_features}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	DEPENDS libzth
 	COMMENT "Generate Rust crate package output files"
@@ -37,7 +43,7 @@ add_custom_target(
 	COMMAND
 		"${CARGO_EXE}" doc --no-deps --manifest-path
 		"${CMAKE_CURRENT_SOURCE_DIR}/Cargo.toml" --target-dir
-		"${CMAKE_CURRENT_BINARY_DIR}/rustdoc"
+		"${CMAKE_CURRENT_BINARY_DIR}/rustdoc" ${cargo_features}
 	COMMAND
 		"${CMAKE_COMMAND}" -E copy_directory
 		"${CMAKE_CURRENT_BINARY_DIR}/rustdoc/${ZTH_RUST_TARGET}/doc"
