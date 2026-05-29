@@ -3,9 +3,14 @@
 # SPDX-License-Identifier: MPL-2.0
 
 set(ZTH_RUST_LINK_FLAGS "")
-separate_arguments(_zth_rust_link_args NATIVE_COMMAND "${CMAKE_EXE_LINKER_FLAGS}")
+separate_arguments(
+	_zth_rust_link_args NATIVE_COMMAND
+	"${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${CMAKE_BINARY_DIR}"
+)
 foreach(arg IN LISTS _zth_rust_link_args)
-	string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
+	if(NOT "${arg}" STREQUAL "")
+		string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
+	endif()
 endforeach()
 
 zth_repo_config(.cargo/config.toml)
@@ -67,6 +72,32 @@ function(add_rust_example name)
 		DESTINATION bin
 		RENAME rust-${output_file}
 	)
+
+	if(UNIX)
+		set(chrpath
+		    "chrpath -r \"$ORIGIN/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
+		)
+	elseif(APPLE)
+		set(chrpath
+		    "install_name_tool -rpath \"${CMAKE_BINARY_DIR}\" \"@executable_path/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
+		)
+	endif()
+
+	if(NOT "${chrpath}" STREQUAL "")
+		install(
+			CODE "
+		execute_process(
+			COMMAND ${chrpath}
+			RESULT_VARIABLE _chrpath_result
+			OUTPUT_VARIABLE _chrpath_out
+			ERROR_VARIABLE _chrpath_err
+		)
+		if(NOT _chrpath_result EQUAL 0)
+			message(WARNING \"chrpath failed: \${_chrpath_err}\")
+		endif()
+	"
+		)
+	endif()
 
 	set(ZTH_RUST_${name}_FILE
 	    "${output_clone}"
