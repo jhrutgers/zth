@@ -244,6 +244,15 @@ else()
 	set(ZTH_GEN_LAUNCH_JSON OFF)
 endif()
 
+if(CMAKE_HOST_WIN32)
+	file(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}\\${CMAKE_INSTALL_BINDIR}" ENV_PATH)
+	set(ENV_PATH "${ENV_PATH};$ENV{PATH}")
+else()
+	set(ENV_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
+endif()
+string(REPLACE "\\" "\\\\" ENV_PATH_ESC_BS "${ENV_PATH}")
+string(REPLACE ";" "\\;" ENV_PATH_ESC_BSSC "${ENV_PATH_ESC_BS}")
+
 function(zth_repo_config file)
 	file(TO_NATIVE_PATH "${file}.in" file_in)
 
@@ -255,7 +264,7 @@ function(zth_repo_config file)
 
 	string(REGEX REPLACE "\.in$" "" file_out "${file_in}")
 
-	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file_out}")
+	if(ZTH_REGEN_REPO_CONFIG OR NOT EXISTS "${file_out}" OR "${file_in}" IS_NEWER_THAN "${file_out}")
 		configure_file("${file_in}" "${file_out}" @ONLY ${ARGN})
 	endif()
 endfunction()
@@ -278,8 +287,7 @@ function(add_launch_json_run name command cwd)
 			\"type\": \"f5anything\",
 			\"request\": \"launch\",
 			\"name\": \"${name}\",
-			\"command\": \"${command}\",
-		"
+			\"command\": \"${command}\""
 	)
 endfunction()
 
@@ -312,8 +320,7 @@ function(add_launch_json_qemu name binary cwd)
 			\"miDebuggerServerAddress\": \"localhost:1234\",
 			\"MIMode\": \"gdb\",
 			\"stopAtEntry\": true,
-			\"preLaunchTask\": \"run-${ZTH_DIST}\"
-		"
+			\"preLaunchTask\": \"run-${ZTH_DIST}\""
 	)
 endfunction()
 
