@@ -12,6 +12,8 @@ use core::ffi::{c_char, c_int};
 use core::ffi::{c_void, CStr};
 use core::fmt::Arguments;
 use core::ptr;
+#[cfg(zth_hosted_std)]
+use log as log_crate;
 
 mod ffi {
     use core::ffi::{c_char, c_int, c_void};
@@ -34,8 +36,8 @@ extern "C" {
 
 /// Logging backend symbol consumed by Zth.
 ///
-/// This function overrides Zth's weak `zth_logv` symbol and routes formatted
-/// output through Rust's standard output buffering.
+/// This function overrides Zth's weak `zth_logv` symbol and routes formatted output through Rust's
+/// logging infrastructure at debug level.
 ///
 /// # Safety
 ///
@@ -45,27 +47,40 @@ extern "C" {
 #[cfg(zth_hosted_std)]
 #[no_mangle]
 pub unsafe extern "C" fn zth_logv(fmt: *const c_char, arg: *mut c_void) {
-    if fmt.is_null() {
-        return;
+    use alloc::string::String;
+    use alloc::string::ToString;
+    use core::cell::RefCell;
+
+    thread_local! {
+        static LOGV_BUF: RefCell<String> = RefCell::new(String::new());
     }
 
-    if arg.is_null() {
-        let line = CStr::from_ptr(fmt).to_string_lossy();
-        print!("{}", line);
+    if fmt.is_null() {
         return;
     }
 
     let mut rendered: *mut c_char = ptr::null_mut();
     let rc = vasprintf(&mut rendered, fmt, arg);
-    if rc >= 0 && !rendered.is_null() {
-        let line = CStr::from_ptr(rendered).to_string_lossy();
-        print!("{}", line);
+    let msg = if rc >= 0 && !rendered.is_null() {
+        let line = CStr::from_ptr(rendered).to_string_lossy().to_string();
         free(rendered.cast::<c_void>());
-        return;
-    }
+        line
+    } else {
+        CStr::from_ptr(fmt).to_string_lossy().to_string()
+    };
 
-    let line = CStr::from_ptr(fmt).to_string_lossy();
-    print!("{}", line);
+    LOGV_BUF.with(|buf| {
+        let mut buf = buf.borrow_mut();
+        buf.push_str(&msg);
+        while let Some(pos) = buf.find('\n') {
+            let mut line = buf[..pos].to_string();
+            if line.starts_with('\x1b') {
+                line.push_str("\x1b[0m");
+            }
+            log_crate::debug!(target: "zth", "{}", line);
+            buf.drain(..=pos); // Remove up to and including the newline
+        }
+    });
 }
 
 /// Returns a banner line with version and configuration information.
@@ -118,6 +133,30 @@ pub fn log_color(color: u8, args: Arguments<'_>) {
     }
 }
 
+/// Prints a pre-formatted message.
+///
+/// Use this function with [`format_args!`] or call the `print!` macro for ergonomic
+/// `format!`-style invocation.
+#[cfg(zth_hosted_std)]
+pub fn print(args: Arguments<'_>) {
+    use std::io::Write;
+    let mut stdout = std::io::stdout().lock();
+    let _ = stdout.write_fmt(args);
+}
+
+#[cfg(not(zth_hosted_std))]
+pub fn print(args: Arguments<'_>) {
+    log(args);
+}
+
+/// Prints through Zth with `format!`-style syntax.
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) => {
+        $crate::print(::core::format_args!($($arg)*))
+    };
+}
+
 /// Logs through Zth with `format!`-style syntax.
 #[macro_export]
 macro_rules! log_color {
@@ -151,7 +190,7 @@ pub fn err(e: i32) -> String {
         }
 
         let s = CStr::from_ptr(p).to_string_lossy().into_owned();
-        free(p.cast());
+        free(p.cast::<c_void>());
 
         s
     }

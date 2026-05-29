@@ -19,13 +19,15 @@ exclude = ["Cargo.toml.in", "CMakeLists.txt", ".cargo", "macros/Cargo.toml.in"]
 
 [features]
 default = ["std"]
-std = []
+std = ["dep:log", "dep:env_logger"]
 bare-metal = ["panic-handler", "allocator"]
 panic-handler = []
 allocator = []
 
 [dependencies]
 zth_macros = { version = "@ZTH_VERSION@" }
+log = { version = "0.4", optional = true }
+env_logger = { version = "0.11", optional = true }
 
 [build-dependencies]
 regex = "1"

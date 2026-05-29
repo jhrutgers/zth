@@ -10,6 +10,8 @@ use core::ffi::c_void;
 use core::option::Option::Some;
 use core::result::Result;
 use core::result::Result::{Err, Ok};
+#[cfg(zth_hosted_std)]
+use env_logger;
 
 use crate::r#async::{fiber_start_trampoline, FiberStart};
 use crate::Error;
@@ -27,6 +29,11 @@ mod ffi {
     }
 }
 
+pub(crate) fn log_init() {
+    #[cfg(zth_hosted_std)]
+    let _ = env_logger::try_init();
+}
+
 /// Start a worker and execute the given entry point as main fiber.
 pub fn run<F, Args>(entry: F, args: Args) -> Result<F::Output, Error>
 where
@@ -36,6 +43,8 @@ where
     assert!(!Fiber::current().is_valid());
 
     unsafe { ffi::zth_preinit() }
+
+    log_init();
 
     let f = Rc::new(Future::<F::Output>::new()?);
 
