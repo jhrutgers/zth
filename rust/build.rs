@@ -183,13 +183,16 @@ fn use_libzth(
         println!("cargo:rustc-link-lib=dylib=stdc++");
         println!("cargo:rustc-link-lib=dylib=dbghelp");
     }
-    if target == Ok("linux") || target == Ok("macos") {
+    if target == Ok("linux") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
         println!("cargo:rustc-link-lib=dylib=pthread");
         println!("cargo:rustc-link-lib=dylib=dl");
-    }
-    if target == Ok("linux") {
         println!("cargo:rustc-link-lib=dylib=rt");
-        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
+    if target == Ok("macos") {
+        println!("cargo:rustc-link-lib=dylib=c++");
+        println!("cargo:rustc-link-lib=dylib=pthread");
+        println!("cargo:rustc-link-lib=dylib=dl");
     }
 
     if cmake_file_has_option(config_file, "ZTH_ENABLE_UBSAN")
