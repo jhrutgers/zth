@@ -12,3 +12,7 @@ ZTH_DIST = "@ZTH_DIST@"
 
 [patch.crates-io]
 zth_macros = { path = "macros" }
+
+[target.@ZTH_RUST_TARGET@]
+linker = "@CMAKE_CXX_COMPILER@"
+rustflags = [@ZTH_RUST_FLAGS@]

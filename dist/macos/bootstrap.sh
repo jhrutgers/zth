@@ -63,9 +63,7 @@ install_or_upgrade jq
 
 if [[ $do_rust -eq 1 ]]; then
 	if ! command -v rustup >/dev/null 2>&1; then
-		install_or_upgrade rustup-init
-		rustup-init -y
-		export PATH="$HOME/.cargo/bin:$PATH"
+		install_or_upgrade rustup
 	fi
 	rustup component add clippy rustfmt rust-src rust-docs
 fi

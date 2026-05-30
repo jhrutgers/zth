@@ -253,26 +253,34 @@ if(APPLE
    AND RUSTC_EXE
    AND ZTH_ENABLE_RUST
 )
-	execute_process(
-		COMMAND "${RUSTC_EXE}" --target ${ZTH_RUST_TARGET} --print=deployment-target
-		OUTPUT_VARIABLE RUSTC_DEPLOYMENT_TARGET
+	execute_process(COMMAND sw_vers -productVersion
+		OUTPUT_VARIABLE CMAKE_OSX_DEPLOYMENT_TARGET
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 	)
-
-	if(RUSTC_DEPLOYMENT_TARGET)
-		message(
-			STATUS
-				"Targeting macOS ${RUSTC_DEPLOYMENT_TARGET} to match Rust's deployment target"
-		)
-		string(REPLACE "MACOSX_DEPLOYMENT_TARGET=" "" CMAKE_OSX_DEPLOYMENT_TARGET
-			       "${RUSTC_DEPLOYMENT_TARGET}"
-		)
-	endif()
 
 	set(ZTH_SHARED_LIB_DEFAULT ON)
 endif()
 
+if(ZTH_ENABLE_RUST)
+	set(ZTH_RUST_LINK_FLAGS "")
+	separate_arguments(
+		_zth_rust_link_args NATIVE_COMMAND
+		"${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${CMAKE_BINARY_DIR}"
+	)
+	foreach(arg IN LISTS _zth_rust_link_args)
+		if(NOT "${arg}" STREQUAL "")
+			string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
+		endif()
+	endforeach()
+	if(APPLE AND NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
+		string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}\",")
+	endif()
+endif()
+
 option(ZTH_SHARED_LIB "Build libzth as a shared library" ${ZTH_SHARED_LIB_DEFAULT})
+if(ZTH_SHARED_LIB)
+	message(STATUS "Building libzth as shared library")
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${ZTH_SOURCE_DIR}/cmake)
 include(zth)
