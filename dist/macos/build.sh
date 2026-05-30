@@ -24,6 +24,13 @@ pushd "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null; pwd -P)" > /dev
 [[ ! -z ${CC:-} ]]  || CC="$(ls -1 "$(brew --prefix gcc)"/bin/gcc-[0-9]* | sort -n | tail -n 1)"
 [[ ! -z ${CXX:-} ]] || CXX="$(ls -1 "$(brew --prefix gcc)"/bin/g++-[0-9]* | sort -n | tail -n 1)"
 
+if ! command -v cargo >/dev/null 2>&1; then
+	rustup_dir="$(brew --prefix rustup)/bin"
+	if [[ -x ${rustup_dir}/cargo ]]; then
+		export PATH="${rustup_dir}:${PATH}"
+	fi
+fi
+
 cmake_opts=
 . ../common/build.sh
 

@@ -2,17 +2,6 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-set(ZTH_RUST_LINK_FLAGS "")
-separate_arguments(
-	_zth_rust_link_args NATIVE_COMMAND
-	"${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${CMAKE_BINARY_DIR}"
-)
-foreach(arg IN LISTS _zth_rust_link_args)
-	if(NOT "${arg}" STREQUAL "")
-		string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
-	endif()
-endforeach()
-
 zth_repo_config(.cargo/config.toml)
 
 if(NOT ZTH_ENABLE_RUST)
