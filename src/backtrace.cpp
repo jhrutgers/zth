@@ -41,7 +41,7 @@
 #endif
 
 #ifndef ZTH_BT_PRINT_NONE
-#  if(defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_POSIX)) \
+#  if (defined(ZTH_OS_WINDOWS) || defined(ZTH_OS_POSIX)) \
 	  && (!defined(ZTH_THREADS) || __cplusplus >= 201103L)
 #    define ZTH_BT_ADDR2LINE
 #  endif
@@ -59,6 +59,9 @@ extern "C" void context_entry(zth::Context* context);
 #  include <windows.h>
 
 #  include <dbghelp.h>
+#  if defined(__GNUG__)
+#    include <cxxabi.h>
+#  endif
 
 static bool bt_win32_sym_init()
 {
@@ -439,6 +442,20 @@ static void bt_addr2line_stop(bt_addr2line_process& proc)
 
 static bool bt_addr2line_start(char const* module, bt_addr2line_process& proc)
 {
+	// Under Windows debuggers we can hit noisy first-chance faults inside CreateProcessA even
+	// when execution would continue. Skip external addr2line in that case and let callers fall
+	// back to the native symbol resolution paths.
+	if(IsDebuggerPresent()) {
+		char env[16] = {};
+		DWORD n = GetEnvironmentVariableA(
+			"ZTH_ADDR2LINE_UNDER_DEBUG", env, (DWORD)sizeof(env));
+		bool allow = n > 0
+			     && (env[0] == '1' || env[0] == 'y' || env[0] == 'Y' || env[0] == 't'
+				 || env[0] == 'T' || env[0] == 'o' || env[0] == 'O');
+		if(!allow)
+			return false;
+	}
+
 	char temp_path[MAX_PATH] = {};
 	char const* windows_cwd = "C:\\";
 	DWORD temp_len = GetTempPathA((DWORD)sizeof(temp_path), temp_path);
@@ -477,20 +494,26 @@ static bool bt_addr2line_start(char const* module, bt_addr2line_process& proc)
 	si.dwFlags = STARTF_USESTDHANDLES;
 	si.hStdInput = child_stdin_read;
 	si.hStdOutput = child_stdout_write;
-	si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+	// Use the known inheritable pipe handle instead of inheriting stderr from the parent.
+	// This avoids debugger-only first-chance faults when parent stderr is unavailable.
+	si.hStdError = child_stdout_write;
 
 	PROCESS_INFORMATION pi = {};
 	zth::string cmd = zth::string("addr2line -e \"") + module + "\" -C -f";
+	zth::string cmd_line = cmd;
+	cmd_line.push_back('\0');
 	bool started = CreateProcessA(
-			       nullptr, const_cast<char*>(cmd.c_str()), nullptr, nullptr, TRUE,
-			       CREATE_NO_WINDOW, nullptr, windows_cwd, &si, &pi)
+			       nullptr, &cmd_line[0], nullptr, nullptr, TRUE, CREATE_NO_WINDOW,
+			       nullptr, windows_cwd, &si, &pi)
 		       == TRUE;
 
 	if(!started) {
 		zth::string shell_cmd = zth::string("cmd.exe /c ") + cmd;
+		zth::string shell_cmd_line = shell_cmd;
+		shell_cmd_line.push_back('\0');
 		started = CreateProcessA(
-				  nullptr, const_cast<char*>(shell_cmd.c_str()), nullptr, nullptr,
-				  TRUE, CREATE_NO_WINDOW, nullptr, windows_cwd, &si, &pi)
+				  nullptr, &shell_cmd_line[0], nullptr, nullptr, TRUE,
+				  CREATE_NO_WINDOW, nullptr, windows_cwd, &si, &pi)
 			  == TRUE;
 	}
 
@@ -1005,22 +1028,38 @@ static void bt_print(size_t index, void const* addr, int color)
 		return;
 	}
 
+	char demangled_name[MAX_SYM_NAME] = {};
+	char const* name = (sym->NameLen > 0 && sym->Name[0]) ? sym->Name : "??";
+	char* demangled_name_gnu = nullptr;
+	if(name != nullptr && name[0] != '\0' && name[0] != '?') {
+		DWORD demangled_len = UnDecorateSymbolName(
+			name, demangled_name, (DWORD)sizeof(demangled_name), UNDNAME_COMPLETE);
+		if(demangled_len > 0 && demangled_name[0] != '\0') {
+			name = demangled_name;
+		} else {
+			int demangle_status = -1;
+			demangled_name_gnu =
+				abi::__cxa_demangle(name, nullptr, nullptr, &demangle_status);
+			if(demangle_status == 0 && demangled_name_gnu
+			   && demangled_name_gnu[0] != '\0')
+				name = demangled_name_gnu;
+		}
+	}
+
 	IMAGEHLP_LINE64 line = {};
 	line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
 	DWORD line_displacement = 0;
 	if(SymGetLineFromAddr64(process, addr64, &line_displacement, &line)) {
-		char const* name = (sym->NameLen > 0 && sym->Name[0]) ? sym->Name : "??";
 		zth::log_color(
 			color, "%s%-3lu [%p] (%s:%lu) %s+0x%llx\n",
 			color >= 0 ? ZTH_DBG_PREFIX : "", (unsigned long)index, addr,
 			line.FileName ? line.FileName : "??", (unsigned long)line.LineNumber, name,
 			(unsigned long long)sym_displacement);
 	} else {
-		char const* name = (sym->NameLen > 0 && sym->Name[0]) ? sym->Name : "??";
-		zth::log_color(
-			color, "%s%-3lu [%p] %s+0x%llx\n", color >= 0 ? ZTH_DBG_PREFIX : "",
-			(unsigned long)index, addr, name, (unsigned long long)sym_displacement);
+		bt_print_libbacktrace(index, addr, color);
 	}
+
+	free(demangled_name_gnu); // NOLINT
 }
 #endif // ZTH_BT_PRINT_WIN32
 
