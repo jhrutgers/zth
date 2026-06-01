@@ -38,6 +38,16 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	)
 endif()
 
+if(NOT DEFINED ZTH_CONFIGURE_ALREADY_RAN)
+	set(ZTH_FIRST_CONFIGURE ON)
+	set(ZTH_CONFIGURE_ALREADY_RAN
+	    ON
+	    CACHE INTERNAL "Marks that configure has run before"
+	)
+else()
+	set(ZTH_FIRST_CONFIGURE OFF)
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(ZTH_DEV_DEFAULT ON)
 else()
@@ -263,7 +273,7 @@ if(APPLE
 endif()
 
 if(ZTH_ENABLE_RUST)
-	set(ZTH_RUST_LINK_FLAGS "")
+	set(ZTH_RUST_FLAGS "")
 	separate_arguments(
 		_zth_rust_link_args NATIVE_COMMAND
 		"${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${CMAKE_BINARY_DIR}"
@@ -321,6 +331,7 @@ function(zth_repo_config file)
 	if(ZTH_REGEN_REPO_CONFIG
 	   OR NOT EXISTS "${file_out}"
 	   OR "${file_in}" IS_NEWER_THAN "${file_out}"
+	   OR ZTH_FIRST_CONFIGURE
 	)
 		configure_file("${file_in}" "${file_out}" @ONLY ${ARGN})
 	endif()
