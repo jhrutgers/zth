@@ -31,6 +31,7 @@
 #include <libzth/fiber.h>
 #include <libzth/fsm14.h>
 #include <libzth/future.h>
+#include <libzth/indirection.h>
 #include <libzth/init.h>
 #include <libzth/io.h>
 #include <libzth/perf.h>
@@ -47,7 +48,11 @@
 #  ifndef ZTH_INLINE_EMIT
 namespace zth {
 ZTH_INIT_CALL_(checkConfig, checkConfig();)
-static checkConfig__init const checkConfig__init_;
+static
+#    if __cplusplus >= 201703L
+	inline
+#    endif // C++17
+	checkConfig__init const checkConfig__init_;
 } // namespace zth
 #  endif // !ZTH_INLINE_EMIT
 #endif	 // __cplusplus

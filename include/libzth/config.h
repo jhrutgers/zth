@@ -334,6 +334,7 @@ struct Check {
 		Config_Debug,
 		Config_EnableAssert,
 		Config_EnableFullAssert,
+		Config_EnableBacktrace,
 		Config_EnableThreads,
 		Config_SupportDebugPrint,
 		Config_EnableColorLog,
@@ -364,6 +365,7 @@ static inline void checkConfig()
 	ZTH_CHECK(Debug)
 	ZTH_CHECK(EnableAssert)
 	ZTH_CHECK(EnableFullAssert)
+	ZTH_CHECK(EnableBacktrace)
 	ZTH_CHECK(EnableThreads)
 	ZTH_CHECK(SupportDebugPrint)
 	ZTH_CHECK(EnableColorLog)

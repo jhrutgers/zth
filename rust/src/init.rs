@@ -14,6 +14,7 @@ use core::result::Result::{Err, Ok};
 use env_logger;
 
 use crate::r#async::{fiber_start_trampoline, FiberStart};
+use crate::util;
 use crate::Error;
 use crate::Fiber;
 use crate::FiberEntry;
@@ -26,6 +27,7 @@ mod ffi {
         pub fn zth_preinit();
         pub fn zth_run(f: extern "C" fn(*mut c_void), arg: *mut c_void) -> c_int;
         pub fn zth_postdeinit() -> c_int;
+        pub fn zth_logv_indirect(func: *mut c_void);
     }
 }
 
@@ -41,6 +43,11 @@ where
     Args: 'static,
 {
     assert!(!Fiber::current().is_valid());
+
+    #[cfg(zth_hosted_std)]
+    unsafe {
+        ffi::zth_logv_indirect(util::zth_logv as *mut c_void)
+    };
 
     unsafe { ffi::zth_preinit() }
 
@@ -63,6 +70,11 @@ where
     };
 
     unsafe { ffi::zth_postdeinit() };
+
+    #[cfg(zth_hosted_std)]
+    unsafe {
+        ffi::zth_logv_indirect(core::ptr::null_mut())
+    };
 
     if rc == 0 {
         Ok(f.get()?)
