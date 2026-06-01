@@ -349,20 +349,37 @@ function(add_launch_json_run name command cwd)
 endfunction()
 
 function(add_launch_json_dbg name binary cwd)
-	add_launch_json_entry(
-		"
-			\"type\": \"cppdbg\",
-			\"request\": \"launch\",
-			\"name\": \"${name}\",
-			\"program\": \"${binary}\",
-			\"cwd\": \"${cwd}\",
-			\"environment\": [
-				{
-					\"name\": \"ASAN_OPTIONS\",
-					\"value\": \"detect_leaks=0\"
-				}
-			]"
-	)
+	if(WIN32)
+		add_launch_json_entry(
+			"
+				\"type\": \"cppdbg\",
+				\"request\": \"launch\",
+				\"name\": \"${name}\",
+				\"program\": \"${binary}\",
+				\"cwd\": \"${cwd}\",
+				\"environment\": [
+					{
+						\"name\": \"PATH\",
+						\"value\": \"${ENV_PATH_ESC_BS}\"
+					}
+				]"
+		)
+	else()
+		add_launch_json_entry(
+			"
+				\"type\": \"cppdbg\",
+				\"request\": \"launch\",
+				\"name\": \"${name}\",
+				\"program\": \"${binary}\",
+				\"cwd\": \"${cwd}\",
+				\"environment\": [
+					{
+						\"name\": \"ASAN_OPTIONS\",
+						\"value\": \"detect_leaks=0\"
+					}
+				]"
+		)
+	endif()
 endfunction()
 
 function(add_launch_json_qemu name binary cwd)
@@ -390,7 +407,7 @@ function(add_launch_json)
 		endif()
 
 		if("${LAUNCH_BINARY}" STREQUAL "")
-			if(MINGW)
+			if(MINGW AND CMAKE_CROSSCOMPILING)
 				# Install before starting in VSCode.
 				set(LAUNCH_BINARY
 				    "${CMAKE_INSTALL_PREFIX}/bin/$<TARGET_FILE_NAME:${LAUNCH_TARGET}>"
@@ -401,7 +418,7 @@ function(add_launch_json)
 		endif()
 
 		if("${LAUNCH_WORKING_DIRECTORY}" STREQUAL "")
-			if(MINGW)
+			if(MINGW AND CMAKE_CROSSCOMPILING)
 				set(LAUNCH_WORKING_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
 			else()
 				set(LAUNCH_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${LAUNCH_TARGET}>")
@@ -421,7 +438,7 @@ function(add_launch_json)
 		set(LAUNCH_WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
 	endif()
 
-	if(MINGW)
+	if(MINGW AND CMAKE_CROSSCOMPILING)
 		add_launch_json_run(
 			"${LAUNCH_NAME}" "${LAUNCH_BINARY}" "${LAUNCH_WORKING_DIRECTORY}"
 		)
