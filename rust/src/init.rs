@@ -28,12 +28,19 @@ mod ffi {
         pub fn zth_run(f: extern "C" fn(*mut c_void), arg: *mut c_void) -> c_int;
         pub fn zth_postdeinit() -> c_int;
         pub fn zth_logv_indirect(func: *mut c_void);
+        pub fn zth_terminate_indirect(func: *mut c_void);
     }
 }
 
 pub(crate) fn log_init() {
     #[cfg(zth_hosted_std)]
     let _ = env_logger::try_init();
+}
+
+#[cfg(zth_hosted_std)]
+unsafe fn setup_indirection() {
+    ffi::zth_logv_indirect(util::zth_logv as *mut c_void);
+    ffi::zth_terminate_indirect(util::zth_terminate as *mut c_void);
 }
 
 /// Start a worker and execute the given entry point as main fiber.
@@ -46,8 +53,8 @@ where
 
     #[cfg(zth_hosted_std)]
     unsafe {
-        ffi::zth_logv_indirect(util::zth_logv as *mut c_void)
-    };
+        setup_indirection();
+    }
 
     unsafe { ffi::zth_preinit() }
 
@@ -70,11 +77,6 @@ where
     };
 
     unsafe { ffi::zth_postdeinit() };
-
-    #[cfg(zth_hosted_std)]
-    unsafe {
-        ffi::zth_logv_indirect(core::ptr::null_mut())
-    };
 
     if rc == 0 {
         Ok(f.get()?)

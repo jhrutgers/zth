@@ -6,6 +6,8 @@
 
 #include <libzth/util.h>
 
+#include <libzth/indirection.h>
+
 #include <exception>
 
 /*!
@@ -16,8 +18,11 @@
 #ifndef ZTH_OS_WINDOWS
 __attribute__((weak))
 #endif
-__attribute__((noreturn)) void
-zth_terminate()
+__attribute__((noreturn)) void zth_terminate()
 {
+	if(::zth_indirection.zth_terminate) {
+		::zth_indirection.zth_terminate();
+	}
+
 	std::terminate();
 }
