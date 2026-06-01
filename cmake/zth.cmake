@@ -108,6 +108,7 @@ add_library(
 	${ZTH_SOURCE_DIR}/src/config.cpp
 	${ZTH_SOURCE_DIR}/src/context.cpp
 	${ZTH_SOURCE_DIR}/src/fiber.cpp
+	${ZTH_SOURCE_DIR}/src/indirection.cpp
 	${ZTH_SOURCE_DIR}/src/init.cpp
 	${ZTH_SOURCE_DIR}/src/inline.cpp
 	${ZTH_SOURCE_DIR}/src/io.cpp
@@ -138,6 +139,7 @@ set(ZTH_HEADERS
     ${ZTH_SOURCE_DIR}/include/libzth/fiber.h
     ${ZTH_SOURCE_DIR}/include/libzth/future.h
     ${ZTH_SOURCE_DIR}/include/libzth/fsm14.h
+    ${ZTH_SOURCE_DIR}/include/libzth/indirection.h
     ${ZTH_SOURCE_DIR}/include/libzth/init.h
     ${ZTH_SOURCE_DIR}/include/libzth/io.h
     ${ZTH_SOURCE_DIR}/include/libzth/list.h
@@ -155,6 +157,8 @@ set(ZTH_HEADERS
 )
 
 set_target_properties(libzth PROPERTIES OUTPUT_NAME "zth" PUBLIC_HEADER "${ZTH_HEADERS}")
+
+target_compile_definitions(libzth PRIVATE -DZTH_BUILD_LIB)
 
 if(ZTH_DRAFT_API)
 	target_compile_definitions(libzth PUBLIC -DZTH_DRAFT_API)

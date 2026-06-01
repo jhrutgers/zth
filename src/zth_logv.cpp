@@ -6,6 +6,8 @@
 
 #include <libzth/util.h>
 
+#include <libzth/indirection.h>
+
 /*!
  * \brief Prints the given printf()-like formatted string to stdout.
  * \details This is a weak symbol. Override when required.
@@ -16,6 +18,7 @@ __attribute__((weak))
 #endif
 void zth_logv(char const* fmt, va_list arg)
 {
-	// NOLINTNEXTLINE
-	vprintf(fmt, arg);
+	ZTH_INDIRECT_PROLOGUEV(zth_logv, fmt, arg)
+
+	(void)vprintf(fmt, arg);
 }

@@ -253,7 +253,8 @@ if(APPLE
    AND RUSTC_EXE
    AND ZTH_ENABLE_RUST
 )
-	execute_process(COMMAND sw_vers -productVersion
+	execute_process(
+		COMMAND sw_vers -productVersion
 		OUTPUT_VARIABLE CMAKE_OSX_DEPLOYMENT_TARGET
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 	)
@@ -273,7 +274,9 @@ if(ZTH_ENABLE_RUST)
 		endif()
 	endforeach()
 	if(APPLE AND NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
-		string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}\",")
+		string(APPEND ZTH_RUST_FLAGS
+		       "\n  \"-Clink-arg=-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}\","
+		)
 	endif()
 endif()
 

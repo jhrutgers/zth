@@ -120,6 +120,14 @@
 #  endif
 #endif
 
+#if defined(ZTH_OS_WINDOWS) && defined(ZTH_SHARED_LIB) && ZTH_SHARED_LIB
+#  if defined(ZTH_BUILD_LIB)
+#    define ZTH_EXPORT __declspec(dllexport)
+#  else
+#    define ZTH_EXPORT __declspec(dllimport)
+#  endif
+#endif // Windows DLL
+
 #ifndef ZTH_EXPORT
 #  define ZTH_EXPORT __attribute__((visibility("default")))
 #endif
@@ -198,9 +206,10 @@ ZTH_EXPORT void foo();
 #    pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #    define ZTH_STATIC_ASSERT_FAILED_(line) zth_static_assert_failed_##line
 #    define ZTH_STATIC_ASSERT_FAILED(line)  ZTH_STATIC_ASSERT_FAILED_(line)
-#    define static_assert(x, ...)                  \
-	    typedef char ZTH_STATIC_ASSERT_FAILED( \
-		    __LINE__)[(x) ? 1 : -1] /* NOLINT(clang-diagnostic-vla-cxx-extension) */
+#    define static_assert(x, ...)                                                         \
+	    typedef char ZTH_STATIC_ASSERT_FAILED(                                        \
+		    __LINE__)[(x) ? 1 : -1] /* NOLINT(clang-diagnostic-vla-cxx-extension) \
+					     */
 #  endif
 #else
 #  ifndef constexpr14
