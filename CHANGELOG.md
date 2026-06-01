@@ -7,13 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [Unreleased](https://github.com/jhrutgers/zth/compare/v2.0.0...HEAD)
+## [Unreleased](https://github.com/jhrutgers/zth/compare/v2.1.0...HEAD)
+
+### Added
+
+...
+
+
+
+## [2.1.0] - 2026-06-02
 
 ### Added
 
 - Rust API bindings and examples.
 - Support being compiled as dynamic library.
 - `Fiber::cancel()` such that a runner fiber is terminated via throwing `zth::cancelled`.
+- Consistent CMake variable/macro/`zth::Config` setting override.
 
 ### Changed
 
