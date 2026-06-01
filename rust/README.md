@@ -48,8 +48,9 @@ By default, Zth enables the `std` feature. As a result:
 - Zth depends on `std`. Otherwise, it only uses `core` and `alloc`.
 - `zth_terminate()` calls Rust `panic!` instead of calling C++ `std::terminate()`, which defaults to
   C `abort()`.
-- C `zth_logv()` is redirected to Rust `print!` instead of C library's `puts()`/`write()` to
-  `stdout`.
+- C `zth_logv()` is redirected to Rust's `log`/`env_logger` crate with `zth` target instead of C
+  library's `puts()`/`write()` to `stdout`. For logging to be visible, make sure to define
+  `ZTH_CONFIG_ENABLE_DEBUG_PRINT` and set `RUST_LOG=debug`.
 
 However, for `no_std` builds, like embedded systems, depend on Zth using `default-features = false`,
 and enable one more of these:
