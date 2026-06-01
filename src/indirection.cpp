@@ -132,8 +132,10 @@ void zth_terminate_indirect(zth_terminate_t* func)
  */
 void zth_indirect(zth_indirection_t const* indirection)
 {
-	if(indirection)
+	if(indirection) {
 		zth_indirection = *indirection;
-	else
-		zth_indirection = {};
+	} else {
+		zth_indirection_t i = {};
+		zth_indirection = i;
+	}
 }
