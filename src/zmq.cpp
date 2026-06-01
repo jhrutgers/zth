@@ -17,11 +17,25 @@
 namespace zth {
 namespace zmq {
 
+static void*& zmq_context_storage()
+{
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+	static void* zmq_ctx = nullptr;
+	return zmq_ctx;
+}
+
+#  ifndef ZTH_OS_WINDOWS
 static void zmq_global_deinit()
 {
+	void*& zmq_ctx = zmq_context_storage();
+	if(!zmq_ctx)
+		return;
+
 	zth_dbg(zmq, "destroy context");
-	zmq_ctx_term(zmq_context());
+	(void)zmq_ctx_term(zmq_ctx);
+	zmq_ctx = nullptr;
 }
+#  endif
 
 static void* zmq_global_init()
 {
@@ -37,8 +51,14 @@ static void* zmq_global_init()
 	if(!zmq_ctx)
 		zth_abort("0MQ context creation failed; %s", err(errno).c_str());
 
+	// Windows shutdown order can tear down Winsock before process-exit hooks,
+	// which makes libzmq's socket cleanup assert with WSANOTINITIALISED.
+	// Keep explicit cleanup on non-Windows only.
+#  ifndef ZTH_OS_WINDOWS
 	// Only do the deinit this when 0MQ was actually used.
 	(void)atexit(zmq_global_deinit);
+#  endif
+	zmq_context_storage() = zmq_ctx;
 	return zmq_ctx;
 }
 
@@ -48,8 +68,9 @@ static void* zmq_global_init()
  */
 void* zmq_context()
 {
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-	static void* zmq_ctx = zmq_global_init();
+	void*& zmq_ctx = zmq_context_storage();
+	if(!zmq_ctx)
+		zmq_ctx = zmq_global_init();
 	return zmq_ctx;
 }
 

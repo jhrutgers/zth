@@ -21,10 +21,19 @@ if(WIN32 AND ZTH_HAVE_LIBZMQ)
 	)
 endif()
 
-function(zth_config_test TEST_LIST)
-	set_tests_properties(
-		${TEST_LIST} PROPERTIES ENVIRONMENT ZTH_CONFIG_ENABLE_DEBUG_PRINT=0 TIMEOUT 300
-	)
+function(zth_config_test)
+	set(TEST_LIST ${ARGV})
+	if(NOT TEST_LIST)
+		return()
+	endif()
+
+	set(_test_env "ZTH_CONFIG_ENABLE_DEBUG_PRINT=0")
+
+	if(WIN32)
+		list(APPEND _test_env "PATH=${ENV_PATH_ESC_BSSC}")
+	endif()
+
+	set_tests_properties(${TEST_LIST} PROPERTIES ENVIRONMENT "${_test_env}" TIMEOUT 300)
 endfunction()
 
 if((CMAKE_CROSSCOMPILING AND NOT MINGW)
