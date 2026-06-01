@@ -6,6 +6,8 @@
 
 #include <libzth/init.h>
 
+#include <libzth/indirection.h>
+
 /*!
  * \brief Initialization function to be called by the default-supplied \c
  *	main(), just before shutting down.
@@ -21,5 +23,7 @@ __attribute__((weak))
 #endif
 int zth_postdeinit()
 {
+	ZTH_INDIRECT_PROLOGUE(zth_postdeinit)
+
 	return 0;
 }

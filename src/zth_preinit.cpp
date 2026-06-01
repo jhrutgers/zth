@@ -6,6 +6,8 @@
 
 #include <libzth/init.h>
 
+#include <libzth/indirection.h>
+
 /*!
  * \brief Initialization function to be called by the default-supplied \c
  *	main(), before doing anything else.
@@ -18,4 +20,6 @@
 __attribute__((weak))
 #endif
 void zth_preinit()
-{}
+{
+	ZTH_INDIRECT_PROLOGUEV(zth_preinit)
+}

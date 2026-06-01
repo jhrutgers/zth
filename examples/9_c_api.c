@@ -24,3 +24,7 @@ int main_fiber(int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 	zth_fiber_create(NULL, fiber, NULL, 0, NULL);
 	return 0;
 }
+
+// In a pure-C application, use a static libzth. Otherwise, it will probably not find main_fiber()
+// and call the default main_fiber() which does nothing.  Alternatively, define a main() and call
+// zth_main() from it.
