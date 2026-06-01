@@ -9,6 +9,8 @@ target = "@ZTH_RUST_TARGET@"
 [env]
 ZTH_REPO = "@ZTH_SOURCE_DIR@"
 ZTH_DIST = "@ZTH_DIST@"
+ZTH_CONFIG_ENABLE_DEBUG_PRINT = "1"
+RUST_LOG = "debug"
 
 [patch.crates-io]
 zth_macros = { path = "@PROJECT_SOURCE_DIR@/rust/macros" }
