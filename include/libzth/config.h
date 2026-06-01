@@ -14,6 +14,8 @@
 #include <libzth/macros.h>
 
 #ifdef __cplusplus
+#  include <libzth/init.h>
+
 #  include <cstddef>
 #  include <sys/time.h>
 
@@ -391,6 +393,8 @@ static inline void checkConfig()
 
 	checked = true;
 }
+
+ZTH_APP_INIT_CALL(checkConfig)
 
 } // namespace zth
 #endif // __cplusplus
