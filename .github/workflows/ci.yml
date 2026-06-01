@@ -85,6 +85,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
         zmq: [zmq, nozmq]
+        shared: [shared, static]
     runs-on: ${{matrix.os}}
     steps:
       - name: checkout
@@ -95,15 +96,15 @@ jobs:
           dist/ubuntu/bootstrap.sh -r
       - name: build Debug
         run: |
-          dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test
+          dist/ubuntu/build.sh Debug dev ${{matrix.zmq}} test ${{matrix.shared}}
       - name: build RelWithDebInfo
         run: |
           rm -rf dist/ubuntu/build
-          dist/ubuntu/build.sh RelWithDebInfo dev ${{matrix.zmq}} test
+          dist/ubuntu/build.sh RelWithDebInfo dev ${{matrix.zmq}} test ${{matrix.shared}}
       - name: build Release
         run: |
           rm -rf dist/ubuntu/build
-          dist/ubuntu/build.sh Release ${{matrix.zmq}} test
+          dist/ubuntu/build.sh Release ${{matrix.zmq}} test ${{matrix.shared}}
 
   build-windows:
     runs-on: windows-latest
@@ -111,20 +112,21 @@ jobs:
       fail-fast: false
       matrix:
         zmq: [ON, OFF]
+        shared: [ON, OFF]
     steps:
       - name: checkout
         uses: actions/checkout@v6
       - name: bootstrap
         run: dist\win32\bootstrap.cmd -r
       - name: build Debug
-        run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF"
+        run: dist\win32\build.cmd Debug "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF" "-DZTH_SHARED_LIB=${{matrix.shared}}"
       - name: test
         run: cmake --build . --target=test
         working-directory: dist\win32\build
       - name: build Release
         run: |
           Remove-Item -path dist\win32\build -recurse -force
-          dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF"
+          dist\win32\build.cmd Release "-DZTH_TESTS=ON" "-DZTH_HAVE_LIBZMQ=${{matrix.zmq}}" "-DZTH_CPPCHECK=OFF" "-DZTH_SHARED_LIB=${{matrix.shared}}"
       - name: test
         run: cmake --build . --target=test
         working-directory: dist\win32\build
@@ -139,12 +141,20 @@ jobs:
           # Workaround for linker bug in XCode 14.0
           sudo xcode-select --switch /Library/Developer/CommandLineTools
           dist/macos/bootstrap.sh -r
-      - name: build Debug
-        run: dist/macos/build.sh Debug test
-      - name: build Release
+      - name: build Debug static
+        run: dist/macos/build.sh Debug test static
+      - name: build Debug shared
         run: |
           rm -rf dist/macos/build
-          dist/macos/build.sh Release test
+          dist/macos/build.sh Debug test shared
+      - name: build Release static
+        run: |
+          rm -rf dist/macos/build
+          dist/macos/build.sh Release test static
+      - name: build Release shared
+        run: |
+          rm -rf dist/macos/build
+          dist/macos/build.sh Release test shared
 
   build-arm-a15:
     runs-on: ubuntu-latest
@@ -187,12 +197,20 @@ jobs:
         run: |
           sudo apt update
           dist/mingw/bootstrap.sh -r
-      - name: build Debug
-        run: dist/mingw/build.sh Debug dev notest
-      - name: build Release
+      - name: build Debug static
+        run: dist/mingw/build.sh Debug dev notest static
+      - name: build Debug shared
         run: |
           rm -rf dist/mingw/build
-          dist/mingw/build.sh Release
+          dist/mingw/build.sh Debug dev notest shared
+      - name: build Release static
+        run: |
+          rm -rf dist/mingw/build
+          dist/mingw/build.sh Release static
+      - name: build Release shared
+        run: |
+          rm -rf dist/mingw/build
+          dist/mingw/build.sh Release shared
 
   documentation:
     if: github.ref == 'refs/heads/main'

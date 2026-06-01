@@ -90,6 +90,10 @@ while [[ ! -z ${1:-} ]]; do
 			cmake_opts="${cmake_opts} -DZTH_THREADS=ON";;
 		nothreads)
 			cmake_opts="${cmake_opts} -DZTH_THREADS=OFF";;
+		shared)
+			cmake_opts="${cmake_opts} -DZTH_SHARED_LIB=ON";;
+		static)
+			cmake_opts="${cmake_opts} -DZTH_SHARED_LIB=OFF";;
 		test)
 			do_test=1;;
 		notest)
