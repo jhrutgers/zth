@@ -35,6 +35,10 @@ class Worker;
 class Worker : public UniqueID<Worker>, public ThreadLocalSingleton<Worker> {
 	ZTH_CLASS_NEW_DELETE(Worker)
 public:
+#  if ZTH_SHARED_LIB
+	static safe_ptr<Worker>::type instance() noexcept;
+#  endif // ZTH_SHARED_LIB
+
 	Worker()
 		: UniqueID("Worker")
 		, m_currentFiber()

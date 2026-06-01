@@ -24,6 +24,16 @@
 
 namespace zth {
 
+#if ZTH_SHARED_LIB
+// In case of a shared pointer, the static m_instance of the Singleton classes are not shared
+// between the library and application. By defining the instance() function here, we ensure that the
+// same instance is used for both.
+safe_ptr<Worker>::type Worker::instance() noexcept
+{
+	return ThreadLocalSingleton<Worker>::instance();
+}
+#endif // ZTH_SHARED_LIB
+
 #if !defined(ZTH_OS_WINDOWS) && !defined(ZTH_OS_BAREMETAL)
 static void sigchld_handler(int /*unused*/);
 #endif
