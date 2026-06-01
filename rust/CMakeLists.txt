@@ -37,6 +37,11 @@ add_custom_target(
 	COMMENT "Generate Rust crate package output files"
 )
 
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/package/zth-${ZTH_VERSION}.crate"
+	      "${CMAKE_CURRENT_BINARY_DIR}/package/zth_macros-${ZTH_VERSION}.crate"
+	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/rust
+)
+
 add_custom_target(
 	rust-doc
 	COMMAND "${CMAKE_COMMAND}" -E make_directory "${ZTH_SOURCE_DIR}/doxygen/html/rust"
