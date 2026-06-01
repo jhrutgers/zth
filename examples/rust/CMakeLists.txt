@@ -2,6 +2,17 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+set(ZTH_RUST_FLAGS "")
+separate_arguments(
+	_zth_rust_link_args NATIVE_COMMAND
+	"${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,${CMAKE_BINARY_DIR}"
+)
+foreach(arg IN LISTS _zth_rust_link_args)
+	if(NOT "${arg}" STREQUAL "")
+		string(APPEND ZTH_RUST_FLAGS "\n  \"-Clink-arg=${arg}\",")
+	endif()
+endforeach()
+
 zth_repo_config(.cargo/config.toml)
 
 if(NOT ZTH_ENABLE_RUST)
@@ -68,29 +79,41 @@ function(add_rust_example name)
 	)
 
 	if(APPLE)
-		set(chrpath
-		    "install_name_tool -rpath \"${CMAKE_BINARY_DIR}\" \"@executable_path/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
-		)
-	elseif(UNIX)
-		set(chrpath
-		    "chrpath -r \"$ORIGIN/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\""
-		)
-	endif()
-
-	if(NOT "${chrpath}" STREQUAL "")
 		install(
 			CODE "
-		execute_process(
-			COMMAND ${chrpath}
-			RESULT_VARIABLE _chrpath_result
-			OUTPUT_VARIABLE _chrpath_out
-			ERROR_VARIABLE _chrpath_err
+			execute_process(
+				COMMAND install_name_tool -rpath \"${CMAKE_BINARY_DIR}\" \"@executable_path/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\"
+				RESULT_VARIABLE _rpath_result
+				OUTPUT_VARIABLE _rpath_out
+				ERROR_VARIABLE _rpath_err
+			)
+			if(NOT _rpath_result EQUAL 0)
+				message(WARNING \"install_name_tool failed (result=\${_rpath_result}) stdout='\${_rpath_out}' stderr='\${_rpath_err}'\")
+			endif()
+		"
 		)
-		if(NOT _chrpath_result EQUAL 0)
-			message(WARNING \"chrpath failed: \${_chrpath_err}\")
+	elseif(UNIX)
+		find_program(CHRPATH_EXE chrpath)
+		if(CHRPATH_EXE)
+			install(
+				CODE "
+				execute_process(
+					COMMAND \"${CHRPATH_EXE}\" -r \"\\$ORIGIN/../lib\" \"\${CMAKE_INSTALL_PREFIX}/bin/rust-${output_file}\"
+					RESULT_VARIABLE _rpath_result
+					OUTPUT_VARIABLE _rpath_out
+					ERROR_VARIABLE _rpath_err
+				)
+				if(NOT _rpath_result EQUAL 0)
+					message(WARNING \"chrpath failed (result=\${_rpath_result}) stdout='\${_rpath_out}' stderr='\${_rpath_err}'\")
+				endif()
+			"
+			)
+		else()
+			message(
+				STATUS
+					"chrpath not found; skipping install-time RPATH rewrite for rust-${output_file}"
+			)
 		endif()
-	"
-		)
 	endif()
 
 	set(ZTH_RUST_${name}_FILE
