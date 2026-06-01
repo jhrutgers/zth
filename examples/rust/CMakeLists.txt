@@ -8,6 +8,11 @@ if(NOT ZTH_ENABLE_RUST)
 	return()
 endif()
 
+if(APPLE AND NOT ZTH_SHARED_LIB)
+	message(STATUS "Skipping Rust examples; not supported on Apple with static libzth")
+	return()
+endif()
+
 function(add_rust_example name)
 	set(cargo_args rustc -p "${name}" -q)
 	if(ZTH_RUST_PROFILE)
