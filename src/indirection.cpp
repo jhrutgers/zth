@@ -41,6 +41,7 @@ zth_indirection_t zth_indirection = {};
 
 void zth_logv_indirect_check(char const* fmt, va_list arg)
 {
+	// NOLINTNEXTLINE(clang-diagnostic-format-nonliteral)
 	ZTH_INDIRECT_CHECKV(zth_logv, fmt, arg)
 }
 
