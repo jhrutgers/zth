@@ -13,11 +13,14 @@ int main(int argc, char** argv)
 	int res = 0;
 	testing::InitGoogleTest(&argc, argv);
 	try {
-		zth::Worker w;
-		auto f = zth::fiber([]() { return RUN_ALL_TESTS(); })
-			 << zth::setName("gtest") << zth::asFuture();
-		w.run();
-		res = *f;
+		auto run_all_tests = [](void* arg) {
+			int* result = static_cast<int*>(arg);
+			*result = RUN_ALL_TESTS();
+		};
+
+		int zth_res = zth_run(run_all_tests, &res);
+		if(zth_res)
+			res = zth_res;
 	} catch(...) {
 		zth_terminate();
 	}

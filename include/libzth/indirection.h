@@ -127,17 +127,17 @@ inline void zth_indirect_auto()
 ZTH_APP_INIT_CALL(zth_indirect_auto)
 #endif // ZTH_SHARED_LIB
 
-#define ZTH_INDIRECT_PROLOGUE(func, ...) \
-	if(::zth_indirection.func)       \
-		return ::zth_indirection.func(__VA_ARGS__);
-
-#define ZTH_INDIRECT_PROLOGUEV(func, ...)            \
-	if(::zth_indirection.func) {                 \
-		::zth_indirection.func(__VA_ARGS__); \
-		return;                              \
-	}
-
 #ifdef __cplusplus
+#  define ZTH_INDIRECT_PROLOGUE(func, ...) \
+	  if(::zth_indirection.func)       \
+		  return ::zth_indirection.func(__VA_ARGS__);
+
+#  define ZTH_INDIRECT_PROLOGUEV(func, ...)            \
+	  if(::zth_indirection.func) {                 \
+		  ::zth_indirection.func(__VA_ARGS__); \
+		  return;                              \
+	  }
+
 } // extern "C"
 #endif // __cplusplus
 #endif // ZTH_INDIRECTION_H

@@ -171,6 +171,7 @@ void abortv(char const* fmt, va_list args) noexcept
 		Backtrace().print();
 	}
 
+	(void)fflush(nullptr);
 	zth_terminate();
 }
 

@@ -145,6 +145,9 @@
 
 #include <stdarg.h>
 
+EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void
+zth_logv(char const* fmt, va_list arg);
+
 #ifdef __cplusplus
 #  include <cstdio>
 #  include <cstdlib>
@@ -170,9 +173,6 @@
 #    include <sys/types.h>
 #    include <unistd.h>
 #  endif
-
-EXTERN_C ZTH_EXPORT __attribute__((format(ZTH_ATTR_PRINTF, 1, 0))) void
-zth_logv(char const* fmt, va_list arg);
 
 #  ifdef __cplusplus
 /*!
@@ -1620,13 +1620,14 @@ auto to_tuple(T&& object) noexcept
 	using type = std::decay_t<T>;
 
 	// Repeat as required...
-	if constexpr(impl::is_braces_constructible<
-			     type, impl::any_type, impl::any_type, impl::any_type,
-			     impl::any_type>{}) {
+	if constexpr(
+		impl::is_braces_constructible<
+			type, impl::any_type, impl::any_type, impl::any_type, impl::any_type>{}) {
 		auto&& [p1, p2, p3, p4] = std::forward<T>(object);
 		return std::make_tuple(p1, p2, p3, p4);
-	} else if constexpr(impl::is_braces_constructible<
-				    type, impl::any_type, impl::any_type, impl::any_type>{}) {
+	} else if constexpr(
+		impl::is_braces_constructible<
+			type, impl::any_type, impl::any_type, impl::any_type>{}) {
 		auto&& [p1, p2, p3] = std::forward<T>(object);
 		return std::make_tuple(p1, p2, p3);
 	} else if constexpr(impl::is_braces_constructible<type, impl::any_type, impl::any_type>{}) {
@@ -1732,8 +1733,8 @@ zth_log_colorv(int color, char const* fmt, va_list args);
  * \ingroup zth_api_c_util
  */
 #ifdef __cplusplus
-EXTERN_C ZTH_EXPORT ZTH_INLINE __attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void
-zth_log(char const* fmt, ...)
+EXTERN_C ZTH_EXPORT ZTH_INLINE
+	__attribute__((format(ZTH_ATTR_PRINTF, 1, 2))) void zth_log(char const* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);

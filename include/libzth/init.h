@@ -55,40 +55,40 @@ EXTERN_C ZTH_EXPORT int zth_main(int argc, char** argv);
 	      static f##__init f##__deinit_;
 #    endif
 #  endif
+#endif // __cplusplus
 
-#  if defined(ZTH_BUILD_LIB) || !defined(__cplusplus)
-#    define ZTH_APP_INIT_CALL(f)
+#if defined(ZTH_BUILD_LIB) || !defined(__cplusplus)
+#  define ZTH_APP_INIT_CALL(f)
+#else
+#  if __cplusplus >= 201703L
+#    define ZTH_APP_INIT_CALL_(f, ...)       \
+	    struct f##__app_init {           \
+		    f##__app_init() noexcept \
+		    {                        \
+			    __VA_ARGS__      \
+		    }                        \
+	    };                               \
+	    inline f##__app_init const f##__app_init_;
 #  else
-#    if __cplusplus >= 201703L
-#      define ZTH_APP_INIT_CALL_(f, ...)       \
-	      struct f##__app_init {           \
-		      f##__app_init() noexcept \
-		      {                        \
-			      __VA_ARGS__      \
-		      }                        \
-	      };                               \
-	      inline f##__app_init const f##__app_init_;
-#    else
-#      define ZTH_APP_INIT_CALL_(f, ...)                 \
-	      inline void f##__app_init_once_() noexcept \
-	      {                                          \
-		      static bool done = false;          \
-		      if(!done) {                        \
-			      done = true;               \
-			      __VA_ARGS__                \
-		      }                                  \
-	      }                                          \
-	      struct f##__app_init {                     \
-		      f##__app_init() noexcept           \
-		      {                                  \
-			      f##__app_init_once_();     \
-		      }                                  \
-	      };                                         \
-	      static f##__app_init const f##__app_init_;
-#    endif
-
-#    define ZTH_APP_INIT_CALL(f) ZTH_APP_INIT_CALL_(f, f();)
+#    define ZTH_APP_INIT_CALL_(f, ...)                 \
+	    inline void f##__app_init_once_() noexcept \
+	    {                                          \
+		    static bool done = false;          \
+		    if(!done) {                        \
+			    done = true;               \
+			    __VA_ARGS__                \
+		    }                                  \
+	    }                                          \
+	    struct f##__app_init {                     \
+		    f##__app_init() noexcept           \
+		    {                                  \
+			    f##__app_init_once_();     \
+		    }                                  \
+	    };                                         \
+	    static f##__app_init const f##__app_init_;
 #  endif
 
-#endif // __cplusplus
+#  define ZTH_APP_INIT_CALL(f) ZTH_APP_INIT_CALL_(f, f();)
+#endif
+
 #endif // ZTH_INIT_H
