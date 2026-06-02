@@ -11,7 +11,7 @@
 #include <cstdio>
 
 // This is a normal function, which we are going to use as a fiber entry point.
-void world()
+static void world()
 {
 	printf("Wonderful\n");
 	// Indicate that a context switch to another fiber may be executed here, although there are
@@ -20,7 +20,7 @@ void world()
 	printf("World!!1\n");
 }
 
-void hello()
+static void hello()
 {
 	// Create a new fiber, that calls `world()'.
 	zth::fiber(world);

@@ -187,7 +187,7 @@ static void startTimeInit()
 }
 ZTH_INIT_CALL(startTimeInit)
 #else  // !ZTH_OS_MAC
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,misc-use-internal-linkage)
 zth::Timestamp startTime_;
 
 static void startTimeInit()
