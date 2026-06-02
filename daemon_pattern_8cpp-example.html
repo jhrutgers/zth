@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line"> </div>
 <div class="line"><span class="comment">// A generic trigger function that signals a zth::Signal every given interval.</span></div>
 <div class="line"><span class="comment">// NOLINTNEXTLINE(performance-unnecessary-value-param)</span></div>
-<div class="line"><span class="keywordtype">void</span> trigger(<a id="_a0" name="_a0"></a><a class="code hl_class" href="classzth_1_1_signal.html">zth::Signal</a>* s, <a id="_a1" name="_a1"></a><a class="code hl_class" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> interval)</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> trigger(<a id="_a0" name="_a0"></a><a class="code hl_class" href="classzth_1_1_signal.html">zth::Signal</a>* s, <a id="_a1" name="_a1"></a><a class="code hl_class" href="classzth_1_1_time_interval.html">zth::TimeInterval</a> interval)</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordflow">if</span>(!s || interval.<a id="a2" name="a2"></a><a class="code hl_function" href="classzth_1_1_time_interval.html#a9e9a2fed835627252cad22d2c8a4df59">isNegative</a>())</div>
 <div class="line">                <span class="keywordflow">return</span>;</div>
@@ -123,7 +123,7 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line"><span class="comment">// daemon, it signals a global zth::Signal.  This wakes the daemon to perform its task.</span></div>
 <div class="line"><span class="keyword">static</span> <a class="code hl_class" href="classzth_1_1_signal.html">zth::Signal</a> triggerSomeDaemon(<span class="stringliteral">&quot;someDaemon trigger&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> someDaemon()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> someDaemon()</div>
 <div class="line">{</div>
 <div class="line">        <span class="comment">// The daemon is an infinite loop, which ends waiting for its trigger signal.  The wait for</span></div>
 <div class="line">        <span class="comment">// the signal is blocking. If a wakeup is required at some interval, start a timer to do</span></div>
@@ -138,7 +138,7 @@ $(document).ready(function(){initNavTree('daemon_pattern_8cpp-example.html','');
 <div class="line">        }</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> foo()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> foo()</div>
 <div class="line">{</div>
 <div class="line">        printf(<span class="stringliteral">&quot;foo\n&quot;</span>);</div>
 <div class="line">        <span class="comment">// Trigger the daemon, but only wake it once if triggered multiple times.</span></div>

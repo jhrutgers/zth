@@ -180,7 +180,7 @@ Serving 9
 <div class="line">                ; <span class="comment">// busy wait</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> nice_fiber()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> nice_fiber()</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 10; i++) {</div>
 <div class="line">                printf(<span class="stringliteral">&quot;Be nice %d\n&quot;</span>, i);</div>
@@ -191,7 +191,7 @@ Serving 9
 <div class="line">        printf(<span class="stringliteral">&quot;nice_fiber() done\n&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> nicer_fiber()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> nicer_fiber()</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 10; i++) {</div>
 <div class="line">                <span class="comment">// I am going to do do_work(10) too, like nice_fiber(), but I</span></div>
@@ -207,7 +207,7 @@ Serving 9
 <div class="line">        printf(<span class="stringliteral">&quot;nicer_fiber() done\n&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> example_1()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> example_1()</div>
 <div class="line">{</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Example 1: nice vs nicer\n&quot;</span>);</div>
 <div class="line">        <a id="_a4" name="_a4"></a><a class="code hl_struct" href="structzth_1_1fiber__future.html">zth::fiber_future&lt;&gt;</a> nice = <a id="a5" name="a5"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(nice_fiber);</div>
@@ -233,7 +233,7 @@ Serving 9
 <div class="line"><span class="keyword">static</span> <span class="keywordtype">bool</span> terminate_server = <span class="keyword">false</span>;</div>
 <div class="line"><span class="keyword">static</span> std::deque&lt;int&gt; work;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> server()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> server()</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordflow">while</span>(<span class="keyword">true</span>) {</div>
 <div class="line">                <span class="keywordflow">if</span>(!work.empty()) {</div>
@@ -252,7 +252,7 @@ Serving 9
 <div class="line">        }</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> client()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> client()</div>
 <div class="line">{</div>
 <div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 10; i++) {</div>
 <div class="line">                printf(<span class="stringliteral">&quot;Requesting %d\n&quot;</span>, i);</div>
@@ -262,7 +262,7 @@ Serving 9
 <div class="line">        }</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> example_2()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> example_2()</div>
 <div class="line">{</div>
 <div class="line">        printf(<span class="stringliteral">&quot;\nExample 2: server-client\n&quot;</span>);</div>
 <div class="line">        <a class="code hl_struct" href="structzth_1_1fiber__future.html">zth::fiber_future&lt;&gt;</a> s = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(server);</div>

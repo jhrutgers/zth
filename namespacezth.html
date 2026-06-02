@@ -788,12 +788,6 @@ Functions</h2></td></tr>
 <tr class="memitem:gace10a072a53ecfc4db384c7301c5e7aa" id="r_gace10a072a53ecfc4db384c7301c5e7aa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__fiber.html#gace10a072a53ecfc4db384c7301c5e7aa">execvp</a> (char const  *file, char *const arg[])</td></tr>
 <tr class="memdesc:gace10a072a53ecfc4db384c7301c5e7aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start an external program.  <br /></td></tr>
 <tr class="separator:gace10a072a53ecfc4db384c7301c5e7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40acff5486713748739e6a4d9a111803" id="r_a40acff5486713748739e6a4d9a111803"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a40acff5486713748739e6a4d9a111803">perf_time</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t)</td></tr>
-<tr class="memdesc:a40acff5486713748739e6a4d9a111803"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a full timestamp into the perf output.  <br /></td></tr>
-<tr class="separator:a40acff5486713748739e6a4d9a111803"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b04b835ec7ef72a0a0e0a9fb4ab5a26" id="r_a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6b04b835ec7ef72a0a0e0a9fb4ab5a26">perf_dt</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t)</td></tr>
-<tr class="memdesc:a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a delta timestamp into the perf output.  <br /></td></tr>
-<tr class="separator:a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0feb299489b882465af74b17d7930b4a" id="r_a0feb299489b882465af74b17d7930b4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0feb299489b882465af74b17d7930b4a">worker_global_init</a> ()</td></tr>
 <tr class="separator:a0feb299489b882465af74b17d7930b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -1794,28 +1788,6 @@ template&lt;typename R &gt; </div>
 
 </div>
 </div>
-<a id="a6b04b835ec7ef72a0a0e0a9fb4ab5a26" name="a6b04b835ec7ef72a0a0e0a9fb4ab5a26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b04b835ec7ef72a0a0e0a9fb4ab5a26">&#9670;&#160;</a></span>perf_dt()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void zth::perf_dt </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td>
-          <td class="paramname"><em>t</em> = <code><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a>()</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Put a delta timestamp into the perf output. </p>
-
-<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00356">356</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aed9e412ab53b9e0a11ed16d891288b1e" name="aed9e412ab53b9e0a11ed16d891288b1e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aed9e412ab53b9e0a11ed16d891288b1e">&#9670;&#160;</a></span>perf_fiber()</h2>
 
@@ -1951,29 +1923,6 @@ template&lt;typename R &gt; </div>
 <p>Put a syscall into the perf output. </p>
 
 <p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00071">71</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
-
-</div>
-</div>
-<a id="a40acff5486713748739e6a4d9a111803" name="a40acff5486713748739e6a4d9a111803"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40acff5486713748739e6a4d9a111803">&#9670;&#160;</a></span>perf_time()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void zth::perf_time </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td>
-          <td class="paramname"><em>t</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Put a full timestamp into the perf output. </p>
-<p>This is the basis for successive time deltas. </p>
-
-<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00327">327</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>

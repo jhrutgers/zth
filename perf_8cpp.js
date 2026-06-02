@@ -18,7 +18,6 @@ var perf_8cpp =
     [ "perf_abort", "perf_8cpp.html#ga8318a86f83100446224fec3d05b74a16", null ],
     [ "perf_async_handle", "perf_8cpp.html#ga0eb13f77535ca26fdc6041c0fd21a5a4", null ],
     [ "perf_deinit", "perf_8cpp.html#a3f8a6fdc27b5e9243380e5b67d672812", null ],
-    [ "perf_dt", "perf_8cpp.html#a6b04b835ec7ef72a0a0e0a9fb4ab5a26", null ],
     [ "perf_dump", "perf_8cpp.html#gaaf5fd1c0b59a49845ca9439de94c7d02", null ],
     [ "perf_fiber", "perf_8cpp.html#aed9e412ab53b9e0a11ed16d891288b1e", null ],
     [ "perf_fiber_state", "perf_8cpp.html#a02e36b3ff3ae722cdc2cdaf159390463", null ],
@@ -32,7 +31,6 @@ var perf_8cpp =
     [ "perf_run_dump", "perf_8cpp.html#gacf6d6c58a6cab29e8da8603fe5568b69", null ],
     [ "perf_start", "perf_8cpp.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd", null ],
     [ "perf_stop", "perf_8cpp.html#ga01eed009522311489304233a25e725a4", null ],
-    [ "perf_time", "perf_8cpp.html#a40acff5486713748739e6a4d9a111803", null ],
     [ "perf_vcd", "perf_8cpp.html#ad462256aecf0ffe894a2df561c39b8c1", null ],
     [ "perf_vcdf", "perf_8cpp.html#afd6f180de9eadb25ae26c4b8cc11df65", null ]
 ];

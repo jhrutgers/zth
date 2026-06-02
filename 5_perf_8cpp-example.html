@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">                ; <span class="comment">// busy wait</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> scheduling()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> scheduling()</div>
 <div class="line">{</div>
 <div class="line">        <span class="comment">// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled, which includes</span></div>
 <div class="line">        <span class="comment">// generating a VCD file.  This VCD file shows every fiber in the system and indicates the</span></div>
@@ -140,7 +140,7 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">        <a id="a3" name="a3"></a><a class="code hl_function" href="group__zth__api__cpp__fiber.html#gabb282193c9fb32207257bb6474436152">zth::mnap</a>(10);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> measure()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> measure()</div>
 <div class="line">{</div>
 <div class="line">        <span class="comment">// This example measures the duration of a task. There are several helpful functions for</span></div>
 <div class="line">        <span class="comment">// this.  First, take a time stamp.  zth::Timestamp::now() is (supposed to be) fast and is</span></div>
@@ -176,7 +176,7 @@ $(document).ready(function(){initNavTree('5_perf_8cpp-example.html',''); initRes
 <div class="line">        <span class="comment">// the measured time interval.</span></div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> stack()</div>
+<div class="line"><span class="keyword">static</span> <span class="keywordtype">void</span> stack()</div>
 <div class="line">{</div>
 <div class="line">        <span class="comment">// Make a snapshot of the current stack backtrace.</span></div>
 <div class="line">        <a class="code hl_typedef" href="group__zth__api__cpp__util.html#ga50d7c8e3df9690708e66b7798e4e0ca5">zth::Backtrace</a> bt;</div>
