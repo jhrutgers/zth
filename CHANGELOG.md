@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   later VCD conversion.  This allows VCD generation from a bare-metal perf dump.
 - Cleanup backtraces.
 
+[2.1.0]: https://github.com/jhrutgers/zth/releases/tag/v2.1.0
+
 
 
 ## [2.0.0] - 2026-02-16
