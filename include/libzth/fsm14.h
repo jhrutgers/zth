@@ -1158,6 +1158,8 @@ public:
 	static constexpr Transitions compile(std::initializer_list<Transition> l)
 	{
 		zth_assert(l.size() == Size);
+		if(l.size() != Size)
+			zth_throw(invalid_fsm{"Invalid number of transitions"});
 
 		Transitions f;
 
@@ -1177,6 +1179,9 @@ public:
 		State prev;
 
 		for(auto const& t : l) {
+			if(i > Size)
+				zth_throw(invalid_fsm{"State transitions exceed table size"});
+
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)

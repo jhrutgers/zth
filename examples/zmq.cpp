@@ -20,7 +20,7 @@ static int check(int res)
 	return res;
 }
 
-void server()
+static void server()
 {
 	void* responder = zth_zmq_socket(ZMQ_REP);
 	int rc = zmq_bind(responder, "inproc://hello");
@@ -47,7 +47,7 @@ void server()
 	}
 }
 
-void client(int messages)
+static void client(int messages)
 {
 	printf("Connecting to hello world server...\n");
 	void* requester = zth_zmq_socket(ZMQ_REQ);

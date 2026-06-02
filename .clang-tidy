@@ -15,8 +15,9 @@ Checks: >
   -cert-dcl51-cpp,
 
   clang-analyzer-*,
-  -clang-diagnostic-defaulted-function-deleted,
   -clang-analyzer-optin.*,
+  -clang-diagnostic-defaulted-function-deleted,
+  -clang-diagnostic-unnecessary-virtual-specifier,
 
   concurrency-*,
 
@@ -35,7 +36,8 @@ Checks: >
   -cppcoreguidelines-pro-type-reinterpret-cast,
   -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-pro-type-vararg,
-  -cppcoreguidelines-use-default-member-init, # Pre C++11
+  -cppcoreguidelines-use-default-member-init,
+  -cppcoreguidelines-use-enum-class,
 
   hicpp-*,
   -hicpp-avoid-c-arrays,
@@ -67,6 +69,7 @@ Checks: >
   -readability-implicit-bool-conversion,
   -readability-magic-numbers,
   -readability-make-member-function-const,
+  -readability-math-missing-parentheses,
   -readability-redundant-access-specifiers,
 
   performance-*,

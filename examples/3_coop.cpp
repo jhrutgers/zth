@@ -23,7 +23,7 @@ static void do_work(int amount)
 		; // busy wait
 }
 
-void nice_fiber()
+static void nice_fiber()
 {
 	for(int i = 0; i < 10; i++) {
 		printf("Be nice %d\n", i);
@@ -34,7 +34,7 @@ void nice_fiber()
 	printf("nice_fiber() done\n");
 }
 
-void nicer_fiber()
+static void nicer_fiber()
 {
 	for(int i = 0; i < 10; i++) {
 		// I am going to do do_work(10) too, like nice_fiber(), but I
@@ -50,7 +50,7 @@ void nicer_fiber()
 	printf("nicer_fiber() done\n");
 }
 
-void example_1()
+static void example_1()
 {
 	printf("Example 1: nice vs nicer\n");
 	zth::fiber_future<> nice = zth::fiber(nice_fiber);
@@ -76,7 +76,7 @@ void example_1()
 static bool terminate_server = false;
 static std::deque<int> work;
 
-void server()
+static void server()
 {
 	while(true) {
 		if(!work.empty()) {
@@ -95,7 +95,7 @@ void server()
 	}
 }
 
-void client()
+static void client()
 {
 	for(int i = 0; i < 10; i++) {
 		printf("Requesting %d\n", i);
@@ -105,7 +105,7 @@ void client()
 	}
 }
 
-void example_2()
+static void example_2()
 {
 	printf("\nExample 2: server-client\n");
 	zth::fiber_future<> s = zth::fiber(server);

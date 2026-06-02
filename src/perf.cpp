@@ -27,8 +27,8 @@ namespace zth {
 // Buffer
 //
 
-void perf_time(Timestamp const& t = Timestamp());
-void perf_dt(Timestamp const& t = Timestamp());
+static void perf_time(Timestamp const& t = Timestamp());
+static void perf_dt(Timestamp const& t = Timestamp());
 
 enum PerfEvent {
 	PerfEventTerminate,
@@ -324,7 +324,7 @@ static size_t leb128_len(char const* buf)
  *
  * This is the basis for successive time deltas.
  */
-void perf_time(Timestamp const& t)
+static void perf_time(Timestamp const& t)
 {
 	if(!perf_buffer)
 		return;
@@ -353,7 +353,7 @@ void perf_time(Timestamp const& t)
 /*!
  * \brief Put a delta timestamp into the perf output.
  */
-void perf_dt(Timestamp const& t)
+static void perf_dt(Timestamp const& t)
 {
 	if(!perf_buffer)
 		return;

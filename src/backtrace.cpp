@@ -340,7 +340,7 @@ static __attribute__((unused)) void bt_print_dl(size_t index, void const* addr, 
 #  if __cplusplus >= 201103L
 #    include <mutex>
 #  endif
-#  if defined(ZTH_OS_POSIX)
+#  ifdef ZTH_OS_POSIX
 #    include <csignal>
 #    include <sys/types.h>
 #    include <sys/wait.h>
@@ -380,7 +380,7 @@ struct bt_addr2line_module_info {
 
 struct bt_addr2line_process {
 	bool started;
-#  if defined(ZTH_OS_WINDOWS)
+#  ifdef ZTH_OS_WINDOWS
 	HANDLE process;
 	HANDLE stdin_write;
 	HANDLE stdout_read;
@@ -392,7 +392,7 @@ struct bt_addr2line_process {
 
 	bt_addr2line_process()
 		: started(false)
-#  if defined(ZTH_OS_WINDOWS)
+#  ifdef ZTH_OS_WINDOWS
 		, process(nullptr)
 		, stdin_write(nullptr)
 		, stdout_read(nullptr)
@@ -409,7 +409,7 @@ typedef zth::map_type<uintptr_t, bt_addr2line_module_info>::type bt_addr2line_mo
 typedef zth::map_type<void const*, std::pair<zth::string, zth::string>>::type
 	bt_addr2line_symbol_map;
 
-#  if defined(ZTH_OS_WINDOWS)
+#  ifdef ZTH_OS_WINDOWS
 static void
 bt_addr2line_close_child_handles(HANDLE out_read, HANDLE out_write, HANDLE in_read, HANDLE in_write)
 {
@@ -646,6 +646,7 @@ static bool bt_addr2line_read_line(bt_addr2line_process& proc, char (&buf)[ADDR2
 	size_t len = 0;
 	while(len + 1 < sizeof(buf)) {
 		char ch = '\0';
+		// NOLINTNEXTLINE(clang-analyzer-unix.BlockInCriticalSection)
 		ssize_t r = read(proc.stdout_read, &ch, 1);
 		if(r <= 0)
 			break;

@@ -18,7 +18,7 @@ static void do_work(int amount)
 		; // busy wait
 }
 
-void scheduling()
+static void scheduling()
 {
 	// When ZTH_CONFIG_DO_PERF_EVENT is set to 1, the perf API is enabled, which includes
 	// generating a VCD file.  This VCD file shows every fiber in the system and indicates the
@@ -44,7 +44,7 @@ void scheduling()
 	zth::mnap(10);
 }
 
-void measure()
+static void measure()
 {
 	// This example measures the duration of a task. There are several helpful functions for
 	// this.  First, take a time stamp.  zth::Timestamp::now() is (supposed to be) fast and is
@@ -80,7 +80,7 @@ void measure()
 	// the measured time interval.
 }
 
-void stack()
+static void stack()
 {
 	// Make a snapshot of the current stack backtrace.
 	zth::Backtrace bt;

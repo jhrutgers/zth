@@ -10,7 +10,7 @@ static bool shutdown_flag = false;
 
 // A generic trigger function that signals a zth::Signal every given interval.
 // NOLINTNEXTLINE(performance-unnecessary-value-param)
-void trigger(zth::Signal* s, zth::TimeInterval interval)
+static void trigger(zth::Signal* s, zth::TimeInterval interval)
 {
 	if(!s || interval.isNegative())
 		return;
@@ -27,7 +27,7 @@ void trigger(zth::Signal* s, zth::TimeInterval interval)
 // daemon, it signals a global zth::Signal.  This wakes the daemon to perform its task.
 static zth::Signal triggerSomeDaemon("someDaemon trigger");
 
-void someDaemon()
+static void someDaemon()
 {
 	// The daemon is an infinite loop, which ends waiting for its trigger signal.  The wait for
 	// the signal is blocking. If a wakeup is required at some interval, start a timer to do
@@ -42,7 +42,7 @@ void someDaemon()
 	}
 }
 
-void foo()
+static void foo()
 {
 	printf("foo\n");
 	// Trigger the daemon, but only wake it once if triggered multiple times.

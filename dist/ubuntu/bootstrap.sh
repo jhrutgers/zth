@@ -45,5 +45,6 @@ sudo apt install -y build-essential cmake doxygen git-core python3 python3-pip p
 
 if [[ $do_rust -eq 1 ]]; then
 	which rustup > /dev/null || sudo apt install -y rustup
+	rustup default stable
 	rustup component add clippy rustfmt rust-src rust-docs
 fi
