@@ -1,9 +1,38 @@
 var perf_8cpp =
 [
-    [ "zth::PerfFiber", "classzth_1_1_perf_fiber.html", "classzth_1_1_perf_fiber" ],
-    [ "UNW_LOCAL_ONLY", "perf_8cpp.html#a7c1fcd39dbc33728a8e1f1f5212203bc", null ],
-    [ "context_entry", "perf_8cpp.html#a11d3236714aa5890b5217c28f9ade701", null ],
+    [ "zth::PerfBuffer", "classzth_1_1_perf_buffer.html", "classzth_1_1_perf_buffer" ],
+    [ "zth::VCDGenerator", "classzth_1_1_v_c_d_generator.html", "classzth_1_1_v_c_d_generator" ],
+    [ "zth::VCDHeaderGenerator", "classzth_1_1_v_c_d_header_generator.html", "classzth_1_1_v_c_d_header_generator" ],
+    [ "zth::VCDDataGenerator", "classzth_1_1_v_c_d_data_generator.html", "classzth_1_1_v_c_d_data_generator" ],
+    [ "ZTH_VCD_USE_FILE_IO", "perf_8cpp.html#a8dfc55021d1a0579f475306d950b1f3b", null ],
+    [ "leb128_buf_t", "perf_8cpp.html#ae57e12fa5a72282628e08d51e24d0f5e", null ],
+    [ "PerfEvent", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61", [
+      [ "PerfEventTerminate", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61a8d0d01880af804cc2081954f10cfe52b", null ],
+      [ "PerfEventTime", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61acb677a2621d53743778bc107ed6acf01", null ],
+      [ "PerfEventTimeDelta", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61a0aa8a6cbf714502525e238eb57f46fb1", null ],
+      [ "PerfEventMarker", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61a82711597eb9f584e1f1f7bbe61d712e1", null ],
+      [ "PerfEventLog", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61a3b8d614fa9ca98d0c825da079afa7168", null ],
+      [ "PerfEventFiber", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61a2b4d402332cc3327d77fda6ae49c84f3", null ],
+      [ "PerfEventFiberState", "perf_8cpp.html#aae25827a2fb5f4a4b27555ea14693b61aee07032369700ad4f70a01f9b3863285", null ]
+    ] ],
+    [ "perf_abort", "perf_8cpp.html#ga8318a86f83100446224fec3d05b74a16", null ],
+    [ "perf_async_handle", "perf_8cpp.html#ga0eb13f77535ca26fdc6041c0fd21a5a4", null ],
     [ "perf_deinit", "perf_8cpp.html#a3f8a6fdc27b5e9243380e5b67d672812", null ],
-    [ "perf_flushEventBuffer", "perf_8cpp.html#a71e3a50748da2dbfad52f9678bd8c179", null ],
-    [ "perf_init", "perf_8cpp.html#a447f951e1169d6fe43f618bce52e75f6", null ]
+    [ "perf_dt", "perf_8cpp.html#a6b04b835ec7ef72a0a0e0a9fb4ab5a26", null ],
+    [ "perf_dump", "perf_8cpp.html#gaaf5fd1c0b59a49845ca9439de94c7d02", null ],
+    [ "perf_fiber", "perf_8cpp.html#aed9e412ab53b9e0a11ed16d891288b1e", null ],
+    [ "perf_fiber_state", "perf_8cpp.html#a02e36b3ff3ae722cdc2cdaf159390463", null ],
+    [ "perf_init", "perf_8cpp.html#a447f951e1169d6fe43f618bce52e75f6", null ],
+    [ "perf_log", "perf_8cpp.html#ga6c69f9f5db0dbf7ca3e2a232c003d072", null ],
+    [ "perf_log", "perf_8cpp.html#ga0a1e79c92b8337544fb5e924997463a6", null ],
+    [ "perf_logv", "perf_8cpp.html#gabf86b57919aaff63e23ccea75b854fca", null ],
+    [ "perf_mark", "perf_8cpp.html#ga1360ae3b938458bcf67be4e5ff1cdd18", null ],
+    [ "perf_mark_async", "perf_8cpp.html#gae087bdbae28e74c563220ea92491fc8c", null ],
+    [ "perf_run", "perf_8cpp.html#ga893ee172a10aa17b69acc10b8d3b8f2f", null ],
+    [ "perf_run_dump", "perf_8cpp.html#gacf6d6c58a6cab29e8da8603fe5568b69", null ],
+    [ "perf_start", "perf_8cpp.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd", null ],
+    [ "perf_stop", "perf_8cpp.html#ga01eed009522311489304233a25e725a4", null ],
+    [ "perf_time", "perf_8cpp.html#a40acff5486713748739e6a4d9a111803", null ],
+    [ "perf_vcd", "perf_8cpp.html#ad462256aecf0ffe894a2df561c39b8c1", null ],
+    [ "perf_vcdf", "perf_8cpp.html#afd6f180de9eadb25ae26c4b8cc11df65", null ]
 ];

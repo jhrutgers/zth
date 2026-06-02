@@ -54,5 +54,5 @@ var async_8h =
     [ "operator<<", "async_8h.html#afb725446af7afe9d4c8d14ebc7f33724", null ],
     [ "operator<<", "async_8h.html#a0887bd476e49aabd78058062e1f993eb", null ],
     [ "operator<<", "async_8h.html#afc4285954c10cf8b22aaa457a5996944", null ],
-    [ "zth_fiber_create", "group__zth__api__c__fiber.html#ga4a5d0ea88bcf26193d4201ac28946cd3", null ]
+    [ "zth_fiber_create", "group__zth__api__c__fiber.html#ga2ccae86b5377f014d68af065a55ff46b", null ]
 ];

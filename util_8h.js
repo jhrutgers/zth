@@ -38,6 +38,7 @@ var util_8h =
     [ "ZTH_CLASS_NOCOPY", "util_8h.html#ad7cc9064552d25659c36efeacc36936d", null ],
     [ "zth_dbg", "group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7", null ],
     [ "ZTH_DBG_PREFIX", "util_8h.html#a095cc98c1b5b115f2cc929370bc8c951", null ],
+    [ "ZTH_ERR_ATTR", "util_8h.html#a8614e333cc77840aae1a1988786ea85b", null ],
     [ "ZTH_GET_MACRO_ARGN", "util_8h.html#a1755477f935397460b8bd17b87717245", null ],
     [ "ZTH_STRINGIFY", "util_8h.html#ab22030f7762239d7744a7bf3e0c523df", null ],
     [ "ZTH_STRINGIFY_", "util_8h.html#a5d72e34c0b817647899416eef607e387", null ],
@@ -79,8 +80,12 @@ var util_8h =
     [ "test_is_braces_constructible", "util_8h.html#af406f15e4d71d284b4560a4f1fbd2a6a", null ],
     [ "to_tuple", "util_8h.html#a0a475b48093813844a200783e4a68151", null ],
     [ "zth_abort", "group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb", null ],
-    [ "zth_banner", "group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588", null ],
+    [ "zth_assert_handler", "util_8h.html#aa1fbc2b5b89febe37cb3e4df023b0c82", null ],
+    [ "zth_banner", "group__zth__api__c__util.html#gaebf06ddf71498204130bfd34d7db1e84", null ],
+    [ "zth_err", "group__zth__api__c__util.html#ga86b3c98d6dbd1248ab9a69254009ab24", null ],
     [ "zth_log", "group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d", null ],
     [ "zth_log_color", "group__zth__api__c__util.html#ga9f263744ecb1252cd9a814ab3aed45a2", null ],
-    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ]
+    [ "zth_log_colorv", "group__zth__api__c__util.html#gadbce145e6126949cfb8065a0fad0cef1", null ],
+    [ "zth_logv", "group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72", null ],
+    [ "zth_terminate", "util_8h.html#aff901147e257ac51f2e128d21cbb44d9", null ]
 ];

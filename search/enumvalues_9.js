@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['new_0',['New',['../classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa8c48c3ee41262fe01b57b93f937760cb',1,'zth::Fiber']]],
-  ['nothing_1',['nothing',['../structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a8a732d3f5d80ec1a1c1c8dd67f969e53',1,'zth::PerfEvent::Nothing'],['../structzth_1_1_perf_event_3_01false_01_4.html#aa7a385666d3a51491ee4b8ab21f69350a3dc995c8e115ace5ae9c56ec26203c6e',1,'zth::PerfEvent&lt; false &gt;::Nothing']]]
+  ['queue_5fput_0',['Queue_Put',['../classzth_1_1_mailbox.html#a2ba5f563fe1a8a9e8b26bd5a97325fafae65e457f5ba43885f722e1fec2d80a30',1,'zth::Mailbox']]],
+  ['queue_5ftake_1',['Queue_Take',['../classzth_1_1_mailbox.html#a2ba5f563fe1a8a9e8b26bd5a97325fafa80f3c68ef24ec253a67dc2429f860b45',1,'zth::Mailbox']]]
 ];

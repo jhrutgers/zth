@@ -238,6 +238,8 @@ Macros</h2></td></tr>
 <tr class="separator:adc6b814d1041bbec4828d2399c0658bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52e12d7ddf980c1e5107cf09364c84ab" id="r_a52e12d7ddf980c1e5107cf09364c84ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a52e12d7ddf980c1e5107cf09364c84ab">ZTH_STRUCTURED_BINDING_FORWARDING_NS</a>(Class)</td></tr>
 <tr class="separator:a52e12d7ddf980c1e5107cf09364c84ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8614e333cc77840aae1a1988786ea85b" id="r_a8614e333cc77840aae1a1988786ea85b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#a8614e333cc77840aae1a1988786ea85b">ZTH_ERR_ATTR</a>&#160;&#160;&#160;__attribute__((malloc, warn_unused_result))</td></tr>
+<tr class="separator:a8614e333cc77840aae1a1988786ea85b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -253,8 +255,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gad788be8c7c1b46f1ff90d1498d8f5b72" id="r_gad788be8c7c1b46f1ff90d1498d8f5b72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a> (char const *fmt, va_list arg)</td></tr>
 <tr class="memdesc:gad788be8c7c1b46f1ff90d1498d8f5b72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the given printf()-like formatted string to stdout.  <br /></td></tr>
 <tr class="separator:gad788be8c7c1b46f1ff90d1498d8f5b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1fbc2b5b89febe37cb3e4df023b0c82" id="r_aa1fbc2b5b89febe37cb3e4df023b0c82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aa1fbc2b5b89febe37cb3e4df023b0c82">zth_assert_handler</a> (char const *file, int line, char const *expr)</td></tr>
+<tr class="separator:aa1fbc2b5b89febe37cb3e4df023b0c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb44b1de600c6dafa1919211ff3dca55" id="r_abb44b1de600c6dafa1919211ff3dca55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#abb44b1de600c6dafa1919211ff3dca55">zth::assert_handler</a> (char const *file, int line, char const *expr)</td></tr>
+<tr class="separator:abb44b1de600c6dafa1919211ff3dca55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga80ce8ae8dab3a0f48abcbf9e977b60d9" id="r_ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="memItemLeft" align="right" valign="top">char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga80ce8ae8dab3a0f48abcbf9e977b60d9">zth::banner</a> () noexcept</td></tr>
-<tr class="memdesc:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.  <br /></td></tr>
+<tr class="memdesc:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a banner line with version and configuration information.  <br /></td></tr>
 <tr class="separator:ga80ce8ae8dab3a0f48abcbf9e977b60d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4889d34edbac39ba98e63d58173f3b88" id="r_ga4889d34edbac39ba98e63d58173f3b88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88">zth::abort</a> (char const  *fmt,...) noexcept</td></tr>
 <tr class="memdesc:ga4889d34edbac39ba98e63d58173f3b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.  <br /></td></tr>
@@ -262,8 +268,6 @@ Functions</h2></td></tr>
 <tr class="memitem:gadbc3a543d826740574ed356738ae3da8" id="r_gadbc3a543d826740574ed356738ae3da8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__util.html#gadbc3a543d826740574ed356738ae3da8">zth::abortv</a> (char const  *fmt, va_list args) noexcept</td></tr>
 <tr class="memdesc:gadbc3a543d826740574ed356738ae3da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.    <br /></td></tr>
 <tr class="separator:gadbc3a543d826740574ed356738ae3da8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb44b1de600c6dafa1919211ff3dca55" id="r_abb44b1de600c6dafa1919211ff3dca55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#abb44b1de600c6dafa1919211ff3dca55">zth::assert_handler</a> (char const *file, int line, char const *expr)</td></tr>
-<tr class="separator:abb44b1de600c6dafa1919211ff3dca55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a706573145bfd5a1986b75657e7dc381f" id="r_a706573145bfd5a1986b75657e7dc381f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a706573145bfd5a1986b75657e7dc381f">zth::log_supports_ansi_colors</a> () noexcept</td></tr>
 <tr class="memdesc:a706573145bfd5a1986b75657e7dc381f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the system supports ANSI colors.  <br /></td></tr>
 <tr class="separator:a706573145bfd5a1986b75657e7dc381f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -352,18 +356,27 @@ Functions</h2></td></tr>
 <tr class="memitem:a0a475b48093813844a200783e4a68151" id="r_a0a475b48093813844a200783e4a68151"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a0a475b48093813844a200783e4a68151"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacezth.html#a0a475b48093813844a200783e4a68151">zth::to_tuple</a> (T &amp;&amp;object) noexcept</td></tr>
 <tr class="separator:a0a475b48093813844a200783e4a68151"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4be59428e2559bcc589cdf4bbb4de588" id="r_ga4be59428e2559bcc589cdf4bbb4de588"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga4be59428e2559bcc589cdf4bbb4de588">zth_banner</a> ()</td></tr>
-<tr class="memdesc:ga4be59428e2559bcc589cdf4bbb4de588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a banner line with version and configuration information.    <br /></td></tr>
-<tr class="separator:ga4be59428e2559bcc589cdf4bbb4de588"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaebf06ddf71498204130bfd34d7db1e84" id="r_gaebf06ddf71498204130bfd34d7db1e84"><td class="memItemLeft" align="right" valign="top">char const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#gaebf06ddf71498204130bfd34d7db1e84">zth_banner</a> ()</td></tr>
+<tr class="memdesc:gaebf06ddf71498204130bfd34d7db1e84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a banner line with version and configuration information.    <br /></td></tr>
+<tr class="separator:gaebf06ddf71498204130bfd34d7db1e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga869dad6591d5f5900808ee721274b7bb" id="r_ga869dad6591d5f5900808ee721274b7bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga869dad6591d5f5900808ee721274b7bb">zth_abort</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga869dad6591d5f5900808ee721274b7bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborts the process after printing the given printf() formatted message.    <br /></td></tr>
 <tr class="separator:ga869dad6591d5f5900808ee721274b7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff901147e257ac51f2e128d21cbb44d9" id="r_aff901147e257ac51f2e128d21cbb44d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="util_8h.html#aff901147e257ac51f2e128d21cbb44d9">zth_terminate</a> ()</td></tr>
+<tr class="memdesc:aff901147e257ac51f2e128d21cbb44d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminate immediately.  <br /></td></tr>
+<tr class="separator:aff901147e257ac51f2e128d21cbb44d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9f263744ecb1252cd9a814ab3aed45a2" id="r_ga9f263744ecb1252cd9a814ab3aed45a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga9f263744ecb1252cd9a814ab3aed45a2">zth_log_color</a> (int color, char const *fmt,...)</td></tr>
 <tr class="memdesc:ga9f263744ecb1252cd9a814ab3aed45a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string using an ANSI color code.    <br /></td></tr>
 <tr class="separator:ga9f263744ecb1252cd9a814ab3aed45a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadbce145e6126949cfb8065a0fad0cef1" id="r_gadbce145e6126949cfb8065a0fad0cef1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#gadbce145e6126949cfb8065a0fad0cef1">zth_log_colorv</a> (int color, char const *fmt, va_list args)</td></tr>
+<tr class="memdesc:gadbce145e6126949cfb8065a0fad0cef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string using an ANSI color code.    <br /></td></tr>
+<tr class="separator:gadbce145e6126949cfb8065a0fad0cef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a7c80b8af18296a6a0b169c10a13b5d" id="r_ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga7a7c80b8af18296a6a0b169c10a13b5d">zth_log</a> (char const *fmt,...)</td></tr>
 <tr class="memdesc:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a given printf()-like formatted string.    <br /></td></tr>
 <tr class="separator:ga7a7c80b8af18296a6a0b169c10a13b5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga86b3c98d6dbd1248ab9a69254009ab24" id="r_ga86b3c98d6dbd1248ab9a69254009ab24"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__c__util.html#ga86b3c98d6dbd1248ab9a69254009ab24">zth_err</a> (int e)</td></tr>
+<tr class="memdesc:ga86b3c98d6dbd1248ab9a69254009ab24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a string like <code>strerror()</code> does, but as a <code><a class="el" href="group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0" title="std::string type using Config::Allocator::type.">zth::string</a></code>.    <br /></td></tr>
+<tr class="separator:ga86b3c98d6dbd1248ab9a69254009ab24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="aa0672ea7123854cc5f51902a06c473fb" name="aa0672ea7123854cc5f51902a06c473fb"></a>
@@ -966,8 +979,8 @@ Functions</h2></td></tr>
 <div class="line">                                      <a class="code hl_variable" href="structzth_1_1_default_config.html#ae6008abfc038bb7185eabf0ecaa34476">::zth::Config::EnableFullAssert</a> ? <a class="code hl_define" href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a>(expr) \</div>
 <div class="line">                                                                      : nullptr);           \</div>
 <div class="line">              } <span class="keywordflow">while</span>(<span class="keyword">false</span>)</div>
-<div class="ttc" id="astructzth_1_1_default_config_html_a532617cba9f4e05a10495dbad852b995"><div class="ttname"><a href="structzth_1_1_default_config.html#a532617cba9f4e05a10495dbad852b995">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static bool const EnableAssert</div><div class="ttdoc">When true, enable zth_assert().</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00064">config.h:64</a></div></div>
-<div class="ttc" id="astructzth_1_1_default_config_html_ae6008abfc038bb7185eabf0ecaa34476"><div class="ttname"><a href="structzth_1_1_default_config.html#ae6008abfc038bb7185eabf0ecaa34476">zth::DefaultConfig::EnableFullAssert</a></div><div class="ttdeci">static bool const EnableFullAssert</div><div class="ttdoc">Show failing expression in case of a failed assert.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00075">config.h:75</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_a532617cba9f4e05a10495dbad852b995"><div class="ttname"><a href="structzth_1_1_default_config.html#a532617cba9f4e05a10495dbad852b995">zth::DefaultConfig::EnableAssert</a></div><div class="ttdeci">static bool const EnableAssert</div><div class="ttdoc">When true, enable zth_assert().</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00070">config.h:70</a></div></div>
+<div class="ttc" id="astructzth_1_1_default_config_html_ae6008abfc038bb7185eabf0ecaa34476"><div class="ttname"><a href="structzth_1_1_default_config.html#ae6008abfc038bb7185eabf0ecaa34476">zth::DefaultConfig::EnableFullAssert</a></div><div class="ttdeci">static bool const EnableFullAssert</div><div class="ttdoc">Show failing expression in case of a failed assert.</div><div class="ttdef"><b>Definition</b> <a href="config_8h_source.html#l00085">config.h:85</a></div></div>
 <div class="ttc" id="autil_8h_html_ab22030f7762239d7744a7bf3e0c523df"><div class="ttname"><a href="util_8h.html#ab22030f7762239d7744a7bf3e0c523df">ZTH_STRINGIFY</a></div><div class="ttdeci">#define ZTH_STRINGIFY(x)</div><div class="ttdoc">Converts the argument to a string literal.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00035">util.h:35</a></div></div>
 <div class="ttc" id="autil_8h_html_ad8700448546b3b5111404cc021061fd5"><div class="ttname"><a href="util_8h.html#ad8700448546b3b5111404cc021061fd5">unlikely</a></div><div class="ttdeci">#define unlikely(expr)</div><div class="ttdoc">Marks the given expression to likely be evaluated to true.</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l00060">util.h:60</a></div></div>
 </div><!-- fragment -->
@@ -1026,6 +1039,22 @@ Functions</h2></td></tr>
 <p>Prefix for every <a class="el" href="group__zth__api__cpp__util.html#ga15bf32dde0718b1eafdcdbc9057d36f7" title="Debug printf()-like function.">zth_dbg()</a> call. </p>
 
 <p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00182">182</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<a id="a8614e333cc77840aae1a1988786ea85b" name="a8614e333cc77840aae1a1988786ea85b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8614e333cc77840aae1a1988786ea85b">&#9670;&#160;</a></span>ZTH_ERR_ATTR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_ERR_ATTR&#160;&#160;&#160;__attribute__((malloc, warn_unused_result))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01752">1752</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1234,9 +1263,9 @@ Functions</h2></td></tr>
 <div class="line">                    <span class="keyword">auto</span>&amp; x = <a class="code hl_function" href="namespacezth.html#a0a475b48093813844a200783e4a68151">to_tuple</a>(*f);                                       \</div>
 <div class="line">                    <span class="keywordflow">return</span> get&lt;N&gt;(x);                                             \</div>
 <div class="line">            }</div>
-<div class="ttc" id="anamespacezth_html_a0a475b48093813844a200783e4a68151"><div class="ttname"><a href="namespacezth.html#a0a475b48093813844a200783e4a68151">zth::to_tuple</a></div><div class="ttdeci">auto to_tuple(T &amp;&amp;object) noexcept</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l01601">util.h:1601</a></div></div>
+<div class="ttc" id="anamespacezth_html_a0a475b48093813844a200783e4a68151"><div class="ttname"><a href="namespacezth.html#a0a475b48093813844a200783e4a68151">zth::to_tuple</a></div><div class="ttdeci">auto to_tuple(T &amp;&amp;object) noexcept</div><div class="ttdef"><b>Definition</b> <a href="util_8h_source.html#l01616">util.h:1616</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01626">1626</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01642">1642</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -1258,9 +1287,68 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">            } <span class="comment">/* assume namespace zth */</span>                  \</div>
 <div class="line">            ZTH_STRUCTURED_BINDING_FORWARDING(zth::Class) \</div>
 <div class="line">            <span class="keyword">namespace </span><a class="code hl_namespace" href="namespacezth.html">zth</a> {</div>
-<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00022">allocator.h:22</a></div></div>
+<div class="ttc" id="anamespacezth_html"><div class="ttname"><a href="namespacezth.html">zth</a></div><div class="ttdef"><b>Definition</b> <a href="allocator_8h_source.html#l00023">allocator.h:23</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01639">1639</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l01655">1655</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa1fbc2b5b89febe37cb3e4df023b0c82" name="aa1fbc2b5b89febe37cb3e4df023b0c82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1fbc2b5b89febe37cb3e4df023b0c82">&#9670;&#160;</a></span>zth_assert_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth_assert_handler </td>
+          <td>(</td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>expr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="zth__assert__handler_8cpp_source.html#l00014">14</a> of file <a class="el" href="zth__assert__handler_8cpp_source.html">zth_assert_handler.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aff901147e257ac51f2e128d21cbb44d9" name="aff901147e257ac51f2e128d21cbb44d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff901147e257ac51f2e128d21cbb44d9">&#9670;&#160;</a></span>zth_terminate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth_terminate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Terminate immediately. </p>
+<p>By default, it calls <code>std::terminate()</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="zth__terminate_8cpp_source.html#l00021">21</a> of file <a class="el" href="zth__terminate_8cpp_source.html">zth_terminate.cpp</a>.</p>
 
 </div>
 </div>

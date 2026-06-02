@@ -35,7 +35,8 @@ var NAVTREE =
         [ "Functions", "namespacemembers_func.html", null ],
         [ "Variables", "namespacemembers_vars.html", null ],
         [ "Typedefs", "namespacemembers_type.html", null ],
-        [ "Enumerations", "namespacemembers_enum.html", null ]
+        [ "Enumerations", "namespacemembers_enum.html", null ],
+        [ "Enumerator", "namespacemembers_eval.html", null ]
       ] ]
     ] ],
     [ "Classes", "annotated.html", [
@@ -69,18 +70,19 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "1_helloworld_8cpp-example.html",
-"classzth_1_1_future_3_01void_01_4.html#ae2bf141e67c52f780627c527550cdbc4",
-"classzth_1_1_named_unique_i_d_3_01false_01_4.html",
-"classzth_1_1_shared_reference.html#a3a20eee10a2d932a7cbf10533b5649bc",
-"classzth_1_1_typed_fiber.html#ab4ca6e882ec1437a7e084eb39d531d22",
-"classzth_1_1coro_1_1generator__promise.html#aedc7f16ad2536a39fd1c0f6941d2f6e2",
-"classzth_1_1fsm_1_1_basic_fsm.html#a3ecec3b29e4744cb2a018531eb0c15d4",
-"classzth_1_1fsm_1_1_transitions.html#a1dc98f191b02ec6102e0e9c87f2043ffaa43c1b0aa53a0c908810c06ab1ff3967",
-"classzth_1_1safe__ptr.html#a3bd88e0c5ca3a6b495b44d5f6c148a28",
-"group__zth__api__c__sync.html#ga6a8db20b4c7ed734e51c5245915cdff4",
-"namespacezth.html#a9fc108c510936a120f6d5d2ad90d6f98",
-"structzth_1_1_stack.html#a77c00df5344677fd99a334b4d84dae33",
-"structzth_1_1impl_1_1_packed.html"
+"classzth_1_1_future_3_01void_01_4.html#a9d2436383d81a35ec6799d615ca6c142",
+"classzth_1_1_named_unique_i_d.html#ad0ae6ec68f43686da3285c29f3b3fc9a",
+"classzth_1_1_shared_pointer.html#a53e828eb6d128657cfac43e608a00f21",
+"classzth_1_1_timestamp.html#a43b5682dc7f70b1592c82bca9ea4c128",
+"classzth_1_1coro_1_1_mailbox.html#a3e624dc25c933cf74519f686b4aa008d",
+"classzth_1_1cow__string.html#a32b7491ce316318d5c70b0f9a4271361",
+"classzth_1_1fsm_1_1_input_guard.html#ad0b8fe7cd859cb2d9a8c745791f25ee5",
+"classzth_1_1impl_1_1_context_base.html#ae49e1b21f22606d3d2edc26a96db3061",
+"fsm14_8h.html#abe27cc5cb53f49481d7614a40ea2339a",
+"group__zth__api__cpp__perf.html#gabf86b57919aaff63e23ccea75b854fca",
+"namespacezth_1_1coro.html#ac0ef6a51c0e1fc6b2295c90f08dc127d",
+"structzth_1_1coro_1_1task__fiber.html#aea1c37e62a778bab1147172aa896bd72",
+"structzth_1_1smallest__uint_3_01x_00_01smallest__uint__size_3_011_01_4_01_4.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

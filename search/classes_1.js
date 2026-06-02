@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['backtrace_0',['Backtrace',['../classzth_1_1_backtrace.html',1,'zth']]],
+  ['backtrace_0',['Backtrace',['../classzth_1_1impl_1_1_backtrace.html',1,'zth::impl']]],
   ['basicfsm_1',['BasicFsm',['../classzth_1_1fsm_1_1_basic_fsm.html',1,'zth::fsm']]]
 ];

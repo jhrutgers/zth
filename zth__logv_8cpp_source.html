@@ -105,17 +105,22 @@ $(document).ready(function(){initNavTree('zth__logv_8cpp_source.html',''); initR
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">libzth/util.h</a>&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#ifndef ZTH_OS_WINDOWS</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>__attribute__((weak))</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#endif</span></div>
-<div class="foldopen" id="foldopen00017" data-start="{" data-end="}">
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">   17</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a>(<span class="keywordtype">char</span> <span class="keyword">const</span>* fmt, va_list arg)</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <span class="comment">// NOLINTNEXTLINE</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        vprintf(fmt, arg);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>}</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;<a class="code" href="indirection_8h.html">libzth/indirection.h</a>&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#ifndef ZTH_OS_WINDOWS</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>__attribute__((weak))</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#endif</span></div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="}">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">   19</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a>(<span class="keywordtype">char</span> <span class="keyword">const</span>* fmt, va_list arg)</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>{</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <a class="code hl_define" href="indirection_8h.html#aed2ed500c8155ed0f977d80c4b712067">ZTH_INDIRECT_PROLOGUEV</a>(<a class="code hl_function" href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a>, fmt, arg)</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        (void)vprintf(fmt, arg);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
 </div>
-<div class="ttc" id="agroup__zth__api__c__util_html_gad788be8c7c1b46f1ff90d1498d8f5b72"><div class="ttname"><a href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a></div><div class="ttdeci">void zth_logv(char const *fmt, va_list arg)</div><div class="ttdoc">Prints the given printf()-like formatted string to stdout.</div><div class="ttdef"><b>Definition</b> <a href="zth__logv_8cpp_source.html#l00017">zth_logv.cpp:17</a></div></div>
+<div class="ttc" id="agroup__zth__api__c__util_html_gad788be8c7c1b46f1ff90d1498d8f5b72"><div class="ttname"><a href="group__zth__api__c__util.html#gad788be8c7c1b46f1ff90d1498d8f5b72">zth_logv</a></div><div class="ttdeci">void zth_logv(char const *fmt, va_list arg)</div><div class="ttdoc">Prints the given printf()-like formatted string to stdout.</div><div class="ttdef"><b>Definition</b> <a href="zth__logv_8cpp_source.html#l00019">zth_logv.cpp:19</a></div></div>
+<div class="ttc" id="aindirection_8h_html"><div class="ttname"><a href="indirection_8h.html">indirection.h</a></div></div>
+<div class="ttc" id="aindirection_8h_html_aed2ed500c8155ed0f977d80c4b712067"><div class="ttname"><a href="indirection_8h.html#aed2ed500c8155ed0f977d80c4b712067">ZTH_INDIRECT_PROLOGUEV</a></div><div class="ttdeci">#define ZTH_INDIRECT_PROLOGUEV(func,...)</div><div class="ttdef"><b>Definition</b> <a href="indirection_8h_source.html#l00135">indirection.h:135</a></div></div>
 <div class="ttc" id="autil_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

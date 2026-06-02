@@ -19,7 +19,7 @@ var searchData=
   ['_7enamed_16',['~named',['../classzth_1_1fsm_1_1_named_3_01false_01_4.html#acbead60c489e74a069d63e84d46df394',1,'zth::fsm::Named&lt; false &gt;::~Named()'],['../classzth_1_1fsm_1_1_named_3_01true_01_4.html#add0df1e9d3ea6ca502ea080924c64033',1,'zth::fsm::Named&lt; true &gt;::~Named()']]],
   ['_7enameduniqueid_17',['~nameduniqueid',['../classzth_1_1_named_unique_i_d.html#a22f7cf8453892d2ccd5140b3abaf1424',1,'zth::NamedUniqueID::~NamedUniqueID()'],['../classzth_1_1_named_unique_i_d_3_01false_01_4.html#a61c0d6a6e2837e48f33db26022d91c50',1,'zth::NamedUniqueID&lt; false &gt;::~NamedUniqueID()']]],
   ['_7eoptional_18',['~Optional',['../classzth_1_1_optional.html#a9dfcab3c676c638f56a0dd61c7c5f3ba',1,'zth::Optional']]],
-  ['_7eperffiber_19',['~PerfFiber',['../classzth_1_1_perf_fiber.html#ac9bc694f3e9d23289755ae7fb39c54b3',1,'zth::PerfFiber']]],
+  ['_7eperfbuffer_19',['~PerfBuffer',['../classzth_1_1_perf_buffer.html#a0d13d07f7baa0d3f639352e5bebacca6',1,'zth::PerfBuffer']]],
   ['_7epolledmemberwaiting_20',['~PolledMemberWaiting',['../classzth_1_1_polled_member_waiting.html#aaecce4adf7d40b648e30c649186bf158',1,'zth::PolledMemberWaiting']]],
   ['_7epolledwaiting_21',['~PolledWaiting',['../classzth_1_1_polled_waiting.html#aa89d6f66486ab7eb5bfc8dbb269d0381',1,'zth::PolledWaiting']]],
   ['_7epollerclient_22',['~PollerClient',['../classzth_1_1_poller_client.html#a5b490b952879add4bfcb0cd522889242',1,'zth::PollerClient']]],
@@ -48,8 +48,11 @@ var searchData=
   ['_7etypedfibern_45',['~typedfibern',['../classzth_1_1_typed_fiber_n.html#a6e972c411dc6a225b5917e520d763e0e',1,'zth::TypedFiberN::~TypedFiberN()'],['../classzth_1_1_typed_fiber_n_3_01_f_00_01void_00_01_args_01_4.html#a59d98e62bef15c7e204036cc47542e36',1,'zth::TypedFiberN&lt; F, void, Args &gt;::~TypedFiberN()']]],
   ['_7euniqueid_46',['~UniqueID',['../classzth_1_1_unique_i_d.html#a01c324a31ce293772cf4d3776abb329e',1,'zth::UniqueID']]],
   ['_7euniqueidbase_47',['~UniqueIDBase',['../classzth_1_1_unique_i_d_base.html#ac416d0f5dcf6bdc5b6fe156bd43c0973',1,'zth::UniqueIDBase']]],
-  ['_7ewaitable_48',['~Waitable',['../classzth_1_1_waitable.html#aec11bbb37138307ff29b67ad0436d5de',1,'zth::Waitable']]],
-  ['_7ewaiter_49',['~Waiter',['../classzth_1_1_waiter.html#a3122bc9778464b5fd8e1ebb156463f33',1,'zth::Waiter']]],
-  ['_7eworker_50',['~Worker',['../classzth_1_1_worker.html#ac0b9aeda15178fbaa0f438ddc364de69',1,'zth::Worker']]],
-  ['_7ezmqpoller_51',['~ZmqPoller',['../classzth_1_1_zmq_poller.html#adcb2cf714c33443fb1586c6bc78bbc1b',1,'zth::ZmqPoller']]]
+  ['_7evcddatagenerator_48',['~VCDDataGenerator',['../classzth_1_1_v_c_d_data_generator.html#a24919f1a492fbd31fcfa6651cc79d219',1,'zth::VCDDataGenerator']]],
+  ['_7evcdgenerator_49',['~VCDGenerator',['../classzth_1_1_v_c_d_generator.html#a0f2f532f06b8e475b67d31c43251bea0',1,'zth::VCDGenerator']]],
+  ['_7evcdheadergenerator_50',['~VCDHeaderGenerator',['../classzth_1_1_v_c_d_header_generator.html#a142b773c485d0edd2468bdee8de75bf8',1,'zth::VCDHeaderGenerator']]],
+  ['_7ewaitable_51',['~Waitable',['../classzth_1_1_waitable.html#aec11bbb37138307ff29b67ad0436d5de',1,'zth::Waitable']]],
+  ['_7ewaiter_52',['~Waiter',['../classzth_1_1_waiter.html#a3122bc9778464b5fd8e1ebb156463f33',1,'zth::Waiter']]],
+  ['_7eworker_53',['~Worker',['../classzth_1_1_worker.html#ac0b9aeda15178fbaa0f438ddc364de69',1,'zth::Worker']]],
+  ['_7ezmqpoller_54',['~ZmqPoller',['../classzth_1_1_zmq_poller.html#adcb2cf714c33443fb1586c6bc78bbc1b',1,'zth::ZmqPoller']]]
 ];

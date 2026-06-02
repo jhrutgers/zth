@@ -91,6 +91,7 @@ $(document).ready(function(){initNavTree('config_8cpp.html',''); initResizable()
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">config.cpp File Reference</div></div>
 </div><!--header-->
@@ -107,12 +108,44 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacezth" id="r_namespacezth"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html">zth</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a4c04651286f2d4e2f7ca8421510b62e6" id="r_a4c04651286f2d4e2f7ca8421510b62e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8cpp.html#a4c04651286f2d4e2f7ca8421510b62e6">ZTH_CHECK</a>(x)</td></tr>
+<tr class="separator:a4c04651286f2d4e2f7ca8421510b62e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ab92f04f131045e5fabf241250d6e14ff" id="r_ab92f04f131045e5fabf241250d6e14ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab92f04f131045e5fabf241250d6e14ff">zth::config</a> (int env, bool whenUnset)</td></tr>
 <tr class="memdesc:ab92f04f131045e5fabf241250d6e14ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a given environment option is set.  <br /></td></tr>
 <tr class="separator:ab92f04f131045e5fabf241250d6e14ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09c6450fd9dda9b1bcfb594728d21df5" id="r_a09c6450fd9dda9b1bcfb594728d21df5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a09c6450fd9dda9b1bcfb594728d21df5">zth::checkConfig</a> (int check, size_t value)</td></tr>
+<tr class="memdesc:a09c6450fd9dda9b1bcfb594728d21df5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structzth_1_1_check.html">Check</a> if a given <a class="el" href="structzth_1_1_config.html" title="The configuration of Zth.">Config</a> field is the same as the given value.  <br /></td></tr>
+<tr class="separator:a09c6450fd9dda9b1bcfb594728d21df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a4c04651286f2d4e2f7ca8421510b62e6" name="a4c04651286f2d4e2f7ca8421510b62e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c04651286f2d4e2f7ca8421510b62e6">&#9670;&#160;</a></span>ZTH_CHECK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_CHECK</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">case</span> Check::Config_##x:                  \</div>
+<div class="line">                ok = (size_t)Config::x == value; \</div>
+<div class="line">                if(Config::EnableFullAssert)     \</div>
+<div class="line">                        name = <span class="stringliteral">&quot;&quot;</span> #x;            \</div>
+<div class="line">                <span class="keywordflow">break</span>;</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

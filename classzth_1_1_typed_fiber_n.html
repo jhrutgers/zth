@@ -138,6 +138,7 @@ Public Types</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa79080f9bf948873bb13aded014a28c68">Waiting</a>
 , <a class="el" href="classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa5841604cffc80791b084e96e872d7f92">Suspended</a>
+, <a class="el" href="classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa80bcce5b6d19b4a7f58ca830c492ee08">Cancel</a>
 , <a class="el" href="classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28fa6f357465066e85f1fe878b1a808b2334">Dead</a>
 <br />
  }</td></tr>
@@ -184,6 +185,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac3fed6cd0dd9d8f4cffc007645e8efe0 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3107323e8499d989b133e7ca1aaa6d1c inherit pub_methods_classzth_1_1_fiber" id="r_a3107323e8499d989b133e7ca1aaa6d1c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a3107323e8499d989b133e7ca1aaa6d1c">~Fiber</a> () noexcept override</td></tr>
 <tr class="separator:a3107323e8499d989b133e7ca1aaa6d1c inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa185503ce5c0e2a8d56ff99fefda11b1 inherit pub_methods_classzth_1_1_fiber" id="r_aa185503ce5c0e2a8d56ff99fefda11b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structzth__fiber__t.html">zth_fiber_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#aa185503ce5c0e2a8d56ff99fefda11b1">handle</a> () const noexcept</td></tr>
+<tr class="separator:aa185503ce5c0e2a8d56ff99fefda11b1 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa42a3713547a9bd6cb2a43e879ac4eba inherit pub_methods_classzth_1_1_fiber" id="r_aa42a3713547a9bd6cb2a43e879ac4eba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#aa42a3713547a9bd6cb2a43e879ac4eba">setStackSize</a> (size_t size) noexcept</td></tr>
 <tr class="separator:aa42a3713547a9bd6cb2a43e879ac4eba inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46e51dbfd2993866e07bddb7439ff728 inherit pub_methods_classzth_1_1_fiber" id="r_a46e51dbfd2993866e07bddb7439ff728"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a46e51dbfd2993866e07bddb7439ff728">stackSize</a> () const noexcept</td></tr>
@@ -208,14 +211,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5d9054718a1967f6111ddf028f7922f8 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3148b02a07ea3baca7af07cb4b71b3cd inherit pub_methods_classzth_1_1_fiber" id="r_a3148b02a07ea3baca7af07cb4b71b3cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a3148b02a07ea3baca7af07cb4b71b3cd">atCleanup</a> (<a class="el" href="classzth_1_1_hook.html#a9307ebd5f845b876c922c17458008f3f">Hook_type::function_type</a> f, <a class="el" href="classzth_1_1_hook.html#ab349da3faacd965c751a8b4d148c3665">Hook_type::arg_type</a> arg=<a class="el" href="classzth_1_1_hook.html#ab349da3faacd965c751a8b4d148c3665">Hook_type::arg_type</a>())</td></tr>
 <tr class="separator:a3148b02a07ea3baca7af07cb4b71b3cd inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ace7e43f765b1dac6ffc198052dc2ec inherit pub_methods_classzth_1_1_fiber" id="r_a4ace7e43f765b1dac6ffc198052dc2ec"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a4ace7e43f765b1dac6ffc198052dc2ec">init</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>())</td></tr>
+<tr class="memitem:a4ace7e43f765b1dac6ffc198052dc2ec inherit pub_methods_classzth_1_1_fiber" id="r_a4ace7e43f765b1dac6ffc198052dc2ec"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a4ace7e43f765b1dac6ffc198052dc2ec">init</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;<a class="el" href="namespacezth.html#a03c34acaf97b38a688167507400f12b8">now</a>=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>())</td></tr>
 <tr class="separator:a4ace7e43f765b1dac6ffc198052dc2ec inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5aa0d8684964ce9871777076f416b97 inherit pub_methods_classzth_1_1_fiber" id="r_ac5aa0d8684964ce9871777076f416b97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#ac5aa0d8684964ce9871777076f416b97">run</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;from, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>())</td></tr>
+<tr class="memitem:ac5aa0d8684964ce9871777076f416b97 inherit pub_methods_classzth_1_1_fiber" id="r_ac5aa0d8684964ce9871777076f416b97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#ac5aa0d8684964ce9871777076f416b97">run</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;from, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> <a class="el" href="namespacezth.html#a03c34acaf97b38a688167507400f12b8">now</a>=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>())</td></tr>
 <tr class="separator:ac5aa0d8684964ce9871777076f416b97 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f23c3dc932f21024665f5902fbc9046 inherit pub_methods_classzth_1_1_fiber" id="r_a4f23c3dc932f21024665f5902fbc9046"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a4f23c3dc932f21024665f5902fbc9046">allowYield</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;now=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) const noexcept</td></tr>
+<tr class="memitem:a4f23c3dc932f21024665f5902fbc9046 inherit pub_methods_classzth_1_1_fiber" id="r_a4f23c3dc932f21024665f5902fbc9046"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a4f23c3dc932f21024665f5902fbc9046">allowYield</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;<a class="el" href="namespacezth.html#a03c34acaf97b38a688167507400f12b8">now</a>=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) const noexcept</td></tr>
 <tr class="separator:a4f23c3dc932f21024665f5902fbc9046 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb78174971fd2bc96fb2a3f6072c139d inherit pub_methods_classzth_1_1_fiber" id="r_aeb78174971fd2bc96fb2a3f6072c139d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#aeb78174971fd2bc96fb2a3f6072c139d">kill</a> () noexcept</td></tr>
 <tr class="separator:aeb78174971fd2bc96fb2a3f6072c139d inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a459a6f61227ad246ff9a68b627eafb45 inherit pub_methods_classzth_1_1_fiber" id="r_a459a6f61227ad246ff9a68b627eafb45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a459a6f61227ad246ff9a68b627eafb45">cancel</a> ()</td></tr>
+<tr class="separator:a459a6f61227ad246ff9a68b627eafb45 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2c78715f4b9c7d8f08c6543d866eba1 inherit pub_methods_classzth_1_1_fiber" id="r_ad2c78715f4b9c7d8f08c6543d866eba1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#ad2c78715f4b9c7d8f08c6543d866eba1">nap</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;sleepUntil=<a class="el" href="classzth_1_1_timestamp.html#a7ea0fae11836050baf851415b0cfc752">Timestamp::null</a>()) noexcept</td></tr>
 <tr class="separator:ad2c78715f4b9c7d8f08c6543d866eba1 inherit pub_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30ff923ce3f2de121c54c2edd0352909 inherit pub_methods_classzth_1_1_fiber" id="r_a30ff923ce3f2de121c54c2edd0352909"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a30ff923ce3f2de121c54c2edd0352909">wakeup</a> () noexcept</td></tr>
@@ -294,6 +299,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a209e5cc77c0041dd232cc9888e75241a inherit pro_methods_classzth_1_1_typed_fiber" id="r_a209e5cc77c0041dd232cc9888e75241a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_typed_fiber.html#a209e5cc77c0041dd232cc9888e75241a">setFuture</a> ()</td></tr>
 <tr class="separator:a209e5cc77c0041dd232cc9888e75241a inherit pro_methods_classzth_1_1_typed_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classzth_1_1_fiber"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classzth_1_1_fiber')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classzth_1_1_fiber.html">zth::Fiber</a></td></tr>
+<tr class="memitem:a1dd0b10d8c1cc62356de8cb948bba422 inherit pro_methods_classzth_1_1_fiber" id="r_a1dd0b10d8c1cc62356de8cb948bba422"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a1dd0b10d8c1cc62356de8cb948bba422">cancelled</a> ()</td></tr>
+<tr class="separator:a1dd0b10d8c1cc62356de8cb948bba422 inherit pro_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a123b34f24005ee9f2dacb14e86901f6c inherit pro_methods_classzth_1_1_fiber" id="r_a123b34f24005ee9f2dacb14e86901f6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a123b34f24005ee9f2dacb14e86901f6c">setState</a> (<a class="el" href="classzth_1_1_fiber.html#ab45e1ac63aa1cf8c36308a8c5d39a28f">State</a> <a class="el" href="classzth_1_1_fiber.html#a07628bdb022b17dea66f0fcef7da192c">state</a>, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;t=<a class="el" href="classzth_1_1_timestamp.html#a0eb8e53a58a414abf6e44a83bb4dc133">Timestamp::now</a>()) noexcept</td></tr>
 <tr class="separator:a123b34f24005ee9f2dacb14e86901f6c inherit pro_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c02fb107f1e15ee1691b7556a57d9e inherit pro_methods_classzth_1_1_fiber" id="r_a90c02fb107f1e15ee1691b7556a57d9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a90c02fb107f1e15ee1691b7556a57d9e">fiberEntry_</a> () noexcept</td></tr>
@@ -317,6 +324,9 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_methods_classzth_1_1_fiber"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classzth_1_1_fiber')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classzth_1_1_fiber.html">zth::Fiber</a></td></tr>
+<tr class="memitem:a28341731f3788ad32b8a3a556d4708ea inherit pub_static_methods_classzth_1_1_fiber" id="r_a28341731f3788ad32b8a3a556d4708ea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classzth_1_1_fiber.html">Fiber</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_fiber.html#a28341731f3788ad32b8a3a556d4708ea">fromHandle</a> (<a class="el" href="structzth__fiber__t.html">zth_fiber_t</a> const &amp;h) noexcept</td></tr>
+<tr class="separator:a28341731f3788ad32b8a3a556d4708ea inherit pub_static_methods_classzth_1_1_fiber"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classzth_1_1_unique_i_d"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classzth_1_1_unique_i_d')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classzth_1_1_unique_i_d.html">zth::UniqueID&lt; Fiber &gt;</a></td></tr>
 <tr class="memitem:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d" id="r_adfdbcd7dd7133c865ecf4c9a3876cdc2"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_unique_i_d.html#adfdbcd7dd7133c865ecf4c9a3876cdc2">getID</a> () noexcept</td></tr>
 <tr class="separator:adfdbcd7dd7133c865ecf4c9a3876cdc2 inherit pub_static_methods_classzth_1_1_unique_i_d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -348,7 +358,7 @@ class zth::TypedFiberN&lt; F, R, Args &gt;</div><p>Actual fiber implementation f
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00566">566</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00567">567</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a435553458b6732e52352455401cb1833" name="a435553458b6732e52352455401cb1833"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a435553458b6732e52352455401cb1833">&#9670;&#160;</a></span>base</h2>
@@ -364,7 +374,7 @@ template&lt;typename F , typename R , typename Args &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00569">569</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00570">570</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -382,7 +392,7 @@ template&lt;typename F , typename R , typename Args &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00570">570</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00571">571</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -425,7 +435,7 @@ template&lt;typename F_ , typename... Args_&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00573">573</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00574">574</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -484,7 +494,7 @@ template&lt;typename F , typename R , typename Args &gt; </div>
 
 <p>Implements <a class="el" href="classzth_1_1_typed_fiber.html#a38472ebdc9467c8bf2aa312ffc6dba45">zth::TypedFiber&lt; R &gt;</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00581">581</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l00582">582</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>

@@ -6,8 +6,26 @@ var group__zth__api__cpp__util =
     [ "zth::map_type< Key, T, Compare >", "structzth_1_1map__type.html", [
       [ "type", "structzth_1_1map__type.html#afb853e35468042b333c9377d4b2465e0", null ]
     ] ],
+    [ "zth::set_type< Key, Compare >", "structzth_1_1set__type.html", [
+      [ "type", "structzth_1_1set__type.html#a358959eae38883e7517aff9bf8e7cf79", null ]
+    ] ],
     [ "zth::list_type< T >", "structzth_1_1list__type.html", [
       [ "type", "structzth_1_1list__type.html#a47601022f1d128dfb32a05db356dcf39", null ]
+    ] ],
+    [ "zth::impl::Backtrace", "classzth_1_1impl_1_1_backtrace.html", [
+      [ "bt_type", "classzth_1_1impl_1_1_backtrace.html#a7f33ef662e9ad67349eb5c7fcf220ef9", null ],
+      [ "Backtrace", "classzth_1_1impl_1_1_backtrace.html#a9b57b9a8551d1281eb79d1742c64e61d", null ],
+      [ "bt", "classzth_1_1impl_1_1_backtrace.html#a4217bb4f76bf01703cfda5887ac022a0", null ],
+      [ "bt", "classzth_1_1impl_1_1_backtrace.html#a88bc0fa189092d6a3470c69ea97d0731", null ],
+      [ "fiber", "classzth_1_1impl_1_1_backtrace.html#a5e581e715bc683cc70a82a27390fbe51", null ],
+      [ "fiberId", "classzth_1_1impl_1_1_backtrace.html#ac351ac455df5fb1a745f8c86bb73eea6", null ],
+      [ "print", "classzth_1_1impl_1_1_backtrace.html#a4cf44f0acf90f6ff1ee482904d58ffa4", null ],
+      [ "printDelta", "classzth_1_1impl_1_1_backtrace.html#a98fa8e653441780b93cc6fa0eb70b370", null ],
+      [ "printPartial", "classzth_1_1impl_1_1_backtrace.html#ad14c8f3aa4cb49f40a74a2635762bd03", null ],
+      [ "t0", "classzth_1_1impl_1_1_backtrace.html#ae2341618c16519002c070a5e23b258bd", null ],
+      [ "t1", "classzth_1_1impl_1_1_backtrace.html#adc968b9b876f06a24f05fc2304602d63", null ],
+      [ "truncated", "classzth_1_1impl_1_1_backtrace.html#a82933dfce0a4cd608c62533f27f2060e", null ],
+      [ "truncated", "classzth_1_1impl_1_1_backtrace.html#abe12302859db806c4a0e9aec2ca30c59", null ]
     ] ],
     [ "zth::Runnable", "classzth_1_1_runnable.html", [
       [ "Runnable", "classzth_1_1_runnable.html#adb04fea6d29ce97aa87d25b80b98d00e", null ],
@@ -83,6 +101,7 @@ var group__zth__api__cpp__util =
     [ "ZTH_VERSION_NUM", "group__zth__api__cpp__util.html#ga3e497c5f6a1e3d083a526307494c66bd", null ],
     [ "ZTH_VERSION_PATCH", "group__zth__api__cpp__util.html#ga2892912ba885d1255ce529e0f14eee2d", null ],
     [ "ZTH_VERSION_SUFFIX", "group__zth__api__cpp__util.html#gad38e14c5d8ad64a9586e99952293c17b", null ],
+    [ "zth::Backtrace", "group__zth__api__cpp__util.html#ga50d7c8e3df9690708e66b7798e4e0ca5", null ],
     [ "zth::string", "group__zth__api__cpp__util.html#ga7a210137c60a4a060f81aeb19a9394c0", null ],
     [ "zth::abort", "group__zth__api__cpp__util.html#ga4889d34edbac39ba98e63d58173f3b88", null ],
     [ "zth::abortv", "group__zth__api__cpp__util.html#gadbc3a543d826740574ed356738ae3da8", null ],

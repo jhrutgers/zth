@@ -93,30 +93,32 @@ $(document).ready(function(){initNavTree('perf_8cpp.html',''); initResizable(); 
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">perf.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="perf_8h_source.html">libzth/perf.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="allocator_8h_source.html">libzth/allocator.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="perf_8h_source.html">libzth/perf.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="fiber_8h_source.html">libzth/fiber.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="worker_8h_source.html">libzth/worker.h</a>&gt;</code><br />
-<code>#include &lt;cinttypes&gt;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
-<code>#include &lt;fcntl.h&gt;</code><br />
-<code>#include &lt;map&gt;</code><br />
-<code>#include &lt;sys/stat.h&gt;</code><br />
-<code>#include &lt;sys/types.h&gt;</code><br />
+<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;set&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
-<code>#include &lt;cxxabi.h&gt;</code><br />
-<code>#include &lt;dlfcn.h&gt;</code><br />
-<code>#include &lt;execinfo.h&gt;</code><br />
 </div>
 <p><a href="perf_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_perf_fiber.html">zth::PerfFiber</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_perf_buffer.html">zth::PerfBuffer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_v_c_d_generator.html">zth::VCDGenerator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_v_c_d_header_generator.html">zth::VCDHeaderGenerator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_v_c_d_data_generator.html">zth::VCDDataGenerator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -126,34 +128,105 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a7c1fcd39dbc33728a8e1f1f5212203bc" id="r_a7c1fcd39dbc33728a8e1f1f5212203bc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf_8cpp.html#a7c1fcd39dbc33728a8e1f1f5212203bc">UNW_LOCAL_ONLY</a></td></tr>
-<tr class="separator:a7c1fcd39dbc33728a8e1f1f5212203bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dfc55021d1a0579f475306d950b1f3b" id="r_a8dfc55021d1a0579f475306d950b1f3b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf_8cpp.html#a8dfc55021d1a0579f475306d950b1f3b">ZTH_VCD_USE_FILE_IO</a></td></tr>
+<tr class="separator:a8dfc55021d1a0579f475306d950b1f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ae57e12fa5a72282628e08d51e24d0f5e" id="r_ae57e12fa5a72282628e08d51e24d0f5e"><td class="memItemLeft" align="right" valign="top">typedef char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ae57e12fa5a72282628e08d51e24d0f5e">zth::leb128_buf_t</a>[9]</td></tr>
+<tr class="separator:ae57e12fa5a72282628e08d51e24d0f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aae25827a2fb5f4a4b27555ea14693b61" id="r_aae25827a2fb5f4a4b27555ea14693b61"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61">zth::PerfEvent</a> { <br />
+&#160;&#160;<a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61a8d0d01880af804cc2081954f10cfe52b">zth::PerfEventTerminate</a>
+, <a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61acb677a2621d53743778bc107ed6acf01">zth::PerfEventTime</a>
+, <a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61a0aa8a6cbf714502525e238eb57f46fb1">zth::PerfEventTimeDelta</a>
+, <a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61a82711597eb9f584e1f1f7bbe61d712e1">zth::PerfEventMarker</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61a3b8d614fa9ca98d0c825da079afa7168">zth::PerfEventLog</a>
+, <a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61a2b4d402332cc3327d77fda6ae49c84f3">zth::PerfEventFiber</a>
+, <a class="el" href="namespacezth.html#aae25827a2fb5f4a4b27555ea14693b61aee07032369700ad4f70a01f9b3863285">zth::PerfEventFiberState</a>
+<br />
+ }</td></tr>
+<tr class="separator:aae25827a2fb5f4a4b27555ea14693b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a40acff5486713748739e6a4d9a111803" id="r_a40acff5486713748739e6a4d9a111803"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a40acff5486713748739e6a4d9a111803">zth::perf_time</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t)</td></tr>
+<tr class="memdesc:a40acff5486713748739e6a4d9a111803"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a full timestamp into the perf output.  <br /></td></tr>
+<tr class="separator:a40acff5486713748739e6a4d9a111803"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b04b835ec7ef72a0a0e0a9fb4ab5a26" id="r_a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a6b04b835ec7ef72a0a0e0a9fb4ab5a26">zth::perf_dt</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t)</td></tr>
+<tr class="memdesc:a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a delta timestamp into the perf output.  <br /></td></tr>
+<tr class="separator:a6b04b835ec7ef72a0a0e0a9fb4ab5a26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8d12b1447aabe2d6d79dd49cdb5fe7bd" id="r_ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd">zth::perf_start</a> (<a class="el" href="perf_8h.html#a87354c6122947d68ac8aac5cf7552d8c">zth_perf_done_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts recording perf events.  <br /></td></tr>
+<tr class="separator:ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga01eed009522311489304233a25e725a4" id="r_ga01eed009522311489304233a25e725a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga01eed009522311489304233a25e725a4">zth::perf_stop</a> () noexcept</td></tr>
+<tr class="memdesc:ga01eed009522311489304233a25e725a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops recording perf events.  <br /></td></tr>
+<tr class="separator:ga01eed009522311489304233a25e725a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1360ae3b938458bcf67be4e5ff1cdd18" id="r_ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18">zth::perf_mark</a> (char const  *m, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t) noexcept</td></tr>
+<tr class="memdesc:ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a string marker into the perf output.  <br /></td></tr>
+<tr class="separator:ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0eb13f77535ca26fdc6041c0fd21a5a4" id="r_ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga0eb13f77535ca26fdc6041c0fd21a5a4">zth::perf_async_handle</a> (<a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *handle) noexcept</td></tr>
+<tr class="memdesc:ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the handle of the current thread's perf buffer.  <br /></td></tr>
+<tr class="separator:ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae087bdbae28e74c563220ea92491fc8c" id="r_gae087bdbae28e74c563220ea92491fc8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gae087bdbae28e74c563220ea92491fc8c">zth::perf_mark_async</a> (char const  *marker, <a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *handle) noexcept</td></tr>
+<tr class="memdesc:gae087bdbae28e74c563220ea92491fc8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async-/thread-safe <a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18" title="Put a string marker into the perf output.">zth::perf_mark()</a>.  <br /></td></tr>
+<tr class="separator:gae087bdbae28e74c563220ea92491fc8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6c69f9f5db0dbf7ca3e2a232c003d072" id="r_ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga6c69f9f5db0dbf7ca3e2a232c003d072">zth::perf_log</a> (char const  *fmt,...) noexcept</td></tr>
+<tr class="memdesc:ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0a1e79c92b8337544fb5e924997463a6" id="r_ga0a1e79c92b8337544fb5e924997463a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga0a1e79c92b8337544fb5e924997463a6">zth::perf_log</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t, char const  *fmt,...) noexcept</td></tr>
+<tr class="memdesc:ga0a1e79c92b8337544fb5e924997463a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:ga0a1e79c92b8337544fb5e924997463a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabf86b57919aaff63e23ccea75b854fca" id="r_gabf86b57919aaff63e23ccea75b854fca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gabf86b57919aaff63e23ccea75b854fca">zth::perf_logv</a> (char const  *fmt, va_list args, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t) noexcept</td></tr>
+<tr class="memdesc:gabf86b57919aaff63e23ccea75b854fca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:gabf86b57919aaff63e23ccea75b854fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed9e412ab53b9e0a11ed16d891288b1e" id="r_aed9e412ab53b9e0a11ed16d891288b1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#aed9e412ab53b9e0a11ed16d891288b1e">zth::perf_fiber</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;f) noexcept</td></tr>
+<tr class="memdesc:aed9e412ab53b9e0a11ed16d891288b1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write fiber ID/name to the perf buffer.  <br /></td></tr>
+<tr class="separator:aed9e412ab53b9e0a11ed16d891288b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02e36b3ff3ae722cdc2cdaf159390463" id="r_a02e36b3ff3ae722cdc2cdaf159390463"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a02e36b3ff3ae722cdc2cdaf159390463">zth::perf_fiber_state</a> (<a class="el" href="classzth_1_1_fiber.html">Fiber</a> &amp;f, int state, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t) noexcept</td></tr>
+<tr class="memdesc:a02e36b3ff3ae722cdc2cdaf159390463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the current fiber state.  <br /></td></tr>
+<tr class="separator:a02e36b3ff3ae722cdc2cdaf159390463"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf5fd1c0b59a49845ca9439de94c7d02" id="r_gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02">zth::perf_dump</a> (<a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Passes collected perf data to <code>f</code>.  <br /></td></tr>
+<tr class="separator:gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga893ee172a10aa17b69acc10b8d3b8f2f" id="r_ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f">zth::perf_run</a> (<a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the system to automatically perform perf event recording, dumping, and resuming.  <br /></td></tr>
+<tr class="separator:ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8318a86f83100446224fec3d05b74a16" id="r_ga8318a86f83100446224fec3d05b74a16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga8318a86f83100446224fec3d05b74a16">zth::perf_abort</a> () noexcept</td></tr>
+<tr class="memdesc:ga8318a86f83100446224fec3d05b74a16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abort a <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>.  <br /></td></tr>
+<tr class="separator:ga8318a86f83100446224fec3d05b74a16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacf6d6c58a6cab29e8da8603fe5568b69" id="r_gacf6d6c58a6cab29e8da8603fe5568b69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gacf6d6c58a6cab29e8da8603fe5568b69">zth::perf_run_dump</a> (char const  *path) noexcept</td></tr>
+<tr class="memdesc:gacf6d6c58a6cab29e8da8603fe5568b69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>, but dump the contents to file immediately.  <br /></td></tr>
+<tr class="separator:gacf6d6c58a6cab29e8da8603fe5568b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a447f951e1169d6fe43f618bce52e75f6" id="r_a447f951e1169d6fe43f618bce52e75f6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a447f951e1169d6fe43f618bce52e75f6">zth::perf_init</a> ()</td></tr>
+<tr class="memdesc:a447f951e1169d6fe43f618bce52e75f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the per-thread perf event buffer.  <br /></td></tr>
 <tr class="separator:a447f951e1169d6fe43f618bce52e75f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8a6fdc27b5e9243380e5b67d672812" id="r_a3f8a6fdc27b5e9243380e5b67d672812"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a3f8a6fdc27b5e9243380e5b67d672812">zth::perf_deinit</a> ()</td></tr>
 <tr class="separator:a3f8a6fdc27b5e9243380e5b67d672812"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71e3a50748da2dbfad52f9678bd8c179" id="r_a71e3a50748da2dbfad52f9678bd8c179"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a71e3a50748da2dbfad52f9678bd8c179">zth::perf_flushEventBuffer</a> () noexcept</td></tr>
-<tr class="separator:a71e3a50748da2dbfad52f9678bd8c179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11d3236714aa5890b5217c28f9ade701" id="r_a11d3236714aa5890b5217c28f9ade701"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a11d3236714aa5890b5217c28f9ade701">zth::context_entry</a> (<a class="el" href="classzth_1_1_context.html">Context</a> *context)</td></tr>
-<tr class="separator:a11d3236714aa5890b5217c28f9ade701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad462256aecf0ffe894a2df561c39b8c1" id="r_ad462256aecf0ffe894a2df561c39b8c1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ad462256aecf0ffe894a2df561c39b8c1">zth::perf_vcd</a> (char const  *perf, char const  *vcd) noexcept</td></tr>
+<tr class="memdesc:ad462256aecf0ffe894a2df561c39b8c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a perf file into VCD.  <br /></td></tr>
+<tr class="separator:ad462256aecf0ffe894a2df561c39b8c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd6f180de9eadb25ae26c4b8cc11df65" id="r_afd6f180de9eadb25ae26c4b8cc11df65"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#afd6f180de9eadb25ae26c4b8cc11df65">zth::perf_vcdf</a> (FILE *perf, FILE *vcd) noexcept</td></tr>
+<tr class="memdesc:afd6f180de9eadb25ae26c4b8cc11df65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a perf file into VCD.  <br /></td></tr>
+<tr class="separator:afd6f180de9eadb25ae26c4b8cc11df65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a7c1fcd39dbc33728a8e1f1f5212203bc" name="a7c1fcd39dbc33728a8e1f1f5212203bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c1fcd39dbc33728a8e1f1f5212203bc">&#9670;&#160;</a></span>UNW_LOCAL_ONLY</h2>
+<a id="a8dfc55021d1a0579f475306d950b1f3b" name="a8dfc55021d1a0579f475306d950b1f3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dfc55021d1a0579f475306d950b1f3b">&#9670;&#160;</a></span>ZTH_VCD_USE_FILE_IO</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UNW_LOCAL_ONLY</td>
+          <td class="memname">#define ZTH_VCD_USE_FILE_IO</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00007">7</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00019">19</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>

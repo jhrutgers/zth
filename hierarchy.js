@@ -13,6 +13,7 @@ var hierarchy =
     [ "zth::map_type< uint64_t, string >", "structzth_1_1map__type.html", null ],
     [ "zth::Optional< type >", "classzth_1_1_optional.html", null ],
     [ "zth::impl::Packed< R >", "structzth_1_1impl_1_1_packed.html", null ],
+    [ "zth::set_type< Known >", "structzth_1_1set__type.html", null ],
     [ "zth::SharedPointerOps< SharedPointer< T >, T >", "classzth_1_1_shared_pointer_ops.html", [
       [ "zth::SharedPointer< T >", "classzth_1_1_shared_pointer.html", null ]
     ] ],
@@ -47,7 +48,7 @@ var hierarchy =
     [ "zth::vector_type< index_type >", "structzth_1_1vector__type.html", null ],
     [ "zth::vector_type< void * >", "structzth_1_1vector__type.html", null ],
     [ "zth::vector_type< zth::fsm::Symbol >", "structzth_1_1vector__type.html", null ],
-    [ "zth::Backtrace", "classzth_1_1_backtrace.html", null ],
+    [ "zth::Check", "structzth_1_1_check.html", null ],
     [ "zth::choose_type< T, WhenTIsVoid >", "structzth_1_1choose__type.html", null ],
     [ "zth::choose_type< void, WhenTIsVoid >", "structzth_1_1choose__type_3_01void_00_01_when_t_is_void_01_4.html", null ],
     [ "zth::ContextAttr", "structzth_1_1_context_attr.html", null ],
@@ -67,6 +68,7 @@ var hierarchy =
     [ "zth::Env", "structzth_1_1_env.html", null ],
     [ "zth::EventRate< T, Bins, Count >", "classzth_1_1_event_rate.html", null ],
     [ "zth::exception", "structzth_1_1exception.html", [
+      [ "zth::cancelled", "structzth_1_1cancelled.html", null ],
       [ "zth::coro_invalid_state", "structzth_1_1coro__invalid__state.html", [
         [ "zth::coro_already_completed", "structzth_1_1coro__already__completed.html", null ]
       ] ],
@@ -126,6 +128,7 @@ var hierarchy =
     [ "zth::Hookable< T >", "classzth_1_1_hookable.html", null ],
     [ "zth::impl::any_type", "structzth_1_1impl_1_1any__type.html", null ],
     [ "zth::impl::Arguments< A >", "structzth_1_1impl_1_1_arguments.html", null ],
+    [ "zth::impl::Backtrace", "classzth_1_1impl_1_1_backtrace.html", null ],
     [ "zth::impl::ContextBase< Impl >", "classzth_1_1impl_1_1_context_base.html", [
       [ "zth::impl::ContextArch< Context >", "classzth_1_1impl_1_1_context_arch.html", [
         [ "zth::Context", "classzth_1_1_context.html", null ],
@@ -143,8 +146,11 @@ var hierarchy =
     [ "zth::impl::FunctionION< void, A, A_ >", "structzth_1_1impl_1_1_function_i_o_n_3_01void_00_01_a_00_01_a___01_4.html", null ],
     [ "zth::impl::is_function_< F >", "structzth_1_1impl_1_1is__function__.html", null ],
     [ "zth::impl::is_function_< T(Args...)>", "structzth_1_1impl_1_1is__function___3_01_t_07_args_8_8_8_08_4.html", null ],
+    [ "zth::impl::NoBacktrace", "classzth_1_1impl_1_1_no_backtrace.html", null ],
     [ "zth::impl::Packed< T >", "structzth_1_1impl_1_1_packed.html", null ],
     [ "zth::impl::Packed< T & >", "structzth_1_1impl_1_1_packed_3_01_t_01_6_01_4.html", null ],
+    [ "zth::impl::PickBacktrace< Enable >", "structzth_1_1impl_1_1_pick_backtrace.html", null ],
+    [ "zth::impl::PickBacktrace< false >", "structzth_1_1impl_1_1_pick_backtrace_3_01false_01_4.html", null ],
     [ "zth::impl::std_promise_base< T >", "classzth_1_1impl_1_1std__promise__base.html", null ],
     [ "zth::impl::std_shared_future_base< T >", "classzth_1_1impl_1_1std__shared__future__base.html", [
       [ "zth::impl::std_future_base< T * >", "classzth_1_1impl_1_1std__future__base.html", null ],
@@ -180,8 +186,7 @@ var hierarchy =
     [ "zth::monotonic_clock", "structzth_1_1monotonic__clock.html", null ],
     [ "zth::Optional< T >", "classzth_1_1_optional.html", null ],
     [ "zth::Optional< void >", "classzth_1_1_optional_3_01void_01_4.html", null ],
-    [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", null ],
-    [ "zth::PerfEvent< false >", "structzth_1_1_perf_event_3_01false_01_4.html", null ],
+    [ "zth::PerfBuffer", "classzth_1_1_perf_buffer.html", null ],
     [ "zth::PeriodicWakeUp", "classzth_1_1_periodic_wake_up.html", null ],
     [ "zth::Pollable", "structzth_1_1_pollable.html", [
       [ "zth::PollableFd", "structzth_1_1_pollable_fd.html", null ]
@@ -225,11 +230,11 @@ var hierarchy =
     [ "zth::Register< T, Addr, Fields >", "structzth_1_1_register.html", null ],
     [ "zth::remove_function_cvref< F >", "structzth_1_1remove__function__cvref.html", null ],
     [ "zth::Runnable", "classzth_1_1_runnable.html", [
-      [ "zth::PerfFiber", "classzth_1_1_perf_fiber.html", null ],
       [ "zth::Waiter", "classzth_1_1_waiter.html", null ]
     ] ],
     [ "zth::safe_ptr< T >", "classzth_1_1safe__ptr.html", null ],
     [ "zth::Sequence<... >", "structzth_1_1_sequence.html", null ],
+    [ "zth::set_type< Key, Compare >", "structzth_1_1set__type.html", null ],
     [ "zth::SharedPointerOps< Impl, T >", "classzth_1_1_shared_pointer_ops.html", [
       [ "zth::SharedPointer< zth::Future< T * > >", "classzth_1_1_shared_pointer.html", null ],
       [ "zth::SharedPointer< zth::Future< void > >", "classzth_1_1_shared_pointer.html", null ],
@@ -295,15 +300,22 @@ var hierarchy =
       ] ],
       [ "zth::NamedUniqueID< false >", "classzth_1_1_named_unique_i_d_3_01false_01_4.html", null ]
     ] ],
+    [ "zth::VCDGenerator", "classzth_1_1_v_c_d_generator.html", [
+      [ "zth::VCDDataGenerator", "classzth_1_1_v_c_d_data_generator.html", null ],
+      [ "zth::VCDHeaderGenerator", "classzth_1_1_v_c_d_header_generator.html", null ]
+    ] ],
     [ "zth::vector_type< T >", "structzth_1_1vector__type.html", null ],
     [ "zth::Waitable", "classzth_1_1_waitable.html", [
       [ "zth::TimedWaitable", "classzth_1_1_timed_waitable.html", null ]
     ] ],
     [ "zth_cond_t", "structzth__cond__t.html", null ],
+    [ "zth_fiber_t", "structzth__fiber__t.html", null ],
     [ "zth_future_t", "structzth__future__t.html", null ],
     [ "zth_gate_t", "structzth__gate__t.html", null ],
+    [ "zth_indirection_t", "structzth__indirection__t.html", null ],
     [ "zth_init_entry", "structzth__init__entry.html", null ],
     [ "zth_mailbox_t", "structzth__mailbox__t.html", null ],
     [ "zth_mutex_t", "structzth__mutex__t.html", null ],
+    [ "zth_perf_async_handle_t", "structzth__perf__async__handle__t.html", null ],
     [ "zth_sem_t", "structzth__sem__t.html", null ]
 ];

@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('config_8h.html',''); initResizable(); 
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="macros_8h_source.html">libzth/macros.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="init_8h_source.html">libzth/init.h</a>&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;sys/time.h&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
@@ -115,6 +116,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_default_config_1_1_allocator.html">zth::DefaultConfig::Allocator&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structzth_1_1_default_config_1_1_allocator.html" title="Allocator type.">Allocator</a> type.  <a href="structzth_1_1_default_config_1_1_allocator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_check.html">zth::Check</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -128,14 +131,69 @@ Macros</h2></td></tr>
 <tr class="separator:ga05849634b61cc2af248e038ee2cbea39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dc6738312e609350b3a781fccd764db" id="r_a6dc6738312e609350b3a781fccd764db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a6dc6738312e609350b3a781fccd764db">ZTH_CONSTEXPR_RETURN</a>(type, ...)&#160;&#160;&#160;return {__VA_ARGS__};</td></tr>
 <tr class="separator:a6dc6738312e609350b3a781fccd764db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3f1c04390ab743ae046e7c367146a47" id="r_ad3f1c04390ab743ae046e7c367146a47"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad3f1c04390ab743ae046e7c367146a47">ZTH_CONFIG_MIN_TIMESLICE_</a>&#160;&#160;&#160;100000</td></tr>
+<tr class="separator:ad3f1c04390ab743ae046e7c367146a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a857b82e7d25fd86a54c74c4bd52429c5" id="r_a857b82e7d25fd86a54c74c4bd52429c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a857b82e7d25fd86a54c74c4bd52429c5">ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_</a>&#160;&#160;&#160;10000000</td></tr>
+<tr class="separator:a857b82e7d25fd86a54c74c4bd52429c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c04651286f2d4e2f7ca8421510b62e6" id="r_a4c04651286f2d4e2f7ca8421510b62e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a4c04651286f2d4e2f7ca8421510b62e6">ZTH_CHECK</a>(x)&#160;&#160;&#160;checkConfig(Check::Config_##x, (size_t)Config::x);</td></tr>
+<tr class="separator:a4c04651286f2d4e2f7ca8421510b62e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ab92f04f131045e5fabf241250d6e14ff" id="r_ab92f04f131045e5fabf241250d6e14ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#ab92f04f131045e5fabf241250d6e14ff">zth::config</a> (int env, bool whenUnset)</td></tr>
 <tr class="memdesc:ab92f04f131045e5fabf241250d6e14ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a given environment option is set.  <br /></td></tr>
 <tr class="separator:ab92f04f131045e5fabf241250d6e14ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09c6450fd9dda9b1bcfb594728d21df5" id="r_a09c6450fd9dda9b1bcfb594728d21df5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacezth.html#a09c6450fd9dda9b1bcfb594728d21df5">zth::checkConfig</a> (int check, size_t value)</td></tr>
+<tr class="memdesc:a09c6450fd9dda9b1bcfb594728d21df5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structzth_1_1_check.html">Check</a> if a given <a class="el" href="structzth_1_1_config.html" title="The configuration of Zth.">Config</a> field is the same as the given value.  <br /></td></tr>
+<tr class="separator:a09c6450fd9dda9b1bcfb594728d21df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a4c04651286f2d4e2f7ca8421510b62e6" name="a4c04651286f2d4e2f7ca8421510b62e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c04651286f2d4e2f7ca8421510b62e6">&#9670;&#160;</a></span>ZTH_CHECK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_CHECK</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x</td><td>)</td>
+          <td>&#160;&#160;&#160;checkConfig(Check::Config_##x, (size_t)Config::x);</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad3f1c04390ab743ae046e7c367146a47" name="ad3f1c04390ab743ae046e7c367146a47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3f1c04390ab743ae046e7c367146a47">&#9670;&#160;</a></span>ZTH_CONFIG_MIN_TIMESLICE_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_CONFIG_MIN_TIMESLICE_&#160;&#160;&#160;100000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a857b82e7d25fd86a54c74c4bd52429c5" name="a857b82e7d25fd86a54c74c4bd52429c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a857b82e7d25fd86a54c74c4bd52429c5">&#9670;&#160;</a></span>ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ZTH_CONFIG_TIMESLICE_OVERRUN_REPORT_THRESHOLD_&#160;&#160;&#160;10000000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a6dc6738312e609350b3a781fccd764db" name="a6dc6738312e609350b3a781fccd764db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6dc6738312e609350b3a781fccd764db">&#9670;&#160;</a></span>ZTH_CONSTEXPR_RETURN</h2>
 
@@ -162,7 +220,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00051">51</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00053">53</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>

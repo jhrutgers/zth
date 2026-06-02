@@ -1,6 +1,7 @@
 var group__zth__api__cpp =
 [
     [ "0MQ", "group__zth__api__cpp__zmq.html", "group__zth__api__cpp__zmq" ],
+    [ "Indirection", "group__zth__api__indirection.html", "group__zth__api__indirection" ],
     [ "config", "group__zth__api__cpp__config.html", "group__zth__api__cpp__config" ],
     [ "coro", "group__zth__api__cpp__coro.html", "group__zth__api__cpp__coro" ],
     [ "fiber", "group__zth__api__cpp__fiber.html", "group__zth__api__cpp__fiber" ],

@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('md_dist_2qemu-arm-a15_2_r_e_a_d_m_e-_a
 <p>The directory <code>dist/qemu-arm-a15</code> contains a set of files that shows how to do this. It targets a QEMU virt machine to run the examples, and can be built on Ubuntu. This virt machine uses an ARM Cortex-A15 with VFP (without NEON). The implementation is not very sophisticated, but shows you where to start, if you have your own ARM system. The compiler, linker script, and startup files are probably supplied to you by the manufacturer of your board.</p>
 <p>To get the stuff running, do this:</p>
 <ol type="1">
-<li>Run <code>bootstrap.sh</code>.</li>
+<li>Run <code>bootstrap.sh</code>. If you also want to build the Rust examples, run <code>bootstrap.sh -r</code>.</li>
 <li>Run <code>build.sh</code>. Optionally, provide the <code>CMAKE_BUILD_TYPE</code> as first command line argument. It will use <code>arm-none-eabi-g++</code> to cross-compile the Zth library and examples. Additionally, a BSP library is built, using <code>crt0.c</code> and <code>startup.S</code>. These files include the interrupt vector for the ARM, initialization of the VFP, C/C++-runtime boot code, and the system calls that <code>newlib</code> needs, like <code>_read()</code> and <code>_write()</code>.</li>
 <li>Run QEMU with one of the examples. (Note: Press 'Ctrl-A X' to terminate QEMU) <pre class="fragment">         qemu-system-arm -machine virt -cpu cortex-a15 -s -m 8M -nographic -kernel build/deploy/bin/1_helloworld
 </pre> ...or simplified: <pre class="fragment">         ./run.sh build/deploy/bin/1_helloworld

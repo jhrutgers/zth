@@ -213,7 +213,7 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="4_sync_8cpp-example.html#a2">4_sync.cpp</a>, <a class="el" href="7_coro_8cpp-example.html#a4">7_coro.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a3">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00417">417</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00427">427</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -242,7 +242,7 @@ Functions</h2></td></tr>
 
 <p>Return the (thread-local) singleton <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a> instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00407">407</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00417">417</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -280,7 +280,7 @@ Functions</h2></td></tr>
 
 <p>Start an external program. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00093">93</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00103">103</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -312,7 +312,7 @@ Functions</h2></td></tr>
 
 <p>Start an external program. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00153">153</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00163">163</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -347,7 +347,7 @@ template&lt;typename F &gt; </div>
 <p>Create a new fiber. </p>
 <p>Actually, it returns a factory, that allows passing the fiber arguments afterwards. </p>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01131">1131</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01160">1160</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -388,11 +388,11 @@ template&lt;typename F , typename... Args&gt; </div>
   </dd>
 </dl>
 <p>This function creates and starts a new fiber in one step. It is equivalent to: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> f = <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga69a3ec45db02cd8dfdcb74735d16efe5">zth::factory</a>(func)(args...);</div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga69a3ec45db02cd8dfdcb74735d16efe5"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga69a3ec45db02cd8dfdcb74735d16efe5">zth::factory</a></div><div class="ttdeci">fiber_type&lt; F &gt;::factory factory(F &amp;&amp;f, char const *name=nullptr)</div><div class="ttdoc">Create a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01131">async.h:1131</a></div></div>
-</div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a1">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a0">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a5">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a9">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a13">5_perf.cpp</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a7">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a6">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a12">measure.cpp</a>, <a class="el" href="socks_8cpp-example.html#a6">socks.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a8">zmq.cpp</a>.</dd>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga69a3ec45db02cd8dfdcb74735d16efe5"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga69a3ec45db02cd8dfdcb74735d16efe5">zth::factory</a></div><div class="ttdeci">fiber_type&lt; F &gt;::factory factory(F &amp;&amp;f, char const *name=nullptr)</div><div class="ttdoc">Create a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01160">async.h:1160</a></div></div>
+</div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a1">1_helloworld.cpp</a>, <a class="el" href="2_fibers_8cpp-example.html#a0">2_fibers.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a5">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a9">4_sync.cpp</a>, <a class="el" href="5_perf_8cpp-example.html#a10">5_perf.cpp</a>, <a class="el" href="daemon_pattern_8cpp-example.html#a7">daemon_pattern.cpp</a>, <a class="el" href="fsm14_8cpp-example.html#a6">fsm14.cpp</a>, <a class="el" href="measure_8cpp-example.html#a12">measure.cpp</a>, <a class="el" href="socks_8cpp-example.html#a6">socks.cpp</a>, and <a class="el" href="zmq_8cpp-example.html#a8">zmq.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01192">1192</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="async_8h_source.html#l01221">1221</a> of file <a class="el" href="async_8h_source.html">async.h</a>.</p>
 
 </div>
 </div>
@@ -421,7 +421,7 @@ template&lt;typename F , typename... Args&gt; </div>
 
 <p>Return the fiber-local storage, as set by setFls(). </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00564">564</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00631">631</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -547,7 +547,7 @@ template&lt;typename F , typename... Args&gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="3_coop_8cpp-example.html#a6">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a5">4_sync.cpp</a>, and <a class="el" href="7_coro_8cpp-example.html#a5">7_coro.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00476">476</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00486">486</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>
@@ -578,7 +578,7 @@ template&lt;typename F , typename... Args&gt; </div>
 <p>Set the fiber-local storage. </p>
 <p>This is just like thread-local storage, but per fiber. </p>
 
-<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00576">576</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fiber_8h_source.html#l00643">643</a> of file <a class="el" href="fiber_8h_source.html">fiber.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +616,7 @@ template&lt;typename F , typename... Args&gt; </div>
 
 <p>Start a new thread, create a <a class="el" href="classzth_1_1_worker.html" title="The class that manages the fibers within this thread.">Worker</a>, with one fiber, which executes <code>f</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00062">62</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8cpp_source.html#l00072">72</a> of file <a class="el" href="worker_8cpp_source.html">worker.cpp</a>.</p>
 
 </div>
 </div>
@@ -798,7 +798,7 @@ template&lt;typename F , typename std::enable_if&lt;!std::is_base_of&lt; <a clas
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="1_helloworld_8cpp-example.html#a0">1_helloworld.cpp</a>, <a class="el" href="3_coop_8cpp-example.html#a3">3_coop.cpp</a>, <a class="el" href="4_sync_8cpp-example.html#a7">4_sync.cpp</a>, and <a class="el" href="measure_8cpp-example.html#a10">measure.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00454">454</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="worker_8h_source.html#l00464">464</a> of file <a class="el" href="worker_8h_source.html">worker.h</a>.</p>
 
 </div>
 </div>

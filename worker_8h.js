@@ -12,6 +12,7 @@ var worker_8h =
     [ "startWorkerThread", "worker_8h.html#ga17f92480e82203077853ee3e3c59d3d5", null ],
     [ "suspend", "worker_8h.html#abaf179a15df72c3e1a5c678697917edf", null ],
     [ "yield", "worker_8h.html#ga727bc20a95cfe9f95c19a5c0367a77dc", null ],
+    [ "zth_current_fiber", "group__zth__api__c__fiber.html#ga864c78b26696e5eb9708d099795618a4", null ],
     [ "zth_execvp", "group__zth__api__c__fiber.html#ga55027710aee632bb2d78893ba6c37afa", null ],
     [ "zth_outOfWork", "group__zth__api__c__fiber.html#ga2749b94d2c18d73e39af1ca929413011", null ],
     [ "zth_startWorkerThread", "group__zth__api__c__fiber.html#ga5d642b95d4322b753639b1d3382af1be", null ],

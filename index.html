@@ -102,6 +102,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li>The configuration can be tailored towards your target, such as fiber stack size, time slices, debug/VCD output.</li>
 <li>Usage of dynamic memory is minimized (only during fiber creation and cleanup), and it allocator-aware.</li>
 <li>Support for <a href="https://github.com/google/sanitizers">ASan, LSan, UBSan</a>, and <a href="https://valgrind.org/">Valgrind</a>.</li>
+<li>Rust API wrapper.</li>
 </ul>
 <p>Working with fibers is very easy. The <code>examples/1_helloworld</code> example starts two fibers by using <code><a class="el" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1" title="Create and start a new fiber.">zth::fiber()</a></code>:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="zth.html">zth</a>&gt;</span></div>
@@ -125,9 +126,9 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="line">        <a class="code hl_function" href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a>(hello);</div>
 <div class="line">        <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main_8cpp_source.html#l00011">main.cpp:11</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01192">async.h:1192</a></div></div>
-<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga727bc20a95cfe9f95c19a5c0367a77dc"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=nullptr, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdoc">Allow a context switch.</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00454">worker.h:454</a></div></div>
+<div class="ttc" id="afiber_8h_html_ac8d3574f284314abb573cdb5762eaf94"><div class="ttname"><a href="fiber_8h.html#ac8d3574f284314abb573cdb5762eaf94">main_fiber</a></div><div class="ttdeci">int main_fiber(int argc, char **argv)</div><div class="ttdef"><b>Definition</b> <a href="main__fiber_8cpp_source.html#l00014">main_fiber.cpp:14</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga726ffb960e201a580e3ee6c82bf3a5e1"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga726ffb960e201a580e3ee6c82bf3a5e1">zth::fiber</a></div><div class="ttdeci">fiber_type&lt; F &gt;::fiber fiber(F &amp;&amp;f, Args &amp;&amp;... args)</div><div class="ttdoc">Create and start a new fiber.</div><div class="ttdef"><b>Definition</b> <a href="async_8h_source.html#l01221">async.h:1221</a></div></div>
+<div class="ttc" id="agroup__zth__api__cpp__fiber_html_ga727bc20a95cfe9f95c19a5c0367a77dc"><div class="ttname"><a href="group__zth__api__cpp__fiber.html#ga727bc20a95cfe9f95c19a5c0367a77dc">zth::yield</a></div><div class="ttdeci">void yield(Fiber *preferFiber=nullptr, bool alwaysYield=false, Timestamp const &amp;now=Timestamp::now())</div><div class="ttdoc">Allow a context switch.</div><div class="ttdef"><b>Definition</b> <a href="worker_8h_source.html#l00464">worker.h:464</a></div></div>
 <div class="ttc" id="azth_html"><div class="ttname"><a href="zth.html">zth</a></div></div>
 </div><!-- fragment --><p>Notable other features include:</p>
 <ul>
@@ -147,7 +148,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </ul>
 <p>Check out the <code>dist</code> directory for example targets.</p>
 <h2>How to build</h2>
-<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>. VS Code configuration is available too.</p>
+<p>To install all build dependencies, run <code>dist/&lt;platform&gt;/bootstrap</code> (as Administrator under Windows). If you also want to build the Rust examples, pass the flag <code>-r</code> to the bootstrap script. Next, run <code>dist/&lt;platform&gt;/build</code> to build the library and all examples. By default, release builds are generated. To do debug builds, pass <code>Debug</code> as command line argument to <code>dist/&lt;platform&gt;/build</code>. VS Code configuration is available too.</p>
 <p>After building, check out the <code>doxygen/html</code> directory for <a href="https://jhrutgers.github.io/zth">documentation</a>.</p>
 <h3>How to integrate in your project</h3>
 <p>Configure Zth options as required, like this:</p>
@@ -169,6 +170,10 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
  When set to 1, the perf VCD logs will contain all calls to Zth's special functions. Enabled by default.</li>
 <li><code>ZTH_CONFIG_CHECK_TIMESLICE_OVERRUN</code> When set to 1, check at every context switch if the timeslice was overrun significantly. Only the longest overrun is reported. Enabled by default in the debug build, not available in release builds.</li>
 </ul>
+<h2>Rust</h2>
+<p>A <a href="https://jhrutgers.github.io/zth/rust/zth/index.html">Rust API wrapper crate</a> is added to allow Zth run fibers written in Rust. It uses the existing C API, but adds convenient wrappers for argument and return types, for example, to match the C++ interface.</p>
+<p>As Rust as low overhead and is feasible to use on embedded targets, it is a good approach to implement safety-critical portions of the application. As microcontrollers have a large C/C++ ecosystem, Zth allows easily embedding safe Rust code in such an application.</p>
+<p>You may pick other (pure) Rust run-time systems to do async/concurrent applications on embedded targets, but I needed (probably for some more time in the future) a C/C++ framework. Therefore this Rust extension to Zth.</p>
 <h2>Related</h2>
 <p>A predecessor project was called Xi, as the Greek capital symbol suggests parallel threads. In this project, preemptive multitasking is implemented. In the same context, the Z(eta) symbol suggests that threads are not parallel, but they explicitly yield from one to another.</p>
 <p><a href="https://www.gnu.org/software/pth/">GNU Pth</a> has been a great inspiration for this library.</p>

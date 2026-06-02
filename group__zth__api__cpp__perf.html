@@ -91,7 +91,6 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__perf.html',''); 
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">perf<div class="ingroups"><a class="el" href="group__zth__api__cpp.html">C++ API</a></div></div></div>
 </div><!--header-->
@@ -99,12 +98,6 @@ $(document).ready(function(){initNavTree('group__zth__api__cpp__perf.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_backtrace.html">zth::Backtrace</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save a backtrace.  <a href="classzth_1_1_backtrace.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structzth_1_1_perf_event.html">zth::PerfEvent&lt; Enable &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An event to be processed by <a class="el" href="namespacezth.html#aa0a9cb2d2794cd2768a0b5fde149f179">perf_event()</a>.  <a href="structzth_1_1_perf_event.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classzth_1_1_load.html">zth::Load&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure the load of some activity.  <a href="classzth_1_1_load.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,52 +105,149 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure the rate of some event in Hz.  <a href="classzth_1_1_event_rate.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ga6bc9fae666913eb0855d1402f45bf302" id="r_ga6bc9fae666913eb0855d1402f45bf302"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302">zth_perf_event</a>(...)</td></tr>
-<tr class="memdesc:ga6bc9fae666913eb0855d1402f45bf302"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="structzth_1_1_perf_event.html" title="An event to be processed by perf_event().">zth::PerfEvent</a> with provided parameters, and forward it to the perf buffer for later processing.  <br /></td></tr>
-<tr class="separator:ga6bc9fae666913eb0855d1402f45bf302"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga1c4be8da3bfdda3cd7edfb6bbbc98428" id="r_ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428">zth::perf_mark</a> (char const *marker)</td></tr>
-<tr class="memdesc:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a string marker into the perf output.  <br /></td></tr>
-<tr class="separator:ga1c4be8da3bfdda3cd7edfb6bbbc98428"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga37750cc0aa9a7e2dde894e68c125292e" id="r_ga37750cc0aa9a7e2dde894e68c125292e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e">zth::perf_log</a> (char const *fmt,...)</td></tr>
-<tr class="memdesc:ga37750cc0aa9a7e2dde894e68c125292e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
-<tr class="separator:ga37750cc0aa9a7e2dde894e68c125292e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga782d1fce6ab5169e3e80376e5c00c1d4" id="r_ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga782d1fce6ab5169e3e80376e5c00c1d4">zth::perf_logv</a> (char const *fmt, va_list args)</td></tr>
-<tr class="memdesc:ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
-<tr class="separator:ga782d1fce6ab5169e3e80376e5c00c1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8d12b1447aabe2d6d79dd49cdb5fe7bd" id="r_ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd">zth::perf_start</a> (<a class="el" href="perf_8h.html#a87354c6122947d68ac8aac5cf7552d8c">zth_perf_done_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts recording perf events.  <br /></td></tr>
+<tr class="separator:ga8d12b1447aabe2d6d79dd49cdb5fe7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga01eed009522311489304233a25e725a4" id="r_ga01eed009522311489304233a25e725a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga01eed009522311489304233a25e725a4">zth::perf_stop</a> () noexcept</td></tr>
+<tr class="memdesc:ga01eed009522311489304233a25e725a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops recording perf events.  <br /></td></tr>
+<tr class="separator:ga01eed009522311489304233a25e725a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1360ae3b938458bcf67be4e5ff1cdd18" id="r_ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18">zth::perf_mark</a> (char const  *m, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t) noexcept</td></tr>
+<tr class="memdesc:ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a string marker into the perf output.  <br /></td></tr>
+<tr class="separator:ga1360ae3b938458bcf67be4e5ff1cdd18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0eb13f77535ca26fdc6041c0fd21a5a4" id="r_ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga0eb13f77535ca26fdc6041c0fd21a5a4">zth::perf_async_handle</a> (<a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *handle) noexcept</td></tr>
+<tr class="memdesc:ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the handle of the current thread's perf buffer.  <br /></td></tr>
+<tr class="separator:ga0eb13f77535ca26fdc6041c0fd21a5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae087bdbae28e74c563220ea92491fc8c" id="r_gae087bdbae28e74c563220ea92491fc8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gae087bdbae28e74c563220ea92491fc8c">zth::perf_mark_async</a> (char const  *marker, <a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *handle) noexcept</td></tr>
+<tr class="memdesc:gae087bdbae28e74c563220ea92491fc8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async-/thread-safe <a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18" title="Put a string marker into the perf output.">zth::perf_mark()</a>.  <br /></td></tr>
+<tr class="separator:gae087bdbae28e74c563220ea92491fc8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6c69f9f5db0dbf7ca3e2a232c003d072" id="r_ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga6c69f9f5db0dbf7ca3e2a232c003d072">zth::perf_log</a> (char const  *fmt,...) noexcept</td></tr>
+<tr class="memdesc:ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:ga6c69f9f5db0dbf7ca3e2a232c003d072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0a1e79c92b8337544fb5e924997463a6" id="r_ga0a1e79c92b8337544fb5e924997463a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga0a1e79c92b8337544fb5e924997463a6">zth::perf_log</a> (<a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t, char const  *fmt,...) noexcept</td></tr>
+<tr class="memdesc:ga0a1e79c92b8337544fb5e924997463a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:ga0a1e79c92b8337544fb5e924997463a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabf86b57919aaff63e23ccea75b854fca" id="r_gabf86b57919aaff63e23ccea75b854fca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gabf86b57919aaff63e23ccea75b854fca">zth::perf_logv</a> (char const  *fmt, va_list args, <a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const  &amp;t) noexcept</td></tr>
+<tr class="memdesc:gabf86b57919aaff63e23ccea75b854fca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put a formatted log string into the perf output.  <br /></td></tr>
+<tr class="separator:gabf86b57919aaff63e23ccea75b854fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf5fd1c0b59a49845ca9439de94c7d02" id="r_gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02">zth::perf_dump</a> (<a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Passes collected perf data to <code>f</code>.  <br /></td></tr>
+<tr class="separator:gaaf5fd1c0b59a49845ca9439de94c7d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga893ee172a10aa17b69acc10b8d3b8f2f" id="r_ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f">zth::perf_run</a> (<a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *f) noexcept</td></tr>
+<tr class="memdesc:ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the system to automatically perform perf event recording, dumping, and resuming.  <br /></td></tr>
+<tr class="separator:ga893ee172a10aa17b69acc10b8d3b8f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8318a86f83100446224fec3d05b74a16" id="r_ga8318a86f83100446224fec3d05b74a16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#ga8318a86f83100446224fec3d05b74a16">zth::perf_abort</a> () noexcept</td></tr>
+<tr class="memdesc:ga8318a86f83100446224fec3d05b74a16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abort a <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>.  <br /></td></tr>
+<tr class="separator:ga8318a86f83100446224fec3d05b74a16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacf6d6c58a6cab29e8da8603fe5568b69" id="r_gacf6d6c58a6cab29e8da8603fe5568b69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__zth__api__cpp__perf.html#gacf6d6c58a6cab29e8da8603fe5568b69">zth::perf_run_dump</a> (char const  *path) noexcept</td></tr>
+<tr class="memdesc:gacf6d6c58a6cab29e8da8603fe5568b69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>, but dump the contents to file immediately.  <br /></td></tr>
+<tr class="separator:gacf6d6c58a6cab29e8da8603fe5568b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>This module allows generating a VCD file (in the current working directory), which tracks scheduling behavior of the application. </p>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ga6bc9fae666913eb0855d1402f45bf302" name="ga6bc9fae666913eb0855d1402f45bf302"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6bc9fae666913eb0855d1402f45bf302">&#9670;&#160;</a></span>zth_perf_event</h2>
+<p>This module allows generating a VCD file which tracks scheduling behavior of the application. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga8318a86f83100446224fec3d05b74a16" name="ga8318a86f83100446224fec3d05b74a16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8318a86f83100446224fec3d05b74a16">&#9670;&#160;</a></span>perf_abort()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">#define zth_perf_event</td>
+          <td class="memname">void zth::perf_abort </td>
           <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Construct a <a class="el" href="structzth_1_1_perf_event.html" title="An event to be processed by perf_event().">zth::PerfEvent</a> with provided parameters, and forward it to the perf buffer for later processing. </p>
+<p>Abort a <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00294">294</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00700">700</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="ga37750cc0aa9a7e2dde894e68c125292e" name="ga37750cc0aa9a7e2dde894e68c125292e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga37750cc0aa9a7e2dde894e68c125292e">&#9670;&#160;</a></span>perf_log()</h2>
+<a id="ga0eb13f77535ca26fdc6041c0fd21a5a4" name="ga0eb13f77535ca26fdc6041c0fd21a5a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0eb13f77535ca26fdc6041c0fd21a5a4">&#9670;&#160;</a></span>perf_async_handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_async_handle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *&#160;</td>
+          <td class="paramname"><em>handle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the handle of the current thread's perf buffer. </p>
+<dl class="section see"><dt>See also</dt><dd>perf_mark_async() </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00408">408</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="gaaf5fd1c0b59a49845ca9439de94c7d02" name="gaaf5fd1c0b59a49845ca9439de94c7d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaf5fd1c0b59a49845ca9439de94c7d02">&#9670;&#160;</a></span>perf_dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_dump </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *&#160;</td>
+          <td class="paramname"><em>f</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Passes collected perf data to <code>f</code>. </p>
+<p>The data (pointer to a buffer and its length) passed to <code>f</code> can be converted to VCD later on. Write the data to file or stdout, for example, for later processing.</p>
+<p>The internal buffer is erased afterwards.</p>
+<p>Typical workflow:</p>
+<ul>
+<li>Call <a class="el" href="group__zth__api__cpp__perf.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd" title="Starts recording perf events.">zth::perf_start()</a> when event collection is required.</li>
+<li>Wait till the callback to <a class="el" href="group__zth__api__cpp__perf.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd" title="Starts recording perf events.">zth::perf_start()</a> is invoked.</li>
+<li>Call <a class="el" href="group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02" title="Passes collected perf data to f.">zth::perf_dump()</a> to convert the buffer to be sent to the PC.</li>
+<li>On the PC (offline), process the buffer into VCD. </li>
+</ul>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00572">572</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ga6c69f9f5db0dbf7ca3e2a232c003d072" name="ga6c69f9f5db0dbf7ca3e2a232c003d072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6c69f9f5db0dbf7ca3e2a232c003d072">&#9670;&#160;</a></span>perf_log() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +275,7 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -194,12 +284,58 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a8">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00336">336</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00443">443</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ga782d1fce6ab5169e3e80376e5c00c1d4" name="ga782d1fce6ab5169e3e80376e5c00c1d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga782d1fce6ab5169e3e80376e5c00c1d4">&#9670;&#160;</a></span>perf_logv()</h2>
+<a id="ga0a1e79c92b8337544fb5e924997463a6" name="ga0a1e79c92b8337544fb5e924997463a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0a1e79c92b8337544fb5e924997463a6">&#9670;&#160;</a></span>perf_log() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_log </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Put a formatted log string into the perf output. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00455">455</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="gabf86b57919aaff63e23ccea75b854fca" name="gabf86b57919aaff63e23ccea75b854fca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabf86b57919aaff63e23ccea75b854fca">&#9670;&#160;</a></span>perf_logv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,7 +353,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">va_list&#160;</td>
-          <td class="paramname"><em>args</em>&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td>
+          <td class="paramname"><em>t</em> = <code><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a>()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -227,19 +369,19 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Put a formatted log string into the perf output. </p>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00352">352</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00467">467</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ga1c4be8da3bfdda3cd7edfb6bbbc98428" name="ga1c4be8da3bfdda3cd7edfb6bbbc98428"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1c4be8da3bfdda3cd7edfb6bbbc98428">&#9670;&#160;</a></span>perf_mark()</h2>
+<a id="ga1360ae3b938458bcf67be4e5ff1cdd18" name="ga1360ae3b938458bcf67be4e5ff1cdd18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1360ae3b938458bcf67be4e5ff1cdd18">&#9670;&#160;</a></span>perf_mark()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,13 +393,23 @@ Functions</h2></td></tr>
           <td class="memname">void zth::perf_mark </td>
           <td>(</td>
           <td class="paramtype">char const *&#160;</td>
-          <td class="paramname"><em>marker</em></td><td>)</td>
+          <td class="paramname"><em>marker</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a> const &amp;&#160;</td>
+          <td class="paramname"><em>t</em> = <code><a class="el" href="classzth_1_1_timestamp.html">Timestamp</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -266,7 +418,177 @@ Functions</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="5_perf_8cpp-example.html#a4">5_perf.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="perf_8h_source.html#l00326">326</a> of file <a class="el" href="perf_8h_source.html">perf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00394">394</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="gae087bdbae28e74c563220ea92491fc8c" name="gae087bdbae28e74c563220ea92491fc8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae087bdbae28e74c563220ea92491fc8c">&#9670;&#160;</a></span>perf_mark_async()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_mark_async </td>
+          <td>(</td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>marker</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structzth__perf__async__handle__t.html">zth_perf_async_handle_t</a> *&#160;</td>
+          <td class="paramname"><em>handle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Async-/thread-safe <a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18" title="Put a string marker into the perf output.">zth::perf_mark()</a>. </p>
+<p>This function performs <a class="el" href="group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18" title="Put a string marker into the perf output.">zth::perf_mark()</a> on another thread's perf event buffer, of which its handle is retrieved by the owner thread using <a class="el" href="group__zth__api__cpp__perf.html#ga0eb13f77535ca26fdc6041c0fd21a5a4" title="Returns the handle of the current thread&#39;s perf buffer.">zth::perf_async_handle()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00424">424</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ga893ee172a10aa17b69acc10b8d3b8f2f" name="ga893ee172a10aa17b69acc10b8d3b8f2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga893ee172a10aa17b69acc10b8d3b8f2f">&#9670;&#160;</a></span>perf_run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_run </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="perf_8h.html#a597deff62ca685a7b58f07a60be02386">zth_perf_dump_callback_t</a> *&#160;</td>
+          <td class="paramname"><em>f</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Setup the system to automatically perform perf event recording, dumping, and resuming. </p>
+<p>Typical workflow:</p>
+<ul>
+<li>Make sure Config::DoPerfEvent is set (optionally via environment).</li>
+<li>Call perf_run().</li>
+<li>When the buffer is full, the callback function is called, as if <a class="el" href="group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02" title="Passes collected perf data to f.">zth::perf_dump()</a> was invoked.</li>
+<li>The buffer is cleared and recording is resumed automatically.</li>
+</ul>
+<p>This gives a continuous flow of <a class="el" href="group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02" title="Passes collected perf data to f.">zth::perf_dump()</a> callbacks, with data later/offline to be converted to VCD. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00685">685</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="gacf6d6c58a6cab29e8da8603fe5568b69" name="gacf6d6c58a6cab29e8da8603fe5568b69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacf6d6c58a6cab29e8da8603fe5568b69">&#9670;&#160;</a></span>perf_run_dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_run_dump </td>
+          <td>(</td>
+          <td class="paramtype">char const *&#160;</td>
+          <td class="paramname"><em>path</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Like <a class="el" href="group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f" title="Setup the system to automatically perform perf event recording, dumping, and resuming.">zth::perf_run()</a>, but dump the contents to file immediately. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00744">744</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ga8d12b1447aabe2d6d79dd49cdb5fe7bd" name="ga8d12b1447aabe2d6d79dd49cdb5fe7bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8d12b1447aabe2d6d79dd49cdb5fe7bd">&#9670;&#160;</a></span>perf_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_start </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="perf_8h.html#a87354c6122947d68ac8aac5cf7552d8c">zth_perf_done_callback_t</a> *&#160;</td>
+          <td class="paramname"><em>f</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Starts recording perf events. </p>
+<p>Recording can only be started when perf is enabled. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00263">263</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ga01eed009522311489304233a25e725a4" name="ga01eed009522311489304233a25e725a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga01eed009522311489304233a25e725a4">&#9670;&#160;</a></span>perf_stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zth::perf_stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stops recording perf events. </p>
+<p>Recording is automatically stopped when the buffer is full. </p>
+
+<p class="definition">Definition at line <a class="el" href="perf_8cpp_source.html#l00276">276</a> of file <a class="el" href="perf_8cpp_source.html">perf.cpp</a>.</p>
 
 </div>
 </div>

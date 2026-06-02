@@ -1,42 +1,5 @@
 var group__zth__api__cpp__perf =
 [
-    [ "zth::Backtrace", "classzth_1_1_backtrace.html", [
-      [ "bt_type", "classzth_1_1_backtrace.html#a5dc7e479267a2db6bdc6092b9590b5d1", null ],
-      [ "Backtrace", "classzth_1_1_backtrace.html#ad4fbc8ee4ae2f87d6baed9eb9de1d6ad", null ],
-      [ "bt", "classzth_1_1_backtrace.html#a883c2f6ed7e2b6cf11f7c1e1e3584fb4", null ],
-      [ "fiber", "classzth_1_1_backtrace.html#aea3fb933208c11053f06b9240fad5a02", null ],
-      [ "fiberId", "classzth_1_1_backtrace.html#ad69c1d9522d3c93090842fccdbaf0608", null ],
-      [ "print", "classzth_1_1_backtrace.html#aa375797537c3eaf7f007f45ac3400d19", null ],
-      [ "printDelta", "classzth_1_1_backtrace.html#a25ef5267cbd53e2e821b42ea21d65d15", null ],
-      [ "printPartial", "classzth_1_1_backtrace.html#ad29a3d453e18b5817c4d2e7890d2d24e", null ],
-      [ "t0", "classzth_1_1_backtrace.html#a59d9a1be89b699366d0573b6cbc6578c", null ],
-      [ "t1", "classzth_1_1_backtrace.html#ac69e20a1127c472df20b19ef77a80b5b", null ],
-      [ "truncated", "classzth_1_1_backtrace.html#a5a9caa807246e0837faa7c109d6f2d7b", null ]
-    ] ],
-    [ "zth::PerfEvent< Enable >", "structzth_1_1_perf_event.html", [
-      [ "Type", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6", [
-        [ "Nothing", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a8a732d3f5d80ec1a1c1c8dd67f969e53", null ],
-        [ "FiberName", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a6b4747e08c334a4f858d66c5ab6b6153", null ],
-        [ "FiberState", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a7f92eb9e56cd644629c96f28de42c2af", null ],
-        [ "Log", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a2edad5826a91d25d8d9c3f8a87fb46b0", null ],
-        [ "Marker", "structzth_1_1_perf_event.html#aa49f3bf5a6ef3cc76c0d0b02fe82cfa6a325f77f559bcd09d1cf5b6c4d3bd0798", null ]
-      ] ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#a39ee6430bc6a74f58019eddb0ad57620", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#ac4e9802d7bdf998f67f208df1b3a8ece", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#ac6257729fb7cc3b05e57a268bced69ad", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#a7c41fb6fd070ad4f5a8e4c57a1b477f9", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#a0cc4998622f963007d53d92bd9aecb03", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#a9e16389ba4d218183d7d7459f2162793", null ],
-      [ "PerfEvent", "structzth_1_1_perf_event.html#ae1a806c7787b2539477b7d066cb24973", null ],
-      [ "release", "structzth_1_1_perf_event.html#a4ea309c4e177dee6d8026fac9c7ce0eb", null ],
-      [ "c_str", "structzth_1_1_perf_event.html#af942b33642c3b8d8383bfc4dc55c571c", null ],
-      [ "fiber", "structzth_1_1_perf_event.html#a1578ea4b724bacc4451a47480e5b5e57", null ],
-      [ "fiberState", "structzth_1_1_perf_event.html#a25f6844bd064fde574be374ab4d39696", null ],
-      [ "str", "structzth_1_1_perf_event.html#a31ecabe5dacfe32e9bea2aa6bce6dbba", null ],
-      [ "t", "structzth_1_1_perf_event.html#a9b1f624aa250a43da7369f6a37269682", null ],
-      [ "type", "structzth_1_1_perf_event.html#a4e4b5dcd641b646118e240728a0d303f", null ],
-      [ "unused", "structzth_1_1_perf_event.html#a9234a7c819bb696cab285aed185985a6", null ]
-    ] ],
     [ "zth::Load< T >", "classzth_1_1_load.html", [
       [ "type", "classzth_1_1_load.html#af6fbdade52bb88f06af78dc5261a2962", null ],
       [ "Load", "classzth_1_1_load.html#a14da4f218ced9440f26e20f652d29440", null ],
@@ -62,8 +25,16 @@ var group__zth__api__cpp__perf =
       [ "operator()", "classzth_1_1_event_rate.html#a159e6527026e7dfb1b24c12be2a60d92", null ],
       [ "rate", "classzth_1_1_event_rate.html#af10c8cbffd10f877e890f19a13f5c3d7", null ]
     ] ],
-    [ "zth_perf_event", "group__zth__api__cpp__perf.html#ga6bc9fae666913eb0855d1402f45bf302", null ],
-    [ "zth::perf_log", "group__zth__api__cpp__perf.html#ga37750cc0aa9a7e2dde894e68c125292e", null ],
-    [ "zth::perf_logv", "group__zth__api__cpp__perf.html#ga782d1fce6ab5169e3e80376e5c00c1d4", null ],
-    [ "zth::perf_mark", "group__zth__api__cpp__perf.html#ga1c4be8da3bfdda3cd7edfb6bbbc98428", null ]
+    [ "zth::perf_abort", "group__zth__api__cpp__perf.html#ga8318a86f83100446224fec3d05b74a16", null ],
+    [ "zth::perf_async_handle", "group__zth__api__cpp__perf.html#ga0eb13f77535ca26fdc6041c0fd21a5a4", null ],
+    [ "zth::perf_dump", "group__zth__api__cpp__perf.html#gaaf5fd1c0b59a49845ca9439de94c7d02", null ],
+    [ "zth::perf_log", "group__zth__api__cpp__perf.html#ga6c69f9f5db0dbf7ca3e2a232c003d072", null ],
+    [ "zth::perf_log", "group__zth__api__cpp__perf.html#ga0a1e79c92b8337544fb5e924997463a6", null ],
+    [ "zth::perf_logv", "group__zth__api__cpp__perf.html#gabf86b57919aaff63e23ccea75b854fca", null ],
+    [ "zth::perf_mark", "group__zth__api__cpp__perf.html#ga1360ae3b938458bcf67be4e5ff1cdd18", null ],
+    [ "zth::perf_mark_async", "group__zth__api__cpp__perf.html#gae087bdbae28e74c563220ea92491fc8c", null ],
+    [ "zth::perf_run", "group__zth__api__cpp__perf.html#ga893ee172a10aa17b69acc10b8d3b8f2f", null ],
+    [ "zth::perf_run_dump", "group__zth__api__cpp__perf.html#gacf6d6c58a6cab29e8da8603fe5568b69", null ],
+    [ "zth::perf_start", "group__zth__api__cpp__perf.html#ga8d12b1447aabe2d6d79dd49cdb5fe7bd", null ],
+    [ "zth::perf_stop", "group__zth__api__cpp__perf.html#ga01eed009522311489304233a25e725a4", null ]
 ];

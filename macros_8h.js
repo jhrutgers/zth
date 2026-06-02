@@ -32,5 +32,6 @@ var macros_8h =
     [ "ZTH_TLS_GET", "macros_8h.html#a55b877a804738fba99a01f296adf2222", null ],
     [ "ZTH_TLS_MEMBER", "macros_8h.html#a7141671ea0dff81b2876bd4ee969e1de", null ],
     [ "ZTH_TLS_SET", "macros_8h.html#a8afceb2d9601e9906696a4353bacf016", null ],
-    [ "ZTH_TLS_STATIC", "macros_8h.html#a228f092c6290125ce8f9b7e945da7bbd", null ]
+    [ "ZTH_TLS_STATIC", "macros_8h.html#a228f092c6290125ce8f9b7e945da7bbd", null ],
+    [ "ZTH_TLS_STATIC_DEFAULT", "macros_8h.html#ab76d12c9280e97a2a9d1bf56cc8d23dc", null ]
 ];

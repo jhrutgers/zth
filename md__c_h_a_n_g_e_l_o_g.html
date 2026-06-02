@@ -94,9 +94,22 @@ $(document).ready(function(){initNavTree('md__c_h_a_n_g_e_l_o_g.html',''); initR
 <div class="contents">
 <div class="textblock"><p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<h1><a href="https://github.com/jhrutgers/zth/compare/v2.0.0...HEAD">Unreleased</a></h1>
+<h1><a href="https://github.com/jhrutgers/zth/compare/v2.1.0...HEAD">Unreleased</a></h1>
 <h2>Added</h2>
 <p>...</p>
+<h1>[2.1.0] - 2026-06-02</h1>
+<h2>Added</h2>
+<ul>
+<li>Rust API bindings and examples.</li>
+<li>Support being compiled as dynamic library.</li>
+<li><code>Fiber::cancel()</code> such that a runner fiber is terminated via throwing <code><a class="el" href="structzth_1_1cancelled.html" title="Exception thrown when a fiber is cancelled.">zth::cancelled</a></code>.</li>
+<li>Consistent CMake variable/macro/<code><a class="el" href="structzth_1_1_config.html" title="The configuration of Zth.">zth::Config</a></code> setting override.</li>
+</ul>
+<h2>Changed</h2>
+<ul>
+<li>Split <code>perf_*</code> data collection from VCD file generation, allowing to extract the dump data for later VCD conversion. This allows VCD generation from a bare-metal perf dump.</li>
+<li>Cleanup backtraces.</li>
+</ul>
 <h1><a href="https://github.com/jhrutgers/zth/releases/tag/v2.0.0">2.0.0</a> - 2026-02-16</h1>
 <h2>Added</h2>
 <ul>
