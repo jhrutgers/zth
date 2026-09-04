@@ -355,6 +355,11 @@ reschedule:
 		return m_load;
 	}
 
+	size_t runnableFibers() const noexcept
+	{
+		return m_runnableQueue.size();
+	}
+
 protected:
 	static void dummyWorkerEntry(void*)
 	{

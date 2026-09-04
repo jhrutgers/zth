@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/jhrutgers/zth/compare/v2.1.0...HEAD)
 
-### Added
+### Fixed
 
-...
+- Issue that the Waiter sleeps too long when it was the only runnable fiber, but
+  a few fibers were just been added to the runnable queue.
 
 
 

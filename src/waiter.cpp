@@ -183,7 +183,7 @@ void Waiter::entry()
 			// No fiber is waiting. suspend() till anyone is going to nap().
 			zth_dbg(waiter, "[%s] No sleeping fibers anymore; suspend", id_str());
 			m_worker.suspend(*fiber());
-		} else if(!m_worker.schedule()) {
+		} else if(!m_worker.schedule() && m_worker.runnableFibers() == 1) {
 			// When true, we were not rescheduled, which means that we are the only
 			// runnable fiber. Do a real sleep, until something interesting happens in
 			// the system.
