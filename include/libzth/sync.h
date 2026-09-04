@@ -1696,7 +1696,7 @@ EXTERN_C ZTH_EXPORT ZTH_INLINE int zth_sem_post(zth_sem_t* sem) noexcept
 		return EINVAL;
 
 	zth::Semaphore* s = static_cast<zth::Semaphore*>(sem->p);
-	if(unlikely(s->value() == std::numeric_limits<size_t>::max()))
+	if(unlikely(s->value() == std::numeric_limits<decltype(s->value())>::max()))
 		return EOVERFLOW;
 
 	s->release();
