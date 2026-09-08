@@ -416,7 +416,7 @@ protected:
 	{
 		if(timeout <= now)
 			// Immediate timeout.
-			return true;
+			return false;
 
 		return block_(timeout, now, q);
 	}
@@ -430,7 +430,7 @@ protected:
 	{
 		if(timeout.isNegative() || timeout.isNull())
 			// Immediate timeout.
-			return true;
+			return false;
 
 		return block_(now + timeout, now, q);
 	}
