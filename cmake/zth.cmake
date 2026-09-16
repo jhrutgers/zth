@@ -17,6 +17,8 @@ include(CMakePackageConfigHelpers)
 #
 
 option(ZTH_SHARED_LIB "Build libzth as a shared library" OFF)
+option(ZTH_INSTALL "Install Zth" ON)
+option(ZTH_INSTALL_TOOLS "Install Zth tools" ${ZTH_INSTALL})
 option(ZTH_DRAFT_API "Enable draft API" OFF)
 option(ZTH_HAVE_LIBZMQ "Use libzmq" OFF)
 option(ZTH_ENABLE_ASAN "Build with Address Sanitizer" OFF)
@@ -286,36 +288,39 @@ if(APPLE AND ZTH_SHARED_LIB)
 	set_target_properties(libzth PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
-install(
-	TARGETS libzth
-	EXPORT libzth
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
-)
+if(ZTH_INSTALL)
+	install(
+		TARGETS libzth
+		EXPORT libzth
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libzth
+	)
 
-install(FILES ${ZTH_SOURCE_DIR}/include/zth ${ZTH_SOURCE_DIR}/include/zth.h
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-set(ZTH_CONFIG_FILE ${ZTH_SOURCE_DIR}/include/zth_config.h)
-foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
-	if(EXISTS ${d}/zth_config.h)
-		set(ZTH_CONFIG_FILE ${d}/zth_config.h)
-		break()
-	endif()
-endforeach()
-install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	install(FILES ${ZTH_SOURCE_DIR}/include/zth ${ZTH_SOURCE_DIR}/include/zth.h
+		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	)
+	set(ZTH_CONFIG_FILE ${ZTH_SOURCE_DIR}/include/zth_config.h)
+	foreach(d IN LISTS ZTH_PREPEND_INCLUDE_DIRECTORIES)
+		if(EXISTS ${d}/zth_config.h)
+			set(ZTH_CONFIG_FILE ${d}/zth_config.h)
+			break()
+		endif()
+	endforeach()
+	install(FILES ${ZTH_CONFIG_FILE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
+	install(EXPORT libzth DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libzth/cmake)
 
-configure_package_config_file(
-	${ZTH_SOURCE_DIR}/cmake/ZthConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
-	INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
-)
+	configure_package_config_file(
+		${ZTH_SOURCE_DIR}/cmake/ZthConfig.cmake.in
+		"${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake"
+		INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
+	)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake
-	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
-)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake
+		DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
+	)
+endif()
 
 if(ZTH_HAVE_LIBZMQ)
 	target_compile_definitions(libzth PUBLIC -DZTH_HAVE_LIBZMQ)
@@ -464,7 +469,9 @@ if(NOT CMAKE_CROSSCOMPILING
 		target_link_options(zth-vcd PRIVATE -Wl,--gc-sections)
 	endif()
 
-	install(TARGETS zth-vcd DESTINATION ${CMAKE_INSTALL_BINDIR})
+	if(ZTH_INSTALL_TOOLS)
+		install(TARGETS zth-vcd DESTINATION ${CMAKE_INSTALL_BINDIR})
+	endif()
 endif()
 
 if(ZTH_CLANG_TIDY)
