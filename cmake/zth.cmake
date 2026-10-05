@@ -320,6 +320,8 @@ if(ZTH_INSTALL)
 	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZthConfig.cmake
 		DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Zth
 	)
+else()
+	set_target_properties(libzth PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endif()
 
 if(ZTH_HAVE_LIBZMQ)
