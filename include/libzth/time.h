@@ -510,8 +510,13 @@ public:
 			uint64_t d = (uint64_t)(m_t.tv_sec / 3600 / 24);
 			time_t rest = m_t.tv_sec - d * 3600 * 24;
 			bool doPrint = d > 0;
-			if(doPrint)
-				res += format("%" PRIu64 "d:", d);
+			if(doPrint) {
+#  ifdef PRIu64
+				res += format("%" PRIu64 "u:", d);
+#  else
+				res += format("%llu:", (unsigned long long)d);
+#  endif
+			}
 
 			int h = int(rest / 3600);
 			rest -= h * 3600;

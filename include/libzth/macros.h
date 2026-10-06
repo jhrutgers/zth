@@ -185,7 +185,8 @@ ZTH_EXPORT void foo();
 #  endif
 #  ifndef is_default
 #    define is_default \
-	    {}
+	    {          \
+	    }
 #  endif
 #  ifndef noexcept
 #    define noexcept throw()
@@ -246,6 +247,10 @@ ZTH_EXPORT void foo();
 #  define ZTH_DEPRECATED(...) [[deprecated(__VA_ARGS__)]]
 #else
 #  define ZTH_DEPRECATED(...) __attribute__((deprecated))
+#endif
+
+#ifndef __STDC_FORMAT_MACROS
+#  define __STDC_FORMAT_MACROS
 #endif
 
 
@@ -371,8 +376,12 @@ ZTH_EXPORT void foo();
 #endif
 
 #if !ZTH_HAVE_EXCEPTIONS
-#  define try		 if(true)
-#  define catch(...)	 if(false)
+#  ifndef try
+#    define try if(true)
+#  endif
+#  ifndef catch
+#    define catch(...) if(false)
+#  endif
 #  define zth_throw(...) zth_terminate()
 #else
 #  define zth_throw(...) throw __VA_ARGS__
