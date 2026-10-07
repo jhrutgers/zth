@@ -261,11 +261,26 @@ private:
 	char const* m_symbol{};
 };
 
+// newlib seems to define this, which messes with the UDL.
+#  undef _S
+
 /*!
  * \brief Literal suffix to convert a string literal to #zth::fsm::Symbol.
  * \ingroup zth_api_cpp_fsm14
  */
 constexpr Symbol operator""_S(char const* s, size_t UNUSED_PAR(len)) noexcept
+{
+	return s;
+}
+
+/*!
+ * \brief Literal suffix to convert a string literal to #zth::fsm::Symbol.
+ *
+ * Alternative to ""_S, as _S might conflict with newlib.
+ *
+ * \ingroup zth_api_cpp_fsm14
+ */
+constexpr Symbol operator""_st(const char* s, size_t UNUSED_PAR(len))
 {
 	return s;
 }
@@ -1185,8 +1200,9 @@ public:
 			if(!prev.constexpr_eq(t.from()) && t.from().valid()) {
 				prev = f.m_transitions[i].from = t.from();
 				if(find(t.from(), l) != (size_t)i)
-					zth_throw(invalid_fsm{
-						"State transitions are not contiguous"});
+					zth_throw(
+						invalid_fsm{
+							"State transitions are not contiguous"});
 			}
 			if(t.hasGuard()) {
 				f.m_transitions[i].guard = &t.guard();
