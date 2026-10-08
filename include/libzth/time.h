@@ -566,7 +566,7 @@ inline cow_string str<TimeInterval const&>(TimeInterval const& value)
  *
  * \ingroup zth_api_cpp_time
  */
-ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int x) noexcept
+ZTH_EXPORT constexpr14 inline TimeInterval operator""_s(unsigned long long int x) noexcept
 {
 	return TimeInterval((time_t)std::min<unsigned long long int>(
 		x, (unsigned long long int)std::numeric_limits<time_t>::max()));
@@ -579,7 +579,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _s(unsigned long long int 
  *
  * \ingroup zth_api_cpp_time
  */
-ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int x) noexcept
+ZTH_EXPORT constexpr14 inline TimeInterval operator""_ms(unsigned long long int x) noexcept
 {
 	return TimeInterval::from_ms(x);
 }
@@ -591,7 +591,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _ms(unsigned long long int
  *
  * \ingroup zth_api_cpp_time
  */
-ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int x) noexcept
+ZTH_EXPORT constexpr14 inline TimeInterval operator""_us(unsigned long long int x) noexcept
 {
 	return TimeInterval::from_us(x);
 }
@@ -603,7 +603,7 @@ ZTH_EXPORT constexpr14 inline TimeInterval operator"" _us(unsigned long long int
  *
  * \ingroup zth_api_cpp_time
  */
-ZTH_EXPORT inline TimeInterval operator"" _s(long double x)
+ZTH_EXPORT inline TimeInterval operator""_s(long double x)
 {
 	return TimeInterval(x);
 }
